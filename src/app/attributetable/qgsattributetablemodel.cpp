@@ -14,68 +14,14 @@
  ***************************************************************************/
 
 #include "qgsattributetablemodel.h"
-//#include "qgsattributetableview.h"
+#include "qgsattributetablefiltermodel.h"
 
-#include "qgsvectordataprovider.h"
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
 
 #include <QtGui>
 #include <QVariant>
-#include <QtAlgorithms>
-#include "qgslogger.h"
-
-//could be faster when type guessed before sorting
-bool idColumnPair::operator<( const idColumnPair &b ) const
-{
-  //QVariat thinks gid is a string!
-  QVariant::Type columnType = columnItem.type();
-
-  if ( columnType == QVariant::Int || columnType == QVariant::UInt || columnType == QVariant::LongLong || columnType == QVariant::ULongLong )
-    return columnItem.toLongLong() < b.columnItem.toLongLong();
-
-  if ( columnType == QVariant::Double )
-    return columnItem.toDouble() < b.columnItem.toDouble();
-
-  return columnItem.toString() < b.columnItem.toString();
-}
-
-//////////////////
-// Filter Model //
-//////////////////
-
-void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
-{
-  (( QgsAttributeTableModel * )sourceModel() )->sort( column, order );
-}
-
-QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsVectorLayer* theLayer )
-{
-  mLayer = theLayer;
-  mHideUnselected = false;
-  setDynamicSortFilter( true );
-}
-
-bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
-{
-  if ( mHideUnselected )
-    // unreadable? yes, i agree :-)
-    return mLayer->selectedFeaturesIds().contains((( QgsAttributeTableModel * )sourceModel() )->rowToId( sourceRow ) );
-
-  return true;
-}
-
-/*
-QModelIndex QgsAttributeTableFilterModel::mapFromSource ( const QModelIndex& sourceIndex ) const
-{
-  return sourceIndex;
-}
-
-QModelIndex QgsAttributeTableFilterModel::mapToSource ( const QModelIndex& filterIndex ) const
-{
-  return filterIndex;
-}
-*/
 
 ////////////////////////////
 // QgsAttributeTableModel //
@@ -336,7 +282,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
 {
   QgsAttributeMap row;
-  idColumnPair pair;
+  QgsAttributeTableIdColumnPair pair;
   QgsAttributeList attrs;
   QgsFeature f;
 
@@ -360,14 +306,14 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
   if ( order == Qt::AscendingOrder )
     qStableSort( mSortList.begin(), mSortList.end() );
   else
-    qStableSort( mSortList.begin(), mSortList.end(), qGreater<idColumnPair>() );
+    qStableSort( mSortList.begin(), mSortList.end(), qGreater<QgsAttributeTableIdColumnPair>() );
 
   // recalculate id<->row maps
   mRowIdMap.clear();
   mIdRowMap.clear();
 
   int i = 0;
-  QList<idColumnPair>::Iterator it;
+  QList<QgsAttributeTableIdColumnPair>::Iterator it;
   for ( it = mSortList.begin(); it != mSortList.end(); ++it, ++i )
   {
     mRowIdMap.insert( i, it->id );
@@ -491,155 +437,3 @@ void QgsAttributeTableModel::incomingChangeLayout()
   emit layoutAboutToBeChanged();
 }
 
-/////////////////////
-// In-Memory model //
-/////////////////////
-
-void QgsAttributeTableMemModel::loadLayer()
-{
-  QgsAttributeTableModel::loadLayer();
-  mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
-
-  QgsFeature f;
-  while ( mLayer->nextFeature( f ) )
-    mFeatureMap.insert( f.id(), f );
-}
-
-QgsAttributeTableMemModel::QgsAttributeTableMemModel
-( QgsVectorLayer *theLayer )
-    : QgsAttributeTableModel( theLayer )
-{
-  loadLayer();
-}
-
-QVariant QgsAttributeTableMemModel::data( const QModelIndex &index, int role ) const
-{
-  if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
-    return QVariant();
-
-  QVariant::Type fldType = mLayer->pendingFields()[ mAttributes[index.column()] ].type();
-  bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
-
-  if ( role == Qt::TextAlignmentRole )
-  {
-    if ( fldNumeric )
-      return QVariant( Qt::AlignRight );
-    else
-      return QVariant( Qt::AlignLeft );
-  }
-
-  // if we don't have the row in current cache, load it from layer first
-  if ( mLastRowId != rowToId( index.row() ) )
-  {
-    //bool res = mLayer->featureAtId(rowToId(index.row()), mFeat, false, true);
-    bool res = mFeatureMap.contains( rowToId( index.row() ) );
-
-    if ( !res )
-      return QVariant( "ERROR" );
-
-    mLastRowId = rowToId( index.row() );
-    mFeat = mFeatureMap[rowToId( index.row() )];
-    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
-  }
-
-  if ( !mLastRow )
-    return QVariant( "ERROR" );
-
-  QVariant &val = ( *mLastRow )[ mAttributes[index.column()] ];
-
-  if ( val.isNull() )
-  {
-    // if the value is NULL, show that in table, but don't show "NULL" text in editor
-    if ( role == Qt::EditRole )
-      return QVariant();
-    else
-      return QVariant( "NULL" );
-  }
-
-  // force also numeric data for EditRole to be strings
-  // otherwise it creates spinboxes instead of line edits
-  // (probably not what we do want)
-  if ( fldNumeric && role == Qt::EditRole )
-    return val.toString();
-
-  // convert to QString from some other representation
-  // this prevents displaying greater numbers in exponential format
-  return val.toString();
-}
-
-bool QgsAttributeTableMemModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() || role != Qt::EditRole )
-    return false;
-
-  if ( !mLayer->isEditable() )
-    return false;
-
-  //bool res = mLayer->featureAtId(rowToId(index.row()), mFeat, false, true);
-  bool res = mFeatureMap.contains( rowToId( index.row() ) );
-
-  if ( res )
-  {
-    mLastRowId = rowToId( index.row() );
-    mFeat = mFeatureMap[rowToId( index.row() )];
-    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
-
-
-// QgsDebugMsg(mFeatureMap[rowToId(index.row())].id());
-    mFeatureMap[rowToId( index.row() )].changeAttribute( index.column(), value );
-    // propagate back to the layer
-    mLayer->changeAttributeValue( rowToId( index.row() ), index.column(), value, true );
-  }
-
-  if ( !mLayer->isModified() )
-    return false;
-
-  emit dataChanged( index, index );
-  return true;
-}
-
-void QgsAttributeTableMemModel::featureDeleted( int fid )
-{
-  QgsDebugMsg( "entered." );
-  mFeatureMap.remove( fid );
-  QgsAttributeTableModel::featureDeleted( fid );
-}
-
-void QgsAttributeTableMemModel::featureAdded( int fid )
-{
-  QgsDebugMsg( "entered." );
-  QgsFeature f;
-  mLayer->featureAtId( fid, f, false, true );
-  mFeatureMap.insert( fid, f );
-  QgsAttributeTableModel::featureAdded( fid );
-}
-
-#if 0
-void QgsAttributeTableMemModel::attributeAdded( int idx )
-{
-  QgsDebugMsg( "entered." );
-  loadLayer();
-  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
-}
-
-void QgsAttributeTableMemModel::attributeDeleted( int idx )
-{
-  QgsDebugMsg( "entered." );
-  loadLayer();
-  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
-}
-#endif
-
-void QgsAttributeTableMemModel::layerDeleted()
-{
-  QgsDebugMsg( "entered." );
-  mFeatureMap.clear();
-  QgsAttributeTableModel::layerDeleted();
-}
-
-void QgsAttributeTableMemModel::attributeValueChanged( int fid, int idx, const QVariant &value )
-{
-  QgsDebugMsg( "entered." );
-  mFeatureMap[fid].changeAttribute( idx, value );
-  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
-}

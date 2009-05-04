@@ -88,7 +88,11 @@ SET(QGIS_APP_SRCS
   
   attributetable/qgsattributetabledialog.cpp
   attributetable/qgsattributetablemodel.cpp
+  attributetable/qgsattributetablememorymodel.cpp
   attributetable/qgsattributetableview.cpp
+  attributetable/qgsattributetablefiltermodel.cpp
+  attributetable/qgsattributetableidcolumnpair.cpp
+  attributetable/qgsattributetabledelegate.cpp
   )
 
 
@@ -157,8 +161,10 @@ SET (QGIS_APP_MOC_HDRS
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
   
-  attributetable/qgsattributetabledialog.h
   attributetable/qgsattributetablemodel.h
+  attributetable/qgsattributetablememorymodel.h
+  attributetable/qgsattributetabledialog.h
+  attributetable/qgsattributetabledelegate.h
   )
 
 IF (POSTGRES_FOUND)

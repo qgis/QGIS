@@ -13,69 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QModelIndex>
-#include <QItemDelegate>
-#include <QHeaderView>
-#include <QSettings>
-#include <QLineEdit>
-#include <QPainter>
 #include <QKeyEvent>
+#include <QSettings>
+#include <QHeaderView>
 
 #include "qgsattributetableview.h"
 #include "qgsattributetablemodel.h"
+#include "qgsattributetablememorymodel.h"
+#include "qgsattributetabledelegate.h"
+#include "qgsattributetablefiltermodel.h"
 
-#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-
-class QgsAttributeTableDelegate : public QItemDelegate
-{
-  public:
-    QgsAttributeTableDelegate( QObject* parent = NULL ) : QItemDelegate( parent ) {}
-
-    QWidget * createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
-    {
-      QWidget *editor = QItemDelegate::createEditor( parent, option, index );
-
-      QLineEdit *le = dynamic_cast<QLineEdit*>( editor );
-      if ( !le ) return editor;
-
-      const QgsAttributeTableModel* m = dynamic_cast<const QgsAttributeTableModel*>( index.model() );
-      if ( !m ) return editor;
-
-      int col = index.column();
-      QVariant::Type type = m->layer()->dataProvider()->fields()[col].type();
-
-      if ( type == QVariant::Int )
-      {
-        le->setValidator( new QIntValidator( le ) );
-      }
-      else if ( type == QVariant::Double )
-      {
-        le->setValidator( new QDoubleValidator( le ) );
-      }
-
-      return editor;
-    }
-
-
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
-    {
-      QItemDelegate::paint( painter, option, index );
-
-      if ( option.state & QStyle::State_HasFocus )
-      {
-        QRect r = option.rect.adjusted( 1, 1, -1, -1 );
-        QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
-        painter->save();
-        painter->setPen( p );
-        painter->drawRect( r );
-        painter->restore();
-      }
-    }
-
-};
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
     : QTableView( parent )
@@ -103,7 +53,7 @@ void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
   if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::RandomSelectGeometryAtId )
     bModel = new QgsAttributeTableModel( layer );
   else
-    bModel = new QgsAttributeTableMemModel( layer );
+    bModel = new QgsAttributeTableMemoryModel( layer );
 
   QgsAttributeTableFilterModel* bfModel = new QgsAttributeTableFilterModel( layer );
   bfModel->setSourceModel( bModel );
