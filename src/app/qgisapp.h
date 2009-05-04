@@ -280,6 +280,7 @@ class QgisApp : public QMainWindow
     QAction *actionSettingsSeparator1() { return mActionSettingsSeparator1; }
     QAction *actionOptions() { return mActionOptions; }
     QAction *actionCustomProjection() { return mActionCustomProjection; }
+    QAction *actionConfigureShortcuts() { return mActionConfigureShortcuts; }
 
 #ifdef Q_WS_MAC
     QAction *actionWindowMinimize() { return mActionWindowMinimize; }
@@ -461,6 +462,8 @@ class QgisApp : public QMainWindow
     void checkQgisVersion();
     //!Invoke the custom projection dialog
     void customProjection();
+    //! configure shortcuts
+    void configureShortcuts();
     //! options dialog slot
     void options();
     //! Whats-this help slot
@@ -769,6 +772,7 @@ class QgisApp : public QMainWindow
     QAction *mActionSettingsSeparator1;
     QAction *mActionOptions;
     QAction *mActionCustomProjection;
+    QAction *mActionConfigureShortcuts;
 
 #ifdef Q_WS_MAC
     QAction *mActionWindowMinimize;

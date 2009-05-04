@@ -10,6 +10,7 @@ SET(QGIS_APP_SRCS
   qgsbookmarks.cpp
   qgsclipboard.cpp
   qgscontinuouscolordialog.cpp
+  qgsconfigureshortcutsdialog.cpp
   qgscustomprojectiondialog.cpp
   qgsdbfilterproxymodel.cpp
   qgsdbtablemodel.cpp
@@ -54,6 +55,7 @@ SET(QGIS_APP_SRCS
   qgsrasterlayerproperties.cpp
   qgssearchquerybuilder.cpp
   qgsserversourceselect.cpp
+  qgsshortcutsmanager.cpp
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
   qgsuniquevaluedialog.cpp
@@ -105,6 +107,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributedialog.h
   qgsbookmarks.h
   qgscontinuouscolordialog.h
+  qgsconfigureshortcutsdialog.h
   qgscustomprojectiondialog.h
   qgsdelattrdialog.h
   qgsgeomtypedialog.h
