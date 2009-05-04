@@ -8,6 +8,8 @@ Building QGIS from source - step by step
 %! preproc      : TUT_URL   https://qgis.org
 %! PostProc(html): '(?i)(<pre>)' '<div class="code">\1'
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'
+% Next line will replace tabs with 2 spaces in txt generated outputs
+%! PostProc(txt): '(?i)(\t)' '  '
 %! encoding: iso-8859-1
 % These are comments and will not be generated in any output
 % -------------------
@@ -63,6 +65,11 @@ and getting involved in the project further.
 
 /!\ ***Note to document writers:*** Please use this document as the central
 place for describing build procedures. Please do not remove this notice. 
+
+/!\ ***Note to document writers:*** This documented is generated from 
+doc/INSTALL.t2t - if you need to edit this document, be sure to edit that 
+file rather than the generated INSTALL document found in the root of the 
+source directory.
 
 /!\ ***Note:*** This is a 'cut and paste' tutorial - in most cases you can
 simply copy the commands listed in codeblocks that look like this:

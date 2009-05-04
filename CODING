@@ -16,7 +16,7 @@ Developers guide for QGIS
     1.3. C++ Files
       1.3.1. Names
       1.3.2. Standard Header and License
-      1.3.3. CVS Keyword
+      1.3.3. SVN Keyword
     1.4. Variable Names
     1.5. Enumerated Types
     1.6. Global Constants
@@ -36,7 +36,7 @@ Developers guide for QGIS
     2.1. Accessing the Repository
     2.2. Anonymous Access
     2.3. QGIS documentation sources
-    2.4. Documentation
+    2.4. SVN Documentation
     2.5. Development in branches
       2.5.1. Purpose
       2.5.2. Procedure
@@ -69,104 +69,118 @@ Developers guide for QGIS
 These standards should be followed by all QGIS developers.
 
 
-	1.1. Classes
-	============
+  1.1. Classes
+  ============
 
 
-		1.1.1. Names
-		============
+    1.1.1. Names
+    ============
 
 Class in QGIS begin with Qgs and are formed using mixed case. 
 
 
   Examples:
-  	QgsPoint
-  	QgsMapCanvas
-  	QgsRasterLayer
+    QgsPoint
+    QgsMapCanvas
+    QgsRasterLayer
 
 
 
-		1.1.2. Members
-		==============
+    1.1.2. Members
+    ==============
 
-Class member names begin with a lower case m and are formed using mixed case.
+Class member names begin with a lower case m and are formed using mixed
+case.
 
 
-  	mMapCanvas	
-  	mCurrentExtent
+    mMapCanvas  
+    mCurrentExtent
 
 
 All class members should be private.
 Public class members are STRONGLY discouraged
 
 
-		1.1.3. Accessor Functions
-		=========================
+    1.1.3. Accessor Functions
+    =========================
 
-Class member values should be obtained through accesssor functions. The function should be named without a get prefix. Accessor functions for the two private members above would be: 
-
-
-  	mapCanvas()
-  	currentExtent()
+Class member values should be obtained through accesssor functions. The
+function should be named without a get prefix. Accessor functions for the
+two private members above would be: 
 
 
-
-		1.1.4. Functions
-		================
-
-Function names begin with a lowercase letter and are formed using mixed case. The function name should convey something about the purpose of the function.
-
-
-  	updateMapExtent()
-  	setUserOptions()
+    mapCanvas()
+    currentExtent()
 
 
 
-	1.2. Qt Designer
-	================
+    1.1.4. Functions
+    ================
+
+Function names begin with a lowercase letter and are formed using mixed case.
+The function name should convey something about the purpose of the function.
 
 
-		1.2.1. Generated Classes
-		========================
+    updateMapExtent()
+    setUserOptions()
 
-QGIS classes that are generated from Qt Designer (ui) files should have a Base suffix. This identifies the class as a generated base class.
+
+
+  1.2. Qt Designer
+  ================
+
+
+    1.2.1. Generated Classes
+    ========================
+
+QGIS classes that are generated from Qt Designer (ui) files should have a
+Base suffix. This identifies the class as a generated base class.
 
 
   Examples:
-  	QgsPluginMangerBase
-  	QgsUserOptionsBase
+    QgsPluginMangerBase
+    QgsUserOptionsBase
 
 
-		1.2.2. Dialogs
-		==============
+    1.2.2. Dialogs
+    ==============
 
 All dialogs should implement the following:
  * Tooltip help for all toolbar icons and other relevant widgets
  * WhatsThis help for all widgets on the dialog
- * An optional (though highly recommended) context sensitive Help button that directs the user to the appropriate help page by launching their web browser
+ * An optional (though highly recommended) context sensitive Help button
+   that directs the user to the appropriate help page by launching their web
+   browser
 
 
-	1.3. C++ Files
-	==============
+  1.3. C++ Files
+  ==============
 
 
-		1.3.1. Names
-		============
+    1.3.1. Names
+    ============
 
-C++ implementation and header files should be have a .cpp and .h extension respectively.
-Filename should be all lowercase and, in the case of classes, match the class name.
+C++ implementation and header files should be have a .cpp and .h extension
+respectively.  Filename should be all lowercase and, in the case of classes,
+match the class name.
 
 
   Example:
-  	Class QgsFeatureAttribute source files are 
-  		qgsfeatureattribute.cpp and qgsfeatureattribute.h
+    Class QgsFeatureAttribute source files are 
+      qgsfeatureattribute.cpp and qgsfeatureattribute.h
 
 
+/!\ Note: in case it is not clear from the statement above, for a filename 
+to match a class name it implicitly means that each class should be declared 
+and implemented in its own file. This makes it much easier for newcomers to 
+identify where the code is relating to specific class.
 
-		1.3.2. Standard Header and License
-		==================================
 
-Each source file should contain a header section patterned after the following example:
+    1.3.2. Standard Header and License
+    ==================================
+
+Each source file should contain a header section patterned after the following
+example:
 
 
   /***************************************************************************
@@ -186,31 +200,35 @@ Each source file should contain a header section patterned after the following e
 
 
 
-		1.3.3. CVS Keyword
-		==================
+    1.3.3. SVN Keyword
+    ==================
 
-Each source file should contain the $Id$ keyword. This will be expanded by CVS to contain useful information about the file, revision, last committer, and date/time of last checkin.
+Each source file should contain the $Id$ keyword. This will be expanded by CVS
+to contain useful information about the file, revision, last committer, and
+date/time of last checkin.
 
-Place the keyword right after the standard header/license that is found at the top of each source file:
+Place the keyword right after the standard header/license that is found at the
+top of each source file:
 
 
-  	/* $Id$ */
+    /* $Id$ */
 
 
 
-	1.4. Variable Names
-	===================
+  1.4. Variable Names
+  ===================
 
 Variable names begin with a lower case letter and are formed using mixed case.
 
 
   Examples:
-  	mapCanvas
-  	currentExtent
+    mapCanvas
+    currentExtent
 
 
-	1.5. Enumerated Types
-	=====================
+
+  1.5. Enumerated Types
+  =====================
 
 Enumerated types should be named in CamelCase with a leading capital e.g.:
 
@@ -224,12 +242,12 @@ Enumerated types should be named in CamelCase with a leading capital e.g.:
       } ;
 
 
-Do not use generic type names that will conflict with other types. e.g. use "UnkownUnit" rather 
-than "Unknown"
+Do not use generic type names that will conflict with other types. e.g. use
+"UnkownUnit" rather than "Unknown"
 
 
-	1.6. Global Constants
-	=====================
+  1.6. Global Constants
+  =====================
 
 Global constants should be written in upper case underscore separated e.g.:
 
@@ -238,44 +256,49 @@ Global constants should be written in upper case underscore separated e.g.:
 
 
 
-	1.7. Editing
-	============
+  1.7. Editing
+  ============
 
-Any text editor/IDE can be used to edit QGIS code, providing the following requirements are met.
-
-
-		1.7.1. Tabs
-		===========
-
-Set your editor to emulate tabs with spaces. Tab spacing should be set to 2 spaces.
+Any text editor/IDE can be used to edit QGIS code, providing the following
+requirements are met.
 
 
-		1.7.2. Indentation
-		==================
+    1.7.1. Tabs
+    ===========
 
-Source code should be indented to improve readability. There is a .indent.pro file in the QGIS src directory that contains the switches to be used when indenting code using the GNU indent program. If you don't use GNU indent, you should emulate these settings.
+Set your editor to emulate tabs with spaces. Tab spacing should be set to 2
+spaces.
 
 
-		1.7.3. Braces
-		=============
+    1.7.2. Indentation
+    ==================
+
+Source code should be indented to improve readability. There is a .indent.pro
+file in the QGIS src directory that contains the switches to be used when
+indenting code using the GNU indent program. If you don't use GNU indent, you
+should emulate these settings.
+
+
+    1.7.3. Braces
+    =============
 
 Braces should start on the line following the expression:
 
 
-  	if(foo == 1)
-  	{
-  	  // do stuff
-  	  ...
-   	}else
-  	{
-  	  // do something else
-  	  ...
-  	}
+    if(foo == 1)
+    {
+      // do stuff
+      ...
+     }else
+    {
+      // do something else
+      ...
+    }
 
 
 
-	1.8. API Compatibility
-	======================
+  1.8. API Compatibility
+  ======================
 
 From QGIS 1.0 we will provide a stable, backwards compatible API. This will
 provide a stable basis for people to develop against, knowing their code will
@@ -302,29 +325,30 @@ Trolltech developers e.g.
 
 
 
-	1.9. Coding Style
-	=================
+  1.9. Coding Style
+  =================
 
-Here are described some programming hints and tips that will hopefully reduce errors, development time, and maintenance.
-
-
-		1.9.1. Where-ever Possible Generalize Code
-		==========================================
+Here are described some programming hints and tips that will hopefully reduce
+errors, development time, and maintenance.
 
 
-  If you are cut-n-pasting code, or otherwise writing the same thing more than once, consider consolidating the code 
-  into a single function.
+    1.9.1. Where-ever Possible Generalize Code
+    ==========================================
+
+
+  If you are cut-n-pasting code, or otherwise writing the same thing more than
+  once, consider consolidating the code into a single function.
 
 
 This will:
   * allow changes to be made in one location instead of in multiple places
   * help prevent code bloat
-  * make it more difficult for multiple copies to evolve differences over time, thus making it harder to understand and 
-maintain for others
+  * make it more difficult for multiple copies to evolve differences over time,
+    thus making it harder to understand and maintain for others
 
 
-		1.9.2. Prefer Having Constants First in Predicates
-		==================================================
+    1.9.2. Prefer Having Constants First in Predicates
+    ==================================================
 
 Prefer to put constants first in predicates. 
 
@@ -332,15 +356,17 @@ Prefer to put constants first in predicates.
   "0 == value" instead of "value == 0"
 
 
-This will help prevent programmers from accidentally using "=" when they meant to use "==", which can introduce very subtle 
-logic bugs.  The compiler will generate an error if you accidentally use "=" instead of "==" for comparisons since constants 
-inherently cannot be assigned values.
+This will help prevent programmers from accidentally using "=" when they meant
+to use "==", which can introduce very subtle logic bugs.  The compiler will
+generate an error if you accidentally use "=" instead of "==" for comparisons
+since constants inherently cannot be assigned values.
 
 
-		1.9.3. Whitespace Can Be Your Friend
-		====================================
+    1.9.3. Whitespace Can Be Your Friend
+    ====================================
 
-Adding spaces between operators, statements, and functions makes it easier for humans to parse code.
+Adding spaces between operators, statements, and functions makes it easier for
+humans to parse code.
 
 Which is easier to read, this:
 
@@ -355,31 +381,35 @@ or this:
 
 
 
-		1.9.4. Add Trailing Identifying Comments
-		========================================
+    1.9.4. Add Trailing Identifying Comments
+    ========================================
 
-Adding comments at the end of function, struct and class implementations makes it easier to find them later.
+Adding comments at the end of function, struct and class implementations makes
+it easier to find them later.
 
-Consider that you're at the bottom of a source file and need to find a very long function -- without these kinds of trailing 
-comments you will have to page up past the body of the function to find its name.  Of course this is ok if you wanted to find 
-the beginning of the function; but what if you were interested at code near its end?  You'd have to page up and then back down 
-again to the desired part.
+Consider that you're at the bottom of a source file and need to find a very
+long function -- without these kinds of trailing comments you will have to page
+up past the body of the function to find its name.  Of course this is ok if you
+wanted to find the beginning of the function; but what if you were interested
+at code near its end?  You'd have to page up and then back down again to the
+desired part.
 
-E.g.,
+e.g.,
 
 
   void foo::bar()
   { 
       // ... imagine a lot of code here 
-   } // foo::bar()
+  } // foo::bar()
 
 
 
-		1.9.5. Use Braces Even for Single Line Statements
-		=================================================
+    1.9.5. Use Braces Even for Single Line Statements
+    =================================================
 
-Using braces for code in if/then blocks or similar code structures even for single line statements means that adding another 
-statement is less likely to generate broken code.
+Using braces for code in if/then blocks or similar code structures even for
+single line statements means that adding another statement is less likely to
+generate broken code.
 
 Consider:
 
@@ -390,8 +420,9 @@ Consider:
       baz();
 
 
-Adding code after bar() or baz() without adding enclosing braces would create broken code.  Though most programmers would 
-naturally do that, some may forget to do so in haste.
+Adding code after bar() or baz() without adding enclosing braces would create
+broken code.  Though most programmers would naturally do that, some may forget
+to do so in haste.
 
 So, prefer this:
 
@@ -407,13 +438,14 @@ So, prefer this:
 
 
 
-		1.9.6. Book recommendations
-		===========================
+    1.9.6. Book recommendations
+    ===========================
 
- * Effective C++ (http://www.awprofessional.com/title/0321334876), Scott Meyers
- * More Effective C++ (http://www.awprofessional.com/bookstore/product.asp?isbn=020163371X&rl=1), Scott Meyers
- * Effective STL (http://www.awprofessional.com/title/0201749629), Scott Meyers
- * Design Patterns (http://www.awprofessional.com/title/0201634988), GoF
+- Effective C++ (http://www.awprofessional.com/title/0321334876), Scott Meyers
+- More Effective C++ (http://www.awprofessional.com/bookstore/product.asp?isbn=020163371X&rl=1), Scott Meyers
+- Effective STL (http://www.awprofessional.com/title/0201749629), Scott Meyers
+- Design Patterns (http://www.awprofessional.com/title/0201634988), GoF
+
 
 You should also really read this article from Qt Quarterly on 
 http://doc.trolltech.com/qq/qq13-apis.html designing Qt style (APIs)
@@ -425,8 +457,8 @@ http://doc.trolltech.com/qq/qq13-apis.html designing Qt style (APIs)
 This page describes how to get started using the QGIS Subversion repository
 
 
-	2.1. Accessing the Repository
-	=============================
+  2.1. Accessing the Repository
+  =============================
 
 To check out QGIS HEAD:
 
@@ -435,20 +467,23 @@ To check out QGIS HEAD:
 
 
 
-	2.2. Anonymous Access
-	=====================
+  2.2. Anonymous Access
+  =====================
 
-You can use the following commands to perform an anonymous checkout from the QGIS Subversion repository. 
-Note we recommend checking out the trunk (unless you are a developer or really HAVE to have the latest 
-changes and dont mind lots of crashing!).
+You can use the following commands to perform an anonymous checkout from the
+QGIS Subversion repository.  Note we recommend checking out the trunk (unless
+you are a developer or really HAVE to have the latest changes and dont mind
+lots of crashing!).
 
-You must have a subversion client installed prior to checking out the code. See the Subversion website 
-for more information. The Links page contains a good selection of SVN clients for various platforms.
+You must have a subversion client installed prior to checking out the code. See
+the Subversion website for more information. The Links page contains a good
+selection of SVN clients for various platforms.
 
 To check out a branch
 
 
     svn co https://svn.osgeo.org/qgis/branches/<branch name>
+
 
 To check out SVN stable trunk:
 
@@ -456,17 +491,20 @@ To check out SVN stable trunk:
     svn co https://svn.osgeo.org/qgis/trunk/qgis qgis_trunk
 
 
-/!\ Note: If you are behind a proxy server, edit your ~/subversion/servers file to specify 
-your proxy settings first!
+/!\ Note: If you are behind a proxy server, edit your ~/subversion/servers
+file to specify your proxy settings first!
 
-/!\ Note: In QGIS we keep our most stable code in trunk. Periodically we will tag a release 
-off trunk, and then continue stabilisation and selective incorporation of new features into trunk.
+/!\ Note: In QGIS we keep our most stable code in the version 1_0 branch.
+Trunk contains code for the so called 'unstable' release series. Periodically
+we will tag a release off trunk, and then continue stabilisation and selective
+incorporation of new features into trunk.
 
-See the INSTALL file in the source tree for specific instructions on building development versions. 
+See the INSTALL file in the source tree for specific instructions on building
+development versions. 
 
 
-	2.3. QGIS documentation sources
-	===============================
+  2.3. QGIS documentation sources
+  ===============================
 
 If you're interested in checking out Quantum GIS documentation sources:
 
@@ -477,58 +515,73 @@ If you're interested in checking out Quantum GIS documentation sources:
 You can also take a look at DocumentationWritersCorner for more information.
 
 
-	2.4. Documentation
-	==================
+  2.4. SVN Documentation
+  ======================
 
 The repository is organized as follows:
 
 http://wiki.qgis.org/images/repo.png
 
-See the Subversion book http://svnbook.red-bean.com for information on becoming a SVN master.
+See the Subversion book http://svnbook.red-bean.com for information on becoming
+a SVN master.
 
 
-	2.5. Development in branches
-	============================
+  2.5. Development in branches
+  ============================
 
 
-		2.5.1. Purpose
-		==============
+    2.5.1. Purpose
+    ==============
 
-The complexity of the QGIS source code has increased considerably during the last years. Therefore it is hard 
-to anticipate the side effects that the addition of a feature will have. In the past, the QGIS project had very 
-long release cycles because it was a lot of work to reetablish the stability of the software system after new 
-features were added. To overcome these problems, QGIS switched to a development model where new features are 
-coded in svn branches first and merged to trunk (the main branch) when they are finished and stable. This section 
-describes the procedure for branching and merging in the QGIS project.
-
-
-		2.5.2. Procedure
-		================
-
- * Initial announcement on mailing list
-Before starting, make an announcement on the developer mailing list to see if another developer is 
-already working on the same feature. Also contact the technical advisor of the project steering committee 
-(PSC). If the new feature requires any changes to the QGIS architecture, a request for comment (RFC) is needed. 
- * Create a branch
-Create a new svn branch for the development of the new feature (see UsingSubversion for the svn syntax). Now 
-you can start developing.
- * Merge from trunk regularly
-It is recommended to merge the changes in trunk to the branch on a regular basis. This makes it easier to merge 
-the branch back to trunk later.
- * Documentation on wiki
-It is also recommended to document the intended changes and the current status of the work on a wiki page.
- * Testing before merging back to trunk
-When you are finished with the new feature and happy with the stability, make an announcement on the developer list. 
-Before merging back, the changes will be tested by developers and users. Binary packages (especially for OsX and Windows) 
-will be generated to also involve non-developers. In trac, a new Component will be opened to file tickets against. 
-Once there are no remaining issues left, the technical advisor of the PSC merges the changes into trunk.
+The complexity of the QGIS source code has increased considerably during the
+last years. Therefore it is hard to anticipate the side effects that the
+addition of a feature will have. In the past, the QGIS project had very long
+release cycles because it was a lot of work to reetablish the stability of the
+software system after new features were added. To overcome these problems, QGIS
+switched to a development model where new features are coded in svn branches
+first and merged to trunk (the main branch) when they are finished and stable.
+This section describes the procedure for branching and merging in the QGIS
+project.
 
 
-		2.5.3. Creating a branch
-		========================
+    2.5.2. Procedure
+    ================
 
-We prefer that new feature developments happen out of trunk so that trunk remains in a 
-stable state. To create a branch use the following command:
+- Initial announcement on mailing list:
+Before starting, make an announcement on the developer mailing list to see if
+another developer is already working on the same feature. Also contact the
+technical advisor of the project steering committee (PSC). If the new feature
+requires any changes to the QGIS architecture, a request for comment (RFC) is
+needed. 
+
+- Create a branch: 
+Create a new svn branch for the development of the new feature (see
+UsingSubversion for the svn syntax). Now you can start developing.
+
+- Merge from trunk regularly:
+It is recommended to merge the changes in trunk to the branch on a regular
+basis. This makes it easier to merge the branch back to trunk later.
+
+- Documentation on wiki: 
+It is also recommended to document the intended changes and the current status
+of the work on a wiki page.
+
+- Testing before merging back to trunk: 
+When you are finished with the new feature and happy with the stability, make
+an announcement on the developer list.  Before merging back, the changes will
+be tested by developers and users. Binary packages (especially for OsX and
+Windows) will be generated to also involve non-developers. In trac, a new
+Component will be opened to file tickets against.  Once there are no remaining
+issues left, the technical advisor of the PSC merges the changes into trunk.
+
+
+
+
+    2.5.3. Creating a branch
+    ========================
+
+We prefer that new feature developments happen out of trunk so that trunk
+remains in a stable state. To create a branch use the following command:
 
 
   svn copy https://svn.osgeo.org/qgis/trunk/qgis https://svn.osgeo.org/qgis/branches/qgis_newfeature
@@ -536,12 +589,13 @@ stable state. To create a branch use the following command:
 
 
 
-		2.5.4. Merge regularly from trunk to branch
-		===========================================
+    2.5.4. Merge regularly from trunk to branch
+    ===========================================
 
-When working in a branch you should regularly merge trunk into it so that your branch does not diverge more 
-than necessary. In the top level dir of your branch, first type `svn info` to determine the revision 
-numbers of your branch which will produce output something like this:
+When working in a branch you should regularly merge trunk into it so that your
+branch does not diverge more than necessary. In the top level dir of your
+branch, first type `svn info` to determine the revision numbers of your
+branch which will produce output something like this:
 
 
   timlinux@timlinux-desktop:~/dev/cpp/qgis_raster_transparency_branch$ svn info
@@ -558,14 +612,16 @@ numbers of your branch which will produce output something like this:
   Propriedades da Última Mudança: 2007-01-09 11:32:55 -0200 (Ter, 09 Jan 2007)
 
 
-The second revision number shows the revision number of the start revision of your branch and the first the 
-current revision. You can do a dry run of the merge like this:
+The second revision number shows the revision number of the start revision of
+your branch and the first the current revision. You can do a dry run of the
+merge like this:
 
 
   svn merge --dry-run -r 6495:6546 https://svn.osgeo.org/qgis/trunk/qgis
 
 
-After you are happy with the changes that will be made do the merge for real like this:
+After you are happy with the changes that will be made do the merge for real
+like this:
 
 
   svn merge -r 6495:6546 https://svn.osgeo.org/qgis/trunk/qgis
@@ -573,30 +629,33 @@ After you are happy with the changes that will be made do the merge for real lik
 
 
 
-	2.6. Submitting Patches
-	=======================
+  2.6. Submitting Patches
+  =======================
 
-There are a few guidelines that will help you to get your patches into QGIS easily, and help us 
-deal with the patches that are sent to use easily.
-
-
-		2.6.1. Patch file naming
-		========================
-
-If the patch is a fix for a specific bug, please name the file with the bug number in it e.g. 
-bug777fix.diff, and attach it to the original bug report in trac (https://trac.osgeo.org/qgis/).
-
-If the bug is an enhancement or new feature, its usually a good idea to create a ticket in 
-trac (https://trac.osgeo.org/qgis/) first and then attach you 
+There are a few guidelines that will help you to get your patches into QGIS
+easily, and help us deal with the patches that are sent to use easily.
 
 
-		2.6.2. Create your patch in the top level QGIS source dir
-		=========================================================
+    2.6.1. Patch file naming
+    ========================
 
-This makes it easier for us to apply the patches since we don't need to navigate to a specific 
-place in the source tree to apply the patch. Also when I receive patches I usually evaluate them 
-using kompare, and having the patch from the top level dir makes this much easier. Below is an 
-example of you you can include multiple changed files into your patch from the top level directory:
+If the patch is a fix for a specific bug, please name the file with the bug
+number in it e.g.  bug777fix.diff, and attach it to the original bug report
+in trac (https://trac.osgeo.org/qgis/).
+
+If the bug is an enhancement or new feature, its usually a good idea to create
+a ticket in trac (https://trac.osgeo.org/qgis/) first and then attach you 
+
+
+    2.6.2. Create your patch in the top level QGIS source dir
+    =========================================================
+
+This makes it easier for us to apply the patches since we don't need to
+navigate to a specific place in the source tree to apply the patch. Also when I
+receive patches I usually evaluate them using kompare, and having the patch
+from the top level dir makes this much easier. Below is an example of you you
+can include multiple changed files into your patch from the top level
+directory:
 
 
   cd qgis
@@ -604,11 +663,12 @@ example of you you can include multiple changed files into your patch from the t
 
 
 
-		2.6.3. Including non version controlled files in your patch
-		===========================================================
+    2.6.3. Including non version controlled files in your patch
+    ===========================================================
 
-If your improvements include new files that don't yet exist in the repository, you should indicate 
-to svn that they need to be added before generating your patch e.g.
+If your improvements include new files that don't yet exist in the repository,
+you should indicate to svn that they need to be added before generating your
+patch e.g.
 
 
   cd qgis
@@ -617,37 +677,44 @@ to svn that they need to be added before generating your patch e.g.
 
 
 
-		2.6.4. Getting your patch noticed
-		=================================
+    2.6.4. Getting your patch noticed
+    =================================
 
-QGIS developers are busy folk. We do scan the incoming patches on bug reports but sometimes we miss things. 
-Don't be offended or alarmed. Try to identify a developer to help you - using the ["Project Organigram"] and 
-contact them asking them if they can look at your patch. If you dont get any response, you can escalate your 
-query to one of the Project Steering Committee members (contact details also available on the ["Project Organigram"]).
-
-
-		2.6.5. Due Diligence
-		====================
-
-QGIS is licensed under the GPL. You should make every effort to ensure you only submit patches which are 
-unencumbered by conflicting intellectual property rights. Also do not submit code that you are not happy to 
-have made available under the GPL.
+QGIS developers are busy folk. We do scan the incoming patches on bug reports
+but sometimes we miss things.  Don't be offended or alarmed. Try to identify a
+developer to help you - using the ["Project Organigram"] and contact them
+asking them if they can look at your patch. If you dont get any response, you
+can escalate your query to one of the Project Steering Committee members
+(contact details also available on the ["Project Organigram"]).
 
 
-	2.7. Obtaining SVN Write Access
-	===============================
+    2.6.5. Due Diligence
+    ====================
 
-Write access to QGIS source tree is by invitation. Typically when a person submits several (there is no fixed 
-number here) substantial patches that demonstrate basic competance and understanding of C++ and QGIS coding 
-conventions, one of the PSC members or other existing developers can nominate that person to the PSC for granting 
-of write access. The nominator should give a basic promotional paragraph of why they think that person should gain 
-write access. In some cases we will grant write access to non C++ developers e.g. for translators and documentors. 
-In these cases, the person should still have demonstrated ability to submit patches and should ideally have submtted 
-several substantial patches that demonstrate their understanding of modifying the code base without breaking things, etc.
+QGIS is licensed under the GPL. You should make every effort to ensure you only
+submit patches which are unencumbered by conflicting intellectual property
+rights. Also do not submit code that you are not happy to have made available
+under the GPL.
 
 
-		2.7.1. Procedure once you have access
-		=====================================
+  2.7. Obtaining SVN Write Access
+  ===============================
+
+Write access to QGIS source tree is by invitation. Typically when a person
+submits several (there is no fixed number here) substantial patches that
+demonstrate basic competance and understanding of C++ and QGIS coding
+conventions, one of the PSC members or other existing developers can nominate
+that person to the PSC for granting of write access. The nominator should give
+a basic promotional paragraph of why they think that person should gain write
+access. In some cases we will grant write access to non C++ developers e.g. for
+translators and documentors.  In these cases, the person should still have
+demonstrated ability to submit patches and should ideally have submtted several
+substantial patches that demonstrate their understanding of modifying the code
+base without breaking things, etc.
+
+
+    2.7.1. Procedure once you have access
+    =====================================
 
 Checkout the sources:
 
@@ -671,18 +738,20 @@ Make your edits
   cd ..
 
 
-Make your changes in sources. Always check that everything compiles before making any commits.
-Try to be aware of possible breakages your commits may cause for people building on other 
-platforms and with older / newer versions of libraries.
+Make your changes in sources. Always check that everything compiles before
+making any commits.  Try to be aware of possible breakages your commits may
+cause for people building on other platforms and with older / newer versions of
+libraries.
 
-Add files (if you added any new files). The svn status command can be used to quickly see 
-if you have added new files.
+Add files (if you added any new files). The svn status command can be used to
+quickly see if you have added new files.
 
 
   svn status src/pluguns/grass/modules
 
 
-Files listed with ? in front are not in SVN and possibly need to be added by you:
+Files listed with ? in front are not in SVN and possibly need to be added by
+you:
 
 
   svn add src/pluguns/grass/modules/foo.xml
@@ -694,82 +763,90 @@ Commit your changes
   svn commit src/pluguns/grass/modules/foo.xml
 
 
-Your editor (as defined in $EDITOR environment variable) will appear and you should make a
- comment at the top of the file (above the area that says 'dont change this'. Put a 
-descriptive comment and rather do several small commits if the changes across a number of 
-files are unrelated. Conversely we prefer you to group related changes into a single commit.
+Your editor (as defined in $EDITOR environment variable) will appear and you
+should make a comment at the top of the file (above the area that says 'dont
+change this'. Put a descriptive comment and rather do several small commits if
+the changes across a number of files are unrelated. Conversely we prefer you to
+group related changes into a single commit.
 
-Save and close in your editor. The first time you do this, you should be prompted to 
-put in your username and password. Just use the same ones as your trac account.
+Save and close in your editor. The first time you do this, you should be
+prompted to put in your username and password. Just use the same ones as your
+trac account.
 
 
   3. Unit Testing
   ===============
 
-As of November 2007 we require all new features going into trunk to be accompanied with 
-a unit test. Initially we have limited this requirement to qgis_core, and we will extend 
-this requirement to other parts of the code base once people are familiar with the 
-procedures for unit testing explained in the sections that follow.
+As of November 2007 we require all new features going into trunk to be
+accompanied with a unit test. Initially we have limited this requirement to
+qgis_core, and we will extend this requirement to other parts of the code base
+once people are familiar with the procedures for unit testing explained in the
+sections that follow.
 
 
-	3.1. The QGIS testing framework  - an overview
-	==============================================
+  3.1. The QGIS testing framework  - an overview
+  ==============================================
 
-Unit testing is carried out using a combination of QTestLib (the Qt testing library) and 
-CTest (a framework for compiling and running tests as part of the CMake build process). 
-Lets take an overview of the process before I delve into the details:
+Unit testing is carried out using a combination of QTestLib (the Qt testing
+library) and CTest (a framework for compiling and running tests as part of the
+CMake build process).  Lets take an overview of the process before I delve into
+the details:
 
- * There is some code you want to test, e.g. a class or function. Extreme programming 
-   advocates suggest that the code should not even be written yet when you start 
-   building your tests, and then as you implement your code you can immediately validate 
-   each new functional part you add with your test. In practive you will probably 
-   need to write tests for pre-existing code in QGIS since we are starting with a testing 
-   framework well after much application logic has already been implemented.
+- There is some code you want to test, e.g. a class or function. Extreme
+   programming advocates suggest that the code should not even be written yet 
+   when you start building your tests, and then as you implement your code you can
+   immediately validate each new functional part you add with your test. In
+   practive you will probably need to write tests for pre-existing code in QGIS
+   since we are starting with a testing framework well after much application
+   logic has already been implemented.
 
- * You create a unit test. This happens under <QGIS Source Dir>/tests/src/core 
-   in the case of the core lib. The test is basically a client that creates an instance 
-   of a class and calls some methods on that class. It will check the return from each 
-   method to make sure it matches the expected value. If any one of the calls fails,
-   the unit will fail.
+- You create a unit test. This happens under <QGIS Source Dir>/tests/src/core 
+   in the case of the core lib. The test is basically a client that creates an
+   instance of a class and calls some methods on that class. It will check the
+   return from each method to make sure it matches the expected value. If any
+   one of the calls fails, the unit will fail.
 
- * You include QtTestLib macros in your test class. This macro is processed by 
-   the Qt meta object compiler (moc) and expands your test class into a runnable application. 
+- You include QtTestLib macros in your test class. This macro is processed by 
+   the Qt meta object compiler (moc) and expands your test class into a
+   runnable application. 
 
- * You add a section to the CMakeLists.txt in your tests directory that will
+- You add a section to the CMakeLists.txt in your tests directory that will
    build your test.
 
- * You ensure you have ENABLE_TESTING enabled in ccmake / cmakesetup. This 
+- You ensure you have ENABLE_TESTING enabled in ccmake / cmakesetup. This 
    will ensure your tests actually get compiled when you type make.
 
- * You optionally add test data to <QGIS Source Dir>/tests/testdata if your 
-   test is data driven (e.g. needs to load a shapefile). These test data should be 
-   as small as possible and wherever possible you should use the existing datasets 
-   already there. Your tests should never modify this data in situ, but rather 
-   may a temporary copy somewhere if needed.
+- You optionally add test data to <QGIS Source Dir>/tests/testdata if your 
+   test is data driven (e.g. needs to load a shapefile). These test data should
+   be as small as possible and wherever possible you should use the existing
+   datasets already there. Your tests should never modify this data in situ,
+   but rather may a temporary copy somewhere if needed.
 
- * You compile your sources and install. Do this using normal make && (sudo) 
+- You compile your sources and install. Do this using normal make && (sudo) 
    make install procedure.
 
- * You run your tests. This is normally done simply by doing make test 
- after the make install step, though I will explain other aproaches that offer more 
- fine grained control over running tests.
-
-Right with that overview in mind, I will delve into a bit of detail. I've already 
-done much of the configuration for you in CMake and other places in the source tree 
-so all you need to do are the easy bits - writing unit tests!
+- You run your tests. This is normally done simply by doing make test 
+ after the make install step, though I will explain other aproaches that offer
+ more fine grained control over running tests.
 
 
-	3.2. Creating a unit test
-	=========================
 
-Creating a unit test is easy - typically you will do this by just creating a 
+Right with that overview in mind, I will delve into a bit of detail. I've
+already done much of the configuration for you in CMake and other places in the
+source tree so all you need to do are the easy bits - writing unit tests!
+
+
+  3.2. Creating a unit test
+  =========================
+
+Creating a unit test is easy - typically you will do this by just creating a
 single .cpp file (not .h file is used) and implement all your test methods as
-public methods that return void. I'll use a simple test class for QgsRasterLayer 
-throughout the section that follows to illustrate. By convention we will name our 
-test with the same name as the class they are testing but prefixed with 'Test'.
-So our test implementation goes in a file called testqgsrasterlayer.cpp and 
-the class itself will be TestQgsRasterLayer. First we add our standard copyright 
-banner:
+public methods that return void. I'll use a simple test class for
+QgsRasterLayer throughout the section that follows to illustrate. By convention
+we will name our test with the same name as the class they are testing but
+prefixed with 'Test'.  So our test implementation goes in a file called
+testqgsrasterlayer.cpp and the class itself will be TestQgsRasterLayer. First
+we add our standard copyright banner:
 
 
   /***************************************************************************
@@ -813,11 +890,11 @@ in whatever headers you may need:
   #include <qgsapplication.h>
 
 
-Since we are combining both class declaration and implementation in a single 
-file the class declaration comes next. We start with our doxygen documentation. 
-Every test case should be properly documented. We use the doxygen ingroup 
-directive so that all the UnitTests appear as a module in the generated 
-Doxygen documentation. After that comes a short description of the unit test:
+Since we are combining both class declaration and implementation in a single
+file the class declaration comes next. We start with our doxygen documentation.
+Every test case should be properly documented. We use the doxygen ingroup
+directive so that all the UnitTests appear as a module in the generated Doxygen
+documentation. After that comes a short description of the unit test:
 
 
   /** \ingroup UnitTests
@@ -833,108 +910,102 @@ The class must inherit from QObject and include the Q_OBJECT macro.
     Q_OBJECT;
 
 
-All our test methods are implemented as private slots. The QtTest framework 
-will sequentially call each private slot method in the test class. There are 
-four 'special' methods which if implemented will be called at the start of 
-the unit test (initTestCase), at the end of the unit test (cleanupTestCase). 
-Before each test method is called, the init() method will be called and 
-after each test method is called the cleanup() method is called. These 
-methods are handy in that they allow you to allocate and cleanup resources 
-prior to running each test, and the test unit as a whole.
+All our test methods are implemented as private slots. The QtTest framework
+will sequentially call each private slot method in the test class. There are
+four 'special' methods which if implemented will be called at the start of the
+unit test (initTestCase), at the end of the unit test
+(cleanupTestCase).  Before each test method is called, the init()
+method will be called and after each test method is called the cleanup()
+method is called. These methods are handy in that they allow you to allocate
+and cleanup resources prior to running each test, and the test unit as a whole.
 
 
   private slots:
-      // will be called before the first testfunction is executed.
-      void initTestCase();
-      // will be called after the last testfunction was executed.
-      void cleanupTestCase(){};
-      // will be called before each testfunction is executed.
-      void init(){};
-      // will be called after every testfunction.
-      void cleanup();
+    // will be called before the first testfunction is executed.
+    void initTestCase();
+    // will be called after the last testfunction was executed.
+    void cleanupTestCase(){};
+    // will be called before each testfunction is executed.
+    void init(){};
+    // will be called after every testfunction.
+    void cleanup();
 
 
-Then come your test methods, all of which should take no parameters and 
-should return void. The methods will be called in order of declaration.
-I am implementing two methods here which illustrates to types of testing. In 
-the first case I want to generally test the various parts of the class are 
-working, I can use a functional testing approach. Once again, extreme 
-programmers would advocate writing these tests before implementing the 
-class. Then as you work your way through your class implementation you 
-iteratively run your unit tests. More and more test functions should complete 
-sucessfully as your class implementation work progresses, and when the whole 
-unit test passes, your new class is done and is now complete with a repeatable 
-way to validate it.
+Then come your test methods, all of which should take no parameters and
+should return void. The methods will be called in order of declaration.  I
+am implementing two methods here which illustrates to types of testing. In the
+first case I want to generally test the various parts of the class are working,
+I can use a functional testing approach. Once again, extreme programmers
+would advocate writing these tests before implementing the class. Then as
+you work your way through your class implementation you iteratively run your
+unit tests. More and more test functions should complete sucessfully as your
+class implementation work progresses, and when the whole unit test passes, your
+new class is done and is now complete with a repeatable way to validate it.
 
-Typically your unit tests would only cover the public API of your 
-class, and normally you do not need to write tests for accessors and mutators.
-If it should happen that an acccessor or mutator is not working as expected 
-you would normally implement a regression test to check for this (see 
-lower down).
+Typically your unit tests would only cover the public API of your class,
+and normally you do not need to write tests for accessors and mutators.  If it
+should happen that an acccessor or mutator is not working as expected you would
+normally implement a regression test to check for this (see lower down).
 
 
-      //
-      // Functional Testing
-      //
-      
-      /** Check if a raster is valid. */
-      void isValid();
+    //
+    // Functional Testing
+    //
+    
+    /** Check if a raster is valid. */
+    void isValid();
   
-      // more functional tests here ...
+    // more functional tests here ...
 
 
-Next we implement our regression tests. Regression tests should be 
-implemented to replicate the conditions of a particular bug. For example 
-I recently received a report by email that the cell count by rasters was 
-off by 1, throwing off all the statistics for the raster bands. I opened 
-a bug (ticket #832) and then created a regression test that replicated 
-the bug using a small test dataset (a 10x10 raster). Then I ran the test 
-and ran it, verifying that it did indeed fail (the cell count was 99 
-instead of 100). Then I went to fix the bug and reran the unit test and 
-the regression test passed. I committed the regression test along with 
-the bug fix. Now if anybody breakes this in the source code again in the 
-future, we can immediatly identify that the code has regressed. Better 
-yet before committing any changes in the future, running our tests will 
-ensure our changes dont have unexpected side effects - like breaking 
+Next we implement our regression tests. Regression tests should be
+implemented to replicate the conditions of a particular bug. For example I
+recently received a report by email that the cell count by rasters was off by
+1, throwing off all the statistics for the raster bands. I opened a bug (ticket
+#832) and then created a regression test that replicated the bug using a small
+test dataset (a 10x10 raster). Then I ran the test and ran it, verifying that
+it did indeed fail (the cell count was 99 instead of 100). Then I went to fix
+the bug and reran the unit test and the regression test passed. I committed the
+regression test along with the bug fix. Now if anybody breakes this in the
+source code again in the future, we can immediatly identify that the code has
+regressed. Better yet before committing any changes in the future, running our
+tests will ensure our changes dont have unexpected side effects - like breaking
 existing functionality.
 
-There is one more benifit to regression tests - they can save you time. 
-If you ever fixed a bug that involved making changes to the source, 
-and then running the application and performing a series of convoluted 
-steps to replicate the issue, it will be immediately apparent that 
-simply implementing your regression test before fixing the bug 
-will let you automate the testing for bug resolution in an efficient 
-manner.
+There is one more benifit to regression tests - they can save you time.  If you
+ever fixed a bug that involved making changes to the source, and then running
+the application and performing a series of convoluted steps to replicate the
+issue, it will be immediately apparent that simply implementing your regression
+test before fixing the bug will let you automate the testing for bug
+resolution in an efficient manner.
 
-To implement your regression test, you should follow the naming 
-convention of regression<TicketID> for your test functions. If no 
-trac ticket exists for the regression, you should create one first. 
-Using this approach allows the person running a failed regression 
-test easily go and find out more information.
+To implement your regression test, you should follow the naming convention of
+regression<TicketID> for your test functions. If no trac ticket exists for the
+regression, you should create one first.  Using this approach allows the person
+running a failed regression test easily go and find out more information.
 
 
-      //
-      // Regression Testing
-      //
-      
-      /** This is our second test case...to check if a raster
-       reports its dimensions properly. It is a regression test 
-       for ticket #832 which was fixed with change r7650. 
-       */
-      void regression832(); 
+    //
+    // Regression Testing
+    //
     
-      // more regression tests go here ...
+    /** This is our second test case...to check if a raster
+     reports its dimensions properly. It is a regression test 
+     for ticket #832 which was fixed with change r7650. 
+     */
+    void regression832(); 
+    
+    // more regression tests go here ...
 
 
-Finally in our test class declaration you can declare privately 
-any data members and helper methods your unit test may need. In our 
-case I will declare a QgsRasterLayer * which can be used by any 
-of our test methods. The raster layer will be created in the 
-initTestCase() function which is run before any other tests, and then
-destroyed using cleanupTestCase() which is run after all tests. By 
-declaring helper methods (which may be called by various test 
-functions) privately, you can ensure that they wont be automatically 
-run by the QTest executeable that is created when we compile our test.
+Finally in our test class declaration you can declare privately any data
+members and helper methods your unit test may need. In our case I will declare
+a QgsRasterLayer * which can be used by any of our test methods. The raster
+layer will be created in the initTestCase() function which is run before any
+other tests, and then destroyed using cleanupTestCase() which is run after all
+tests. By declaring helper methods (which may be called by various test
+functions) privately, you can ensure that they wont be automatically run by the
+QTest executeable that is created when we compile our test.
 
 
     private:
@@ -945,8 +1016,8 @@ run by the QTest executeable that is created when we compile our test.
   
 
 
-That ends our class declaration. The implementation is simply 
-inlined in the same file lower down. First our init and cleanup functions:
+That ends our class declaration. The implementation is simply inlined in the
+same file lower down. First our init and cleanup functions:
 
 
   void TestQgsRasterLayer::initTestCase()
@@ -997,11 +1068,10 @@ Qt also provides some other interesting mechanisms for data driven
 testing, so if you are interested to know more on the topic, consult 
 the Qt documentation.
 
-Next lets look at our functional test. The isValid() test simply 
-checks the raster layer was correctly loaded in the initTestCase. 
-QVERIFY is a Qt macro that you can use to evaluate a test condition. 
-There are a few other use macros Qt provide for use in your tests 
-including:
+Next lets look at our functional test. The isValid() test simply checks the
+raster layer was correctly loaded in the initTestCase.  QVERIFY is a Qt macro
+that you can use to evaluate a test condition.  There are a few other use
+macros Qt provide for use in your tests including:
 
 
   QCOMPARE ( actual, expected )
@@ -1018,8 +1088,8 @@ including:
   QWARN ( message ) 
 
 
-Some of these macros are useful only when using the Qt framework 
-for data driven testing (see the Qt docs for more detail).
+Some of these macros are useful only when using the Qt framework for data
+driven testing (see the Qt docs for more detail).
 
 
   void TestQgsRasterLayer::isValid()
@@ -1028,13 +1098,13 @@ for data driven testing (see the Qt docs for more detail).
   }
 
 
-Normally your functional tests would cover all the range of 
-functionality of your classes public API where feasible. With our 
-functional tests out the way, we can look at our regression test example.
+Normally your functional tests would cover all the range of functionality of
+your classes public API where feasible. With our functional tests out the way,
+we can look at our regression test example.
 
-Since the issue in bug #832 is a misreported cell count, writing 
-our test if simply a matter of using QVERIFY to check that the 
-cell count meets the expected value:
+Since the issue in bug #832 is a misreported cell count, writing our test if
+simply a matter of using QVERIFY to check that the cell count meets the
+expected value:
 
 
   void TestQgsRasterLayer::regression832()
@@ -1047,27 +1117,26 @@ cell count meets the expected value:
   }
 
 
-With all the unit test functions implemented, there one final thing we 
-need to add to our test class:
+With all the unit test functions implemented, there one final thing we need to
+add to our test class:
 
 
   QTEST_MAIN(TestQgsRasterLayer)
   #include "moc_testqgsrasterlayer.cxx"
 
 
-The purpose of these two lines is to signal to Qt's moc that his is a 
-QtTest (it will generate a main method that in turn calls each test funtion.
-The last line is the include for the MOC generated sources. You should 
-replace 'testqgsrasterlayer' with the name of your class in lower case.
+The purpose of these two lines is to signal to Qt's moc that his is a QtTest
+(it will generate a main method that in turn calls each test funtion.  The last
+line is the include for the MOC generated sources. You should replace
+'testqgsrasterlayer' with the name of your class in lower case.
 
 
-	3.3. Adding your unit test to CMakeLists.txt
-	============================================
+  3.3. Adding your unit test to CMakeLists.txt
+  ============================================
 
-Adding your unit test to the build system is simply a matter of editing 
-the CMakeLists.txt in the test directory, cloning one of the existing 
-test blocks, and then search and replacing your test class name into it. 
-For example:
+Adding your unit test to the build system is simply a matter of editing the
+CMakeLists.txt in the test directory, cloning one of the existing test blocks,
+and then search and replacing your test class name into it.  For example:
 
 
   #
@@ -1084,23 +1153,23 @@ For example:
   ADD_TEST(qgis_rasterlayertest ${QGIS_BIN_DIR}/qgis_rasterlayertest)
 
 
-I'll run through these lines briefly to explain what they do, but if 
-you are not interested, just clone the block, search and replace e.g.
+I'll run through these lines briefly to explain what they do, but if you are
+not interested, just clone the block, search and replace e.g.
 
 
   :'<,'>s/rasterlayer/mynewtest/g
 
 
-Lets look a little more in detail at the individual lines. First we 
-define the list of sources for our test. Since we have only one source file 
-(following the methodology I described above where class declaration and 
-definition are in the same file) its a simple statement:
+Lets look a little more in detail at the individual lines. First we define the
+list of sources for our test. Since we have only one source file (following the
+methodology I described above where class declaration and definition are in the
+same file) its a simple statement:
 
 
   SET(qgis_rasterlayertest_SRCS testqgsrasterlayer.cpp)
 
 
-Since our test class needs to be run through the Qt meta object compiler (moc) 
+Since our test class needs to be run through the Qt meta object compiler (moc)
 we need to provide a couple of lines to make that happen too:
 
 
@@ -1109,73 +1178,70 @@ we need to provide a couple of lines to make that happen too:
   ADD_CUSTOM_TARGET(qgis_rasterlayertestmoc ALL DEPENDS ${qgis_rasterlayertest_MOC_SRCS})
 
 
-Next we tell cmake that it must make an executeable from the test class. 
-Remember in the previous section on the last line of the class implementation 
-I included the moc outputs directly into our test class, so that will 
-give it (among other things) a main method so the class can be 
-compiled as an executeable:
+Next we tell cmake that it must make an executeable from the test class.
+Remember in the previous section on the last line of the class implementation I
+included the moc outputs directly into our test class, so that will give it
+(among other things) a main method so the class can be compiled as an
+executeable:
 
 
   ADD_EXECUTABLE(qgis_rasterlayertest ${qgis_rasterlayertest_SRCS})
   ADD_DEPENDENCIES(qgis_rasterlayertest qgis_rasterlayertestmoc)
 
 
-Next we need to specify any library dependencies. At the moment classes 
-have been implemented with a catch-all QT_LIBRARIES dependency, but I will 
-be working to replace that with the specific Qt libraries that each class 
-needs only. Of course you also need to link to the relevant qgis 
-libraries as required by your unit test.
+Next we need to specify any library dependencies. At the moment classes have
+been implemented with a catch-all QT_LIBRARIES dependency, but I will be
+working to replace that with the specific Qt libraries that each class needs
+only. Of course you also need to link to the relevant qgis libraries as
+required by your unit test.
 
 
   TARGET_LINK_LIBRARIES(qgis_rasterlayertest ${QT_LIBRARIES} qgis_core)
 
 
-Next I tell cmake to the same place as the qgis binaries itself. This 
-is something I plan to remove in the future so that the tests can 
-run directly from inside the source tree.
+Next I tell cmake to the same place as the qgis binaries itself. This is
+something I plan to remove in the future so that the tests can run directly
+from inside the source tree.
 
 
   INSTALL(TARGETS qgis_rasterlayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
 
 
-Finally here is where the best magic happens - we register the class with 
-ctest. If you recall in the overview I gave in the beginning of this 
-section we are using both QtTest and CTest together. To recap, QtTest adds a 
-main method to your test unit and handles calling your test methods within 
-the class. It also provides some macros like QVERIFY that you can use as 
-to test for failure of the tests using conditions. The output from 
-a QtTest unit test is an executeable which you can run from the command line. 
-However when you have a suite of tests and you want to run each executeable 
-in turn, and better yet integrate running tests into the build process, 
-the CTest is what we use. The next line registers the unit test with 
-CMake / CTest.
+Finally here is where the best magic happens - we register the class with
+ctest. If you recall in the overview I gave in the beginning of this section we
+are using both QtTest and CTest together. To recap, QtTest adds a main
+method to your test unit and handles calling your test methods within the
+class. It also provides some macros like QVERIFY that you can use as to test
+for failure of the tests using conditions. The output from a QtTest unit test
+is an executeable which you can run from the command line.  However when you
+have a suite of tests and you want to run each executeable in turn, and
+better yet integrate running tests into the build process, the CTest is
+what we use. The next line registers the unit test with CMake / CTest.
 
 
   ADD_TEST(qgis_rasterlayertest ${QGIS_BIN_DIR}/qgis_rasterlayertest)
 
 
-The last thing I should add is that if your test requires optional 
-parts of the build process (e.g. Postgresql support, GSL libs, GRASS etc.), 
-you should take care to enclose you test block inside a IF () block 
-in the CMakeLists.txt file.
+The last thing I should add is that if your test requires optional parts of the
+build process (e.g. Postgresql support, GSL libs, GRASS etc.), you should take
+care to enclose you test block inside a IF () block in the CMakeLists.txt file.
 
 
-	3.4. Building your unit test
-	============================
+  3.4. Building your unit test
+  ============================
 
-To build the unit test you need only to make sure that ENABLE_TESTS=true 
-in the cmake configuration. There are two ways to do this:
+To build the unit test you need only to make sure that ENABLE_TESTS=true in the
+cmake configuration. There are two ways to do this:
 
  1. Run ccmake .. (cmakesetup .. under windows) and interactively set 
  the ENABLE_TESTS flag to ON.
  1. Add a command line flag to cmake e.g. cmake -DENABLE_TESTS=true ..
 
-Other than that, just build QGIS as per normal and the tests should build 
-too.
+Other than that, just build QGIS as per normal and the tests should build too.
 
 
-	3.5. Run your tests
-	===================
+  3.5. Run your tests
+  ===================
 
 The simplest way to run the tests is as part of your normal build process:
 
@@ -1183,9 +1249,9 @@ The simplest way to run the tests is as part of your normal build process:
   make && make install && make test
 
 
-The make test command will invoke CTest which will run each test that 
-was registered using the ADD_TEST CMake directive described above. Typical 
-output from make test will look like this:
+The make test command will invoke CTest which will run each test that was
+registered using the ADD_TEST CMake directive described above. Typical output
+from make test will look like this:
 
 
   Running tests...
@@ -1203,9 +1269,9 @@ output from make test will look like this:
     make: *** [test] Error 8
 
 
-If a test fails, you can use the ctest command to examine more 
-closely why it failed. User the -R option to specify a regex for 
-which tests you want to run and -V to get verbose output:
+If a test fails, you can use the ctest command to examine more closely why it
+failed. User the -R option to specify a regex for which tests you want to run
+and -V to get verbose output:
 
 
   [build] ctest -R appl -V
@@ -1247,56 +1313,59 @@ which tests you want to run and -V to get verbose output:
   
 
 
-Well that concludes this section on writing unit tests in QGIS. We hope you 
-will get into the habit of writing test to test new functionality and to 
-check for regressions. Some aspects of the test system (in particular the 
-CMakeLists.txt parts) are still being worked on so that the testing framework 
-works in a truly platform way. I will update this document as things progress.
+Well that concludes this section on writing unit tests in QGIS. We hope you
+will get into the habit of writing test to test new functionality and to check
+for regressions. Some aspects of the test system (in particular the
+CMakeLists.txt parts) are still being worked on so that the testing framework
+works in a truly platform way. I will update this document as things
+progress.
 
 
   4. HIG (Human Interface Guidelines)
   ===================================
 
-In order for all graphical user interface elements to appear consistant and 
-to all the user to instinctively use dialogs, it is important that the following 
+In order for all graphical user interface elements to appear consistant and to
+all the user to instinctively use dialogs, it is important that the following
 guidelines are followed in layout and design of GUIs.
 
  1. Group related elements using group boxes:
-   Try to identify elements that can be grouped together and then use 
-   group boxes with a label to identify the topic of that group. 
-   Avoid using group boxes with only a single widget / item inside.
+   Try to identify elements that can be grouped together and then use group
+   boxes with a label to identify the topic of that group.  Avoid using group
+   boxes with only a single widget / item inside.
  2. Capitalise first letter only in labels:
-   Labels (and group box labels) should be written as a phrase with leading capital letter,
-   and all remaing words written with lower case first letters 
+   Labels (and group box labels) should be written as a phrase with leading
+   capital letter, and all remaing words written with lower case first letters 
  3. Do not end labels for widgets or group boxes with a colon:
    Adding a colon causes visual noise and does not impart additional meaning,
-   so dont use them. An exception to this rule is when you have two labels 
-   next to each other e.g.: Label1 Plugin (Path:) Label2 [/path/to/plugins]
+   so dont use them. An exception to this rule is when you have two labels next
+   to each other e.g.: Label1 Plugin (Path:) Label2 [/path/to/plugins]
  4. Keep harmful actions away from harmless ones:
-   If you have actions for 'delete', 'remove' etc, try to impose adequate 
-   space between the harmful action and innocuous actions so that the users 
-   is less likely to inadvertantly click on the harmful action.
+   If you have actions for 'delete', 'remove' etc, try to impose adequate space
+   between the harmful action and innocuous actions so that the users is less
+   likely to inadvertantly click on the harmful action.
  5. Always use a QButtonBox for 'OK', 'Cancel' etc buttons:
-   Using a button box will ensure that the order of 'OK' and 'Cancel' etc, 
-   buttons is consistent with the operating system / locale / desktop 
+   Using a button box will ensure that the order of 'OK' and 'Cancel' etc,
+   buttons is consistent with the operating system / locale / desktop
    environment that the user is using.
 
 
   5. Authors
   ==========
 
- * Tim Sutton (author and editor)
- * Gary Sherman
- * Marco Hugentobler
+- Tim Sutton (author and editor)
+- Gary Sherman
+- Marco Hugentobler
+
 
 Original pages from wiki to deprecate:
 
- * http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
- * http://wiki.qgis.org/qgiswiki/CodingStandards (./)
- * http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
- * http://wiki.qgis.org/qgiswiki/DebuggingPlugins
- * http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
- * http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
+- http://wiki.qgis.org/qgiswiki/CodingGuidelines (./)
+- http://wiki.qgis.org/qgiswiki/CodingStandards (./)
+- http://wiki.qgis.org/qgiswiki/UsingSubversion (./)
+- http://wiki.qgis.org/qgiswiki/DebuggingPlugins
+- http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
+- http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
+
 
 
 
