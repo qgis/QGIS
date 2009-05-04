@@ -50,6 +50,7 @@ bool QgsShortcutsManager::registerAction( QAction* action, QString defaultShortc
 bool QgsShortcutsManager::unregisterAction( QAction* action )
 {
   mActions.remove( action );
+  return true;
 }
 
 QList<QAction*> QgsShortcutsManager::listActions()
@@ -75,6 +76,7 @@ bool QgsShortcutsManager::setActionShortcut( QAction* action, QString shortcut )
   // save to settings
   QSettings settings;
   settings.setValue("/shortcuts/"+actionText, shortcut );
+  return true;
 }
 
 QAction* QgsShortcutsManager::actionForShortcut( QKeySequence s )
