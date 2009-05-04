@@ -55,9 +55,6 @@ class GUI_EXPORT QgsDetailedItemDelegate :
 
     int horizontalSpacing() const;
 
-
-
-
   private:
     QFont detailFont( const QStyleOptionViewItem &theOption ) const;
     QFont titleFont( const QStyleOptionViewItem &theOption ) const;
