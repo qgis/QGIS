@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSATTRIBUTETABLEVIEW_H_
-#define QGSATTRIBUTETABLEVIEW_H_
+#ifndef QGSATTRIBUTETABLEVIEW_H
+#define QGSATTRIBUTETABLEVIEW_H
 
 #include <QTableView>
 
@@ -23,7 +23,7 @@ class QgsVectorLayer;
 
 class QgsAttributeTableView: public QTableView
 {
-//private slots:
+  //private slots:
     //void setRows(int rows);
 
   public:

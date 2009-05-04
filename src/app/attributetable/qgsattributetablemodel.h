@@ -14,42 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSATTRIBUTETABKEMODEL_H
-#define QGSATTRIBUTETABKEMODEL_H
+#ifndef QGSATTRIBUTETABLEMODEL_H
+#define QGSATTRIBUTETABLEMODEL_H
 
 #include <QAbstractTableModel>
-#include <QSortFilterProxyModel>
 #include <QModelIndex>
 #include <QObject>
 
 //QGIS Includes
-#include "qgis.h"
 #include "qgsfeature.h" //QgsAttributeMap
 #include "qgsvectorlayer.h" //QgsAttributeList
-
-class idColumnPair
-{
-  public:
-    int id;
-    QVariant columnItem;
-
-    bool operator<( const idColumnPair &b ) const;
-};
-
-class QgsAttributeTableFilterModel: public QSortFilterProxyModel
-{
-  public:
-    QgsAttributeTableFilterModel( QgsVectorLayer* theLayer );
-    //QModelIndex mapToSource ( const QModelIndex & filterIndex ) const;
-    //QModelIndex mapFromSource ( const QModelIndex & sourceIndex ) const;
-    bool mHideUnselected;
-    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
-  protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
-  private:
-    QgsVectorLayer* mLayer;
-};
-
+#include "qgsattributetableidcolumnpair.h" 
 
 class QgsAttributeTableModel: public QAbstractTableModel
 {
@@ -102,7 +77,7 @@ class QgsAttributeTableModel: public QAbstractTableModel
     mutable QgsAttributeMap *mLastRow;
     QgsAttributeList mAttributes;
 
-    QList<idColumnPair> mSortList;
+    QList<QgsAttributeTableIdColumnPair> mSortList;
     QMap<int, int> mIdRowMap;
     QMap<int, int> mRowIdMap;
 
@@ -111,30 +86,5 @@ class QgsAttributeTableModel: public QAbstractTableModel
 
 };
 
-class QgsAttributeTableMemModel: public QgsAttributeTableModel
-{
-    Q_OBJECT
-
-  public:
-    QgsAttributeTableMemModel( QgsVectorLayer *theLayer );//, QObject *parent = 0);
-
-  protected slots:
-    virtual void featureDeleted( int fid );
-    virtual void featureAdded( int fid );
-    virtual void layerDeleted();
-
-  private slots:
-    //virtual void attributeAdded (int idx);
-    //virtual void attributeDeleted (int idx);
-    virtual void attributeValueChanged( int fid, int idx, const QVariant &value );
-    //virtual void layerModified(bool onlyGeometry);
-
-  private:
-    virtual QVariant data( const QModelIndex &index, int role ) const;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
-    virtual void loadLayer();
-
-    QMap<int, QgsFeature> mFeatureMap;
-};
 
 #endif

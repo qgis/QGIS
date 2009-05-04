@@ -18,6 +18,7 @@
 
 #include "qgsattributetabledialog.h"
 #include "qgsattributetablemodel.h"
+#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
 
 #include <qgsapplication.h>
