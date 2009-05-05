@@ -644,7 +644,6 @@ unsigned int QgsRasterLayer::bandCount()
 
 const QString QgsRasterLayer::bandName( int theBandNo )
 {
-  QgsDebugMsg( "entered." );
   if ( theBandNo <= mRasterStatsList.size() && theBandNo > 0 )
   {
     //vector starts at base 0, band counts at base1 !
