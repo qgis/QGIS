@@ -41,7 +41,7 @@ class CORE_EXPORT QgsOverlayObject: public pal::PalGeometry
 
 
     /**Returns the feature geometry in geos format. The calling function does _not_ take
-     ownership of the generated object*/
+     ownership of the generated object. The geometry is in map coordinates*/
     GEOSGeometry* getGeosGeometry();
     /**Feature geometry is released when object is destructed so this function is empty*/
     void releaseGeosGeometry( GEOSGeometry *the_geom ) {}
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsOverlayObject: public pal::PalGeometry
     /**Rotation of the object*/
     double mRotation;
     /**Copy of the feature geometry. A copy is necessary because in QGIS geometries are deleted
-    after drawing*/
+    after drawing. The geometry is in map coordinates*/
     QgsGeometry* mGeometry;
 
 };

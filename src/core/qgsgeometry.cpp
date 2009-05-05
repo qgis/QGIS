@@ -3021,7 +3021,7 @@ int QgsGeometry::translate( double dx, double dy )
   return 0;
 }
 
-int QgsGeometry::transform( QgsCoordinateTransform& ct )
+int QgsGeometry::transform( const QgsCoordinateTransform& ct )
 {
   if ( mDirtyWkb )
   {
@@ -4734,7 +4734,7 @@ void QgsGeometry::translateVertex( int& wkbPosition, double dx, double dy, bool 
   }
 }
 
-void QgsGeometry::transformVertex( int& wkbPosition, QgsCoordinateTransform& ct, bool hasZValue )
+void QgsGeometry::transformVertex( int& wkbPosition, const QgsCoordinateTransform& ct, bool hasZValue )
 {
   double x, y, z;
 
