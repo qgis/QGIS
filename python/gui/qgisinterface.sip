@@ -89,8 +89,8 @@ class QgisInterface : QObject
     /** Add a dock widget to the main window */
     virtual void addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget )=0;
 
-	/** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
-	virtual void removeDockWidget ( QDockWidget * dockwidget )=0;
+    /** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
+    virtual void removeDockWidget ( QDockWidget * dockwidget )=0;
 
     /** refresh legend of a layer */
     virtual void refreshLegend( QgsMapLayer * layer )=0;
@@ -101,6 +101,16 @@ class QgisInterface : QObject
     /** Remove window from Window menu. Calling this is necessary only for
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
+
+    /** Register action to the shortcuts manager so its shortcut can be changed in GUI
+       \note added in 1.2
+    */
+    virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut ) = 0;
+
+    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
+       \note added in 1.2
+    */
+    virtual bool unregisterMainWindowAction( QAction* action ) = 0;
 
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
