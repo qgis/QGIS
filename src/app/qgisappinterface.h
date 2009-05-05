@@ -116,6 +116,14 @@ class QgisAppInterface : public QgisInterface
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action );
 
+    /** Register action to the shortcuts manager so its shortcut can be changed in GUI.
+      @note added in version 1.2. */
+    virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut );
+
+    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded.
+      @note added in version 1.2. */
+    virtual bool unregisterMainWindowAction( QAction* action );
+
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
      */
