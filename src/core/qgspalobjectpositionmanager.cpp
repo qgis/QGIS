@@ -95,9 +95,15 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
 {
   //trigger label placement
   QgsRectangle viewExtent = renderContext.extent();
+  //PAL needs projected view extent
+  if(renderContext.coordinateTransform())
+  {
+    viewExtent = renderContext.coordinateTransform()->transformBoundingBox(viewExtent);
+  }
   double bbox[4]; bbox[0] = viewExtent.xMinimum(); bbox[1] = viewExtent.yMinimum(); bbox[2] = viewExtent.xMaximum(); bbox[3] = viewExtent.yMaximum();
-  pal::PalStat* stat = 0;
 
+
+  pal::PalStat* stat = 0;
   //set map units
   pal::Units mapUnits;
   switch ( unitType )

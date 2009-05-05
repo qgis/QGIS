@@ -238,7 +238,7 @@ class CORE_EXPORT QgsGeometry
 
     /**Transform this geometry as described by CoordinateTranasform ct
      @return 0 in case of success*/
-    int transform( QgsCoordinateTransform& ct );
+    int transform( const QgsCoordinateTransform& ct );
 
     /**Splits this geometry according to a given line. Note that the geometry is only splitted once. If there are several intersections
      between geometry and splitLine, only the first one is considered.
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsGeometry
     @param wkbPosition position in wkb array. Is increased automatically by the function
     @param ct the QgsCoordinateTransform
     @param hasZValue 25D type?*/
-    void transformVertex( int& wkbPosition, QgsCoordinateTransform& ct, bool hasZValue );
+    void transformVertex( int& wkbPosition, const QgsCoordinateTransform& ct, bool hasZValue );
 
     //helper functions for geometry splitting
 

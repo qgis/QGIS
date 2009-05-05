@@ -79,6 +79,8 @@ void QgsDiagramOverlay::createOverlayObjects( const QgsRenderContext& renderCont
       theProvider->select( mAttributes, renderContext.extent() );
 
       QgsFeature currentFeature;
+      QgsGeometry* currentGeometry = 0;
+
       int width, height;
 
       std::list<unsigned char*> wkbBuffers;
@@ -95,7 +97,13 @@ void QgsDiagramOverlay::createOverlayObjects( const QgsRenderContext& renderCont
           //error
         }
 
-        mOverlayObjects.insert( currentFeature.id(), new QgsOverlayObject( width, height, 0, currentFeature.geometryAndOwnership() ) );
+        currentGeometry = currentFeature.geometryAndOwnership();
+        //overlay objects needs the geometry in map coordinates
+        if(currentGeometry && renderContext.coordinateTransform())
+        {
+          currentGeometry->transform(*(renderContext.coordinateTransform()));
+        }
+        mOverlayObjects.insert( currentFeature.id(), new QgsOverlayObject( width, height, 0, currentGeometry ) );
       }
     }
   }
@@ -142,10 +150,6 @@ void QgsDiagramOverlay::drawOverlayObjects( QgsRenderContext& context ) const
             for(; positionIt != positionList.constEnd(); ++positionIt)
             {
                 QgsPoint overlayPosition = *positionIt;
-                if ( ct )
-                {
-                    overlayPosition = ct->transform(overlayPosition);
-                }
                 context.mapToPixel().transform( &overlayPosition );
                 int shiftX = currentDiagramImage->width() / 2;
                 int shiftY = currentDiagramImage->height() / 2;
