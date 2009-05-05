@@ -29,6 +29,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmapcanvas.h"
 #include "qgslegend.h"
+#include "qgsshortcutsmanager.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
     : qgis( _qgis )
@@ -184,6 +185,18 @@ void QgisAppInterface::refreshLegend( QgsMapLayer *l )
 
 void QgisAppInterface::addWindow( QAction *action ) { qgis->addWindow( action ); }
 void QgisAppInterface::removeWindow( QAction *action ) { qgis->removeWindow( action ); }
+
+
+bool QgisAppInterface::registerMainWindowAction( QAction* action, QString defaultShortcut )
+{
+  return QgsShortcutsManager::instance()->registerAction( action, defaultShortcut );
+}
+
+bool QgisAppInterface::unregisterMainWindowAction( QAction* action )
+{
+  return QgsShortcutsManager::instance()->unregisterAction( action );
+}
+
 
 //! Menus
 QMenu *QgisAppInterface::fileMenu() { return qgis->fileMenu(); }

@@ -135,6 +135,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
 
+    /** Register action to the shortcuts manager so its shortcut can be changed in GUI */
+    virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut ) = 0;
+
+    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded */
+    virtual bool unregisterMainWindowAction( QAction* action ) = 0;
+
     // TODO: is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
