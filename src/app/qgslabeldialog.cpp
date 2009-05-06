@@ -72,7 +72,6 @@ void QgsLabelDialog::init( )
   cboLabelField->addItems( myFieldStringList );
   cboLabelField->setCurrentIndex( itemNoForField( mLabel->labelField( QgsLabel::Text ), myFieldStringList ) );
 
-
   cboFontField->clear();
   cboFontField->addItems( myFieldStringList );
   cboFontField->setCurrentIndex( itemNoForField( mLabel->labelField( QgsLabel::Family ), myFieldStringList ) );
@@ -98,9 +97,16 @@ void QgsLabelDialog::init( )
   cboFontSizeTypeField->addItems( myFieldStringList );
   cboFontSizeTypeField->setCurrentIndex( itemNoForField( mLabel->labelField( QgsLabel::SizeType ), myFieldStringList ) );
 
+#if 0
   cboFontTransparencyField->clear();
   cboFontTransparencyField->addItems( myFieldStringList );
-  //cboFontTransparencyField->setCurrentIndex(itemNoForField(mLabel->labelField(QgsLabel::FontTransparency),myFieldStringList));
+  cboFontTransparencyField->setCurrentIndex( itemNoForField( mLabel->labelField( QgsLabel::FontTransparency ), myFieldStringList ) );
+#endif
+
+  cboFontColorField->clear();
+  cboFontColorField->addItems( myFieldStringList );
+  cboFontColorField->setCurrentIndex( itemNoForField( mLabel->labelField( QgsLabel::Color ), myFieldStringList ) );
+
 
   cboBufferSizeField->clear();
   cboBufferSizeField->addItems( myFieldStringList );
@@ -389,6 +395,7 @@ void QgsLabelDialog::apply()
   mLabel->setLabelField( QgsLabel::Underline,  fieldIndexFromName( cboUnderlineField->currentText() ) );
   mLabel->setLabelField( QgsLabel::Size,  fieldIndexFromName( cboFontSizeField->currentText() ) );
   mLabel->setLabelField( QgsLabel::SizeType,  fieldIndexFromName( cboFontSizeTypeField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Color,  fieldIndexFromName( cboFontColorField->currentText() ) );
   mLabel->setLabelField( QgsLabel::BufferSize,  fieldIndexFromName( cboBufferSizeField->currentText() ) );
   //mLabel->setLabelField( QgsLabel::BufferTransparency,  cboBufferTransparencyField->currentText() );
   mLabel->setLabelField( QgsLabel::XCoordinate,  fieldIndexFromName( cboXCoordinateField->currentText() ) );
