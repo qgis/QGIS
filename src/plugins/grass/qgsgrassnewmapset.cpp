@@ -1266,26 +1266,28 @@ void QgsGrassNewMapset::createMapset()
     G__setenv(( char * ) "GISDBASE", mDatabaseLineEdit->text().toAscii().data() );
 #endif
 
-    QgsGrass::resetError();
-    int ret = G_make_location( location.toAscii().data(), &mCellHead,
-                               mProjInfo, mProjUnits, stdout );
+    int ret = 0;
 
-    if ( ret != 0 )
+    QgsGrass::resetError();
+    if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+    {
+      ret = G_make_location( location.toAscii().data(), &mCellHead, mProjInfo, mProjUnits, stdout );
+    }
+    QgsGrass::clearErrorEnv();
+
+    if ( QgsGrass::getError() == QgsGrass::FATAL || ret != 0 )
     {
       QMessageBox::warning( this, tr( "Create location" ),
                             tr( "Cannot create new location: %1" ).arg( QgsGrass::getErrorMessage() ) );
-
       return;
     }
-    else
-    {
-      // Location created -> reset widgets
-      setLocations();
-      mSelectLocationRadioButton->setChecked( true );
-      mLocationComboBox->setItemText( mLocationComboBox->currentIndex(), location );
-      mLocationLineEdit->setText( "" );
-      locationRadioSwitched(); // calls also checkLocation()
-    }
+
+    // Location created -> reset widgets
+    setLocations();
+    mSelectLocationRadioButton->setChecked( true );
+    mLocationComboBox->setItemText( mLocationComboBox->currentIndex(), location );
+    mLocationLineEdit->setText( "" );
+    locationRadioSwitched(); // calls also checkLocation()
   }
   else
   {
@@ -1352,7 +1354,7 @@ void QgsGrassNewMapset::createMapset()
     mPlugin->mapsetChanged();
   }
 
-  delete this;
+  deleteLater();
 }
 
 void QgsGrassNewMapset::accept()
@@ -1388,7 +1390,7 @@ void QgsGrassNewMapset::keyPressEvent( QKeyEvent * e )
 
 void QgsGrassNewMapset::pageSelected( int index )
 {
-  QgsDebugMsg( QString( "title = %1" ).arg( page( index )->title() ) );
+  QgsDebugMsg( QString( "title = %1" ).arg( page( index ) ? page( index )->title() : "(null)" ) );
 
   switch ( index )
   {
@@ -1474,7 +1476,7 @@ void QgsGrassNewMapset::close( void )
 
   hide();
   mRunning = false;
-  delete this;
+  deleteLater();
 }
 
 void QgsGrassNewMapset::closeEvent( QCloseEvent *e )
