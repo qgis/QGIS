@@ -117,6 +117,31 @@
      </item>
     </widget>
    </item>
+   <item row="2" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox5" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title" >
+      <string>Preview:</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="lblSample" >
+        <property name="text" >
+         <string>QGIS Rocks!</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item row="1" column="1" >
     <widget class="QStackedWidget" name="stackedWidget" >
      <property name="sizePolicy" >
@@ -126,15 +151,15 @@
       </sizepolicy>
      </property>
      <property name="currentIndex" >
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page" >
       <property name="geometry" >
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>309</width>
-        <height>394</height>
+        <width>304</width>
+        <height>399</height>
        </rect>
       </property>
       <layout class="QGridLayout" >
@@ -421,8 +446,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>309</width>
-        <height>394</height>
+        <width>304</width>
+        <height>399</height>
        </rect>
       </property>
       <layout class="QGridLayout" >
@@ -537,8 +562,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>100</width>
-        <height>30</height>
+        <width>304</width>
+        <height>399</height>
        </rect>
       </property>
       <layout class="QGridLayout" >
@@ -613,11 +638,11 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>100</width>
-        <height>30</height>
+        <width>304</width>
+        <height>399</height>
        </rect>
       </property>
-      <layout class="QGridLayout" >
+      <layout class="QGridLayout" name="gridLayout" >
        <item row="0" column="0" >
         <widget class="QLabel" name="lblFont" >
          <property name="sizePolicy" >
@@ -776,6 +801,9 @@
        </item>
        <item row="6" column="0" >
         <widget class="QLabel" name="textLabel4_3_2_3" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
          <property name="sizePolicy" >
           <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
            <horstretch>0</horstretch>
@@ -792,6 +820,35 @@
        </item>
        <item row="6" column="1" >
         <widget class="QComboBox" name="cboFontTransparencyField" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" >
+        <widget class="QLabel" name="textLabel4_3_2_5" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>&amp;Color</string>
+         </property>
+         <property name="buddy" >
+          <cstring>cboFontColorField</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1" >
+        <widget class="QComboBox" name="cboFontColorField" >
          <property name="minimumSize" >
           <size>
            <width>0</width>
@@ -807,8 +864,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>100</width>
-        <height>30</height>
+        <width>304</width>
+        <height>399</height>
        </rect>
       </property>
       <layout class="QGridLayout" >
@@ -851,8 +908,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>100</width>
-        <height>30</height>
+        <width>304</width>
+        <height>399</height>
        </rect>
       </property>
       <layout class="QGridLayout" >
@@ -987,32 +1044,10 @@
      </widget>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2" >
-    <widget class="QGroupBox" name="groupBox5" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title" >
-      <string>Preview:</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>11</number>
-      </property>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="lblSample" >
-        <property name="text" >
-         <string>QGIS Rocks!</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
   </layout>
+  <zorder>listWidget</zorder>
+  <zorder>groupBox5</zorder>
+  <zorder>stackedWidget</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
