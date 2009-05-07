@@ -712,7 +712,14 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
     QgsRasterBandStats myNullReturnStats;
     return myNullReturnStats;
   }
+
   // check if we have previously gathered stats for this band...
+  if ( theBandNo < 1 || theBandNo > mRasterStatsList.size() )
+  {
+    // invalid band id, return nothing
+    QgsRasterBandStats myNullReturnStats;
+    return myNullReturnStats;
+  }
 
   QgsRasterBandStats myRasterBandStats = mRasterStatsList[theBandNo - 1];
   myRasterBandStats.bandNumber = theBandNo;
