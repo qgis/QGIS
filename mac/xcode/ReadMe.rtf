@@ -10,7 +10,7 @@
 \b0\fs24 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\i \cf0 2.1.7	2009-4-22\
+\i \cf0 2.1.7	2009-5-8\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \i0 \cf0 \
@@ -32,7 +32,7 @@ Dependent libraries are optionally copied into the application bundle and embedd
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \b0 \cf0 \
-See the Qgis installation document for details on obtaining the requirements.\
+See the Qgis {\field{\*\fldinst{HYPERLINK "http://wiki.qgis.org/qgiswiki/BuildingFromSource"}}{\fldrslt installation document}} for details on obtaining the requirements.  All optional items below are required for the default \ul Full QGIS\ulnone  build target.\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \ul \ulc0 Xcode 2.5\ulnone  - This also makes Mac OS 10.4 a requirement.\
@@ -55,17 +55,17 @@ See the Qgis installation document for details on obtaining the requirements.\
 \
 \ul Postgres client library\ulnone  (optional) - normally available in a full Postgres installation.\
 \
-\ul SQLite3 library\ulnone  - OSX includes SQLite 3, or use a more recent SQLite framework, or compile from source.\
+\ul SQLite3 library\ulnone  - OSX includes SQLite 3, or use a more recent SQLite framework (recommended), or compile from source.\
 \
-\ul Spatialite library\ulnone  - Spatialite is included in the SQLite framework.  Or compile from source (includes its own SQLite).\
+\ul Spatialite library\ulnone  - Spatialite is included in the SQLite framework starting with 3.6.11.  Or compile from source (includes its own SQLite).\
 \
 \ul Expat library\ulnone  - Leopard includes expat.  The one in X11 should work on Tiger, but I prefer to avoid X11 dependencies.\
 \
 \ul gpsbabel\ulnone  (optional) - for the GPS Import plugin.  A universal gpsbabel is available from gpsbabel.org.\
 \
-\ul Python 2.5\ulnone  - the system Python on Leopard will work.\
+\ul Python 2.5\ulnone  - the system Python on Leopard will work.  Or install Python 2.5 from {\field{\*\fldinst{HYPERLINK "http://www.python.org/"}}{\fldrslt python.org}} (required for Tiger).\
 \
-\ul SIP\ulnone  and \ul PyQt\ulnone \
+\ul SIP\ulnone  and \ul PyQt\ulnone  - make sure that they fully support the installed Qt version.  Development versions may cause trouble for QGIS.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -90,16 +90,24 @@ The xcconfig file is a simple text file with environment variables and values, a
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \ul Defaults\
 \ulnone \
-The default configuration is for the native architecture, without using a system SDK.  GDAL, PROJ, GEOS and SQLite frameworks are used.  Expat, Postgres and GSL are expected in default /usr/local builds.  GRASS support is from a GRASS-6.4.app application.  The python.org Python framework is used, even on Leopard.\
-\
+The default configuration is for the native architecture, without using a system SDK.  GDAL, PROJ, GEOS and SQLite frameworks are used.  Spatialite is expected in the SQLite framework.  Expat, Postgres and GSL are expected in default /usr/local builds.  GRASS support is from a GRASS-6.4.app application.  The python.org Python framework is used, even on Leopard.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
 By default, Qt, GSL, the Postgres client library are bundled in the Qgis application.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+\ul Minimal Config\ulnone \
+\
+The only changes you may need to make for Leopard are: to use the system Python (PYTHON_FORM), and to use the system expat (EXPAT_FORM).  See the xcconfig file for details.\
+\
+For Tiger, you need to set BISON (see below).\
 \
 \ul Build\ulnone  - At the top are some basic build settings.\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \f1\fs20 \cf0 SDKSYS
-\f0\fs24  tells the project to use the 10.4 (tig) or 10.5 (leo) SDK.  This will also build Qgis in a subfolder of the build folder - this is handy if you want to build once for Tiger (python.org Python) and once for Leopard (system Python) without overwriting either.\
+\f0\fs24  tells the project to use the 10.4 (tig) or 10.5 (leo) SDK, or none ([empty]).  Using an SDK will also build Qgis in a subfolder of the build folder - this is handy if you want to build once for Tiger (python.org Python) and once for Leopard (system Python) without overwriting either.\
 \
 Note that there may be linking problems with the SDK for non-system libraries and frameworks.  This is because the linker prefixes everything with the SDKROOT and indirectly linked libraries in non-standard locations (ie /usr/local) may not be found.  If you encounter linking errors, you should add symlinks to the SDKROOT to those locations.\
 \
@@ -147,7 +155,7 @@ ln -s /Users/Shared/unix /Developer/SDKs/MacOSX10.4u.sdk/Users/Shared/unix
 \
 
 \f1\fs20 SIP_system
-\f0\fs24  is the full path to the sip program when installed for the system Python on Leopard.\
+\f0\fs24  is the full path to the sip program when installed for the system Python on Leopard.  If the INSTALL instructions are followed to install SIP, this shouldn't need to be changed.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -247,8 +255,7 @@ When finished building, The final \ul Qgis.app\ulnone  is put in the
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \b0 \cf0 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
-\cf0 There are 2 "configurations" - \ul Release\ulnone  and \ul Debug\ulnone .  Use the Release configuration unless you have a need to debug Qgis.\
+There are 2 "configurations" - \ul Release\ulnone  and \ul Debug\ulnone .  Use the Release configuration unless you have a need to debug Qgis.\
 \
 The Debug configuration will use the debug version of Qt, if installed, but that is not required.  To use the debug Qt frameworks, you must change a setting before starting the debugger: in the 
 \b Executables

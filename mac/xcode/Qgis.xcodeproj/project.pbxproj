@@ -133,7 +133,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		720382E00F8B86070083B883 /* qgstolerance.h in Headers */ = {isa = PBXBuildFile; fileRef = 72F8D9420F8924F100D10CE5 /* qgstolerance.h */; };
+		720382E00F8B86070083B883 /* qgstolerance.h in Headers */ = {isa = PBXBuildFile; fileRef = 72F8D9420F8924F100D10CE5 /* qgstolerance.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7203830A0F8B8C8F0083B883 /* qgscentralpointpositionmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720383000F8B8C2D0083B883 /* qgscentralpointpositionmanager.cpp */; };
 		7203830B0F8B8C8F0083B883 /* qgsoverlayobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720383080F8B8C2D0083B883 /* qgsoverlayobject.cpp */; };
 		7203830C0F8B8C8F0083B883 /* qgspalobjectpositionmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720383050F8B8C2D0083B883 /* qgspalobjectpositionmanager.cpp */; };
@@ -1046,10 +1046,10 @@
 		7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8E0F7A767400498385 /* qgsspatialiteprovider.cpp */; };
 		7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */; };
 		7262EDCD0F7A9FFC00498385 /* qgsspatialitetablemodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED7F0F7A74B700498385 /* qgsspatialitetablemodel.h */; };
-		7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383010F8B8C2D0083B883 /* qgscentralpointpositionmanager.h */; };
+		7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383010F8B8C2D0083B883 /* qgscentralpointpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */; };
 		7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383040F8B8C2D0083B883 /* qgspalobjectpositionmanager.h */; };
-		7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383020F8B8C2D0083B883 /* qgsvectoroverlay.h */; };
+		7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383020F8B8C2D0083B883 /* qgsvectoroverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		726979A80F7136D700AFA402 /* qgsnewogrconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */; };
 		726979A90F7136D800AFA402 /* qgsogrhelperfunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */; };
 		726979AA0F7136D800AFA402 /* qgsopenvectorlayerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A60F71369A00AFA402 /* qgsopenvectorlayerdialog.cpp */; };
@@ -8649,6 +8649,7 @@
 		72FB54C60FAF3A5D00AB2F8D /* qgsattributetabledelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetabledelegate.h; path = ../../src/app/attributetable/qgsattributetabledelegate.h; sourceTree = SOURCE_ROOT; };
 		72FB54C70FAF3A5D00AB2F8D /* qgsattributetableidcolumnpair.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetableidcolumnpair.cpp; path = ../../src/app/attributetable/qgsattributetableidcolumnpair.cpp; sourceTree = SOURCE_ROOT; };
 		72FB54C80FAF3A5D00AB2F8D /* qgsattributetablefiltermodel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetablefiltermodel.cpp; path = ../../src/app/attributetable/qgsattributetablefiltermodel.cpp; sourceTree = SOURCE_ROOT; };
+		72FDF1640FB4720400580178 /* DONORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DONORS; path = ../../DONORS; sourceTree = SOURCE_ROOT; };
 		8D0C4E960486CD37000505A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -9016,6 +9017,7 @@
 				7256F2E40F4147890022BE1F /* CODING */,
 				7256F2E30F4147890022BE1F /* CONTRIBUTORS */,
 				7256F2E20F4147890022BE1F /* COPYING */,
+				72FDF1640FB4720400580178 /* DONORS */,
 				7256F2E00F4147890022BE1F /* INSTALL */,
 				7256F2DF0F4147890022BE1F /* PROVENANCE */,
 				7256F2DE0F4147890022BE1F /* README */,
@@ -13898,6 +13900,7 @@
 			buildConfigurationList = C0E91AC508A95435008D54AB /* Build configuration list for PBXNativeTarget "Qgis" */;
 			buildPhases = (
 				7209F5A60F3A54E1003DC336 /* Headers */,
+				722E163C0FB4E95F00DA3CCA /* Script - install ui headers */,
 				8D0C4E8C0486CD37000505A6 /* Resources */,
 				8D0C4E8F0486CD37000505A6 /* Sources */,
 				8D0C4E910486CD37000505A6 /* Frameworks */,
@@ -14072,6 +14075,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
+			showEnvVarsInLog = 0;
+		};
+		722E163C0FB4E95F00DA3CCA /* Script - install ui headers */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - install ui headers";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "GUI_UI=\"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\n\nfor u in qgsdetaileditemwidgetbase qgsgenericprojectionselectorbase qgsmessageviewer qgsprojectionselectorbase\ndo\n\tcp -f \"$GUI_UI/ui_$u.h\" \"$QGIS_BUILD_PATH/Headers/qgis/\"\ndone\n";
 			showEnvVarsInLog = 0;
 		};
 		7256F1530F4105770022BE1F /* configure.py */ = {
