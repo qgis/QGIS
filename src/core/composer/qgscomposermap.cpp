@@ -34,7 +34,6 @@
 #include "qgslabelattributes.h"
 
 #include <QGraphicsScene>
-#include <QGraphicsView>
 #include <QPainter>
 #include <QSettings>
 #include <iostream>
@@ -455,24 +454,6 @@ bool QgsComposerMap::containsWMSLayer() const
     }
   }
   return false;
-}
-
-double QgsComposerMap::horizontalViewScaleFactor() const
-{
-  double result = 1;
-  if ( scene() )
-  {
-    QList<QGraphicsView*> viewList = scene()->views();
-    if ( viewList.size() > 0 )
-    {
-      result = viewList.at( 0 )->transform().m11();
-    }
-    else
-    {
-      return 1; //probably called from non-gui code
-    }
-  }
-  return result;
 }
 
 void QgsComposerMap::connectUpdateSlot()

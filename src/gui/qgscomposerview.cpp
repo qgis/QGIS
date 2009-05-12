@@ -45,6 +45,22 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
   QPointF scenePoint = mapToScene( e->pos() );
   QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
 
+  //lock/unlock position of item with right click
+  if(e->button() == Qt::RightButton)
+  {
+     QgsComposerItem* selectedItem = composition()->composerItemAt( scenePoint );
+     if(selectedItem)
+     {
+         bool lock = selectedItem->positionLock() ? false : true;
+         selectedItem->setPositionLock(lock);
+         selectedItem->update();
+         //make sure the new cursor is correct
+         QPointF itemPoint = selectedItem->mapFromScene( scenePoint );
+         selectedItem->updateCursor(itemPoint);
+     }
+     return;
+  }
+
   switch ( mCurrentTool )
   {
       //select/deselect items and pass mouse event further
