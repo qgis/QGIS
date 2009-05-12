@@ -8954,7 +8954,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Make to toplevel item</source>
-        <translation>Als Top-Level Objekt &amp;machen</translation>
+        <translation>In oberste Ebene &amp;bringen</translation>
     </message>
     <message>
         <source>Re&amp;name</source>
@@ -8966,7 +8966,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Expand all</source>
-        <translation>Alles Ausklapp&amp;en</translation>
+        <translation>Alles ausklapp&amp;en</translation>
     </message>
     <message>
         <source>&amp;Collapse all</source>
