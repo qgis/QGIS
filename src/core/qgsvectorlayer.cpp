@@ -71,6 +71,8 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 
+#include "qgsrendererv2.h"
+
 #ifdef Q_WS_X11
 #include "qgsclipper.h"
 #endif
@@ -101,7 +103,9 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mRenderer( 0 ),
     mLabel( 0 ),
     mLabelOn( false ),
-    mFetching( false )
+    mFetching( false ),
+    mRendererV2( NULL ),
+    mUsingRendererV2( false )
 {
   mActions = new QgsAttributeAction;
 
@@ -676,6 +680,31 @@ unsigned char *QgsVectorLayer::drawPolygon(
 
 bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
+  if (mUsingRendererV2)
+  {
+    if (mRendererV2 == NULL)
+      return FALSE;
+    
+    mRendererV2->startRender(rendererContext);
+    
+    // TODO: really needed?
+    updateFeatureCount();
+    int totalFeatures = pendingFeatureCount();
+    int featureCount = 0;
+    
+    QgsFeature fet;
+    QgsAttributeList attributes = mRendererV2->usedAttributes();
+    select( attributes, rendererContext.extent() );
+
+    while ( nextFeature( fet ) )
+    {
+      mRendererV2->renderFeature(fet, rendererContext);
+    }
+    
+    mRendererV2->stopRender(rendererContext);
+    return TRUE;
+  }
+  
   //set update threshold before each draw to make sure the current setting is picked up
   QSettings settings;
   mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
