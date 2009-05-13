@@ -148,15 +148,34 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
     const QgsMapRenderer* renderer = mComposerMap->mapRenderer();
     if ( renderer )
     {
-      QgsRectangle canvasExtent = renderer->extent();
+      QgsRectangle newExtent = renderer->extent();
+
+      //Make sure the width/height ratio is the same as in current composer map extent.
+      //This is to keep the map item frame and the page layout fixed
+      QgsRectangle currentMapExtent = mComposerMap->extent();
+      double currentWidthHeightRatio = currentMapExtent.width() / currentMapExtent.height();
+      double newWidthHeightRatio = newExtent.width() / newExtent.height();
+
+      if(currentWidthHeightRatio < newWidthHeightRatio)
+       {
+        //enlarge height of new extent
+        double newHeight = newExtent.width() / currentWidthHeightRatio;
+        newExtent.setYMinimum(newExtent.yMaximum() - newHeight);
+       }
+      else if(currentWidthHeightRatio > newWidthHeightRatio)
+      {
+        //enlarge width of new extent
+        double newWidth = currentWidthHeightRatio * newExtent.height();
+        newExtent.setXMaximum(newExtent.xMinimum() + newWidth);
+      }
 
       //fill text into line edits
-      mXMinLineEdit->setText( QString::number( canvasExtent.xMinimum() ) );
-      mXMaxLineEdit->setText( QString::number( canvasExtent.xMaximum() ) );
-      mYMinLineEdit->setText( QString::number( canvasExtent.yMinimum() ) );
-      mYMaxLineEdit->setText( QString::number( canvasExtent.yMaximum() ) );
+      mXMinLineEdit->setText( QString::number( newExtent.xMinimum() ) );
+      mXMaxLineEdit->setText( QString::number( newExtent.xMaximum() ) );
+      mYMinLineEdit->setText( QString::number( newExtent.yMinimum() ) );
+      mYMaxLineEdit->setText( QString::number( newExtent.yMaximum() ) );
 
-      mComposerMap->setNewExtent( canvasExtent );
+      mComposerMap->setNewExtent( newExtent );
     }
   }
 }
