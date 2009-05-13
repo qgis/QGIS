@@ -23,6 +23,7 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2(QString name, QColor 
 {
   mName = name;
   mColor = color;
+  mBorderColor = borderColor;
   mSize = size;
   mAngle = angle;
 }
