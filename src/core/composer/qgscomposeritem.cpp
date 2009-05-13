@@ -371,19 +371,21 @@ QgsComposerItem::MouseMoveAction QgsComposerItem::mouseMoveActionForPosition( co
   bool nearLowerBorder = false;
   bool nearUpperBorder = false;
 
-  if ( itemCoordPos.x() < 5 )
+  double borderTolerance = rectHandlerBorderTolerance();
+
+  if ( itemCoordPos.x() < borderTolerance )
   {
     nearLeftBorder = true;
   }
-  if ( itemCoordPos.y() < 5 )
+  if ( itemCoordPos.y() < borderTolerance )
   {
     nearUpperBorder = true;
   }
-  if ( itemCoordPos.x() > ( rect().width() - 5 ) )
+  if ( itemCoordPos.x() > ( rect().width() - borderTolerance ) )
   {
     nearRightBorder = true;
   }
-  if ( itemCoordPos.y() > ( rect().height() - 5 ) )
+  if ( itemCoordPos.y() > ( rect().height() - borderTolerance ) )
   {
     nearLowerBorder = true;
   }
@@ -430,6 +432,9 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
   {
     return;
   }
+
+  //test if change item is a composer item. If so, prefer call to  setSceneRect() instead of setTransform() and setRect()
+  QgsComposerItem* changeComposerItem = dynamic_cast<QgsComposerItem*>(changeItem);
 
   double mx = 0.0, my = 0.0, rx = 0.0, ry = 0.0;
   QPointF snappedPosition = mComposition->snapPointToGrid( currentPosition );
@@ -499,17 +504,34 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
       double moveRectX = snappedLeftPoint.x() - originalItem->transform().dx();
       double moveRectY = snappedLeftPoint.y() - originalItem->transform().dy();
 
-      QTransform moveTransform;
-      moveTransform.translate( originalItem->transform().dx() + moveRectX, originalItem->transform().dy() + moveRectY );
-      changeItem->setTransform( moveTransform );
+      if(!changeComposerItem)
+      {
+        QTransform moveTransform;
+        moveTransform.translate( originalItem->transform().dx() + moveRectX, originalItem->transform().dy() + moveRectY );
+        changeItem->setTransform( moveTransform );
+      }
+      else  //for composer items, we prefer setSceneRect as subclasses can implement custom behaviour (e.g. item group)
+      {
+        changeComposerItem->setSceneRect(QRectF(originalItem->transform().dx() + moveRectX, \
+                                                originalItem->transform().dy() + moveRectY, \
+                                                originalItem->rect().width(), originalItem->rect().height()));
+      }
       return;
   }
 
-  QTransform itemTransform;
-  itemTransform.translate( originalItem->transform().dx() + mx, originalItem->transform().dy() + my );
-  changeItem->setTransform( itemTransform );
-  QRectF itemRect( 0, 0, originalItem->rect().width() + rx,  originalItem->rect().height() + ry );
-  changeItem->setRect( itemRect );
+  if(!changeComposerItem)
+  {
+    QTransform itemTransform;
+    itemTransform.translate( originalItem->transform().dx() + mx, originalItem->transform().dy() + my );
+    changeItem->setTransform( itemTransform );
+    QRectF itemRect( 0, 0, originalItem->rect().width() + rx,  originalItem->rect().height() + ry );
+    changeItem->setRect( itemRect );
+  }
+  else //for composer items, we prefer setSceneRect as subclasses can implement custom behaviour (e.g. item group)
+  {
+    changeComposerItem->setSceneRect( QRectF(originalItem->transform().dx() + mx, originalItem->transform().dy() + my, \
+      originalItem->rect().width() + rx, originalItem->rect().height() + ry) );
+  }
 }
 
 void QgsComposerItem::drawSelectionBoxes( QPainter* p )
@@ -523,26 +545,8 @@ void QgsComposerItem::drawSelectionBoxes( QPainter* p )
   {
     //size of symbol boxes depends on zoom level in composer view
     double viewScaleFactor = horizontalViewScaleFactor();
-    double rectHandlerSize = 10.0 / viewScaleFactor;
-    double lockSymbolSize = 20.0 / viewScaleFactor;
-
-    //make sure the boxes don't get too large
-    if(rectHandlerSize > (rect().width() / 3))
-    {
-        rectHandlerSize = rect().width() / 3;
-    }
-    if(rectHandlerSize > (rect().height() / 3))
-    {
-        rectHandlerSize = rect().height() / 3;
-    }
-    if(lockSymbolSize > (rect().width() / 3))
-    {
-        lockSymbolSize = rect().width() / 3;
-    }
-    if(lockSymbolSize > (rect().height() / 3))
-    {
-        lockSymbolSize = rect().height() / 3;
-    }
+    double rectHandlerSize = rectHandlerBorderTolerance();
+    double sizeLockSymbol = lockSymbolSize();
 
     if(mItemPositionLocked)
     {
@@ -556,7 +560,7 @@ void QgsComposerItem::drawSelectionBoxes( QPainter* p )
         QImage lockImage(lockIconPath);
         if(!lockImage.isNull())
         {
-            p->drawImage(QRectF(0, 0, lockSymbolSize, lockSymbolSize), lockImage, QRectF(0, 0, lockImage.width(), lockImage.height()));
+            p->drawImage(QRectF(0, 0, sizeLockSymbol, sizeLockSymbol), lockImage, QRectF(0, 0, lockImage.width(), lockImage.height()));
         }
     }
     else //draw blue squares
@@ -741,6 +745,39 @@ double QgsComposerItem::horizontalViewScaleFactor() const
     }
   }
   return result;
+}
+
+double QgsComposerItem::rectHandlerBorderTolerance() const
+{
+     //size of symbol boxes depends on zoom level in composer view
+    double viewScaleFactor = horizontalViewScaleFactor();
+    double rectHandlerSize = 10.0 / viewScaleFactor;
+
+    //make sure the boxes don't get too large
+    if(rectHandlerSize > (rect().width() / 3))
+    {
+        rectHandlerSize = rect().width() / 3;
+    }
+    if(rectHandlerSize > (rect().height() / 3))
+    {
+        rectHandlerSize = rect().height() / 3;
+    }
+    return rectHandlerSize;
+}
+
+double QgsComposerItem::lockSymbolSize() const
+{
+  double lockSymbolSize = 20.0 / horizontalViewScaleFactor();
+
+  if(lockSymbolSize > (rect().width() / 3))
+  {
+    lockSymbolSize = rect().width() / 3;
+  }
+  if(lockSymbolSize > (rect().height() / 3))
+  {
+    lockSymbolSize = rect().height() / 3;
+  }
+  return lockSymbolSize;
 }
 
 void QgsComposerItem::updateCursor(const QPointF& itemPos)
