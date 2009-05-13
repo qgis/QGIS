@@ -103,12 +103,12 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mView->verticalHeader(), SIGNAL( sectionClicked( int ) ), this, SLOT( updateRowSelection( int ) ) );
   connect( mModel, SIGNAL( modelChanged() ), this, SLOT( updateSelection() ) );
 
-  //make sure to show all recs on first load
-  on_cbxShowSelectedOnly_toggled( false );
-
   mLastClickedHeaderIndex = 0;
   mSelectionModel = new QItemSelectionModel( mFilterModel );
   updateSelectionFromLayer();
+
+  //make sure to show all recs on first load
+  on_cbxShowSelectedOnly_toggled( false );
 }
 
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
@@ -220,6 +220,7 @@ void QgsAttributeTableDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
   mFilterModel->invalidate();
   //TODO: weird
   //mModel->changeLayout();
+  updateSelection();
 }
 
 void QgsAttributeTableDialog::columnBoxInit()
