@@ -1073,6 +1073,7 @@
 		72745A130F770319007F4218 /* spit.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A030F770252007F4218 /* spit.png */; };
 		72745A140F770319007F4218 /* wfs.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A040F770252007F4218 /* wfs.png */; };
 		72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */ = {isa = PBXBuildFile; fileRef = 727459F80F770252007F4218 /* coordinate_capture.png */; };
+		727CEC220FBAFFA200F5B88C /* mIconLock.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 727CEC210FBAFF6000F5B88C /* mIconLock.png */; };
 		72820FE10FACCE770011C963 /* qgsmaptooldeletering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDE0FACCE520011C963 /* qgsmaptooldeletering.cpp */; };
 		72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */; };
 		72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FE00FACCE520011C963 /* qgsmaptoolsimplify.cpp */; };
@@ -3992,6 +3993,7 @@
 			dstPath = "$(QGIS_DATA_SUBDIR)/themes/default";
 			dstSubfolderSpec = 6;
 			files = (
+				727CEC220FBAFFA200F5B88C /* mIconLock.png in Copy - theme-default */,
 				72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */,
 				7256F4220F41C4DD0022BE1F /* clearInput.png in Copy - theme-default */,
 				7256F4230F41C4DD0022BE1F /* extents.png in Copy - theme-default */,
@@ -8371,6 +8373,7 @@
 		72745A020F770252007F4218 /* scale_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = scale_bar.png; path = ../../images/themes/gis/plugins/scale_bar.png; sourceTree = SOURCE_ROOT; };
 		72745A030F770252007F4218 /* spit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit.png; path = ../../images/themes/gis/plugins/spit.png; sourceTree = SOURCE_ROOT; };
 		72745A040F770252007F4218 /* wfs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wfs.png; path = ../../images/themes/gis/plugins/wfs.png; sourceTree = SOURCE_ROOT; };
+		727CEC210FBAFF6000F5B88C /* mIconLock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconLock.png; path = ../../images/themes/default/mIconLock.png; sourceTree = SOURCE_ROOT; };
 		72820FDB0FACCE520011C963 /* qgsmaptooldeletering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooldeletering.h; path = ../../src/app/qgsmaptooldeletering.h; sourceTree = SOURCE_ROOT; };
 		72820FDC0FACCE520011C963 /* qgsmaptooldeletepart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooldeletepart.h; path = ../../src/app/qgsmaptooldeletepart.h; sourceTree = SOURCE_ROOT; };
 		72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptooldeletepart.cpp; path = ../../src/app/qgsmaptooldeletepart.cpp; sourceTree = SOURCE_ROOT; };
@@ -12391,6 +12394,7 @@
 				7209EF610F39E5D9003DC336 /* user.svg */,
 				7209EF620F39E5D9003DC336 /* zoomMaster.svg */,
 				7262ED890F7A75FB00498385 /* mActionAddSpatiaLiteLayer.png */,
+				727CEC210FBAFF6000F5B88C /* mIconLock.png */,
 				72EB12940F7E9B51002C38FA /* plugins */,
 			);
 			name = default;
