@@ -411,7 +411,7 @@ bool QgsStyleV2::save(QString filename)
   
   // save
   QFile f(filename);
-  if (!f.open(QFile::ReadWrite))
+  if (!f.open(QFile::WriteOnly))
   {
     mErrorString = "Couldn't open file for writing: "+filename;
     return false;

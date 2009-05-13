@@ -198,6 +198,19 @@ void QgsSymbolV2::dump()
   }
 }
 
+QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
+{
+  QgsSymbolLayerV2List lst;
+  for (QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it)
+  {
+    QgsSymbolLayerV2* layer = (*it)->clone();
+    layer->setLocked( (*it)->isLocked() );
+    lst.append( layer );
+  }
+  return lst;
+}
+
+
 ///////////////////
 
 
@@ -263,10 +276,7 @@ void QgsMarkerSymbolV2::renderPoint(const QPointF& point, QgsRenderContext& cont
 
 QgsSymbolV2* QgsMarkerSymbolV2::clone() const
 {
-  QgsSymbolLayerV2List lst;
-  for (QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it)
-    lst.append( (*it)->clone() );
-  return new QgsMarkerSymbolV2(lst);
+  return new QgsMarkerSymbolV2( cloneLayers() );
 }
 
 
@@ -315,10 +325,7 @@ void QgsLineSymbolV2::renderPolyline(const QPolygonF& points, QgsRenderContext& 
 
 QgsSymbolV2* QgsLineSymbolV2::clone() const
 {
-  QgsSymbolLayerV2List lst;
-  for (QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it)
-    lst.append( (*it)->clone() );
-  return new QgsLineSymbolV2(lst);
+  return new QgsLineSymbolV2( cloneLayers() );
 }
 
 ///////////////////
@@ -343,8 +350,5 @@ void QgsFillSymbolV2::renderPolygon(const QPolygonF& points, QList<QPolygonF>* r
 
 QgsSymbolV2* QgsFillSymbolV2::clone() const
 {
-  QgsSymbolLayerV2List lst;
-  for (QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it)
-    lst.append( (*it)->clone() );
-  return new QgsFillSymbolV2(lst);
+  return new QgsFillSymbolV2( cloneLayers() );
 }

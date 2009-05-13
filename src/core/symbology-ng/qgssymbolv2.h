@@ -70,6 +70,8 @@ public:
 	
 protected:
   QgsSymbolV2(SymbolType type, QgsSymbolLayerV2List layers); // can't be instantiated
+
+  QgsSymbolLayerV2List cloneLayers() const;
   
   SymbolType mType;
 	QgsSymbolLayerV2List mLayers;

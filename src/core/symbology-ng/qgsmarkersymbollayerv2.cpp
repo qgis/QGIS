@@ -4,6 +4,7 @@
 
 #include "qgsrendercontext.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -43,7 +44,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create(const QgsStringMap& props
   if (props.contains("size"))
     size = props["size"].toDouble();
   if (props.contains("angle"))
-    size = props["angle"].toDouble();
+    angle = props["angle"].toDouble();
   
   return new QgsSimpleMarkerSymbolLayerV2(name, color, borderColor, size, angle);
 }
@@ -253,7 +254,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create(const QgsStringMap& props)
   if (props.contains("size"))
     size = props["size"].toDouble();
   if (props.contains("angle"))
-    size = props["angle"].toDouble();
+    angle = props["angle"].toDouble();
   
   return new QgsSvgMarkerSymbolLayerV2(name, size, angle);
 }
