@@ -325,8 +325,11 @@ class QgsGrassModuleItem
     //! Optional option id used by other options which depend on this
     QString mId;
 
-    //! GRASS description
-    QString mDescription;
+    //! Item title, GRASS label or description
+    QString mTitle;
+
+    //! Item tooltip, GRASS description if defined
+    QString mToolTip;
 
     //! Hidden option or displayed
     bool mHidden;
@@ -334,7 +337,40 @@ class QgsGrassModuleItem
     //! Predefined answer from config
     QString mAnswer;
 
+    //! Is it required
+    bool mRequired;
+
   private:
+
+};
+
+/****************** QgsGrassModuleGroupBoxItem ************************/
+
+/*! \class QgsGrassModuleGroupBoxItem
+ *  \brief GRASS module option box
+ */
+class QgsGrassModuleGroupBoxItem: public QGroupBox, public QgsGrassModuleItem
+{
+  Q_OBJECT
+
+  public:
+    /*! \brief Constructor
+     * \param qdesc option element in QGIS module description XML file
+     * \param gdesc GRASS module XML description file
+     * \param gnode option node in GRASS module XML description file
+     */
+    QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
+                        QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, 
+                        QWidget * parent = 0 );
+
+    //! Destructor
+    virtual ~QgsGrassModuleGroupBoxItem();
+
+    void resizeEvent ( QResizeEvent * event );
+
+  public slots:
+    //! Adjust title size, called on resize
+    void adjustTitle();
 
 };
 
@@ -343,7 +379,7 @@ class QgsGrassModuleItem
 /*! \class QgsGrassModuleOption
  *  \brief  GRASS option
  */
-class QgsGrassModuleOption: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -458,9 +494,15 @@ class QgsGrassModuleFlag: public QCheckBox, public QgsGrassModuleItem
 
     //! Destructor
     ~QgsGrassModuleFlag();
+
     //! Retruns list of options which will be passed to module
     virtual QStringList options();
-  private:
+
+    void resizeEvent ( QResizeEvent * event );
+
+  public slots:
+    //! Adjust title size, called on resize
+    void adjustText();
 };
 
 /************************ QgsGrassModuleInput **********************/
@@ -468,7 +510,7 @@ class QgsGrassModuleFlag: public QCheckBox, public QgsGrassModuleItem
 /*! \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
-class QgsGrassModuleInput: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -575,7 +617,7 @@ class QgsGrassModuleInput: public QGroupBox, public QgsGrassModuleItem
 /*! \class QgsGrassModuleGdalInput
  *  \brief GDAL/OGR module input
  */
-class QgsGrassModuleGdalInput: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleGdalInput: public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -629,7 +671,7 @@ class QgsGrassModuleGdalInput: public QGroupBox, public QgsGrassModuleItem
 /*! \class QgsGrassModuleField
  *  \brief GRASS vector attribute column.
  */
-class QgsGrassModuleField: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleField: public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -676,7 +718,7 @@ class QgsGrassModuleField: public QGroupBox, public QgsGrassModuleItem
 /*! \class QgsGrassModuleSelection
  *  \brief List of categories taken from current layer selection.
  */
-class QgsGrassModuleSelection: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleSelection: public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -724,10 +766,10 @@ class QgsGrassModuleSelection: public QGroupBox, public QgsGrassModuleItem
 
 /*********************** QgsGrassModuleFile **********************/
 
-/*! \class QgsGrassModuleSelection
+/*! \class QgsGrassModuleFile
  *  \brief Input/output file.
  */
-class QgsGrassModuleFile: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleFile: public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
