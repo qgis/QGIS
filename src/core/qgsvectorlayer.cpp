@@ -1804,6 +1804,8 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
     {
       //change this geometry
       mChangedGeometries.insert( select_it->id(), *( select_it->geometry() ) );
+      //update of cached geometries is necessary because we use addTopologicalPoints() later
+      mCachedGeometries[select_it->id()] = *( select_it->geometry() );
 
       //insert new features
       for ( int i = 0; i < newGeometries.size(); ++i )
