@@ -14,6 +14,7 @@
 #include <QStandardItemModel>
 
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 
 static QString iconPath(QString iconFile)
@@ -29,8 +30,8 @@ static QString iconPath(QString iconFile)
 
 ///////
 
-QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog(QgsStyleV2* style, QWidget* parent)
-  : QDialog(parent), mStyle(style)
+QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog(QgsStyleV2* style, QString styleFilename, QWidget* parent)
+  : QDialog(parent), mStyle(style), mStyleFilename(styleFilename)
 {
 
   setupUi(this);
@@ -61,7 +62,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog(QgsStyleV2* style, QWidget* par
 
 void QgsStyleV2ManagerDialog::onFinished()
 {
-  // TODO: if modified, save the changes
+  // TODO: save only when modified
+  if (!mStyleFilename.isEmpty())
+    mStyle->save(mStyleFilename);
 }
 
 void QgsStyleV2ManagerDialog::populateTypes()

@@ -232,8 +232,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ../core
-  ../core/composer ../core/raster ../core/renderer ../core/symbology
-  ../gui
+  ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
+  ../gui ../gui/symbology-ng
   ../plugins
   ../python
   ${PROJ_INCLUDE_DIR}

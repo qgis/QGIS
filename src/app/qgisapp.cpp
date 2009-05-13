@@ -992,6 +992,68 @@ void QgisApp::createActions()
   mActionAbout->setStatusTip( tr( "About QGIS" ) );
   mActionAbout->setMenuRole( QAction::AboutRole ); // put in application menu on Mac OS X
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
+
+  // %%%
+  mActionUseRendererV2 = new QAction( "V2", this );
+  mActionUseRendererV2->setStatusTip( tr( "Toggles renderer V2 for current layer" ) );
+  connect( mActionUseRendererV2, SIGNAL( triggered() ), this, SLOT( toggleRendererV2() ) );
+
+  // %%%
+  mActionStyleManagerV2 = new QAction( "MGR", this );
+  mActionStyleManagerV2->setStatusTip( tr( "Show style manager V2" ) );
+  connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
+}
+
+#include "qgsstylev2.h"
+#include "qgssymbolv2.h"
+#include "qgsrendererv2.h"
+#include "qgsrendererv2propertiesdialog.h"
+#include "qgsstylev2managerdialog.h"
+
+static QgsStyleV2* gStyleV2 = NULL;
+
+static void _initStyle()
+{
+  if (gStyleV2 == NULL)
+  {
+    QString styleFilename = QgsApplication::userStyleV2Path();
+
+    // copy default style if user style doesn't exist
+    if ( !QFile::exists( styleFilename ) )
+    {
+      QFile::copy( QgsApplication::defaultStyleV2Path(), styleFilename );
+    }
+
+    gStyleV2 = new QgsStyleV2;
+    gStyleV2->load( styleFilename );
+  }
+}
+
+void QgisApp::toggleRendererV2()
+{
+  QgsMapLayer* layer = activeLayer();
+  if (layer == NULL || layer->type() != QgsMapLayer::VectorLayer)
+  {
+    QMessageBox::information(this, "sorry", "Give me a vector layer!");
+    return;
+  }
+  QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>(layer);
+  
+  _initStyle();
+  
+  QgsRendererV2PropertiesDialog dlg(vlayer, gStyleV2, this);
+  if (!dlg.exec())
+    return;
+  
+  refreshMapCanvas();
+}
+
+void QgisApp::showStyleManagerV2()
+{
+  _initStyle();
+
+  QgsStyleV2ManagerDialog dlg(gStyleV2, QgsApplication::userStyleV2Path(), this);
+  dlg.exec();
 }
 
 void QgisApp::showPythonDialog()
@@ -1305,6 +1367,8 @@ void QgisApp::createToolBars()
   mFileToolBar->addAction( mActionAddSpatiaLiteLayer );
 #endif
   mFileToolBar->addAction( mActionAddWmsLayer );
+  mFileToolBar->addAction( mActionUseRendererV2 );
+  mFileToolBar->addAction( mActionStyleManagerV2 );
   mToolbarMenu->addAction( mFileToolBar->toggleViewAction() );
   //
   // Layer Toolbar

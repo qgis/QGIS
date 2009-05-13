@@ -597,6 +597,9 @@ class QgisApp : public QMainWindow
     //! Stops rendering of the main map
     void stopRendering();
 
+    void toggleRendererV2();
+    void showStyleManagerV2();
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -789,6 +792,9 @@ class QgisApp : public QMainWindow
     QAction *mActionCheckQgisVersion;
     QAction *mActionHelpSeparator2;
     QAction *mActionAbout;
+
+    QAction *mActionUseRendererV2;
+    QAction *mActionStyleManagerV2;
 
     // action groups ----------------------------------
     QActionGroup *mMapToolGroup;

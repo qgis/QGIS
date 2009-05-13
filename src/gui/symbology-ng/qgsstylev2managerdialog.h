@@ -13,7 +13,7 @@ class QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV2ManagerDia
   Q_OBJECT
   
 public:
-  QgsStyleV2ManagerDialog(QgsStyleV2* style, QWidget* parent = NULL);
+  QgsStyleV2ManagerDialog(QgsStyleV2* style, QString styleFilename, QWidget* parent = NULL);
   
 public slots:
   void addItem();
@@ -51,6 +51,7 @@ protected:
   
   QgsStyleV2* mStyle;
 
+  QString mStyleFilename;
 };
 
 #endif
