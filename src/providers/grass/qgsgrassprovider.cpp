@@ -1002,7 +1002,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   QgsDebugMsg( QString( "Setting  gisdbase, location: %1, %2" ).arg( gisdbase ).arg( location ) );
 
   // Find the vector
-  char *ms = G_find_vector2( mapName.toAscii().data(), mapset.toAscii().data() ) ;
+  const char *ms = G_find_vector2( mapName.toAscii().data(), mapset.toAscii().data() ) ;
 
   if ( ms == NULL )
   {
