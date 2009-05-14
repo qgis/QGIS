@@ -18,8 +18,8 @@
 #ifndef QGSOVERLAYOBJECT_H
 #define QGSOVERLAYOBJECT_H
 
+#include "qgsgeometry.h"
 #include "qgspoint.h"
-#include "palgeometry.h"
 #include <QList>
 
 class QgsGeometry;
@@ -29,7 +29,7 @@ class QgsGeometry;
 *    to calculate object placement
 * \note This class has been added in version 1.1
 */
-class CORE_EXPORT QgsOverlayObject: public pal::PalGeometry
+class CORE_EXPORT QgsOverlayObject
 {
   public:
     QgsOverlayObject( int width = 0, int height = 0, double rotation = 0, QgsGeometry* geometry = 0 );
@@ -41,9 +41,10 @@ class CORE_EXPORT QgsOverlayObject: public pal::PalGeometry
 
 
     /**Returns the feature geometry in geos format. The calling function does _not_ take
-     ownership of the generated object. The geometry is in map coordinates*/
+     ownership of the generated object. The geometry is in map coordinates
+    @note: this function is deprecated. Please use geometry() and QgsGeometry::asGeos instead*/
     GEOSGeometry* getGeosGeometry();
-    /**Feature geometry is released when object is destructed so this function is empty*/
+    /**Feature geometry is released when object is destructed so this function is empty. This function is deprecated and does nothing*/
     void releaseGeosGeometry( GEOSGeometry *the_geom ) {}
 
     //getters
@@ -73,7 +74,8 @@ class CORE_EXPORT QgsOverlayObject: public pal::PalGeometry
     int mHeight;
     /**Position of the object in map coordinates. Note that it is possible that an object
     has several positions, e.g. a multiobject or an object that is split into multiple parts
-    by the edge of the view extent*/
+    by the edge of the view extent. It is also possible that there is no position (e.g. geometry too small). In
+    that case*/
     QList<QgsPoint> mPositions;
     /**Rotation of the object*/
     double mRotation;

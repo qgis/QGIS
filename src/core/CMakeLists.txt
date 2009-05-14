@@ -27,6 +27,7 @@ SET(QGIS_CORE_SRCS
   qgsmaptopixel.cpp
   qgsmessageoutput.cpp
   qgsoverlayobject.cpp
+  qgspalgeometry.cpp
   qgspalobjectpositionmanager.cpp
   qgspoint.cpp
   qgsproject.cpp
