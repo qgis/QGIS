@@ -281,6 +281,39 @@ class QgsGrassModuleStandardOptions: public QgsGrassModuleOptions, QWidget
     bool mUsesRegion;
 };
 
+/****************** QgsGrassModuleGroupBoxItem ************************/
+
+/*! \class QgsGrassModuleCheckBox
+ *  \brief Checkbox with elided text
+ */
+class QgsGrassModuleCheckBox: public QCheckBox
+{
+  Q_OBJECT
+
+  public:
+    /*! \brief Constructor
+     */
+    QgsGrassModuleCheckBox( const QString & text, QWidget * parent = 0 );
+
+    //! Destructor
+    virtual ~QgsGrassModuleCheckBox ();
+
+    void resizeEvent ( QResizeEvent * event );
+
+  public slots:
+    void setText ( const QString & text );
+
+    void setToolTip ( const QString & text );
+
+    //! Adjust title size, called on resize
+    void adjustText();
+
+  private:
+    QString mText;
+
+    QString mTip;
+};
+
 /*! \class QgsGrassModuleItem
  *  \brief GRASS module option
  */
@@ -455,7 +488,7 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
     std::vector<QString> mValues;
 
     //! Check boxes
-    std::vector<QCheckBox*> mCheckBoxes;
+    std::vector<QgsGrassModuleCheckBox*> mCheckBoxes;
 
     //! Line
     std::vector<QLineEdit*> mLineEdits;
@@ -479,7 +512,7 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
 /*! \class QgsGrassModuleFlag
  *  \brief  GRASS flag
  */
-class QgsGrassModuleFlag: public QCheckBox, public QgsGrassModuleItem
+class QgsGrassModuleFlag: public QgsGrassModuleCheckBox, public QgsGrassModuleItem
 {
     Q_OBJECT
 
@@ -498,11 +531,6 @@ class QgsGrassModuleFlag: public QCheckBox, public QgsGrassModuleItem
     //! Retruns list of options which will be passed to module
     virtual QStringList options();
 
-    void resizeEvent ( QResizeEvent * event );
-
-  public slots:
-    //! Adjust title size, called on resize
-    void adjustText();
 };
 
 /************************ QgsGrassModuleInput **********************/
@@ -817,5 +845,6 @@ class QgsGrassModuleFile: public QgsGrassModuleGroupBoxItem
     //! File filters
     QStringList mFilters;
 };
+
 
 #endif // QGSGRASSMODULE_H

@@ -1660,7 +1660,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
               }
               else
               {
-                QCheckBox *cb = new QCheckBox( desc, this );
+                QgsGrassModuleCheckBox *cb = new QgsGrassModuleCheckBox( desc, this );
                 mCheckBoxes.push_back( cb );
                 mLayout->addWidget( cb );
               }
@@ -1944,7 +1944,7 @@ QgsGrassModuleOption::~QgsGrassModuleOption()
 QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                                         QWidget * parent )
-    : QCheckBox( parent ), QgsGrassModuleItem( module, key, qdesc, gdesc, gnode )
+    : QgsGrassModuleCheckBox( "", parent ), QgsGrassModuleItem( module, key, qdesc, gdesc, gnode )
 {
   QgsDebugMsg( "called." );
 
@@ -1956,6 +1956,7 @@ QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
     setChecked( false );
 
   setText( mTitle );
+  setToolTip ( mToolTip );
 }
 
 QStringList QgsGrassModuleFlag::options()
@@ -1970,18 +1971,6 @@ QStringList QgsGrassModuleFlag::options()
 
 QgsGrassModuleFlag::~QgsGrassModuleFlag()
 {
-}
-
-void QgsGrassModuleFlag::resizeEvent ( QResizeEvent * event )
-{
-  adjustText();
-}
-
-void QgsGrassModuleFlag::adjustText()
-{
-  QString t = fontMetrics().elidedText ( mTitle , Qt::ElideRight, width() - iconSize().width() - 20  );
-
-  setText( t );
 }
 
 /************************** QgsGrassModuleInput ***************************/
@@ -2925,7 +2914,9 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
     connect( mLayerInput, SIGNAL( valueChanged() ), this, SLOT( updateSelection() ) );
   }
 
+  QHBoxLayout *l = new QHBoxLayout( this );
   mLineEdit = new QLineEdit( this );
+  l->addWidget( mLineEdit );
 
   // Fill in layer current fields
   updateSelection();
@@ -3126,4 +3117,45 @@ QString QgsGrassModuleFile::ready()
 
 QgsGrassModuleFile::~QgsGrassModuleFile()
 {
+}
+
+/***************************** QgsGrassModuleCheckBox *********************************/
+
+QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString & text, QWidget * parent )
+    : QCheckBox( text, parent ), mText(text)
+{
+  QgsDebugMsg( "called." );
+  adjustText();
+}
+
+QgsGrassModuleCheckBox::~QgsGrassModuleCheckBox()
+{
+}
+
+void QgsGrassModuleCheckBox::resizeEvent ( QResizeEvent * event )
+{
+  adjustText();
+}
+void QgsGrassModuleCheckBox::setText ( const QString & text )
+{
+    mText = text;
+    adjustText();
+}
+void QgsGrassModuleCheckBox::setToolTip ( const QString & text )
+{
+    mTip = text;
+    QWidget::setToolTip ( text );
+}
+void QgsGrassModuleCheckBox::adjustText()
+{
+  QString t = fontMetrics().elidedText ( mText , Qt::ElideRight, width() - iconSize().width() - 20  );
+  QCheckBox::setText( t );
+
+  if ( mTip.isEmpty() ) {
+    QString tt;
+    if ( t != mText ) {
+      tt = mText;
+    }
+    QWidget::setToolTip ( tt );
+  }
 }
