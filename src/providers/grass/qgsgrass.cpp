@@ -181,6 +181,7 @@ void GRASS_EXPORT QgsGrass::init( void )
 #endif
   QString path = "PATH=" + gisBase + "/bin";
   path.append( sep + gisBase + "/scripts" );
+  path.append( sep +  QgsApplication::pkgDataPath() + "/grass/scripts/" );
 
   // On windows the GRASS libraries are in
   // QgsApplication::prefixPath(), we have to add them
