@@ -1469,6 +1469,7 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
   // and add to the known added features.
   f.setFeatureId( addedIdLowWaterMark );
   mAddedFeatures.append( f );
+  mCachedGeometries[f.id()] = *(f.geometry());
 
   setModified( true );
 
@@ -1502,6 +1503,7 @@ bool QgsVectorLayer::insertVertex( double x, double y, int atFeatureId, int befo
     }
 
     mChangedGeometries[atFeatureId].insertVertex( x, y, beforeVertex );
+    mCachedGeometries[atFeatureId] = mChangedGeometries[atFeatureId];
 
     setModified( true, true ); // only geometry was changed
 
@@ -1531,6 +1533,7 @@ bool QgsVectorLayer::moveVertex( double x, double y, int atFeatureId, int atVert
     }
 
     mChangedGeometries[atFeatureId].moveVertex( x, y, atVertex );
+    mCachedGeometries[atFeatureId] = mChangedGeometries[atFeatureId];
 
     setModified( true, true ); // only geometry was changed
 
@@ -1652,7 +1655,9 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
   QgsGeometryMap::iterator changedIt = mChangedGeometries.find( selectedFeatureId );
   if ( changedIt != mChangedGeometries.end() )
   {
-    return changedIt->addIsland( ring );
+    int returnValue = changedIt->addIsland( ring );
+    mCachedGeometries[selectedFeatureId] = *changedIt;
+    return returnValue;
   }
 
   //look if id of selected feature belongs to an added feature
@@ -1661,6 +1666,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
     if ( addedIt->id() == selectedFeatureId )
     {
       return addedIt->geometry()->addIsland( ring );
+      mCachedGeometries[selectedFeatureId] = *(addedIt->geometry());
     }
   }
 
@@ -1672,6 +1678,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
     if ( errorCode == 0 )
     {
       mChangedGeometries.insert( selectedFeatureId, *cachedIt );
+      mCachedGeometries[selectedFeatureId] = *cachedIt;
       setModified( true, true );
     }
     return errorCode;
@@ -2572,6 +2579,7 @@ bool QgsVectorLayer::changeGeometry(int fid, QgsGeometry* geom)
   }
 
   mChangedGeometries[ fid ] = *geom;
+  mCachedGeometries[fid] = *geom;
   setModified( true, true );
   return true;
 }
@@ -3236,7 +3244,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
   int n = 0;
   QgsFeature f;
 
-  if ( mCachedGeometriesRect.contains( searchRect ) )
+  if (mCachedGeometriesRect.contains( searchRect ) )
   {
     QgsDebugMsg( "Using cached geometries for snapping." );
 
