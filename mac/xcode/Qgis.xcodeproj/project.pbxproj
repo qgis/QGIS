@@ -546,6 +546,10 @@
 		72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */; };
 		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
 		72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 72267A500F9A1D3100010C18 /* mActionZoomNext.png */; };
+		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
+		723FD0620FBCB91C00EFA55D /* qgis.db.connect-login.pg.1.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 723FD0610FBCB8E100EFA55D /* qgis.db.connect-login.pg.1.png */; };
+		723FD0630FBCB91C00EFA55D /* qgis.db.connect-login.pg.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 723FD0600FBCB8E100EFA55D /* qgis.db.connect-login.pg.qgm */; };
+		723FD06B0FBCBA3500EFA55D /* qgis.db.connect-login.pg.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 723FD0670FBCB94600EFA55D /* qgis.db.connect-login.pg.py */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
 		7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */; };
 		7256F2FB0F4148FC0022BE1F /* Christoph_Spoerri.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE010F39E5D9003DC336 /* Christoph_Spoerri.jpg */; };
@@ -3668,6 +3672,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		723FD0700FBCBA3D00EFA55D /* Copy - scripts */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/scripts";
+			dstSubfolderSpec = 0;
+			files = (
+				723FD06B0FBCBA3500EFA55D /* qgis.db.connect-login.pg.py in Copy - scripts */,
+			);
+			name = "Copy - scripts";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7256F2D60F4146A70022BE1F /* Copy - doc-images */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -5226,6 +5241,8 @@
 				72E70A1C0F426C7600142011 /* v.what.vect.1.png in Copy - modules */,
 				72E70A1D0F426C7600142011 /* v.what.vect.2.png in Copy - modules */,
 				72E70A1E0F426C7600142011 /* v.what.vect.qgm in Copy - modules */,
+				723FD0620FBCB91C00EFA55D /* qgis.db.connect-login.pg.1.png in Copy - modules */,
+				723FD0630FBCB91C00EFA55D /* qgis.db.connect-login.pg.qgm in Copy - modules */,
 			);
 			name = "Copy - modules";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8304,6 +8321,12 @@
 		72331DFB0F8E2A2100398D2B /* qgsoverlayobject.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsoverlayobject.sip; path = ../../python/core/qgsoverlayobject.sip; sourceTree = SOURCE_ROOT; };
 		72331DFC0F8E2A5D00398D2B /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = ../../src/core/spatialite/sqlite3.c; sourceTree = SOURCE_ROOT; };
 		72331DFD0F8E2A5D00398D2B /* spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = spatialite.c; path = ../../src/core/spatialite/spatialite.c; sourceTree = SOURCE_ROOT; };
+		723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspalgeometry.cpp; path = ../../src/core/qgspalgeometry.cpp; sourceTree = SOURCE_ROOT; };
+		723FD05E0FBCB85D00EFA55D /* qgspalgeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspalgeometry.h; path = ../../src/core/qgspalgeometry.h; sourceTree = SOURCE_ROOT; };
+		723FD0600FBCB8E100EFA55D /* qgis.db.connect-login.pg.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "qgis.db.connect-login.pg.qgm"; path = "../../src/plugins/grass/modules/qgis.db.connect-login.pg.qgm"; sourceTree = SOURCE_ROOT; };
+		723FD0610FBCB8E100EFA55D /* qgis.db.connect-login.pg.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "qgis.db.connect-login.pg.1.png"; path = "../../src/plugins/grass/modules/qgis.db.connect-login.pg.1.png"; sourceTree = SOURCE_ROOT; };
+		723FD0660FBCB94600EFA55D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/scripts/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		723FD0670FBCB94600EFA55D /* qgis.db.connect-login.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "qgis.db.connect-login.pg.py"; path = "../../src/plugins/grass/scripts/qgis.db.connect-login.pg.py"; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
 		7256F2DD0F4147890022BE1F /* SPONSORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SPONSORS; path = ../../SPONSORS; sourceTree = SOURCE_ROOT; };
 		7256F2DE0F4147890022BE1F /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../README; sourceTree = SOURCE_ROOT; };
@@ -9421,6 +9444,8 @@
 				7209E6AC0F39E57A003DC336 /* qgsmaptopixel.h */,
 				7209E6AD0F39E57A003DC336 /* qgsmessageoutput.cpp */,
 				7209E6AE0F39E57A003DC336 /* qgsmessageoutput.h */,
+				723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */,
+				723FD05E0FBCB85D00EFA55D /* qgspalgeometry.h */,
 				7209E6AF0F39E57A003DC336 /* qgspoint.cpp */,
 				7209E6B00F39E57A003DC336 /* qgspoint.h */,
 				7209E6B10F39E57A003DC336 /* qgsproject.cpp */,
@@ -10125,6 +10150,7 @@
 				7209E8300F39E57B003DC336 /* config */,
 				7209E8340F39E57B003DC336 /* images */,
 				7209E8370F39E57B003DC336 /* modules */,
+				723FD0650FBCB94600EFA55D /* scripts */,
 				7209EB490F39E57B003DC336 /* themes */,
 			);
 			name = grass;
@@ -10914,6 +10940,8 @@
 				7209EB200F39E57B003DC336 /* v.what.vect.1.png */,
 				7209EB210F39E57B003DC336 /* v.what.vect.2.png */,
 				7209EB220F39E57B003DC336 /* v.what.vect.qgm */,
+				723FD0600FBCB8E100EFA55D /* qgis.db.connect-login.pg.qgm */,
+				723FD0610FBCB8E100EFA55D /* qgis.db.connect-login.pg.1.png */,
 			);
 			name = modules;
 			path = ../../src/plugins/grass/modules;
@@ -12781,6 +12809,16 @@
 			path = ../../src/plugins/oracle_raster;
 			sourceTree = SOURCE_ROOT;
 		};
+		723FD0650FBCB94600EFA55D /* scripts */ = {
+			isa = PBXGroup;
+			children = (
+				723FD0660FBCB94600EFA55D /* CMakeLists.txt */,
+				723FD0670FBCB94600EFA55D /* qgis.db.connect-login.pg.py */,
+			);
+			name = scripts;
+			path = ../../src/plugins/grass/scripts;
+			sourceTree = SOURCE_ROOT;
+		};
 		7262ED8C0F7A767400498385 /* spatialite */ = {
 			isa = PBXGroup;
 			children = (
@@ -13674,6 +13712,7 @@
 				72E70A4E0F426D3B00142011 /* Copy - theme-classic */,
 				72E70A810F426DF300142011 /* Copy - theme-gis */,
 				72EBC9800F49D7F60016BA3C /* Copy - theme-default */,
+				723FD0700FBCBA3D00EFA55D /* Copy - scripts */,
 			);
 			buildRules = (
 				729288440F71F4F0006D9489 /* PBXBuildRule */,
@@ -14641,6 +14680,7 @@
 				7203830A0F8B8C8F0083B883 /* qgscentralpointpositionmanager.cpp in Sources */,
 				7203830B0F8B8C8F0083B883 /* qgsoverlayobject.cpp in Sources */,
 				7203830C0F8B8C8F0083B883 /* qgspalobjectpositionmanager.cpp in Sources */,
+				723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */,
 				7203830D0F8B8C8F0083B883 /* qgsvectoroverlay.cpp in Sources */,
 				720383780F8BA8C50083B883 /* feature.cpp in Sources */,
 				720383790F8BA8C50083B883 /* geomfunction.cpp in Sources */,
