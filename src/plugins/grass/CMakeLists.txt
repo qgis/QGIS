@@ -1,5 +1,5 @@
 
-SUBDIRS(config modules themes)
+SUBDIRS(config modules scripts themes)
 
 ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 ADD_DEFINITIONS(-DHAVE_OPENPTY=${HAVE_OPENPTY})
