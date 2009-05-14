@@ -168,6 +168,14 @@ QgsVectorLayer::~QgsVectorLayer()
   deleteCachedGeometries();
 
   delete mActions;
+
+  //delete remaining overlays
+
+  QList<QgsVectorOverlay*>::iterator overlayIt = mOverlays.begin();
+  for(; overlayIt != mOverlays.end(); ++overlayIt)
+  {
+    delete (*overlayIt);
+  }
 }
 
 QString QgsVectorLayer::storageType() const

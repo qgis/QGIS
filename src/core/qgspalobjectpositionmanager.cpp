@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgspalobjectpositionmanager.h"
+#include "qgsgeometry.h"
+#include "qgspalgeometry.h"
 #include "qgsoverlayobject.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
@@ -31,7 +33,7 @@ QgsPALObjectPositionManager::QgsPALObjectPositionManager(): mNumberOfLayers( 0 )
 
 QgsPALObjectPositionManager::~QgsPALObjectPositionManager()
 {
-
+  deletePALGeometries();
 }
 
 void QgsPALObjectPositionManager::addLayer( QgsVectorLayer* vl, QList<QgsVectorOverlay*>& overlays )
@@ -85,7 +87,10 @@ void QgsPALObjectPositionManager::addLayer( QgsVectorLayer* vl, QList<QgsVectorO
     QMap<int, QgsOverlayObject*>::const_iterator objectIt = positionObjects->begin();
     for ( ; objectIt != positionObjects->end(); ++objectIt )
     {
-      positionLayer->registerFeature( strdup( QString::number( objectNr ).toAscii().data() ), objectIt.value(), objectIt.value()->width(), objectIt.value()->height() );
+      QgsPALGeometry* palGeom = new QgsPALGeometry(objectIt.value());
+      mPALGeometries.push_back(palGeom); //insert object into list to delete memory later
+      char* featureLabel = QString::number( objectNr ).toAscii().data();
+      positionLayer->registerFeature(featureLabel, palGeom, objectIt.value()->width(), objectIt.value()->height() );
       ++objectNr;
     }
   }
@@ -135,13 +140,20 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
     return;
   }
 
-  QgsOverlayObject* currentOverlayObject = 0;
+  //pal geometry that the current label object refers to
+  QgsPALGeometry* referredGeometry = 0;
+  QgsOverlayObject* referredOverlayObject = 0;
 
   std::list<pal::Label*>::iterator labelIt = resultLabelList->begin();
   for ( ; labelIt != resultLabelList->end(); ++labelIt )
   {
-    currentOverlayObject = dynamic_cast<QgsOverlayObject*>(( *labelIt )->getGeometry() );
-    if ( !currentOverlayObject )
+    referredGeometry = dynamic_cast<QgsPALGeometry*>(( *labelIt )->getGeometry() );
+    if ( !referredGeometry)
+    {
+      continue;
+    }
+    referredOverlayObject = referredGeometry->overlayObjectPtr();
+    if(!referredOverlayObject)
     {
       continue;
     }
@@ -149,8 +161,11 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
     //QGIS takes the coordinates of the middle points
     double x = (( *labelIt )->getX( 0 ) + ( *labelIt )->getX( 1 ) + ( *labelIt )->getX( 2 ) + ( *labelIt )->getX( 3 ) ) / 4;
     double y = (( *labelIt )->getY( 0 ) + ( *labelIt )->getY( 1 ) + ( *labelIt )->getY( 2 ) + ( *labelIt )->getY( 3 ) ) / 4;
-    currentOverlayObject->addPosition( QgsPoint( x, y ) );
+    referredOverlayObject->addPosition( QgsPoint( x, y ) );
   }
+
+  //release memory for QgsPALGeometries
+  deletePALGeometries();
 }
 
 void QgsPALObjectPositionManager::removeLayers()
@@ -195,4 +210,14 @@ void QgsPALObjectPositionManager::setPlacementAlgorithm( const QString& algorith
   {
     mPositionEngine.setSearch( pal::CHAIN );
   }
+}
+
+void QgsPALObjectPositionManager::deletePALGeometries()
+{
+  QList<QgsPALGeometry*>::iterator geomIt = mPALGeometries.begin();
+  for(; geomIt != mPALGeometries.end(); ++geomIt)
+  {
+    delete (*geomIt);
+  }
+  mPALGeometries.clear();
 }
