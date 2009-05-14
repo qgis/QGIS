@@ -22,6 +22,7 @@
 #include "qgstolerance.h"
 
 #include <QMouseEvent>
+#include <QMessageBox>
 
 #include <math.h>
 
@@ -81,7 +82,14 @@ void QgsMapToolSimplify::toleranceChanged(int tolerance)
 
   // create a copy of selected feature and do the simplification
   QgsFeature f = mSelectedFeature;
-  QgsSimplifyFeature::simplifyLine(f, mTolerance);
+  if ( mSelectedFeature.geometry()->type() == QGis::Line )
+  {
+    QgsSimplifyFeature::simplifyLine(f, mTolerance);
+  }
+  else
+  {
+    QgsSimplifyFeature::simplifyPolygon(f, mTolerance);
+  }
   mRubberBand->setToGeometry(f.geometry(), false);
 }
 
@@ -89,7 +97,14 @@ void QgsMapToolSimplify::toleranceChanged(int tolerance)
 void QgsMapToolSimplify::storeSimplified()
 {
   QgsVectorLayer * vlayer = currentVectorLayer();
-  QgsSimplifyFeature::simplifyLine(mSelectedFeature, mTolerance);
+  if ( mSelectedFeature.geometry()->type() == QGis::Line )
+  {
+    QgsSimplifyFeature::simplifyLine(mSelectedFeature, mTolerance);
+  }
+  else
+  {
+    QgsSimplifyFeature::simplifyPolygon(mSelectedFeature, mTolerance);
+  }
 
   vlayer->changeGeometry( mSelectedFeature.id(), mSelectedFeature.geometry() );
 
@@ -99,7 +114,7 @@ void QgsMapToolSimplify::storeSimplified()
 int QgsMapToolSimplify::calculateDivider(double num)
 {
   double tmp = num;
-  int i = 1;
+  long i = 1;
   while (tmp < 1) 
   {
     tmp = tmp*10;
@@ -108,7 +123,7 @@ int QgsMapToolSimplify::calculateDivider(double num)
   return i;
 }
 
-void QgsMapToolSimplify::calculateSliderBoudaries()
+bool QgsMapToolSimplify::calculateSliderBoudaries()
 {
   double minTolerance, maxTolerance;
 
@@ -117,9 +132,9 @@ void QgsMapToolSimplify::calculateSliderBoudaries()
   bool isLine = mSelectedFeature.geometry()->type() == QGis::Line;
   QVector<QgsPoint> pts = getPointList(mSelectedFeature);
   int size = pts.size();
-  if (size == 0 || (isLine && size < 2) || (!isLine && size < 3) )
+  if (size == 0 || (isLine && size < 2) || (!isLine && size < 4) )
   {
-    return;
+    return false;
   }
 
   // calculate min
@@ -128,30 +143,61 @@ void QgsMapToolSimplify::calculateSliderBoudaries()
     if (QgsSimplifyFeature::simplifyPoints(pts, tol).size() < size)
     {
       found = true;
-      minTolerance = tol/2;
+      minTolerance = tol/ 2;
     } else {
       tol = tol * 2;
     }
   }
-
   found = false;
-  int requiredCnt = (isLine ? 2 : 3);
+  int requiredCnt = (isLine ? 2 : 4); //4 for polygon is correct because first and last points are the same
+  bool bottomFound = false;
+  double highTol, lowTol;// two boundaries to be used when no directly correct solution is found
   // calculate max
   while (!found)
   {
-    if (QgsSimplifyFeature::simplifyPoints(pts, tol).size() < requiredCnt + 1)
+
+    int foundVertexes = QgsSimplifyFeature::simplifyPoints(pts, tol).size();
+    if (foundVertexes < requiredCnt + 1)
     {
-//TODO: fix for polygon
-      found = true;
-      maxTolerance = tol;
+      if (foundVertexes == requiredCnt)
+      {
+        found = true;
+        maxTolerance = tol;
+      }
+      else
+      {
+        bottomFound = true;
+        highTol = tol;
+        tol = (highTol + lowTol) /2;
+        if (highTol/lowTol < 1.00000001)
+        {
+          found = true;
+          maxTolerance = lowTol;
+        }
+      }
     } else {
-      tol = tol * 2;
+      if (bottomFound)
+      {
+        lowTol = tol;
+        tol = (highTol + lowTol) /2;
+        if (highTol/lowTol < 1.00000001)
+        {
+          found = true;
+          maxTolerance = lowTol;
+        }
+      }
+      else
+      {
+        lowTol = tol;
+        tol = tol * 2;
+      }
     }
   }
   toleranceDivider = calculateDivider(minTolerance);
   // set min and max
   mSimplifyDialog->setRange( int(minTolerance * toleranceDivider),
                              int(maxTolerance * toleranceDivider) );
+  return true;
 }
 
 
@@ -181,7 +227,11 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
       mSelectedFeature = f;
     }
   }
-
+  if (mSelectedFeature.geometry()->isMultipart())
+  {
+    QMessageBox::critical( 0, tr( "Unsupported operation" ), tr( "Multipart features are not supported for simplification." ) );
+    return;
+  }
   // delete previous rubberband (if any)
   removeRubberBand();
 
@@ -193,10 +243,11 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
     mRubberBand->setWidth(2);
     mRubberBand->show();
     //calculate boudaries for slidebar
-    calculateSliderBoudaries();
-
-    // show dialog as a non-modal window
-    mSimplifyDialog->show();
+    if (calculateSliderBoudaries())
+    {
+      // show dialog as a non-modal window
+      mSimplifyDialog->show();
+    }
   }
 }
 
@@ -234,10 +285,7 @@ QVector<QgsPoint> QgsMapToolSimplify::getPointList(QgsFeature& f)
     }
     return line->asPolygon()[0];
   }
-
 }
-
-
 
 
 
@@ -254,21 +302,20 @@ bool QgsSimplifyFeature::simplifyLine(QgsFeature& lineFeature,  double tolerance
   return TRUE;
 }
 
-
-//TODO: change to correct structure after
-bool QgsSimplifyFeature::simplifyPartOfLine(QgsFeature& lineFeature, int fromVertexNr, int toVertexNr, double tolerance)
+bool QgsSimplifyFeature::simplifyPolygon(QgsFeature& polygonFeature,  double tolerance)
 {
-  QgsGeometry* line = lineFeature.geometry();
-  if (line->type() != QGis::Line)
+  QgsGeometry* polygon = polygonFeature.geometry();
+  if (polygon->type() != QGis::Polygon)
   {
     return FALSE;
   }
-        
-  QVector<QgsPoint> resultPoints = simplifyPoints(line->asPolyline(), tolerance);
-  lineFeature.setGeometry( QgsGeometry::fromPolyline( resultPoints ) );
+  QVector<QgsPoint> resultPoints = simplifyPoints(polygon->asPolygon()[0], tolerance);
+  //resultPoints.push_back(resultPoints[0]);
+  QVector<QgsPolyline> poly;
+  poly.append(resultPoints);
+  polygonFeature.setGeometry( QgsGeometry::fromPolygon( poly ) );
   return TRUE;
 }
-
 
 
 QVector<QgsPoint> QgsSimplifyFeature::simplifyPoints (const QVector<QgsPoint>& pts, double tolerance)
