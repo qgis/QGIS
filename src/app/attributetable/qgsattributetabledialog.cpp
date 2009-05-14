@@ -424,19 +424,35 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-
   mSelectedFeatures.clear();
-  mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
-
-  QgsFeature f;
-  while ( mLayer->nextFeature( f ) )
+  
+  if ( cbxSearchSelectedOnly->isChecked() )
   {
-    if ( searchTree->checkAgainst( mLayer->pendingFields(), f.attributeMap() ) )
-      mSelectedFeatures << f.id();
+    QgsFeatureList selectedFeatures = mLayer->selectedFeatures();
+    for (QgsFeatureList::ConstIterator it = selectedFeatures.begin(); it != selectedFeatures.end(); ++it)
+    {
+      if ( searchTree->checkAgainst( mLayer->pendingFields(), it->attributeMap() ) )
+        mSelectedFeatures << it->id();
 
-    // check if there were errors during evaluating
-    if ( searchTree->hasError() )
-      break;
+      // check if there were errors during evaluating
+      if ( searchTree->hasError() )
+        break;
+    } 
+  }
+  else
+  {
+    mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
+    QgsFeature f;
+
+    while ( mLayer->nextFeature( f ) )
+    {
+      if ( searchTree->checkAgainst( mLayer->pendingFields(), f.attributeMap() ) )
+        mSelectedFeatures << f.id();
+
+      // check if there were errors during evaluating
+      if ( searchTree->hasError() )
+        break;
+    }
   }
 
   QApplication::restoreOverrideCursor();

@@ -220,6 +220,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="cbxSearchSelectedOnly" >
+       <property name="text" >
+        <string>Search selected records only</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer>
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
