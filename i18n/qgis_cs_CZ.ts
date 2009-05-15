@@ -430,102 +430,92 @@
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="243"/>
         <source>in</source>
-        <translation type="unfinished">v</translation>
+        <translation type="obsolete">v</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="185"/>
         <source>Attribute Table</source>
-        <translation type="unfinished">Atributová tabulka</translation>
+        <translation type="obsolete">Atributová tabulka</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="188"/>
         <source>Remove selection</source>
-        <translation type="unfinished">Odebrat výběr</translation>
+        <translation type="obsolete">Odebrat výběr</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="195"/>
         <source>Move selected to top</source>
-        <translation type="unfinished">Přesunout vybrané nahoru</translation>
+        <translation type="obsolete">Přesunout vybrané nahoru</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="199"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="202"/>
         <source>Invert selection</source>
-        <translation type="unfinished">Obrátit výběr</translation>
+        <translation type="obsolete">Obrátit výběr</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="206"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="209"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">Kopírovat vybrané řádky do schránky (Ctrl+C)</translation>
+        <translation type="obsolete">Kopírovat vybrané řádky do schránky (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="214"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">Kopíruje vybrané řádky do schránky</translation>
+        <translation type="obsolete">Kopíruje vybrané řádky do schránky</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="218"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Crtl+C</translation>
+        <translation type="obsolete">Crtl+C</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="221"/>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished">Přiblížit mapu na vybrané záznamy (Ctrl-J)</translation>
+        <translation type="obsolete">Přiblížit mapu na vybrané záznamy (Ctrl-J)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="226"/>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">Přiblížit mapu na vybrané záznamy</translation>
+        <translation type="obsolete">Přiblížit mapu na vybrané záznamy</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="230"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="233"/>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">Přepnout editační mód</translation>
+        <translation type="obsolete">Přepnout editační mód</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="238"/>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">Kliknout k přepnutí editace tabulky</translation>
+        <translation type="obsolete">Kliknout k přepnutí editace tabulky</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="244"/>
         <source>&amp;Search</source>
-        <translation type="unfinished">&amp;Hledání</translation>
+        <translation type="obsolete">&amp;Hledání</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="246"/>
         <source>Advanced search</source>
-        <translation type="unfinished">Rozšířené vyhledávání</translation>
+        <translation type="obsolete">Rozšířené vyhledávání</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="247"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="242"/>
-        <source>Look for</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="245"/>
-        <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
@@ -8857,7 +8847,7 @@ Krátký přehled syntaxe:
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="201"/>
         <source>Attribute Table</source>
-        <translation>Atributová tabulka</translation>
+        <translation type="obsolete">Atributová tabulka</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -8907,42 +8897,42 @@ Krátký přehled syntaxe:
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="222"/>
         <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="218"/>
         <source>Invert selection</source>
-        <translation>Obrátit výběr</translation>
+        <translation type="obsolete">Obrátit výběr</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="215"/>
         <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="211"/>
         <source>Move selected to top</source>
-        <translation>Přesunout vybrané nahoru</translation>
+        <translation type="obsolete">Přesunout vybrané nahoru</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="204"/>
         <source>Remove selection</source>
-        <translation>Odebrat výběr</translation>
+        <translation type="obsolete">Odebrat výběr</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="225"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation>Kopírovat vybrané řádky do schránky (Ctrl+C)</translation>
+        <translation type="obsolete">Kopírovat vybrané řádky do schránky (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="230"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation>Kopíruje vybrané řádky do schránky</translation>
+        <translation type="obsolete">Kopíruje vybrané řádky do schránky</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="234"/>
         <source>Ctrl+C</source>
-        <translation>Crtl+C</translation>
+        <translation type="obsolete">Crtl+C</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -8962,22 +8952,22 @@ Krátký přehled syntaxe:
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="248"/>
         <source>in</source>
-        <translation>v</translation>
+        <translation type="obsolete">v</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="249"/>
         <source>Search</source>
-        <translation>Hledat</translation>
+        <translation type="obsolete">Hledat</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="250"/>
         <source>Adva&amp;nced...</source>
-        <translation>&amp;Rozšířené...</translation>
+        <translation type="obsolete">&amp;Rozšířené...</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="251"/>
         <source>Alt+N</source>
-        <translation>Alt+N</translation>
+        <translation type="obsolete">Alt+N</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -8997,7 +8987,7 @@ Krátký přehled syntaxe:
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="242"/>
         <source>Zoom map to the selected rows</source>
-        <translation>Přiblížit mapu na vybrané záznamy</translation>
+        <translation type="obsolete">Přiblížit mapu na vybrané záznamy</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -9007,27 +8997,27 @@ Krátký přehled syntaxe:
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="247"/>
         <source>Search for</source>
-        <translation>Hledat</translation>
+        <translation type="obsolete">Hledat</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="237"/>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation>Přiblížit mapu na vybrané záznamy (Ctrl-J)</translation>
+        <translation type="obsolete">Přiblížit mapu na vybrané záznamy (Ctrl-J)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="246"/>
         <source>Ctrl+J</source>
-        <translation>Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="254"/>
         <source>Toggle editing mode</source>
-        <translation>Přepnout editační mód</translation>
+        <translation type="obsolete">Přepnout editační mód</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="259"/>
         <source>Click to toggle table editing</source>
-        <translation>Kliknout k přepnutí editace tabulky</translation>
+        <translation type="obsolete">Kliknout k přepnutí editace tabulky</translation>
     </message>
 </context>
 <context>
@@ -29201,11 +29191,6 @@ The error was:
         <source>SQLite error: %1
 
 SQL: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="178"/>
-        <source></source>
         <translation type="unfinished"></translation>
     </message>
 </context>

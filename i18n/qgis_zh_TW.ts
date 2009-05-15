@@ -428,102 +428,67 @@
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="243"/>
         <source>in</source>
-        <translation type="unfinished">在欄位</translation>
+        <translation type="obsolete">在欄位</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="185"/>
         <source>Attribute Table</source>
-        <translation type="unfinished">屬性工作表</translation>
+        <translation type="obsolete">屬性工作表</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="188"/>
         <source>Remove selection</source>
-        <translation type="unfinished">取消選擇</translation>
+        <translation type="obsolete">取消選擇</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="195"/>
         <source>Move selected to top</source>
-        <translation type="unfinished">將選中的記錄移動到頂端</translation>
+        <translation type="obsolete">將選中的記錄移動到頂端</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="199"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="202"/>
         <source>Invert selection</source>
-        <translation type="unfinished">反向選擇</translation>
+        <translation type="obsolete">反向選擇</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="206"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="209"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">將選中的列複製到剪貼簿 (Ctrl+C)</translation>
+        <translation type="obsolete">將選中的列複製到剪貼簿 (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="214"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">將選中的列複製到剪貼簿</translation>
+        <translation type="obsolete">將選中的列複製到剪貼簿</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="218"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="221"/>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished">縮放地圖至選取的列</translation>
+        <translation type="obsolete">縮放地圖至選取的列</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="226"/>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">縮放地圖至選取的列</translation>
+        <translation type="obsolete">縮放地圖至選取的列</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="233"/>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">切換編輯模式</translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="230"/>
-        <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="238"/>
-        <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="242"/>
-        <source>Look for</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="244"/>
-        <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="245"/>
-        <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="246"/>
-        <source>Advanced search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="247"/>
-        <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">切換編輯模式</translation>
     </message>
 </context>
 <context>
@@ -7578,7 +7543,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="201"/>
         <source>Attribute Table</source>
-        <translation>屬性工作表</translation>
+        <translation type="obsolete">屬性工作表</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -7623,42 +7588,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="222"/>
         <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="218"/>
         <source>Invert selection</source>
-        <translation>反向選擇</translation>
+        <translation type="obsolete">反向選擇</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="215"/>
         <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="211"/>
         <source>Move selected to top</source>
-        <translation>將選中的記錄移動到頂端</translation>
+        <translation type="obsolete">將選中的記錄移動到頂端</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="204"/>
         <source>Remove selection</source>
-        <translation type="unfinished">取消選擇</translation>
+        <translation type="obsolete">取消選擇</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="225"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation>將選中的列複製到剪貼簿 (Ctrl+C)</translation>
+        <translation type="obsolete">將選中的列複製到剪貼簿 (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="230"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation>將選中的列複製到剪貼簿</translation>
+        <translation type="obsolete">將選中的列複製到剪貼簿</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="234"/>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -7678,22 +7643,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="248"/>
         <source>in</source>
-        <translation type="unfinished">在欄位</translation>
+        <translation type="obsolete">在欄位</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="249"/>
         <source>Search</source>
-        <translation>尋找</translation>
+        <translation type="obsolete">尋找</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="250"/>
         <source>Adva&amp;nced...</source>
-        <translation type="unfinished">進階查詢(&amp;n)...</translation>
+        <translation type="obsolete">進階查詢(&amp;n)...</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="251"/>
         <source>Alt+N</source>
-        <translation>Alt+N</translation>
+        <translation type="obsolete">Alt+N</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -7703,32 +7668,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="242"/>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">縮放地圖至選取的列</translation>
+        <translation type="obsolete">縮放地圖至選取的列</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="247"/>
         <source>Search for</source>
-        <translation type="unfinished">搜尋關鍵字</translation>
+        <translation type="obsolete">搜尋關鍵字</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="237"/>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished">縮放地圖至選取的列</translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="246"/>
-        <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">縮放地圖至選取的列</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="254"/>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">切換編輯模式</translation>
+        <translation type="obsolete">切換編輯模式</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="259"/>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">按一下切換表格編輯</translation>
+        <translation type="obsolete">按一下切換表格編輯</translation>
     </message>
 </context>
 <context>
@@ -25587,11 +25547,6 @@ The error was:
         <source>SQLite error: %1
 
 SQL: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="178"/>
-        <source></source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -463,103 +463,68 @@
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="243"/>
         <source>in</source>
-        <translation type="unfinished">trong</translation>
+        <translation type="obsolete">trong</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="185"/>
         <source>Attribute Table</source>
-        <translation type="unfinished">Bảng thuộc tính</translation>
+        <translation type="obsolete">Bảng thuộc tính</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="188"/>
         <source>Remove selection</source>
-        <translation type="unfinished">Loại bỏ phép chọn</translation>
+        <translation type="obsolete">Loại bỏ phép chọn</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="195"/>
         <source>Move selected to top</source>
-        <translation type="unfinished">Di chuyển mục được chọn lên trên cùng</translation>
+        <translation type="obsolete">Di chuyển mục được chọn lên trên cùng</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="199"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+A
+        <translation type="obsolete">Ctrl+A
 </translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="202"/>
         <source>Invert selection</source>
-        <translation type="unfinished">Đảo ngược phép chọn</translation>
+        <translation type="obsolete">Đảo ngược phép chọn</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="206"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="209"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">Chép các hàng được chọn vào clipboard(Ctrl+C)</translation>
+        <translation type="obsolete">Chép các hàng được chọn vào clipboard(Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="214"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">Chép các hàng được chọn vào clipboard</translation>
+        <translation type="obsolete">Chép các hàng được chọn vào clipboard</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="218"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="226"/>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">Phóng bản đồ đến hàng được chọn</translation>
+        <translation type="obsolete">Phóng bản đồ đến hàng được chọn</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="230"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="247"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="221"/>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="233"/>
-        <source>Toggle editing mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="238"/>
-        <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="242"/>
-        <source>Look for</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="244"/>
-        <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="245"/>
-        <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="246"/>
-        <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
@@ -8071,7 +8036,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="201"/>
         <source>Attribute Table</source>
-        <translation>Bảng thuộc tính</translation>
+        <translation type="obsolete">Bảng thuộc tính</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -8104,29 +8069,19 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Thuộc tính mới</translation>
     </message>
     <message>
-        <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="222"/>
-        <source>Ctrl+S</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="218"/>
         <source>Invert selection</source>
-        <translation>Đảo ngược phép chọn</translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="215"/>
-        <source>Ctrl+T</source>
-        <translation></translation>
+        <translation type="obsolete">Đảo ngược phép chọn</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="211"/>
         <source>Move selected to top</source>
-        <translation>Di chuyển mục được chọn lên trên cùng</translation>
+        <translation type="obsolete">Di chuyển mục được chọn lên trên cùng</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="204"/>
         <source>Remove selection</source>
-        <translation>Loại bỏ phép chọn</translation>
+        <translation type="obsolete">Loại bỏ phép chọn</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -8141,37 +8096,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="248"/>
         <source>in</source>
-        <translation>trong</translation>
+        <translation type="obsolete">trong</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="249"/>
         <source>Search</source>
-        <translation>Tìm kiếm</translation>
+        <translation type="obsolete">Tìm kiếm</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="250"/>
         <source>Adva&amp;nced...</source>
-        <translation>Nâng &amp;cao...</translation>
+        <translation type="obsolete">Nâng &amp;cao...</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="251"/>
         <source>Alt+N</source>
-        <translation>Alt+N</translation>
+        <translation type="obsolete">Alt+N</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="225"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation>Chép các hàng được chọn vào clipboard(Ctrl+C)</translation>
+        <translation type="obsolete">Chép các hàng được chọn vào clipboard(Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="230"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation>Chép các hàng được chọn vào clipboard</translation>
+        <translation type="obsolete">Chép các hàng được chọn vào clipboard</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="234"/>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -8201,7 +8156,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="242"/>
         <source>Zoom map to the selected rows</source>
-        <translation>Phóng bản đồ đến hàng được chọn</translation>
+        <translation type="obsolete">Phóng bản đồ đến hàng được chọn</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -8209,29 +8164,9 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="247"/>
-        <source>Search for</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="237"/>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="246"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="254"/>
-        <source>Toggle editing mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="259"/>
-        <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
 </context>
 <context>
@@ -27383,11 +27318,6 @@ The error was:
         <source>SQLite error: %1
 
 SQL: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="178"/>
-        <source></source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -13,102 +13,82 @@
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="185"/>
         <source>Attribute Table</source>
-        <translation type="unfinished">Tabla de atributos</translation>
+        <translation type="obsolete">Tabla de atributos</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="188"/>
         <source>Remove selection</source>
-        <translation type="unfinished">Eliminar selección</translation>
+        <translation type="obsolete">Eliminar selección</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="195"/>
         <source>Move selected to top</source>
-        <translation type="unfinished">Mover la selección arriba del todo</translation>
+        <translation type="obsolete">Mover la selección arriba del todo</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="199"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="202"/>
         <source>Invert selection</source>
-        <translation type="unfinished">Invertir selección</translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="206"/>
-        <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Invertir selección</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="209"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">Copiar las filas seleccionadas al portapapeles (Ctrl+C)</translation>
+        <translation type="obsolete">Copiar las filas seleccionadas al portapapeles (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="214"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">Copia las filas seleccionadas al portapapeles</translation>
+        <translation type="obsolete">Copia las filas seleccionadas al portapapeles</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="218"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="221"/>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="226"/>
-        <source>Zoom map to the selected rows</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/src/ui/ui_BeataGui.h" line="230"/>
-        <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="233"/>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">Conmutar el modo edición</translation>
+        <translation type="obsolete">Conmutar el modo edición</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="238"/>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">Pulsar para conmutar la edición de la tabla</translation>
+        <translation type="obsolete">Pulsar para conmutar la edición de la tabla</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="242"/>
         <source>Look for</source>
-        <translation type="unfinished">Buscar</translation>
+        <translation type="obsolete">Buscar</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="243"/>
         <source>in</source>
-        <translation type="unfinished">en</translation>
+        <translation type="obsolete">en</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="244"/>
         <source>&amp;Search</source>
-        <translation type="unfinished">Bu&amp;scar</translation>
+        <translation type="obsolete">Bu&amp;scar</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="245"/>
         <source>Show selected records only</source>
-        <translation type="unfinished">Mostrar sólo los registros seleccionados</translation>
+        <translation type="obsolete">Mostrar sólo los registros seleccionados</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="246"/>
         <source>Advanced search</source>
-        <translation type="unfinished">Búsqueda avanzada</translation>
+        <translation type="obsolete">Búsqueda avanzada</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="247"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
@@ -4301,97 +4281,97 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="201"/>
         <source>Attribute Table</source>
-        <translation>Tabla de atributos</translation>
+        <translation type="obsolete">Tabla de atributos</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="248"/>
         <source>in</source>
-        <translation>en</translation>
+        <translation type="obsolete">en</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="249"/>
         <source>Search</source>
-        <translation>Búsqueda</translation>
+        <translation type="obsolete">Búsqueda</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="250"/>
         <source>Adva&amp;nced...</source>
-        <translation>Ava&amp;nzado...</translation>
+        <translation type="obsolete">Ava&amp;nzado...</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="251"/>
         <source>Alt+N</source>
-        <translation>Alt+N</translation>
+        <translation type="obsolete">Alt+N</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="204"/>
         <source>Remove selection</source>
-        <translation>Eliminar selección</translation>
+        <translation type="obsolete">Eliminar selección</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="211"/>
         <source>Move selected to top</source>
-        <translation>Mover la selección arriba del todo</translation>
+        <translation type="obsolete">Mover la selección arriba del todo</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="215"/>
         <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="218"/>
         <source>Invert selection</source>
-        <translation>Invertir selección</translation>
+        <translation type="obsolete">Invertir selección</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="222"/>
         <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="225"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation>Copiar las filas seleccionadas al portapapeles (Ctrl+C)</translation>
+        <translation type="obsolete">Copiar las filas seleccionadas al portapapeles (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="230"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation>Copia las filas seleccionadas al portapapeles</translation>
+        <translation type="obsolete">Copia las filas seleccionadas al portapapeles</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="234"/>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="242"/>
         <source>Zoom map to the selected rows</source>
-        <translation>Zum a las filas seleccionadas </translation>
+        <translation type="obsolete">Zum a las filas seleccionadas </translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="247"/>
         <source>Search for</source>
-        <translation>Buscar</translation>
+        <translation type="obsolete">Buscar</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="237"/>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation>Acercar el mapa a las filas seleccionadas (Ctrl+F)</translation>
+        <translation type="obsolete">Acercar el mapa a las filas seleccionadas (Ctrl+F)</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="246"/>
         <source>Ctrl+J</source>
-        <translation>Ctrl+F</translation>
+        <translation type="obsolete">Ctrl+F</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="254"/>
         <source>Toggle editing mode</source>
-        <translation>Conmutar el modo edición</translation>
+        <translation type="obsolete">Conmutar el modo edición</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="259"/>
         <source>Click to toggle table editing</source>
-        <translation>Pulsar para conmutar la edición de la tabla</translation>
+        <translation type="obsolete">Pulsar para conmutar la edición de la tabla</translation>
     </message>
 </context>
 <context>
@@ -17217,11 +17197,6 @@ The error was:
         <source>SQLite error: %1
 
 SQL: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="178"/>
-        <source></source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -76,102 +76,102 @@
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="243"/>
         <source>in</source>
-        <translation>in</translation>
+        <translation type="obsolete">in</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="185"/>
         <source>Attribute Table</source>
-        <translation>Attributtabelle</translation>
+        <translation type="obsolete">Attributtabelle</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="188"/>
         <source>Remove selection</source>
-        <translation>Auswahl löschen</translation>
+        <translation type="obsolete">Auswahl löschen</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="195"/>
         <source>Move selected to top</source>
-        <translation>Ausgewählte Objekte nach oben</translation>
+        <translation type="obsolete">Ausgewählte Objekte nach oben</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="199"/>
         <source>Ctrl+T</source>
-        <translation>Die meisten Werkzeugleisten ausblenden</translation>
+        <translation type="obsolete">Die meisten Werkzeugleisten ausblenden</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="202"/>
         <source>Invert selection</source>
-        <translation>Auswahl umkehren</translation>
+        <translation type="obsolete">Auswahl umkehren</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="206"/>
         <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="209"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation>Ausgewählte Zeilen in die Zwischenablage kopieren (Ctrl+C).</translation>
+        <translation type="obsolete">Ausgewählte Zeilen in die Zwischenablage kopieren (Ctrl+C).</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="214"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation>Kopiert die gewählten Zeilen in die Zwischenablage.</translation>
+        <translation type="obsolete">Kopiert die gewählten Zeilen in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="218"/>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="221"/>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation>Zu den selektierten Zeilen zoomen</translation>
+        <translation type="obsolete">Zu den selektierten Zeilen zoomen</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="226"/>
         <source>Zoom map to the selected rows</source>
-        <translation>Zoome Karte zu den ausgewählten Spalteneinträgen</translation>
+        <translation type="obsolete">Zoome Karte zu den ausgewählten Spalteneinträgen</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="230"/>
         <source>Ctrl+J</source>
-        <translation>Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="233"/>
         <source>Toggle editing mode</source>
-        <translation>Bearbeitungsmodus umschalten</translation>
+        <translation type="obsolete">Bearbeitungsmodus umschalten</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="238"/>
         <source>Click to toggle table editing</source>
-        <translation>Anklicken um den Tabellenbearbeitungsmodus umzuschalten</translation>
+        <translation type="obsolete">Anklicken um den Tabellenbearbeitungsmodus umzuschalten</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="247"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="242"/>
         <source>Look for</source>
-        <translation>Suchen nach</translation>
+        <translation type="obsolete">Suchen nach</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="244"/>
         <source>&amp;Search</source>
-        <translation>&amp;Suchen</translation>
+        <translation type="obsolete">&amp;Suchen</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="245"/>
         <source>Show selected records only</source>
-        <translation>Nur gewählte Datensätze zeigen</translation>
+        <translation type="obsolete">Nur gewählte Datensätze zeigen</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_BeataGui.h" line="246"/>
         <source>Advanced search</source>
-        <translation>Erweiterte Suche</translation>
+        <translation type="obsolete">Erweiterte Suche</translation>
     </message>
 </context>
 <context>
@@ -4494,97 +4494,97 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="201"/>
         <source>Attribute Table</source>
-        <translation>Attributtabelle</translation>
+        <translation type="obsolete">Attributtabelle</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="222"/>
         <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="218"/>
         <source>Invert selection</source>
-        <translation>Auswahl umkehren</translation>
+        <translation type="obsolete">Auswahl umkehren</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="215"/>
         <source>Ctrl+T</source>
-        <translation>Die meisten Werkzeugleisten ausblenden</translation>
+        <translation type="obsolete">Die meisten Werkzeugleisten ausblenden</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="211"/>
         <source>Move selected to top</source>
-        <translation>Ausgewählte Objekte nach oben</translation>
+        <translation type="obsolete">Ausgewählte Objekte nach oben</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="204"/>
         <source>Remove selection</source>
-        <translation>Auswahl löschen</translation>
+        <translation type="obsolete">Auswahl löschen</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="225"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation>Ausgewählte Zeilen in die Zwischenablage kopieren (Ctrl+C).</translation>
+        <translation type="obsolete">Ausgewählte Zeilen in die Zwischenablage kopieren (Ctrl+C).</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="230"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation>Kopiert die gewählten Zeilen in die Zwischenablage.</translation>
+        <translation type="obsolete">Kopiert die gewählten Zeilen in die Zwischenablage.</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="234"/>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="248"/>
         <source>in</source>
-        <translation>in</translation>
+        <translation type="obsolete">in</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="249"/>
         <source>Search</source>
-        <translation>Suchen</translation>
+        <translation type="obsolete">Suchen</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="250"/>
         <source>Adva&amp;nced...</source>
-        <translation>Erw&amp;eitert...</translation>
+        <translation type="obsolete">Erw&amp;eitert...</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="251"/>
         <source>Alt+N</source>
-        <translation>Alt+N</translation>
+        <translation type="obsolete">Alt+N</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="242"/>
         <source>Zoom map to the selected rows</source>
-        <translation>Zoome Karte zu den ausgewählten Spalteneinträgen</translation>
+        <translation type="obsolete">Zoome Karte zu den ausgewählten Spalteneinträgen</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="247"/>
         <source>Search for</source>
-        <translation>Suchen nach</translation>
+        <translation type="obsolete">Suchen nach</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="254"/>
         <source>Toggle editing mode</source>
-        <translation>Bearbeitungsmodus umschalten</translation>
+        <translation type="obsolete">Bearbeitungsmodus umschalten</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="259"/>
         <source>Click to toggle table editing</source>
-        <translation>Anklicken um den Tabellenbearbeitungsmodus umzuschalten</translation>
+        <translation type="obsolete">Anklicken um den Tabellenbearbeitungsmodus umzuschalten</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="237"/>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation>Zu den selektierten Zeilen zoomen</translation>
+        <translation type="obsolete">Zu den selektierten Zeilen zoomen</translation>
     </message>
     <message>
         <location filename="../build/src/ui/ui_qgsattributetablebase.h" line="246"/>
         <source>Ctrl+J</source>
-        <translation>Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
 </context>
 <context>
@@ -17797,6 +17797,11 @@ SQL: %2</source>
         <translation>SQLite-Fehler: %1
 
 SQL: %2</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="178"/>
+        <source></source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
