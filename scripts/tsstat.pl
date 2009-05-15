@@ -6,7 +6,7 @@ use Locale::Country;
 
 my @lang;
 
-print "||'''Language'''||'''Count'''||'''Translated'''||'''Translation finished'''||'''Translated unfinished'''||'''Untranslated'''||'''Percentage'''||\n";
+print "{| border='1' \n |Language||Count||Translated||Translation finished||Translation unfinished||Untranslated||Percentage \n |- \n";
 
 for my $i (<i18n/qgis_*.ts>) {
         my ($langcode) = $i =~ /i18n\/qgis_(.*).ts/;
@@ -44,5 +44,6 @@ for my $i (<i18n/qgis_*.ts>) {
 
 
 for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
-        print "||'''", $l->{name}, "'''||", join("||", $l->{n}, $l->{translations}, $l->{finished}, $l->{unfinished}, $l->{untranslated}, sprintf("%.1f", $l->{percentage}) ), "||\n";
+        print "|", $l->{name}, "||", join("||", $l->{n}, $l->{translations}, $l->{finished}, $l->{unfinished}, $l->{untranslated}, sprintf("%.1f", $l->{percentage}) ), "\n", "|-\n";
 }
+print "|}","\n";
