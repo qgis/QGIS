@@ -8,6 +8,7 @@
 
 #include "qgssymbolv2propertiesdialog.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
+#include "qgsvectorrandomcolorrampv2dialog.h"
 
 #include <QFile>
 #include <QInputDialog>
@@ -104,9 +105,17 @@ void QgsStyleV2ManagerDialog::populateList()
   int itemType = currentItemType();
   
   if (itemType < 3)
+  {
     populateSymbols(itemType);
-  else
+  }
+  else if (itemType == 3)
+  {
     populateColorRamps();
+  }
+  else
+  {
+    Q_ASSERT(0 && "not implemented");
+  }
 }
 
 void QgsStyleV2ManagerDialog::populateSymbols(int type)
@@ -170,11 +179,17 @@ QString QgsStyleV2ManagerDialog::currentItemName()
 void QgsStyleV2ManagerDialog::addItem()
 {
   if (currentItemType() < 3)
+  {
     addSymbol();
+  }
   else if (currentItemType() == 3)
+  {
     addColorRamp();
+  }
   else
+  {
     Q_ASSERT(0 && "not implemented");
+  }
   
   populateList();
   populateTypes();
@@ -217,18 +232,15 @@ bool QgsStyleV2ManagerDialog::addSymbol()
 
 bool QgsStyleV2ManagerDialog::addColorRamp()
 {
-  // TODO: random color ramp
-/*
+  // let the user choose the color ramp type
   QStringList rampTypes;
   rampTypes << "Gradient" << "Random";
   bool ok;
-  QString rampType = QInputDialog.getItem(this, "Color ramp type",
+  QString rampType = QInputDialog::getItem(this, "Color ramp type",
         "Please select color ramp type:", rampTypes, 0, false, &ok);
   if (!ok || rampType.isEmpty())
     return false;
-*/
-  QString rampType = "Gradient";
-  
+
   QgsVectorColorRampV2* ramp;
   if (rampType == "Gradient")
   {
@@ -241,22 +253,23 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
     }
     ramp = gradRamp;
   }
-  else
+  else if (rampType == "Random")
   {
-    /*
     QgsVectorRandomColorRampV2* randRamp = new QgsVectorRandomColorRampV2();
-    DlgRandomColorRamp dlg(randRamp, this);
+    QgsVectorRandomColorRampV2Dialog dlg(randRamp, this);
     if (!dlg.exec())
     {
       delete randRamp;
       return false;
     }
     ramp = randRamp;
-    */
+  }
+  else
+  {
+    Q_ASSERT(0 && "invalid ramp type");
   }
   
   // get name
-  bool ok;
   QString name = QInputDialog::getText(this, "Color ramp name",
        "Please enter name for new color ramp:", QLineEdit::Normal, "new color ramp", &ok);
   if (!ok || name.isEmpty())
@@ -274,11 +287,17 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
 void QgsStyleV2ManagerDialog::editItem()
 {
   if (currentItemType() < 3)
+  {
     editSymbol();
+  }
   else if (currentItemType() == 3)
+  {
     editColorRamp();
+  }
   else
+  {
     Q_ASSERT(0 && "not implemented");
+  }
   
   populateList();
 }
@@ -322,10 +341,19 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
       return false;
     }
   }
+  else if (ramp->type() == "random")
+  {
+    QgsVectorRandomColorRampV2* randRamp = static_cast<QgsVectorRandomColorRampV2*>(ramp);
+    QgsVectorRandomColorRampV2Dialog dlg(randRamp, this);
+    if (!dlg.exec())
+    {
+      delete ramp;
+      return false;
+    }
+  }
   else
   {
-    // TODO: random color ramp
-    //dlg = DlgRandomColorRamp(ramp, self)
+    Q_ASSERT(0 && "invalid ramp type");
   }
   
   mStyle->addColorRamp(name, ramp);
@@ -336,11 +364,17 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
 void QgsStyleV2ManagerDialog::removeItem()
 {
   if (currentItemType() < 3)
+  {
     removeSymbol();
+  }
   else if (currentItemType() == 3)
+  {
     removeColorRamp();
+  }
   else
+  {
     Q_ASSERT(0 && "not implemented");
+  }
   
   populateList();
   populateTypes();
