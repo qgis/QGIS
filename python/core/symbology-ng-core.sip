@@ -29,6 +29,9 @@ public:
 	
 	virtual ~QgsFeatureRendererV2();
 	
+	virtual QString dump();
+
+	
 	void renderFeature(QgsFeature& feature, QgsRenderContext& context);
 	
 protected:
@@ -304,7 +307,7 @@ public:
   
   QImage bigSymbolPreviewImage();
 	
-	void dump();
+	QString dump();
   
   virtual QgsSymbolV2* clone() const = 0 /Factory/;
 	

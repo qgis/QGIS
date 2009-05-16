@@ -47,11 +47,14 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   labels << "Value" << "Label";
   m->setHorizontalHeaderLabels(labels);
   viewCategories->setModel(m);
-  
+
+  mCategorizedSymbol = createDefaultSymbol();
+
   connect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
   
   connect(viewCategories, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(categoriesDoubleClicked(const QModelIndex &)));
   
+  connect(btnChangeCategorizedSymbol, SIGNAL(clicked()), this, SLOT(changeCategorizedSymbol()));
   connect(btnAddCategories, SIGNAL(clicked()), this, SLOT(addCategories()));
   connect(btnDeleteCategory, SIGNAL(clicked()), this, SLOT(deleteCategory()));
   connect(btnDeleteAllCategories, SIGNAL(clicked()), this, SLOT(deleteAllCategories()));
@@ -144,7 +147,8 @@ void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
       radCategorized->setChecked(true);
     
       stackedWidget->setCurrentWidget(pageCategorized);
-      
+      updateCategorizedSymbolIcon();
+
       {
         int idx = rendererCategorized()->attributeIndex();
         cboCategorizedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
@@ -199,6 +203,21 @@ QgsSymbolV2* QgsRendererV2PropertiesDialog::createDefaultSymbol()
     case QGis::Polygon: return new QgsFillSymbolV2();
     default: QgsDebugMsg("unknown layer's geometry type"); return NULL;
   }
+}
+
+void QgsRendererV2PropertiesDialog::changeCategorizedSymbol()
+{
+  QgsSymbolV2SelectorDialog dlg(mCategorizedSymbol, mStyle, this);
+  if (!dlg.exec())
+    return;
+
+  updateCategorizedSymbolIcon();
+}
+
+void QgsRendererV2PropertiesDialog::updateCategorizedSymbolIcon()
+{
+  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon(mCategorizedSymbol, btnChangeCategorizedSymbol->iconSize());
+  btnChangeCategorizedSymbol->setIcon(icon);
 }
 
 void QgsRendererV2PropertiesDialog::populateCategories()
@@ -310,16 +329,10 @@ void QgsRendererV2PropertiesDialog::addCategories()
   //if (!dlg.exec())
   //  return;
   
-  QgsSymbolV2* newSymbol = createDefaultSymbol();
-  QgsSymbolV2SelectorDialog dlg(newSymbol, mStyle, this);
-  if (!dlg.exec())
-  {
-    delete newSymbol;
-    return;
-  }
+  QgsVectorColorRampV2* ramp = mStyle->colorRamp( cboCategorizedColorRamp->currentText() );
   
   QgsCategoryList cats;
-  ::createCategories(cats, unique_vals, newSymbol, new QgsVectorGradientColorRampV2()); // dlg.activeRamp());
+  ::createCategories(cats, unique_vals, mCategorizedSymbol, ramp );
   
   // TODO: if not all categories are desired, delete some!
   /*
@@ -393,11 +406,15 @@ void QgsRendererV2PropertiesDialog::populateColorRamps()
 {
   QSize rampIconSize(50,16);
   cboGraduatedColorRamp->setIconSize(rampIconSize);
+  cboCategorizedColorRamp->setIconSize(rampIconSize);
+
   QStringList rampNames = mStyle->colorRampNames();
   for (QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it)
   {
     QgsVectorColorRampV2* ramp = mStyle->colorRamp(*it);
-    cboGraduatedColorRamp->addItem( QgsSymbolLayerV2Utils::colorRampPreviewIcon(ramp, rampIconSize), *it);
+    QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon(ramp, rampIconSize);
+    cboGraduatedColorRamp->addItem(icon, *it);
+    cboCategorizedColorRamp->addItem(icon, *it);
     delete ramp;
   }
 }

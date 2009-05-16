@@ -29,7 +29,7 @@ void QgsMarkerSymbolLayerV2::drawPreviewIcon(QPainter* painter, QSize size)
   context.setPainter(painter);
   
   startRender(context);
-  renderPoint(QPointF(size.width()/2 + 0.5, size.height()/2 + 0.5), context);
+  renderPoint(QPointF(size.width()/2, size.height()/2), context);
   stopRender(context);
 }
 

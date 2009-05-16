@@ -64,7 +64,7 @@ public:
   
   QImage bigSymbolPreviewImage();
 	
-	void dump();
+  QString dump();
   
   virtual QgsSymbolV2* clone() const = 0;
 	

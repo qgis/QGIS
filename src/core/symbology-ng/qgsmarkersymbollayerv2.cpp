@@ -148,8 +148,14 @@ void QgsSimpleMarkerSymbolLayerV2::startRender(QgsRenderContext& context)
   // cache the marker
   // TODO: use caching only when drawing to screen (not printer)
   // TODO: decide whether to use QImage or QPixmap - based on the render context
-  double s = mSize+2;
-  mCache = QImage(QSize(s,s), QImage::Format_ARGB32_Premultiplied);
+
+  // calculate necessary image size for the cache
+  int pw = (( mPen.width() == 0 ? 1 : mPen.width() ) + 1 ) / 2 * 2; // make even (round up); handle cosmetic pen
+  int imageSize = (( int ) mSize + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
+
+  double center = ((double) imageSize / 2) + 0.5; // add 1/2 pixel for proper rounding when the figure's coordinates are added
+
+  mCache = QImage(QSize(imageSize,imageSize), QImage::Format_ARGB32_Premultiplied);
   mCache.fill(0);
   
   QPainter p;
@@ -157,7 +163,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender(QgsRenderContext& context)
   p.setRenderHint( QPainter::Antialiasing );
   p.setBrush(mBrush);
   p.setPen(mPen);
-  p.translate(QPointF(s/2.0, s/2.0));
+  p.translate(QPointF(center, center));
   drawMarker(&p);
   p.end();
 }
@@ -176,13 +182,10 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint(const QPointF& point, QgsRenderCo
   //p->translate(point);
   
   //drawMarker(p);
-  double s = mSize+2;
+  double s = mCache.width();
   //if (mCache.isValid())
     p->drawImage(point + QPointF(-s/2.0, -s/2.0), mCache);
-  //else
-    //qDebug("WTF!!!!!!!!!");
   
-  //p->translate(-point); // TODO: maybe save+restore is faster?
   //p->restore();
 }
 

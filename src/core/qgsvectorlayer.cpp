@@ -684,6 +684,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   {
     if (mRendererV2 == NULL)
       return FALSE;
+
+    QgsDebugMsg("rendering v2:\n" + mRendererV2->dump());
     
     mRendererV2->startRender(rendererContext);
     
@@ -3713,4 +3715,23 @@ QgsVectorOverlay* QgsVectorLayer::findOverlayByType( const QString& typeName )
     }
   }
   return 0; //not found
+}
+
+
+QgsFeatureRendererV2* QgsVectorLayer::rendererV2()
+{
+  return mRendererV2;
+}
+void QgsVectorLayer::setRendererV2(QgsFeatureRendererV2* r)
+{
+  delete mRendererV2;
+  mRendererV2 = r;
+}
+bool QgsVectorLayer::isUsingRendererV2()
+{
+  return mUsingRendererV2;
+}
+void QgsVectorLayer::setUsingRendererV2(bool usingRendererV2)
+{
+  mUsingRendererV2 = usingRendererV2;
 }

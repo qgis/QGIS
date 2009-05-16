@@ -236,6 +236,12 @@ void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& 
   }
 }
 
+QString QgsFeatureRendererV2::dump()
+{
+  return "UNKNOWN RENDERER\n";
+}
+
+
 ///////////////////
 
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2(QgsSymbolV2* symbol)
@@ -280,6 +286,12 @@ void QgsSingleSymbolRendererV2::setSymbol(QgsSymbolV2* s)
   mSymbol = s;
 }
 
+QString QgsSingleSymbolRendererV2::dump()
+{
+  return QString("SINGLE: %1").arg(mSymbol->dump());
+}
+
+
 ///////////////////
 
 QgsRendererCategoryV2::QgsRendererCategoryV2(const QgsRendererCategoryV2& cat)
@@ -298,6 +310,11 @@ void QgsRendererCategoryV2::setSymbol(QgsSymbolV2* s)
 {
   delete mSymbol;
   mSymbol = s;
+}
+
+QString QgsRendererCategoryV2::dump()
+{
+  return QString("%1::%2::%3\n").arg(mValue.toString()).arg(mLabel).arg(mSymbol->dump());
 }
 
 ///////////////////
@@ -322,25 +339,23 @@ QgsCategorizedSymbolRendererV2::~QgsCategorizedSymbolRendererV2()
   mCategories.clear(); // this should also call destructors of symbols
 }
 
+void QgsCategorizedSymbolRendererV2::rebuildHash()
+{
+  mSymbolHash.clear();
+
+  for (int i = 0; i < mCategories.count(); ++i)
+  {
+    QgsRendererCategoryV2& cat = mCategories[i];
+    mSymbolHash.insert(cat.value().toString(), cat.symbol());
+  }
+}
+
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue(QVariant value)
 {
-  static QHash<QString, QgsSymbolV2*> symbolHash;
-  static bool first = true;
-  
-  // init the hash table if not yet filled
   // TODO: special case for int, double
-  if (first)
-  {
-    for (int i = 0; i < mCategories.count(); ++i)
-    {
-      QgsRendererCategoryV2& cat = mCategories[i];
-      symbolHash.insert(cat.value().toString(), cat.symbol());
-    }
-    first = false;
-  }
   
-  QHash<QString, QgsSymbolV2*>::iterator it = symbolHash.find(value.toString());
-  if (it == symbolHash.end())
+  QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find(value.toString());
+  if (it == mSymbolHash.end())
   {
     QgsDebugMsg("attribute value not found: " + value.toString());
     return NULL;
@@ -405,6 +420,9 @@ void QgsCategorizedSymbolRendererV2::deleteAllCategories()
 
 void QgsCategorizedSymbolRendererV2::startRender(QgsRenderContext& context)
 {
+  // make sure that the hash table is up to date
+  rebuildHash();
+
   QgsCategoryList::iterator it = mCategories.begin();
   for ( ; it != mCategories.end(); ++it)
     it->symbol()->startRender(context);
@@ -422,6 +440,14 @@ QList<int> QgsCategorizedSymbolRendererV2::usedAttributes()
   QList<int> lst;
   lst.append(mAttrNum);
   return lst;
+}
+
+QString QgsCategorizedSymbolRendererV2::dump()
+{
+  QString s = QString("CATEGORIZED: idx %1\n").arg(mAttrNum);
+  for (int i=0; i<mCategories.count();i++)
+    s += mCategories[i].dump();
+  return s;
 }
 
 

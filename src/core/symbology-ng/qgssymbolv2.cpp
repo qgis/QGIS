@@ -190,12 +190,23 @@ QImage QgsSymbolV2::bigSymbolPreviewImage()
 }
 
 	
-void QgsSymbolV2::dump()
+QString QgsSymbolV2::dump()
 {
+  QString t;
+  switch (type())
+  {
+    case QgsSymbolV2::Marker: t = "MARKER"; break;
+    case QgsSymbolV2::Line: t = "LINE"; break;
+    case QgsSymbolV2::Fill: t = "FILL"; break;
+    default: Q_ASSERT(0 && "unknown symbol type");
+  }
+  QString s = QString("%1 SYMBOL (%2 layers) color %3").arg(t).arg(mLayers.count()).arg(QgsSymbolLayerV2Utils::encodeColor(color()));
+
   for (QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it)
   {
     // TODO:
   }
+  return s;
 }
 
 QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const

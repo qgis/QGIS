@@ -38,6 +38,9 @@ public:
 	virtual ~QgsFeatureRendererV2() {}
 	
 	void renderFeature(QgsFeature& feature, QgsRenderContext& context);
+
+  //! for debugging
+  virtual QString dump();
 	
 	//TODO: symbols() for symbol levels
   
@@ -66,6 +69,8 @@ public:
   QgsSymbolV2* symbol() const;
   void setSymbol(QgsSymbolV2* s);
 
+  virtual QString dump();
+
 protected:
 	QgsSymbolV2* mSymbol;
 };
@@ -90,6 +95,9 @@ public:
   
   void setSymbol(QgsSymbolV2* s);
   void setLabel(QString label) { mLabel = label; }
+
+  // debugging
+  QString dump();
   
 protected:
   QVariant mValue;
@@ -115,6 +123,8 @@ public:
 	
 	virtual QList<int> usedAttributes();
   
+  virtual QString dump();
+
   const QgsCategoryList& categories() { return mCategories; }
   
   //! return index of category with specified value (-1 if not found)
@@ -132,7 +142,12 @@ public:
 protected:
   QgsCategoryList mCategories;
   int mAttrNum;
-  
+
+  //! hashtable for faster access to symbols
+  QHash<QString, QgsSymbolV2*> mSymbolHash;
+
+  void rebuildHash();
+
   QgsSymbolV2* symbolForValue(QVariant value);
 };
 

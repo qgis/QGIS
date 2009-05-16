@@ -23,6 +23,7 @@ public slots:
   void changeSingleSymbol();
   void updateRenderer();
   
+  void changeCategorizedSymbol();
   void categoryColumnChanged();
   void categoriesDoubleClicked(const QModelIndex & idx);
   void addCategories();
@@ -38,6 +39,7 @@ protected:
   void updateUiFromRenderer();
   
   void updateSingleSymbolIcon();
+  void updateCategorizedSymbolIcon();
   void updateGraduatedSymbolIcon();
  
   //! create default symbol for the layer's geometry type (point/line/polygon)
@@ -71,6 +73,7 @@ protected:
   QgsStyleV2* mStyle;
   
   QgsSymbolV2* mGraduatedSymbol;
+  QgsSymbolV2* mCategorizedSymbol;
 };
 
 #endif

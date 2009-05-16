@@ -163,13 +163,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setRenderer( QgsRenderer * r );
     
     /** Return renderer V2. Added in QGIS 1.2 */
-    QgsFeatureRendererV2* rendererV2() { return mRendererV2; }
+    QgsFeatureRendererV2* rendererV2();
     /** Set renderer V2. Added in QGIS 1.2 */
-    void setRendererV2(QgsFeatureRendererV2* r) { mRendererV2 = r; }
+    void setRendererV2(QgsFeatureRendererV2* r);
     /** Return whether using renderer V2. Added in QGIS 1.2 */
-    bool isUsingRendererV2() { return mUsingRendererV2; }
+    bool isUsingRendererV2();
     /** set whether to use renderer V2 for drawing. Added in QGIS 1.2 */
-    void setUsingRendererV2(bool usingRendererV2) { mUsingRendererV2 = usingRendererV2; }
+    void setUsingRendererV2(bool usingRendererV2);
 
     /** Returns point, line or polygon */
     QGis::GeometryType geometryType() const;
