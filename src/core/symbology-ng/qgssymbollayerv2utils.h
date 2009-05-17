@@ -15,6 +15,7 @@ class QgsVectorColorRampV2;
 class QColor;
 class QIcon;
 class QPixmap;
+class QPointF;
 class QSize;
 
 class QgsSymbolLayerV2Utils
@@ -29,6 +30,9 @@ public:
 
   static QString encodeBrushStyle(Qt::BrushStyle style);
   static Qt::BrushStyle decodeBrushStyle(QString str);
+
+  static QString encodePoint(QPointF point);
+  static QPointF decodePoint(QString str);
   
   static QIcon symbolPreviewIcon(QgsSymbolV2* symbol, QSize size);
   static QIcon symbolLayerPreviewIcon(QgsSymbolLayerV2* layer, QSize size);

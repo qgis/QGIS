@@ -26,6 +26,7 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2(QString name, QColor 
   mBorderColor = borderColor;
   mSize = size;
   mAngle = angle;
+  mOffset = QPointF(0,0);
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create(const QgsStringMap& props)
@@ -47,7 +48,10 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create(const QgsStringMap& props
   if (props.contains("angle"))
     angle = props["angle"].toDouble();
   
-  return new QgsSimpleMarkerSymbolLayerV2(name, color, borderColor, size, angle);
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2(name, color, borderColor, size, angle);
+  if (props.contains("offset"))
+    m->setOffset( QgsSymbolLayerV2Utils::decodePoint(props["offset"]) );
+  return m;
 }
 	
 
@@ -184,7 +188,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint(const QPointF& point, QgsRenderCo
   //drawMarker(p);
   double s = mCache.width();
   //if (mCache.isValid())
-    p->drawImage(point + QPointF(-s/2.0, -s/2.0), mCache);
+    p->drawImage(point + QPointF(-s/2.0, -s/2.0) + mOffset, mCache);
   
   //p->restore();
 }
@@ -198,12 +202,15 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   map["color_border"] = QgsSymbolLayerV2Utils::encodeColor(mBorderColor);
   map["size"] = QString::number(mSize);
   map["angle"] = QString::number(mAngle);
+  map["offset"] = QgsSymbolLayerV2Utils::encodePoint(mOffset);
   return map;
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 {
-  return new QgsSimpleMarkerSymbolLayerV2(mName, mColor, mBorderColor, mSize, mAngle);
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2(mName, mColor, mBorderColor, mSize, mAngle);
+  m->setOffset( mOffset );
+  return m;
 }
 
 void QgsSimpleMarkerSymbolLayerV2::drawMarker(QPainter* p)
@@ -244,6 +251,7 @@ QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2(QString name, double size, 
   mName = name;
   mSize = size;
   mAngle = angle;
+  mOffset = QPointF(0,0);
 }
 
 
@@ -260,7 +268,10 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create(const QgsStringMap& props)
   if (props.contains("angle"))
     angle = props["angle"].toDouble();
   
-  return new QgsSvgMarkerSymbolLayerV2(name, size, angle);
+  QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2(name, size, angle);
+  if (props.contains("offset"))
+    m->setOffset( QgsSymbolLayerV2Utils::decodePoint(props["offset"]) );
+  return m;
 }
 
 
@@ -288,7 +299,9 @@ void QgsSvgMarkerSymbolLayerV2::stopRender(QgsRenderContext& context)
 void QgsSvgMarkerSymbolLayerV2::renderPoint(const QPointF& point, QgsRenderContext& context)
 {
   QPainter* p = context.painter();
-  p->translate(point);
+  p->save();
+  p->translate(point + mOffset);
+
   if (mAngle != 0)
     p->rotate(mAngle);
   
@@ -296,7 +309,8 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint(const QPointF& point, QgsRenderConte
   
   if (mAngle != 0)
     p->rotate(-mAngle);
-  p->translate(-point); // TODO: maybe save+restore is faster?
+
+  p->restore();
 }
 
 
@@ -306,10 +320,13 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
   map["name"] = mName;
   map["size"] = QString::number(mSize);
   map["angle"] = QString::number(mAngle);
+  map["offset"] = QgsSymbolLayerV2Utils::encodePoint(mOffset);
   return map;
 }
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
 {
-  return new QgsSvgMarkerSymbolLayerV2(mName, mSize, mAngle);
+  QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2(mName, mSize, mAngle);
+  m->setOffset( mOffset );
+  return m;
 }

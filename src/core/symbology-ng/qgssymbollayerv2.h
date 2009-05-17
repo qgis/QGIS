@@ -5,6 +5,7 @@
 #include <QMap>
 
 #include <QColor>
+#include <QPointF>
 
 #include "qgssymbolv2.h"
 
@@ -12,7 +13,6 @@
 
 class QPainter;
 class QSize;
-class QPointF;
 class QPolygonF;
 
 class QgsRenderContext;
@@ -72,12 +72,16 @@ public:
 	
   void setSize(double size) { mSize = size; }
   double size() const { return mSize; } 
+
+  void setOffset(QPointF offset) { mOffset = offset; }
+  QPointF offset() { return mOffset; }
 	
 protected:
   QgsMarkerSymbolLayerV2(bool locked = false);
   
   double mAngle;
   double mSize;
+  QPointF mOffset;
 };
 
 class QgsLineSymbolLayerV2 : public QgsSymbolLayerV2

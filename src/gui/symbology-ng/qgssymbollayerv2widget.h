@@ -75,7 +75,8 @@ class QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, privat
     void setColorFill();
     void setSize();
     void setAngle();
-    
+    void setOffset();
+
   protected:
     QgsSimpleMarkerSymbolLayerV2* mLayer;
 };
@@ -166,7 +167,8 @@ class QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private U
     void setName(const QModelIndex& idx);
     void setSize();
     void setAngle();
-    
+    void setOffset();
+
   protected:
     
     void populateList();

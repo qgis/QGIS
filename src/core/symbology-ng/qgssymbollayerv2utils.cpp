@@ -87,6 +87,18 @@ Qt::BrushStyle QgsSymbolLayerV2Utils::decodeBrushStyle(QString str)
   return Qt::SolidPattern;
 }
 
+QString QgsSymbolLayerV2Utils::encodePoint(QPointF point)
+{
+  return QString("%1,%2").arg(point.x()).arg(point.y());
+}
+
+QPointF QgsSymbolLayerV2Utils::decodePoint(QString str)
+{
+  QStringList lst = str.split(',');
+  if (lst.count() != 2)
+    return QPointF(0,0);
+  return QPointF( lst[0].toDouble(), lst[1].toDouble() );
+}
 
 QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon(QgsSymbolV2* symbol, QSize size)
 {

@@ -116,6 +116,8 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget(QWidget* 
   connect(btnChangeColorFill, SIGNAL(clicked()), this, SLOT(setColorFill()));
   connect(spinSize, SIGNAL(valueChanged(int)), this, SLOT(setSize()));
   connect(spinAngle, SIGNAL(valueChanged(double)), this, SLOT(setAngle()));
+  connect(spinOffsetX, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));
+  connect(spinOffsetY, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));
 }
 
 void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
@@ -140,6 +142,14 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
   updateColorButton(btnChangeColorFill, mLayer->color());
   spinSize->setValue(mLayer->size());
   spinAngle->setValue(mLayer->angle());
+
+  // without blocking signals the value gets changed because of slot setOffset()
+  spinOffsetX->blockSignals(true);
+  spinOffsetX->setValue(mLayer->offset().x());
+  spinOffsetX->blockSignals(false);
+  spinOffsetY->blockSignals(true);
+  spinOffsetY->setValue(mLayer->offset().y());
+  spinOffsetY->blockSignals(false);
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2Widget::symbolLayer()
@@ -182,6 +192,12 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSize()
 void QgsSimpleMarkerSymbolLayerV2Widget::setAngle()
 {
   mLayer->setAngle(spinAngle->value());
+  emit changed();
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::setOffset()
+{
+  mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
 }
 
@@ -331,6 +347,8 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget(QWidget* parent
   connect(viewImages->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(setName(const QModelIndex&)));
   connect(spinSize, SIGNAL(valueChanged(int)), this, SLOT(setSize()));
   connect(spinAngle, SIGNAL(valueChanged(double)), this, SLOT(setAngle()));
+  connect(spinOffsetX, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));
+  connect(spinOffsetY, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));
 }
 
 void QgsSvgMarkerSymbolLayerV2Widget::populateList()
@@ -395,6 +413,14 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
   
   spinSize->setValue(mLayer->size());
   spinAngle->setValue(mLayer->angle());
+
+  // without blocking signals the value gets changed because of slot setOffset()
+  spinOffsetX->blockSignals(true);
+  spinOffsetX->setValue(mLayer->offset().x());
+  spinOffsetX->blockSignals(false);
+  spinOffsetY->blockSignals(true);
+  spinOffsetY->setValue(mLayer->offset().y());
+  spinOffsetY->blockSignals(false);
 }
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
@@ -419,6 +445,12 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSize()
 void QgsSvgMarkerSymbolLayerV2Widget::setAngle()
 {
   mLayer->setAngle(spinAngle->value());
+  emit changed();
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::setOffset()
+{
+  mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
 }
 
