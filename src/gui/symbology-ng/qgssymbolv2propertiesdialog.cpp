@@ -119,7 +119,7 @@ void QgsSymbolV2PropertiesDialog::loadSymbol()
   connect(selModel, SIGNAL(currentChanged(const QModelIndex&,const QModelIndex&)), this, SLOT(layerChanged()));
   
   int count = mSymbol->symbolLayerCount();
-  for (int i = 0; i < count; i++)
+  for (int i = count-1; i >= 0; i--)
   {
     model->appendRow(new SymbolLayerItem( mSymbol->symbolLayer(i) ));
   }
@@ -140,7 +140,7 @@ void QgsSymbolV2PropertiesDialog::populateLayerTypes()
 
 void QgsSymbolV2PropertiesDialog::updateUi()
 {
-  int row = currentLayerIndex();
+  int row = currentRowIndex();
   btnUp->setEnabled( row > 0 );
   btnDown->setEnabled( row < listLayers->model()->rowCount()-1 && row != -1 );
   btnRemoveLayer->setEnabled( row != -1 );
@@ -209,7 +209,7 @@ void QgsSymbolV2PropertiesDialog::loadPropertyWidgets()
   }
 }
 
-int QgsSymbolV2PropertiesDialog::currentLayerIndex()
+int QgsSymbolV2PropertiesDialog::currentRowIndex()
 {
   QModelIndex idx = listLayers->selectionModel()->currentIndex();
   if (!idx.isValid())
@@ -217,9 +217,14 @@ int QgsSymbolV2PropertiesDialog::currentLayerIndex()
   return idx.row();
 }
 
+int QgsSymbolV2PropertiesDialog::currentLayerIndex()
+{
+  return listLayers->model()->rowCount() - currentRowIndex() - 1;
+}
+
 SymbolLayerItem* QgsSymbolV2PropertiesDialog::currentLayerItem()
 {
-  int index = currentLayerIndex();
+  int index = currentRowIndex();
   if (index < 0)
     return NULL;
   
@@ -339,15 +344,16 @@ void QgsSymbolV2PropertiesDialog::moveLayerUp()
 
 void QgsSymbolV2PropertiesDialog::moveLayerByOffset(int offset)
 {
-  int idx = currentLayerIndex();
-  
+  int rowIdx = currentRowIndex();
+  int layerIdx = currentLayerIndex();
+
   // switch layers
-  QgsSymbolLayerV2* tmpLayer = mSymbol->takeSymbolLayer(idx);
-  mSymbol->insertSymbolLayer(idx + offset, tmpLayer);
+  QgsSymbolLayerV2* tmpLayer = mSymbol->takeSymbolLayer(layerIdx);
+  mSymbol->insertSymbolLayer(layerIdx - offset, tmpLayer);
   
   loadSymbol();
   
-  QModelIndex newIndex = listLayers->model()->index(idx + offset,0);
+  QModelIndex newIndex = listLayers->model()->index(rowIdx + offset,0);
   listLayers->setCurrentIndex(newIndex);
   
   updateUi();

@@ -50,6 +50,7 @@ protected:
   void updateSymbolLayerWidget(QgsSymbolLayerV2* layer);
   void updateLockButton();
   
+  int currentRowIndex();
   int currentLayerIndex();
   SymbolLayerItem* currentLayerItem();
   QgsSymbolLayerV2* currentLayer();
