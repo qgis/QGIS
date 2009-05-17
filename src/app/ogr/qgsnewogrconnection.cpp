@@ -89,8 +89,8 @@ void QgsNewOgrConnection::testConnection()
   else
   {
     QMessageBox::information( this, tr( "Test connection" ), tr( "Connection to %1 was successful" ).arg( uri ) );
+    OGRReleaseDataSource( poDS );
   }
-  OGRReleaseDataSource( poDS );
 }
 
 void QgsNewOgrConnection::saveConnection()
