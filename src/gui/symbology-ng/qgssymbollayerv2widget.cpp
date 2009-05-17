@@ -35,6 +35,7 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget(QWidget* pare
   connect(spinWidth, SIGNAL(valueChanged(int)), this, SLOT(penWidthChanged()));
   connect(btnChangeColor, SIGNAL(clicked()), this, SLOT(colorChanged()));
   connect(cboPenStyle, SIGNAL(currentIndexChanged(int)), this, SLOT(penStyleChanged()));
+  connect(spinOffset, SIGNAL(valueChanged(double)), this, SLOT(offsetChanged()));
 }
 
 void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
@@ -49,6 +50,7 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
   spinWidth->setValue(mLayer->width());
   updateColorButton(btnChangeColor, mLayer->color());
   cboPenStyle->setPenStyle(mLayer->penStyle());
+  spinOffset->setValue(mLayer->offset());
 }
 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2Widget::symbolLayer()
@@ -75,6 +77,12 @@ void QgsSimpleLineSymbolLayerV2Widget::colorChanged()
 void QgsSimpleLineSymbolLayerV2Widget::penStyleChanged()
 {
   mLayer->setPenStyle(cboPenStyle->penStyle());
+  emit changed();
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::offsetChanged()
+{
+  mLayer->setOffset(spinOffset->value());
   emit changed();
 }
 
@@ -249,6 +257,7 @@ QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget(QWidget* pare
   connect(spinInterval, SIGNAL(valueChanged(int)), this, SLOT(setInterval(int)));
   connect(btnChangeMarker, SIGNAL(clicked()), this, SLOT(setMarker()));
   connect(chkRotateMarker, SIGNAL(clicked()), this, SLOT(setRotate()));
+  connect(spinOffset, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));
 }
 
 void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
@@ -262,6 +271,7 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
   // set values
   spinInterval->setValue( (int) mLayer->interval());
   chkRotateMarker->setChecked(mLayer->rotateMarker());
+  spinOffset->setValue(mLayer->offset());
   updateMarker();
 }
 
@@ -291,6 +301,13 @@ void QgsMarkerLineSymbolLayerV2Widget::setRotate()
   mLayer->setRotateMarker(chkRotateMarker->isChecked());
   emit changed();
 }
+
+void QgsMarkerLineSymbolLayerV2Widget::setOffset()
+{
+  mLayer->setOffset(spinOffset->value());
+  emit changed();
+}
+
 
 void QgsMarkerLineSymbolLayerV2Widget::updateMarker()
 {

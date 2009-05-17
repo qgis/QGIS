@@ -44,6 +44,7 @@ class QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private 
     void penWidthChanged();
     void colorChanged();
     void penStyleChanged();
+    void offsetChanged();
     
   protected:
     QgsSimpleLineSymbolLayerV2* mLayer;
@@ -132,6 +133,7 @@ class QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private 
     void setInterval(int val);
     void setMarker();
     void setRotate();
+    void setOffset();
     
   protected:
     

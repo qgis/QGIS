@@ -133,3 +133,109 @@ QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap(QgsVectorColorRampV2* ramp
   painter.end();
   return pixmap;
 }
+
+
+#include <QPolygonF>
+
+#include <cmath>
+#include <cfloat>
+
+
+// calculate line's angle and tangent
+static bool lineInfo(QPointF p1, QPointF p2, double& angle, double& t)
+{
+  double x1 = p1.x(), y1 = p1.y(), x2 = p2.x(), y2 = p2.y();
+
+  if (x1 == x2 && y1 == y2)
+    return false;
+
+  // tangent
+  t = ( x1 == x2 ? t = DBL_MAX : (y2-y1)/(x2-x1) );
+
+  // angle
+  if (t == DBL_MAX)
+    angle = ( y2 >= y1 ? M_PI/2 : M_PI*3/2 );  // angle is 90 or 270
+  else if (t >= 0)
+    angle = ( y2 >= y1 ? atan(t) : M_PI + atan(t) );
+  else // t < 0
+    angle = ( y2 >= y1 ? M_PI + atan(t) : M_PI*2 + atan(t) );
+
+  return true;
+}
+
+// offset a point with an angle and distance
+static QPointF offsetPoint(QPointF pt, double angle, double dist)
+{
+  return QPointF(pt.x() + dist * cos(angle), pt.y() + dist * sin(angle));
+}
+
+// calc intersection of two (infinite) lines defined by one point and tangent
+static QPointF linesIntersection(QPointF p1, double t1, QPointF p2, double t2)
+{
+  // parallel lines?
+  if ( (t1 == DBL_MAX && t2 == DBL_MAX) || t1 == t2)
+    return QPointF();
+
+  double x,y;
+  if (t1 == DBL_MAX || t2 == DBL_MAX)
+  {
+    // in case one line is with angle 90 resp. 270 degrees (tangent undefined)
+    // swap them so that line 2 is with undefined tangent
+    if (t1 == DBL_MAX)
+    {
+      QPointF pSwp = p1; p1 = p2; p2 = pSwp;
+      double  tSwp = t1; t1 = t2; t2 = tSwp;
+    }
+
+    x = p2.x();
+  }
+  else
+  {
+    // usual case
+    x = ( (p1.y() - p2.y()) + t2*p2.x() - t1*p1.x() ) / (t2 - t1);
+  }
+
+  y = p1.y() + t1 * (x - p1.x());
+  return QPointF(x,y);
+}
+
+
+QPolygonF offsetLine(QPolygonF polyline, double dist)
+{
+  QPolygonF newLine;
+
+  if (polyline.count() < 2)
+    return newLine;
+
+  double angle, t_new, t_old=0;
+  QPointF pt_old, pt_new;
+  QPointF p1 = polyline[0], p2;
+
+  for (int i = 1; i < polyline.count(); i++)
+  {
+    p2 = polyline[i];
+
+    if ( !lineInfo(p1, p2, angle, t_new) )
+      continue; // not a line...
+
+    pt_new = offsetPoint(p1, angle + M_PI/2, dist);
+
+    if (i != 1)
+    {
+      // if it's not the first line segment
+      // calc intersection with last line (with offset)
+      pt_new = linesIntersection(pt_old, t_old, pt_new, t_new);
+    }
+
+    newLine.append(pt_new);
+
+    pt_old = pt_new;
+    t_old = t_new;
+    p1 = p2;
+  }
+
+  // last line segment:
+  pt_new = offsetPoint(p2, angle + M_PI/2, dist);
+  newLine.append(pt_new);
+  return newLine;
+}

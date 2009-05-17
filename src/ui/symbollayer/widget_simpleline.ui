@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>WidgetSimpleLine</class>
- <widget class="QWidget" name="WidgetSimpleLine" >
-  <property name="geometry" >
+ <widget class="QWidget" name="WidgetSimpleLine">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,41 +10,41 @@
     <height>244</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <layout class="QGridLayout" >
-     <item row="0" column="0" >
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+    <layout class="QGridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>Color:</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" >
-      <widget class="QPushButton" name="btnChangeColor" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+     <item row="0" column="1">
+      <widget class="QPushButton" name="btnChangeColor">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>change</string>
        </property>
       </widget>
      </item>
-     <item rowspan="3" row="0" column="2" >
+     <item row="0" column="2" rowspan="4">
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeType">
         <enum>QSizePolicy::Preferred</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>50</width>
          <height>91</height>
@@ -51,47 +52,61 @@
        </property>
       </spacer>
      </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
         <string>Pen width:</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QSpinBox" name="spinWidth" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="spinWidth">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
-       <property name="minimum" >
+       <property name="minimum">
         <number>1</number>
        </property>
       </widget>
      </item>
-     <item row="2" column="0" >
-      <widget class="QLabel" name="label_3" >
-       <property name="text" >
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
         <string>Pen style:</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1" >
-      <widget class="QgsPenStyleComboBox" name="cboPenStyle" />
+     <item row="2" column="1">
+      <widget class="QgsPenStyleComboBox" name="cboPenStyle"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Offset:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QDoubleSpinBox" name="spinOffset">
+       <property name="minimum">
+        <double>-99.989999999999995</double>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
    <item>
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>350</width>
        <height>81</height>

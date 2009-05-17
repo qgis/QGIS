@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>WidgetMarkerLine</class>
- <widget class="QWidget" name="WidgetMarkerLine" >
-  <property name="geometry" >
+ <widget class="QWidget" name="WidgetMarkerLine">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,35 +10,35 @@
     <height>192</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <layout class="QGridLayout" >
-     <item row="0" column="0" >
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+    <layout class="QGridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>Marker:</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" >
-      <widget class="QPushButton" name="btnChangeMarker" >
-       <property name="text" >
+     <item row="0" column="1">
+      <widget class="QPushButton" name="btnChangeMarker">
+       <property name="text">
         <string>change</string>
        </property>
       </widget>
      </item>
-     <item rowspan="3" row="0" column="2" >
+     <item row="0" column="2" rowspan="4">
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeType">
         <enum>QSizePolicy::Preferred</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -45,24 +46,38 @@
        </property>
       </spacer>
      </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
-        <string>Interval:</string>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Marker interval:</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QSpinBox" name="spinInterval" >
-       <property name="minimum" >
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="spinInterval">
+       <property name="minimum">
         <number>1</number>
        </property>
       </widget>
      </item>
-     <item row="2" column="0" colspan="2" >
-      <widget class="QCheckBox" name="chkRotateMarker" >
-       <property name="text" >
+     <item row="2" column="0" colspan="2">
+      <widget class="QCheckBox" name="chkRotateMarker">
+       <property name="text">
         <string>Rotate marker</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Line offset:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QDoubleSpinBox" name="spinOffset">
+       <property name="minimum">
+        <double>-99.989999999999995</double>
        </property>
       </widget>
      </item>
@@ -70,10 +85,10 @@
    </item>
    <item>
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>261</width>
        <height>40</height>
@@ -86,7 +101,6 @@
  <tabstops>
   <tabstop>btnChangeMarker</tabstop>
   <tabstop>spinInterval</tabstop>
-  <tabstop>chkRotateMarker</tabstop>
  </tabstops>
  <resources/>
  <connections/>

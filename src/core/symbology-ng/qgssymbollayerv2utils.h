@@ -37,4 +37,10 @@ public:
   static QPixmap colorRampPreviewPixmap(QgsVectorColorRampV2* ramp, QSize size);
 };
 
+class QPolygonF;
+
+//! calculate line shifted by a specified distance
+QPolygonF offsetLine(QPolygonF polyline, double dist);
+
+
 #endif

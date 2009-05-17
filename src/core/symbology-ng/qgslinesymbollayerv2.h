@@ -40,10 +40,14 @@ public:
   
   Qt::PenStyle penStyle() const { return mPenStyle; }
   void setPenStyle(Qt::PenStyle style) { mPenStyle = style; }
+
+  double offset() const { return mOffset; }
+  void setOffset(double offset) { mOffset = offset; }
 	
 protected:
 	Qt::PenStyle mPenStyle;
 	QPen mPen;
+  double mOffset;
 };
 
 /////////
@@ -89,11 +93,18 @@ public:
   
   double interval() const { return mInterval; }
   void setInterval(double interval) { mInterval = interval; }
+
+  double offset() const { return mOffset; }
+  void setOffset(double offset) { mOffset = offset; }
   
 protected:
+
+  void renderPolylineNoOffset(const QPolygonF& points, QgsRenderContext& context);
+
   bool mRotateMarker;
   double mInterval;
   QgsMarkerSymbolV2* mMarker;
+  double mOffset;
 };
 
 /////////

@@ -9,7 +9,7 @@
 #include <cmath>
 
 QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2(QColor color, int width, Qt::PenStyle penStyle)
- : mPenStyle(penStyle)
+ : mPenStyle(penStyle), mOffset(0)
 {
   mColor = color;
   mWidth = width;
@@ -29,7 +29,10 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create(const QgsStringMap& props)
   if (props.contains("penstyle"))
     penStyle = QgsSymbolLayerV2Utils::decodePenStyle(props["penstyle"]);
   
-  return new QgsSimpleLineSymbolLayerV2(color, width, penStyle);
+  QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2(color, width, penStyle);
+  if (props.contains("offset"))
+    l->setOffset( props["offset"].toDouble() );
+  return l;
 }
 	
 
@@ -53,7 +56,14 @@ void QgsSimpleLineSymbolLayerV2::stopRender(QgsRenderContext& context)
 void QgsSimpleLineSymbolLayerV2::renderPolyline(const QPolygonF& points, QgsRenderContext& context)
 {
   context.painter()->setPen(mPen);
-  context.painter()->drawPolyline(points);
+  if (mOffset == 0)
+  {
+    context.painter()->drawPolyline(points);
+  }
+  else
+  {
+    context.painter()->drawPolyline( ::offsetLine(points, mOffset) );
+  }
 }
 
 QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
@@ -62,12 +72,15 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
   map["color"] = QgsSymbolLayerV2Utils::encodeColor(mColor);
   map["width"] = QString::number(mWidth);
   map["penstyle"] = QgsSymbolLayerV2Utils::encodePenStyle(mPenStyle);
+  map["offset"] = QString::number(mOffset);
   return map;
 }
 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
 {
-  return new QgsSimpleLineSymbolLayerV2(mColor, mWidth, mPenStyle);
+  QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2(mColor, mWidth, mPenStyle);
+  l->setOffset(mOffset);
+  return l;
 }
 
 
@@ -138,6 +151,7 @@ QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2(bool rotateMarker, double
   mRotateMarker = rotateMarker;
   mInterval = interval;
   mMarker = NULL;
+  mOffset = 0;
   
   setSubSymbol(new QgsMarkerSymbolV2());
 }
@@ -158,6 +172,8 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create(const QgsStringMap& props)
     rotate = (props["rotate"] == "1");
   
   QgsMarkerLineSymbolLayerV2* x = new QgsMarkerLineSymbolLayerV2(rotate, interval);
+  if (props.contains("offset"))
+    x->setOffset(props["offset"].toDouble());
   return x;
 }
 
@@ -186,6 +202,19 @@ void QgsMarkerLineSymbolLayerV2::stopRender(QgsRenderContext& context)
 }
 	
 void QgsMarkerLineSymbolLayerV2::renderPolyline(const QPolygonF& points, QgsRenderContext& context)
+{
+  if (mOffset == 0)
+  {
+    renderPolylineNoOffset(points, context);
+  }
+  else
+  {
+    QPolygonF points2 = ::offsetLine( points, mOffset );
+    renderPolylineNoOffset( points2, context );
+  }
+}
+
+void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset(const QPolygonF& points, QgsRenderContext& context)
 {
   QPointF lastPt = points[0];
   double lengthLeft = 0; // how much is left until next marker
@@ -245,6 +274,7 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   QgsStringMap map;
   map["rotate"] = (mRotateMarker ? "1" : "0");
   map["interval"] = QString::number(mInterval);
+  map["offset"] = QString::number(mOffset);
   return map;
 }
 
@@ -271,6 +301,7 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
 {
   QgsMarkerLineSymbolLayerV2* x = new QgsMarkerLineSymbolLayerV2(mRotateMarker, mInterval);
   x->setSubSymbol(mMarker->clone());
+  x->setOffset(mOffset);
   return x;
 }
 
