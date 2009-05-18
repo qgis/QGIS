@@ -23,7 +23,7 @@ for i in python/plugins/*/.; do
 	cd ../../..
 done
 echo Creating qmake project file
-qmake -project -o qgis_ts.pro
+qmake -project -o qgis_ts.pro -nopwd src python i18n
 echo Updating translation files
 lupdate -verbose qgis_ts.pro
 echo Removing temporary python plugin translation files
