@@ -2317,7 +2317,7 @@ void QgsGrassModuleInput::updateQgisLayers()
                       + " " + grassLayer + " " + type + " )";
 
       mLayerComboBox->addItem( label );
-      if ( label == current ) mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
+      if ( label == current ) mLayerComboBox->setCurrentIndex ( mLayerComboBox->count()-1 );
 
       mMapLayers.push_back( vector );
       mVectorLayerNames.push_back( grassLayer );
@@ -2366,7 +2366,7 @@ void QgsGrassModuleInput::updateQgisLayers()
       QString label = layer->name() + " ( " + map + "@" + mapset + " )";
 
       mLayerComboBox->addItem( label );
-      if ( label == current ) mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
+      if ( label == current ) mLayerComboBox->setCurrentIndex ( mLayerComboBox->count()-1 );
     }
   }
 }
