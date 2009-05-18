@@ -176,7 +176,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cboLocale->addItems( myI18nList );
   if ( myI18nList.contains( myUserLocale ) )
   {
-    cboLocale->setItemText( cboLocale->currentIndex(), myUserLocale );
+    cboLocale->setCurrentIndex( myI18nList.indexOf( myUserLocale ) );
   }
   bool myLocaleOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();
   grpLocale->setChecked( myLocaleOverrideFlag );
@@ -623,7 +623,7 @@ QStringList QgsOptions::i18nList()
   QStringList myList;
   myList << "en_US"; //there is no qm file for this so we add it manually
   QString myI18nPath = QgsApplication::i18nPath();
-  QDir myDir( myI18nPath, "*.qm" );
+  QDir myDir( myI18nPath, "qgis*.qm" );
   QStringList myFileList = myDir.entryList();
   QStringListIterator myIterator( myFileList );
   while ( myIterator.hasNext() )
