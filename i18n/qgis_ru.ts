@@ -2534,7 +2534,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Ключевое поле</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="433"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="442"/>
         <source>GISBASE is not set.</source>
         <translation>Не задано значение GISBASE.</translation>
     </message>
@@ -2549,7 +2549,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">Не удалось запустить </translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="482"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="491"/>
         <source>Mapset is already in use.</source>
         <translation>Набор уже используется.</translation>
     </message>
@@ -2579,22 +2579,22 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">Не удалось снять блокировку набора: </translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1013"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1022"/>
         <source>Warning</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="961"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="970"/>
         <source>Cannot read raster map region</source>
         <translation>Не удалось прочесть границы растровой карты</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="978"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="987"/>
         <source>Cannot read vector map region</source>
         <translation>Не удалось прочесть границы векторной карты</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1014"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1023"/>
         <source>Cannot read region</source>
         <translation>Не удалось прочесть регион</translation>
     </message>
@@ -2669,7 +2669,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Версия 0.001</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="383"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="392"/>
         <source>Uncatched fatal GRASS error</source>
         <translation>Необработанная фатальная ошибка GRASS</translation>
     </message>
@@ -2855,32 +2855,32 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Ошибка разбора в строке %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="438"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="447"/>
         <source>%1 is not a GRASS mapset.</source>
         <translation>%1 не является набором GRASS.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="472"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="481"/>
         <source>Cannot start %1/etc/lock</source>
         <translation>Не удалось запустить %1/etc/lock</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="497"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="506"/>
         <source>Temporary directory %1 exists but is not writable</source>
         <translation>Права на запись в существующий временный каталог %1 отсутствуют</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="503"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="512"/>
         <source>Cannot create temporary directory %1</source>
         <translation>Не удалось создать временный каталог %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="517"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="526"/>
         <source>Cannot create %1</source>
         <translation>Не удалось создать %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="592"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="601"/>
         <source>Cannot remove mapset lock: %1</source>
         <translation>Не удалось снять блокировку набора: %1</translation>
     </message>
@@ -15608,7 +15608,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="19"/>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
-        <translation>Обнаружен устаревший модуль, который делает невозможной загрузку модуля, поставляемого с этой версией QGIS. Возможно этот модуль остался после предыдущей установки QGIS. Используйте установщик модулей для его удаления, чтобы сделать возможной загрузку включенной в QGIS версии.</translation>
+        <translation type="obsolete">Обнаружен устаревший модуль, который делает невозможной загрузку модуля, поставляемого с этой версией QGIS. Возможно этот модуль остался после предыдущей установки QGIS. Используйте установщик модулей для его удаления, чтобы сделать возможной загрузку включенной в QGIS версии.</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/i18n.cpp" line="19"/>
+        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

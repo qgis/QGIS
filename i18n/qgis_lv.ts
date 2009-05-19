@@ -2680,7 +2680,7 @@ Python atbalsts tiks atslēgts.</translation>
         <translation>Atslēgas kolonna</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="433"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="442"/>
         <source>GISBASE is not set.</source>
         <translation>GISBASE nav norādīta.</translation>
     </message>
@@ -2695,7 +2695,7 @@ Python atbalsts tiks atslēgts.</translation>
         <translation type="obsolete">Nevar sākt</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="482"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="491"/>
         <source>Mapset is already in use.</source>
         <translation>Karšu kopa ir jau lietošanā.</translation>
     </message>
@@ -2725,22 +2725,22 @@ Python atbalsts tiks atslēgts.</translation>
         <translation type="obsolete">Nevar noņemt mapset slēdzi: </translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1013"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1022"/>
         <source>Warning</source>
         <translation>Brīdinājums</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="961"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="970"/>
         <source>Cannot read raster map region</source>
         <translation>Nevar nolasīt rastra kartes reģionu</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="978"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="987"/>
         <source>Cannot read vector map region</source>
         <translation>Nevar nolasīt vektoru kartes reģionu</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1014"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1023"/>
         <source>Cannot read region</source>
         <translation>Nevar nolasīt reģionu</translation>
     </message>
@@ -2835,7 +2835,7 @@ Python atbalsts tiks atslēgts.</translation>
         <translation>Versija 0.001</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="383"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="392"/>
         <source>Uncatched fatal GRASS error</source>
         <translation>Nedokumentēta GRASS kļūda</translation>
     </message>
@@ -2991,32 +2991,32 @@ Python atbalsts tiks atslēgts.</translation>
         <translation>Parsēšanas kļūda līnijā %1 : %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="438"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="447"/>
         <source>%1 is not a GRASS mapset.</source>
         <translation>%1 nav GRASS karšu kopa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="472"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="481"/>
         <source>Cannot start %1/etc/lock</source>
         <translation>Nevar startēt %1/etc/lock</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="497"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="506"/>
         <source>Temporary directory %1 exists but is not writable</source>
         <translation>Pagaidu mape %1 eksistē, bet nav rakstāma</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="503"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="512"/>
         <source>Cannot create temporary directory %1</source>
         <translation>Nevar izveidot pagaidu mapi %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="517"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="526"/>
         <source>Cannot create %1</source>
         <translation>Nevar izveidot %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="592"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="601"/>
         <source>Cannot remove mapset lock: %1</source>
         <translation>Nevar noņemt mapset slēdzi: %1</translation>
     </message>
@@ -17762,7 +17762,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="19"/>
-        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
+        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
