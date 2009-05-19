@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="pl_PL">
+<defaultcodec></defaultcodec>
 <context>
     <name></name>
     <message>
@@ -957,7 +958,6 @@ p, li { white-space: pre-wrap; }
         <translation>Wybierz proszę większą tolerancję...</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Function not found</source>
         <translation type="obsolete">Nie znaleziono funkcji</translation>
     </message>
@@ -967,7 +967,6 @@ p, li { white-space: pre-wrap; }
         <translation>Błąd zapisu wyjściowego Shapefile.</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to delete existing layer...</source>
         <translation type="obsolete">Nie można usunąć istniejącej warstwy...</translation>
     </message>
@@ -1040,17 +1039,14 @@ p, li { white-space: pre-wrap; }
         <translation>Podaj wyjściowy plik Shapefile</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to create geoprocessing result.</source>
         <translation type="obsolete">Nie można utworzyć wyniku geoprocesingu.</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Created output shapefile.</source>
         <translation type="obsolete">Utworzono plik Shapefile.</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Would you like to add the new layer to the TOC?</source>
         <translation type="obsolete">Czy chcesz dodać wynikową warstwę do mapy?</translation>
     </message>
@@ -1080,7 +1076,6 @@ p, li { white-space: pre-wrap; }
         <translation>Agreguj</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Erase layer</source>
         <translation type="obsolete">Wyczyść warstwę</translation>
     </message>
@@ -3891,32 +3886,32 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="690"/>
         <source>Simplify Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Uprość geometrię</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="696"/>
         <source>Delete Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń pierścień</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="702"/>
         <source>Delete Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń część</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="938"/>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguracja skrótów...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="940"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguracja skrótów</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1340"/>
         <source>Advanced Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaawansowana digitalizacja</translation>
     </message>
 </context>
 <context>
@@ -4524,7 +4519,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="225"/>
         <source>Search selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>Szukaj tylko w wybranych rekordach</translation>
     </message>
 </context>
 <context>
@@ -5804,57 +5799,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="110"/>
         <source>None</source>
-        <translation type="unfinished">Brak</translation>
+        <translation>Brak</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="111"/>
         <source>Set default (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw domyślny (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="205"/>
         <source>Input: </source>
-        <translation type="unfinished"></translation>
+        <translation>Wprowadź:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <source>Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="236"/>
         <source>Shortcut conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Konflikt skrótów</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="237"/>
         <source>This shortcut is already assigned to action %1. Reassign?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ten skrót jest już przypisany do akcji %1. Przełączyć go?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="14"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguracja skrótów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="27"/>
         <source>Action</source>
-        <translation type="unfinished">Akcja</translation>
+        <translation>Akcja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="32"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrót</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="55"/>
         <source>Set none</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="62"/>
         <source>Set default</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw domyślny</translation>
     </message>
 </context>
 <context>
@@ -6040,7 +6035,6 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(uwaga: &amp;amp;copy; wstawia symbol praw autorskich)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -6053,7 +6047,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;￼p, li { white-space: pre-wrap; }￼&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;￼&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -7525,12 +7519,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="193"/>
         <source>Width</source>
-        <translation type="unfinished">Szerokość</translation>
+        <translation>Szerokość</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="198"/>
         <source>Precision</source>
-        <translation type="unfinished">Dokładność</translation>
+        <translation>Dokładność</translation>
     </message>
 </context>
 <context>
@@ -8993,7 +8987,7 @@ w wierszu %2 kolumnie %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1992"/>
         <source>Input</source>
-        <translation type="unfinished">Wejście</translation>
+        <translation>Wejście</translation>
     </message>
 </context>
 <context>
@@ -9007,14 +9001,13 @@ w wierszu %2 kolumnie %3</translation>
 <context>
     <name>QgsGrassModuleSelection</name>
     <message>
-        <location filename="" line="0"/>
         <source>Attribute field</source>
         <translation type="obsolete">Pole atrybutu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2897"/>
         <source>Selected categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybrane kategorie</translation>
     </message>
 </context>
 <context>
@@ -9888,28 +9881,26 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="41"/>
         <source>Close</source>
-        <translation type="unfinished">Zamknij</translation>
+        <translation>Zamknij</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="42"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="43"/>
         <source>Ctrl+Shift+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+C</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassShellBase</name>
     <message>
-        <location filename="" line="0"/>
         <source>GRASS Shell</source>
         <translation type="obsolete">GRASS Shell</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Close</source>
         <translation type="obsolete">Zamknij</translation>
     </message>
@@ -10657,19 +10648,18 @@ p, li { white-space: pre-wrap; }
         <translation>Maksymalna skala, dla której warstwa będzie wyświetlana.</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>&#xb0;</source>
         <translation type="obsolete">°</translation>
     </message>
     <message encoding="UTF-8">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="245"/>
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="843"/>
         <source>&amp;Color</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kolor</translation>
     </message>
 </context>
 <context>
@@ -11201,17 +11191,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="114"/>
         <source>Delete part</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń część</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="101"/>
         <source>This isn&apos;t a multipart geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>To nie jest obiekt wieloczęściowy.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="114"/>
         <source>Couldn&apos;t remove the selected part.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można usunąć wybranej części.</translation>
     </message>
 </context>
 <context>
@@ -11335,12 +11325,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="232"/>
         <source>Unsupported operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieobsługiwana operacja</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="232"/>
         <source>Multipart features are not supported for simplification.</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcja upraszczania nie obsługuje obiektów wieloczęściowych.</translation>
     </message>
 </context>
 <context>
@@ -13448,7 +13438,6 @@ p, li { white-space: pre-wrap; }
         <translation>Nie mogę rozczytać zawartości repozytorium </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Couldn&apos;t open the system plugin directory</source>
         <translation type="obsolete">Nie mogę otworzyć katalogu wtyczek systemowych </translation>
     </message>
@@ -13520,7 +13509,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="19"/>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalator Wtyczek wykrył starą wtyczkę, blokującą jej nowszą wersję, dostarczoną z tą wersją programu Quantum GIS. Jest to prawdopodobnie pozostałość po starszej instalacji programu. Proszę użyć Instalatora Wtyczek i odinstalować ją w celu odblokowania aktualnej wersji.</translation>
     </message>
 </context>
 <context>
@@ -13691,43 +13680,36 @@ p, li { white-space: pre-wrap; }
         <translation>Nie można dodać drugiego repozytorium pod tym samym adresem!</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>not installed</source>
         <comment>plural</comment>
         <translation type="obsolete">niezainstalowane</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>installed</source>
         <comment>plural</comment>
         <translation type="obsolete">zainstalowane</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>not installed</source>
         <comment>singular</comment>
         <translation type="obsolete">niezainstalowana</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>installed</source>
         <comment>singular</comment>
         <translation type="obsolete">zainstalowana</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>upgradeable</source>
         <comment>singular</comment>
         <translation type="obsolete">aktualizowalna</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>new!</source>
         <comment>singular</comment>
         <translation type="obsolete">nowość!</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>invalid</source>
         <comment>singular</comment>
         <translation type="obsolete">niesprawna</translation>
@@ -19252,17 +19234,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="14"/>
         <source>Simplify line tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancja upraszczania geometrii</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="20"/>
         <source>Set tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw tolerancję</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="34"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -19298,12 +19280,10 @@ Tried URL: %1</source>
         <translation>Wyświel unikalne wartości</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unique values:</source>
         <translation type="obsolete">Unikalne wartości:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Total unique values:</source>
         <translation type="obsolete">Łącznie unikalnych wartości:</translation>
     </message>
@@ -19328,37 +19308,30 @@ Tried URL: %1</source>
         <translation>Statystyki najbliższego sąsiedztwa</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Observed mean distance : </source>
         <translation type="obsolete">Faktyczna średnia odległość:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Expected mean distance : </source>
         <translation type="obsolete">Oczekiwana średnia odległość:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Nearest neighbour index : </source>
         <translation type="obsolete">Wskaźnik najbliższego sąsiedztwa:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Feature %1 contains an unnested hole</source>
         <translation type="obsolete">Obiekt %1 zawiera niepoprawny pierścień</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Feature %1 is not closed</source>
         <translation type="obsolete">Obiekt %1 nie jest domknięty</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Feature %1 is self intersecting</source>
         <translation type="obsolete">Obiekt %1 zawiera wewnętrzne przecięcia</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Feature %1 has incorrect node ordering</source>
         <translation type="obsolete">Obiekt %1 posiada niepoprawną kolejność węzłów</translation>
     </message>
@@ -19496,12 +19469,10 @@ For support send a mail to scala@itc.cnr.it
         <translation>Wykryta wersję Quantum GIS:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
         <translation type="obsolete">Ta wersja fTools wymaga przynajmniej QGIS w wersji 1.0.0</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Plugin will not be enabled.</source>
         <translation type="obsolete">Nie można włączyć wtyczki.</translation>
     </message>
@@ -19556,7 +19527,6 @@ For support send a mail to scala@itc.cnr.it
         <translation>Przecięcia linii</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>&amp;Sampling Tools</source>
         <translation type="obsolete">Narzędzia &amp;próbkowania</translation>
     </message>
@@ -19711,7 +19681,6 @@ For support send a mail to scala@itc.cnr.it
         <translation>Podziel warstwę wektorową</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>About fTools</source>
         <translation type="obsolete">O fTools</translation>
     </message>
@@ -19731,17 +19700,14 @@ For support send a mail to scala@itc.cnr.it
         <translation>Poligon z zasięgu warstwy</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Input layer</source>
         <translation type="obsolete">Warstwa wejściowa</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Input point vector layer</source>
         <translation type="obsolete">Wejściowa warstwa wektorowa (punkty)</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Output polygon shapefile</source>
         <translation type="obsolete">Wyjściowy Shapefile (poligony)</translation>
     </message>
