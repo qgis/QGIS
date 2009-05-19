@@ -4097,12 +4097,12 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="938"/>
         <source>Configure shortcuts...</source>
-        <translation></translation>
+        <translation>Tastenkürzel festlegen...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="940"/>
         <source>Configure shortcuts</source>
-        <translation></translation>
+        <translation>Tastenkürzel festlegen</translation>
     </message>
 </context>
 <context>
@@ -4730,7 +4730,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="225"/>
         <source>Search selected records only</source>
-        <translation></translation>
+        <translation>Nur ausgewählte Datensätze durchsuchen</translation>
     </message>
 </context>
 <context>
@@ -6181,32 +6181,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="111"/>
         <source>Set default (%1)</source>
-        <translation></translation>
+        <translation>Voreinstellung (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="205"/>
         <source>Input: </source>
-        <translation></translation>
+        <translation>Eingabe: </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <source>Change</source>
-        <translation></translation>
+        <translation>Ändern</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="236"/>
         <source>Shortcut conflict</source>
-        <translation></translation>
+        <translation>Tastenkürzelkonflikt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="237"/>
         <source>This shortcut is already assigned to action %1. Reassign?</source>
-        <translation></translation>
+        <translation>Diese Tastenkürzel ist bereits der Aktion %1 zugeordnet.  Neuzuordnen?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="14"/>
         <source>Configure shortcuts</source>
-        <translation></translation>
+        <translation>Tastenkürzel festlegen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="27"/>
@@ -6216,17 +6216,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="32"/>
         <source>Shortcut</source>
-        <translation></translation>
+        <translation>Tastenkürzel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="55"/>
         <source>Set none</source>
-        <translation></translation>
+        <translation>Keins setzen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="62"/>
         <source>Set default</source>
-        <translation></translation>
+        <translation>Voreingestelltes setzen</translation>
     </message>
 </context>
 <context>
@@ -9450,7 +9450,7 @@ in Zeile %2, Spalte %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2897"/>
         <source>Selected categories</source>
-        <translation></translation>
+        <translation>Gewählte Kategorien</translation>
     </message>
 </context>
 <context>
@@ -11113,7 +11113,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="843"/>
         <source>&amp;Color</source>
-        <translation></translation>
+        <translation>&amp;Farbe</translation>
     </message>
 </context>
 <context>
@@ -11778,12 +11778,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="232"/>
         <source>Unsupported operation</source>
-        <translation></translation>
+        <translation>Nicht unterstützte Operation</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="232"/>
         <source>Multipart features are not supported for simplification.</source>
-        <translation></translation>
+        <translation>Vereinfachung wird für mehrteilige Objekte nicht unterstützt.</translation>
     </message>
 </context>
 <context>
@@ -13981,13 +13981,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="19"/>
-        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
-        <translation type="obsolete">Der Plugin-Installer hat ein veraltetes Plugin erkannt, das ein neueres, mit dieser QGIS-Version geliefertes verdeckt. Dies ist wahrscheinlich ein Überbleibsel einer ältereren QGIS-Installation. Bitte entfernen Sie es mit dem Plugin-Installer, um die mitgelieferte Ausgabe sichtbar zu machen.</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/i18n.cpp" line="19"/>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Plugin-Installer hat ein veraltetes Plugin erkannt, das ein neueres, mit dieser QGIS-Version geliefertes, verdeckt. Dies ist wahrscheinlich ein Überbleibsel einer ältereren QGIS-Installation. Bitte entfernen Sie es mit dem Plugin-Installer, um die mitgelieferte Ausgabe sichtbar zu machen.</translation>
     </message>
 </context>
 <context>
