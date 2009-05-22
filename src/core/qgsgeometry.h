@@ -316,16 +316,16 @@ class CORE_EXPORT QgsGeometry
         if wkbType is WKBPolygon, otherwise an empty list */
     QgsPolygon asPolygon();
 
-    /** return contents of the geometry as a polygon
-        if wkbType is WKBPolygon, otherwise an empty list */
+    /** return contents of the geometry as a multi point
+        if wkbType is WKBMultiPoint, otherwise an empty list */
     QgsMultiPoint asMultiPoint();
 
-    /** return contents of the geometry as a polygon
-        if wkbType is WKBPolygon, otherwise an empty list */
+    /** return contents of the geometry as a multi linestring
+        if wkbType is WKBMultiLineString, otherwise an empty list */
     QgsMultiPolyline asMultiPolyline();
 
-    /** return contents of the geometry as a polygon
-        if wkbType is WKBPolygon, otherwise an empty list */
+    /** return contents of the geometry as a multi polygon
+        if wkbType is WKBMultiPolygon, otherwise an empty list */
     QgsMultiPolygon asMultiPolygon();
 
     /** return contents of the geometry as a list of geometries
