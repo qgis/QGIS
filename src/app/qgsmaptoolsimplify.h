@@ -71,7 +71,7 @@ public slots:
 
 private:
   /** Divider calculation, because slider can go only by whole numbers */
-  int calculateDivider(double num);
+  int calculateDivider(double minimum, double maximum);
 
   /** Function to calculate tolerance boudaries for simplifying */
   bool calculateSliderBoudaries();
@@ -90,7 +90,7 @@ private:
   QgsFeature mSelectedFeature;
 
   /** tolerance divider is value which tells with which delete value from sidebar */
-  int toleranceDivider;
+  long toleranceDivider;
 
   /** real value of tolerance */
   double mTolerance;

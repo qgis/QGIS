@@ -49,11 +49,12 @@ void QgsSimplifyDialog::simplify()
 
 void QgsSimplifyDialog::setRange(int minValue, int maxValue)
 {
-  horizontalSlider->setMinimum(minValue);
-  horizontalSlider->setMaximum(maxValue);
-
   // let's have 20 page steps
   horizontalSlider->setPageStep( (maxValue - minValue) / 20 );
+
+  horizontalSlider->setMinimum(minValue -1);// -1 for count with minimum tolerance end caused by double imprecision
+  horizontalSlider->setMaximum(maxValue);
+
 }
 
 
@@ -82,13 +83,17 @@ void QgsMapToolSimplify::toleranceChanged(int tolerance)
 
   // create a copy of selected feature and do the simplification
   QgsFeature f = mSelectedFeature;
-  if ( mSelectedFeature.geometry()->type() == QGis::Line )
+  //QgsSimplifyFeature::simplifyLine(f, mTolerance);
+  if (mTolerance > 0)
   {
-    QgsSimplifyFeature::simplifyLine(f, mTolerance);
-  }
-  else
-  {
-    QgsSimplifyFeature::simplifyPolygon(f, mTolerance);
+    if ( mSelectedFeature.geometry()->type() == QGis::Line )
+    {
+      QgsSimplifyFeature::simplifyLine(f, mTolerance);
+    }
+    else
+    {
+      QgsSimplifyFeature::simplifyPolygon(f, mTolerance);
+    }
   }
   mRubberBand->setToGeometry(f.geometry(), false);
 }
@@ -111,14 +116,28 @@ void QgsMapToolSimplify::storeSimplified()
   mCanvas->refresh();
 }
 
-int QgsMapToolSimplify::calculateDivider(double num)
+int QgsMapToolSimplify::calculateDivider(double minimum, double maximum)
 {
-  double tmp = num;
+  double tmp = minimum;
   long i = 1;
+  if (minimum == 0)
+  { //exception if min = 0 than divider must be counted from maximum
+    tmp = maximum;
+  }
+  //count divider in such way so it can be used as whole number
   while (tmp < 1) 
   {
     tmp = tmp*10;
     i = i *10;
+  }
+  if (minimum == 0)
+  { //special case that minimum is 0 to have more than 1 step
+    i = i*100000;
+  }
+//taking care of problem when multiplication would overflow maxint
+  while (int(i * maximum) < 0)
+  {
+    i = i/10;
   }
   return i;
 }
@@ -127,7 +146,7 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
 {
   double minTolerance, maxTolerance;
 
-  double tol = 0.0000001;
+  double tol = 0.000001;
   bool found = false;
   bool isLine = mSelectedFeature.geometry()->type() == QGis::Line;
   QVector<QgsPoint> pts = getPointList(mSelectedFeature);
@@ -137,14 +156,35 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
     return false;
   }
 
-  // calculate min
+  // calculate minimum tolerance where no vertex is excluded
+  bool maximized = false;
+  int count = 0;
   while (!found)
   {
-    if (QgsSimplifyFeature::simplifyPoints(pts, tol).size() < size)
-    {
+    count++;
+    if (count == 30 && !maximized)
+    { //special case when tolerance is tool low to be correct so it's similat to 0
+      // else in some special cases this algorithm would create infinite loop
       found = true;
-      minTolerance = tol/ 2;
-    } else {
+      minTolerance = 0;
+    }
+
+    if (QgsSimplifyFeature::simplifyPoints(pts, tol).size() < size)
+    { //some vertexes were already excluded
+      if (maximized) //if we were already in second direction end
+      {
+        found = true;
+        minTolerance = tol/ 2;
+      }
+      else //only lowering tolerance till it's low enough to have all vertexes
+      {
+        tol = tol/2;
+      }
+    }
+    else
+    { // simplified feature has all vertexes therefore no need we need higher tolerance also ending flag set
+      // when some tolerance will exclude some of vertexes
+      maximized = true;
       tol = tol * 2;
     }
   }
@@ -152,25 +192,26 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
   int requiredCnt = (isLine ? 2 : 4); //4 for polygon is correct because first and last points are the same
   bool bottomFound = false;
   double highTol, lowTol;// two boundaries to be used when no directly correct solution is found
-  // calculate max
+  // calculate minimum tolerance where minimum (requiredCnt) of vertexes are left in geometry
   while (!found)
   {
 
     int foundVertexes = QgsSimplifyFeature::simplifyPoints(pts, tol).size();
     if (foundVertexes < requiredCnt + 1)
-    {
+    { //requred or lower number of verticies found
       if (foundVertexes == requiredCnt)
       {
         found = true;
         maxTolerance = tol;
       }
       else
-      {
+      { //solving problem that polygon would have less than minimum alowed vertexes
         bottomFound = true;
         highTol = tol;
         tol = (highTol + lowTol) /2;
         if (highTol/lowTol < 1.00000001)
-        {
+        { //solving problem that two points are in same distance from  line, so they will be both excluded at same time
+          //so some time more than required count of vertices can stay
           found = true;
           maxTolerance = lowTol;
         }
@@ -181,19 +222,20 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
         lowTol = tol;
         tol = (highTol + lowTol) /2;
         if (highTol/lowTol < 1.00000001)
-        {
+        { //solving problem that two points are in same distance from  line, so they will be both excluded at same time
+          //so some time more than required count of vertices can stay
           found = true;
           maxTolerance = lowTol;
         }
       }
       else
-      {
+      { //still too much verticies left so we need to increase tolerance
         lowTol = tol;
         tol = tol * 2;
       }
     }
   }
-  toleranceDivider = calculateDivider(minTolerance);
+  toleranceDivider = calculateDivider(minTolerance, maxTolerance);
   // set min and max
   mSimplifyDialog->setRange( int(minTolerance * toleranceDivider),
                              int(maxTolerance * toleranceDivider) );
