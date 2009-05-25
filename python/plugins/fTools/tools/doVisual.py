@@ -174,11 +174,11 @@ class visualThread( QThread ):
     fields = vprovider.fields()
     index = vprovider.fieldNameIndex( myField )
     feat = QgsFeature()
-    sumVal = 0
-    meanVal = 0
-    stdVal = 0
-    cvVal = 0
-    nVal = 0
+    sumVal = 0.0
+    meanVal = 0.0
+    stdVal = 0.0
+    cvVal = 0.0
+    nVal = 0.0
     values = []
     first = True
     nFeat = vprovider.featureCount()
@@ -196,20 +196,17 @@ class visualThread( QThread ):
         if value < minVal: minVal = value
         if value > maxVal: maxVal = value
       values.append( value )
-      sumVal = sumVal + value
+      sumVal = float( sumVal + value )
       nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
     nVal= float( len( values ) )
-    print "to here"
-    if not nVal > 0.00:
-      print "then here"
+    if nVal > 0.00:
       meanVal = float( sumVal ) / nVal
       if not meanVal == 0.00:
         for val in values:
-          stdVal += ( ( val - meanVal ) * ( val - meanVal ) )
-        print "finally here"
-        stdVal = math.sqrt( stdVal / nVal )
-        cvVal = stdVal / meanVal
+          stdVal += float( ( val - meanVal ) * ( val - meanVal ) )
+        stdVal = float( math.sqrt( stdVal / nVal ) )
+        cvVal = float( stdVal / meanVal )
     lstStats = []
     lstStats.append( "Mean    : " + unicode( meanVal ) )
     lstStats.append( "StdDev : " + unicode( stdVal ) )
