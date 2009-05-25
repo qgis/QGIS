@@ -165,7 +165,7 @@ public:
               bool fetchGeometry = true,
               bool useIntersect = false);
 
-  bool nextFeature(QgsFeature& feature /Out/ );
+  bool nextFeature(QgsFeature& feature);
 
 
   /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
