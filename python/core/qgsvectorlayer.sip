@@ -165,7 +165,7 @@ public:
               bool fetchGeometry = true,
               bool useIntersect = false);
 
-  bool nextFeature(QgsFeature& feature);
+  bool nextFeature(QgsFeature& feature /Out/ );
 
 
   /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
@@ -368,6 +368,26 @@ public:
 
   /**access range */
   RangeData &range(int idx);
+
+    /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
+    @note this method was added in version 1.1
+    */
+    void addOverlay( QgsVectorOverlay* overlay /Transfer/);
+
+    /**Removes all overlays of a given type
+    @note this method was added in version 1.1
+    */
+    void removeOverlay( const QString& typeName );
+
+    /**Returns pointers to the overlays of this layer
+    @note this method was added in version 1.1
+    */
+    void vectorOverlays( QList<QgsVectorOverlay*>& overlayList /Out/);
+
+    /**Returns the (first) overlay of a type, e.g. diagram or label
+    @note this method was added in version 1.1
+    */
+    QgsVectorOverlay* findOverlayByType( const QString& typeName );
 
 public slots:
 
