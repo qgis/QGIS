@@ -1,125 +1,137 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Dialog</class>
- <widget class="QDialog" name="Dialog" >
-  <property name="windowModality" >
+ <widget class="QDialog" name="Dialog">
+  <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
-  <property name="geometry" >
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
+    <width>404</width>
     <height>485</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>List Unique Values</string>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="0" column="0" colspan="2" >
-    <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <layout class="QVBoxLayout">
      <item>
-      <widget class="QLabel" name="label_3" >
-       <property name="text" >
+      <widget class="QLabel" name="label_3">
+       <property name="text">
         <string>Input Vector Layer</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="inShape" />
+      <widget class="QComboBox" name="inShape"/>
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <layout class="QVBoxLayout" >
+   <item row="4" column="0" colspan="2">
+    <layout class="QVBoxLayout">
      <item>
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>Target field</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cmbField" />
+      <widget class="QComboBox" name="cmbField"/>
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="2" >
-    <layout class="QVBoxLayout" >
+   <item row="5" column="0" colspan="2">
+    <layout class="QVBoxLayout">
      <item>
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
+      <widget class="QLabel" name="label_2">
+       <property name="text">
         <string>Unique values list</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QListWidget" name="lstUnique" >
-       <property name="editTriggers" >
+      <widget class="QListWidget" name="lstUnique">
+       <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
        </property>
-       <property name="showDropIndicator" stdset="0" >
+       <property name="showDropIndicator" stdset="0">
         <bool>false</bool>
        </property>
-       <property name="alternatingRowColors" >
+       <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
-       <property name="selectionMode" >
+       <property name="selectionMode">
         <enum>QAbstractItemView::ExtendedSelection</enum>
        </property>
-       <property name="selectionBehavior" >
+       <property name="selectionBehavior">
         <enum>QAbstractItemView::SelectRows</enum>
        </property>
-       <property name="selectionRectVisible" >
+       <property name="selectionRectVisible">
         <bool>true</bool>
        </property>
-       <property name="sortingEnabled" >
+       <property name="sortingEnabled">
         <bool>true</bool>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="3" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
+   <item row="6" column="0" colspan="2">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QLabel" name="label_4" >
-       <property name="text" >
+      <widget class="QLabel" name="label_4">
+       <property name="text">
         <string>Unique value count</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lstCount" >
-       <property name="readOnly" >
+      <widget class="QLineEdit" name="lstCount">
+       <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="4" column="0" >
-    <widget class="QProgressBar" name="progressBar" >
-     <property name="value" >
+   <item row="7" column="0">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
       <number>24</number>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" >
-    <widget class="QDialogButtonBox" name="buttonBox_2" >
-     <property name="orientation" >
+   <item row="7" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox_2">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
      </property>
     </widget>
+   </item>
+   <item row="3" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QCheckBox" name="useSelected">
+       <property name="text">
+        <string>Use only selected features</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -131,11 +143,11 @@
    <receiver>Dialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>133</x>
      <y>276</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>215</x>
      <y>290</y>
     </hint>
@@ -147,11 +159,11 @@
    <receiver>Dialog</receiver>
    <slot>close()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>59</x>
      <y>276</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>132</x>
      <y>239</y>
     </hint>

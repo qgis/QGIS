@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'frmVisual.ui'
 #
-# Created: Tue Apr 21 15:10:47 2009
-#      by: PyQt4 UI code generator 4.4.3
+# Created: Tue May 26 18:55:54 2009
+#      by: PyQt4 UI code generator 4.4.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,7 +13,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.setWindowModality(QtCore.Qt.NonModal)
-        Dialog.resize(374, 485)
+        Dialog.resize(404, 485)
         Dialog.setSizeGripEnabled(True)
         self.gridLayout = QtGui.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
@@ -34,7 +34,7 @@ class Ui_Dialog(object):
         self.cmbField = QtGui.QComboBox(Dialog)
         self.cmbField.setObjectName("cmbField")
         self.vboxlayout1.addWidget(self.cmbField)
-        self.gridLayout.addLayout(self.vboxlayout1, 1, 0, 1, 2)
+        self.gridLayout.addLayout(self.vboxlayout1, 4, 0, 1, 2)
         self.vboxlayout2 = QtGui.QVBoxLayout()
         self.vboxlayout2.setObjectName("vboxlayout2")
         self.label_2 = QtGui.QLabel(Dialog)
@@ -49,7 +49,7 @@ class Ui_Dialog(object):
         self.lstUnique.setSelectionRectVisible(True)
         self.lstUnique.setObjectName("lstUnique")
         self.vboxlayout2.addWidget(self.lstUnique)
-        self.gridLayout.addLayout(self.vboxlayout2, 2, 0, 1, 2)
+        self.gridLayout.addLayout(self.vboxlayout2, 5, 0, 1, 2)
         self.hboxlayout = QtGui.QHBoxLayout()
         self.hboxlayout.setObjectName("hboxlayout")
         self.label_4 = QtGui.QLabel(Dialog)
@@ -59,17 +59,23 @@ class Ui_Dialog(object):
         self.lstCount.setReadOnly(True)
         self.lstCount.setObjectName("lstCount")
         self.hboxlayout.addWidget(self.lstCount)
-        self.gridLayout.addLayout(self.hboxlayout, 3, 0, 1, 2)
+        self.gridLayout.addLayout(self.hboxlayout, 6, 0, 1, 2)
         self.progressBar = QtGui.QProgressBar(Dialog)
         self.progressBar.setProperty("value", QtCore.QVariant(24))
         self.progressBar.setAlignment(QtCore.Qt.AlignCenter)
         self.progressBar.setObjectName("progressBar")
-        self.gridLayout.addWidget(self.progressBar, 4, 0, 1, 1)
+        self.gridLayout.addWidget(self.progressBar, 7, 0, 1, 1)
         self.buttonBox_2 = QtGui.QDialogButtonBox(Dialog)
         self.buttonBox_2.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox_2.setStandardButtons(QtGui.QDialogButtonBox.Close|QtGui.QDialogButtonBox.Ok)
         self.buttonBox_2.setObjectName("buttonBox_2")
-        self.gridLayout.addWidget(self.buttonBox_2, 4, 1, 1, 1)
+        self.gridLayout.addWidget(self.buttonBox_2, 7, 1, 1, 1)
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.useSelected = QtGui.QCheckBox(Dialog)
+        self.useSelected.setObjectName("useSelected")
+        self.verticalLayout.addWidget(self.useSelected)
+        self.gridLayout.addLayout(self.verticalLayout, 3, 0, 1, 1)
 
         self.retranslateUi(Dialog)
         QtCore.QObject.connect(self.buttonBox_2, QtCore.SIGNAL("accepted()"), Dialog.accept)
@@ -83,4 +89,5 @@ class Ui_Dialog(object):
         self.label_2.setText(QtGui.QApplication.translate("Dialog", "Unique values list", None, QtGui.QApplication.UnicodeUTF8))
         self.lstUnique.setSortingEnabled(True)
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "Unique value count", None, QtGui.QApplication.UnicodeUTF8))
+        self.useSelected.setText(QtGui.QApplication.translate("Dialog", "Use only selected features", None, QtGui.QApplication.UnicodeUTF8))
 
