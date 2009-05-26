@@ -38,31 +38,42 @@ class VisualDialog( QDialog, Ui_Dialog ):
     if inputLayer != "":
       changedLayer = ftools_utils.getVectorLayerByName( inputLayer )
       changedField = changedLayer.dataProvider().fields()
+      # for Basic statistics (with or without selection)
+      if self.myFunction == 3:
+        if changedLayer.selectedFeatureCount() != 0:
+          self.useSelected.setCheckState( Qt.Checked )
+        else:
+          self.useSelected.setCheckState( Qt.Unchecked )
+      # add all fields in combobox because now we can work with text fields too
       for i in changedField:
         if self.myFunction == 3:
           if changedField[i].type() == QVariant.Int or changedField[i].type() == QVariant.Double:
             self.cmbField.addItem( unicode( changedField[i].name() ) )
         else:
           self.cmbField.addItem( unicode( changedField[i].name() ) )
+        self.cmbField.addItem( unicode( changedField[i].name() ) )
+        
   def accept( self ):
     if self.inShape.currentText() == "":
       QMessageBox.information( self, "Error!", self.tr( "Please specify input vector layer" ) )
     elif self.cmbField.isVisible() and self.cmbField.currentText() == "":
       QMessageBox.information( self, "Error!", self.tr( "Please specify input field" ) )
     else:
-      self.visual( self.inShape.currentText(), self.cmbField.currentText() )
+      self.visual( self.inShape.currentText(), self.cmbField.currentText(), self.useSelected.checkState() )
   
   def manageGui( self ):
     if self.myFunction == 1: # Check geometry validity
       self.setWindowTitle( self.tr( "Check geometry validity" ) )
       self.cmbField.setVisible( False )
       self.label.setVisible( False )
+      self.useSelected.setVisible( False )
       self.label_2.setText( self.tr( "Geometry errors" ) )
       self.label_4.setText( self.tr( "Total encountered errors" ) )
     elif self.myFunction == 2: # List unique values
       self.setWindowTitle( self.tr( "List unique values" ) )
       self.label_2.setText( self.tr( "Unique values" ) )
       self.label_4.setText(self.tr(  "Total unique values" ) )
+      self.useSelected.setVisible( False )
     elif self.myFunction == 3: # Basic statistics
       self.setWindowTitle( self.tr( "Basics statistics" ) )
       self.label_2.setText( self.tr( "Statistics output" ) )
@@ -73,6 +84,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
       self.setWindowTitle( self.tr( "Nearest neighbour analysis" ) )
       self.cmbField.setVisible( False )
       self.label.setVisible( False )
+      self.useSelected.setVisible( False )
       self.label_2.setText( self.tr( "Nearest neighbour statistics" ) )
       self.label_4.setVisible( False )
       self.lstCount.setVisible( False )
@@ -91,11 +103,11 @@ class VisualDialog( QDialog, Ui_Dialog ):
 #2:  List unique values
 #3:  Basic statistics
 #4:  Nearest neighbour analysis
-  def visual( self,  myLayer, myField ):
+  def visual( self,  myLayer, myField, mySelection ):
     vlayer = ftools_utils.getVectorLayerByName( myLayer )
     self.lstUnique.clear()
     self.lstCount.clear()
-    self.testThread = visualThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myField )
+    self.testThread = visualThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myField, mySelection )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange(PyQt_PyObject)" ), self.runRangeFromThread )
@@ -122,13 +134,14 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.progressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
     
 class visualThread( QThread ):
-  def __init__( self, parentThread, parentObject, function, vlayer, myField ):
+  def __init__( self, parentThread, parentObject, function, vlayer, myField, mySelection ):
     QThread.__init__( self, parentThread )
     self.parent = parentObject
     self.running = False
     self.myFunction = function
     self.vlayer = vlayer
     self.myField = myField
+    self.mySelection = mySelection
 #        self.total = 0
 #        self.currentCount = 0
 
@@ -176,46 +189,127 @@ class visualThread( QThread ):
     feat = QgsFeature()
     sumVal = 0.0
     meanVal = 0.0
-    stdVal = 0.0
-    cvVal = 0.0
     nVal = 0.0
     values = []
     first = True
-    nFeat = vprovider.featureCount()
     nElement = 0
-    self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-    self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-    while vprovider.nextFeature( feat ):
-      atMap = feat.attributeMap()
-      value = float( atMap[ index ].toDouble()[ 0 ] )
-      if first:
-        minVal = value
-        maxVal = value
-        first = False
-      else:
-        if value < minVal: minVal = value
-        if value > maxVal: maxVal = value
-      values.append( value )
-      sumVal = float( sumVal + value )
-      nElement += 1
-      self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
-    nVal= float( len( values ) )
-    if nVal > 0.00:
-      meanVal = float( sumVal ) / nVal
-      if not meanVal == 0.00:
-        for val in values:
-          stdVal += float( ( val - meanVal ) * ( val - meanVal ) )
-        stdVal = float( math.sqrt( stdVal / nVal ) )
-        cvVal = float( stdVal / meanVal )
-    lstStats = []
-    lstStats.append( "Mean    : " + unicode( meanVal ) )
-    lstStats.append( "StdDev : " + unicode( stdVal ) )
-    lstStats.append( "Sum     : " + unicode( sumVal) )
-    lstStats.append( "Min     : " + unicode( minVal ) )
-    lstStats.append( "Max     : " + unicode( maxVal ) )
-    lstStats.append( "N         : " + unicode( nVal ) )
-    lstStats.append( "CV       : " + unicode( cvVal ) )
-    return ( lstStats, [] )
+    # determine selected field type
+    if ftools_utils.getFieldType( vlayer, myField ) == 'String':
+      fillVal = 0
+      emptyVal = 0
+      if self.mySelection: # only selected features
+        selection = vlayer.selectedFeatures()
+        nFeat = vlayer.selectedFeatureCount()
+        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+        self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+        for f in selection:
+          atMap = f.attributeMap()
+          lenVal = float( len( atMap[ index ].toString() ) )
+          if first:
+            minVal = lenVal
+            maxVal = lenVal
+            first = False
+          else:
+            if lenVal < minVal: minVal = lenVal
+            if lenVal > maxVal: maxVal = lenVal
+          if lenVal != 0.00:
+            fillVal += 1
+          else:
+            emptyVal += 1
+          values.append( lenVal )
+          sumVal = sumVal + lenVal
+          nElement += 1
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
+      else: # there is no selection, process the whole layer
+        nFeat = vprovider.featureCount()
+        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+        self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+        while vprovider.nextFeature( feat ):
+          atMap = feat.attributeMap()
+          lenVal = float( len( atMap[ index ].toString() ) )
+          if first:
+            minVal = lenVal
+            maxVal = lenVal
+            first = False
+          else:
+            if lenVal < minVal: minVal = lenVal
+            if lenVal > maxVal: maxVal = lenVal
+          if lenVal != 0.00:
+            fillVal += 1
+          else:
+            emptyVal += 1
+          values.append( lenVal )
+          sumVal = sumVal + lenVal
+          nElement += 1
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
+      nVal= float( len( values ) )
+      if nVal > 0.00:
+        meanVal = sumVal / nVal
+      lstStats = []
+      lstStats.append( QCoreApplication.translate( "statResult", "Max. len.      : " ) + unicode( maxVal ) )
+      lstStats.append( QCoreApplication.translate( "statResult", "Min. len.       : " ) + unicode( minVal ) )
+      lstStats.append( QCoreApplication.translate( "statResult", "Mean. len     : " ) + unicode( meanVal ) )
+      lstStats.append( QCoreApplication.translate( "statResult", "Filled             : " ) + unicode( fillVal ) )
+      lstStats.append( QCoreApplication.translate( "statResult", "Empty           : " ) + unicode( emptyVal ) )
+      lstStats.append( QCoreApplication.translate( "statResult", "N                   : " ) + unicode( nVal ) )
+      return ( lstStats, [] )
+    else: # numeric field
+      stdVal = 0
+      cvVal = 0
+      if self.mySelection: # only selected features
+        selection = vlayer.selectedFeatures()
+        nFeat = vlayer.selectedFeatureCount()
+        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+        self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+        for f in selection:
+          atMap = f.attributeMap()
+          value = float( atMap[ index ].toDouble()[ 0 ] )
+          if first:
+            minVal = value
+            maxVal = value
+            first = False
+          else:
+            if value < minVal: minVal = value
+            if value > maxVal: maxVal = value
+          values.append( value )
+          sumVal = sumVal + value
+          nElement += 1
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
+      else: # there is no selection, process the whole layer
+        nFeat = vprovider.featureCount()
+        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+        self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+        while vprovider.nextFeature( feat ):
+          atMap = feat.attributeMap()
+          value = float( atMap[ index ].toDouble()[ 0 ] )
+          if first:
+            minVal = value
+            maxVal = value
+            first = False
+          else:
+            if value < minVal: minVal = value
+            if value > maxVal: maxVal = value
+          values.append( value )
+          sumVal = sumVal + value
+          nElement += 1
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
+      nVal= float( len( values ) )
+      if nVal > 0.00:
+        meanVal = sumVal / nVal
+        if meanVal != 0.00:
+          for val in values:
+            stdVal += ( ( val - meanVal ) * ( val - meanVal ) )
+          stdVal = math.sqrt( stdVal / nVal )
+          cvVal = stdVal / meanVal
+      lstStats = []
+      lstStats.append( "Mean    : " + unicode( meanVal ) )
+      lstStats.append( "StdDev : " + unicode( stdVal ) )
+      lstStats.append( "Sum     : " + unicode( sumVal) )
+      lstStats.append( "Min     : " + unicode( minVal ) )
+      lstStats.append( "Max     : " + unicode( maxVal ) )
+      lstStats.append( "N         : " + unicode( nVal ) )
+      lstStats.append( "CV       : " + unicode( cvVal ) )
+      return ( lstStats, [] )
 
   def nearest_neighbour_analysis( self, vlayer ):
     vprovider = vlayer.dataProvider()
