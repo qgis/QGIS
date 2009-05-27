@@ -2267,6 +2267,8 @@
 		72E70A7E0F426DB700142011 /* mActionZoomOut.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF940F39E5D9003DC336 /* mActionZoomOut.png */; };
 		72E70A7F0F426DB700142011 /* mActionZoomToLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF950F39E5D9003DC336 /* mActionZoomToLayer.png */; };
 		72E70A800F426DB700142011 /* mActionZoomToSelected.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF960F39E5D9003DC336 /* mActionZoomToSelected.png */; };
+		72EA46F30FCD7788009D4CFB /* mActionArrowDown.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EA46F20FCD7772009D4CFB /* mActionArrowDown.png */; };
+		72EA46F40FCD7788009D4CFB /* mActionArrowUp.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EA46F10FCD7772009D4CFB /* mActionArrowUp.png */; };
 		72EB129A0F7E9BCD002C38FA /* plugin_installer.png in Copy - theme-dflt-plugins */ = {isa = PBXBuildFile; fileRef = 72EB12950F7E9B51002C38FA /* plugin_installer.png */; };
 		72EBC9430F49D0E20016BA3C /* qgspaperitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9420F49D0E20016BA3C /* qgspaperitem.cpp */; };
 		72EBC9630F49D41E0016BA3C /* qgsogrsublayersdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9620F49D4130016BA3C /* qgsogrsublayersdialog.cpp */; };
@@ -4031,6 +4033,8 @@
 				72EBC9C00F49DBA30016BA3C /* mActionAlignRight.png in Copy - theme-default */,
 				72EBC9C10F49DBA30016BA3C /* mActionAlignTop.png in Copy - theme-default */,
 				72EBC9C20F49DBA30016BA3C /* mActionAlignVCenter.png in Copy - theme-default */,
+				72EA46F30FCD7788009D4CFB /* mActionArrowDown.png in Copy - theme-default */,
+				72EA46F40FCD7788009D4CFB /* mActionArrowUp.png in Copy - theme-default */,
 				7256F4310F41C4DD0022BE1F /* mActionCaptureLine.png in Copy - theme-default */,
 				7256F4320F41C4DD0022BE1F /* mActionCapturePoint.png in Copy - theme-default */,
 				7256F4330F41C4DD0022BE1F /* mActionCapturePolygon.png in Copy - theme-default */,
@@ -8470,6 +8474,9 @@
 		72E9A3C50F5AE63500E78E3C /* qgscomposerpicture.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerpicture.sip; path = ../../python/core/qgscomposerpicture.sip; sourceTree = SOURCE_ROOT; };
 		72E9A3C60F5AE63500E78E3C /* qgscomposerscalebar.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerscalebar.sip; path = ../../python/core/qgscomposerscalebar.sip; sourceTree = SOURCE_ROOT; };
 		72E9A3C70F5AE63500E78E3C /* qgscomposerlabel.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerlabel.sip; path = ../../python/core/qgscomposerlabel.sip; sourceTree = SOURCE_ROOT; };
+		72EA46F10FCD7772009D4CFB /* mActionArrowUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionArrowUp.png; path = ../../images/themes/default/mActionArrowUp.png; sourceTree = SOURCE_ROOT; };
+		72EA46F20FCD7772009D4CFB /* mActionArrowDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionArrowDown.png; path = ../../images/themes/default/mActionArrowDown.png; sourceTree = SOURCE_ROOT; };
+		72EA46F50FCD77CB009D4CFB /* qgis_xh.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_xh.ts; path = ../../i18n/qgis_xh.ts; sourceTree = SOURCE_ROOT; };
 		72EB12930F7E9AED002C38FA /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../../python/plugins/fTools/LICENSE; sourceTree = SOURCE_ROOT; };
 		72EB12950F7E9B51002C38FA /* plugin_installer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plugin_installer.png; path = ../../images/themes/default/plugins/plugin_installer.png; sourceTree = SOURCE_ROOT; };
 		72EBC9410F49D0E20016BA3C /* qgspaperitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspaperitem.h; path = ../../src/core/composer/qgspaperitem.h; sourceTree = SOURCE_ROOT; };
@@ -12314,6 +12321,8 @@
 				72EBC9BA0F49DB8F0016BA3C /* mActionAlignBottom.png */,
 				72EBC9BB0F49DB8F0016BA3C /* mActionAlignRight.png */,
 				72EBC9BC0F49DB8F0016BA3C /* mActionAlignLeft.png */,
+				72EA46F10FCD7772009D4CFB /* mActionArrowUp.png */,
+				72EA46F20FCD7772009D4CFB /* mActionArrowDown.png */,
 				7209EEFB0F39E5D9003DC336 /* mActionCaptureLine.png */,
 				7209EEFC0F39E5D9003DC336 /* mActionCapturePoint.png */,
 				7209EEFD0F39E5D9003DC336 /* mActionCapturePolygon.png */,
@@ -12592,6 +12601,7 @@
 				7209EFF00F39E5DA003DC336 /* qgis_th.ts */,
 				7209EFF10F39E5DA003DC336 /* qgis_tr.ts */,
 				7209EFF20F39E5DA003DC336 /* qgis_vi.ts */,
+				72EA46F50FCD77CB009D4CFB /* qgis_xh.ts */,
 				7209EFF30F39E5DA003DC336 /* qgis_zh_CN.ts */,
 				7209EFF40F39E5DA003DC336 /* qgis_zh_TW.ts */,
 				7209EFF50F39E5DA003DC336 /* qt_ar.ts */,
