@@ -152,6 +152,21 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   QDomElement mne = mnl.toElement();
   mDataSource = mne.text();
 
+  QFileInfo fi( mDataSource );
+  if ( !fi.exists() && fi.isRelative() )
+  {
+    QFileInfo pfi( QgsProject::instance()->fileName() );
+    if ( pfi.exists() )
+    {
+      fi.setFile( pfi.canonicalPath() + QDir::separator() + mDataSource );
+
+      if ( fi.exists() )
+      {
+        mDataSource = fi.canonicalPath();
+      }
+    }
+  }
+
   // Set the CRS from project file, asking the user if necessary.
   // Make it the saved CRS to have WMS layer projected correctly.
   // We will still overwrite whatever GDAL etc picks up anyway
@@ -182,7 +197,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   }
 
   // the internal name is just the data source basename
-  QFileInfo dataSourceFileInfo( mDataSource );
+  //QFileInfo dataSourceFileInfo( mDataSource );
   //internalName = dataSourceFileInfo.baseName();
 
   // set ID
@@ -263,7 +278,20 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   // data source
   QDomElement dataSource = document.createElement( "datasource" );
-  QDomText dataSourceText = document.createTextNode( source() );
+
+  QString src = source();
+  QFileInfo srcInfo( src );
+
+  if ( srcInfo.exists() )
+  {
+    QFileInfo pfi( QgsProject::instance()->fileName() );
+    QgsDebugMsg( "project path: " + pfi.canonicalPath() );
+    QgsDebugMsg( "src path: " + srcInfo.canonicalFilePath() + QDir::separator() );
+    if ( srcInfo.canonicalFilePath().startsWith( pfi.canonicalPath() + QDir::separator() ) )
+      src = src.mid( pfi.canonicalPath().size() + 1 );
+  }
+
+  QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
 
   maplayer.appendChild( dataSource );
