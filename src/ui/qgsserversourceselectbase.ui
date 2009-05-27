@@ -13,7 +13,9 @@
    <string>Add Layer(s) from a Server</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -93,7 +95,7 @@
          <property name="sizeType" >
           <enum>QSizePolicy::Expanding</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>131</width>
            <height>30</height>
@@ -138,6 +140,61 @@
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="tabLayerOrder" >
+      <attribute name="title" >
+       <string>Layer Order</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout" >
+       <item row="0" column="0" >
+        <widget class="QPushButton" name="mLayerUpButton" >
+         <property name="text" >
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QPushButton" name="mLayerDownButton" >
+         <property name="text" >
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2" >
+        <spacer name="horizontalSpacer" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>391</width>
+           <height>30</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0" colspan="3" >
+        <widget class="QTreeWidget" name="mLayerOrderTreeWidget" >
+         <property name="columnCount" >
+          <number>2</number>
+         </property>
+         <column>
+          <property name="text" >
+           <string>Layer</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Style</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+      <zorder>mLayerUpButton</zorder>
+      <zorder>mLayerDownButton</zorder>
+      <zorder>horizontalSpacer</zorder>
+      <zorder>mLayerOrderTreeWidget</zorder>
      </widget>
      <widget class="QWidget" name="tab_2" >
       <attribute name="title" >
@@ -236,7 +293,7 @@
         <property name="sizeType" >
          <enum>QSizePolicy::Expanding</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>441</width>
           <height>23</height>
@@ -281,7 +338,7 @@
      <property name="sizeType" >
       <enum>QSizePolicy::Expanding</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0" >
       <size>
        <width>284</width>
        <height>31</height>
