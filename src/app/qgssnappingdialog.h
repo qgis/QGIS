@@ -28,7 +28,7 @@ struct LayerEntry
   int snapTo; //0 = to vertex, 1 = to segment, 2 = to vertex and to segment
   QString layerName;
   double tolerance;
-  int toleranceUnit;
+  int toleranceUnit; // 0 = map units, 1 = pixels
 };
 
 /**A dialog to enter advanced editing properties, e.g. topological editing, snapping settings

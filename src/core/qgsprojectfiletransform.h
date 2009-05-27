@@ -80,6 +80,7 @@ class QgsProjectFileTransform
     void transform091to0100();
     void transform0100to0110();
     void transform0110to1000();
+    void transform1100to1200();
 };
 
 
