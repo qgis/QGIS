@@ -26,6 +26,7 @@
 #include <QDomDocument>
 #include <QPrinter> //to find out screen resolution
 #include <cstdlib>
+#include "qgsprojectproperty.h"
 
 typedef QgsProjectVersion PFV;
 
@@ -38,7 +39,8 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 0, 9, 1 ), PFV( 0, 10, 0 ), &QgsProjectFileTransform::transform091to0100},
   {PFV( 0, 9, 2 ), PFV( 0, 10, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 0, 10, 0 ), PFV( 0, 11, 0 ), &QgsProjectFileTransform::transform0100to0110},
-  {PFV( 0, 11, 0 ), PFV( 1, 0, 0 ), &QgsProjectFileTransform::transform0110to1000}
+  {PFV( 0, 11, 0 ), PFV( 1, 0, 0 ), &QgsProjectFileTransform::transform0110to1000},
+  {PFV( 1, 1, 0 ), PFV( 1, 2, 0 ), &QgsProjectFileTransform::transform1100to1200},
 };
 
 bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
@@ -345,4 +347,38 @@ void QgsProjectFileTransform::transform0110to1000()
 
     }
   }
+}
+
+void QgsProjectFileTransform::transform1100to1200()
+{
+  QgsDebugMsg( "Entering..." );
+  if ( mDom.isNull() )
+    return;
+
+  QDomNode qgis = mDom.firstChildElement( "qgis" );
+  if ( qgis.isNull() )
+    return;
+
+  QDomElement properties = qgis.firstChildElement( "properties" );
+  if ( properties.isNull() )
+    return;
+
+  QDomElement digitizing = properties.firstChildElement( "Digitizing" );
+  if ( digitizing.isNull() )
+    return;
+
+  QDomElement tolList = digitizing.firstChildElement( "LayerSnappingToleranceList" );
+  if ( tolList.isNull() )
+    return;
+
+  QDomElement tolUnitList = digitizing.firstChildElement( "LayerSnappingToleranceUnitList" );
+  if ( !tolUnitList.isNull() )
+    return;
+
+  QStringList units;
+  for ( int i = 0; i < tolList.childNodes().count(); i++ )
+    units << "0";
+
+  QgsPropertyValue value( units );
+  value.writeXML( "LayerSnappingToleranceUnitList", digitizing, mDom );
 }
