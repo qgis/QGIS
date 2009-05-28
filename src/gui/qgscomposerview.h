@@ -107,6 +107,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QgsComposerItem* mMoveContentItem;
     /**Start position of content move*/
     QPointF mMoveContentStartPos;
+    /**Start of rubber band creation*/
+    QPointF mRubberBandStartPos;
 
   public slots:
     /**For QgsComposerItemGroup to send its signals to QgsComposer (or other classes that keep track of input widgets)*/
