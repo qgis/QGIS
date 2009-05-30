@@ -261,17 +261,17 @@ void QgsVectorLayerProperties::addAttribute()
   QgsAddAttrDialog dialog( layer->dataProvider(), this );
   if ( dialog.exec() == QDialog::Accepted )
   {
-    if ( !addAttribute( dialog.name(), dialog.type() ) )
+    if ( !addAttribute( dialog.field() ) )
     {
       QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
     }
   }
 }
 
-bool QgsVectorLayerProperties::addAttribute( QString name, QString type )
+bool QgsVectorLayerProperties::addAttribute( const QgsField &field )
 {
-  QgsDebugMsg( "inserting attribute " + name + " of type " + type );
-  return layer->addAttribute( name, type );
+  QgsDebugMsg( "inserting attribute " + field.name() + " of type " + field.typeName() );
+  return layer->addAttribute( field );
 }
 
 void QgsVectorLayerProperties::deleteAttribute()

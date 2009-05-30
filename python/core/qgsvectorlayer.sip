@@ -325,7 +325,7 @@ public:
 
   /** add an attribute field (but does not commit it) 
       returns the field index or -1 in case of failure */
-  bool addAttribute(QString name, QString type);
+  bool addAttribute( const QgsField &field );
 
   /** delete an attribute field (but does not commit it) */
   bool deleteAttribute(int attr);

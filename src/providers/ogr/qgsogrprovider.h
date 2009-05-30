@@ -133,7 +133,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual bool deleteFeatures( const QgsFeatureIds & id );
 
     /**Adds new attributess. Unfortunately not supported for layers with features in it*/
-    virtual bool addAttributes( const QgsNewAttributesMap & attributes );
+    virtual bool addAttributes( const QList<QgsField> &attributes );
 
     /**Changes attribute values of existing features */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );

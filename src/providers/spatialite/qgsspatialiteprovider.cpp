@@ -42,7 +42,7 @@ const QString SPATIALITE_DESCRIPTION = "SpatiaLite data provider";
 QMap < QString, QgsSpatiaLiteProvider::SqliteHandles * >QgsSpatiaLiteProvider::SqliteHandles::handles;
 
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri ): QgsVectorDataProvider( uri ),
-    geomType( QGis::WKBUnknown ), mSrid( -1 ), spatialIndexRTree( false ), sqliteHandle( NULL ), spatialIndexMbrCache( false ), sqliteStatement( NULL )
+    geomType( QGis::WKBUnknown ), sqliteHandle( NULL ), sqliteStatement( NULL ), mSrid( -1 ), spatialIndexRTree( false ), spatialIndexMbrCache( false )
 {
   QgsDataSourceURI mUri = QgsDataSourceURI( uri );
 
@@ -107,10 +107,12 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri ): QgsVectorDat
     return;
   }
   //fill type names into sets
-  mSupportedNativeTypes.insert( "SQLITE_BLOB", QVariant::ByteArray );
-  mSupportedNativeTypes.insert( "SQLITE_TEXT", QVariant::String );
-  mSupportedNativeTypes.insert( "SQLITE_FLOAT", QVariant::Double );
-  mSupportedNativeTypes.insert( "SQLITE_INTEGER", QVariant::LongLong );
+  mNativeTypes
+  << QgsVectorDataProvider::NativeType( tr( "BLOB" ), "SQLITE_BLOB", QVariant::ByteArray )
+  << QgsVectorDataProvider::NativeType( tr( "Text" ), "SQLITE_TEXT", QVariant::String )
+  << QgsVectorDataProvider::NativeType( tr( "Double" ), "SQLITE_FLOAT", QVariant::Double, 0, 20, 0, 20 )
+  << QgsVectorDataProvider::NativeType( tr( "Integer" ), "SQLITE_INTEGER", QVariant::LongLong, 0, 20 )
+  ;
 }
 
 QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
@@ -175,7 +177,7 @@ void QgsSpatiaLiteProvider::loadFields()
           fieldType = QVariant::Double;
         }
 
-        attributeFields.insert( i - 1, QgsField( name, fieldType, type, 0, 0, tr( "" ) ) );
+        attributeFields.insert( i - 1, QgsField( name, fieldType, type, 0, 0, "" ) );
       }
     }
   }
@@ -1096,7 +1098,7 @@ abort:
   return false;
 }
 
-bool QgsSpatiaLiteProvider::addAttributes( const QgsNewAttributesMap & name )
+bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
 {
   char *errMsg = NULL;
   bool toCommit = false;
@@ -1112,9 +1114,12 @@ bool QgsSpatiaLiteProvider::addAttributes( const QgsNewAttributesMap & name )
   }
   toCommit = true;
 
-  for ( QgsNewAttributesMap::const_iterator iter = name.begin(); iter != name.end(); ++iter )
+  for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
   {
-    sql = QString( "ALTER TABLE %1 ADD COLUMN %2 %3" ).arg( quotedValue( mTableName ) ).arg( quotedValue( iter.key() ) ).arg( iter.value() );
+    sql = QString( "ALTER TABLE %1 ADD COLUMN %2 %3" )
+          .arg( quotedValue( mTableName ) )
+          .arg( quotedValue( iter->name() ) )
+          .arg( iter->typeName() );
     strcpy( xSql, sql.toUtf8().constData() );
     ret = sqlite3_exec( sqliteHandle, xSql, NULL, NULL, &errMsg );
     if ( ret != SQLITE_OK )

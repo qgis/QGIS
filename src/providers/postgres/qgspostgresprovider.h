@@ -215,7 +215,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
-    bool addAttributes( const QgsNewAttributesMap & name );
+    bool addAttributes( const QList<QgsField> &attributes );
 
     /**Deletes existing attributes
       @param names of the attributes to delete

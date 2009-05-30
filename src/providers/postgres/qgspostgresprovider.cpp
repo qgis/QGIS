@@ -224,11 +224,23 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 #endif
 
   //fill type names into sets
-  mSupportedNativeTypes.insert( "double precision", QVariant::Double );
-  mSupportedNativeTypes.insert( "int4", QVariant::Int );
-  mSupportedNativeTypes.insert( "int8", QVariant::LongLong );
-  mSupportedNativeTypes.insert( "text", QVariant::String );
-  mSupportedNativeTypes.insert( "varchar(30)", QVariant::String );
+  mNativeTypes
+  // integer types
+  << QgsVectorDataProvider::NativeType( tr( "smallint (16bit)" ), "int2", QVariant::Int )
+  << QgsVectorDataProvider::NativeType( tr( "integer (32bit)" ), "int4", QVariant::Int )
+  << QgsVectorDataProvider::NativeType( tr( "integer (64bit)" ), "int8", QVariant::LongLong )
+  << QgsVectorDataProvider::NativeType( tr( "numeric" ), "numeric", QVariant::LongLong, 1, 20, 0, 20 )
+  << QgsVectorDataProvider::NativeType( tr( "decimal" ), "decimal", QVariant::LongLong, 1, 20, 0, 20 )
+
+  // floating point
+  << QgsVectorDataProvider::NativeType( tr( "real" ), "real", QVariant::Double )
+  << QgsVectorDataProvider::NativeType( tr( "double" ), "double precision", QVariant::Double )
+
+  // string types
+  << QgsVectorDataProvider::NativeType( tr( "char" ), "char", QVariant::String, 1, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "varchar" ), "varchar", QVariant::String, 1, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "text" ), "text", QVariant::String )
+  ;
 
   if ( primaryKey.isEmpty() )
   {
@@ -875,9 +887,13 @@ void QgsPostgresProvider::loadFields()
 
         if ( fieldTypeName == "int8" )
           fieldType = QVariant::LongLong;
-        else if ( fieldTypeName.startsWith( "int" ) || fieldTypeName == "serial" )
+        else if ( fieldTypeName.startsWith( "int" ) ||
+                  fieldTypeName == "serial" )
           fieldType = QVariant::Int;
-        else if ( fieldTypeName == "real" || fieldTypeName == "double precision" || fieldTypeName.startsWith( "float" ) || fieldTypeName == "numeric" )
+        else if ( fieldTypeName == "real" ||
+                  fieldTypeName == "double precision" ||
+                  fieldTypeName.startsWith( "float" ) ||
+                  fieldTypeName == "numeric" )
           fieldType = QVariant::Double;
         else if ( fieldTypeName == "text" ||
                   fieldTypeName == "char" ||
@@ -1828,15 +1844,19 @@ QByteArray QgsPostgresProvider::paramValue( QString fieldValue, const QString &d
 
   if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
-    Result result = connectionRO->PQexec( QString( "select %1" ).arg( defaultValue ) );
+    PGresult *result = connectionRW->PQexec( QString( "select %1" ).arg( defaultValue ) );
+    if ( PQresultStatus( result ) == PGRES_FATAL_ERROR )
+      throw PGException( result );
+
     if ( PQgetisnull( result, 0, 0 ) )
     {
+      PQclear( result );
       return QByteArray( 0 );  // QByteArray(0).isNull() is true
     }
     else
     {
-      QString val = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
-      return val.toUtf8();
+      PQclear( result );
+      return QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toUtf8();
     }
   }
 
@@ -2060,7 +2080,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
   return returnvalue;
 }
 
-bool QgsPostgresProvider::addAttributes( const QgsNewAttributesMap & name )
+bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
 {
   bool returnvalue = true;
 
@@ -2071,12 +2091,22 @@ bool QgsPostgresProvider::addAttributes( const QgsNewAttributesMap & name )
   {
     connectionRW->PQexecNR( "BEGIN" );
 
-    for ( QgsNewAttributesMap::const_iterator iter = name.begin();iter != name.end();++iter )
+    for ( QList<QgsField>::const_iterator iter = attributes.begin();iter != attributes.end();++iter )
     {
+      QString type = iter->typeName();
+      if ( type == "char" || type == "varchar" )
+      {
+        type = QString( "%1(%2)" ).arg( type ).arg( iter->length() );
+      }
+      else if ( type == "numeric" || type == "decimal" )
+      {
+        type = QString( "%1(%2,%3)" ).arg( type ).arg( iter->length() ).arg( iter->precision() );
+      }
+
       QString sql = QString( "ALTER TABLE %1 ADD COLUMN %2 %3" )
                     .arg( mSchemaTableName )
-                    .arg( quotedIdentifier( iter.key() ) )
-                    .arg( iter.value() );
+                    .arg( quotedIdentifier( iter->name() ) )
+                    .arg( type );
       QgsDebugMsg( sql );
 
       //send sql statement and do error handling
@@ -2084,6 +2114,18 @@ bool QgsPostgresProvider::addAttributes( const QgsNewAttributesMap & name )
       if ( result == 0 || PQresultStatus( result ) == PGRES_FATAL_ERROR )
         throw PGException( result );
       PQclear( result );
+
+      if ( !iter->comment().isEmpty() )
+      {
+        sql = QString( "COMMENT ON COLUMN %1.%2 IS %3" )
+              .arg( mSchemaTableName )
+              .arg( quotedIdentifier( iter->name() ) )
+              .arg( quotedValue( iter->comment() ) );
+        result = connectionRW->PQexec( sql );
+        if ( result == 0 || PQresultStatus( result ) == PGRES_FATAL_ERROR )
+          throw PGException( result );
+        PQclear( result );
+      }
     }
 
     connectionRW->PQexecNR( "COMMIT" );

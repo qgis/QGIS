@@ -172,9 +172,9 @@ QgsVectorLayer::~QgsVectorLayer()
   //delete remaining overlays
 
   QList<QgsVectorOverlay*>::iterator overlayIt = mOverlays.begin();
-  for(; overlayIt != mOverlays.end(); ++overlayIt)
+  for ( ; overlayIt != mOverlays.end(); ++overlayIt )
   {
-    delete (*overlayIt);
+    delete *overlayIt;
   }
 }
 
@@ -1469,7 +1469,7 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
   // and add to the known added features.
   f.setFeatureId( addedIdLowWaterMark );
   mAddedFeatures.append( f );
-  mCachedGeometries[f.id()] = *(f.geometry());
+  mCachedGeometries[f.id()] = *f.geometry();
 
   setModified( true );
 
@@ -1666,7 +1666,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
     if ( addedIt->id() == selectedFeatureId )
     {
       return addedIt->geometry()->addIsland( ring );
-      mCachedGeometries[selectedFeatureId] = *(addedIt->geometry());
+      mCachedGeometries[selectedFeatureId] = *addedIt->geometry();
     }
   }
 
@@ -1737,19 +1737,19 @@ int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
 
   //else get the geometry from provider (may be slow)
   QgsFeature f;
-  if(mDataProvider && mDataProvider->featureAtId(featureId, f, true))
+  if ( mDataProvider && mDataProvider->featureAtId( featureId, f, true ) )
   {
-      if(f.geometry())
+    if ( f.geometry() )
+    {
+      QgsGeometry translateGeom( *( f.geometry() ) );
+      int errorCode = translateGeom.translate( dx, dy );
+      if ( errorCode == 0 )
       {
-          QgsGeometry translateGeom(*(f.geometry()));
-          int errorCode = translateGeom.translate(dx, dy);
-          if(errorCode == 0)
-          {
-            mChangedGeometries.insert(featureId, translateGeom);
-            setModified(true, true);
-          }
-          return errorCode;
+        mChangedGeometries.insert( featureId, translateGeom );
+        setModified( true, true );
       }
+      return errorCode;
+    }
   }
   return 1; //geometry not found
 }
@@ -2571,7 +2571,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 }
 
 
-bool QgsVectorLayer::changeGeometry(int fid, QgsGeometry* geom)
+bool QgsVectorLayer::changeGeometry( int fid, QgsGeometry* geom )
 {
   if ( !mEditable || !mDataProvider )
   {
@@ -2621,24 +2621,22 @@ bool QgsVectorLayer::changeAttributeValue( int fid, int field, QVariant value, b
   return true;
 }
 
-bool QgsVectorLayer::addAttribute( QString name, QString type )
+bool QgsVectorLayer::addAttribute( const QgsField &field )
 {
   if ( !isEditable() )
     return false;
 
   for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
   {
-    if ( it.value().name() == name )
+    if ( it.value().name() == field.name() )
       return false;
   }
 
-  const QgsNativeTypeMap &types = mDataProvider->supportedNativeTypes();
-  QVariant::Type typeType = QVariant::String;
-  if ( types.contains( type ) )
-    typeType = ( QVariant::Type ) types[type];
+  if ( !mDataProvider->supportedType( field ) )
+    return false;
 
   mMaxUpdatedIndex++;
-  mUpdatedFields.insert( mMaxUpdatedIndex, QgsField( name, typeType, type ) );
+  mUpdatedFields.insert( mMaxUpdatedIndex, field );
   mAddedAttributeIds.insert( mMaxUpdatedIndex );
 
   setModified( true, false );
@@ -2656,10 +2654,12 @@ bool QgsVectorLayer::deleteAttribute( int index )
   if ( mDeletedAttributeIds.contains( index ) )
     return false;
 
-  if ( !mDataProvider->fields().contains( index ) )
+  if ( !mAddedAttributeIds.contains( index ) &&
+       !mDataProvider->fields().contains( index ) )
     return false;
 
   mDeletedAttributeIds.insert( index );
+  mAddedAttributeIds.remove( index );
   mUpdatedFields.remove( index );
 
   setModified( true, false );
@@ -2748,9 +2748,9 @@ bool QgsVectorLayer::commitChanges()
   //
   if ( mAddedAttributeIds.size() > 0 )
   {
-    QgsNewAttributesMap addedAttributes;
+    QList<QgsField> addedAttributes;
     for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.begin(); it != mAddedAttributeIds.end(); it++ )
-      addedAttributes[ mUpdatedFields[ *it ].name()] = mUpdatedFields[ *it ].typeName();
+      addedAttributes << mUpdatedFields[ *it ];
 
     if (( cap & QgsVectorDataProvider::AddAttributes ) && mDataProvider->addAttributes( addedAttributes ) )
     {
@@ -3244,7 +3244,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
   int n = 0;
   QgsFeature f;
 
-  if (mCachedGeometriesRect.contains( searchRect ) )
+  if ( mCachedGeometriesRect.contains( searchRect ) )
   {
     QgsDebugMsg( "Using cached geometries for snapping." );
 

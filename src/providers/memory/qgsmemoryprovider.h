@@ -115,7 +115,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      * @param attributes map with attribute name as key and type as value
      * @return true in case of success and false in case of failure
      */
-    virtual bool addAttributes( const QgsNewAttributesMap & attributes );
+    virtual bool addAttributes( const QList<QgsField> &attributes );
 
     /**
      * Deletes existing attributes

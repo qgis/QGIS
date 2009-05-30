@@ -164,7 +164,7 @@ class QgsVectorDataProvider : QgsDataProvider
        * @param attributes map with attribute name as key and type as value
        * @return true in case of success and false in case of failure
        */
-      virtual bool addAttributes(const QMap<QString, QString> & attributes);
+      virtual bool addAttributes(const QList<QgsField> & attributes);
 
       /**
        * Deletes existing attributes
@@ -231,9 +231,12 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       QList<int> attributeIndexes();
 
-      /**Returns the names of the numerical types*/
-      const QMap<QString,QVariant::Type> &supportedNativeTypes() const;
-      
+      /**
+       * check if provider supports type of field
+       * @note added in 1.2
+       */
+      bool supportedType( const QgsField &field ) const;
+
       /**
        * Set whether provider should return also features that don't have
        * associated geometry. FALSE by default
