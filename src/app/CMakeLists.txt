@@ -313,6 +313,9 @@ ELSE (APPLE)
   INSTALL(TARGETS qgis RUNTIME DESTINATION ${QGIS_BIN_DIR})
 ENDIF (APPLE)
 
+IF(MSVC)
+  INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
+ENDIF(MSVC)
 
 ########## Install headers for developers to use against qgis libs
 #commented out since app classes dont go into any lib there is little point
