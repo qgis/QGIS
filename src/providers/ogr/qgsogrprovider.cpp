@@ -184,9 +184,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     valid = false;
   }
 
-  mSupportedNativeTypes.insert( "Integer", QVariant::Int );
-  mSupportedNativeTypes.insert( "Real", QVariant::Double );
-  mSupportedNativeTypes.insert( "String", QVariant::String );
+  mNativeTypes
+  << QgsVectorDataProvider::NativeType( tr( "Integer" ), "integer", QVariant::Int, 1, 10 )
+  << QgsVectorDataProvider::NativeType( tr( "Real" ), "double", QVariant::Double, 1, 20, 0, 5 )
+  << QgsVectorDataProvider::NativeType( tr( "String" ), "string", QVariant::String, 1, 20, 0, 5 )
+  ;
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -672,33 +674,34 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList & flist )
   return returnvalue;
 }
 
-bool QgsOgrProvider::addAttributes( const QgsNewAttributesMap & attributes )
+bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 {
   bool returnvalue = true;
 
-  for ( QgsNewAttributesMap::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
+  for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
   {
-    OGRFieldDefnH fielddefn = OGR_Fld_Create( mEncoding->fromUnicode( iter.key() ).data(), OFTInteger );
+    OGRFieldType type;
 
-    if ( *iter == "Integer" )
+    switch ( iter->type() )
     {
-      OGR_Fld_SetType( fielddefn, OFTInteger );
-      OGR_Fld_SetWidth( fielddefn, 10 );
+      case QVariant::Int:
+        type = OFTInteger;
+        break;
+      case QVariant::Double:
+        type = OFTReal;
+        break;
+      case QVariant::String:
+        type = OFTString;
+        break;
+      default:
+        QgsLogger::warning( QString( "QgsOgrProvider::addAttributes, type %1 not found" ).arg( iter->typeName() ) );
+        returnvalue = false;
+        continue;
     }
-    else if ( *iter == "Real" )
-    {
-      OGR_Fld_SetType( fielddefn, OFTReal );
-    }
-    else if ( *iter == "String" )
-    {
-      OGR_Fld_SetType( fielddefn, OFTString );
-    }
-    else
-    {
-      QgsLogger::warning( QString( "QgsOgrProvider::addAttributes, type %1 not found" ).arg( *iter ) );
-      returnvalue = false;
-      continue;
-    }
+
+    OGRFieldDefnH fielddefn = OGR_Fld_Create( mEncoding->fromUnicode( iter->name() ).data(), type );
+    OGR_Fld_SetWidth( fielddefn, iter->length() );
+    OGR_Fld_SetPrecision( fielddefn, iter->precision() );
 
     if ( OGR_L_CreateField( ogrLayer, fielddefn, TRUE ) != OGRERR_NONE )
     {

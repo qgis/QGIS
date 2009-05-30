@@ -78,7 +78,7 @@ bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds & id )
   return false;
 }
 
-bool QgsVectorDataProvider::addAttributes( const QgsNewAttributesMap & attributes )
+bool QgsVectorDataProvider::addAttributes( const QList<QgsField> & attributes )
 {
   return false;
 }
@@ -262,11 +262,27 @@ void QgsVectorDataProvider::enableGeometrylessFeatures( bool fetch )
   mFetchFeaturesWithoutGeom = fetch;
 }
 
-const QgsNativeTypeMap &QgsVectorDataProvider::supportedNativeTypes() const
+const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeTypes() const
 {
-  return mSupportedNativeTypes;
+  return mNativeTypes;
 }
 
+
+bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
+{
+  int i;
+  for ( i = 0; i < mNativeTypes.size(); i++ )
+  {
+    if ( field.type() == mNativeTypes[i].mType &&
+         field.length() >= mNativeTypes[i].mMinLen && field.length() <= mNativeTypes[i].mMaxLen &&
+         field.precision() >= mNativeTypes[i].mMinPrec && field.precision() <= mNativeTypes[i].mMaxPrec )
+    {
+      break;
+    }
+  }
+
+  return i < mNativeTypes.size();
+}
 
 QVariant QgsVectorDataProvider::minimumValue( int index )
 {

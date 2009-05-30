@@ -29,9 +29,6 @@ class QTextCodec;
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"
 
-typedef QMap<QString, QString> QgsNewAttributesMap;
-typedef QMap<QString, QVariant::Type> QgsNativeTypeMap;
-
 /** \ingroup core
  * This is the base class for vector data providers.
  *
@@ -208,21 +205,21 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param attributes map with attribute name as key and type as value
      * @return true in case of success and false in case of failure
      */
-    virtual bool addAttributes( const QgsNewAttributesMap & attributes );
+    virtual bool addAttributes( const QList<QgsField> &attributes );
 
     /**
      * Deletes existing attributes
      * @param attributes a set containing names of attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteAttributes( const QgsAttributeIds& attributes );
+    virtual bool deleteAttributes( const QgsAttributeIds &attributes );
 
     /**
      * Changes attribute values of existing features.
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
 
     /**
      * Returns the default value for field specified by @c fieldId
@@ -279,14 +276,36 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual QgsAttributeList attributeIndexes();
 
-    /**Returns the names of the numerical types*/
-    const QgsNativeTypeMap &supportedNativeTypes() const;
-
     /**
      * Set whether provider should also return features that don't have
      * associated geometry. FALSE by default
      */
     void enableGeometrylessFeatures( bool fetch );
+
+    /**
+     * check if provider supports type of field
+     * @note added in 1.2
+     */
+    bool supportedType( const QgsField &field ) const;
+
+    struct NativeType
+    {
+      NativeType( QString typeDesc, QString typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 ) :
+          mTypeDesc( typeDesc ), mTypeName( typeName ), mType( type ), mMinLen( minLen ), mMaxLen( maxLen ), mMinPrec( minPrec ), mMaxPrec( maxPrec ) {};
+
+      QString mTypeDesc;
+      QString mTypeName;
+      QVariant::Type mType;
+      int mMinLen, mMaxLen;
+      int mMinPrec, mMaxPrec;
+    };
+
+
+    /**
+     * Returns the names of the numerical types
+     * @note added in 1.2
+     */
+    const QList< NativeType > &nativeTypes() const;
 
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
@@ -309,7 +328,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     QgsAttributeList mAttributesToFetch;
 
     /**The names of the providers native types*/
-    QgsNativeTypeMap mSupportedNativeTypes;
+    QList< NativeType > mNativeTypes;
 };
 
 #endif

@@ -50,10 +50,9 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void setDisplayField( QString name );
 
     /**Adds an attribute to the table (but does not commit it yet)
-    @param name attribute name
-    @param type attribute type
-    @return false in case of a name conflict, true in case of success*/
-    bool addAttribute( QString name, QString type );
+    @param field the field to add
+    @return false in case of a name conflict, true in case of success */
+    bool addAttribute( const QgsField &field );
 
     /**Deletes an attribute (but does not commit it)
       @param name attribute name
