@@ -234,7 +234,7 @@ int QgsWFSProvider::describeFeatureType( const QString& uri, QString& geometryAt
 
 int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAttribute )
 {
-#if 0
+#if 0 //the old and slower method with DOM
   //assemble request string
   QString request = uri /*+ "&OUTPUTFORMAT=gml3"*/; //use gml2 as it is supported by most wfs servers
   QByteArray result;
@@ -265,11 +265,13 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   return 0;
 #endif
 
-  //the new and faster method with the expat parser
-  QSet<QString> thematicAttributes;
+  //the new and faster method with the expat SAX parser
+
+  //allows fast searchings with attribute name. Also needed is attribute Index and type infos
+  QMap<QString, QPair<int, QgsField> > thematicAttributes;
   for ( QgsFieldMap::const_iterator it = mFields.begin(); it != mFields.end(); ++it )
   {
-    thematicAttributes << it->name();
+    thematicAttributes.insert(it.value().name(), qMakePair(it.key(), it.value()));
   }
 
   QgsWFSData dataReader( uri, &mExtent, &mSourceCRS, mFeatures, geometryAttribute, thematicAttributes, &mWKBType );
@@ -512,7 +514,20 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     }
     else //todo: distinguish between numerical and non-numerical types
     {
-      fields[fields.size()] = QgsField( name, QVariant::String, type );
+      QVariant::Type  attributeType = QVariant::String; //string is default type
+      if(type.contains("double", Qt::CaseInsensitive) || type.contains("float", Qt::CaseInsensitive))
+      {
+        attributeType = QVariant::Double;
+      }
+      else if(type.contains("int", Qt::CaseInsensitive))
+      {
+        attributeType = QVariant::Int;
+      }
+      else if(type.contains("long", Qt::CaseInsensitive))
+      {
+        attributeType = QVariant::LongLong;
+      }
+      fields[fields.size()] = QgsField( name, attributeType, type );
     }
   }
   return 0;
