@@ -36,7 +36,7 @@ QgsWFSData::QgsWFSData(
   QgsCoordinateReferenceSystem* srs,
   QList<QgsFeature*> &features,
   const QString& geometryAttribute,
-  const QSet<QString>& thematicAttributes,
+  const QMap<QString, QPair<int, QgsField> >& thematicAttributes,
   QGis::WkbType* wkbType )
     : QObject(),
     mUri( uri ),
@@ -193,7 +193,6 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
   {
     mCurrentFeature = new QgsFeature( mFeatureCount );
-    mAttributeIndex = 0;
     mParseModeStack.push( QgsWFSData::featureMember );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Box" && mParseModeStack.top() == QgsWFSData::boundingBox )
@@ -262,15 +261,35 @@ void QgsWFSData::endElement( const XML_Char* el )
       mParseModeStack.pop();
     }
   }
-  else if ( localName == mAttributeName )
+  else if ( localName == mAttributeName ) //add a thematic attribute to the feature
   {
     if ( !mParseModeStack.empty() )
     {
       mParseModeStack.pop();
     }
 
-    mCurrentFeature->addAttribute( mAttributeIndex, QVariant( mStringCash ) );
-    ++mAttributeIndex;
+    //find index with attribute name
+    QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.find(mAttributeName);
+    if(att_it != mThematicAttributes.constEnd())
+    {
+      QVariant var;
+      switch(att_it.value().second.type())
+      {
+        case QVariant::Double:
+          var = QVariant(mStringCash.toDouble());
+          break;
+        case QVariant::Int:
+          var = QVariant(mStringCash.toInt());
+          break;
+        case QVariant::LongLong:
+          var = QVariant(mStringCash.toLongLong());
+          break;
+        default: //string type is default
+          var = QVariant( mStringCash );
+          break;
+      }
+       mCurrentFeature->addAttribute(att_it.value().first, QVariant( mStringCash ));
+    }
   }
   else if ( localName == mGeometryAttribute )
   {
