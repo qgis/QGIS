@@ -777,8 +777,13 @@ void QgsComposer::on_mActionSaveAsTemplate_activated( void )
     return;
   }
 
-  //save directory
   QFileInfo saveFileInfo( saveFileName );
+  //check if suffix has been added
+  if(saveFileInfo.suffix().isEmpty())
+  {
+    QString saveFileNameWithSuffix = saveFileName.append(".qpt");
+    saveFileInfo = QFileInfo(saveFileNameWithSuffix);
+  }
   settings.setValue( "UI/LastComposerTemplateDir", saveFileInfo.absolutePath() );
 
   QFile templateFile( saveFileName );
