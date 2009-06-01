@@ -282,7 +282,8 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QString src = source();
   QFileInfo srcInfo( src );
 
-  if ( srcInfo.exists() )
+  bool absolutePath = QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true );
+  if ( !absolutePath && srcInfo.exists() )
   {
     QFileInfo pfi( QgsProject::instance()->fileName() );
     QgsDebugMsg( "project path: " + pfi.canonicalPath() );

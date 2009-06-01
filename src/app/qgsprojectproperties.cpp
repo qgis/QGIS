@@ -80,6 +80,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     radManual->setChecked( true );
   }
 
+  cbxAbsolutePath->setChecked( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true ) );
+
   int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
   spinBoxDP->setValue( dp );
 
@@ -274,13 +276,12 @@ void QgsProjectProperties::apply()
   // number of decimal places for the manual option
   // Note. Qt 3.2.3 and greater have a function selectedId() that
   // can be used instead of the two part technique here
-  if ( radAutomatic->isChecked() )
-    QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", true );
-  else
-    QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", false );
+  QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", radAutomatic->isChecked() );
   QgsProject::instance()->writeEntry( "PositionPrecision", "/DecimalPlaces", spinBoxDP->value() );
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
+
+  QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->isChecked() );
 
   //set the colour for selections
   QColor myColour = pbnSelectionColour->color();
