@@ -104,9 +104,9 @@ void QgsDiagramOverlay::createOverlayObjects( const QgsRenderContext& renderCont
 
         currentGeometry = currentFeature.geometryAndOwnership();
         //overlay objects needs the geometry in map coordinates
-        if(currentGeometry && renderContext.coordinateTransform())
+        if ( currentGeometry && renderContext.coordinateTransform() )
         {
-          currentGeometry->transform(*(renderContext.coordinateTransform()));
+          currentGeometry->transform( *( renderContext.coordinateTransform() ) );
         }
         mOverlayObjects.insert( currentFeature.id(), new QgsOverlayObject( width, height, 0, currentGeometry ) );
       }
@@ -152,21 +152,21 @@ void QgsDiagramOverlay::drawOverlayObjects( QgsRenderContext& context ) const
             const QgsCoordinateTransform* ct = context.coordinateTransform();
 
             QList<QgsPoint>::const_iterator positionIt = positionList.constBegin();
-            for(; positionIt != positionList.constEnd(); ++positionIt)
+            for ( ; positionIt != positionList.constEnd(); ++positionIt )
             {
-                QgsPoint overlayPosition = *positionIt;
-                context.mapToPixel().transform( &overlayPosition );
-                int shiftX = currentDiagramImage->width() / 2;
-                int shiftY = currentDiagramImage->height() / 2;
+              QgsPoint overlayPosition = *positionIt;
+              context.mapToPixel().transform( &overlayPosition );
+              int shiftX = currentDiagramImage->width() / 2;
+              int shiftY = currentDiagramImage->height() / 2;
 
-                if ( painter )
-                {
-                    painter->save();
-                    painter->scale( 1.0 / context.rasterScaleFactor(), 1.0 / context.rasterScaleFactor() );
-                    //painter->drawRect(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, it.value()->width(), it.value()->height());
-                    painter->drawImage(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, *currentDiagramImage );
-                    painter->restore();
-                }
+              if ( painter )
+              {
+                painter->save();
+                painter->scale( 1.0 / context.rasterScaleFactor(), 1.0 / context.rasterScaleFactor() );
+                //painter->drawRect(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, it.value()->width(), it.value()->height());
+                painter->drawImage(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, *currentDiagramImage );
+                painter->restore();
+              }
             }
           }
         }

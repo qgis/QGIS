@@ -46,19 +46,19 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
   QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
 
   //lock/unlock position of item with right click
-  if(e->button() == Qt::RightButton)
+  if ( e->button() == Qt::RightButton )
   {
-     QgsComposerItem* selectedItem = composition()->composerItemAt( scenePoint );
-     if(selectedItem)
-     {
-         bool lock = selectedItem->positionLock() ? false : true;
-         selectedItem->setPositionLock(lock);
-         selectedItem->update();
-         //make sure the new cursor is correct
-         QPointF itemPoint = selectedItem->mapFromScene( scenePoint );
-         selectedItem->updateCursor(itemPoint);
-     }
-     return;
+    QgsComposerItem* selectedItem = composition()->composerItemAt( scenePoint );
+    if ( selectedItem )
+    {
+      bool lock = selectedItem->positionLock() ? false : true;
+      selectedItem->setPositionLock( lock );
+      selectedItem->update();
+      //make sure the new cursor is correct
+      QPointF itemPoint = selectedItem->mapFromScene( scenePoint );
+      selectedItem->updateCursor( itemPoint );
+    }
+    return;
   }
 
   switch ( mCurrentTool )
@@ -101,7 +101,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     {
       QTransform t;
       mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
-      mRubberBandStartPos = QPointF(snappedScenePoint.x(), snappedScenePoint.y());
+      mRubberBandStartPos = QPointF( snappedScenePoint.x(), snappedScenePoint.y() );
       t.translate( snappedScenePoint.x(), snappedScenePoint.y() );
       mRubberBandItem->setTransform( t );
       mRubberBandItem->setZValue( 100 );
@@ -236,43 +236,43 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
 
       case AddMap:
         //adjust rubber band item
+      {
+        double x = 0;
+        double y = 0;
+        double width = 0;
+        double height = 0;
+
+        double dx = scenePoint.x() - mRubberBandStartPos.x();
+        double dy = scenePoint.y() - mRubberBandStartPos.y();
+
+        if ( dx < 0 )
         {
-          double x = 0;
-          double y = 0;
-          double width = 0;
-          double height = 0;
-
-          double dx = scenePoint.x() - mRubberBandStartPos.x();
-          double dy = scenePoint.y() - mRubberBandStartPos.y();
-
-          if(dx < 0)
-          {
-            x = scenePoint.x();
-            width = -dx;
-          }
-          else
-          {
-            x = mRubberBandStartPos.x();
-            width = dx;
-          }
-
-          if(dy < 0)
-          {
-            y = scenePoint.y();
-            height = -dy;
-          }
-          else
-          {
-            y = mRubberBandStartPos.y();
-            height = dy;
-          }
-
-          mRubberBandItem->setRect( 0, 0, width, height );
-          QTransform t;
-          t.translate(x, y);
-          mRubberBandItem->setTransform(t);
-          break;
+          x = scenePoint.x();
+          width = -dx;
         }
+        else
+        {
+          x = mRubberBandStartPos.x();
+          width = dx;
+        }
+
+        if ( dy < 0 )
+        {
+          y = scenePoint.y();
+          height = -dy;
+        }
+        else
+        {
+          y = mRubberBandStartPos.y();
+          height = dy;
+        }
+
+        mRubberBandItem->setRect( 0, 0, width, height );
+        QTransform t;
+        t.translate( x, y );
+        mRubberBandItem->setTransform( t );
+        break;
+      }
 
       case MoveItemContent:
       {

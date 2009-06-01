@@ -34,7 +34,7 @@
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
 QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue ): QGraphicsRectItem( 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), \
-        mFrame( true ), mItemPositionLocked(false)
+    mFrame( true ), mItemPositionLocked( false )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setAcceptsHoverEvents( true );
@@ -125,13 +125,13 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
 
   //position lock for mouse moves/resizes
-  if(mItemPositionLocked)
+  if ( mItemPositionLocked )
   {
-    composerItemElem.setAttribute( "positionLock", "true");
+    composerItemElem.setAttribute( "positionLock", "true" );
   }
   else
   {
-    composerItemElem.setAttribute( "positionLock", "false");
+    composerItemElem.setAttribute( "positionLock", "false" );
   }
 
 
@@ -177,14 +177,14 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //position lock for mouse moves/resizes
-  QString positionLock = itemElem.attribute("positionLock");
-  if(positionLock.compare("true", Qt::CaseInsensitive) == 0)
+  QString positionLock = itemElem.attribute( "positionLock" );
+  if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
   {
-      mItemPositionLocked = true;
+    mItemPositionLocked = true;
   }
   else
   {
-      mItemPositionLocked = false;
+    mItemPositionLocked = false;
   }
 
   //position
@@ -246,10 +246,10 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
 void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 {
-    if(mItemPositionLocked)
-    {
-        return;
-    }
+  if ( mItemPositionLocked )
+  {
+    return;
+  }
 
   if ( mBoundingResizeRectangle )
   {
@@ -263,10 +263,10 @@ void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 
 void QgsComposerItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
-    if(mItemPositionLocked)
-    {
-        return;
-    }
+  if ( mItemPositionLocked )
+  {
+    return;
+  }
 
   //set current position and type of mouse move action
   mMouseMoveStartPos = event->lastScenePos();
@@ -297,10 +297,10 @@ void QgsComposerItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
 void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
 {
 
-    if(mItemPositionLocked)
-    {
-        return;
-    }
+  if ( mItemPositionLocked )
+  {
+    return;
+  }
 
   //delete frame rectangle
   if ( mBoundingResizeRectangle )
@@ -331,9 +331,9 @@ Qt::CursorShape QgsComposerItem::cursorForPosition( const QPointF& itemCoordPos 
 {
   QgsComposerItem::MouseMoveAction mouseAction = mouseMoveActionForPosition( itemCoordPos );
 
-  if( mouseAction == QgsComposerItem::NoAction)
+  if ( mouseAction == QgsComposerItem::NoAction )
   {
-      return Qt::ForbiddenCursor;
+    return Qt::ForbiddenCursor;
   }
   if ( mouseAction == QgsComposerItem::MoveItem )
   {
@@ -361,9 +361,9 @@ QgsComposerItem::MouseMoveAction QgsComposerItem::mouseMoveActionForPosition( co
 {
 
   //no action at all if item position is locked for mouse
-  if(mItemPositionLocked)
+  if ( mItemPositionLocked )
   {
-      return QgsComposerItem::NoAction;
+    return QgsComposerItem::NoAction;
   }
 
   bool nearLeftBorder = false;
@@ -434,7 +434,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
   }
 
   //test if change item is a composer item. If so, prefer call to  setSceneRect() instead of setTransform() and setRect()
-  QgsComposerItem* changeComposerItem = dynamic_cast<QgsComposerItem*>(changeItem);
+  QgsComposerItem* changeComposerItem = dynamic_cast<QgsComposerItem*>( changeItem );
 
   double mx = 0.0, my = 0.0, rx = 0.0, ry = 0.0;
   QPointF snappedPosition = mComposition->snapPointToGrid( currentPosition );
@@ -504,7 +504,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
       double moveRectX = snappedLeftPoint.x() - originalItem->transform().dx();
       double moveRectY = snappedLeftPoint.y() - originalItem->transform().dy();
 
-      if(!changeComposerItem)
+      if ( !changeComposerItem )
       {
         QTransform moveTransform;
         moveTransform.translate( originalItem->transform().dx() + moveRectX, originalItem->transform().dy() + moveRectY );
@@ -512,14 +512,14 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
       }
       else  //for composer items, we prefer setSceneRect as subclasses can implement custom behaviour (e.g. item group)
       {
-        changeComposerItem->setSceneRect(QRectF(originalItem->transform().dx() + moveRectX, \
-                                                originalItem->transform().dy() + moveRectY, \
-                                                originalItem->rect().width(), originalItem->rect().height()));
+        changeComposerItem->setSceneRect( QRectF( originalItem->transform().dx() + moveRectX, \
+                                          originalItem->transform().dy() + moveRectY, \
+                                          originalItem->rect().width(), originalItem->rect().height() ) );
       }
       return;
   }
 
-  if(!changeComposerItem)
+  if ( !changeComposerItem )
   {
     QTransform itemTransform;
     itemTransform.translate( originalItem->transform().dx() + mx, originalItem->transform().dy() + my );
@@ -529,8 +529,8 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
   }
   else //for composer items, we prefer setSceneRect as subclasses can implement custom behaviour (e.g. item group)
   {
-    changeComposerItem->setSceneRect( QRectF(originalItem->transform().dx() + mx, originalItem->transform().dy() + my, \
-      originalItem->rect().width() + rx, originalItem->rect().height() + ry) );
+    changeComposerItem->setSceneRect( QRectF( originalItem->transform().dx() + mx, originalItem->transform().dy() + my, \
+                                      originalItem->rect().width() + rx, originalItem->rect().height() + ry ) );
   }
 }
 
@@ -548,29 +548,29 @@ void QgsComposerItem::drawSelectionBoxes( QPainter* p )
     double rectHandlerSize = rectHandlerBorderTolerance();
     double sizeLockSymbol = lockSymbolSize();
 
-    if(mItemPositionLocked)
+    if ( mItemPositionLocked )
     {
-        //draw lock symbol at upper left edge. Use QImage to be independant of the graphic system
-        QString lockIconPath = QgsApplication::activeThemePath() + "/mIconLock.png";
-        if(!QFile::exists(lockIconPath))
-        {
-            lockIconPath = QgsApplication::defaultThemePath() + "/mIconLock.png";
-        }
+      //draw lock symbol at upper left edge. Use QImage to be independant of the graphic system
+      QString lockIconPath = QgsApplication::activeThemePath() + "/mIconLock.png";
+      if ( !QFile::exists( lockIconPath ) )
+      {
+        lockIconPath = QgsApplication::defaultThemePath() + "/mIconLock.png";
+      }
 
-        QImage lockImage(lockIconPath);
-        if(!lockImage.isNull())
-        {
-            p->drawImage(QRectF(0, 0, sizeLockSymbol, sizeLockSymbol), lockImage, QRectF(0, 0, lockImage.width(), lockImage.height()));
-        }
+      QImage lockImage( lockIconPath );
+      if ( !lockImage.isNull() )
+      {
+        p->drawImage( QRectF( 0, 0, sizeLockSymbol, sizeLockSymbol ), lockImage, QRectF( 0, 0, lockImage.width(), lockImage.height() ) );
+      }
     }
     else //draw blue squares
     {
-        p->setPen( QPen( QColor( 0, 0, 255 ) ) );
-        p->setBrush( QBrush( QColor( 0, 0, 255 ) ) );
-        p->drawRect( QRectF( 0, 0, rectHandlerSize, rectHandlerSize ) );
-        p->drawRect( QRectF( rect().width() - rectHandlerSize, 0, rectHandlerSize, rectHandlerSize ) );
-        p->drawRect( QRectF( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
-        p->drawRect( QRectF( 0, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
+      p->setPen( QPen( QColor( 0, 0, 255 ) ) );
+      p->setBrush( QBrush( QColor( 0, 0, 255 ) ) );
+      p->drawRect( QRectF( 0, 0, rectHandlerSize, rectHandlerSize ) );
+      p->drawRect( QRectF( rect().width() - rectHandlerSize, 0, rectHandlerSize, rectHandlerSize ) );
+      p->drawRect( QRectF( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
+      p->drawRect( QRectF( 0, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
     }
   }
 }
@@ -749,38 +749,38 @@ double QgsComposerItem::horizontalViewScaleFactor() const
 
 double QgsComposerItem::rectHandlerBorderTolerance() const
 {
-     //size of symbol boxes depends on zoom level in composer view
-    double viewScaleFactor = horizontalViewScaleFactor();
-    double rectHandlerSize = 10.0 / viewScaleFactor;
+  //size of symbol boxes depends on zoom level in composer view
+  double viewScaleFactor = horizontalViewScaleFactor();
+  double rectHandlerSize = 10.0 / viewScaleFactor;
 
-    //make sure the boxes don't get too large
-    if(rectHandlerSize > (rect().width() / 3))
-    {
-        rectHandlerSize = rect().width() / 3;
-    }
-    if(rectHandlerSize > (rect().height() / 3))
-    {
-        rectHandlerSize = rect().height() / 3;
-    }
-    return rectHandlerSize;
+  //make sure the boxes don't get too large
+  if ( rectHandlerSize > ( rect().width() / 3 ) )
+  {
+    rectHandlerSize = rect().width() / 3;
+  }
+  if ( rectHandlerSize > ( rect().height() / 3 ) )
+  {
+    rectHandlerSize = rect().height() / 3;
+  }
+  return rectHandlerSize;
 }
 
 double QgsComposerItem::lockSymbolSize() const
 {
   double lockSymbolSize = 20.0 / horizontalViewScaleFactor();
 
-  if(lockSymbolSize > (rect().width() / 3))
+  if ( lockSymbolSize > ( rect().width() / 3 ) )
   {
     lockSymbolSize = rect().width() / 3;
   }
-  if(lockSymbolSize > (rect().height() / 3))
+  if ( lockSymbolSize > ( rect().height() / 3 ) )
   {
     lockSymbolSize = rect().height() / 3;
   }
   return lockSymbolSize;
 }
 
-void QgsComposerItem::updateCursor(const QPointF& itemPos)
+void QgsComposerItem::updateCursor( const QPointF& itemPos )
 {
-    setCursor( cursorForPosition(itemPos) );
+  setCursor( cursorForPosition( itemPos ) );
 }
