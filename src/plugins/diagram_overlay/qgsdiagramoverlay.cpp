@@ -149,7 +149,6 @@ void QgsDiagramOverlay::drawOverlayObjects( QgsRenderContext& context ) const
           if ( it.value() )
           {
             QList<QgsPoint> positionList = it.value()->positions();
-            const QgsCoordinateTransform* ct = context.coordinateTransform();
 
             QList<QgsPoint>::const_iterator positionIt = positionList.constBegin();
             for ( ; positionIt != positionList.constEnd(); ++positionIt )

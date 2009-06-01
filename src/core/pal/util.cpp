@@ -553,20 +553,22 @@ namespace pal
           std::cout << f->x[i] << ";" << f->y[i] << std::endl;
 #endif
 
-        // Butterfly detector
-        //
-        //   3____0
-        //    \  /
-        //     \/  <--- not allowed
-        //     /\
-        //   1/__\2
-        //
-        //   1____0
-        //    \  /
-        //    2\/5  <--- allowed
-        //     /\
-        //   3/__\4
-        //
+        /*
+                  Butterfly detector
+
+                   3____0
+                    \  /
+                     \/  <--- not allowed
+                     /\
+                   1/__\2
+
+                   1____0
+                    \  /
+                    2\/5  <--- allowed
+                     /\
+                   3/__\4
+        */
+
         pt_a = -1;
         pt_b = -1;
         for ( i = 0;i < f->nbPoints - 2;i++ )
