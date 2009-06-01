@@ -226,7 +226,6 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
   else
   {
     QPointF scenePoint = mapToScene( e->pos() );
-    double newWidth, newHeight; //for rubber band
 
     switch ( mCurrentTool )
     {

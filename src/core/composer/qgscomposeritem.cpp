@@ -493,7 +493,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
       break;
 
     case QgsComposerItem::MoveItem:
-
+    {
       //calculate total move difference
       double moveX = currentPosition.x() - mouseMoveStartPos.x();
       double moveY = currentPosition.y() - mouseMoveStartPos.y();
@@ -516,7 +516,10 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
                                           originalItem->transform().dy() + moveRectY, \
                                           originalItem->rect().width(), originalItem->rect().height() ) );
       }
-      return;
+    }
+    return;
+    case QgsComposerItem::NoAction:
+      break;
   }
 
   if ( !changeComposerItem )
@@ -544,7 +547,6 @@ void QgsComposerItem::drawSelectionBoxes( QPainter* p )
   if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
     //size of symbol boxes depends on zoom level in composer view
-    double viewScaleFactor = horizontalViewScaleFactor();
     double rectHandlerSize = rectHandlerBorderTolerance();
     double sizeLockSymbol = lockSymbolSize();
 
