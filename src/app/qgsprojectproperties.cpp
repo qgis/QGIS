@@ -121,10 +121,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   }
 
   bool ok;
+  bool toleranceUnitOk; //1.0 project files may not have a unit entry
   QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &ok );
   QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &ok );
   QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", &ok );
-  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", &ok );
+  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", &toleranceUnitOk );
   QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &ok );
 
   QStringList::const_iterator idIter = layerIdList.constBegin();
@@ -136,7 +137,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QgsMapLayer* currentLayer = 0;
 
   //create the new layer entries
-  for ( ; idIter != layerIdList.constEnd(); ++idIter, ++enabledIter, ++tolIter, ++snapToIter )
+  for ( ; idIter != layerIdList.constEnd(); ++idIter, ++enabledIter, ++tolIter, ++tolUnitIter, ++snapToIter )
   {
     currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
     if ( currentLayer )
@@ -164,7 +165,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
         newEntry.snapTo = 2;
       }
       newEntry.tolerance = tolIter->toDouble();
-      newEntry.toleranceUnit = tolUnitIter->toInt();
+      if(toleranceUnitOk)
+      {
+        newEntry.toleranceUnit = tolUnitIter->toInt();
+      }
+      else
+      {
+        newEntry.toleranceUnit = 0;
+      }
       mSnappingLayerSettings.insert( *idIter, newEntry );
     }
   }
