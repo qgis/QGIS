@@ -271,7 +271,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   QMap<QString, QPair<int, QgsField> > thematicAttributes;
   for ( QgsFieldMap::const_iterator it = mFields.begin(); it != mFields.end(); ++it )
   {
-    thematicAttributes.insert(it.value().name(), qMakePair(it.key(), it.value()));
+    thematicAttributes.insert( it.value().name(), qMakePair( it.key(), it.value() ) );
   }
 
   QgsWFSData dataReader( uri, &mExtent, &mSourceCRS, mFeatures, geometryAttribute, thematicAttributes, &mWKBType );
@@ -508,22 +508,22 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
 
     //is it a geometry attribute?
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
-    if ( (type.startsWith( "gml:" ) && type.endsWith( "PropertyType" )) || name.isEmpty() )
+    if (( type.startsWith( "gml:" ) && type.endsWith( "PropertyType" ) ) || name.isEmpty() )
     {
       geometryAttribute = name;
     }
     else //todo: distinguish between numerical and non-numerical types
     {
       QVariant::Type  attributeType = QVariant::String; //string is default type
-      if(type.contains("double", Qt::CaseInsensitive) || type.contains("float", Qt::CaseInsensitive))
+      if ( type.contains( "double", Qt::CaseInsensitive ) || type.contains( "float", Qt::CaseInsensitive ) )
       {
         attributeType = QVariant::Double;
       }
-      else if(type.contains("int", Qt::CaseInsensitive))
+      else if ( type.contains( "int", Qt::CaseInsensitive ) )
       {
         attributeType = QVariant::Int;
       }
-      else if(type.contains("long", Qt::CaseInsensitive))
+      else if ( type.contains( "long", Qt::CaseInsensitive ) )
       {
         attributeType = QVariant::LongLong;
       }

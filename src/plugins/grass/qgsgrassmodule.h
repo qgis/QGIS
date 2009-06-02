@@ -288,7 +288,7 @@ class QgsGrassModuleStandardOptions: public QgsGrassModuleOptions, QWidget
  */
 class QgsGrassModuleCheckBox: public QCheckBox
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     /*! \brief Constructor
@@ -296,14 +296,14 @@ class QgsGrassModuleCheckBox: public QCheckBox
     QgsGrassModuleCheckBox( const QString & text, QWidget * parent = 0 );
 
     //! Destructor
-    virtual ~QgsGrassModuleCheckBox ();
+    virtual ~QgsGrassModuleCheckBox();
 
-    void resizeEvent ( QResizeEvent * event );
+    void resizeEvent( QResizeEvent * event );
 
   public slots:
-    void setText ( const QString & text );
+    void setText( const QString & text );
 
-    void setToolTip ( const QString & text );
+    void setToolTip( const QString & text );
 
     //! Adjust title size, called on resize
     void adjustText();
@@ -384,7 +384,7 @@ class QgsGrassModuleItem
  */
 class QgsGrassModuleGroupBoxItem: public QGroupBox, public QgsGrassModuleItem
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     /*! \brief Constructor
@@ -393,13 +393,13 @@ class QgsGrassModuleGroupBoxItem: public QGroupBox, public QgsGrassModuleItem
      * \param gnode option node in GRASS module XML description file
      */
     QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
-                        QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, 
-                        QWidget * parent = 0 );
+                                QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
+                                QWidget * parent = 0 );
 
     //! Destructor
     virtual ~QgsGrassModuleGroupBoxItem();
 
-    void resizeEvent ( QResizeEvent * event );
+    void resizeEvent( QResizeEvent * event );
 
   public slots:
     //! Adjust title size, called on resize

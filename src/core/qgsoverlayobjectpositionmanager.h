@@ -31,8 +31,8 @@ class QgsVectorOverlay;
 class QgsOverlayObjectPositionManager
 {
   public:
-  //virtual destructor needed for proper memory management
-  virtual ~QgsOverlayObjectPositionManager(){}
+    //virtual destructor needed for proper memory management
+    virtual ~QgsOverlayObjectPositionManager() {}
     /**Adds a layer that may contain * overlays to the position manager. The overlay objects contained in the
     overlays will then be considered in label placement*/
     virtual void addLayer( QgsVectorLayer* vl, QList<QgsVectorOverlay*>& overlays ) = 0;

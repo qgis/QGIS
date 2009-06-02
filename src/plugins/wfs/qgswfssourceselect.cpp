@@ -167,10 +167,10 @@ int QgsWFSSourceSelect::getCapabilitiesGET( QString uri, std::list<QString>& typ
     {
       tname = nameList.at( 0 ).toElement().text();
       //strip away namespace prefixes
-     /* if ( tname.contains( ":" ) )
-      {
-        tname = tname.section( ":", 1, 1 );
-      }*/
+      /* if ( tname.contains( ":" ) )
+       {
+         tname = tname.section( ":", 1, 1 );
+       }*/
     }
     //Title
     QDomNodeList titleList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "Title" );

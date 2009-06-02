@@ -1384,13 +1384,13 @@ void QgsRasterLayerProperties::apply()
         myNewColorRampItem.value = myCurrentItem->text( 0 ).toDouble();
         myNewColorRampItem.color = myCurrentItem->background( 1 ).color();
         myNewColorRampItem.label = myCurrentItem->text( 2 );
-        
+
         myColorRampItems.append( myNewColorRampItem );
       }
-      
+
       // sort the shader items
-      qSort(myColorRampItems);
-      
+      qSort( myColorRampItems );
+
       myRasterShaderFunction->setColorRampItemList( myColorRampItems );
       //Reload table in GUI because it may have been sorted or contained invalid values
       populateColorMapTable( myColorRampItems );

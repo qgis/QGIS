@@ -28,79 +28,79 @@ class QgsRubberBand;
 
 class QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
+  public:
 
-  QgsSimplifyDialog( QWidget* parent = NULL );
+    QgsSimplifyDialog( QWidget* parent = NULL );
 
-  /** Setting range of slide bar */
-  void setRange(int minValue, int maxValue);
+    /** Setting range of slide bar */
+    void setRange( int minValue, int maxValue );
 
-signals:
-  /** Signal when slidebar is moved */
-  void toleranceChanged( int tol );
+  signals:
+    /** Signal when slidebar is moved */
+    void toleranceChanged( int tol );
 
-  /** Signal to accept changes */
-  void storeSimplified();
+    /** Signal to accept changes */
+    void storeSimplified();
 
-private slots:
-  /** Internal signal when value is changed */
-  void valueChanged( int value );
-  /** Internal signal to store simplified feature */
-  void simplify();
+  private slots:
+    /** Internal signal when value is changed */
+    void valueChanged( int value );
+    /** Internal signal to store simplified feature */
+    void simplify();
 };
 
 
 /** Map tool to simplify line/polygon features */
 class QgsMapToolSimplify: public QgsMapToolEdit
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  QgsMapToolSimplify( QgsMapCanvas* canvas );
-  virtual ~QgsMapToolSimplify();
+  public:
+    QgsMapToolSimplify( QgsMapCanvas* canvas );
+    virtual ~QgsMapToolSimplify();
 
-  void canvasPressEvent( QMouseEvent * e );
+    void canvasPressEvent( QMouseEvent * e );
 
-  //! called when map tool is being deactivated
-  void deactivate();
+    //! called when map tool is being deactivated
+    void deactivate();
 
-public slots:
-  void removeRubberBand();
+  public slots:
+    void removeRubberBand();
 
-private:
-  /** Divider calculation, because slider can go only by whole numbers */
-  int calculateDivider(double minimum, double maximum);
+  private:
+    /** Divider calculation, because slider can go only by whole numbers */
+    int calculateDivider( double minimum, double maximum );
 
-  /** Function to calculate tolerance boudaries for simplifying */
-  bool calculateSliderBoudaries();
+    /** Function to calculate tolerance boudaries for simplifying */
+    bool calculateSliderBoudaries();
 
-  /** Function to get list of vertexes from feature */
-  QVector<QgsPoint> getPointList(QgsFeature& f);
+    /** Function to get list of vertexes from feature */
+    QVector<QgsPoint> getPointList( QgsFeature& f );
 
-  // data
-  /** Dialog with slider to set correct tolerance value */
-  QgsSimplifyDialog* mSimplifyDialog;
+    // data
+    /** Dialog with slider to set correct tolerance value */
+    QgsSimplifyDialog* mSimplifyDialog;
 
-  /** Rubber band to draw current state of simplification */
-  QgsRubberBand* mRubberBand;
+    /** Rubber band to draw current state of simplification */
+    QgsRubberBand* mRubberBand;
 
-  /** Feature with which we are working */
-  QgsFeature mSelectedFeature;
+    /** Feature with which we are working */
+    QgsFeature mSelectedFeature;
 
-  /** tolerance divider is value which tells with which delete value from sidebar */
-  long toleranceDivider;
+    /** tolerance divider is value which tells with which delete value from sidebar */
+    long toleranceDivider;
 
-  /** real value of tolerance */
-  double mTolerance;
+    /** real value of tolerance */
+    double mTolerance;
 
-private slots:
-  /** slot to change display when slidebar is moved */
-  void toleranceChanged(int tolerance);
+  private slots:
+    /** slot to change display when slidebar is moved */
+    void toleranceChanged( int tolerance );
 
-  /** slot to store feture after simplification */
-  void storeSimplified();
+    /** slot to store feture after simplification */
+    void storeSimplified();
 
 };
 
@@ -109,19 +109,20 @@ private slots:
  */
 class QgsSimplifyFeature
 {
-   /** structure for one entry in stack for simplification algorithm */
-   struct StackEntry {
-     int anchor;
-     int floater;
-  };
+    /** structure for one entry in stack for simplification algorithm */
+    struct StackEntry
+    {
+      int anchor;
+      int floater;
+    };
 
-public:
-  /** simplify line feature with specified tolerance. Returns TRUE on success */
-  static bool simplifyLine(QgsFeature &lineFeature, double tolerance);
-  /** simplify polygon feature with specified tolerance. Returns TRUE on success */
-  static bool simplifyPolygon(QgsFeature &polygonFeature, double tolerance);
-  /** simplify a line given by a vector of points and tolerance. Returns simplified vector of points */
-  static QVector<QgsPoint> simplifyPoints (const QVector<QgsPoint>& pts, double tolerance);
+  public:
+    /** simplify line feature with specified tolerance. Returns TRUE on success */
+    static bool simplifyLine( QgsFeature &lineFeature, double tolerance );
+    /** simplify polygon feature with specified tolerance. Returns TRUE on success */
+    static bool simplifyPolygon( QgsFeature &polygonFeature, double tolerance );
+    /** simplify a line given by a vector of points and tolerance. Returns simplified vector of points */
+    static QVector<QgsPoint> simplifyPoints( const QVector<QgsPoint>& pts, double tolerance );
 
 
 };

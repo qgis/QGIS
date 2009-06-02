@@ -23,7 +23,7 @@
 #include <QMessageBox>
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
-  : QgsMapToolVertexEdit( canvas ), mCross( 0 )
+    : QgsMapToolVertexEdit( canvas ), mCross( 0 )
 {
 }
 
@@ -82,14 +82,14 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent * e )
     QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
     for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
     {
-      deletePart( sr_it->snappedAtGeometry, sr_it->snappedVertexNr, vlayer);
+      deletePart( sr_it->snappedAtGeometry, sr_it->snappedVertexNr, vlayer );
     }
   }
 
 }
 
 
-void QgsMapToolDeletePart::deletePart( int fId, int beforeVertexNr, QgsVectorLayer* vlayer)
+void QgsMapToolDeletePart::deletePart( int fId, int beforeVertexNr, QgsVectorLayer* vlayer )
 {
   QgsFeature f;
   vlayer->featureAtId( fId, f );
@@ -98,22 +98,22 @@ void QgsMapToolDeletePart::deletePart( int fId, int beforeVertexNr, QgsVectorLay
   QgsGeometry* g = f.geometry();
   if ( !g->isMultipart() )
   {
-    QMessageBox::information(mCanvas, tr("Delete part"), tr("This isn't a multipart geometry."));
+    QMessageBox::information( mCanvas, tr( "Delete part" ), tr( "This isn't a multipart geometry." ) );
     return;
   }
 
   int partNum = partNumberOfVertex( g, beforeVertexNr );
 
-  if (g->deletePart( partNum ))
+  if ( g->deletePart( partNum ) )
   {
     vlayer->changeGeometry( fId, g );
     mCanvas->refresh();
   }
   else
   {
-    QMessageBox::information(mCanvas, tr("Delete part"), tr("Couldn't remove the selected part."));
+    QMessageBox::information( mCanvas, tr( "Delete part" ), tr( "Couldn't remove the selected part." ) );
   }
-  
+
 }
 
 int QgsMapToolDeletePart::partNumberOfVertex( QgsGeometry* g, int beforeVertexNr )
@@ -133,9 +133,9 @@ int QgsMapToolDeletePart::partNumberOfVertex( QgsGeometry* g, int beforeVertexNr
     case QGis::WKBMultiLineString:
     {
       QgsMultiPolyline mline = g->asMultiPolyline();
-      for (part = 0; part < mline.count(); part++)
+      for ( part = 0; part < mline.count(); part++ )
       {
-        if (beforeVertexNr < mline[part].count())
+        if ( beforeVertexNr < mline[part].count() )
           return part;
 
         beforeVertexNr -= mline[part].count();
@@ -147,12 +147,12 @@ int QgsMapToolDeletePart::partNumberOfVertex( QgsGeometry* g, int beforeVertexNr
     case QGis::WKBMultiPolygon:
     {
       QgsMultiPolygon mpolygon = g->asMultiPolygon();
-      for (part = 0; part < mpolygon.count(); part++) // go through the polygons
+      for ( part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
         const QgsPolygon& polygon = mpolygon[part];
-        for (int ring = 0; ring < polygon.count(); ring++) // go through the rings
+        for ( int ring = 0; ring < polygon.count(); ring++ ) // go through the rings
         {
-          if (beforeVertexNr < polygon[ring].count())
+          if ( beforeVertexNr < polygon[ring].count() )
             return part;
 
           beforeVertexNr -= polygon[ring].count();

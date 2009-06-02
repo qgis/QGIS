@@ -426,7 +426,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * Set the name of the connection for use in authentication where required
      * \note added in 1.1
      */
-    void setConnectionName( QString const & connName);
+    void setConnectionName( QString const & connName );
 
     // TODO: Document this better.
     /** \brief   Renders the layer as an image

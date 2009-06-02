@@ -25,21 +25,21 @@ QgsShortcutsManager* QgsShortcutsManager::mInstance = NULL;
 
 QgsShortcutsManager* QgsShortcutsManager::instance()
 {
-  if (!mInstance)
+  if ( !mInstance )
     mInstance = new QgsShortcutsManager;
   return mInstance;
 }
 
 bool QgsShortcutsManager::registerAction( QAction* action, QString defaultShortcut )
 {
-  mActions.insert(action, defaultShortcut);
+  mActions.insert( action, defaultShortcut );
 
   QString actionText = action->text();
-  actionText.remove('&'); // remove the accelerator
+  actionText.remove( '&' ); // remove the accelerator
 
   // load overridden value from settings
   QSettings settings;
-  QString shortcut = settings.value("/shortcuts/"+actionText, defaultShortcut).toString();
+  QString shortcut = settings.value( "/shortcuts/" + actionText, defaultShortcut ).toString();
 
   if ( !shortcut.isEmpty() )
     action->setShortcut( shortcut );
@@ -71,11 +71,11 @@ bool QgsShortcutsManager::setActionShortcut( QAction* action, QString shortcut )
   action->setShortcut( shortcut );
 
   QString actionText = action->text();
-  actionText.remove('&'); // remove the accelerator
+  actionText.remove( '&' ); // remove the accelerator
 
   // save to settings
   QSettings settings;
-  settings.setValue("/shortcuts/"+actionText, shortcut );
+  settings.setValue( "/shortcuts/" + actionText, shortcut );
   return true;
 }
 
@@ -84,9 +84,9 @@ QAction* QgsShortcutsManager::actionForShortcut( QKeySequence s )
   if ( s.isEmpty() )
     return NULL;
 
-  for (ActionsHash::iterator it = mActions.begin(); it != mActions.end(); ++it)
+  for ( ActionsHash::iterator it = mActions.begin(); it != mActions.end(); ++it )
   {
-    if (it.key()->shortcut() == s)
+    if ( it.key()->shortcut() == s )
       return it.key();
   }
 
