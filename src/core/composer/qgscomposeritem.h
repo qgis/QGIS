@@ -158,7 +158,7 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
 
     /**Locks / unlocks the item position for mouse drags
     @note this method was added in version 1.2*/
-    void setPositionLock(bool lock){mItemPositionLocked = lock;}
+    void setPositionLock( bool lock ) {mItemPositionLocked = lock;}
 
     /**Returns position lock for mouse drags (true means locked)
     @note this method was added in version 1.2*/
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
 
     /**Update mouse cursor at (item) position
     @note this method was added in version 1.2*/
-    void updateCursor(const QPointF& itemPos);
+    void updateCursor( const QPointF& itemPos );
 
   protected:
 

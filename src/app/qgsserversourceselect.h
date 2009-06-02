@@ -149,7 +149,7 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     QString descriptionForEpsg( long epsg );
 
     //! Keeps the layer order list up-to-date with changed layers and styles
-    void updateLayerOrderTab(const QStringList& newLayerList, const QStringList& newStyleList);
+    void updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList );
 
     //! Name for selected connection
     QString m_connName;

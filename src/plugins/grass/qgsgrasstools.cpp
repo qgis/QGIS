@@ -215,12 +215,12 @@ void QgsGrassTools::runModule( QString name )
   // We must call resize to reset COLUMNS enviroment variable
   // used by bash !!!
 
-/* TODO: Implement something that resizes the terminal without
- *       crashes.
-#ifndef WIN32
-  if ( sh ) sh->resizeTerminal();
-#endif
-*/
+  /* TODO: Implement something that resizes the terminal without
+   *       crashes.
+  #ifndef WIN32
+    if ( sh ) sh->resizeTerminal();
+  #endif
+  */
 }
 
 bool QgsGrassTools::loadConfig( QString filePath )

@@ -23,17 +23,17 @@
 #include <QKeySequence>
 #include <QMessageBox>
 
-QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog(QWidget* parent)
-  : QDialog(parent), mGettingShortcut(false)
+QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget* parent )
+    : QDialog( parent ), mGettingShortcut( false )
 {
-  setupUi(this);
+  setupUi( this );
 
-  connect(btnChangeShortcut, SIGNAL(clicked()), this, SLOT(changeShortcut()));
-  connect(btnResetShortcut, SIGNAL(clicked()), this, SLOT(resetShortcut()));
-  connect(btnSetNoShortcut, SIGNAL(clicked()), this, SLOT(setNoShortcut()));
+  connect( btnChangeShortcut, SIGNAL( clicked() ), this, SLOT( changeShortcut() ) );
+  connect( btnResetShortcut, SIGNAL( clicked() ), this, SLOT( resetShortcut() ) );
+  connect( btnSetNoShortcut, SIGNAL( clicked() ), this, SLOT( setNoShortcut() ) );
 
-  connect(treeActions, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-          this, SLOT(actionChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+  connect( treeActions, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
+           this, SLOT( actionChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
   populateActions();
 }
@@ -43,32 +43,32 @@ void QgsConfigureShortcutsDialog::populateActions()
   QList<QAction*> actions = QgsShortcutsManager::instance()->listActions();
 
   QList<QTreeWidgetItem *> items;
-  for (int i = 0; i < actions.count(); ++i)
+  for ( int i = 0; i < actions.count(); ++i )
   {
     QString actionText = actions[i]->text();
-    actionText.remove('&'); // remove the accelerator
+    actionText.remove( '&' ); // remove the accelerator
 
     QStringList lst; lst << actionText << actions[i]->shortcut().toString();
-    QTreeWidgetItem* item = new QTreeWidgetItem(lst);
-    item->setIcon(0, actions[i]->icon());
-    item->setData(0, Qt::UserRole, qVariantFromValue((QObject*)actions[i]) );
-    items.append(item);
+    QTreeWidgetItem* item = new QTreeWidgetItem( lst );
+    item->setIcon( 0, actions[i]->icon() );
+    item->setData( 0, Qt::UserRole, qVariantFromValue(( QObject* )actions[i] ) );
+    items.append( item );
   }
 
-  treeActions->addTopLevelItems(items);
+  treeActions->addTopLevelItems( items );
 
   // make sure everything's visible and sorted
-  treeActions->resizeColumnToContents(0);
-  treeActions->sortItems(0, Qt::AscendingOrder);
+  treeActions->resizeColumnToContents( 0 );
+  treeActions->sortItems( 0, Qt::AscendingOrder );
 
-  actionChanged(treeActions->currentItem(), NULL);
+  actionChanged( treeActions->currentItem(), NULL );
 }
 
 
 void QgsConfigureShortcutsDialog::changeShortcut()
 {
   setFocus(); // make sure we have focus
-  setGettingShortcut(true);
+  setGettingShortcut( true );
 }
 
 void QgsConfigureShortcutsDialog::resetShortcut()
@@ -88,17 +88,17 @@ void QgsConfigureShortcutsDialog::setNoShortcut()
 
 QAction* QgsConfigureShortcutsDialog::currentAction()
 {
-  if (treeActions->currentItem() == NULL)
+  if ( treeActions->currentItem() == NULL )
     return NULL;
 
-  QObject* action = treeActions->currentItem()->data(0, Qt::UserRole).value<QObject*>();
-  return qobject_cast<QAction*>(action);
+  QObject* action = treeActions->currentItem()->data( 0, Qt::UserRole ).value<QObject*>();
+  return qobject_cast<QAction*>( action );
 }
 
-void QgsConfigureShortcutsDialog::actionChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
   // cancel previous shortcut setting (if any)
-  setGettingShortcut(false);
+  setGettingShortcut( false );
 
   QAction* action = currentAction();
   if ( !action )
@@ -106,28 +106,28 @@ void QgsConfigureShortcutsDialog::actionChanged(QTreeWidgetItem* current, QTreeW
 
   // show which one is the default action
   QString shortcut = QgsShortcutsManager::instance()->actionDefaultShortcut( action );
-  if (shortcut.isEmpty())
-    shortcut = tr("None");
-  btnResetShortcut->setText( tr("Set default (%1)").arg(shortcut) );
+  if ( shortcut.isEmpty() )
+    shortcut = tr( "None" );
+  btnResetShortcut->setText( tr( "Set default (%1)" ).arg( shortcut ) );
 
   // if there's no shortcut, disable set none
   btnSetNoShortcut->setEnabled( !action->shortcut().isEmpty() );
   // if the shortcut is default, disable set default
-  btnResetShortcut->setEnabled( action->shortcut() != QKeySequence(shortcut) );
+  btnResetShortcut->setEnabled( action->shortcut() != QKeySequence( shortcut ) );
 }
 
-void QgsConfigureShortcutsDialog::keyPressEvent ( QKeyEvent * event )
+void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent * event )
 {
-  if (!mGettingShortcut)
+  if ( !mGettingShortcut )
   {
-    QDialog::keyPressEvent(event);
+    QDialog::keyPressEvent( event );
     return;
   }
 
   int key = event->key();
-  switch (key)
+  switch ( key )
   {
-    // modifiers
+      // modifiers
     case Qt::Key_Meta:
       mModifiers |= Qt::META;
       updateShortcutText();
@@ -145,9 +145,9 @@ void QgsConfigureShortcutsDialog::keyPressEvent ( QKeyEvent * event )
       updateShortcutText();
       break;
 
-    // escape aborts the acquisition of shortcut
+      // escape aborts the acquisition of shortcut
     case Qt::Key_Escape:
-      setGettingShortcut(false);
+      setGettingShortcut( false );
       break;
 
     default:
@@ -156,18 +156,18 @@ void QgsConfigureShortcutsDialog::keyPressEvent ( QKeyEvent * event )
   }
 }
 
-void QgsConfigureShortcutsDialog::keyReleaseEvent ( QKeyEvent * event )
+void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent * event )
 {
-  if (!mGettingShortcut)
+  if ( !mGettingShortcut )
   {
-    QDialog::keyPressEvent(event);
+    QDialog::keyPressEvent( event );
     return;
   }
 
   int key = event->key();
-  switch (key)
+  switch ( key )
   {
-    // modifiers
+      // modifiers
     case Qt::Key_Meta:
       mModifiers &= ~Qt::META;
       updateShortcutText();
@@ -189,11 +189,11 @@ void QgsConfigureShortcutsDialog::keyReleaseEvent ( QKeyEvent * event )
       break;
 
     default:
-      {
-        // an ordinary key - set it with modifiers as a shortcut
-        setCurrentActionShortcut( QKeySequence(mModifiers + mKey) );
-        setGettingShortcut(false);
-      }
+    {
+      // an ordinary key - set it with modifiers as a shortcut
+      setCurrentActionShortcut( QKeySequence( mModifiers + mKey ) );
+      setGettingShortcut( false );
+    }
   }
 }
 
@@ -201,19 +201,19 @@ void QgsConfigureShortcutsDialog::keyReleaseEvent ( QKeyEvent * event )
 void QgsConfigureShortcutsDialog::updateShortcutText()
 {
   // update text of the button so that user can see what has typed already
-  QKeySequence s(mModifiers + mKey);
-  btnChangeShortcut->setText( tr("Input: ") + s.toString() );
+  QKeySequence s( mModifiers + mKey );
+  btnChangeShortcut->setText( tr( "Input: " ) + s.toString() );
 }
 
-void QgsConfigureShortcutsDialog::setGettingShortcut(bool getting)
+void QgsConfigureShortcutsDialog::setGettingShortcut( bool getting )
 {
   mModifiers = 0;
   mKey = 0;
   mGettingShortcut = getting;
-  if (!getting)
+  if ( !getting )
   {
-    btnChangeShortcut->setChecked(false);
-    btnChangeShortcut->setText(tr("Change"));
+    btnChangeShortcut->setChecked( false );
+    btnChangeShortcut->setText( tr( "Change" ) );
   }
   else
   {
@@ -221,37 +221,37 @@ void QgsConfigureShortcutsDialog::setGettingShortcut(bool getting)
   }
 }
 
-void QgsConfigureShortcutsDialog::setCurrentActionShortcut(QKeySequence s)
+void QgsConfigureShortcutsDialog::setCurrentActionShortcut( QKeySequence s )
 {
   QAction* action = currentAction();
   if ( !action ) return;
 
   // first check whether this action is not taken already
-  QAction* otherAction = QgsShortcutsManager::instance()->actionForShortcut(s);
-  if (otherAction != NULL)
+  QAction* otherAction = QgsShortcutsManager::instance()->actionForShortcut( s );
+  if ( otherAction != NULL )
   {
     QString otherActionText = otherAction->text();
-    otherActionText.remove('&'); // remove the accelerator
+    otherActionText.remove( '&' ); // remove the accelerator
 
-    int res = QMessageBox::question( this, tr("Shortcut conflict"),
-        tr("This shortcut is already assigned to action %1. Reassign?").arg(otherActionText),
-        QMessageBox::Yes | QMessageBox::No);
+    int res = QMessageBox::question( this, tr( "Shortcut conflict" ),
+                                     tr( "This shortcut is already assigned to action %1. Reassign?" ).arg( otherActionText ),
+                                     QMessageBox::Yes | QMessageBox::No );
 
-    if (res != QMessageBox::Yes)
+    if ( res != QMessageBox::Yes )
       return;
 
     // reset action of the conflicting other action!
     QgsShortcutsManager::instance()->setActionShortcut( otherAction, QString() );
-    QList<QTreeWidgetItem*> items = treeActions->findItems(otherActionText, Qt::MatchExactly);
-    if (items.count() > 0) // there should be exactly one
-      items[0]->setText(1, QString() );
+    QList<QTreeWidgetItem*> items = treeActions->findItems( otherActionText, Qt::MatchExactly );
+    if ( items.count() > 0 ) // there should be exactly one
+      items[0]->setText( 1, QString() );
   }
 
   // update manager
   QgsShortcutsManager::instance()->setActionShortcut( action, s.toString() );
 
   // update gui
-  treeActions->currentItem()->setText(1, s.toString() );
+  treeActions->currentItem()->setText( 1, s.toString() );
 
   actionChanged( treeActions->currentItem(), NULL );
 }

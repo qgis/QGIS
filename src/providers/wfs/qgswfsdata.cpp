@@ -81,9 +81,9 @@ int QgsWFSData::getWFSData()
   XML_SetCharacterDataHandler( p, QgsWFSData::chars );
 
   //start with empty extent
-  if(mExtent)
+  if ( mExtent )
   {
-      mExtent->set(0, 0, 0, 0);
+    mExtent->set( 0, 0, 0, 0 );
   }
 
   //separate host from query string
@@ -139,13 +139,13 @@ int QgsWFSData::getWFSData()
 
   delete progressDialog;
 
-  if(mExtent)
+  if ( mExtent )
   {
-    if(mExtent->isEmpty())
-      {
-        //reading of bbox from the server failed, so we calculate it less efficiently by evaluating the features
-        calculateExtentFromFeatures();
-      }
+    if ( mExtent->isEmpty() )
+    {
+      //reading of bbox from the server failed, so we calculate it less efficiently by evaluating the features
+      calculateExtentFromFeatures();
+    }
   }
 
   return 0; //soon
@@ -174,7 +174,7 @@ void QgsWFSData::handleProgressEvent( int progress, int totalSteps )
 void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
 {
   QString elementName( el );
-    QString localName = elementName.section( NS_SEPARATOR, 1, 1 );
+  QString localName = elementName.section( NS_SEPARATOR, 1, 1 );
   if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "coordinates" )
   {
     mParseModeStack.push( QgsWFSData::coordinate );
@@ -269,26 +269,26 @@ void QgsWFSData::endElement( const XML_Char* el )
     }
 
     //find index with attribute name
-    QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.find(mAttributeName);
-    if(att_it != mThematicAttributes.constEnd())
+    QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.find( mAttributeName );
+    if ( att_it != mThematicAttributes.constEnd() )
     {
       QVariant var;
-      switch(att_it.value().second.type())
+      switch ( att_it.value().second.type() )
       {
         case QVariant::Double:
-          var = QVariant(mStringCash.toDouble());
+          var = QVariant( mStringCash.toDouble() );
           break;
         case QVariant::Int:
-          var = QVariant(mStringCash.toInt());
+          var = QVariant( mStringCash.toInt() );
           break;
         case QVariant::LongLong:
-          var = QVariant(mStringCash.toLongLong());
+          var = QVariant( mStringCash.toLongLong() );
           break;
         default: //string type is default
           var = QVariant( mStringCash );
           break;
       }
-       mCurrentFeature->addAttribute(att_it.value().first, QVariant( mStringCash ));
+      mCurrentFeature->addAttribute( att_it.value().first, QVariant( mStringCash ) );
     }
   }
   else if ( localName == mGeometryAttribute )
@@ -317,13 +317,13 @@ void QgsWFSData::endElement( const XML_Char* el )
     //We fill the not initialized ones with empty strings, otherwise the feature cannot be exported to shp later
     QgsAttributeMap currentFeatureAttributes = mCurrentFeature->attributeMap();
     QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constBegin();
-    for(; att_it != mThematicAttributes.constEnd(); ++att_it)
+    for ( ; att_it != mThematicAttributes.constEnd(); ++att_it )
     {
       int attIndex = att_it.value().first;
-      QgsAttributeMap::const_iterator findIt = currentFeatureAttributes.find(attIndex);
-      if(findIt == currentFeatureAttributes.constEnd())
+      QgsAttributeMap::const_iterator findIt = currentFeatureAttributes.find( attIndex );
+      if ( findIt == currentFeatureAttributes.constEnd() )
       {
-        mCurrentFeature->addAttribute(attIndex, QVariant(""));
+        mCurrentFeature->addAttribute( attIndex, QVariant( "" ) );
       }
     }
 
@@ -848,37 +848,37 @@ QWidget* QgsWFSData::findMainWindow() const
 
 void QgsWFSData::calculateExtentFromFeatures() const
 {
-    if(mFeatures.size() < 1)
+  if ( mFeatures.size() < 1 )
+  {
+    return;
+  }
+
+  QgsRectangle bbox;
+
+  QgsFeature* currentFeature = 0;
+  QgsGeometry* currentGeometry = 0;
+  bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
+
+  for ( int i = 0; i < mFeatures.size(); ++i )
+  {
+    currentFeature = mFeatures[i];
+    if ( !currentFeature )
     {
-        return;
+      continue;
     }
-
-    QgsRectangle bbox;
-
-    QgsFeature* currentFeature = 0;
-    QgsGeometry* currentGeometry = 0;
-    bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
-
-    for(int i = 0; i < mFeatures.size(); ++i)
+    currentGeometry = currentFeature->geometry();
+    if ( currentGeometry )
     {
-        currentFeature = mFeatures[i];
-        if(!currentFeature)
-        {
-            continue;
-        }
-        currentGeometry = currentFeature->geometry();
-        if(currentGeometry)
-        {
-            if(!bboxInitialised)
-            {
-                bbox = currentGeometry->boundingBox();
-                bboxInitialised = true;
-            }
-            else
-            {
-                bbox.unionRect(currentGeometry->boundingBox());
-            }
-        }
+      if ( !bboxInitialised )
+      {
+        bbox = currentGeometry->boundingBox();
+        bboxInitialised = true;
+      }
+      else
+      {
+        bbox.unionRect( currentGeometry->boundingBox() );
+      }
     }
-    (*mExtent) = bbox;
+  }
+  ( *mExtent ) = bbox;
 }

@@ -1912,10 +1912,11 @@ QStringList QgsGrassModuleOption::options()
     list.push_back( mKey + "=" + mAnswer );
   }
   else
-  { 
-    QString val = value(); 
-    if ( !val.isEmpty() ) {
-        list.push_back( mKey + "=" + val );
+  {
+    QString val = value();
+    if ( !val.isEmpty() )
+    {
+      list.push_back( mKey + "=" + val );
     }
   }
   return list;
@@ -1956,7 +1957,7 @@ QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
     setChecked( false );
 
   setText( mTitle );
-  setToolTip ( mToolTip );
+  setToolTip( mToolTip );
 }
 
 QStringList QgsGrassModuleFlag::options()
@@ -2317,7 +2318,7 @@ void QgsGrassModuleInput::updateQgisLayers()
                       + " " + grassLayer + " " + type + " )";
 
       mLayerComboBox->addItem( label );
-      if ( label == current ) mLayerComboBox->setCurrentIndex ( mLayerComboBox->count()-1 );
+      if ( label == current ) mLayerComboBox->setCurrentIndex( mLayerComboBox->count() - 1 );
 
       mMapLayers.push_back( vector );
       mVectorLayerNames.push_back( grassLayer );
@@ -2366,7 +2367,7 @@ void QgsGrassModuleInput::updateQgisLayers()
       QString label = layer->name() + " ( " + map + "@" + mapset + " )";
 
       mLayerComboBox->addItem( label );
-      if ( label == current ) mLayerComboBox->setCurrentIndex ( mLayerComboBox->count()-1 );
+      if ( label == current ) mLayerComboBox->setCurrentIndex( mLayerComboBox->count() - 1 );
     }
   }
 }
@@ -2495,7 +2496,7 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
     : mModule( module ),
     mKey( key ),
     mHidden( false ),
-    mRequired (false)
+    mRequired( false )
 {
   //mAnswer = qdesc.attribute("answer", "");
 
@@ -2536,16 +2537,19 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
   QDomNode n = gnode.namedItem( "description" );
   if ( !n.isNull() )
   {
-      QDomElement e = n.toElement();
-      description = e.text().trimmed();
-      description.replace( 0, 1, description.left( 1 ).toUpper() );
+    QDomElement e = n.toElement();
+    description = e.text().trimmed();
+    description.replace( 0, 1, description.left( 1 ).toUpper() );
   }
 
-  if ( !label.isEmpty() ) {
-      mTitle = label;
-      mToolTip = description;
-  } else {
-      mTitle = description;
+  if ( !label.isEmpty() )
+  {
+    mTitle = label;
+    mToolTip = description;
+  }
+  else
+  {
+    mTitle = description;
   }
 
   if ( gnode.toElement().attribute( "required" ) == "yes" )
@@ -2572,20 +2576,20 @@ QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, 
 {
   adjustTitle();
 
-  setToolTip ( mToolTip );
+  setToolTip( mToolTip );
 }
 
 QgsGrassModuleGroupBoxItem::~QgsGrassModuleGroupBoxItem() {}
 
-void QgsGrassModuleGroupBoxItem::resizeEvent ( QResizeEvent * event )
+void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent * event )
 {
   adjustTitle();
-  setToolTip ( mToolTip );
+  setToolTip( mToolTip );
 }
 
 void QgsGrassModuleGroupBoxItem::adjustTitle()
 {
-  QString tit = fontMetrics().elidedText ( mTitle, Qt::ElideRight, width() - 20  );
+  QString tit = fontMetrics().elidedText( mTitle, Qt::ElideRight, width() - 20 );
 
   setTitle( tit );
 }
@@ -3122,7 +3126,7 @@ QgsGrassModuleFile::~QgsGrassModuleFile()
 /***************************** QgsGrassModuleCheckBox *********************************/
 
 QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString & text, QWidget * parent )
-    : QCheckBox( text, parent ), mText(text)
+    : QCheckBox( text, parent ), mText( text )
 {
   QgsDebugMsg( "called." );
   adjustText();
@@ -3132,30 +3136,32 @@ QgsGrassModuleCheckBox::~QgsGrassModuleCheckBox()
 {
 }
 
-void QgsGrassModuleCheckBox::resizeEvent ( QResizeEvent * event )
+void QgsGrassModuleCheckBox::resizeEvent( QResizeEvent * event )
 {
   adjustText();
 }
-void QgsGrassModuleCheckBox::setText ( const QString & text )
+void QgsGrassModuleCheckBox::setText( const QString & text )
 {
-    mText = text;
-    adjustText();
+  mText = text;
+  adjustText();
 }
-void QgsGrassModuleCheckBox::setToolTip ( const QString & text )
+void QgsGrassModuleCheckBox::setToolTip( const QString & text )
 {
-    mTip = text;
-    QWidget::setToolTip ( text );
+  mTip = text;
+  QWidget::setToolTip( text );
 }
 void QgsGrassModuleCheckBox::adjustText()
 {
-  QString t = fontMetrics().elidedText ( mText , Qt::ElideRight, width() - iconSize().width() - 20  );
+  QString t = fontMetrics().elidedText( mText , Qt::ElideRight, width() - iconSize().width() - 20 );
   QCheckBox::setText( t );
 
-  if ( mTip.isEmpty() ) {
+  if ( mTip.isEmpty() )
+  {
     QString tt;
-    if ( t != mText ) {
+    if ( t != mText )
+    {
       tt = mText;
     }
-    QWidget::setToolTip ( tt );
+    QWidget::setToolTip( tt );
   }
 }

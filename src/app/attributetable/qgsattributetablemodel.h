@@ -24,7 +24,7 @@
 //QGIS Includes
 #include "qgsfeature.h" //QgsAttributeMap
 #include "qgsvectorlayer.h" //QgsAttributeList
-#include "qgsattributetableidcolumnpair.h" 
+#include "qgsattributetableidcolumnpair.h"
 
 class QgsAttributeTableModel: public QAbstractTableModel
 {

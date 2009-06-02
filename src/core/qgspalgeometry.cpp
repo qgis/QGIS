@@ -20,11 +20,11 @@
 #include "qgsoverlayobject.h"
 #include <geos_c.h>
 
-QgsPALGeometry::QgsPALGeometry(QgsOverlayObject* op): mOverlayObjectPtr(op)
+QgsPALGeometry::QgsPALGeometry( QgsOverlayObject* op ): mOverlayObjectPtr( op )
 {
 }
 
-QgsPALGeometry::QgsPALGeometry(): mOverlayObjectPtr(0)
+QgsPALGeometry::QgsPALGeometry(): mOverlayObjectPtr( 0 )
 {
 }
 
@@ -34,9 +34,9 @@ QgsPALGeometry::~QgsPALGeometry()
 
 GEOSGeometry* QgsPALGeometry::getGeosGeometry()
 {
-  if(mOverlayObjectPtr)
+  if ( mOverlayObjectPtr )
   {
-    if(mOverlayObjectPtr->geometry())
+    if ( mOverlayObjectPtr->geometry() )
     {
       return mOverlayObjectPtr->geometry()->asGeos();
     }

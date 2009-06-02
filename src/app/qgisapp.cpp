@@ -552,7 +552,7 @@ void QgisApp::createActions()
   connect( mActionOpenProject, SIGNAL( triggered() ), this, SLOT( fileOpen() ) );
 
   mActionSaveProject = new QAction( getThemeIcon( "mActionFileSave.png" ), tr( "&Save Project" ), this );
-  shortcuts->registerAction( mActionSaveProject, tr( "Ctrl+S", "Save Project" ));
+  shortcuts->registerAction( mActionSaveProject, tr( "Ctrl+S", "Save Project" ) );
   mActionSaveProject->setStatusTip( tr( "Save Project" ) );
   connect( mActionSaveProject, SIGNAL( triggered() ), this, SLOT( fileSave() ) );
 

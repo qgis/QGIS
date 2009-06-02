@@ -2660,13 +2660,13 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
     newRing = createGeosLinearRing( ring.toVector() );
     if ( !GEOSisValid( newRing ) )
     {
-        throwGEOSException("ring is invalid");
+      throwGEOSException( "ring is invalid" );
     }
 
     newRingPolygon = createGeosPolygon( newRing );
     if ( !GEOSisValid( newRingPolygon ) )
     {
-        throwGEOSException("ring is invalid");
+      throwGEOSException( "ring is invalid" );
     }
   }
   catch ( GEOSException &e )
@@ -5451,17 +5451,17 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
     GEOSGeometry* unionGeom = GEOSUnion( mGeos, geometry->mGeos );
     QGis::WkbType thisGeomType = wkbType();
     QGis::WkbType otherGeomType = geometry->wkbType();
-    if( (thisGeomType == QGis::WKBLineString || thisGeomType == QGis::WKBLineString25D) \
-        && (otherGeomType == QGis::WKBLineString || otherGeomType == QGis::WKBLineString25D) )
+    if (( thisGeomType == QGis::WKBLineString || thisGeomType == QGis::WKBLineString25D ) \
+        && ( otherGeomType == QGis::WKBLineString || otherGeomType == QGis::WKBLineString25D ) )
     {
-      GEOSGeometry* mergedGeom = GEOSLineMerge(unionGeom);
-      if(mergedGeom)
+      GEOSGeometry* mergedGeom = GEOSLineMerge( unionGeom );
+      if ( mergedGeom )
       {
-        GEOSGeom_destroy(unionGeom);
+        GEOSGeom_destroy( unionGeom );
         unionGeom = mergedGeom;
       }
     }
-    return fromGeosGeom(unionGeom);
+    return fromGeosGeom( unionGeom );
   }
   CATCH_GEOS( new QgsGeometry( *this ) ) //return this geometry if union not possible
 }
@@ -5557,7 +5557,7 @@ QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
 
 bool QgsGeometry::deleteRing( int ringNum, int partNum )
 {
-  if (ringNum <= 0 || partNum < 0)
+  if ( ringNum <= 0 || partNum < 0 )
     return FALSE;
 
   switch ( wkbType() )
@@ -5565,7 +5565,7 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
     case QGis::WKBPolygon25D:
     case QGis::WKBPolygon:
     {
-      if (partNum != 0)
+      if ( partNum != 0 )
         return FALSE;
 
       QgsPolygon polygon = asPolygon();
@@ -5585,7 +5585,7 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
     {
       QgsMultiPolygon mpolygon = asMultiPolygon();
 
-      if (partNum >= mpolygon.count())
+      if ( partNum >= mpolygon.count() )
         return FALSE;
 
       if ( ringNum >= mpolygon[partNum].count() )
@@ -5607,7 +5607,7 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
 
 bool QgsGeometry::deletePart( int partNum )
 {
-  if (partNum < 0)
+  if ( partNum < 0 )
     return FALSE;
 
   switch ( wkbType() )
@@ -5617,7 +5617,7 @@ bool QgsGeometry::deletePart( int partNum )
     {
       QgsMultiPoint mpoint = asMultiPoint();
 
-      if (partNum >= mpoint.size() || mpoint.size() == 1)
+      if ( partNum >= mpoint.size() || mpoint.size() == 1 )
         return FALSE;
 
       mpoint.remove( partNum );
@@ -5633,7 +5633,7 @@ bool QgsGeometry::deletePart( int partNum )
     {
       QgsMultiPolyline mline = asMultiPolyline();
 
-      if (partNum >= mline.size() || mline.size() == 1)
+      if ( partNum >= mline.size() || mline.size() == 1 )
         return FALSE;
 
       mline.remove( partNum );
@@ -5649,7 +5649,7 @@ bool QgsGeometry::deletePart( int partNum )
     {
       QgsMultiPolygon mpolygon = asMultiPolygon();
 
-      if (partNum >= mpolygon.size() || mpolygon.size() == 1)
+      if ( partNum >= mpolygon.size() || mpolygon.size() == 1 )
         return FALSE;
 
       mpolygon.remove( partNum );

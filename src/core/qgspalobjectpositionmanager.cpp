@@ -87,10 +87,10 @@ void QgsPALObjectPositionManager::addLayer( QgsVectorLayer* vl, QList<QgsVectorO
     QMap<int, QgsOverlayObject*>::const_iterator objectIt = positionObjects->begin();
     for ( ; objectIt != positionObjects->end(); ++objectIt )
     {
-      QgsPALGeometry* palGeom = new QgsPALGeometry(objectIt.value());
-      mPALGeometries.push_back(palGeom); //insert object into list to delete memory later
+      QgsPALGeometry* palGeom = new QgsPALGeometry( objectIt.value() );
+      mPALGeometries.push_back( palGeom ); //insert object into list to delete memory later
       char* featureLabel = QString::number( objectNr ).toAscii().data();
-      positionLayer->registerFeature(featureLabel, palGeom, objectIt.value()->width(), objectIt.value()->height() );
+      positionLayer->registerFeature( featureLabel, palGeom, objectIt.value()->width(), objectIt.value()->height() );
       ++objectNr;
     }
   }
@@ -101,9 +101,9 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   //trigger label placement
   QgsRectangle viewExtent = renderContext.extent();
   //PAL needs projected view extent
-  if(renderContext.coordinateTransform())
+  if ( renderContext.coordinateTransform() )
   {
-    viewExtent = renderContext.coordinateTransform()->transformBoundingBox(viewExtent);
+    viewExtent = renderContext.coordinateTransform()->transformBoundingBox( viewExtent );
   }
   double bbox[4]; bbox[0] = viewExtent.xMinimum(); bbox[1] = viewExtent.yMinimum(); bbox[2] = viewExtent.xMaximum(); bbox[3] = viewExtent.yMaximum();
 
@@ -129,7 +129,7 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   }
 
   mPositionEngine.setMapUnit( mapUnits );
-  mPositionEngine.setDpi(renderContext.scaleFactor() * 25.4);
+  mPositionEngine.setDpi( renderContext.scaleFactor() * 25.4 );
 
   std::list<pal::Label*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, &stat, false );
   delete stat;
@@ -148,12 +148,12 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   for ( ; labelIt != resultLabelList->end(); ++labelIt )
   {
     referredGeometry = dynamic_cast<QgsPALGeometry*>(( *labelIt )->getGeometry() );
-    if ( !referredGeometry)
+    if ( !referredGeometry )
     {
       continue;
     }
     referredOverlayObject = referredGeometry->overlayObjectPtr();
-    if(!referredOverlayObject)
+    if ( !referredOverlayObject )
     {
       continue;
     }
@@ -215,9 +215,9 @@ void QgsPALObjectPositionManager::setPlacementAlgorithm( const QString& algorith
 void QgsPALObjectPositionManager::deletePALGeometries()
 {
   QList<QgsPALGeometry*>::iterator geomIt = mPALGeometries.begin();
-  for(; geomIt != mPALGeometries.end(); ++geomIt)
+  for ( ; geomIt != mPALGeometries.end(); ++geomIt )
   {
-    delete (*geomIt);
+    delete( *geomIt );
   }
   mPALGeometries.clear();
 }

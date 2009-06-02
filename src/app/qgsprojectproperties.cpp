@@ -165,7 +165,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
         newEntry.snapTo = 2;
       }
       newEntry.tolerance = tolIter->toDouble();
-      if(toleranceUnitOk)
+      if ( toleranceUnitOk )
       {
         newEntry.toleranceUnit = tolUnitIter->toInt();
       }

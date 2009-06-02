@@ -56,8 +56,8 @@ QgsServerSourceSelect::QgsServerSourceSelect( QWidget * parent, Qt::WFlags fl )
     mWmsProvider( 0 )
 {
   setupUi( this );
-  mLayerUpButton->setIcon(QgisApp::getThemeIcon("/mActionArrowUp.png"));
-  mLayerDownButton->setIcon(QgisApp::getThemeIcon("/mActionArrowDown.png"));
+  mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.png" ) );
+  mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.png" ) );
   connect( btnCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
 
   // Qt Designer 4.1 doesn't let us use a QButtonGroup, so it has to
@@ -385,7 +385,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
     // check for a password, if none prompt to get it
     if ( password.isEmpty() )
     {
-      password = QInputDialog::getText( this, tr( "WMS Password for %1" ).arg( m_connName ), "Password", QLineEdit::Password ); 
+      password = QInputDialog::getText( this, tr( "WMS Password for %1" ).arg( m_connName ), "Password", QLineEdit::Password );
 
     }
     m_connectionInfo = "username=" + username + ",password=" + password + ",url=" + m_connectionInfo;
@@ -523,11 +523,11 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
       // Remove old style selection
       lstLayers->findItems( m_selectedStyleIdForLayer[layerName], Qt::MatchRecursive ).first()->setSelected( false );
       // Remove old layer/style pair also from newSelectedLayers / newSelectedStylesForSelectedLayers
-      int oldIndex = newSelectedLayers.indexOf(layerName);
-      if(oldIndex != -1)
+      int oldIndex = newSelectedLayers.indexOf( layerName );
+      if ( oldIndex != -1 )
       {
-        newSelectedLayers.removeAt(oldIndex);
-        newSelectedStylesForSelectedLayers.removeAt(oldIndex);
+        newSelectedLayers.removeAt( oldIndex );
+        newSelectedStylesForSelectedLayers.removeAt( oldIndex );
       }
     }
 
@@ -587,7 +587,7 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
   }
 
   m_selectedStyleIdForLayer         = newSelectedStyleIdForLayer;
-  updateLayerOrderTab(newSelectedLayers, newSelectedStylesForSelectedLayers);
+  updateLayerOrderTab( newSelectedLayers, newSelectedStylesForSelectedLayers );
 }
 
 
@@ -605,9 +605,9 @@ QStringList QgsServerSourceSelect::selectedLayers()
 {
   //go through list in layer order tab
   QStringList selectedLayerList;
-  for(int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i)
+  for ( int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i )
   {
-    selectedLayerList << mLayerOrderTreeWidget->topLevelItem(i)->text(0);
+    selectedLayerList << mLayerOrderTreeWidget->topLevelItem( i )->text( 0 );
   }
   return selectedLayerList;
 }
@@ -616,9 +616,9 @@ QStringList QgsServerSourceSelect::selectedStylesForSelectedLayers()
 {
   //go through list in layer order tab
   QStringList selectedStyleList;
-  for(int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i)
+  for ( int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i )
   {
-    selectedStyleList << mLayerOrderTreeWidget->topLevelItem(i)->text(1);
+    selectedStyleList << mLayerOrderTreeWidget->topLevelItem( i )->text( 1 );
   }
   return selectedStyleList;
 }
@@ -934,42 +934,42 @@ void QgsServerSourceSelect::wmsSelectionChanged()
 void QgsServerSourceSelect::on_mLayerUpButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if(selectionList.size() < 1)
+  if ( selectionList.size() < 1 )
   {
     return;
   }
- int selectedIndex = mLayerOrderTreeWidget->indexOfTopLevelItem(selectionList[0]);
- if(selectedIndex < 1)
- {
-   return; //item not existing or already on top
- }
+  int selectedIndex = mLayerOrderTreeWidget->indexOfTopLevelItem( selectionList[0] );
+  if ( selectedIndex < 1 )
+  {
+    return; //item not existing or already on top
+  }
 
- QTreeWidgetItem* selectedItem = mLayerOrderTreeWidget->takeTopLevelItem(selectedIndex);
- mLayerOrderTreeWidget->insertTopLevelItem(selectedIndex - 1, selectedItem);
- mLayerOrderTreeWidget->clearSelection();
- selectedItem->setSelected(true);
+  QTreeWidgetItem* selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
+  mLayerOrderTreeWidget->insertTopLevelItem( selectedIndex - 1, selectedItem );
+  mLayerOrderTreeWidget->clearSelection();
+  selectedItem->setSelected( true );
 }
 
 void QgsServerSourceSelect::on_mLayerDownButton_clicked()
 {
-QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if(selectionList.size() < 1)
+  QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
+  if ( selectionList.size() < 1 )
   {
     return;
   }
- int selectedIndex = mLayerOrderTreeWidget->indexOfTopLevelItem(selectionList[0]);
- if(selectedIndex < 0 || selectedIndex > mLayerOrderTreeWidget->topLevelItemCount() - 2)
- {
-   return; //item not existing or already at bottom
- }
+  int selectedIndex = mLayerOrderTreeWidget->indexOfTopLevelItem( selectionList[0] );
+  if ( selectedIndex < 0 || selectedIndex > mLayerOrderTreeWidget->topLevelItemCount() - 2 )
+  {
+    return; //item not existing or already at bottom
+  }
 
- QTreeWidgetItem* selectedItem = mLayerOrderTreeWidget->takeTopLevelItem(selectedIndex);
- mLayerOrderTreeWidget->insertTopLevelItem(selectedIndex + 1, selectedItem);
- mLayerOrderTreeWidget->clearSelection();
- selectedItem->setSelected(true);
+  QTreeWidgetItem* selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
+  mLayerOrderTreeWidget->insertTopLevelItem( selectedIndex + 1, selectedItem );
+  mLayerOrderTreeWidget->clearSelection();
+  selectedItem->setSelected( true );
 }
 
-void QgsServerSourceSelect::updateLayerOrderTab(const QStringList& newLayerList, const QStringList& newStyleList)
+void QgsServerSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList )
 {
   //check, if each layer / style combination is already contained in the  layer order tab
   //if not, add it to the top of the list
@@ -977,25 +977,25 @@ void QgsServerSourceSelect::updateLayerOrderTab(const QStringList& newLayerList,
   QStringList::const_iterator layerListIt = newLayerList.constBegin();
   QStringList::const_iterator styleListIt = newStyleList.constBegin();
 
-  for( ; layerListIt != newLayerList.constEnd(); ++layerListIt, ++styleListIt)
+  for ( ; layerListIt != newLayerList.constEnd(); ++layerListIt, ++styleListIt )
   {
     bool combinationExists = false;
-    for(int i = 0; i < mLayerOrderTreeWidget->topLevelItemCount(); ++i)
+    for ( int i = 0; i < mLayerOrderTreeWidget->topLevelItemCount(); ++i )
     {
-      QTreeWidgetItem* currentItem = mLayerOrderTreeWidget->topLevelItem(i);
-      if(currentItem->text(0) == *layerListIt && currentItem->text(1) == *styleListIt)
+      QTreeWidgetItem* currentItem = mLayerOrderTreeWidget->topLevelItem( i );
+      if ( currentItem->text( 0 ) == *layerListIt && currentItem->text( 1 ) == *styleListIt )
       {
         combinationExists = true;
         break;
       }
     }
 
-   if(!combinationExists)
+    if ( !combinationExists )
     {
       QTreeWidgetItem* newItem = new QTreeWidgetItem();
-      newItem->setText(0, *layerListIt);
-      newItem->setText(1, *styleListIt);
-      mLayerOrderTreeWidget->insertTopLevelItem(0, newItem);
+      newItem->setText( 0, *layerListIt );
+      newItem->setText( 1, *styleListIt );
+      mLayerOrderTreeWidget->insertTopLevelItem( 0, newItem );
     }
 
   }
@@ -1003,29 +1003,29 @@ void QgsServerSourceSelect::updateLayerOrderTab(const QStringList& newLayerList,
   //check, if each layer style combination in the layer order tab is still in newLayerList / newStyleList
   //if not: remove it from the tree widget
 
-  if(mLayerOrderTreeWidget->topLevelItemCount() > 0)
+  if ( mLayerOrderTreeWidget->topLevelItemCount() > 0 )
   {
-    for(int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i)
+    for ( int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i )
     {
-      QTreeWidgetItem* currentItem = mLayerOrderTreeWidget->topLevelItem(i);
+      QTreeWidgetItem* currentItem = mLayerOrderTreeWidget->topLevelItem( i );
       bool combinationExists = false;
 
       QStringList::const_iterator llIt = newLayerList.constBegin();
       QStringList::const_iterator slIt = newStyleList.constBegin();
-      for( ; llIt != newLayerList.constEnd(); ++llIt, ++slIt)
+      for ( ; llIt != newLayerList.constEnd(); ++llIt, ++slIt )
       {
-        if(*llIt == currentItem->text(0) && *slIt == currentItem->text(1))
+        if ( *llIt == currentItem->text( 0 ) && *slIt == currentItem->text( 1 ) )
         {
           combinationExists = true;
           break;
         }
       }
 
-      if(!combinationExists)
+      if ( !combinationExists )
       {
-        mLayerOrderTreeWidget->takeTopLevelItem(i);
+        mLayerOrderTreeWidget->takeTopLevelItem( i );
       }
-     }
+    }
   }
 
 }

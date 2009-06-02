@@ -23,21 +23,21 @@ class QgsGrassShell : public QFrame
 {
     Q_OBJECT
 
-public:
-    QgsGrassShell(QgsGrassTools *tools, QTabWidget *parent = 0, const char *name = 0);
+  public:
+    QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent = 0, const char *name = 0 );
     virtual ~QgsGrassShell();
 
-/* TODO: Implement something that resizes the terminal without
- *       crashes.
-public slots:
-    void resizeTerminal();
-*/
+    /* TODO: Implement something that resizes the terminal without
+     *       crashes.
+    public slots:
+        void resizeTerminal();
+    */
 
-private slots:
+  private slots:
     void closeShell();
 
-private:
-    void initTerminal(QTermWidget *terminal);
+  private:
+    void initTerminal( QTermWidget *terminal );
 
     QTermWidget *mTerminal;
     QgsGrassTools *mTools;

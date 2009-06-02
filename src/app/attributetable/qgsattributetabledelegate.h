@@ -25,22 +25,22 @@ class QPainter;
 
 class QgsAttributeTableDelegate : public QItemDelegate
 {
-  Q_OBJECT;
+    Q_OBJECT;
   public:
     /** Constructor */
-    QgsAttributeTableDelegate( QObject* parent = NULL ) : 
-      QItemDelegate( parent ) {};
-    /** Used to create an editor for when the user tries to 
+    QgsAttributeTableDelegate( QObject* parent = NULL ) :
+        QItemDelegate( parent ) {};
+    /** Used to create an editor for when the user tries to
      * change the contents of a cell */
-    QWidget * createEditor( 
-        QWidget *parent, 
-        const QStyleOptionViewItem &option, 
-        const QModelIndex &index ) const;
+    QWidget * createEditor(
+      QWidget *parent,
+      const QStyleOptionViewItem &option,
+      const QModelIndex &index ) const;
     /** Overloads the paint method form the QItemDelegate bas class */
-    void paint( 
-        QPainter * painter, 
-        const QStyleOptionViewItem & option, 
-        const QModelIndex & index ) const;
+    void paint(
+      QPainter * painter,
+      const QStyleOptionViewItem & option,
+      const QModelIndex & index ) const;
 };
 
 #endif //QGSATTRIBUTETABLEDELEGATE_H
