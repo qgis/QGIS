@@ -118,9 +118,9 @@ bool QgsAttributeTableMemoryModel::setData( const QModelIndex &index, const QVar
 
 
 // QgsDebugMsg(mFeatureMap[rowToId(index.row())].id());
-    mFeatureMap[rowToId( index.row() )].changeAttribute( index.column(), value );
+    mFeatureMap[rowToId( index.row() )].changeAttribute( mAttributes[ index.column()], value );
     // propagate back to the layer
-    mLayer->changeAttributeValue( rowToId( index.row() ), index.column(), value, true );
+    mLayer->changeAttributeValue( rowToId( index.row() ), mAttributes[ index.column()], value, true );
   }
 
   if ( !mLayer->isModified() )
