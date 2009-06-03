@@ -22,7 +22,6 @@
 #include "qgsrectangle.h"
 #include <QGraphicsRectItem>
 #include <QObject>
-#include <QPixmap>
 
 class QgsComposition;
 class QgsMapRenderer;
@@ -152,10 +151,7 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     QgsRectangle mExtent;
 
     // Cache used in composer preview
-    // NOTE:  QCanvasView is slow with bigger images but the spped does not decrease with image size.
-    //        It is very slow, with zoom in in QCanvasView, it seems, that QCanvas is stored as a big image
-    //        with resolution necessary for current zoom and so always a big image mus be redrawn.
-    QPixmap mCachePixmap;
+    QImage mCacheImage;
 
     // Is cache up to date
     bool mCacheUpdated;
