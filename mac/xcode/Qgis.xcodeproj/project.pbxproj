@@ -1050,6 +1050,11 @@
 		7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8E0F7A767400498385 /* qgsspatialiteprovider.cpp */; };
 		7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */; };
 		7262EDCD0F7A9FFC00498385 /* qgsspatialitetablemodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED7F0F7A74B700498385 /* qgsspatialitetablemodel.h */; };
+		72683FFB0FD6B21A00D90FFC /* mActionFromSelectedFeature.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FF90FD6B1EA00D90FFC /* mActionFromSelectedFeature.png */; };
+		72683FFC0FD6B21A00D90FFC /* mActionMergeFeatures.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FF80FD6B1EA00D90FFC /* mActionMergeFeatures.png */; };
+		72683FFD0FD6B21A00D90FFC /* mActionRemoveSelectedFeature.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FFA0FD6B1EA00D90FFC /* mActionRemoveSelectedFeature.png */; };
+		726840010FD6B2D200D90FFC /* qgsmergeattributesdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */; };
+		726840020FD6B2D200D90FFC /* qgsmergeattributesdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */; };
 		7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383010F8B8C2D0083B883 /* qgscentralpointpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */; };
 		7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383040F8B8C2D0083B883 /* qgspalobjectpositionmanager.h */; };
@@ -4139,6 +4144,9 @@
 				72820FEF0FACCFA90011C963 /* mActionDeleteRing.png in Copy - theme-default */,
 				72820FF00FACCFA90011C963 /* mActionDeletePart.png in Copy - theme-default */,
 				72820FF10FACCFA90011C963 /* mActionSimplify.png in Copy - theme-default */,
+				72683FFB0FD6B21A00D90FFC /* mActionFromSelectedFeature.png in Copy - theme-default */,
+				72683FFC0FD6B21A00D90FFC /* mActionMergeFeatures.png in Copy - theme-default */,
+				72683FFD0FD6B21A00D90FFC /* mActionRemoveSelectedFeature.png in Copy - theme-default */,
 			);
 			name = "Copy - theme-default";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8368,6 +8376,12 @@
 		7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialiteprovider.h; path = ../../src/providers/spatialite/qgsspatialiteprovider.h; sourceTree = SOURCE_ROOT; };
 		7262ED9C0F7A770300498385 /* libspatialiteprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libspatialiteprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		7262EDB90F7A99CE00498385 /* FindSPATIALITE.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindSPATIALITE.cmake; path = ../../cmake/FindSPATIALITE.cmake; sourceTree = SOURCE_ROOT; };
+		72683FF80FD6B1EA00D90FFC /* mActionMergeFeatures.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionMergeFeatures.png; path = ../../images/themes/default/mActionMergeFeatures.png; sourceTree = SOURCE_ROOT; };
+		72683FF90FD6B1EA00D90FFC /* mActionFromSelectedFeature.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionFromSelectedFeature.png; path = ../../images/themes/default/mActionFromSelectedFeature.png; sourceTree = SOURCE_ROOT; };
+		72683FFA0FD6B1EA00D90FFC /* mActionRemoveSelectedFeature.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRemoveSelectedFeature.png; path = ../../images/themes/default/mActionRemoveSelectedFeature.png; sourceTree = SOURCE_ROOT; };
+		72683FFE0FD6B26E00D90FFC /* qgsmergeattributesdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsmergeattributesdialogbase.ui; path = ../../src/ui/qgsmergeattributesdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmergeattributesdialog.h; path = ../../src/app/qgsmergeattributesdialog.h; sourceTree = SOURCE_ROOT; };
+		726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmergeattributesdialog.cpp; path = ../../src/app/qgsmergeattributesdialog.cpp; sourceTree = SOURCE_ROOT; };
 		726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsnewogrconnection.cpp; path = ../../src/app/ogr/qgsnewogrconnection.cpp; sourceTree = SOURCE_ROOT; };
 		726979A30F71369A00AFA402 /* qgsnewogrconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsnewogrconnection.h; path = ../../src/app/ogr/qgsnewogrconnection.h; sourceTree = SOURCE_ROOT; };
 		726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsogrhelperfunctions.cpp; path = ../../src/app/ogr/qgsogrhelperfunctions.cpp; sourceTree = SOURCE_ROOT; };
@@ -9277,6 +9291,8 @@
 				7209E6360F39E57A003DC336 /* qgsmeasuredialog.h */,
 				7209E6370F39E57A003DC336 /* qgsmeasuretool.cpp */,
 				7209E6380F39E57A003DC336 /* qgsmeasuretool.h */,
+				72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */,
+				726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */,
 				7209E6390F39E57A003DC336 /* qgsnewconnection.cpp */,
 				7209E63A0F39E57A003DC336 /* qgsnewconnection.h */,
 				7209E63B0F39E57A003DC336 /* qgsnewhttpconnection.cpp */,
@@ -11442,6 +11458,7 @@
 				7209ECA70F39E57B003DC336 /* qgsludialogbase.ui */,
 				7209ECA80F39E57B003DC336 /* qgsmapserverexportbase.ui */,
 				7209ECA90F39E57B003DC336 /* qgsmeasurebase.ui */,
+				72683FFE0FD6B26E00D90FFC /* qgsmergeattributesdialogbase.ui */,
 				7209ECAA0F39E57B003DC336 /* qgsmessageviewer.ui */,
 				7209ECAB0F39E57B003DC336 /* qgsnewconnectionbase.ui */,
 				7209ECAC0F39E57B003DC336 /* qgsnewhttpconnectionbase.ui */,
@@ -12423,6 +12440,9 @@
 				72820FEC0FACCF970011C963 /* mActionSimplify.png */,
 				72820FED0FACCF970011C963 /* mActionDeletePart.png */,
 				72820FEE0FACCF970011C963 /* mActionDeleteRing.png */,
+				72683FF80FD6B1EA00D90FFC /* mActionMergeFeatures.png */,
+				72683FF90FD6B1EA00D90FFC /* mActionFromSelectedFeature.png */,
+				72683FFA0FD6B1EA00D90FFC /* mActionRemoveSelectedFeature.png */,
 				7209EF5C0F39E5D9003DC336 /* qgis.xpm */,
 				7209EF5D0F39E5D9003DC336 /* tracking.png */,
 				7209EF5E0F39E5D9003DC336 /* tracking.svg */,
@@ -15200,6 +15220,7 @@
 				7209F44A0F3A468C003DC336 /* qgsmaptoolvertexedit.cpp in Sources */,
 				7209F44B0F3A468C003DC336 /* qgsmeasuredialog.cpp in Sources */,
 				7209F44C0F3A468C003DC336 /* qgsmeasuretool.cpp in Sources */,
+				726840010FD6B2D200D90FFC /* qgsmergeattributesdialog.cpp in Sources */,
 				7209F44D0F3A468C003DC336 /* qgsnewhttpconnection.cpp in Sources */,
 				7209F44E0F3A468C003DC336 /* qgsnumericsortlistviewitem.cpp in Sources */,
 				7209F44F0F3A468C003DC336 /* qgsoptions.cpp in Sources */,
@@ -15279,6 +15300,7 @@
 				7292889C0F71FE65006D9489 /* qgsmaptoolvertexedit.h in Sources */,
 				7292889D0F71FE65006D9489 /* qgsmeasuredialog.h in Sources */,
 				7292889E0F71FE65006D9489 /* qgsmeasuretool.h in Sources */,
+				726840020FD6B2D200D90FFC /* qgsmergeattributesdialog.h in Sources */,
 				7292889F0F71FE65006D9489 /* qgsnewconnection.h in Sources */,
 				729288A00F71FE65006D9489 /* qgsnewhttpconnection.h in Sources */,
 				729288A10F71FE65006D9489 /* qgsoptions.h in Sources */,
