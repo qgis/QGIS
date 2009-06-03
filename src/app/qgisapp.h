@@ -41,6 +41,7 @@ class QValidator;
 class QgisAppInterface;
 class QgsClipboard;
 class QgsComposer;
+class QgsGeometry;
 class QgsHelpViewer;
 class QgsFeature;
 
@@ -63,6 +64,7 @@ class QgsVectorLayer;
 #include <QPointer>
 
 #include "qgsconfig.h"
+#include "qgsfeature.h"
 #include "qgspoint.h"
 
 /*! \class QgisApp
@@ -509,6 +511,8 @@ class QgisApp : public QMainWindow
     void deleteRing();
     //! deletes part of polygon
     void deletePart();
+    //! merges the selected features together
+    void mergeSelectedFeatures();
 
     //! activates the selection tool
     void select();
@@ -655,6 +659,9 @@ class QgisApp : public QMainWindow
     void pasteTransformations();
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
+    /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
+      @return 0 in case of error*/
+    QgsGeometry* unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& featureList) const;
 
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );
@@ -719,6 +726,7 @@ class QgisApp : public QMainWindow
     QAction *mActionSimplifyFeature;
     QAction *mActionDeleteRing;
     QAction *mActionDeletePart;
+    QAction *mActionMergeFeatures;
     QAction *mActionEditSeparator3;
 
     QAction *mActionPan;
