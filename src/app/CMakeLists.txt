@@ -41,6 +41,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolvertexedit.cpp
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
+  qgsmergeattributesdialog.cpp
   qgsnewhttpconnection.cpp
   qgsnumericsortlistviewitem.cpp
   qgsogrsublayersdialog.cpp
@@ -129,6 +130,7 @@ SET (QGIS_APP_MOC_HDRS
 
   qgsmeasuretool.h
   qgsmeasuredialog.h
+  qgsmergeattributesdialog.h
   qgsnewhttpconnection.h
   qgsoptions.h
   qgsogrsublayersdialog.h
