@@ -654,6 +654,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Display labels */
     bool mLabelOn;
 
+    /**The current type of editing marker*/
+    QgsVectorLayer::VertexMarkerType mCurrentVertexMarkerType;
+
+    /**Flag if the vertex markers should be drawn only for selection (true) or for all features (false)*/
+    bool mVertexMarkerOnlyForSelection;
+
     /**List of overlays. Vector overlays will be rendered on top of all maplayers*/
     QList<QgsVectorOverlay*> mOverlays;
 
