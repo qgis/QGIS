@@ -49,6 +49,8 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
     cboPlacement->setCurrentIndex( cboPlacement->findData( QVariant( (int)lyr.placement ) ) );
     cboFieldName->setCurrentIndex( cboFieldName->findText(lyr.fieldName) );
     chkEnableLabeling->setChecked( lyr.enabled );
+    sliderPriority->setValue( lyr.priority );
+    chkNoObstacle->setChecked( !lyr.obstacle );
   }
   else
   {
@@ -81,6 +83,8 @@ PalLabeling::LayerSettings LabelingGui::layerSettings()
   lyr.textColor = btnTextColor->color();
   lyr.textFont = lblFontPreview->font();
   lyr.enabled = chkEnableLabeling->isChecked();
+  lyr.priority = sliderPriority->value();
+  lyr.obstacle = !chkNoObstacle->isChecked();
 
   return lyr;
 }

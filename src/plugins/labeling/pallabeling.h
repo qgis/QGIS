@@ -36,6 +36,8 @@ public:
       QFont textFont;
       QColor textColor;
       bool enabled;
+      int priority; // 0 = low, 10 = high
+      bool obstacle; // whether it's an obstacle
     };
 
     void doLabeling(QPainter* painter);

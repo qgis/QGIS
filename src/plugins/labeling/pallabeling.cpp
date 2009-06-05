@@ -141,7 +141,8 @@ int PalLabeling::prepareLayer(Pal& pal, const LayerSettings& lyr)
   }
 
   // create the pal layer
-  Layer* l = pal.addLayer(lyr.layerId.toLocal8Bit().data(), -1, -1, arrangement, METER, 0, true, true, true);
+  double priority = 1 - lyr.priority/10.0; // convert 0..10 --> 1..0
+  Layer* l = pal.addLayer(lyr.layerId.toLocal8Bit().data(), -1, -1, arrangement, METER, priority, lyr.obstacle, true, true);
 
   QFontMetrics fm(lyr.textFont);
 
