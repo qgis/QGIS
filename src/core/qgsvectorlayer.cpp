@@ -101,6 +101,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mRenderer( 0 ),
     mLabel( 0 ),
     mLabelOn( false ),
+    mVertexMarkerOnlyForSelection(false),
     mFetching( false )
 {
   mActions = new QgsAttributeAction;
@@ -439,13 +440,12 @@ unsigned char* QgsVectorLayer::drawLineString(
   // draw vertex markers if in editing mode, but only to the main canvas
   if ( mEditable && drawingToEditingCanvas )
   {
-    QgsVectorLayer::VertexMarkerType markerType = currentVertexMarkerType();
 
     std::vector<double>::const_iterator xIt;
     std::vector<double>::const_iterator yIt;
     for ( xIt = x.begin(), yIt = y.begin(); xIt != x.end(); ++xIt, ++yIt )
     {
-      drawVertexMarker(( int )( *xIt ), ( int )( *yIt ), *p, markerType );
+      drawVertexMarker(( int )( *xIt ), ( int )( *yIt ), *p, mCurrentVertexMarkerType );
     }
   }
 
@@ -662,12 +662,10 @@ unsigned char *QgsVectorLayer::drawPolygon(
     // draw vertex markers if in editing mode, but only to the main canvas
     if ( mEditable && drawingToEditingCanvas )
     {
-      QgsVectorLayer::VertexMarkerType markerType = currentVertexMarkerType();
-
       for ( int i = 0; i < path.elementCount(); ++i )
       {
         const QPainterPath::Element & e = path.elementAt( i );
-        drawVertexMarker(( int )e.x, ( int )e.y, *p, markerType );
+        drawVertexMarker(( int )e.x, ( int )e.y, *p, mCurrentVertexMarkerType );
       }
     }
 
@@ -702,13 +700,16 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QPen pen;
     /*Pointer to a marker image*/
     QImage marker;
+    //vertex marker type for selection
+    QgsVectorLayer::VertexMarkerType vertexMarker;
 
     if ( mEditable )
     {
       // Destroy all cached geometries and clear the references to them
       deleteCachedGeometries();
-
       mCachedGeometriesRect = rendererContext.extent();
+      vertexMarker = currentVertexMarkerType();
+      mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
     }
 
     updateFeatureCount();
@@ -744,16 +745,27 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         Q_UNUSED( totalFeatures );
 #endif //Q_WS_MAC
 
-        if ( mEditable )
-        {
-          // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-          mCachedGeometries[fet.id()] = *fet.geometry();
-        }
-
         // check if feature is selected
         // only show selections of the current layer
         // TODO: create a mechanism to let layer know whether it's current layer or not [MD]
         bool sel = mSelectedFeatureIds.contains( fet.id() );
+
+        if ( mEditable )
+        {
+          // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+          mCachedGeometries[fet.id()] = *fet.geometry();
+
+          if(mVertexMarkerOnlyForSelection && !sel)
+          {
+            mCurrentVertexMarkerType = QgsVectorLayer::NoMarker;
+          }
+          else
+          {
+            mCurrentVertexMarkerType = vertexMarker;
+          }
+        }
+
+
 
         //QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
         // markerScalerFactore reflects the wanted scaling of the marker
