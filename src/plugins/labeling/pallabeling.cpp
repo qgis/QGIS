@@ -66,6 +66,19 @@ protected:
 PalLabeling::PalLabeling(QgsMapCanvas* mapCanvas)
   : mMapCanvas(mapCanvas)
 {
+  // find out engine defaults
+  Pal p;
+  mCandPoint = p.getPointP();
+  mCandLine = p.getLineP();
+  mCandPolygon = p.getPolyP();
+
+  switch (p.getSearch())
+  {
+    case CHAIN: mSearch = Chain; break;
+    case POPMUSIC_TABU: mSearch = Popmusic_Tabu; break;
+    case POPMUSIC_CHAIN: mSearch = Popmusic_Chain; break;
+    case POPMUSIC_TABU_CHAIN: mSearch = Popmusic_Tabu_Chain; break;
+  }
 }
 
 void PalLabeling::addLayer(LayerSettings layerSettings)
@@ -162,6 +175,22 @@ int PalLabeling::prepareLayer(Pal& pal, const LayerSettings& lyr)
 void PalLabeling::doLabeling(QPainter* painter)
 {
   Pal p;
+
+  SearchMethod s;
+  switch (mSearch)
+  {
+    case Chain: s = CHAIN; break;
+    case Popmusic_Tabu: s = POPMUSIC_TABU; break;
+    case Popmusic_Chain: s = POPMUSIC_CHAIN; break;
+    case Popmusic_Tabu_Chain: s = POPMUSIC_TABU_CHAIN; break;
+  }
+  p.setSearch(s);
+
+  // set number of candidates generated per feature
+  p.setPointP(mCandPoint);
+  p.setLineP(mCandLine);
+  p.setPolyP(mCandPolygon);
+
   //p.setSearch(POPMUSIC_TABU_CHAIN);// this is really slow! // default is CHAIN (worst, fastest)
   // TODO: API 0.2 - no mention about changing map units!
   // pal map units = METER by default ... change setMapUnit
@@ -233,4 +262,28 @@ void PalLabeling::doLabeling(QPainter* painter)
   std::cout << "LABELING draw:   " << t.elapsed() << "ms" << std::endl;
 
   delete labels;
+}
+
+void PalLabeling::numCandidatePositions(int& candPoint, int& candLine, int& candPolygon)
+{
+  candPoint = mCandPoint;
+  candLine = mCandLine;
+  candPolygon = mCandPolygon;
+}
+
+void PalLabeling::setNumCandidatePositions(int candPoint, int candLine, int candPolygon)
+{
+  mCandPoint = candPoint;
+  mCandLine = candLine;
+  mCandPolygon = candPolygon;
+}
+
+void PalLabeling::setSearchMethod(PalLabeling::Search s)
+{
+  mSearch = s;
+}
+
+PalLabeling::Search PalLabeling::searchMethod() const
+{
+  return mSearch;
 }

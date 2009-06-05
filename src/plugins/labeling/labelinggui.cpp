@@ -22,6 +22,7 @@
 #include <qgsmaplayerregistry.h>
 
 #include "pallabeling.h"
+#include "engineconfigdialog.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -36,6 +37,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
 
   connect(btnTextColor, SIGNAL(clicked()), this, SLOT(changeTextColor()) );
   connect(btnChangeFont, SIGNAL(clicked()), this, SLOT(changeTextFont()) );
+  connect(btnEngineSettings, SIGNAL(clicked()), this, SLOT(showEngineConfigDialog()) );
 
   populatePlacementMethods();
   populateFieldNames();
@@ -141,4 +143,10 @@ void LabelingGui::updateFontPreview(QFont font)
   palette.setBrush(QPalette::Active, QPalette::WindowText, brush);
   palette.setBrush(QPalette::Inactive, QPalette::WindowText, brush);
   lblFontPreview->setPalette(palette);
+}
+
+void LabelingGui::showEngineConfigDialog()
+{
+  EngineConfigDialog dlg(mLBL, this);
+  dlg.exec();
 }

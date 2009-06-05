@@ -46,12 +46,22 @@ public:
 
     LayerSettings layer(QString layerId);
 
+    void numCandidatePositions(int& candPoint, int& candLine, int& candPolygon);
+    void setNumCandidatePositions(int candPoint, int candLine, int candPolygon);
+
+    enum Search { Chain, Popmusic_Tabu, Popmusic_Chain, Popmusic_Tabu_Chain };
+
+    void setSearchMethod(Search s);
+    Search searchMethod() const;
+
 protected:
     int prepareLayer(pal::Pal& pal, const LayerSettings& lyr);
 
 protected:
     QList<LayerSettings> mLayers;
     QgsMapCanvas* mMapCanvas;
+    int mCandPoint, mCandLine, mCandPolygon;
+    Search mSearch;
 };
 
 #endif // PALLABELING_H

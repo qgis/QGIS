@@ -6,13 +6,15 @@ SET (labeling_SRCS
      labeling.cpp
      labelinggui.cpp
      pallabeling.cpp
+     engineconfigdialog.cpp
 )
 
-SET (labeling_UIS labelingguibase.ui)
+SET (labeling_UIS labelingguibase.ui engineconfigdialog.ui)
 
 SET (labeling_MOC_HDRS
      labeling.h
      labelinggui.h
+     engineconfigdialog.h
 )
 
 SET (labeling_RCCS  labeling.qrc)

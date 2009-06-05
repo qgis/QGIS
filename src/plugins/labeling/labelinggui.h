@@ -40,6 +40,7 @@ class LabelingGui : public QDialog, private Ui::LabelingGuiBase
   public slots:
     void changeTextColor();
     void changeTextFont();
+    void showEngineConfigDialog();
 
   protected:
     void populatePlacementMethods();

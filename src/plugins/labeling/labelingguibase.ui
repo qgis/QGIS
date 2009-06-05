@@ -247,7 +247,7 @@
      <item>
       <widget class="QPushButton" name="btnEngineSettings">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
         <string>Engine settings</string>
