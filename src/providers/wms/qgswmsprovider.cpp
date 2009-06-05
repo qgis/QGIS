@@ -454,6 +454,12 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
   url += "&";
   url += "FORMAT=" + imageMimeType;
 
+  //DPI parameter is accepted by QGIS mapserver (and ignored by the other WMS servers)
+  if(mDpi != -1)
+  {
+    url += "&DPI=" + QString::number(mDpi);
+  }
+
   //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
   if ( !imageMimeType.contains( "jpeg", Qt::CaseInsensitive ) && !imageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
   {
