@@ -35,6 +35,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolidentify.cpp
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovevertex.cpp
+  qgsmaptoolnodetool.cpp
   qgsmaptoolselect.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp

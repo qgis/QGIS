@@ -166,6 +166,7 @@
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolmovefeature.h"
 #include "qgsmaptoolmovevertex.h"
+#include "qgsmaptoolnodetool.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolsplitfeatures.h"
@@ -475,6 +476,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mDeleteRing;
   delete mMapTools.mDeletePart;
   delete mMapTools.mAddIsland;
+  delete mMapTools.mNodeTool;
 
   delete mPythonConsole;
   delete mPythonUtils;
@@ -710,6 +712,11 @@ void QgisApp::createActions()
   connect( mActionMergeFeatures, SIGNAL(triggered()), this, SLOT(mergeSelectedFeatures()));
   mActionMergeFeatures->setEnabled(false);
 
+  mActionNodeTool = new QAction( getThemeIcon( "mActionNodeTool.png" ), tr( "Node Tool" ), this );
+  shortcuts->registerAction( mActionNodeTool );
+  mActionNodeTool->setStatusTip( tr( "Node Tool" ) );
+  connect( mActionNodeTool, SIGNAL( triggered() ), this, SLOT( nodeTool() ) );
+  mActionNodeTool->setEnabled( false );
 
   // View Menu Items
 
@@ -1061,6 +1068,9 @@ void QgisApp::createActionGroups()
   mActionDeletePart->setCheckable( true );
   mMapToolGroup->addAction( mActionDeletePart );
   mMapToolGroup->addAction( mActionMergeFeatures);
+  mActionNodeTool->setCheckable( true );
+  mMapToolGroup->addAction( mActionNodeTool );
+
 }
 
 void QgisApp::createMenus()
@@ -1150,7 +1160,8 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionDeleteRing );
   mEditMenu->addAction( mActionDeletePart );
   mEditMenu->addAction( mActionMergeFeatures );
-
+  mEditMenu->addAction( mActionNodeTool );
+  
   if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
   {
     mActionEditSeparator3 = mEditMenu->addSeparator();
@@ -1355,6 +1366,7 @@ void QgisApp::createToolBars()
   mAdvancedDigitizeToolBar->addAction( mActionDeleteRing );
   mAdvancedDigitizeToolBar->addAction( mActionDeletePart );
   mAdvancedDigitizeToolBar->addAction( mActionMergeFeatures );
+  mAdvancedDigitizeToolBar->addAction( mActionNodeTool );
   mToolbarMenu->addAction( mAdvancedDigitizeToolBar->toggleViewAction() );
 
 
@@ -1707,6 +1719,8 @@ void QgisApp::createCanvas()
   mMapTools.mDeleteRing->setAction( mActionDeleteRing );
   mMapTools.mDeletePart = new QgsMapToolDeletePart( mMapCanvas );
   mMapTools.mDeletePart->setAction( mActionDeletePart );
+  mMapTools.mNodeTool = new QgsMapToolNodeTool( mMapCanvas );
+  mMapTools.mNodeTool->setAction( mActionNodeTool );
   //ensure that non edit tool is initialised or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;
 }
@@ -4228,6 +4242,11 @@ void QgisApp::mergeSelectedFeatures()
     }
 }
 
+void QgisApp::nodeTool()
+{
+  mMapCanvas->setMapTool( mMapTools.mNodeTool );
+}
+
 void QgisApp::splitFeatures()
 {
   mMapCanvas->setMapTool( mMapTools.mSplitFeatures );
@@ -5472,10 +5491,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
       {
         mActionMoveFeature->setEnabled( true );
+        mActionNodeTool->setEnabled( true );
       }
       else
       {
         mActionMoveFeature->setEnabled( false );
+        mActionNodeTool->setEnabled( false );
       }
 
       if ( vlayer->geometryType() == QGis::Point )
