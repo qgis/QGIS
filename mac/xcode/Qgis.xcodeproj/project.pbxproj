@@ -2493,6 +2493,8 @@
 		72EBCB3B0F49E8240016BA3C /* favicon.ico in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0160F39E5DA003DC336 /* favicon.ico */; };
 		72EBCB3C0F49E8240016BA3C /* index.html in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F01B0F39E5DA003DC336 /* index.html */; };
 		72EBCB3D0F49E8240016BA3C /* qgisdoc.css in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0370F39E5DA003DC336 /* qgisdoc.css */; };
+		72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */; };
+		72F22FB90FDAC249000E8CB0 /* mActionNodeTool.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */; };
 		72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */; };
 		72FB54C90FAF3AD400AB2F8D /* qgsattributetabledelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C30FAF3A5D00AB2F8D /* qgsattributetabledelegate.cpp */; };
 		72FB54CA0FAF3AD800AB2F8D /* qgsattributetablefiltermodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C80FAF3A5D00AB2F8D /* qgsattributetablefiltermodel.cpp */; };
@@ -4086,6 +4088,7 @@
 				7256F45C0F41C4DD0022BE1F /* mActionNewBookmark.png in Copy - theme-default */,
 				7256F45D0F41C4DD0022BE1F /* mActionNewFolder.png in Copy - theme-default */,
 				7256F45E0F41C4DD0022BE1F /* mActionNewVectorLayer.png in Copy - theme-default */,
+				72F22FB90FDAC249000E8CB0 /* mActionNodeTool.png in Copy - theme-default */,
 				7256F45F0F41C4DD0022BE1F /* mActionOpenTable.png in Copy - theme-default */,
 				7256F4600F41C4DD0022BE1F /* mActionOptions.png in Copy - theme-default */,
 				7256F4610F41C4DD0022BE1F /* mActionPan.png in Copy - theme-default */,
@@ -8676,6 +8679,9 @@
 		72EBCA650F49DC130016BA3C /* frmVisual.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmVisual.ui; path = ../../python/plugins/fTools/tools/frmVisual.ui; sourceTree = SOURCE_ROOT; };
 		72EBCA660F49DC130016BA3C /* ftools_utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ftools_utils.py; path = ../../python/plugins/fTools/tools/ftools_utils.py; sourceTree = SOURCE_ROOT; };
 		72F117AB0F73DB1A00D68564 /* tsstat.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = tsstat.pl; path = ../../scripts/tsstat.pl; sourceTree = SOURCE_ROOT; };
+		72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolnodetool.cpp; path = ../../src/app/qgsmaptoolnodetool.cpp; sourceTree = SOURCE_ROOT; };
+		72F22FB60FDAC1F4000E8CB0 /* qgsmaptoolnodetool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolnodetool.h; path = ../../src/app/qgsmaptoolnodetool.h; sourceTree = SOURCE_ROOT; };
+		72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNodeTool.png; path = ../../images/themes/default/mActionNodeTool.png; sourceTree = SOURCE_ROOT; };
 		72F8D9350F89234600D10CE5 /* FindIconv.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindIconv.cmake; path = ../../cmake/FindIconv.cmake; sourceTree = SOURCE_ROOT; };
 		72F8D9390F8924AE00D10CE5 /* qgstolerance.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgstolerance.sip; path = ../../python/core/qgstolerance.sip; sourceTree = SOURCE_ROOT; };
 		72F8D9420F8924F100D10CE5 /* qgstolerance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstolerance.h; path = ../../src/core/qgstolerance.h; sourceTree = SOURCE_ROOT; };
@@ -9281,6 +9287,8 @@
 				7209E62C0F39E57A003DC336 /* qgsmaptoolmovefeature.h */,
 				7209E62D0F39E57A003DC336 /* qgsmaptoolmovevertex.cpp */,
 				7209E62E0F39E57A003DC336 /* qgsmaptoolmovevertex.h */,
+				72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */,
+				72F22FB60FDAC1F4000E8CB0 /* qgsmaptoolnodetool.h */,
 				7209E62F0F39E57A003DC336 /* qgsmaptoolselect.cpp */,
 				7209E6300F39E57A003DC336 /* qgsmaptoolselect.h */,
 				7209E6310F39E57A003DC336 /* qgsmaptoolsplitfeatures.cpp */,
@@ -12386,6 +12394,7 @@
 				7209EF260F39E5D9003DC336 /* mActionNewBookmark.png */,
 				7209EF270F39E5D9003DC336 /* mActionNewFolder.png */,
 				7209EF280F39E5D9003DC336 /* mActionNewVectorLayer.png */,
+				72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */,
 				7209EF290F39E5D9003DC336 /* mActionOpenTable.png */,
 				7209EF2A0F39E5D9003DC336 /* mActionOptions.png */,
 				7209EF2B0F39E5D9003DC336 /* mActionPan.png */,
@@ -15215,6 +15224,7 @@
 				7209F4450F3A468C003DC336 /* qgsmaptoolidentify.cpp in Sources */,
 				7209F4460F3A468C003DC336 /* qgsmaptoolmovefeature.cpp in Sources */,
 				7209F4470F3A468C003DC336 /* qgsmaptoolmovevertex.cpp in Sources */,
+				72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */,
 				7209F4480F3A468C003DC336 /* qgsmaptoolselect.cpp in Sources */,
 				7209F4490F3A468C003DC336 /* qgsmaptoolsplitfeatures.cpp in Sources */,
 				7209F44A0F3A468C003DC336 /* qgsmaptoolvertexedit.cpp in Sources */,
