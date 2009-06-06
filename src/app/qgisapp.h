@@ -227,6 +227,7 @@ class QgisApp : public QMainWindow
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
     QAction *actionDeleteRing() { return mActionDeleteRing; }
     QAction *actionDeletePart() { return mActionDeletePart; }
+    QAction *actionNodeTool() { return mActionNodeTool; }
     QAction *actionEditSeparator2() { return mActionEditSeparator2; }
 
     QAction *actionPan() { return mActionPan; }
@@ -513,6 +514,8 @@ class QgisApp : public QMainWindow
     void deletePart();
     //! merges the selected features together
     void mergeSelectedFeatures();
+    //! provides operations with nodes
+    void nodeTool();
 
     //! activates the selection tool
     void select();
@@ -727,6 +730,7 @@ class QgisApp : public QMainWindow
     QAction *mActionDeleteRing;
     QAction *mActionDeletePart;
     QAction *mActionMergeFeatures;
+    QAction *mActionNodeTool;
     QAction *mActionEditSeparator3;
 
     QAction *mActionPan;
@@ -847,6 +851,7 @@ class QgisApp : public QMainWindow
         QgsMapTool* mSimplifyFeature;
         QgsMapTool* mDeleteRing;
         QgsMapTool* mDeletePart;
+        QgsMapTool* mNodeTool;
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool;
