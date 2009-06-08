@@ -1501,6 +1501,8 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
     emit statusChanged( tr( "Retrieving using %1" ).arg( mProviderKey ) );
 
+    mDataProvider->setDpi(rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor());
+
     QImage* image =
       mDataProvider->draw(
         myRasterExtent,
