@@ -142,6 +142,7 @@ INCLUDE_DIRECTORIES(
      ${GRASS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}
      ${PROJ_INCLUDE_DIR}
+     ${GEOS_INCLUDE_DIR}
      qtermwidget
 )
 
