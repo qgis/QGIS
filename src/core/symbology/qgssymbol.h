@@ -101,13 +101,13 @@ class CORE_EXPORT QgsSymbol
 
     /** Get QImage representation of point symbol with current settings
     */
-    virtual QImage getCachedPointSymbolAsImage( double widthScale = 1.,
+    virtual QImage getCachedPointSymbolAsImage( double widthScale = 1.0,
         bool selected = false, QColor selectionColor = Qt::yellow );
 
     /** Get QImage representation of point symbol with current settings
      * and scaled (can be slow when scale != 1.0)
      */
-    virtual QImage getPointSymbolAsImage( double widthScale = 1.,
+    virtual QImage getPointSymbolAsImage( double widthScale = 1.0,
                                           bool selected = false,
                                           QColor selectionColor = Qt::yellow,
                                           double scale = 1.0,
