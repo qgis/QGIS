@@ -30,6 +30,7 @@
 #include "qgisapp.h"
 #include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
 
 
 class QgsAttributeTableTableDock : public QDockWidget
@@ -201,7 +202,7 @@ void QgsAttributeTableDialog::on_mCopySelectedRowsButton_clicked()
 
 void QgsAttributeTableDialog::on_mZoomMapToSelectedRowsButton_clicked()
 {
-  QgisApp::instance()->zoomToSelected();
+  QgisApp::instance()->mapCanvas()->zoomToSelected(mLayer);
 }
 
 void QgsAttributeTableDialog::on_mInvertSelectionButton_clicked()
