@@ -506,7 +506,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   QgsLegendLayer * llayer = new QgsLegendLayer( layer->name() );//generate entry for mStateOfCheckBoxes below
   QgsLegendLayerFileGroup * llfgroup = new QgsLegendLayerFileGroup( llayer, QString( "Files" ) );
   QgsLegendLayerFile * llfile = new QgsLegendLayerFile( llfgroup, QgsLegendLayerFile::nameFromLayer( layer ), layer );
-  llayer->setLayerTypeIcon();
+  llayer->updateIcon();
   llayer->setToolTip( 0, layer->publicSource() );
 
   //set the correct check states
@@ -547,6 +547,10 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   setCurrentItem( llayer );
   //make the QTreeWidget item up-to-date
   doItemsLayout();
+
+  // setup connections that will update the layer icons
+  connect(layer, SIGNAL(editingStarted()), llayer, SLOT(updateIcon()));
+  connect(layer, SIGNAL(editingStopped()), llayer, SLOT(updateIcon()));
 }
 
 QgsLegendLayerFile* QgsLegend::currentLayerFile()
@@ -1086,7 +1090,7 @@ bool QgsLegend::readXML( QDomNode& legendnode )
           //set the layer type icon if this legendlayerfile is the last in the file group
           if ( child.nextSibling().isNull() )
           {
-            static_cast<QgsLegendLayer*>( theLegendLayerFile->parent()->parent() )->setLayerTypeIcon();
+            static_cast<QgsLegendLayer*>( theLegendLayerFile->parent()->parent() )->updateIcon();
           }
 
           theLegendLayerFile->updateLegendItem();

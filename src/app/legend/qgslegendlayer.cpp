@@ -84,11 +84,6 @@ void QgsLegendLayer::setupFont() //private method
   myFont.setBold( true ); //visually differentiate layer labels from the rest
   setFont( 0, myFont );
 }
-void QgsLegendLayer::setLayerTypeIcon()
-{
-  QIcon myIcon( getOriginalPixmap() );
-  setIcon( 0, myIcon );
-}
 
 bool QgsLegendLayer::isLeafNode()
 {
@@ -407,23 +402,28 @@ void QgsLegendLayer::updateIcon()
   if ( mapLayers().size() == 1 )
   {
     //overview
+    // FIXME: overview icon is missing
+    /*
     if ( theFile->isInOverview() )
     {
       // Overlay the overview icon on the default icon
-      QPixmap myPixmap = QgisApp::getThemePixmap( + "mIconOverview.png" );
+      QPixmap myPixmap = QgisApp::getThemePixmap(  "/mIconOverview.png" );
       QPainter p( &newIcon );
       p.drawPixmap( 0, 0, myPixmap );
       p.end();
-    }
+    }*/
 
     //editable
     if ( theLayer->isEditable() )
     {
+      QPixmap myPixmap = QgisApp::getThemePixmap( "/mIconEditable.png" );
+      // use editable icon instead of the layer's type icon
+      newIcon = myPixmap;
+
       // Overlay the editable icon on the default icon
-      QPixmap myPixmap = QgisApp::getThemePixmap( + "mIconEditable.png" );
-      QPainter p( &newIcon );
+      /*QPainter p( &newIcon );
       p.drawPixmap( 0, 0, myPixmap );
-      p.end();
+      p.end();*/
     }
   }
 
