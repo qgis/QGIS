@@ -1402,6 +1402,10 @@
 		72A892CC0FAF7B8500108152 /* qgsconfigureshortcutsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CA0FAF7B6100108152 /* qgsconfigureshortcutsdialog.cpp */; };
 		72A892CD0FAF7B8500108152 /* qgsshortcutsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */; };
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
+		72E4DF0D0FE00FB600D3505D /* qgis.v.out.ogr.pg.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 72E4DF0C0FE00FAD00D3505D /* qgis.v.out.ogr.pg.py */; };
+		72E4DF120FE0101500D3505D /* qgis.v.out.ogr.pg.1.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 72E4DF110FE00FFD00D3505D /* qgis.v.out.ogr.pg.1.png */; };
+		72E4DF130FE0101500D3505D /* qgis.v.out.ogr.pg.2.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 72E4DF100FE00FFD00D3505D /* qgis.v.out.ogr.pg.2.png */; };
+		72E4DF140FE0101500D3505D /* qgis.v.out.ogr.pg.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 72E4DF0F0FE00FFD00D3505D /* qgis.v.out.ogr.pg.qgm */; };
 		72E707040F42691B00142011 /* __init__.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 7209ED860F39E5D9003DC336 /* __init__.py */; };
 		72E7070A0F426A5C00142011 /* __init__.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD30F39E5D9003DC336 /* __init__.py */; };
 		72E7070B0F426A5C00142011 /* mapserver_export.png in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD50F39E5D9003DC336 /* mapserver_export.png */; };
@@ -3688,6 +3692,7 @@
 			dstSubfolderSpec = 0;
 			files = (
 				723FD06B0FBCBA3500EFA55D /* qgis.db.connect-login.pg.py in Copy - scripts */,
+				72E4DF0D0FE00FB600D3505D /* qgis.v.out.ogr.pg.py in Copy - scripts */,
 			);
 			name = "Copy - scripts";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5258,6 +5263,9 @@
 				72E70A1E0F426C7600142011 /* v.what.vect.qgm in Copy - modules */,
 				723FD0620FBCB91C00EFA55D /* qgis.db.connect-login.pg.1.png in Copy - modules */,
 				723FD0630FBCB91C00EFA55D /* qgis.db.connect-login.pg.qgm in Copy - modules */,
+				72E4DF120FE0101500D3505D /* qgis.v.out.ogr.pg.1.png in Copy - modules */,
+				72E4DF130FE0101500D3505D /* qgis.v.out.ogr.pg.2.png in Copy - modules */,
+				72E4DF140FE0101500D3505D /* qgis.v.out.ogr.pg.qgm in Copy - modules */,
 			);
 			name = "Copy - modules";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8480,6 +8488,10 @@
 		72B602A80FA0CB4100E00BC9 /* ts2cpp.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = ts2cpp.pl; path = ../../scripts/ts2cpp.pl; sourceTree = SOURCE_ROOT; };
 		72B957270F45C24200E3FF98 /* ReadMe.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = SOURCE_ROOT; };
 		72D232D30F4A206E000B9039 /* qgis_user-template.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "qgis_user-template.xcconfig"; sourceTree = SOURCE_ROOT; };
+		72E4DF0C0FE00FAD00D3505D /* qgis.v.out.ogr.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = qgis.v.out.ogr.pg.py; path = ../../src/plugins/grass/scripts/qgis.v.out.ogr.pg.py; sourceTree = SOURCE_ROOT; };
+		72E4DF0F0FE00FFD00D3505D /* qgis.v.out.ogr.pg.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis.v.out.ogr.pg.qgm; path = ../../src/plugins/grass/modules/qgis.v.out.ogr.pg.qgm; sourceTree = SOURCE_ROOT; };
+		72E4DF100FE00FFD00D3505D /* qgis.v.out.ogr.pg.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = qgis.v.out.ogr.pg.2.png; path = ../../src/plugins/grass/modules/qgis.v.out.ogr.pg.2.png; sourceTree = SOURCE_ROOT; };
+		72E4DF110FE00FFD00D3505D /* qgis.v.out.ogr.pg.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = qgis.v.out.ogr.pg.1.png; path = ../../src/plugins/grass/modules/qgis.v.out.ogr.pg.1.png; sourceTree = SOURCE_ROOT; };
 		72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = qgscomposerview.sip; sourceTree = "<group>"; };
 		72E9A3BE0F5AE63500E78E3C /* qgsscalebarstyle.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsscalebarstyle.sip; path = ../../python/core/qgsscalebarstyle.sip; sourceTree = SOURCE_ROOT; };
 		72E9A3BF0F5AE63500E78E3C /* qgscomposeritem.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposeritem.sip; path = ../../python/core/qgscomposeritem.sip; sourceTree = SOURCE_ROOT; };
@@ -10973,6 +10985,9 @@
 				7209EB220F39E57B003DC336 /* v.what.vect.qgm */,
 				723FD0600FBCB8E100EFA55D /* qgis.db.connect-login.pg.qgm */,
 				723FD0610FBCB8E100EFA55D /* qgis.db.connect-login.pg.1.png */,
+				72E4DF0F0FE00FFD00D3505D /* qgis.v.out.ogr.pg.qgm */,
+				72E4DF100FE00FFD00D3505D /* qgis.v.out.ogr.pg.2.png */,
+				72E4DF110FE00FFD00D3505D /* qgis.v.out.ogr.pg.1.png */,
 			);
 			name = modules;
 			path = ../../src/plugins/grass/modules;
@@ -12853,6 +12868,7 @@
 			children = (
 				723FD0660FBCB94600EFA55D /* CMakeLists.txt */,
 				723FD0670FBCB94600EFA55D /* qgis.db.connect-login.pg.py */,
+				72E4DF0C0FE00FAD00D3505D /* qgis.v.out.ogr.pg.py */,
 			);
 			name = scripts;
 			path = ../../src/plugins/grass/scripts;
@@ -18092,6 +18108,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				QGIS_VERSION_BUILD = 20090610;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18102,6 +18119,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				QGIS_VERSION_BUILD = 20090610;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
