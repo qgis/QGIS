@@ -52,7 +52,7 @@
 			</section>
 			<section label="Export vector">
 				<grass name="v.out.ogr"/>
-				<grass name="v.out.ogr.postgis"/>
+				<grass name="qgis.v.out.ogr.pg"/>
 				<grass name="v.out.ogr.gml"/>
 				<grass name="v.out.ogr.mapinfo"/>
 				<grass name="v.out.ascii"/>
