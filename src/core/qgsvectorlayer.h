@@ -69,7 +69,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Classification,
       EditRange,
       SliderRange,
-      FileName
+      FileName,
+      Enumeration
     };
 
     struct RangeData

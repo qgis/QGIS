@@ -132,6 +132,21 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       }
       break;
 
+      case QgsVectorLayer::Enumeration:
+      {
+        QStringList enumValues;
+        mLayer->dataProvider()->enumValues(it.key(), enumValues);
+
+        QComboBox *cb = new QComboBox();
+        QStringList::const_iterator s_it = enumValues.constBegin();
+        for(; s_it != enumValues.constEnd(); ++s_it)
+        {
+          cb->addItem(*s_it);
+        }
+        myWidget = cb;
+      }
+      break;
+
       case QgsVectorLayer::ValueMap:
       {
         const QMap<QString, QVariant> &map = vl->valueMap( it.key() );
