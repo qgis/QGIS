@@ -16821,6 +16821,7 @@
 					"$(GRASS_INC)",
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
+					"$(GEOS_INC)",
 				);
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
 				MACH_O_TYPE = mh_bundle;
@@ -16933,6 +16934,7 @@
 					"$(GRASS_INC)",
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
+					"$(GEOS_INC)",
 				);
 				INSTALL_PATH = "@executable_path/$(QGIS_LIB_SUBDIR)";
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
@@ -16966,6 +16968,7 @@
 					"$(GRASS_INC)",
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
+					"$(GEOS_INC)",
 				);
 				INSTALL_PATH = "@executable_path/$(QGIS_LIB_SUBDIR)";
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
@@ -17265,6 +17268,7 @@
 					"$(GRASS_INC)",
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
+					"$(GEOS_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
