@@ -1680,6 +1680,66 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
   }
 }
 
+void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
+{
+  enumList.clear();
+
+  QString typeName;
+  //find out type of index
+  QgsFieldMap::const_iterator f_it = attributeFields.find(index);
+  if(f_it != attributeFields.constEnd())
+  {
+    typeName = f_it.value().typeName();
+  }
+  else
+  {
+    return;
+  }
+
+  //is type an enum or a domain type?
+  QString typeSql = QString("SELECT typtype FROM pg_type where typname = %1").arg(quotedValue(typeName));
+  Result typeRes = connectionRO->PQexec( typeSql );
+  if ( PQresultStatus( typeRes ) != PGRES_TUPLES_OK || PQntuples(typeRes) < 1)
+  {
+    return;
+  }
+
+  QString typtype = PQgetvalue( typeRes, 0, 0 );
+  if(typtype.compare("e", Qt::CaseInsensitive) == 0)
+  {
+    //parse enum_range
+    QString enumRangeSql = QString("SELECT enum_range(%1) from %2 limit1").arg(quotedIdentifier(f_it.value().name())).arg(mSchemaTableName);
+    Result enumRangeRes = connectionRO->PQexec(enumRangeSql);
+    if ( PQresultStatus( enumRangeRes ) != PGRES_TUPLES_OK || PQntuples(enumRangeRes) > 0)
+    {
+      QString enumRangeString = PQgetvalue(enumRangeRes, 0, 0);
+      //strip away the brackets at begin and end
+      enumRangeString.chop(1);
+      enumRangeString.remove(0, 1);
+      QStringList rangeSplit = enumRangeString.split(",");
+      QStringList::const_iterator range_it = rangeSplit.constBegin();
+      for(; range_it != rangeSplit.constEnd(); ++range_it)
+      {
+        QString currentEnumValue = *range_it;
+        //remove quotes from begin and end of the value
+        if(currentEnumValue.startsWith("'") || currentEnumValue.startsWith("\""))
+        {
+          currentEnumValue.remove(0, 1);
+        }
+        if(currentEnumValue.endsWith("'") || currentEnumValue.endsWith("\""))
+        {
+          currentEnumValue.chop(1);
+        }
+        enumList << currentEnumValue;
+      }
+    }
+  }
+  else if (typtype.compare("d", Qt::CaseInsensitive) == 0)
+  {
+    //a domain type. Todo: evaluate the check constraint
+  }
+}
+
 // Returns the maximum value of an attribute
 QVariant QgsPostgresProvider::maximumValue( int index )
 {
