@@ -60,6 +60,8 @@ void QgsTINInterpolator::initialize()
     cacheBaseData();
   }
 
+  QList<Point3D*> rejectedPoints;
+
   //create DualEdgeTriangulation
 
   DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( mCachedBaseData.size(), 0 );
@@ -70,7 +72,16 @@ void QgsTINInterpolator::initialize()
   for ( ; vertex_it != mCachedBaseData.constEnd(); ++vertex_it )
   {
     Point3D* thePoint = new Point3D( vertex_it->x, vertex_it->y, vertex_it->z );
-    mTriangulation->addPoint( thePoint );
+    if(mTriangulation->addPoint( thePoint ) == -100)
+    {
+      rejectedPoints.push_back(new Point3D(vertex_it->x, vertex_it->y, vertex_it->z));
+    }
+  }
+
+  QList<Point3D*>::iterator rejectedIt = rejectedPoints.begin();
+  for(; rejectedIt != rejectedPoints.end(); ++rejectedIt)
+  {
+    mTriangulation->addPoint(*rejectedIt);
   }
 
   mTriangleInterpolator = new LinTriangleInterpolator( theDualEdgeTriangulation );
