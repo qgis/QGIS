@@ -66,7 +66,15 @@ ENDIF (WITH_GRASS)
 
 IF (GRASS_FOUND)
    FILE(READ ${GRASS_INCLUDE_DIR}/grass/version.h VERSIONFILE)
+   # We can avoid the following block using version_less version_equal and
+   # version_greater. Are there compatibility problems? 
    STRING(REGEX MATCH "[0-9]+\\.[0-9]+\\.[^ ]+" GRASS_VERSION ${VERSIONFILE})
+   STRING(REGEX REPLACE "^([0-9]*)\\.[0-9]*\\..*$" "\\1" GRASS_MAJOR_VERSION ${GRASS_VERSION})
+   STRING(REGEX REPLACE "^[0-9]*\\.([0-9]*)\\..*$" "\\1" GRASS_MINOR_VERSION ${GRASS_VERSION})
+   STRING(REGEX REPLACE "^[0-9]*\\.[0-9]*\\.(.*)$" "\\1" GRASS_MICRO_VERSION ${GRASS_VERSION})
+   # Add micro version too?
+   # How to numerize RC versions?
+   MATH( EXPR GRASS_NUM_VERSION "${GRASS_MAJOR_VERSION}*10000 + ${GRASS_MINOR_VERSION}*100")
 
    IF (NOT GRASS_FIND_QUIETLY)
       MESSAGE(STATUS "Found GRASS: ${GRASS_PREFIX} (${GRASS_VERSION})")
