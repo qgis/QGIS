@@ -347,6 +347,11 @@ void Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
           //case geos::geom::GEOS_POINT:
           //case geos::geom::GEOS_LINESTRING:
           //case geos::geom::GEOS_POLYGON:
+
+          // ignore invalid geometries
+          if ( (f->type == GEOS_LINESTRING && f->nbPoints < 2) ||
+               (f->type == GEOS_POLYGON && f->nbPoints < 3) )
+            continue;
 #ifdef _DEBUG_FULL_
           std::cout << "Create Feat" << std::endl;
 #endif
