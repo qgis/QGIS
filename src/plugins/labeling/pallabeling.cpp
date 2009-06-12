@@ -89,8 +89,10 @@ void LayerSettings::registerFeature(QgsFeature& f)
   double labelX, labelY; // will receive label size
   calculateLabelSize(labelText, labelX, labelY);
 
-  //std::cout << labelX << " " << labelY << std::endl;
   MyLabel* lbl = new MyLabel(f.id(), labelText, GEOSGeom_clone( f.geometry()->asGeos() ) );
+
+  // record the created geometry - it will be deleted at the end.
+  geometries.append(lbl);
 
   // register feature to the layer
   palLayer->registerFeature(lbl->strId(), lbl, labelX, labelY);
@@ -106,6 +108,7 @@ void LayerSettings::registerFeature(QgsFeature& f)
 PalLabeling::PalLabeling(QgsMapCanvas* mapCanvas)
   : mMapCanvas(mapCanvas), mPal(NULL)
 {
+
   // find out engine defaults
   Pal p;
   mCandPoint = p.getPointP();
@@ -244,6 +247,7 @@ void PalLabeling::initPal()
     case Popmusic_Tabu_Chain: s = POPMUSIC_TABU_CHAIN; break;
   }
   mPal->setSearch(s);
+  //mPal->setSearch(FALP);
 
   // set number of candidates generated per feature
   mPal->setPointP(mCandPoint);
@@ -278,7 +282,7 @@ void PalLabeling::doLabeling(QPainter* painter)
   {
      labels = mPal->labeller(scale, bbox, NULL, false);
   }
-  catch ( std::exception e )
+  catch ( std::exception& e )
   {
     std::cerr << "PAL EXCEPTION :-( " << e.what() << std::endl;
     return;
@@ -308,13 +312,21 @@ void PalLabeling::doLabeling(QPainter* painter)
     painter->drawText(0,0, ((MyLabel*)label->getGeometry())->text());
     painter->restore();
 
-    delete label->getGeometry();
     delete label;
   }
 
   std::cout << "LABELING draw:   " << t.elapsed() << "ms" << std::endl;
 
   delete labels;
+
+  // delete all allocated geometries for features
+  for (int i = 0; i < mLayers.count(); i++)
+  {
+    LayerSettings& lyr = mLayers[i];
+    for (QList<MyLabel*>::iterator git = lyr.geometries.begin(); git != lyr.geometries.end(); ++git)
+      delete *git;
+    lyr.geometries.clear();
+  }
 
   // re-create PAL
   initPal();

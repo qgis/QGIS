@@ -7,6 +7,7 @@ class QgsMapCanvas;
 #include <QString>
 #include <QFont>
 #include <QColor>
+#include <QList>
 
 namespace pal
 {
@@ -18,6 +19,7 @@ class QgsMapToPixel;
 class QgsFeature;
 #include "qgspoint.h"
 
+class MyLabel;
 
 class LayerSettings
 {
@@ -57,6 +59,7 @@ public:
   int fontBaseline;
   const QgsMapToPixel* xform;
   QgsPoint ptZero;
+  QList<MyLabel*> geometries;
 };
 
 class PalLabeling
