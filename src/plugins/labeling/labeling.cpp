@@ -89,17 +89,6 @@ void Labeling::initGui()
 
 void Labeling::doLabeling( QPainter * painter )
 {
-  int w = painter->device()->width();
-  int h = painter->device()->height();
-
-
-  QgsMapLayer* layer = mQGisIface->activeLayer();
-  if (layer == NULL || layer->type() != QgsMapLayer::VectorLayer)
-  {
-    painter->drawLine(0,0,w,h);
-    return;
-  }
-
   mLBL->doLabeling(painter);
 }
 

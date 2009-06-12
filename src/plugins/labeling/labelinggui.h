@@ -35,7 +35,7 @@ class LabelingGui : public QDialog, private Ui::LabelingGuiBase
     LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent );
     ~LabelingGui();
 
-    PalLabeling::LayerSettings layerSettings();
+    LayerSettings layerSettings();
 
   public slots:
     void changeTextColor();

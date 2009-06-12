@@ -54,6 +54,10 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
+typedef int (*LabelingPrepareLayerHook)(void*, void*, int&);
+typedef void (*LabelingRegisterFeatureHook)(QgsFeature&, void*);
+
+
 /** \ingroup core
  * Vector layer backed by a data source provider.
  */
@@ -339,6 +343,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Label is on */
     bool hasLabelsEnabled( void ) const;
+
+    void setLabelingHooks(LabelingPrepareLayerHook prepareLayerHook,
+                          LabelingRegisterFeatureHook registerFeatureHook,
+                          void* mLabelingContext,
+                          void* mLabelingLayerContext);
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
@@ -666,6 +675,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Label */
     QgsLabel *mLabel;
+
+    LabelingPrepareLayerHook mLabelingPrepareLayerHook;
+    LabelingRegisterFeatureHook mLabelingRegisterFeatureHook;
+    void* mLabelingContext;
+    void* mLabelingLayerContext;
+
 
     /** Display labels */
     bool mLabelOn;

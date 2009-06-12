@@ -42,7 +42,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
   populatePlacementMethods();
   populateFieldNames();
 
-  PalLabeling::LayerSettings lyr = lbl->layer(layerId);
+  LayerSettings lyr = lbl->layer(layerId);
   if (!lyr.layerId.isEmpty())
   {
     // load the labeling settings
@@ -74,12 +74,12 @@ QgsVectorLayer* LabelingGui::layer()
   return static_cast<QgsVectorLayer*>(layer);
 }
 
-PalLabeling::LayerSettings LabelingGui::layerSettings()
+LayerSettings LabelingGui::layerSettings()
 {
-  PalLabeling::LayerSettings lyr;
+  LayerSettings lyr;
   lyr.layerId = mLayerId;
   lyr.fieldName = cboFieldName->currentText();
-  lyr.placement = (PalLabeling::Placement) cboPlacement->itemData(cboPlacement->currentIndex()).toInt();
+  lyr.placement = (LayerSettings::Placement) cboPlacement->itemData(cboPlacement->currentIndex()).toInt();
   lyr.textColor = btnTextColor->color();
   lyr.textFont = lblFontPreview->font();
   lyr.enabled = chkEnableLabeling->isChecked();
@@ -94,18 +94,18 @@ void LabelingGui::populatePlacementMethods()
   switch (layer()->geometryType())
   {
     case QGis::Point:
-      cboPlacement->addItem(tr("Around the point"), QVariant(PalLabeling::AroundPoint));
+      cboPlacement->addItem(tr("Around the point"), QVariant(LayerSettings::AroundPoint));
       break;
     case QGis::Line:
-      cboPlacement->addItem(tr("On the line"), QVariant(PalLabeling::OnLine));
-      cboPlacement->addItem(tr("Around the line"), QVariant(PalLabeling::AroundLine));
+      cboPlacement->addItem(tr("On the line"), QVariant(LayerSettings::OnLine));
+      cboPlacement->addItem(tr("Around the line"), QVariant(LayerSettings::AroundLine));
       break;
     case QGis::Polygon:
-      cboPlacement->addItem(tr("Horizontal"), QVariant(PalLabeling::Horizontal));
-      cboPlacement->addItem(tr("Free"), QVariant(PalLabeling::Free));
-      cboPlacement->addItem(tr("Around the centroid"), QVariant(PalLabeling::AroundPoint));
-      cboPlacement->addItem(tr("On the perimeter"), QVariant(PalLabeling::OnLine));
-      cboPlacement->addItem(tr("Around the perimeter"), QVariant(PalLabeling::AroundLine));
+      cboPlacement->addItem(tr("Horizontal"), QVariant(LayerSettings::Horizontal));
+      cboPlacement->addItem(tr("Free"), QVariant(LayerSettings::Free));
+      cboPlacement->addItem(tr("Around the centroid"), QVariant(LayerSettings::AroundPoint));
+      cboPlacement->addItem(tr("On the perimeter"), QVariant(LayerSettings::OnLine));
+      cboPlacement->addItem(tr("Around the perimeter"), QVariant(LayerSettings::AroundLine));
       break;
   }
 }

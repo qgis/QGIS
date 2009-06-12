@@ -105,7 +105,9 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mLabelOn( false ),
     mFetching( false ),
     mRendererV2( NULL ),
-    mUsingRendererV2( false )
+    mUsingRendererV2( false ),
+    mLabelingPrepareLayerHook( NULL ),
+    mLabelingRegisterFeatureHook( NULL )
 {
   mActions = new QgsAttributeAction;
 
@@ -696,11 +698,29 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     
     QgsFeature fet;
     QgsAttributeList attributes = mRendererV2->usedAttributes();
+
+    bool labeling = FALSE;
+    if (mLabelingPrepareLayerHook)
+    {
+      int attrIndex;
+      if (mLabelingPrepareLayerHook(mLabelingContext, mLabelingLayerContext, attrIndex))
+      {
+        if (!attributes.contains(attrIndex))
+          attributes << attrIndex;
+        labeling = TRUE;
+      }
+    }
+
     select( attributes, rendererContext.extent() );
 
     while ( nextFeature( fet ) )
     {
       mRendererV2->renderFeature(fet, rendererContext);
+
+      if (labeling && mLabelingRegisterFeatureHook)
+      {
+        mLabelingRegisterFeatureHook(fet, mLabelingLayerContext);
+      }
     }
     
     mRendererV2->stopRender(rendererContext);
@@ -739,6 +759,19 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     int featureCount = 0;
     QgsFeature fet;
     QgsAttributeList attributes = mRenderer->classificationAttributes();
+
+    bool labeling = FALSE;
+    if (mLabelingPrepareLayerHook)
+    {
+      int attrIndex;
+      if (mLabelingPrepareLayerHook(mLabelingContext, mLabelingLayerContext, attrIndex))
+      {
+        if (!attributes.contains(attrIndex))
+          attributes << attrIndex;
+        labeling = TRUE;
+      }
+    }
+
     select( attributes, rendererContext.extent() );
 
     try
@@ -800,6 +833,11 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
           rendererContext.scaleFactor(),
           rendererContext.rasterScaleFactor(),
           rendererContext.drawEditingInformation() );
+
+        if (labeling && mLabelingRegisterFeatureHook)
+        {
+          mLabelingRegisterFeatureHook(fet, mLabelingLayerContext);
+        }
 
         ++featureCount;
       }
@@ -2086,6 +2124,18 @@ bool QgsVectorLayer::hasLabelsEnabled( void ) const
 {
   return mLabelOn;
 }
+
+void QgsVectorLayer::setLabelingHooks(LabelingPrepareLayerHook prepareLayerHook,
+                                      LabelingRegisterFeatureHook registerFeatureHook,
+                                      void* context,
+                                      void* layerContext)
+{
+  mLabelingPrepareLayerHook = prepareLayerHook;
+  mLabelingRegisterFeatureHook = registerFeatureHook;
+  mLabelingContext = context;
+  mLabelingLayerContext = layerContext;
+}
+
 
 bool QgsVectorLayer::startEditing()
 {

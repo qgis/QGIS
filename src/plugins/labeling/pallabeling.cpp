@@ -59,12 +59,48 @@ protected:
   int mId;
 };
 
+// -------------
+
+LayerSettings::LayerSettings()
+  : palLayer(NULL), fontMetrics(NULL)
+{
+}
+
+LayerSettings::~LayerSettings()
+{
+  // pal layer is deleted internally in PAL
+  delete fontMetrics;
+}
+
+void LayerSettings::calculateLabelSize(QString text, double& labelX, double& labelY)
+{
+  //QFontMetrics fontMetrics(textFont);
+  QRect labelRect = /*QRect(0,0,20,20);*/ fontMetrics->boundingRect(text);
+
+  // 2px border...
+  QgsPoint ptSize = xform->toMapCoordinates( labelRect.width()+2,labelRect.height()+2 );
+  labelX = fabs(ptSize.x()-ptZero.x());
+  labelY = fabs(ptSize.y()-ptZero.y());
+}
+
+void LayerSettings::registerFeature(QgsFeature& f)
+{
+  QString labelText = f.attributeMap()[fieldIndex].toString();
+  double labelX, labelY; // will receive label size
+  calculateLabelSize(labelText, labelX, labelY);
+
+  //std::cout << labelX << " " << labelY << std::endl;
+  MyLabel* lbl = new MyLabel(f.id(), labelText, GEOSGeom_clone( f.geometry()->asGeos() ) );
+
+  // register feature to the layer
+  palLayer->registerFeature(lbl->strId(), lbl, labelX, labelY);
+}
 
 
 // -------------
 
 PalLabeling::PalLabeling(QgsMapCanvas* mapCanvas)
-  : mMapCanvas(mapCanvas)
+  : mMapCanvas(mapCanvas), mPal(NULL)
 {
   // find out engine defaults
   Pal p;
@@ -79,11 +115,31 @@ PalLabeling::PalLabeling(QgsMapCanvas* mapCanvas)
     case POPMUSIC_CHAIN: mSearch = Popmusic_Chain; break;
     case POPMUSIC_TABU_CHAIN: mSearch = Popmusic_Tabu_Chain; break;
   }
+
+  initPal();
 }
+
+
+PalLabeling::~PalLabeling()
+{
+  delete mPal;
+
+  // make sure to remove hooks from all layers
+  while (mLayers.count())
+  {
+    removeLayer(mLayers[0].layerId);
+  }
+}
+
 
 void PalLabeling::addLayer(LayerSettings layerSettings)
 {
   mLayers.append(layerSettings);
+
+  QgsVectorLayer* vlayer = (QgsVectorLayer*) QgsMapLayerRegistry::instance()->mapLayer(layerSettings.layerId);
+
+  LayerSettings& lyr = mLayers[ mLayers.count()-1 ]; // make sure we have the right pointer
+  vlayer->setLabelingHooks(PalLabeling::prepareLayerHook, PalLabeling::registerFeatureHook, this, &lyr);
 }
 
 void PalLabeling::removeLayer(QString layerId)
@@ -92,13 +148,16 @@ void PalLabeling::removeLayer(QString layerId)
   {
     if (mLayers.at(i).layerId == layerId)
     {
+      QgsVectorLayer* vlayer = (QgsVectorLayer*) QgsMapLayerRegistry::instance()->mapLayer(mLayers.at(i).layerId);
+      if (vlayer) { vlayer->setLabelingHooks(NULL, NULL, NULL, NULL); }
+
       mLayers.removeAt(i);
       return;
     }
   }
 }
 
-PalLabeling::LayerSettings PalLabeling::layer(QString layerId)
+LayerSettings PalLabeling::layer(QString layerId)
 {
   for (int i = 0; i < mLayers.count(); i++)
   {
@@ -111,71 +170,63 @@ PalLabeling::LayerSettings PalLabeling::layer(QString layerId)
 }
 
 
-int PalLabeling::prepareLayer(Pal& pal, const LayerSettings& lyr)
-{
-  if (!lyr.enabled)
-    return 0;
 
-  QgsVectorLayer* vlayer = (QgsVectorLayer*) QgsMapLayerRegistry::instance()->mapLayer(lyr.layerId);
+int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIndex)
+{
+  PalLabeling* thisClass = (PalLabeling*) context;
+  LayerSettings* lyr = (LayerSettings*) layerContext;
+
+  QgsVectorLayer* vlayer = (QgsVectorLayer*) QgsMapLayerRegistry::instance()->mapLayer(lyr->layerId);
   if (vlayer == NULL)
     return 0;
 
-  QgsAttributeList attrs;
-
-  int fldName = vlayer->dataProvider()->fieldNameIndex(lyr.fieldName);
-  if (fldName == -1)
+  // find out which field will be needed
+  int fldIndex = vlayer->dataProvider()->fieldNameIndex(lyr->fieldName);
+  if (fldIndex == -1)
     return 0;
-  attrs << fldName;
-  vlayer->select(attrs, mMapCanvas->extent());
+  attrIndex = fldIndex;
 
 
   // how to place the labels
   Arrangement arrangement;
-  switch (lyr.placement)
+  switch (lyr->placement)
   {
-    case AroundPoint: arrangement = P_POINT; break;
-    case OnLine:      arrangement = P_LINE; break;
-    case AroundLine:  arrangement = P_LINE_AROUND; break;
-    case Horizontal:  arrangement = P_HORIZ; break;
-    case Free:        arrangement = P_FREE; break;
+    case LayerSettings::AroundPoint: arrangement = P_POINT; break;
+    case LayerSettings::OnLine:      arrangement = P_LINE; break;
+    case LayerSettings::AroundLine:  arrangement = P_LINE_AROUND; break;
+    case LayerSettings::Horizontal:  arrangement = P_HORIZ; break;
+    case LayerSettings::Free:        arrangement = P_FREE; break;
   }
 
   // create the pal layer
-  double priority = 1 - lyr.priority/10.0; // convert 0..10 --> 1..0
-  Layer* l = pal.addLayer(lyr.layerId.toLocal8Bit().data(), -1, -1, arrangement, METER, priority, lyr.obstacle, true, true);
+  double priority = 1 - lyr->priority/10.0; // convert 0..10 --> 1..0
+  Layer* l = thisClass->mPal->addLayer(lyr->layerId.toLocal8Bit().data(), -1, -1, arrangement, METER, priority, lyr->obstacle, true, true);
 
-  QFontMetrics fm(lyr.textFont);
+  // save the pal layer to our layer context (with some additional info)
+  lyr->palLayer = l;
+  lyr->fieldIndex = fldIndex;
+  lyr->fontMetrics = new QFontMetrics(lyr->textFont);
+  lyr->fontBaseline = lyr->fontMetrics->boundingRect("X").bottom(); // dummy text to find out how many pixels of the text are below the baseline
+  lyr->xform = thisClass->mMapCanvas->mapRenderer()->coordinateTransform();
+  lyr->ptZero = lyr->xform->toMapCoordinates( 0,0 );
 
-  QgsFeature f;
-  int feats = 0;
-  const QgsMapToPixel* xform = mMapCanvas->mapRenderer()->coordinateTransform();
-  QgsPoint ptZero = xform->toMapCoordinates( 0,0 );
+  return 1; // init successful
+}
 
-  while (vlayer->nextFeature(f))
-  {
-    QString labelText = f.attributeMap()[fldName].toString();
-    QRect labelRect = fm.boundingRect(labelText);
-    //std::cout << "bound: " << labelRect.width() << "x" << labelRect.height() << std::endl;
-    // 2px border...
-    QgsPoint ptSize = xform->toMapCoordinates( labelRect.width()+2,labelRect.height()+2 );
-    double labelX = fabs(ptSize.x()-ptZero.x());
-    double labelY = fabs(ptSize.y()-ptZero.y());
-    //std::cout << "L " << labelX << " " << labelY << std::endl;
-
-    MyLabel* lbl = new MyLabel(f.id(), labelText, GEOSGeom_clone( f.geometry()->asGeos() ) );
-
-    // TODO: owner of the id?
-    l->registerFeature(lbl->strId(), lbl, labelX, labelY);
-    feats++;
-  }
-
-  return feats;
+void PalLabeling::registerFeatureHook(QgsFeature& f, void* layerContext)
+{
+  LayerSettings* lyr = (LayerSettings*) layerContext;
+  lyr->registerFeature(f);
 }
 
 
-void PalLabeling::doLabeling(QPainter* painter)
+void PalLabeling::initPal()
 {
-  Pal p;
+  // delete if exists already
+  if (mPal)
+    delete mPal;
+  
+  mPal = new Pal;
 
   SearchMethod s;
   switch (mSearch)
@@ -185,31 +236,30 @@ void PalLabeling::doLabeling(QPainter* painter)
     case Popmusic_Chain: s = POPMUSIC_CHAIN; break;
     case Popmusic_Tabu_Chain: s = POPMUSIC_TABU_CHAIN; break;
   }
-  p.setSearch(s);
+  mPal->setSearch(s);
 
   // set number of candidates generated per feature
-  p.setPointP(mCandPoint);
-  p.setLineP(mCandLine);
-  p.setPolyP(mCandPolygon);
+  mPal->setPointP(mCandPoint);
+  mPal->setLineP(mCandLine);
+  mPal->setPolyP(mCandPolygon);
+}
 
-  //p.setSearch(POPMUSIC_TABU_CHAIN);// this is really slow! // default is CHAIN (worst, fastest)
-  // TODO: API 0.2 - no mention about changing map units!
-  // pal map units = METER by default ... change setMapUnit
-  //p.setMapUnit(METER);
-  // pal label units ... to be chosen
-  // pal dist label - pixels?
+
+
+void PalLabeling::doLabeling(QPainter* painter)
+{
 
   QTime t;
   t.start();
 
-  int feats = 0;
+  // make sure to delete fontmetrics otherwise it crashes inside Qt when drawing... :-(
+  // probably gets invalid when setting fonts in the label drawing loop
   for (int i = 0; i < mLayers.count(); i++)
   {
-    feats += prepareLayer(p, mLayers.at(i));
+    LayerSettings& lyr = mLayers[i];
+    delete lyr.fontMetrics;
+    lyr.fontMetrics = NULL;
   }
-
-  std::cout << "LABELING prepare: " << t.elapsed() << "ms" << std::endl;
-  t.restart();
 
   // do the labeling itself
   double scale = 1; // scale denominator
@@ -219,7 +269,7 @@ void PalLabeling::doLabeling(QPainter* painter)
   std::list<Label*>* labels;
   try
   {
-     labels = p.labeller(scale, bbox, NULL, false);
+     labels = mPal->labeller(scale, bbox, NULL, false);
   }
   catch ( std::exception e )
   {
@@ -227,13 +277,8 @@ void PalLabeling::doLabeling(QPainter* painter)
     return;
   }
 
-  std::cout << "LABELING work:   " << t.elapsed() << "ms" << std::endl;
-  std::cout << "-->> " << labels->size() << "/" << feats << std::endl;
+  std::cout << "LABELING work:   " << t.elapsed() << "ms  ... labels# " << labels->size() << std::endl;
   t.restart();
-
-  QFontMetrics fm = painter->fontMetrics();
-  QRect labelRect = fm.boundingRect("X"); // dummy text to find out height
-  int baseline = labelRect.bottom(); // how many pixels of the text are below the baseline
 
   // draw the labels
   const QgsMapToPixel* xform = mMapCanvas->mapRenderer()->coordinateTransform();
@@ -251,7 +296,7 @@ void PalLabeling::doLabeling(QPainter* painter)
     painter->save();
     painter->setPen( lyr.textColor );
     painter->setFont( lyr.textFont );
-    painter->translate( QPointF(outPt.x()+1, outPt.y()-1-baseline) );
+    painter->translate( QPointF(outPt.x()+1, outPt.y()-1-lyr.fontBaseline) );
     painter->rotate(-label->getRotation() * 180 / M_PI );
     painter->drawText(0,0, ((MyLabel*)label->getGeometry())->text());
     painter->restore();
@@ -263,6 +308,9 @@ void PalLabeling::doLabeling(QPainter* painter)
   std::cout << "LABELING draw:   " << t.elapsed() << "ms" << std::endl;
 
   delete labels;
+
+  // re-create PAL
+  initPal();
 }
 
 void PalLabeling::numCandidatePositions(int& candPoint, int& candLine, int& candPolygon)
