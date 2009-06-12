@@ -20,6 +20,7 @@
 				<grass name="i.in.spotvgt"/>
 				<grass name="r.in.srtm"/>
 				<grass name="r.in.aster"/>
+				<grass name="r.external"/>
 			</section>
 			 <section label="Import vector">
                                 <grass name="v.in.ogr.qgis"/>
