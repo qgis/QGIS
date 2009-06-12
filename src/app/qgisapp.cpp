@@ -2399,6 +2399,11 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
       }
       else  // there is 1 layer of data available
       {
+        //set friendly name for datasources with only one layer 
+        QStringList sublayers = layer->dataProvider()->subLayers();
+		QString ligne = sublayers.at( 0 );
+        QStringList elements = ligne.split( ":" );        
+		layer->setLayerName(elements.at(1));  
         // Register this layer with the layers registry
         QgsMapLayerRegistry::instance()->addMapLayer( layer );
         // notify the project we've made a change
