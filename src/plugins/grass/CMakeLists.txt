@@ -1,5 +1,5 @@
-
-SUBDIRS(config modules modules-old scripts themes)
+SET (GRASS_MODULES_DIR "modules-${GRASS_MAJOR_VERSION}.${GRASS_MINOR_VERSION}")
+SUBDIRS(config modules-common ${GRASS_MODULES_DIR} scripts themes)
 
 ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 ADD_DEFINITIONS(-DHAVE_OPENPTY=${HAVE_OPENPTY})
