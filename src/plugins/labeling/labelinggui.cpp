@@ -51,11 +51,18 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
     chkEnableLabeling->setChecked( lyr.enabled );
     sliderPriority->setValue( lyr.priority );
     chkNoObstacle->setChecked( !lyr.obstacle );
+    spinDist->setValue( lyr.dist );
   }
   else
   {
     // set enabled by default
     chkEnableLabeling->setChecked( true );
+  }
+
+  // feature distance available only for points and lines
+  if (layer()->geometryType() == QGis::Polygon)
+  {
+    spinDist->setEnabled( false );
   }
 
   btnTextColor->setColor( lyr.textColor );
@@ -85,6 +92,7 @@ LayerSettings LabelingGui::layerSettings()
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
+  lyr.dist = spinDist->value();
 
   return lyr;
 }

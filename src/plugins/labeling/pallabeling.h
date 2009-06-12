@@ -42,6 +42,7 @@ public:
   bool enabled;
   int priority; // 0 = low, 10 = high
   bool obstacle; // whether it's an obstacle
+  double dist; // distance from the feature
 
   // called from register feature hook
   void calculateLabelSize(QString text, double& labelX, double& labelY);

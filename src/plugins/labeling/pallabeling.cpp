@@ -94,6 +94,10 @@ void LayerSettings::registerFeature(QgsFeature& f)
 
   // register feature to the layer
   palLayer->registerFeature(lbl->strId(), lbl, labelX, labelY);
+
+  // TODO: allow layer-wide feature dist in PAL...?
+  if (dist != 0)
+    palLayer->setFeatureDistlabel(lbl->strId(), dist);
 }
 
 
@@ -175,6 +179,9 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
 {
   PalLabeling* thisClass = (PalLabeling*) context;
   LayerSettings* lyr = (LayerSettings*) layerContext;
+
+  if (!lyr->enabled)
+    return 0;
 
   QgsVectorLayer* vlayer = (QgsVectorLayer*) QgsMapLayerRegistry::instance()->mapLayer(lyr->layerId);
   if (vlayer == NULL)
