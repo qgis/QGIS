@@ -58,6 +58,9 @@ class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
 
     QRectF boundingRect() const;
 
+    //! Update contents - can be called while drawing to show the status.
+    //! Added in version 1.2
+    void updateContents();
 
   private:
 
