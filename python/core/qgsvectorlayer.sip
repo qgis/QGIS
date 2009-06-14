@@ -389,6 +389,25 @@ public:
     */
     QgsVectorOverlay* findOverlayByType( const QString& typeName );
 
+
+    /**
+     * Create edit command for undo/redo operations
+     * @param text text which is to be displayed in undo window
+     */
+    void beginEditCommand(QString text);
+
+    /** Finish edit command and add it to undo/redo stack */
+    void endEditCommand();
+
+    /** Destroy active command and deletes all changes in it */
+    void destroyEditCommand();
+
+    /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand. */
+    // (not necessary) void undoEditCommand(QgsUndoCommand* cmd);
+
+    /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand. */
+    // (not necessary) void redoEditCommand(QgsUndoCommand* cmd);
+
 public slots:
 
   /** Select feature by its ID, optionally emit signal selectionChanged() */
