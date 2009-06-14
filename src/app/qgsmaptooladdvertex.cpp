@@ -122,10 +122,12 @@ void QgsMapToolAddVertex::canvasReleaseEvent( QMouseEvent * e )
 
       //and change the feature points
       QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
+      vlayer->beginEditCommand( tr("Added vertex") );
       for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
       {
         vlayer->insertVertex( snappedPointLayerCoord.x(), snappedPointLayerCoord.y(), sr_it->snappedAtGeometry, sr_it->afterVertexNr );
       }
+      vlayer->endEditCommand();
     }
   }
 

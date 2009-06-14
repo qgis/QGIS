@@ -438,7 +438,9 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
       {
         QgsPoint coords = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(),  e->pos().y() );
         //add vertex
+        vlayer->beginEditCommand( tr("Inserted vertex") );
         vlayer->insertVertex(coords.x(), coords.y(), mSelectionFeature->featureId(), snapResults.first().afterVertexNr );
+        vlayer->endEditCommand();
 
         mSelectionFeature->updateFromFeature();
       }
@@ -536,11 +538,14 @@ void SelectionFeature::setSelectedFeature( int featureId,  QgsVectorLayer* vlaye
 
 void SelectionFeature::deleteSelectedVertexes()
 {
+  mVlayer->beginEditCommand( QObject::tr("Deleted vertices") );
+  int count = 0;
   for (int i = mVertexMap.size() -1; i > -1 ; i--)
   {
     if (mVertexMap[i].selected)
     {
       mVlayer->deleteVertex(mFeatureId, i);
+      count++;
 
       if (mVertexMap[i].equals != -1 && !mVertexMap[mVertexMap[i].equals].selected)
       {
@@ -548,12 +553,18 @@ void SelectionFeature::deleteSelectedVertexes()
       }
     }
   }
+  if (count)
+    mVlayer->endEditCommand();
+  else
+    mVlayer->destroyEditCommand(); // no changes...
+
   updateFromFeature();
 }
 
 
 void SelectionFeature::moveSelectedVertexes( double changeX, double changeY )
 {
+  mVlayer->beginEditCommand( QObject::tr("Moved vertices") );
   for (int i = mVertexMap.size() -1; i > -1 ; i--)
   {
     if (mVertexMap[i].selected)
@@ -570,6 +581,7 @@ void SelectionFeature::moveSelectedVertexes( double changeX, double changeY )
       }
     }
   }
+  mVlayer->endEditCommand();
   updateFeature();
 }
 

@@ -459,6 +459,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
       if ( isDisabledAttributeValuesDlg )
       {
+        vlayer->beginEditCommand( tr("Feature added") );
         if ( vlayer->addFeature( *f ) )
         {
           //add points to other features to keep topology up-to-date
@@ -468,12 +469,14 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
             vlayer->addTopologicalPoints( f->geometry() );
           }
         }
+        vlayer->endEditCommand();
       }
       else
       {
         QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
         if ( mypDialog->exec() )
         {
+          vlayer->beginEditCommand( tr("Feature added") );
           if ( vlayer->addFeature( *f ) )
           {
             //add points to other features to keep topology up-to-date
@@ -483,6 +486,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
               vlayer->addTopologicalPoints( f->geometry() );
             }
           }
+          vlayer->endEditCommand();
         }
         delete mypDialog;
       }

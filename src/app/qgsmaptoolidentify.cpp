@@ -489,17 +489,25 @@ void QgsMapToolIdentify::editFeature( QgsFeature &f )
 
   QgsAttributeMap src = f.attributeMap();
 
+  layer->beginEditCommand( tr("Attribute changed") );
   QgsAttributeDialog *ad = new QgsAttributeDialog( layer, &f );
   if ( ad->exec() )
   {
     const QgsAttributeMap &dst = f.attributeMap();
-
     for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
     {
       if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
+      {
         layer->changeAttributeValue( f.id(), it.key(), it.value() );
+      }
     }
+    layer->endEditCommand();
   }
+  else
+  {
+    layer->destroyEditCommand();
+  }
+
   delete ad;
   mCanvas->refresh();
 }

@@ -111,7 +111,9 @@ void QgsMapToolSimplify::storeSimplified()
     QgsSimplifyFeature::simplifyPolygon( mSelectedFeature, mTolerance );
   }
 
+  vlayer->beginEditCommand( tr("Geometry simplified") );
   vlayer->changeGeometry( mSelectedFeature.id(), mSelectedFeature.geometry() );
+  vlayer->endEditCommand();
 
   mCanvas->refresh();
 }

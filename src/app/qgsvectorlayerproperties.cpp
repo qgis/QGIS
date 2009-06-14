@@ -272,7 +272,17 @@ void QgsVectorLayerProperties::addAttribute()
 bool QgsVectorLayerProperties::addAttribute( const QgsField &field )
 {
   QgsDebugMsg( "inserting attribute " + field.name() + " of type " + field.typeName() );
-  return layer->addAttribute( field );
+  layer->beginEditCommand( tr("Added attribute") );
+  if ( layer->addAttribute( field ) )
+  {
+    layer->endEditCommand();
+    return true;
+  }
+  else
+  {
+    layer->destroyEditCommand();
+    return false;
+  }
 }
 
 void QgsVectorLayerProperties::deleteAttribute()
@@ -287,7 +297,11 @@ void QgsVectorLayerProperties::deleteAttribute()
   }
 
   for ( QList<int>::const_iterator it = idxs.begin(); it != idxs.end(); it++ )
+  {
+    layer->beginEditCommand( tr("Deleted attribute") );
     layer->deleteAttribute( *it );
+    layer->endEditCommand();
+  }
 }
 
 void QgsVectorLayerProperties::editingToggled()
