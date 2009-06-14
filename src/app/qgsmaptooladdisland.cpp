@@ -101,8 +101,9 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
 
     //close polygon
     mCaptureList.push_back( *mCaptureList.begin() );
-
+    vlayer->beginEditCommand( tr("Island added") );
     int errorCode = vlayer->addIsland( mCaptureList );
+    vlayer->endEditCommand();
     QString errorMessage;
 
     if ( errorCode != 0 )

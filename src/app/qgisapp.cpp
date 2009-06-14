@@ -132,6 +132,7 @@
 #include "qgsrenderer.h"
 #include "qgsserversourceselect.h"
 #include "qgsshortcutsmanager.h"
+#include "qgsundowidget.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -363,6 +364,11 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
+  // create undo widget
+  mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas);
+  addDockWidget(Qt::LeftDockWidgetArea, mUndoWidget);
+  mUndoWidget->hide();
+
   // set application's icon
   setWindowIcon( QPixmap( qgis_xpm ) );
 
@@ -583,11 +589,6 @@ void QgisApp::createActions()
   // Edit Menu Items
 
 #if 0
-  mActionUndo = new QAction( tr( "&Undo" ), this );
-  shortcuts->registerAction( mActionUndo, tr( "Ctrl+Z" ) );
-  mActionUndo->setStatusTip( tr( "Undo the last operation" ) );
-  connect( mActionUndo, SIGNAL( triggered ), this, SLOT( undo() ) );
-
   mActionCut = new QAction( tr( "Cu&t" ), this );
   shortcuts->registerAction( mActionCut, tr( "Ctrl+X" ) );
   mActionCut->setStatusTip( tr( "Cut the current selection's contents to the clipboard" ) );
@@ -603,6 +604,18 @@ void QgisApp::createActions()
   mActionPaste->setStatusTip( tr( "Paste the clipboard's contents into the current selection" ) );
   connect( mActionPaste, SIGNAL( triggered ), this, SLOT( paste() ) );
 #endif
+
+  mActionUndo = new QAction( getThemeIcon( "mActionUndo.png"), tr( "&Undo" ), this );
+  shortcuts->registerAction( mActionUndo, tr( "Ctrl+Z" ) );
+  mActionUndo->setStatusTip( tr( "Undo the last operation" ) );
+  mActionUndo->setEnabled( false );
+  // action connected to mUndoWidget::undo slot in setupConnections()
+
+  mActionRedo = new QAction( getThemeIcon( "mActionRedo.png"), tr( "&Redo" ), this );
+  shortcuts->registerAction( mActionRedo, tr( "Ctrl+Shift+Z" ) );
+  mActionRedo->setStatusTip( tr( "Redo the last operation" ) );
+  mActionRedo->setEnabled( false );
+  // action connected to mUndoWidget::redo slot in setupConnections()
 
   mActionCutFeatures = new QAction( getThemeIcon( "mActionEditCut.png" ), tr( "Cut Features" ), this );
   shortcuts->registerAction( mActionCutFeatures, tr( "Ctrl+X" ) );
@@ -1132,11 +1145,14 @@ void QgisApp::createMenus()
   mEditMenu = menuBar()->addMenu( tr( "&Edit" ) );
 
 #if 0
-  mEditMenu->addAction( mActionUndo );
   mEditMenu->addAction( mActionCut );
   mEditMenu->addAction( mActionCopy );
   mEditMenu->addAction( mActionPaste );
 #endif
+  mEditMenu->addAction( mActionUndo );
+  mEditMenu->addAction( mActionRedo );
+  mActionEditSeparator0 = mEditMenu->addSeparator();
+
   mEditMenu->addAction( mActionCutFeatures );
   mEditMenu->addAction( mActionCopyFeatures );
   mEditMenu->addAction( mActionPasteFeatures );
@@ -1360,6 +1376,8 @@ void QgisApp::createToolBars()
   mAdvancedDigitizeToolBar = addToolBar( tr( "Advanced Digitizing" ) );
   mAdvancedDigitizeToolBar->setIconSize( myIconSize );
   mAdvancedDigitizeToolBar->setObjectName( "Advanced Digitizing" );
+  mAdvancedDigitizeToolBar->addAction( mActionUndo );
+  mAdvancedDigitizeToolBar->addAction( mActionRedo );
   mAdvancedDigitizeToolBar->addAction( mActionSimplifyFeature );
   mAdvancedDigitizeToolBar->addAction( mActionAddRing );
   mAdvancedDigitizeToolBar->addAction( mActionAddIsland );
@@ -1638,6 +1656,8 @@ void QgisApp::setupConnections()
            mMapLegend, SLOT( addLayer( QgsMapLayer * ) ) );
   connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer* ) ) );
+  connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+           mUndoWidget, SLOT( layerChanged( QgsMapLayer* ) ) );
 
 
   //signal when mouse moved over window (coords display in status bar)
@@ -1664,7 +1684,12 @@ void QgisApp::setupConnections()
 
   connect( QgsProject::instance(), SIGNAL( layerLoaded( int, int ) ), this, SLOT( showProgress( int, int ) ) );
 
+  // setup undo/redo actions
+  connect( mActionUndo, SIGNAL( triggered() ), mUndoWidget, SLOT( undo() ) );
+  connect( mActionRedo, SIGNAL( triggered() ), mUndoWidget, SLOT( redo() ) );
+  connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT(updateUndoActions()) );
 }
+
 void QgisApp::createCanvas()
 {
   // "theMapCanvas" used to find this canonical instance later
@@ -4083,13 +4108,14 @@ void QgisApp::deleteSelected()
     return;
   }
 
-
+  vlayer->beginEditCommand( tr("Features deleted") );
   if ( !vlayer->deleteSelectedFeatures() )
   {
     QMessageBox::information( this, tr( "Problem deleting features" ),
                               tr( "A problem occured during deletion of features" ) );
   }
 
+  vlayer->endEditCommand();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
 }
@@ -4228,6 +4254,8 @@ void QgisApp::mergeSelectedFeatures()
       }
     }
 
+    vl->beginEditCommand( tr("Merged features") );
+
     //create new feature
     QgsFeature newFeature;
     newFeature.setGeometry(unionGeom);
@@ -4240,6 +4268,8 @@ void QgisApp::mergeSelectedFeatures()
     }
 
     vl->addFeature(newFeature, false);
+
+    vl->endEditCommand();;
 
     if(mapCanvas())
     {
@@ -4361,7 +4391,9 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
     {
       QgsFeatureList features = selectionVectorLayer->selectedFeatures();
       clipboard()->replaceWithCopyOf( selectionVectorLayer->dataProvider()->fields(), features );
+      selectionVectorLayer->beginEditCommand( tr("Features cut") );
       selectionVectorLayer->deleteSelectedFeatures();
+      selectionVectorLayer->endEditCommand();
     }
   }
 }
@@ -4410,7 +4442,9 @@ void QgisApp::editPaste( QgsMapLayer * destinationLayer )
 
     if ( pasteVectorLayer != 0 )
     {
+      pasteVectorLayer->beginEditCommand( tr("Features pasted") );
       pasteVectorLayer->addFeatures( clipboard()->copyOf() );
+      pasteVectorLayer->endEditCommand();
       mMapCanvas->refresh();
     }
   }
@@ -5420,6 +5454,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionLayerProperties->setEnabled( false );
     mActionAddToOverview->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
+    mActionUndo->setEnabled( false );
+    mActionRedo->setEnabled( false );
     return;
   }
 
@@ -6138,4 +6174,21 @@ QPixmap QgisApp::getThemePixmap( const QString theName )
     //doesnt exist in the default theme either!
     return QPixmap( myDefaultPath );
   }
+}
+
+void QgisApp::updateUndoActions()
+{
+  bool canUndo = false, canRedo = false;
+  QgsMapLayer* layer = this->activeLayer();
+  if (layer)
+  {
+    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+    if ( vlayer && vlayer->isEditable() )
+    {
+      canUndo = vlayer->undoStack()->canUndo();
+      canRedo = vlayer->undoStack()->canRedo();
+    }
+  }
+  mActionUndo->setEnabled( canUndo );
+  mActionRedo->setEnabled( canRedo );
 }
