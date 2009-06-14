@@ -489,6 +489,11 @@
 		720FC8E60F3D5A450069492F /* format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFD0F39E57B003DC336 /* format.cpp */; };
 		720FC8E70F3D5A470069492F /* translator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC050F39E57B003DC336 /* translator.cpp */; };
 		7214353F0FA15C1C00B0B7BC /* mActionAddSpatiaLiteLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7214353E0FA15C0A00B0B7BC /* mActionAddSpatiaLiteLayer.png */; };
+		7216ADEF0FE571C000552832 /* qgsvectorlayerundocommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7216ADEE0FE571C000552832 /* qgsvectorlayerundocommand.cpp */; };
+		7216ADF20FE5721400552832 /* qgsundowidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7216ADF00FE571F000552832 /* qgsundowidget.cpp */; };
+		7216ADF30FE5721400552832 /* qgsundowidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7216ADF10FE571F000552832 /* qgsundowidget.h */; };
+		7216ADF70FE5726700552832 /* mActionRedo.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7216ADF50FE5725B00552832 /* mActionRedo.png */; };
+		7216ADF80FE5726700552832 /* mActionUndo.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7216ADF60FE5725B00552832 /* mActionUndo.png */; };
 		721E07000FABDC6700558FF9 /* qgsgrassshell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB410F39E57B003DC336 /* qgsgrassshell.cpp */; };
 		721E07360FABDDBA00558FF9 /* BlockArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07050FABDCAB00558FF9 /* BlockArray.cpp */; };
 		721E07370FABDDBA00558FF9 /* Emulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E070C0FABDCAB00558FF9 /* Emulation.cpp */; };
@@ -3258,6 +3263,8 @@
 			dstPath = "$(QGIS_DATA_SUBDIR)/themes/default";
 			dstSubfolderSpec = 6;
 			files = (
+				7216ADF70FE5726700552832 /* mActionRedo.png in Copy - theme-default */,
+				7216ADF80FE5726700552832 /* mActionUndo.png in Copy - theme-default */,
 				727CEC220FBAFFA200F5B88C /* mIconLock.png in Copy - theme-default */,
 				72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */,
 				7256F4220F41C4DD0022BE1F /* clearInput.png in Copy - theme-default */,
@@ -5976,6 +5983,12 @@
 		7209F4B80F3A5434003DC336 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		7209F4B90F3A5434003DC336 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		7214353E0FA15C0A00B0B7BC /* mActionAddSpatiaLiteLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddSpatiaLiteLayer.png; path = ../../images/themes/gis/mActionAddSpatiaLiteLayer.png; sourceTree = SOURCE_ROOT; };
+		7216ADEA0FE5714E00552832 /* qgsvectorlayerundocommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectorlayerundocommand.h; path = ../../src/core/qgsvectorlayerundocommand.h; sourceTree = SOURCE_ROOT; };
+		7216ADEE0FE571C000552832 /* qgsvectorlayerundocommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsvectorlayerundocommand.cpp; path = ../../src/core/qgsvectorlayerundocommand.cpp; sourceTree = SOURCE_ROOT; };
+		7216ADF00FE571F000552832 /* qgsundowidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsundowidget.cpp; path = ../../src/app/qgsundowidget.cpp; sourceTree = SOURCE_ROOT; };
+		7216ADF10FE571F000552832 /* qgsundowidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsundowidget.h; path = ../../src/app/qgsundowidget.h; sourceTree = SOURCE_ROOT; };
+		7216ADF50FE5725B00552832 /* mActionRedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRedo.png; path = ../../images/themes/default/mActionRedo.png; sourceTree = SOURCE_ROOT; };
+		7216ADF60FE5725B00552832 /* mActionUndo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionUndo.png; path = ../../images/themes/default/mActionUndo.png; sourceTree = SOURCE_ROOT; };
 		721E07050FABDCAB00558FF9 /* BlockArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BlockArray.cpp; path = ../../src/plugins/grass/qtermwidget/BlockArray.cpp; sourceTree = SOURCE_ROOT; };
 		721E07060FABDCAB00558FF9 /* BlockArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlockArray.h; path = ../../src/plugins/grass/qtermwidget/BlockArray.h; sourceTree = SOURCE_ROOT; };
 		721E07070FABDCAB00558FF9 /* Character.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Character.h; path = ../../src/plugins/grass/qtermwidget/Character.h; sourceTree = SOURCE_ROOT; };
@@ -7854,6 +7867,8 @@
 				72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */,
 				72A892CA0FAF7B6100108152 /* qgsconfigureshortcutsdialog.cpp */,
 				72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */,
+				7216ADF00FE571F000552832 /* qgsundowidget.cpp */,
+				7216ADF10FE571F000552832 /* qgsundowidget.h */,
 				72A239420F74A62200AFC35B /* attributetable */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				7209E5D00F39E57A003DC336 /* legend */,
@@ -8026,6 +8041,8 @@
 				720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */,
 				720383070F8B8C2D0083B883 /* qgsoverlayobject.h */,
 				720383080F8B8C2D0083B883 /* qgsoverlayobject.cpp */,
+				7216ADEE0FE571C000552832 /* qgsvectorlayerundocommand.cpp */,
+				7216ADEA0FE5714E00552832 /* qgsvectorlayerundocommand.h */,
 				7209E6630F39E57A003DC336 /* composer */,
 				720382E10F8B8B540083B883 /* pal */,
 				7209E6D90F39E57A003DC336 /* raster */,
@@ -10179,6 +10196,8 @@
 				72683FF80FD6B1EA00D90FFC /* mActionMergeFeatures.png */,
 				72683FF90FD6B1EA00D90FFC /* mActionFromSelectedFeature.png */,
 				72683FFA0FD6B1EA00D90FFC /* mActionRemoveSelectedFeature.png */,
+				7216ADF50FE5725B00552832 /* mActionRedo.png */,
+				7216ADF60FE5725B00552832 /* mActionUndo.png */,
 				7209EF5C0F39E5D9003DC336 /* qgis.xpm */,
 				7209EF5D0F39E5D9003DC336 /* tracking.png */,
 				7209EF5E0F39E5D9003DC336 /* tracking.svg */,
@@ -13287,6 +13306,7 @@
 				720383800F8BA8C50083B883 /* priorityqueue.cpp in Sources */,
 				720383810F8BA8C50083B883 /* problem.cpp in Sources */,
 				720383820F8BA8C50083B883 /* util.cpp in Sources */,
+				7216ADEF0FE571C000552832 /* qgsvectorlayerundocommand.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13913,6 +13933,8 @@
 				72A892CC0FAF7B8500108152 /* qgsconfigureshortcutsdialog.cpp in Sources */,
 				72A892CD0FAF7B8500108152 /* qgsshortcutsmanager.cpp in Sources */,
 				72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */,
+				7216ADF20FE5721400552832 /* qgsundowidget.cpp in Sources */,
+				7216ADF30FE5721400552832 /* qgsundowidget.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
