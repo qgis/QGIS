@@ -51,6 +51,7 @@ SET(QGIS_CORE_SRCS
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
+  qgsvectorlayerundocommand.cpp
   qgsvectoroverlay.cpp
 
   composer/qgscomposeritem.cpp

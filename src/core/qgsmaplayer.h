@@ -23,6 +23,7 @@
 #include <map>
 
 #include <QObject>
+#include <QUndoStack>
 
 #include "qgsrectangle.h"
 
@@ -259,6 +260,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const = 0;
 
+    /** Return pointer to layer's undo stack */
+    QUndoStack* undoStack();
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
@@ -355,6 +359,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     float mMaxScale;
     /** A flag that tells us whether to use the above vars to restrict layer visibility */
     bool mScaleBasedVisibility;
+
+    QUndoStack mUndoStack;
 
 };
 

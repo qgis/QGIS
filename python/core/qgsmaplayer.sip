@@ -249,6 +249,9 @@ public:
      */
     virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );	
     
+    /** Return pointer to layer's undo stack */
+    QUndoStack* undoStack();
+
 public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
