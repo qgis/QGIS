@@ -2347,15 +2347,13 @@ void QgisApp::addVectorLayer()
   {
     QStringList selectedSources = ovl->dataSources();
     QString enc = ovl->encoding();
-    if ( selectedSources.isEmpty() )
+    if ( !selectedSources.isEmpty() )
     {
-      // no files were selected, so just bail
-      mMapCanvas->freeze( false );
-      return;
-    }
-    else
       addVectorLayers( selectedSources, enc, ovl->dataSourceType() );
+    }
   }
+
+  mMapCanvas->freeze( false );
 
   delete ovl;
   // update UI
