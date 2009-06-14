@@ -42,27 +42,26 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
   setSelectionMode( QAbstractItemView::NoSelection );
   setSortingEnabled( true );
 
-  shiftPressed = false;
-  ctrlPressed = false;
+  mShiftPressed = false;
+  mCtrlPressed = false;
 }
 
 void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
 {
-  QgsAttributeTableModel *bModel;
-
   if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::RandomSelectGeometryAtId )
-    bModel = new QgsAttributeTableModel( layer );
+    mModel = new QgsAttributeTableModel( layer );
   else
-    bModel = new QgsAttributeTableMemoryModel( layer );
+    mModel = new QgsAttributeTableMemoryModel( layer );
 
-  QgsAttributeTableFilterModel* bfModel = new QgsAttributeTableFilterModel( layer );
-  bfModel->setSourceModel( bModel );
-
-  setModel( bfModel );
+  mFilterModel = new QgsAttributeTableFilterModel( layer );
+  mFilterModel->setSourceModel( mModel );
+  setModel( mFilterModel );
 }
 
 QgsAttributeTableView::~QgsAttributeTableView()
 {
+  delete mModel;
+  delete mFilterModel;
 }
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *event )
@@ -75,9 +74,9 @@ void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
 {
   // shift pressed
   if ( event->key() == Qt::Key_Shift )// && event->modifiers() & Qt::ShiftModifier)
-    shiftPressed = true;
+    mShiftPressed = true;
   else if ( event->key() == Qt::Key_Control )
-    ctrlPressed = true;
+    mCtrlPressed = true;
   else
     QTableView::keyPressEvent( event );
 }
@@ -86,9 +85,9 @@ void QgsAttributeTableView::keyReleaseEvent( QKeyEvent *event )
 {
   // workaround for some Qt bug
   if ( event->key() == Qt::Key_Shift || event->key() == -1 )
-    shiftPressed = false;
+    mShiftPressed = false;
   else if ( event->key() == Qt::Key_Control )
-    ctrlPressed = false;
+    mCtrlPressed = false;
   else
     QTableView::keyReleaseEvent( event );
 }
