@@ -4795,8 +4795,8 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
   GEOSGeometry* intersectGeom = 0;
 
   //hardcoded thresholds
-  double bufferDistance = 0.000000001;
-  double intersectThreshold =  0.0000001;
+  double bufferDistance = 0.0001;
+  double intersectThreshold =  0.1;
 
   for ( int i = 0; i < GEOSGetNumGeometries( mergedLines ); i++ )
   {
