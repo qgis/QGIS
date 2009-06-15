@@ -3648,7 +3648,8 @@ bool QgisApp::openLayer( const QString & fileName )
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
     ok = addRasterLayer( fileName, fileInfo.completeBaseName() );
   else // nope - try to load it as a shape/ogr
-    ok = addVectorLayer( fileName, fileName, "ogr" );
+    ok = addVectorLayer( fileName, fileInfo.completeBaseName(), "ogr" );
+   
   CPLPopErrorHandler();
 
   if ( !ok )
@@ -4963,9 +4964,9 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
   QgsDebugMsg( "Creating new vector layer using " + vectorLayerPath
                + " with baseName of " + baseName
                + " and providerKey of " + providerKey );
-
-  layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey );
-
+  
+  layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey );  
+  
   if ( layer && layer->isValid() )
   {
     // Register this layer with the layers registry
