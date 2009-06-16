@@ -1421,7 +1421,6 @@
 		72E707260F426AFB00142011 /* resources_rc.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF50F39E5D9003DC336 /* resources_rc.py */; };
 		72E707270F426AFB00142011 /* unzip.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF60F39E5D9003DC336 /* unzip.py */; };
 		72E707280F426AFB00142011 /* version_compare.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF70F39E5D9003DC336 /* version_compare.py */; };
-		72E707320F426BEF00142011 /* default.qgc in Copy - config */ = {isa = PBXBuildFile; fileRef = 7209E8330F39E57B003DC336 /* default.qgc */; };
 		72E707350F426C6900142011 /* locations.gml in Copy - grass */ = {isa = PBXBuildFile; fileRef = 7209E8360F39E57B003DC336 /* locations.gml */; };
 		72E707360F426C6900142011 /* world.png in Copy - grass */ = {isa = PBXBuildFile; fileRef = 7209E8350F39E57B003DC336 /* world.png */; };
 		72E70A220F426D1C00142011 /* grass_add_map.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB4E0F39E57B003DC336 /* grass_add_map.png */; };
@@ -3716,17 +3715,6 @@
 			name = "Copy - plugininstall";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		72E707310F426BD700142011 /* Copy - config */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/config";
-			dstSubfolderSpec = 0;
-			files = (
-				72E707320F426BEF00142011 /* default.qgc in Copy - config */,
-			);
-			name = "Copy - config";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		72E70A1F0F426CB600142011 /* Copy - grass */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4815,8 +4803,6 @@
 		7209E82B0F39E57B003DC336 /* tracks.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = tracks.gpx; path = ../../src/plugins/gps_importer/sample_data/tracks.gpx; sourceTree = SOURCE_ROOT; };
 		7209E82C0F39E57B003DC336 /* waypoints.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = waypoints.gpx; path = ../../src/plugins/gps_importer/sample_data/waypoints.gpx; sourceTree = SOURCE_ROOT; };
 		7209E82F0F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		7209E8320F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/config/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		7209E8330F39E57B003DC336 /* default.qgc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = default.qgc; path = ../../src/plugins/grass/config/default.qgc; sourceTree = SOURCE_ROOT; };
 		7209E8350F39E57B003DC336 /* world.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = world.png; path = ../../src/plugins/grass/images/world.png; sourceTree = SOURCE_ROOT; };
 		7209E8360F39E57B003DC336 /* locations.gml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = locations.gml; path = ../../src/plugins/grass/locations.gml; sourceTree = SOURCE_ROOT; };
 		7209EB230F39E57B003DC336 /* qgsgrass_plugin.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgrass_plugin.qrc; path = ../../src/plugins/grass/qgsgrass_plugin.qrc; sourceTree = SOURCE_ROOT; };
@@ -7191,6 +7177,8 @@
 		72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolnodetool.cpp; path = ../../src/app/qgsmaptoolnodetool.cpp; sourceTree = SOURCE_ROOT; };
 		72F22FB60FDAC1F4000E8CB0 /* qgsmaptoolnodetool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolnodetool.h; path = ../../src/app/qgsmaptoolnodetool.h; sourceTree = SOURCE_ROOT; };
 		72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNodeTool.png; path = ../../images/themes/default/mActionNodeTool.png; sourceTree = SOURCE_ROOT; };
+		72F6FCDE0FE7D78F00D5B53B /* default.qgc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = default.qgc; path = "../../src/plugins/grass/modules-6.3/default.qgc"; sourceTree = SOURCE_ROOT; };
+		72F6FCDF0FE7D79C00D5B53B /* default.qgc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = default.qgc; path = "../../src/plugins/grass/modules-6.4/default.qgc"; sourceTree = SOURCE_ROOT; };
 		72F8D9350F89234600D10CE5 /* FindIconv.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindIconv.cmake; path = ../../cmake/FindIconv.cmake; sourceTree = SOURCE_ROOT; };
 		72F8D9390F8924AE00D10CE5 /* qgstolerance.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgstolerance.sip; path = ../../python/core/qgstolerance.sip; sourceTree = SOURCE_ROOT; };
 		72F8D9420F8924F100D10CE5 /* qgstolerance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstolerance.h; path = ../../src/core/qgstolerance.h; sourceTree = SOURCE_ROOT; };
@@ -8694,23 +8682,12 @@
 				7299397A0FE3037600244D1A /* modules-6.4 */,
 				7299398F0FE3037600244D1A /* modules-common */,
 				721E07040FABDCAB00558FF9 /* qtermwidget */,
-				7209E8300F39E57B003DC336 /* config */,
 				7209E8340F39E57B003DC336 /* images */,
 				723FD0650FBCB94600EFA55D /* scripts */,
 				7209EB490F39E57B003DC336 /* themes */,
 			);
 			name = grass;
 			path = ../../src/plugins/grass;
-			sourceTree = SOURCE_ROOT;
-		};
-		7209E8300F39E57B003DC336 /* config */ = {
-			isa = PBXGroup;
-			children = (
-				7209E8320F39E57B003DC336 /* CMakeLists.txt */,
-				7209E8330F39E57B003DC336 /* default.qgc */,
-			);
-			name = config;
-			path = ../../src/plugins/grass/config;
 			sourceTree = SOURCE_ROOT;
 		};
 		7209E8340F39E57B003DC336 /* images */ = {
@@ -10666,6 +10643,7 @@
 			isa = PBXGroup;
 			children = (
 				7299396A0FE3037600244D1A /* CMakeLists.txt */,
+				72F6FCDE0FE7D78F00D5B53B /* default.qgc */,
 				7299396B0FE3037600244D1A /* r.surf.fractal.1.png */,
 				7299396C0FE3037600244D1A /* r.surf.fractal.2.png */,
 				7299396D0FE3037600244D1A /* r.surf.fractal.qgm */,
@@ -10690,6 +10668,7 @@
 			isa = PBXGroup;
 			children = (
 				7299397B0FE3037600244D1A /* CMakeLists.txt */,
+				72F6FCDF0FE7D79C00D5B53B /* default.qgc */,
 				7299397C0FE3037600244D1A /* r.external.1.png */,
 				7299397D0FE3037600244D1A /* r.external.qgis.1.png */,
 				7299397E0FE3037600244D1A /* r.external.qgis.qgm */,
@@ -12305,12 +12284,11 @@
 				72A56B5A0F3C823800BA32A1 /* Sources */,
 				72A56B5B0F3C823800BA32A1 /* Frameworks */,
 				72E70A1F0F426CB600142011 /* Copy - grass */,
-				72E707310F426BD700142011 /* Copy - config */,
 				72E70A4E0F426D3B00142011 /* Copy - theme-classic */,
 				72E70A810F426DF300142011 /* Copy - theme-gis */,
 				72EBC9800F49D7F60016BA3C /* Copy - theme-default */,
 				723FD0700FBCBA3D00EFA55D /* Copy - scripts */,
-				72993C820FE303FA00244D1A /* Script - copy modules */,
+				72993C820FE303FA00244D1A /* Script - copy modules & config */,
 			);
 			buildRules = (
 				729288440F71F4F0006D9489 /* PBXBuildRule */,
@@ -12868,19 +12846,19 @@
 			shellScript = "cd ../../i18n\nTS=`ls *.ts`\nmkdir -p \"$CONFIGURATION_BUILD_DIR/Qgis.app/Contents/MacOS/$QGIS_DATA_SUBDIR/i18n\"\ncd \"$CONFIGURATION_BUILD_DIR/Qgis.app/Contents/MacOS/$QGIS_DATA_SUBDIR/i18n\"\nfor t in $TS\ndo\n\ttb=`echo $t | cut -d . -f 1`\n\tif [ ! -f $tb.qm ] || [ \"$PROJECT_DIR/../../i18n/$t\" -nt $tb.qm ] ; then\n\t\t$QTLREL -verbose \"$PROJECT_DIR/../../i18n/$t\" -qm $tb.qm\n\tfi\ndone\n\nexit 0";
 			showEnvVarsInLog = 0;
 		};
-		72993C820FE303FA00244D1A /* Script - copy modules */ = {
+		72993C820FE303FA00244D1A /* Script - copy modules & config */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Script - copy modules";
+			name = "Script - copy modules & config";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# copy modules with script for conditional stuff\n\nmkdir -p \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\ncp -f *.png \\\n\t*.qgm \\\n\t*.svg \\\n\t\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\n\nif [ -d ../modules-$GRASS_VERSION ] ; then\ncd ../modules-$GRASS_VERSION\ncp -f *.png \\\n\t*.qgm \\\n\t*.svg \\\n\t\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nfi\n";
+			shellScript = "# copy modules with script for conditional stuff\n\nMODDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nmkdir -p \"$MODDIR\"\nCONFDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/config\"\nmkdir -p \"$CONFDIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\nMODS=`ls *.png *.qgm *.svg`\nfor m in $MODS\ndo\n\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\tcp -f $m \"$MODDIR\"\n\tfi\ndone\n\nif [ -d ../modules-$GRASS_VERSION ] ; then\n\tcd ../modules-$GRASS_VERSION\n\tMODS=`ls *.png *.qgm *.svg`\n\tfor m in $MODS\n\tdo\n\t\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\t\tcp -f $m \"$MODDIR\"\n\t\tfi\n\tdone\n\tif [ ! -f \"$CONFDIR/default.qgc\" ] || [ default.qgc -nt \"$CONFDIR/default.qgc\" ] ; then\n\t\techo \"cp -f default.qgc \\\"$CONFDIR\\\"\"\n\t\tcp -f default.qgc \"$CONFDIR\"\n\tfi\n\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		729BBF0E0F407818001BCB63 /* Script - ui */ = {
