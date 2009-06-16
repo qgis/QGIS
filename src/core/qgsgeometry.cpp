@@ -4794,9 +4794,12 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
   QVector<GEOSGeometry*> testedGeometries;
   GEOSGeometry* intersectGeom = 0;
 
-  //hardcoded thresholds
+  //Create a small buffer around the original geometry
+  //and intersect candidate line segments with the buffer.
+  //Then we use the ratio intersection length / segment length to
+  //decide if the line segment belongs to the original geometry or
+  //if it is part of the splitting line
   double bufferDistance = 0.0000001;
-  double intersectThreshold =  0.00001;
 
   for ( int i = 0; i < GEOSGetNumGeometries( mergedLines ); i++ )
   {
@@ -4804,8 +4807,14 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
     intersectGeom = GEOSIntersection( mGeos, GEOSBuffer( testing, bufferDistance, DEFAULT_QUADRANT_SEGMENTS ) );
     double len;
     GEOSLength( intersectGeom, &len );
-    if ( len > intersectThreshold )
+     double testingLen;
+    GEOSLength( testing, &testingLen);
+    double ratio = len / testingLen;
+    //the ratios for geometries that belong to the original line are usually close to 1
+    if ( ratio >= 0.5 && ratio <= 1.5)
+    {
       testedGeometries << GEOSGeom_clone( testing );
+    }
     GEOSGeom_destroy( intersectGeom );
   }
 
