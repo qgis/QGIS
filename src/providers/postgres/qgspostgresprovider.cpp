@@ -1696,7 +1696,7 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
     return;
   }
 
-  //is type an enum or a domain type?
+  //is type an enum?
   QString typeSql = QString("SELECT typtype FROM pg_type where typname = %1").arg(quotedValue(typeName));
   Result typeRes = connectionRO->PQexec( typeSql );
   if ( PQresultStatus( typeRes ) != PGRES_TUPLES_OK || PQntuples(typeRes) < 1)
@@ -1704,40 +1704,108 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
     return;
   }
 
+
   QString typtype = PQgetvalue( typeRes, 0, 0 );
   if(typtype.compare("e", Qt::CaseInsensitive) == 0)
   {
-    //parse enum_range
-    QString enumRangeSql = QString("SELECT enum_range(%1) from %2 limit1").arg(quotedIdentifier(f_it.value().name())).arg(mSchemaTableName);
-    Result enumRangeRes = connectionRO->PQexec(enumRangeSql);
-    if ( PQresultStatus( enumRangeRes ) != PGRES_TUPLES_OK || PQntuples(enumRangeRes) > 0)
+    //try to read enum_range of attribute
+    if(!parseEnumRange(enumList, f_it->name()))
     {
-      QString enumRangeString = PQgetvalue(enumRangeRes, 0, 0);
-      //strip away the brackets at begin and end
-      enumRangeString.chop(1);
-      enumRangeString.remove(0, 1);
-      QStringList rangeSplit = enumRangeString.split(",");
-      QStringList::const_iterator range_it = rangeSplit.constBegin();
-      for(; range_it != rangeSplit.constEnd(); ++range_it)
-      {
-        QString currentEnumValue = *range_it;
-        //remove quotes from begin and end of the value
-        if(currentEnumValue.startsWith("'") || currentEnumValue.startsWith("\""))
-        {
-          currentEnumValue.remove(0, 1);
-        }
-        if(currentEnumValue.endsWith("'") || currentEnumValue.endsWith("\""))
-        {
-          currentEnumValue.chop(1);
-        }
-        enumList << currentEnumValue;
-      }
+      enumList.clear();
     }
   }
-  else if (typtype.compare("d", Qt::CaseInsensitive) == 0)
+  else
   {
-    //a domain type. Todo: evaluate the check constraint
+    //is there a domain check constraint for the attribute?
+    if(!parseDomainCheckConstraint(enumList, f_it->name()))
+    {
+       enumList.clear();
+    }
   }
+}
+
+bool QgsPostgresProvider::parseEnumRange(QStringList& enumValues, const QString& attributeName) const
+{
+  enumValues.clear();
+  QString enumRangeSql = QString("SELECT enum_range(%1) from %2 limit1").arg(quotedIdentifier(attributeName)).arg(mSchemaTableName);
+  Result enumRangeRes = connectionRO->PQexec(enumRangeSql);
+  if ( PQresultStatus( enumRangeRes ) == PGRES_TUPLES_OK && PQntuples(enumRangeRes) > 0)
+  {
+    QString enumRangeString = PQgetvalue(enumRangeRes, 0, 0);
+    //strip away the brackets at begin and end
+    enumRangeString.chop(1);
+    enumRangeString.remove(0, 1);
+    QStringList rangeSplit = enumRangeString.split(",");
+    QStringList::const_iterator range_it = rangeSplit.constBegin();
+    for(; range_it != rangeSplit.constEnd(); ++range_it)
+    {
+      QString currentEnumValue = *range_it;
+      //remove quotes from begin and end of the value
+      if(currentEnumValue.startsWith("'") || currentEnumValue.startsWith("\""))
+      {
+        currentEnumValue.remove(0, 1);
+      }
+      if(currentEnumValue.endsWith("'") || currentEnumValue.endsWith("\""))
+      {
+        currentEnumValue.chop(1);
+      }
+      enumValues << currentEnumValue;
+    }
+    return true;
+  }
+  return false;
+}
+
+bool QgsPostgresProvider::parseDomainCheckConstraint(QStringList& enumValues, const QString& attributeName) const
+{
+  enumValues.clear();
+
+  //is it a domain type with a check constraint?
+  QString domainSql = QString("SELECT domain_name from information_schema.columns where table_name = %1 and column_name = %2").arg(quotedValue(mTableName)).arg(quotedValue(attributeName));
+  Result domainResult = connectionRO->PQexec(domainSql);
+  if ( PQresultStatus( domainResult ) == PGRES_TUPLES_OK && PQntuples(domainResult) > 0)
+  {
+    //a domain type
+    QString domainCheckDefinitionSql = QString("SELECT consrc FROM pg_constraint where conname = (SELECT constraint_name FROM information_schema.domain_constraints WHERE domain_name = %1)").arg(quotedValue(PQgetvalue(domainResult, 0, 0)));
+    Result domainCheckRes = connectionRO->PQexec(domainCheckDefinitionSql);
+    if ( PQresultStatus(domainCheckRes) == PGRES_TUPLES_OK && PQntuples(domainCheckRes) > 0)
+    {
+      QString checkDefinition = PQgetvalue(domainCheckRes, 0, 0);
+
+      //we assume that the constraint is of the following form:
+      //(VALUE = ANY (ARRAY['a'::text, 'b'::text, 'c'::text, 'd'::text]))
+      //normally, postgresql creates that if the contstraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
+
+      //todo: ANY must occure before ARRAY
+      int anyPos = checkDefinition.indexOf("VALUE = ANY");
+      int arrayPosition = checkDefinition.lastIndexOf("ARRAY[");
+      int closingBracketPos = checkDefinition.indexOf("]", arrayPosition + 6);
+
+      if(anyPos == -1 || anyPos >= arrayPosition)
+      {
+        return false; //constraint has not the required format
+      }
+
+      if(arrayPosition != -1)
+      {
+        QString valueList = checkDefinition.mid(arrayPosition + 6, closingBracketPos);
+        QStringList commaSeparation = valueList.split(",", QString::SkipEmptyParts);
+        QStringList::const_iterator cIt = commaSeparation.constBegin();
+        for(; cIt != commaSeparation.constEnd(); ++cIt)
+        {
+          //get string between ''
+          int beginQuotePos = cIt->indexOf("'");
+          int endQuotePos = cIt->lastIndexOf("'");
+          if(beginQuotePos != -1 && (endQuotePos - beginQuotePos) > 1)
+          {
+            enumValues << cIt->mid(beginQuotePos + 1, endQuotePos - beginQuotePos - 1);
+          }
+        }
+      }
+      return true;
+    }
+  }
+  return false;
 }
 
 // Returns the maximum value of an attribute

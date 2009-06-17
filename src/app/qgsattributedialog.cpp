@@ -143,6 +143,11 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         {
           cb->addItem(*s_it);
         }
+        int idx = cb->findText( myFieldValue.toString() );
+        if ( idx >= 0 )
+        {
+          cb->setCurrentIndex( idx );
+        }
         myWidget = cb;
       }
       break;
