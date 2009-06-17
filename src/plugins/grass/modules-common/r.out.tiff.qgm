@@ -8,5 +8,5 @@
 	<flag key="t" />
 	<flag key="l" />
 	<flag key="v" />	
-	<option key="output" />
+	<file key="output" type="new" />
 </qgisgrassmodule>
