@@ -3013,6 +3013,10 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   if ( qdesc.attribute( "type" ).toLower() == "new" )
   {
     mType = New;
+  } 
+  if ( qdesc.attribute( "type" ).toLower() == "multiple" )
+  {
+    mType = Multiple;
   }
 
   if ( !qdesc.attribute( "filters" ).isNull() )
@@ -3071,17 +3075,21 @@ void QgsGrassModuleFile::browse()
   // TODO: unfortunately QFileDialog does not support 'new' directory
   QFileDialog *fd = new QFileDialog( this, NULL, mLineEdit->text() );
 
-  fd->setDirectory( QDir::current() );
+  static QDir currentDir = QDir::current();
+  fd->setDirectory( currentDir );
 
-  fd->setFileMode( QFileDialog::AnyFile );
-
-  if ( mType == New )
-  {
-    fd->setAcceptMode( QFileDialog::AcceptSave );
-  }
-  else
-  {
-    fd->setAcceptMode( QFileDialog::AcceptOpen );
+  switch( mType ) {
+    case New:
+      fd->setFileMode( QFileDialog::AnyFile );
+      fd->setAcceptMode( QFileDialog::AcceptSave );
+      break;
+    case Multiple:
+      fd->setFileMode( QFileDialog::ExistingFiles );
+      fd->setAcceptMode( QFileDialog::AcceptOpen );
+      break;
+    default:
+      fd->setFileMode( QFileDialog::ExistingFile );
+      fd->setAcceptMode( QFileDialog::AcceptOpen );
   }
 
   if ( mFilters.size() > 0 )
@@ -3092,7 +3100,14 @@ void QgsGrassModuleFile::browse()
 
   if ( fd->exec() == QDialog::Accepted )
   {
-    mLineEdit->setText( fd->selectedFiles().first() );
+    QString selectedFile = fd->selectedFiles().first();
+    QFileInfo fi = QFileInfo(selectedFile);
+    currentDir = fi.absoluteDir();
+    if (mType == Multiple)
+    {
+      selectedFile = fd->selectedFiles().join(",");   
+    }
+    mLineEdit->setText( selectedFile );
   }
 }
 
