@@ -53,6 +53,7 @@
 #include <QPrinter>
 #include <QProcess>
 #include <QProgressBar>
+#include <QProgressDialog>
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSettings>
@@ -4139,7 +4140,7 @@ void QgisApp::deletePart()
   mMapCanvas->setMapTool( mMapTools.mDeletePart );
 }
 
-QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& featureList) const
+QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& featureList)
 {
   if(!vl || featureList.size() < 2)
   {
@@ -4153,8 +4154,20 @@ QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& 
     return 0;
   }
 
+  QProgressDialog progress(tr("Merging features..."), tr("Abort"), 0, featureList.size(), this);
+  progress.setWindowModality(Qt::WindowModal);
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   for(int i = 1; i < featureList.size(); ++i)
   {
+    if(progress.wasCanceled())
+    {
+      delete unionGeom;
+      QApplication::restoreOverrideCursor();
+      return 0;
+    }
+    progress.setValue(i);
     QgsGeometry* currentGeom = featureList[i].geometry();
     if(currentGeom)
     {
@@ -4167,6 +4180,9 @@ QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& 
       }
     }
   }
+
+  QApplication::restoreOverrideCursor();
+  progress.setValue(featureList.size());
   return unionGeom;
 }
 

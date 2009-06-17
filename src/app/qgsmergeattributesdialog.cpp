@@ -248,7 +248,7 @@ void QgsMergeAttributesDialog::refreshMergedValue(int col)
 
     //insert string into table widget
    QTableWidgetItem* newTotalItem = new QTableWidgetItem(evalText);
-   newTotalItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+   newTotalItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
    mTableWidget->setItem(mTableWidget->rowCount() - 1, col, newTotalItem);
 }
 
