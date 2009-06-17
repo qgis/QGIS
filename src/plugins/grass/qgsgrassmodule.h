@@ -816,7 +816,7 @@ class QgsGrassModuleFile: public QgsGrassModuleGroupBoxItem
     ~QgsGrassModuleFile();
 
     //! File type
-    enum Type { Old, New };
+    enum Type { Old, New, Multiple };
 
     // Reimplemented methods from QgsGrassModuleOptions
     QStringList options();
