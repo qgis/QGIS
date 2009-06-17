@@ -1162,7 +1162,6 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionCaptureLine );
   mEditMenu->addAction( mActionCapturePolygon );
   mEditMenu->addAction( mActionMoveFeature );
-  mEditMenu->addAction( mActionSplitFeatures );
   mEditMenu->addAction( mActionDeleteSelected );
   mEditMenu->addAction( mActionAddVertex );
   mEditMenu->addAction( mActionMoveVertex );
@@ -1175,6 +1174,7 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionAddIsland );
   mEditMenu->addAction( mActionDeleteRing );
   mEditMenu->addAction( mActionDeletePart );
+  mEditMenu->addAction( mActionSplitFeatures );
   mEditMenu->addAction( mActionMergeFeatures );
   mEditMenu->addAction( mActionNodeTool );
   
@@ -1362,7 +1362,6 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction( mActionCapturePoint );
   mDigitizeToolBar->addAction( mActionCaptureLine );
   mDigitizeToolBar->addAction( mActionCapturePolygon );
-  mDigitizeToolBar->addAction( mActionSplitFeatures );
   mDigitizeToolBar->addAction( mActionMoveFeature );
   mDigitizeToolBar->addAction( mActionMoveVertex );
   mDigitizeToolBar->addAction( mActionAddVertex );
@@ -1383,6 +1382,7 @@ void QgisApp::createToolBars()
   mAdvancedDigitizeToolBar->addAction( mActionAddIsland );
   mAdvancedDigitizeToolBar->addAction( mActionDeleteRing );
   mAdvancedDigitizeToolBar->addAction( mActionDeletePart );
+  mAdvancedDigitizeToolBar->addAction( mActionSplitFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionMergeFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionNodeTool );
   mToolbarMenu->addAction( mAdvancedDigitizeToolBar->toggleViewAction() );
