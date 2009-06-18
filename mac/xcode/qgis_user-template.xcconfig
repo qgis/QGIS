@@ -37,9 +37,11 @@
 //PROJ_FORM = fw // fw or shared
 //GEOS_FORM = fw // fw or shared
 
-//SQLITE_FORM = fw // fw, system, static or shared
-// spatialite framework form is actually a part of sqlite fw
-//SPATIALITE_FORM = fw // fw, static or shared
+// SQLite and Spatialite tied together and use same setting
+// system is sqlite-only
+// fw, shared and internal enable both, so spatial MUST be available
+//   (is avail for fw, use spatialite 2.3+ for shared sqlite+spatialite)
+//SQLITE_FORM = fw // system, fw, shared or internal
 // whether spatialite is built with GEOS and PROJ
 // (must be same GEOS and PROJ used for Qgis)
 //SPATIALITE_GEOS = yes
@@ -77,7 +79,6 @@
 //BUNDLE_GEOS = YES
 //BUNDLE_PROJ = YES
 //BUNDLE_SQLITE = YES
-//BUNDLE_SPATIALITE = YES
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -109,14 +110,11 @@
 
 //EXPAT_PREFIX = /usr/local // not used for system expat
 
-// unix SQLite defaults to system
-//SQLITE_PREFIX_shared = /usr
-//SQLITE_PREFIX_static = /usr/local
-//SPATIALITE_PREFIX = /usr/local
+//SQLITE_PREFIX_shared = /usr/local
 
 //PGSQL_PREFIX = /usr/local/pgsql
 // used to link static libs, defaults based on kyngchaos dist
-//PGSQL_LIBADD = -lintl -framework CoreFoundation -liconv -lxml2 -lssl -lcrypto -lpam -lkrb5 -lldap -lreadline -lz
+//PGSQL_LIBADD = -lintl -framework CoreFoundation -liconv -lxml2 -lssl -lcrypto -lpam -lkrb5 -lldap -lz
 
 //////////////////////////////////////////////////////////////////////
 // do not change these unless you have a very odd layout for them
@@ -148,9 +146,6 @@
 
 //SQLITE_INC = $(SQLITE_INC_$(SQLITE_FORM))
 //SQLITE_LIB = $(SQLITE_LIB_$(SQLITE_FORM))
-
-//SPATIALITE_INC = $(SPATIALITE_INC_$(SPATIALITE_FORM))
-//SPATIALITE_LIB = $(SPATIALITE_LIB_$(SPATIALITE_FORM))
 //SPATIALITE_LIBADD = $(GEOS_LIB) $(PROJ_LIB)
 
 //PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/$(PYTHON_VERSION)
