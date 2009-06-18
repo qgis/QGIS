@@ -532,6 +532,7 @@
 		7223B79C0F96A9BF00D905B4 /* qgsoracleconnect_ui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7790F969A9D00D905B4 /* qgsoracleconnect_ui.h */; };
 		7223B79D0F96A9BF00D905B4 /* qgsselectgeoraster_ui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */; };
 		7223B79E0F96AA2000D905B4 /* oracleplugin.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7750F969A9D00D905B4 /* oracleplugin.qrc */; };
+		7224A24E0FEA732A004E87E3 /* qgsmaptoolnodetool.h in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB60FDAC1F4000E8CB0 /* qgsmaptoolnodetool.h */; };
 		72267A470F9A1CC900010C18 /* mActionZoomNext.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 72267A460F9A1CB400010C18 /* mActionZoomNext.png */; };
 		72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */; };
 		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
@@ -13859,6 +13860,7 @@
 				729288980F71FE65006D9489 /* qgslegendlayerfile.h in Sources */,
 				729288990F71FE65006D9489 /* qgsludialog.h in Sources */,
 				7292889A0F71FE65006D9489 /* qgsmaptoolidentify.h in Sources */,
+				7224A24E0FEA732A004E87E3 /* qgsmaptoolnodetool.h in Sources */,
 				7292889B0F71FE65006D9489 /* qgsmaptoolsplitfeatures.h in Sources */,
 				7292889C0F71FE65006D9489 /* qgsmaptoolvertexedit.h in Sources */,
 				7292889D0F71FE65006D9489 /* qgsmeasuredialog.h in Sources */,
