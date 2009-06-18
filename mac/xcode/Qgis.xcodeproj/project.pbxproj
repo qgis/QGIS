@@ -46,9 +46,7 @@
 			buildPhases = (
 			);
 			dependencies = (
-				7256F1C70F411CA70022BE1F /* PBXTargetDependency */,
-				7256F1C90F411CBC0022BE1F /* PBXTargetDependency */,
-				7256F1CB0F411CC20022BE1F /* PBXTargetDependency */,
+				727E6B520FEABF4E00DF6F64 /* PBXTargetDependency */,
 				7256F1CD0F411CDD0022BE1F /* PBXTargetDependency */,
 				7256F1CF0F411CF70022BE1F /* PBXTargetDependency */,
 				72E706FA0F42613A00142011 /* PBXTargetDependency */,
@@ -63,12 +61,10 @@
 			buildPhases = (
 			);
 			dependencies = (
-				7256F19C0F411B2B0022BE1F /* PBXTargetDependency */,
 				7256F1960F411B110022BE1F /* PBXTargetDependency */,
 				7256F1940F411B110022BE1F /* PBXTargetDependency */,
 				7256F1920F411B110022BE1F /* PBXTargetDependency */,
 				7256F1900F411B110022BE1F /* PBXTargetDependency */,
-				7262EDA10F7A887F00498385 /* PBXTargetDependency */,
 				7256F1B30F411C120022BE1F /* PBXTargetDependency */,
 				7256F1B10F411C120022BE1F /* PBXTargetDependency */,
 				7256F1AD0F411C120022BE1F /* PBXTargetDependency */,
@@ -90,9 +86,9 @@
 			buildPhases = (
 			);
 			dependencies = (
-				7256F19E0F411B330022BE1F /* PBXTargetDependency */,
 				7256F1A60F411B480022BE1F /* PBXTargetDependency */,
 				7256F1A40F411B480022BE1F /* PBXTargetDependency */,
+				727E6B7B0FEACF5100DF6F64 /* PBXTargetDependency */,
 				7256F1A20F411B480022BE1F /* PBXTargetDependency */,
 				7256F1A00F411B480022BE1F /* PBXTargetDependency */,
 				72F07FEA0F5112D8008D3148 /* PBXTargetDependency */,
@@ -105,13 +101,25 @@
 			name = "Optional Plugins";
 			productName = "Optional Plugins";
 		};
+		727E6B480FEABF2B00DF6F64 /* Base Qgis */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 727E6B530FEABFA900DF6F64 /* Build configuration list for PBXAggregateTarget "Base Qgis" */;
+			buildPhases = (
+			);
+			dependencies = (
+				727E6B4C0FEABF3D00DF6F64 /* PBXTargetDependency */,
+				727E6B4E0FEABF4100DF6F64 /* PBXTargetDependency */,
+				727E6B500FEABF4500DF6F64 /* PBXTargetDependency */,
+			);
+			name = "Base Qgis";
+			productName = "Base Qgis";
+		};
 		729BBE720F4075D1001BCB63 /* All Plugins */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 729BBEF90F4076E3001BCB63 /* Build configuration list for PBXAggregateTarget "All Plugins" */;
 			buildPhases = (
 			);
 			dependencies = (
-				729BBE780F407604001BCB63 /* PBXTargetDependency */,
 				7256F1980F411B1C0022BE1F /* PBXTargetDependency */,
 				7256F19A0F411B210022BE1F /* PBXTargetDependency */,
 			);
@@ -1032,8 +1040,6 @@
 		7262ED720F7A6E6F00498385 /* grass_split_line.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED600F7A6E0800498385 /* grass_split_line.png */; };
 		7262ED830F7A750F00498385 /* qgsspatialitefilterproxymodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED7E0F7A74B700498385 /* qgsspatialitefilterproxymodel.cpp */; };
 		7262ED840F7A750F00498385 /* qgsspatialitetablemodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED820F7A74B700498385 /* qgsspatialitetablemodel.cpp */; };
-		7262ED870F7A754100498385 /* qgsspatialitesourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED800F7A74B700498385 /* qgsspatialitesourceselect.cpp */; };
-		7262ED880F7A754100498385 /* qgsspatialitesourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED810F7A74B700498385 /* qgsspatialitesourceselect.h */; };
 		7262ED8A0F7A760B00498385 /* mActionAddSpatiaLiteLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7262ED890F7A75FB00498385 /* mActionAddSpatiaLiteLayer.png */; };
 		7262ED970F7A770300498385 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8E0F7A767400498385 /* qgsspatialiteprovider.cpp */; };
@@ -1072,6 +1078,10 @@
 		72745A140F770319007F4218 /* wfs.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A040F770252007F4218 /* wfs.png */; };
 		72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */ = {isa = PBXBuildFile; fileRef = 727459F80F770252007F4218 /* coordinate_capture.png */; };
 		727CEC220FBAFFA200F5B88C /* mIconLock.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 727CEC210FBAFF6000F5B88C /* mIconLock.png */; };
+		727E6AF10FEA90E200DF6F64 /* x_sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */; };
+		727E6B040FEA9BC000DF6F64 /* x_spatialite.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B030FEA9BC000DF6F64 /* x_spatialite.c */; };
+		727E6B110FEAA0CF00DF6F64 /* x_qgsspatialitesourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B0C0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.cpp */; };
+		727E6B150FEAA14C00DF6F64 /* x_qgsspatialitesourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B0B0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.h */; };
 		72820FE10FACCE770011C963 /* qgsmaptooldeletering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDE0FACCE520011C963 /* qgsmaptooldeletering.cpp */; };
 		72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */; };
 		72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FE00FACCE520011C963 /* qgsmaptoolsimplify.cpp */; };
@@ -2288,52 +2298,17 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -nw $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
-		7203834B0F8B905D0083B883 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		7203834D0F8B905D0083B883 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
 		720383860F8BA92B0083B883 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 720383490F8B905D0083B883;
 			remoteInfo = diagramoverlayplugin;
-		};
-		7209F3F50F3A3C25003DC336 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		7223B7800F96A96500D905B4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		7223B7820F96A96500D905B4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
 		};
 		7223B7A50F96AA6C00D905B4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2383,20 +2358,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 7256F1880F411AC90022BE1F;
 			remoteInfo = "Optional Plugins";
-		};
-		7256F19B0F411B2B0022BE1F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1C30F39E6E3003DC336;
-			remoteInfo = config;
-		};
-		7256F19D0F411B330022BE1F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1C30F39E6E3003DC336;
-			remoteInfo = config;
 		};
 		7256F19F0F411B480022BE1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2524,27 +2485,6 @@
 			remoteGlobalIDString = 72A56B800F3C824400BA32A1;
 			remoteInfo = quickprintplugin;
 		};
-		7256F1C60F411CA70022BE1F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1C30F39E6E3003DC336;
-			remoteInfo = config;
-		};
-		7256F1C80F411CBC0022BE1F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		7256F1CA0F411CC20022BE1F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
 		7256F1CC0F411CDD0022BE1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
@@ -2566,327 +2506,40 @@
 			remoteGlobalIDString = 8D0C4E890486CD37000505A6;
 			remoteInfo = Qgis;
 		};
-		7262ED940F7A770300498385 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		7262EDA00F7A887F00498385 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7262ED920F7A770300498385;
-			remoteInfo = spatialiteprovider;
-		};
-		729287EC0F71E808006D9489 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729287EE0F71E808006D9489 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBE750F4075F7001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBE770F407604001BCB63 /* PBXContainerItemProxy */ = {
+		727E6B4B0FEABF3D00DF6F64 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 7209F1C30F39E6E3003DC336;
 			remoteInfo = config;
 		};
-		729BBEA90F407636001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 72A07DAC0F3BDFA4004FC2A4;
-			remoteInfo = grassprovider;
-		};
-		729BBEAB0F407643001BCB63 /* PBXContainerItemProxy */ = {
+		727E6B4D0FEABF4100DF6F64 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 7209F1D10F39E760003DC336;
 			remoteInfo = qgis_core;
 		};
-		729BBEAD0F40764A001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEAF0F407653001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEB10F40765B001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEB30F407663001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEB50F407666001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEB70F407669001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEB90F40766C001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEBB0F40766F001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEBD0F40768E001BCB63 /* PBXContainerItemProxy */ = {
+		727E6B4F0FEABF4500DF6F64 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
 			remoteInfo = qgis_gui;
 		};
-		729BBEBF0F40768E001BCB63 /* PBXContainerItemProxy */ = {
+		727E6B510FEABF4E00DF6F64 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
+			remoteGlobalIDString = 727E6B480FEABF2B00DF6F64;
+			remoteInfo = "Base Qgis";
 		};
-		729BBEC10F407692001BCB63 /* PBXContainerItemProxy */ = {
+		727E6B7A0FEACF5100DF6F64 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEC30F407692001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEC50F407696001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEC70F407696001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEC90F40769A001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBECB0F40769A001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBECD0F40769E001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBECF0F40769E001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBED10F4076A4001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBED30F4076A4001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBED50F4076A7001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBED70F4076A7001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBED90F4076AB001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEDB0F4076AB001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEDD0F4076AE001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEDF0F4076AE001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEE10F4076B1001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEE30F4076B1001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEE50F4076B5001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEE70F4076B5001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEE90F4076B9001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEEB0F4076B9001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEF10F4076C0001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEF30F4076C0001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEF50F4076C5001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEF70F4076C5001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBF2E0F407C45001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBF480F407DC5001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
+			remoteGlobalIDString = 7262ED920F7A770300498385;
+			remoteInfo = spatialiteprovider;
 		};
 		72A07E520F3BF191004FC2A4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -6125,6 +5778,10 @@
 		72745A030F770252007F4218 /* spit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit.png; path = ../../images/themes/gis/plugins/spit.png; sourceTree = SOURCE_ROOT; };
 		72745A040F770252007F4218 /* wfs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wfs.png; path = ../../images/themes/gis/plugins/wfs.png; sourceTree = SOURCE_ROOT; };
 		727CEC210FBAFF6000F5B88C /* mIconLock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconLock.png; path = ../../images/themes/default/mIconLock.png; sourceTree = SOURCE_ROOT; };
+		727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_sqlite3.c; sourceTree = "<group>"; };
+		727E6B030FEA9BC000DF6F64 /* x_spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_spatialite.c; sourceTree = "<group>"; };
+		727E6B0B0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x_qgsspatialitesourceselect.h; sourceTree = "<group>"; };
+		727E6B0C0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = x_qgsspatialitesourceselect.cpp; sourceTree = "<group>"; };
 		72820FDB0FACCE520011C963 /* qgsmaptooldeletering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooldeletering.h; path = ../../src/app/qgsmaptooldeletering.h; sourceTree = SOURCE_ROOT; };
 		72820FDC0FACCE520011C963 /* qgsmaptooldeletepart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooldeletepart.h; path = ../../src/app/qgsmaptooldeletepart.h; sourceTree = SOURCE_ROOT; };
 		72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptooldeletepart.cpp; path = ../../src/app/qgsmaptooldeletepart.cpp; sourceTree = SOURCE_ROOT; };
@@ -7541,6 +7198,7 @@
 				72A07E040F3BE917004FC2A4 /* ReadMe-Developers.rtf */,
 				5048396909E3304600765E4B /* Configuration Files */,
 				20286C2AFDCF999611CA2CEA /* Sources */,
+				727E6AED0FEA909E00DF6F64 /* src */,
 				20286C2CFDCF999611CA2CEA /* Resources */,
 				20286C32FDCF999611CA2CEA /* External Frameworks and Libraries */,
 				195DF8CFFE9D517E11CA2CBB /* Products */,
@@ -10640,6 +10298,17 @@
 			path = ../../images/themes/gis/plugins/coordinate_capture;
 			sourceTree = SOURCE_ROOT;
 		};
+		727E6AED0FEA909E00DF6F64 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				727E6B030FEA9BC000DF6F64 /* x_spatialite.c */,
+				727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */,
+				727E6B0B0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.h */,
+				727E6B0C0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.cpp */,
+			);
+			path = src;
+			sourceTree = SOURCE_ROOT;
+		};
 		729939690FE3037600244D1A /* modules-6.3 */ = {
 			isa = PBXGroup;
 			children = (
@@ -11888,8 +11557,6 @@
 				720383540F8B905D0083B883 /* PBXBuildRule */,
 			);
 			dependencies = (
-				7203834A0F8B905D0083B883 /* PBXTargetDependency */,
-				7203834C0F8B905D0083B883 /* PBXTargetDependency */,
 			);
 			name = diagramoverlayplugin;
 			productName = testprog;
@@ -11928,7 +11595,6 @@
 				729287920F71D0E6006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				7209F3F60F3A3C25003DC336 /* PBXTargetDependency */,
 			);
 			name = qgis_gui;
 			productName = qgis_core;
@@ -11948,8 +11614,6 @@
 				7223B7890F96A96500D905B4 /* PBXBuildRule */,
 			);
 			dependencies = (
-				7223B77F0F96A96500D905B4 /* PBXTargetDependency */,
-				7223B7810F96A96500D905B4 /* PBXTargetDependency */,
 			);
 			name = oracleplugin;
 			productName = testprog;
@@ -11967,7 +11631,6 @@
 				7262ED980F7A770300498385 /* PBXBuildRule */,
 			);
 			dependencies = (
-				7262ED930F7A770300498385 /* PBXTargetDependency */,
 			);
 			name = spatialiteprovider;
 			productName = testprog;
@@ -11988,7 +11651,6 @@
 				729288730F71F8A0006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBF2F0F407C45001BCB63 /* PBXTargetDependency */,
 			);
 			name = qgis_help;
 			productName = ggis_help;
@@ -12006,7 +11668,6 @@
 			);
 			comments = "had -undefined dynamic_lookup in old project\n";
 			dependencies = (
-				729BBF490F407DC5001BCB63 /* PBXTargetDependency */,
 			);
 			name = qgispython;
 			productName = qgis_core;
@@ -12024,7 +11685,6 @@
 				729287B70F71DE53006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEAC0F407643001BCB63 /* PBXTargetDependency */,
 			);
 			name = memoryprovider;
 			productName = testprog;
@@ -12042,7 +11702,6 @@
 				729287B60F71DE33006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEAE0F40764A001BCB63 /* PBXTargetDependency */,
 			);
 			name = ogrprovider;
 			productName = testprog;
@@ -12060,7 +11719,6 @@
 				729287B50F71DE07006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEBC0F40766F001BCB63 /* PBXTargetDependency */,
 			);
 			name = wmsprovider;
 			productName = testprog;
@@ -12078,7 +11736,6 @@
 				729287C00F71DF16006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEBA0F40766C001BCB63 /* PBXTargetDependency */,
 			);
 			name = delimitedtextprovider;
 			productName = testprog;
@@ -12096,7 +11753,6 @@
 				729287C20F71DF60006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEB80F407669001BCB63 /* PBXTargetDependency */,
 			);
 			name = postgresprovider;
 			productName = testprog;
@@ -12114,7 +11770,6 @@
 				729287C40F71DF90006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEB60F407666001BCB63 /* PBXTargetDependency */,
 			);
 			name = gpxprovider;
 			productName = testprog;
@@ -12132,7 +11787,6 @@
 				729287C90F71DFE4006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEB20F40765B001BCB63 /* PBXTargetDependency */,
 			);
 			name = wfsprovider;
 			productName = testprog;
@@ -12149,7 +11803,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				729BBEB00F407653001BCB63 /* PBXTargetDependency */,
 				72A07E530F3BF191004FC2A4 /* PBXTargetDependency */,
 			);
 			name = grassprovider;
@@ -12168,7 +11821,6 @@
 				729287BB0F71DE84006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBE760F4075F7001BCB63 /* PBXTargetDependency */,
 			);
 			name = "provider template";
 			productName = testprog;
@@ -12186,7 +11838,6 @@
 			);
 			comments = "had -undefined dynamic_lookup in old project\n";
 			dependencies = (
-				729BBEB40F407663001BCB63 /* PBXTargetDependency */,
 			);
 			name = qgisgrass;
 			productName = qgis_core;
@@ -12206,8 +11857,6 @@
 				729287DB0F71E3BE006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEF80F4076C5001BCB63 /* PBXTargetDependency */,
-				729BBEF60F4076C5001BCB63 /* PBXTargetDependency */,
 			);
 			name = copyrightlabelplugin;
 			productName = testprog;
@@ -12227,8 +11876,6 @@
 				729287F20F71E88F006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEF40F4076C0001BCB63 /* PBXTargetDependency */,
-				729BBEF20F4076C0001BCB63 /* PBXTargetDependency */,
 			);
 			name = delimitedtextplugin;
 			productName = testprog;
@@ -12248,8 +11895,6 @@
 				7292883A0F71F3DD006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBED40F4076A4001BCB63 /* PBXTargetDependency */,
-				729BBED20F4076A4001BCB63 /* PBXTargetDependency */,
 			);
 			name = georeferencerplugin;
 			productName = testprog;
@@ -12269,8 +11914,6 @@
 				729288240F71F0C4006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEDC0F4076AB001BCB63 /* PBXTargetDependency */,
-				729BBEDA0F4076AB001BCB63 /* PBXTargetDependency */,
 			);
 			name = gpsimporterplugin;
 			productName = testprog;
@@ -12296,9 +11939,6 @@
 				729288430F71F4CE006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBED00F40769E001BCB63 /* PBXTargetDependency */,
-				729BBECE0F40769E001BCB63 /* PBXTargetDependency */,
-				729BBEAA0F407636001BCB63 /* PBXTargetDependency */,
 			);
 			name = grassplugin;
 			productName = testprog;
@@ -12318,8 +11958,6 @@
 				729287F90F71EA7D006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEEC0F4076B9001BCB63 /* PBXTargetDependency */,
-				729BBEEA0F4076B9001BCB63 /* PBXTargetDependency */,
 			);
 			name = interpolationplugin;
 			productName = testprog;
@@ -12339,8 +11977,6 @@
 				729288020F71EB9E006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEE80F4076B5001BCB63 /* PBXTargetDependency */,
-				729BBEE60F4076B5001BCB63 /* PBXTargetDependency */,
 			);
 			name = northarrowplugin;
 			productName = testprog;
@@ -12360,8 +11996,6 @@
 				729288560F71F602006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBECC0F40769A001BCB63 /* PBXTargetDependency */,
-				729BBECA0F40769A001BCB63 /* PBXTargetDependency */,
 			);
 			name = quickprintplugin;
 			productName = testprog;
@@ -12381,8 +12015,6 @@
 				7292880D0F71EC69006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEE40F4076B1001BCB63 /* PBXTargetDependency */,
-				729BBEE20F4076B1001BCB63 /* PBXTargetDependency */,
 			);
 			name = scalebarplugin;
 			productName = testprog;
@@ -12402,8 +12034,6 @@
 				729288140F71ED92006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEE00F4076AE001BCB63 /* PBXTargetDependency */,
-				729BBEDE0F4076AE001BCB63 /* PBXTargetDependency */,
 			);
 			name = spitplugin;
 			productName = testprog;
@@ -12423,8 +12053,6 @@
 				7292882D0F71F258006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBED80F4076A7001BCB63 /* PBXTargetDependency */,
-				729BBED60F4076A7001BCB63 /* PBXTargetDependency */,
 			);
 			name = wfsplugin;
 			productName = testprog;
@@ -12444,8 +12072,6 @@
 				7292885D0F71F691006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEC80F407696001BCB63 /* PBXTargetDependency */,
-				729BBEC60F407696001BCB63 /* PBXTargetDependency */,
 			);
 			name = coordinatecaptureplugin;
 			productName = testprog;
@@ -12465,8 +12091,6 @@
 				729288650F71F721006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEC40F407692001BCB63 /* PBXTargetDependency */,
-				729BBEC20F407692001BCB63 /* PBXTargetDependency */,
 			);
 			name = dxf2shpconverterplugin;
 			productName = testprog;
@@ -12486,8 +12110,6 @@
 				7292886C0F71F79F006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729BBEC00F40768E001BCB63 /* PBXTargetDependency */,
-				729BBEBE0F40768E001BCB63 /* PBXTargetDependency */,
 			);
 			name = ogrconverterplugin;
 			productName = testprog;
@@ -12507,8 +12129,6 @@
 				729287D70F71E2C9006D9489 /* PBXBuildRule */,
 			);
 			dependencies = (
-				729287EF0F71E808006D9489 /* PBXTargetDependency */,
-				729287ED0F71E808006D9489 /* PBXTargetDependency */,
 			);
 			name = "plugin template";
 			productName = testprog;
@@ -12521,6 +12141,7 @@
 			buildPhases = (
 				7209F5A60F3A54E1003DC336 /* Headers */,
 				722E163C0FB4E95F00DA3CCA /* Script - install ui headers */,
+				727E6B3D0FEAAD0D00DF6F64 /* Script - optional moc */,
 				8D0C4E8C0486CD37000505A6 /* Resources */,
 				8D0C4E8F0486CD37000505A6 /* Sources */,
 				8D0C4E910486CD37000505A6 /* Frameworks */,
@@ -12576,6 +12197,7 @@
 			projectRoot = "";
 			targets = (
 				7256F1820F411A850022BE1F /* Full Qgis */,
+				727E6B480FEABF2B00DF6F64 /* Base Qgis */,
 				729BBE720F4075D1001BCB63 /* All Plugins */,
 				7256F1850F411A9F0022BE1F /* Base Plugins */,
 				7256F1880F411AC90022BE1F /* Optional Plugins */,
@@ -12784,7 +12406,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Note: quoting messes up the -change action in install_name_tool, so for now\n# dependency libraries should have no spaces in paths.  ***FIXME***\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls *.so`\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR\"\nliblist=`ls *.dylib`\n\ncd \"$PROJECT_DIR\"\n\n# Postgres\n\nPGSQLROOT=\"$PGSQL_PREFIX/lib\"\nif [ \"$BUNDLE_PGSQL\" = \"YES\" ] && [ -f \"$PGSQLROOT/libpq.dylib\" ] ; then\n\tcp -f \"$PGSQLROOT/libpq.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libpq.dylib\"\n\tplib=`otool -L \"$PGSQLROOT/libpq.dylib\" | grep -E -m 1 \"libpq.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPGSQL_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libpq.dylib\"\nfi\n\n# GDAL\n# *** Note: may need support files also ***\n\nGDALROOT=\"$GDAL_PREFIX/lib\"\nif [ \"$BUNDLE_GDAL\" = \"YES\" ] && [ \"$GDAL_FORM\" = \"shared\" ] && [ -f \"$GDALROOT/libgdal.dylib\" ] ; then\n\tcp -f \"$GDALROOT/libgdal.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgdal.dylib\"\n\tglib=`otool -L \"$GDALROOT/libgdal.dylib\" | grep -E -m 1 \"libgdal.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGDAL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgdal.dylib\"\nfi\n\n# PROJ\n# *** Note: may need support files also ***\n\nPROJROOT=\"$PROJ_PREFIX/lib\"\nif [ \"$BUNDLE_PROJ\" = \"YES\" ] && [ \"$PROJ_FORM\" = \"shared\" ] && [ -f \"$PROJROOT/libproj.dylib\" ] ; then\n\tcp -f \"$PROJROOT/libproj.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libproj.dylib\"\n\tplib=`otool -L \"$PROJROOT/libproj.dylib\" | grep -E -m 1 \"libproj.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPROJ_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libproj.dylib\"\nfi\n\n# GEOS\n\nGEOSROOT=\"$GEOS_PREFIX/lib\"\nif [ \"$BUNDLE_GEOS\" = \"YES\" ] && [ \"$GEOS_FORM\" = \"shared\" ] && [ -f \"$GEOSROOT/libgeos.dylib\" ] ; then\n\tcp -f \"$GEOSROOT/libgeos.dylib\" \"$GEOSROOT/libgeos_c.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/\"\n\tglib=`otool -L \"$GEOSROOT/libgeos.dylib\" | grep -E -m 1 \"libgeos.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GEOSROOT/libgeos_c.dylib\" | grep -E -m 1 \"libgeos_c.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGEOS_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgeos.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgeos_c.dylib\"\nfi\n\n# SQLite\n\nSQLITEROOT=\"$SQLITE_PREFIX/lib\"\nif [ \"$BUNDLE_SQLITE\" = \"YES\" ] && [ \"$SQLITE_FORM\" = \"shared\" ] && [ -f \"$SQLITEROOT/libsqlite3.dylib\" ] ; then\n\tcp -f \"$SQLITEROOT/libsqlite3.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tslib=`otool -L \"$SQLITEROOT/libsqlite3.dylib\" | grep -E -m 1 \"libsqlite3.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSQLITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\nfi\n\n# SpatiaLite\n\nSPATIALITEROOT=\"$SPATIALITE_PREFIX/lib\"\nif [ \"$BUNDLE_SPATIALITE\" = \"YES\" ] && [ \"$SPATIALITE_FORM\" = \"shared\" ] && [ -f \"$SPATIALITEROOT/libspatialite.dylib\" ] ; then\n\tcp -f \"$SPATIALITEROOT/libspatialite.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\tslib=`otool -L \"$SPATIALITEROOT/libspatialite.dylib\" | grep -E -m 1 \"libspatialite.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSPATIALITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\nfi\n\n# GSL\n\nGSLROOT=\"$GSL_PREFIX/lib\"\nif [ \"$BUNDLE_GSL\" = \"YES\" ] && [ \"$GSL_FORM\" = \"shared\" ] && [ -f \"$GSLROOT/libgsl.dylib\" ] ; then\n\tcp -f \"$GSLROOT/libgsl.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgsl.dylib\"\n\tcp -f \"$GSLROOT/libgslcblas.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\n\tglib=`otool -L \"$GSLROOT/libgsl.dylib\" | grep -E -m 1 \"libgsl.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GSLROOT/libgslcblas.dylib\" | grep -E -m 1 \"libgslcblas.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGSL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgsl.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\nfi\n\n# change for all bundled libs now\n\necho \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/Qgis\\\"\"\ninstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/Qgis\"\n\nfor p in $pluglist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\"\ndone\n\nfor l in $liblist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\"\ndone\n\nif [ -f \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\" ] ; then\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/gui.so\"\nfi\n\n# other bundling\n\n# gpsbabel\n\nif [ \"$BUNDLE_GPSBABEL\" = \"YES\" ] && [ -f \"$GPSBABEL\" ] ; then\n\tcp -f \"$GPSBABEL\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"/\nfi\n\n# user bundling from bundle.sh\n\nif [ -f bundle.sh ] ; then\n\t./bundle.sh\nfi\n";
+			shellScript = "# Note: quoting messes up the -change action in install_name_tool, so for now\n# dependency libraries should have no spaces in paths.  ***FIXME***\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls *.so`\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR\"\nliblist=`ls *.dylib`\n\ncd \"$PROJECT_DIR\"\n\n# Postgres\n\nPGSQLROOT=\"$PGSQL_PREFIX/lib\"\nif [ \"$BUNDLE_PGSQL\" = \"YES\" ] && [ -f \"$PGSQLROOT/libpq.dylib\" ] ; then\n\tcp -f \"$PGSQLROOT/libpq.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libpq.dylib\"\n\tplib=`otool -L \"$PGSQLROOT/libpq.dylib\" | grep -E -m 1 \"libpq.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPGSQL_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libpq.dylib\"\nfi\n\n# GDAL\n# *** Note: may need support files also ***\n\nGDALROOT=\"$GDAL_PREFIX/lib\"\nif [ \"$BUNDLE_GDAL\" = \"YES\" ] && [ \"$GDAL_FORM\" = \"shared\" ] && [ -f \"$GDALROOT/libgdal.dylib\" ] ; then\n\tcp -f \"$GDALROOT/libgdal.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgdal.dylib\"\n\tglib=`otool -L \"$GDALROOT/libgdal.dylib\" | grep -E -m 1 \"libgdal.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGDAL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgdal.dylib\"\nfi\n\n# PROJ\n# *** Note: may need support files also ***\n\nPROJROOT=\"$PROJ_PREFIX/lib\"\nif [ \"$BUNDLE_PROJ\" = \"YES\" ] && [ \"$PROJ_FORM\" = \"shared\" ] && [ -f \"$PROJROOT/libproj.dylib\" ] ; then\n\tcp -f \"$PROJROOT/libproj.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libproj.dylib\"\n\tplib=`otool -L \"$PROJROOT/libproj.dylib\" | grep -E -m 1 \"libproj.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPROJ_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libproj.dylib\"\nfi\n\n# GEOS\n\nGEOSROOT=\"$GEOS_PREFIX/lib\"\nif [ \"$BUNDLE_GEOS\" = \"YES\" ] && [ \"$GEOS_FORM\" = \"shared\" ] && [ -f \"$GEOSROOT/libgeos.dylib\" ] ; then\n\tcp -f \"$GEOSROOT/libgeos.dylib\" \"$GEOSROOT/libgeos_c.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/\"\n\tglib=`otool -L \"$GEOSROOT/libgeos.dylib\" | grep -E -m 1 \"libgeos.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GEOSROOT/libgeos_c.dylib\" | grep -E -m 1 \"libgeos_c.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGEOS_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgeos.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgeos_c.dylib\"\nfi\n\n# SQLite & SpatiaLite\n\nSQLITEROOT=\"$SQLITE_PREFIX/lib\"\nif [ \"$BUNDLE_SQLITE\" = \"YES\" ] && [ \"$SQLITE_FORM\" = \"shared\" ] && [ -f \"$SQLITEROOT/libsqlite3.dylib\" ] ; then\n\tcp -f \"$SQLITEROOT/libsqlite3.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tslib=`otool -L \"$SQLITEROOT/libsqlite3.dylib\" | grep -E -m 1 \"libsqlite3.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSQLITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tif [ -f \"$SQLITEROOT/libspatialite.dylib\" ] ; then\n\t\tcp -f \"$SQLITEROOT/libspatialite.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\t\tslib=`otool -L \"$SQLITEROOT/libspatialite.dylib\" | grep -E -m 1 \"libspatialite.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tSPATIALITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\tfi\nfi\n\n# GSL\n\nGSLROOT=\"$GSL_PREFIX/lib\"\nif [ \"$BUNDLE_GSL\" = \"YES\" ] && [ \"$GSL_FORM\" = \"shared\" ] && [ -f \"$GSLROOT/libgsl.dylib\" ] ; then\n\tcp -f \"$GSLROOT/libgsl.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgsl.dylib\"\n\tcp -f \"$GSLROOT/libgslcblas.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\n\tglib=`otool -L \"$GSLROOT/libgsl.dylib\" | grep -E -m 1 \"libgsl.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GSLROOT/libgslcblas.dylib\" | grep -E -m 1 \"libgslcblas.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGSL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgsl.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\nfi\n\n# change for all bundled libs now\n\necho \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/Qgis\\\"\"\ninstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/Qgis\"\n\nfor p in $pluglist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\"\ndone\n\nfor l in $liblist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\"\ndone\n\nif [ -f \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\" ] ; then\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/gui.so\"\nfi\n\n# other bundling\n\n# gpsbabel\n\nif [ \"$BUNDLE_GPSBABEL\" = \"YES\" ] && [ -f \"$GPSBABEL\" ] ; then\n\tcp -f \"$GPSBABEL\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"/\nfi\n\n# user bundling from bundle.sh\n\nif [ -f bundle.sh ] ; then\n\t./bundle.sh\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		727AD4FA0F7325CA002B9DCD /* install */ = {
@@ -12800,6 +12422,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "mkdir -p \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nif [ -f \"$TARGET_TEMP_DIR/python/python/core/core.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/core/core.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/gui/gui.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/gui/gui.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/configure.py\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/configure.py\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		727E6B3D0FEAAD0D00DF6F64 /* Script - optional moc */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - optional moc";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# optional moc sources, can't use dummy file with #if'd #include\n\nrm -f src/x_qgsspatialitesourceselect.h\nif [ \"$SQLITE_SYSTEM\" = \"1\" ] ; then\n\ttouch src/x_qgsspatialitesourceselect.h\nelse\n\tln -s ../../../src/app/qgsspatialitesourceselect.h src/x_qgsspatialitesourceselect.h\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		729287A60F71D4FE006D9489 /* Script - ui */ = {
@@ -13286,6 +12923,8 @@
 				720383810F8BA8C50083B883 /* problem.cpp in Sources */,
 				720383820F8BA8C50083B883 /* util.cpp in Sources */,
 				7216ADEF0FE571C000552832 /* qgsvectorlayerundocommand.cpp in Sources */,
+				727E6AF10FEA90E200DF6F64 /* x_sqlite3.c in Sources */,
+				727E6B040FEA9BC000DF6F64 /* x_spatialite.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13898,8 +13537,6 @@
 				7262ED830F7A750F00498385 /* qgsspatialitefilterproxymodel.cpp in Sources */,
 				7262ED840F7A750F00498385 /* qgsspatialitetablemodel.cpp in Sources */,
 				7262EDCD0F7A9FFC00498385 /* qgsspatialitetablemodel.h in Sources */,
-				7262ED870F7A754100498385 /* qgsspatialitesourceselect.cpp in Sources */,
-				7262ED880F7A754100498385 /* qgsspatialitesourceselect.h in Sources */,
 				72820FE10FACCE770011C963 /* qgsmaptooldeletering.cpp in Sources */,
 				72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */,
 				72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */,
@@ -13915,41 +13552,18 @@
 				72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */,
 				7216ADF20FE5721400552832 /* qgsundowidget.cpp in Sources */,
 				7216ADF30FE5721400552832 /* qgsundowidget.h in Sources */,
+				727E6B110FEAA0CF00DF6F64 /* x_qgsspatialitesourceselect.cpp in Sources */,
+				727E6B150FEAA14C00DF6F64 /* x_qgsspatialitesourceselect.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		7203834A0F8B905D0083B883 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 7203834B0F8B905D0083B883 /* PBXContainerItemProxy */;
-		};
-		7203834C0F8B905D0083B883 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 7203834D0F8B905D0083B883 /* PBXContainerItemProxy */;
-		};
 		720383870F8BA92B0083B883 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 720383490F8B905D0083B883 /* diagramoverlayplugin */;
 			targetProxy = 720383860F8BA92B0083B883 /* PBXContainerItemProxy */;
-		};
-		7209F3F60F3A3C25003DC336 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 7209F3F50F3A3C25003DC336 /* PBXContainerItemProxy */;
-		};
-		7223B77F0F96A96500D905B4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 7223B7800F96A96500D905B4 /* PBXContainerItemProxy */;
-		};
-		7223B7810F96A96500D905B4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 7223B7820F96A96500D905B4 /* PBXContainerItemProxy */;
 		};
 		7223B7A60F96AA6C00D905B4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -13985,16 +13599,6 @@
 			isa = PBXTargetDependency;
 			target = 7256F1880F411AC90022BE1F /* Optional Plugins */;
 			targetProxy = 7256F1990F411B210022BE1F /* PBXContainerItemProxy */;
-		};
-		7256F19C0F411B2B0022BE1F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1C30F39E6E3003DC336 /* config */;
-			targetProxy = 7256F19B0F411B2B0022BE1F /* PBXContainerItemProxy */;
-		};
-		7256F19E0F411B330022BE1F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1C30F39E6E3003DC336 /* config */;
-			targetProxy = 7256F19D0F411B330022BE1F /* PBXContainerItemProxy */;
 		};
 		7256F1A00F411B480022BE1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -14086,21 +13690,6 @@
 			target = 72A56B800F3C824400BA32A1 /* quickprintplugin */;
 			targetProxy = 7256F1C40F411C7C0022BE1F /* PBXContainerItemProxy */;
 		};
-		7256F1C70F411CA70022BE1F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1C30F39E6E3003DC336 /* config */;
-			targetProxy = 7256F1C60F411CA70022BE1F /* PBXContainerItemProxy */;
-		};
-		7256F1C90F411CBC0022BE1F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 7256F1C80F411CBC0022BE1F /* PBXContainerItemProxy */;
-		};
-		7256F1CB0F411CC20022BE1F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 7256F1CA0F411CC20022BE1F /* PBXContainerItemProxy */;
-		};
 		7256F1CD0F411CDD0022BE1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 729BBE720F4075D1001BCB63 /* All Plugins */;
@@ -14116,235 +13705,30 @@
 			target = 8D0C4E890486CD37000505A6 /* Qgis */;
 			targetProxy = 7256F1D00F411D080022BE1F /* PBXContainerItemProxy */;
 		};
-		7262ED930F7A770300498385 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 7262ED940F7A770300498385 /* PBXContainerItemProxy */;
-		};
-		7262EDA10F7A887F00498385 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7262ED920F7A770300498385 /* spatialiteprovider */;
-			targetProxy = 7262EDA00F7A887F00498385 /* PBXContainerItemProxy */;
-		};
-		729287ED0F71E808006D9489 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729287EC0F71E808006D9489 /* PBXContainerItemProxy */;
-		};
-		729287EF0F71E808006D9489 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729287EE0F71E808006D9489 /* PBXContainerItemProxy */;
-		};
-		729BBE760F4075F7001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBE750F4075F7001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBE780F407604001BCB63 /* PBXTargetDependency */ = {
+		727E6B4C0FEABF3D00DF6F64 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7209F1C30F39E6E3003DC336 /* config */;
-			targetProxy = 729BBE770F407604001BCB63 /* PBXContainerItemProxy */;
+			targetProxy = 727E6B4B0FEABF3D00DF6F64 /* PBXContainerItemProxy */;
 		};
-		729BBEAA0F407636001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 72A07DAC0F3BDFA4004FC2A4 /* grassprovider */;
-			targetProxy = 729BBEA90F407636001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEAC0F407643001BCB63 /* PBXTargetDependency */ = {
+		727E6B4E0FEABF4100DF6F64 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEAB0F407643001BCB63 /* PBXContainerItemProxy */;
+			targetProxy = 727E6B4D0FEABF4100DF6F64 /* PBXContainerItemProxy */;
 		};
-		729BBEAE0F40764A001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEAD0F40764A001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEB00F407653001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEAF0F407653001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEB20F40765B001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEB10F40765B001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEB40F407663001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEB30F407663001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEB60F407666001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEB50F407666001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEB80F407669001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEB70F407669001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEBA0F40766C001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEB90F40766C001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEBC0F40766F001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEBB0F40766F001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEBE0F40768E001BCB63 /* PBXTargetDependency */ = {
+		727E6B500FEABF4500DF6F64 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEBD0F40768E001BCB63 /* PBXContainerItemProxy */;
+			targetProxy = 727E6B4F0FEABF4500DF6F64 /* PBXContainerItemProxy */;
 		};
-		729BBEC00F40768E001BCB63 /* PBXTargetDependency */ = {
+		727E6B520FEABF4E00DF6F64 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEBF0F40768E001BCB63 /* PBXContainerItemProxy */;
+			target = 727E6B480FEABF2B00DF6F64 /* Base Qgis */;
+			targetProxy = 727E6B510FEABF4E00DF6F64 /* PBXContainerItemProxy */;
 		};
-		729BBEC20F407692001BCB63 /* PBXTargetDependency */ = {
+		727E6B7B0FEACF5100DF6F64 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEC10F407692001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEC40F407692001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEC30F407692001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEC60F407696001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEC50F407696001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEC80F407696001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEC70F407696001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBECA0F40769A001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEC90F40769A001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBECC0F40769A001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBECB0F40769A001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBECE0F40769E001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBECD0F40769E001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBED00F40769E001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBECF0F40769E001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBED20F4076A4001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBED10F4076A4001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBED40F4076A4001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBED30F4076A4001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBED60F4076A7001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBED50F4076A7001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBED80F4076A7001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBED70F4076A7001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEDA0F4076AB001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBED90F4076AB001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEDC0F4076AB001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEDB0F4076AB001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEDE0F4076AE001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEDD0F4076AE001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEE00F4076AE001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEDF0F4076AE001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEE20F4076B1001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEE10F4076B1001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEE40F4076B1001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEE30F4076B1001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEE60F4076B5001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEE50F4076B5001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEE80F4076B5001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEE70F4076B5001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEEA0F4076B9001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEE90F4076B9001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEEC0F4076B9001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEEB0F4076B9001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEF20F4076C0001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEF10F4076C0001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEF40F4076C0001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEF30F4076C0001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEF60F4076C5001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEF50F4076C5001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEF80F4076C5001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEF70F4076C5001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBF2F0F407C45001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBF2E0F407C45001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBF490F407DC5001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBF480F407DC5001BCB63 /* PBXContainerItemProxy */;
+			target = 7262ED920F7A770300498385 /* spatialiteprovider */;
+			targetProxy = 727E6B7A0FEACF5100DF6F64 /* PBXContainerItemProxy */;
 		};
 		72A07E530F3BF191004FC2A4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -14470,6 +13854,7 @@
 					"$(inherited)",
 					qgis_core_EXPORTS,
 					_HAVE_PTHREAD_,
+					"$(SQLITE_DEFS)",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -14494,6 +13879,7 @@
 					"$(PROJ_LIB)",
 					"$(GEOS_LIB)",
 					"$(SQLITE_LIB)",
+					"$(SPATIALITE_LIBADD)",
 					"$(QT_LIB)",
 				);
 				PRODUCT_NAME = qgis_core;
@@ -14509,6 +13895,7 @@
 					"$(inherited)",
 					qgis_core_EXPORTS,
 					_HAVE_PTHREAD_,
+					"$(SQLITE_DEFS)",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -14533,6 +13920,7 @@
 					"$(PROJ_LIB)",
 					"$(GEOS_LIB)",
 					"$(SQLITE_LIB)",
+					"$(SPATIALITE_LIBADD)",
 					"$(QT_LIB)",
 				);
 				PRODUCT_NAME = qgis_core;
@@ -14765,7 +14153,7 @@
 					"$(inherited)",
 					../../src/providers/provider,
 					../../src/core,
-					"$(SPATIALITE_INC)",
+					"$(SQLITE_INC)",
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
 				);
@@ -14776,7 +14164,7 @@
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_XML)",
-					"$(SPATIALITE_LIB)",
+					"$(SQLITE_LIB)",
 				);
 				PRODUCT_NAME = spatialiteprovider.so;
 			};
@@ -14793,7 +14181,7 @@
 					"$(inherited)",
 					../../src/providers/provider,
 					../../src/core,
-					"$(SPATIALITE_INC)",
+					"$(SQLITE_INC)",
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
 				);
@@ -14804,9 +14192,30 @@
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_XML)",
-					"$(SPATIALITE_LIB)",
+					"$(SQLITE_LIB)",
 				);
 				PRODUCT_NAME = spatialiteprovider.so;
+			};
+			name = Release;
+		};
+		727E6B490FEABF2C00DF6F64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Base Qgis";
+			};
+			name = Debug;
+		};
+		727E6B4A0FEABF2C00DF6F64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = "Base Qgis";
+				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -16551,7 +15960,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"$(SQLITE_SYSTEM)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/app,
@@ -16571,7 +15983,6 @@
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
 					"$(SQLITE_INC)",
-					"$(SPATIALITE_INC)",
 					"$(PGSQL_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
@@ -16586,8 +15997,8 @@
 					"$(inherited)",
 					"$(GDAL_LIB)",
 					"$(PROJ_LIB)",
+					"$(GEOS_LIB)",
 					"$(SQLITE_LIB)",
-					"$(SPATIALITE_LIB)",
 					"$(PGSQL_LIB)",
 					"$(QT_LIB)",
 				);
@@ -16600,7 +16011,10 @@
 		C0E91AC708A95435008D54AB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"$(SQLITE_SYSTEM)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/app,
@@ -16620,7 +16034,6 @@
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
 					"$(SQLITE_INC)",
-					"$(SPATIALITE_INC)",
 					"$(PGSQL_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
@@ -16635,8 +16048,8 @@
 					"$(inherited)",
 					"$(GDAL_LIB)",
 					"$(PROJ_LIB)",
+					"$(GEOS_LIB)",
 					"$(SQLITE_LIB)",
-					"$(SPATIALITE_LIB)",
 					"$(PGSQL_LIB)",
 					"$(QT_LIB)",
 				);
@@ -16653,7 +16066,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20090610;
+				QGIS_VERSION_BUILD = 20090618;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -16664,7 +16077,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20090610;
+				QGIS_VERSION_BUILD = 20090618;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
@@ -16758,6 +16171,15 @@
 			buildConfigurations = (
 				7262ED9A0F7A770300498385 /* Debug */,
 				7262ED9B0F7A770300498385 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		727E6B530FEABFA900DF6F64 /* Build configuration list for PBXAggregateTarget "Base Qgis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				727E6B490FEABF2C00DF6F64 /* Debug */,
+				727E6B4A0FEABF2C00DF6F64 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
