@@ -189,6 +189,7 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
   cb->addItem( tr( "range (slider)" ), QgsVectorLayer::SliderRange );
   cb->addItem( tr( "file name" ), QgsVectorLayer::FileName );
   cb->addItem( tr( "enumeration" ), QgsVectorLayer::Enumeration);
+  cb->addItem( tr( "immutable" ), QgsVectorLayer::Immutable);
   cb->setSizeAdjustPolicy( QComboBox::AdjustToContentsOnFirstShow );
   cb->setCurrentIndex( layer->editType( idx ) );
 

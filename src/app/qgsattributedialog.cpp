@@ -238,10 +238,15 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       case QgsVectorLayer::LineEdit:
       case QgsVectorLayer::UniqueValuesEditable:
+      case QgsVectorLayer::Immutable:
       default:
       {
         QLineEdit *le = new QLineEdit( myFieldValue.toString() );
 
+        if ( editType == QgsVectorLayer::Immutable)
+        {
+          le->setEnabled(false);
+        }
         if ( editType == QgsVectorLayer::UniqueValuesEditable )
         {
           QList<QVariant> values;
