@@ -127,6 +127,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooladdisland.h
   qgsmaptooladdring.h
   qgsmaptoolmovefeature.h
+  qgsmaptoolnodetool.h
   qgsmaptoolselect.h
   qgsmaptoolsimplify.h
 

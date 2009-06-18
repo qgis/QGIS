@@ -101,7 +101,12 @@ void QgsUndoWidget::setUndoStack(QUndoStack* undoStack)
   setWidget(dockWidgetContents);
   connect(this->mUndoStack,  SIGNAL(canUndoChanged(bool)), this, SLOT(undoChanged(bool)));
   connect(this->mUndoStack,  SIGNAL(canRedoChanged(bool)), this, SLOT(redoChanged(bool)));
-  connect(this->mUndoStack,  SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
+
+  // indexChanged() triggers a refresh. but it gets triggered also when a new action
+  // is done, resulting in two refreshes. For now let's trigger the refresh from
+  // vector layer: it causes potentially multiple refreshes when moving more commands
+  // back, but avoids double refresh in common case when adding commands to the stack
+  //connect(this->mUndoStack,  SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
 
   this->undoButton->setDisabled( !mUndoStack->canUndo() );
   this->redoButton->setDisabled( !mUndoStack->canRedo() );
