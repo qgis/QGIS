@@ -3943,7 +3943,10 @@ void QgsVectorLayer::redoEditCommand(QgsUndoCommand* cmd)
     mDeletedAttributeIds.insert(attrIndex);
     mUpdatedFields.remove(attrIndex);
   }
+  setModified( true );
 
+  // it's not ideal to trigger refresh from here
+  triggerRepaint();
 }
 
 void QgsVectorLayer::undoEditCommand(QgsUndoCommand* cmd)
@@ -4044,5 +4047,8 @@ void QgsVectorLayer::undoEditCommand(QgsUndoCommand* cmd)
       emit attributeValueChanged( fid, attrChIt.key(), attrChIt.value().original );
     }
   }
+  setModified( true );
 
+  // it's not ideal to trigger refresh from here
+  triggerRepaint();
 }
