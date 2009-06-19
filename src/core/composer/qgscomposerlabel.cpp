@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposerlabel.h"
+#include <QDate>
 #include <QDomElement>
 #include <QPainter>
 
@@ -58,7 +59,26 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
 void QgsComposerLabel::setText( const QString& text )
 {
+  //replace '$CURRENT_DATE<(FORMAT)>' with the current date
+  //e.g. $CURRENT_DATE(d 'June' yyyy)
   mText = text;
+  int currentDatePos = mText.indexOf("$CURRENT_DATE");
+  if(currentDatePos != -1)
+  {
+    //check if there is a bracket just after $CURRENT_DATE
+    QString formatText;
+    int openingBracketPos = mText.indexOf("(", currentDatePos);
+    int closingBracketPos = mText.indexOf(")", openingBracket + 1);
+    if(openingBracketPos != -1 && closingBracketPos != -1 && (closingBracketPos - openingBracketPos) > 1 )
+    {
+      formatText = mText.mid(openingBracketPos + 1, closingBracketPos - openingBracketPos - 1);
+      mText.replace(currentDatePos, closingBracketPos - currentDatePos + 1, QDate::currentDate().toString(formatText));
+    }
+    else //no bracket
+    {
+      mText.replace("$CURRENT_DATE", QDate::currentDate().toString());
+    }
+  }
 }
 
 void QgsComposerLabel::setFont( const QFont& f )
