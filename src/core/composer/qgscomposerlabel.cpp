@@ -68,7 +68,7 @@ void QgsComposerLabel::setText( const QString& text )
     //check if there is a bracket just after $CURRENT_DATE
     QString formatText;
     int openingBracketPos = mText.indexOf("(", currentDatePos);
-    int closingBracketPos = mText.indexOf(")", openingBracket + 1);
+    int closingBracketPos = mText.indexOf(")", openingBracketPos + 1);
     if(openingBracketPos != -1 && closingBracketPos != -1 && (closingBracketPos - openingBracketPos) > 1 )
     {
       formatText = mText.mid(openingBracketPos + 1, closingBracketPos - openingBracketPos - 1);
