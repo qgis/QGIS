@@ -1499,13 +1499,9 @@ void QgsGrassModule::viewOutput()
       if ( onlyLayer1 && layers[j].left( 1 ) != "1" )
         continue;
 
-      QStringList split = uri.split( '/',  QString::SkipEmptyParts );
-      QString layer = split.last();
-
       QString name = QgsGrassUtils::vectorLayerName(
-                       map, layer, 1 );
-
-      // TODO vector layer name
+                       map, layers[j], 1 );
+      
       mIface->addVectorLayer( uri, name, "grass" );
     }
   }
