@@ -19,6 +19,7 @@
 #include "qgsgrassselect.h"
 #include "qgsgrasstools.h"
 #include "qgsgrassprovider.h"
+#include "qgsgrassutils.h"
 #include "qgsgrass.h"
 
 #include "qgisinterface.h"
@@ -1498,8 +1499,14 @@ void QgsGrassModule::viewOutput()
       if ( onlyLayer1 && layers[j].left( 1 ) != "1" )
         continue;
 
+      QStringList split = uri.split( '/',  QString::SkipEmptyParts );
+      QString layer = split.last();
+
+      QString name = QgsGrassUtils::vectorLayerName(
+                       map, layer, 1 );
+
       // TODO vector layer name
-      mIface->addVectorLayer( uri, layers[j], "grass" );
+      mIface->addVectorLayer( uri, name, "grass" );
     }
   }
 
@@ -3100,7 +3107,7 @@ void QgsGrassModuleFile::browse()
 
   if ( fd->exec() == QDialog::Accepted )
   {
-    QString selectedFile = fd->selectedFiles().first();
+    QString selectedFile = fd->selectedFiles().last();
     QFileInfo fi = QFileInfo(selectedFile);
     currentDir = fi.absoluteDir();
     if (mType == Multiple)
