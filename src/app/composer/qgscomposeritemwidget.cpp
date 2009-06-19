@@ -17,6 +17,7 @@
 
 #include "qgscomposeritemwidget.h"
 #include "qgscomposeritem.h"
+#include "qgscomposermap.h"
 #include "qgsitempositiondialog.h"
 #include "qgspoint.h"
 #include <QColorDialog>
@@ -74,6 +75,13 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
 
   newBackgroundColor.setAlpha( mOpacitySlider->value() );
   mItem->setBrush( QBrush( QColor( newBackgroundColor ), Qt::SolidPattern ) );
+  //if the item is a composer map, we need to regenerate the map image
+  //because it usually is cached
+  QgsComposerMap* cm = dynamic_cast<QgsComposerMap*>(mItem);
+  if(cm)
+  {
+    cm->cache();
+  }
   mItem->update();
 }
 
