@@ -105,14 +105,7 @@ void QgsMapCanvasMap::render()
 
 QPaintDevice& QgsMapCanvasMap::paintDevice()
 {
-  if ( mUseQImageToRender )
-  {
-    return mImage;
-  }
-  else
-  {
-    return mPixmap;
-  }
+  return mPixmap;
 }
 
 void QgsMapCanvasMap::updateContents()
