@@ -3341,6 +3341,10 @@ bool QgisApp::addProject( QString projectFile )
   // clear the map canvas
   removeAllLayers();
 
+  //clear the composer
+  delete mComposer;
+  mComposer = new QgsComposer(this);
+
   try
   {
     if ( QgsProject::instance()->read( projectFile ) )
