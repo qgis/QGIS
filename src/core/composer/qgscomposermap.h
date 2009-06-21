@@ -101,6 +101,22 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     PreviewMode previewMode() {return mPreviewMode;}
     void setPreviewMode( PreviewMode m ) {mPreviewMode = m;}
 
+    /**Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
+    @note this function was added in version 1.2*/
+    bool keepLayerSet() const {return mKeepLayerSet;}
+    /**Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
+    @note this function was added in version 1.2*/
+    void setKeepLayerSet(bool enabled) {mKeepLayerSet = enabled;}
+
+    /**Getter for stored layer set that is used if mKeepLayerSet is true
+    @note this function was added in version 1.2*/
+    QStringList layerSet() const {return mLayerSet;}
+    /**Setter for stored layer set that is used if mKeepLayerSet is true
+    @note this function was added in version 1.2*/
+    void setLayerSet(const QStringList& layerSet) {mLayerSet = layerSet;}
+    /**Stores the current layer set of the qgis mapcanvas in mLayerSet*/
+    void storeCurrentLayerSet();
+
     // Set cache outdated
     void setCacheUpdated( bool u = false );
 
@@ -176,11 +192,20 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     /**Offset in y direction for showing map cache image*/
     double mYOffset;
 
+    /**Flag if layers to be displayed should be read from qgis canvas (true) or from stored list in mLayerSet (false)*/
+    bool mKeepLayerSet;
+
+    /**Stored layer list (used if layer live-link mKeepLayerSet is disabled)*/
+    QStringList mLayerSet;
+
     /**For the generation of new unique ids*/
     static int mCurrentComposerId;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
+
+    /**Removes layer ids from mLayerSet that are no longer present in the qgis main map*/
+    void syncLayerSet();
 };
 
 #endif

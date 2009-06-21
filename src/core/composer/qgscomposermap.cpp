@@ -42,7 +42,7 @@
 int QgsComposerMap::mCurrentComposerId = 0;
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
-    : QgsComposerItem( x, y, width, height, composition )
+    : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet(false)
 {
   mComposition = composition;
   mMapRenderer = mComposition->mapRenderer();
@@ -69,7 +69,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 }
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
-    : QgsComposerItem( 0, 0, 10, 10, composition )
+    : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet(false)
 {
   //Offset
   mXOffset = 0.0;
@@ -113,7 +113,16 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   QgsMapRenderer theMapRenderer;
   theMapRenderer.setExtent( extent );
   theMapRenderer.setOutputSize( size, dpi );
-  theMapRenderer.setLayerSet( mMapRenderer->layerSet() );
+
+  //use stored layer set or read current set from main canvas
+  if(mKeepLayerSet)
+  {
+    theMapRenderer.setLayerSet(mLayerSet);
+  }
+  else
+  {
+    theMapRenderer.setLayerSet( mMapRenderer->layerSet() );
+  }
   theMapRenderer.setProjectionsEnabled( mMapRenderer->hasCrsTransformEnabled() );
   theMapRenderer.setDestinationSrs( mMapRenderer->destinationSrs() );
 
@@ -240,6 +249,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
 void QgsComposerMap::updateCachedImage( void )
 {
+  syncLayerSet(); //layer list may have changed
   mCacheUpdated = false;
   cache();
   QGraphicsRectItem::update();
@@ -489,6 +499,15 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
     composerMapElem.setAttribute( "previewMode", "Rectangle" );
   }
 
+  if(mKeepLayerSet)
+  {
+    composerMapElem.setAttribute( "keepLayerSet", "true");
+  }
+  else
+  {
+    composerMapElem.setAttribute( "keepLayerSet", "false");
+  }
+
   //extent
   QDomElement extentElem = doc.createElement( "Extent" );
   extentElem.setAttribute( "xmin", QString::number( mExtent.xMinimum() ) );
@@ -496,6 +515,18 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   extentElem.setAttribute( "ymin", QString::number( mExtent.yMinimum() ) );
   extentElem.setAttribute( "ymax", QString::number( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
+
+  //layer set
+  QDomElement layerSetElem = doc.createElement( "LayerSet" );
+  QStringList::const_iterator layerIt = mLayerSet.constBegin();
+  for(; layerIt != mLayerSet.constEnd(); ++layerIt)
+  {
+    QDomElement layerElem = doc.createElement( "Layer" );
+    QDomText layerIdText = doc.createTextNode(*layerIt);
+    layerElem.appendChild(layerIdText);
+    layerSetElem.appendChild(layerElem);
+  }
+  composerMapElem.appendChild(layerSetElem);
 
 #if 0
   // why is saving the map changing anything about the cache?
@@ -545,6 +576,31 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mExtent = QgsRectangle( xmin, ymin, xmax, ymax );
   }
 
+  //mKeepLayerSet flag
+  QString keepLayerSetFlag = itemElem.attribute( "keepLayerSet" );
+  if(keepLayerSetFlag.compare("true", Qt::CaseInsensitive) == 0)
+  {
+    mKeepLayerSet = true;
+  }
+  else
+  {
+    mKeepLayerSet = false;
+  }
+
+  //mLayerSet
+  QDomNodeList layerSetNodeList = itemElem.elementsByTagName("LayerSet");
+  QStringList layerSet;
+  if(layerSetNodeList.size() > 0)
+  {
+    QDomElement layerSetElem = layerSetNodeList.at(0).toElement();
+    QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName("Layer");
+    for(int i = 0; i < layerIdNodeList.size(); ++i)
+    {
+      layerSet << layerIdNodeList.at(i).toElement().text();
+    }
+  }
+  mLayerSet = layerSet;
+
   mDrawing = false;
   mNumCachedLayers = 0;
   mCacheUpdated = false;
@@ -564,4 +620,29 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   }
 
   return true;
+}
+
+void QgsComposerMap::storeCurrentLayerSet()
+{
+  if(mMapRenderer)
+  {
+    mLayerSet = mMapRenderer->layerSet();
+  }
+}
+
+void QgsComposerMap::syncLayerSet()
+{
+  if(mLayerSet.size() < 1 && !mMapRenderer)
+  {
+    return;
+  }
+
+  QStringList currentLayerSet = mMapRenderer->layerSet();
+  for(int i = mLayerSet.size() - 1; i >= 0; --i)
+  {
+    if(!currentLayerSet.contains(mLayerSet.at(i)))
+    {
+      mLayerSet.removeAt(i);
+    }
+  }
 }

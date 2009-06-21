@@ -252,6 +252,18 @@ void QgsComposerMapWidget::updateGuiElements()
     mXMaxLineEdit->setText( QString::number( composerMapExtent.xMaximum(), 'f', 3 ) );
     mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );
     mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
+
+    //keep layer list check box
+    mKeepLayerListCheckBox->blockSignals(true);
+    if(mComposerMap->keepLayerSet())
+    {
+      mKeepLayerListCheckBox->setCheckState(Qt::Checked);
+    }
+    else
+    {
+      mKeepLayerListCheckBox->setCheckState(Qt::Unchecked);
+    }
+    mKeepLayerListCheckBox->blockSignals(false);
   }
 }
 
@@ -297,4 +309,24 @@ void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
   mComposerMap->update();
 
   mUpdatePreviewButton->setEnabled( true );
+}
+
+void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged(int state)
+{
+  if(!mComposerMap)
+  {
+    return;
+  }
+
+  if(state == Qt::Checked)
+  {
+    mComposerMap->storeCurrentLayerSet();
+    mComposerMap->setKeepLayerSet(true);
+  }
+  else
+  {
+    QStringList emptyLayerSet;
+    mComposerMap->setLayerSet(emptyLayerSet);
+    mComposerMap->setKeepLayerSet(false);
+  }
 }
