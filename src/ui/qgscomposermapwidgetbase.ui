@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsComposerMapWidgetBase</class>
- <widget class="QWidget" name="QgsComposerMapWidgetBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QgsComposerMapWidgetBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,178 +10,175 @@
     <height>374</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Map options</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" colspan="4" >
-    <widget class="QLabel" name="mNameLabel" >
-     <property name="text" >
-      <string>&lt;b>Map&lt;/b></string>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="mNameLabel">
+     <property name="text">
+      <string>&lt;b&gt;Map&lt;/b&gt;</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4" >
-    <widget class="Line" name="line1" >
-     <property name="frameShape" >
+   <item row="1" column="0" colspan="5">
+    <widget class="Line" name="line1">
+     <property name="frameShape">
       <enum>QFrame::HLine</enum>
      </property>
-     <property name="frameShadow" >
+     <property name="frameShadow">
       <enum>QFrame::Sunken</enum>
      </property>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="textLabel1" >
-     <property name="text" >
+   <item row="2" column="0">
+    <widget class="QLabel" name="textLabel1">
+     <property name="text">
       <string>Width</string>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>true</bool>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>mWidthLineEdit</cstring>
      </property>
     </widget>
    </item>
-   <item row="2" column="2" colspan="2" >
-    <widget class="QLineEdit" name="mWidthLineEdit" />
+   <item row="2" column="3">
+    <widget class="QLineEdit" name="mWidthLineEdit"/>
    </item>
-   <item row="3" column="0" >
-    <widget class="QLabel" name="textLabel2" >
-     <property name="text" >
+   <item row="3" column="0">
+    <widget class="QLabel" name="textLabel2">
+     <property name="text">
       <string>Height</string>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>true</bool>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>mHeightLineEdit</cstring>
      </property>
     </widget>
    </item>
-   <item row="3" column="2" colspan="2" >
-    <widget class="QLineEdit" name="mHeightLineEdit" />
+   <item row="3" column="3">
+    <widget class="QLineEdit" name="mHeightLineEdit"/>
    </item>
-   <item row="4" column="0" >
-    <widget class="QLabel" name="label_2" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="text" >
+     <property name="text">
       <string>Scale:</string>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" >
-    <widget class="QLabel" name="label" >
-     <property name="text" >
+   <item row="4" column="1" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="text">
       <string>1:</string>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="4" column="2" colspan="2" >
-    <widget class="QLineEdit" name="mScaleLineEdit" />
+   <item row="4" column="3">
+    <widget class="QLineEdit" name="mScaleLineEdit"/>
    </item>
-   <item row="5" column="0" colspan="4" >
-    <widget class="QGroupBox" name="mMapExtentGroupBox" >
-     <property name="title" >
+   <item row="5" column="0" colspan="5">
+    <widget class="QGroupBox" name="mMapExtentGroupBox">
+     <property name="title">
       <string>Map extent</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <layout class="QVBoxLayout" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <layout class="QVBoxLayout">
         <item>
-         <widget class="QLabel" name="mXMinLabel" >
-          <property name="enabled" >
+         <widget class="QLabel" name="mXMinLabel">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>X min:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="mYMinLabel" >
-          <property name="text" >
+         <widget class="QLabel" name="mYMinLabel">
+          <property name="text">
            <string>Y min:</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="0" column="1" colspan="2" >
-       <layout class="QVBoxLayout" >
+      <item row="0" column="1" colspan="2">
+       <layout class="QVBoxLayout">
         <item>
-         <widget class="QLineEdit" name="mXMinLineEdit" />
+         <widget class="QLineEdit" name="mXMinLineEdit"/>
         </item>
         <item>
-         <widget class="QLineEdit" name="mYMinLineEdit" />
+         <widget class="QLineEdit" name="mYMinLineEdit"/>
         </item>
        </layout>
       </item>
-      <item row="0" column="3" >
-       <layout class="QVBoxLayout" >
+      <item row="0" column="3">
+       <layout class="QVBoxLayout">
         <item>
-         <widget class="QLabel" name="mXMaxLabel" >
-          <property name="text" >
+         <widget class="QLabel" name="mXMaxLabel">
+          <property name="text">
            <string>X max:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="mYMaxLabel" >
-          <property name="windowModality" >
-           <enum>Qt::NonModal</enum>
-          </property>
-          <property name="text" >
+         <widget class="QLabel" name="mYMaxLabel">
+          <property name="text">
            <string>Y max:</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="0" column="4" >
-       <layout class="QVBoxLayout" >
+      <item row="0" column="4">
+       <layout class="QVBoxLayout">
         <item>
-         <widget class="QLineEdit" name="mXMaxLineEdit" />
+         <widget class="QLineEdit" name="mXMaxLineEdit"/>
         </item>
         <item>
-         <widget class="QLineEdit" name="mYMaxLineEdit" />
+         <widget class="QLineEdit" name="mYMaxLineEdit"/>
         </item>
        </layout>
       </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QPushButton" name="mSetToMapCanvasExtentButton" >
-        <property name="text" >
+      <item row="1" column="0" colspan="2">
+       <widget class="QPushButton" name="mSetToMapCanvasExtentButton">
+        <property name="text">
          <string>set to map canvas extent</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2" colspan="3" >
+      <item row="1" column="2" colspan="3">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>311</width>
           <height>20</height>
@@ -191,42 +189,49 @@
      </layout>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2" >
-    <widget class="QLabel" name="mPreviewModeLabel" >
-     <property name="text" >
+   <item row="6" column="0" colspan="2">
+    <widget class="QLabel" name="mPreviewModeLabel">
+     <property name="text">
       <string>Preview</string>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>true</bool>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>mPreviewModeComboBox</cstring>
      </property>
     </widget>
    </item>
-   <item row="6" column="2" >
-    <widget class="QComboBox" name="mPreviewModeComboBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+   <item row="6" column="3">
+    <widget class="QComboBox" name="mPreviewModeComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
     </widget>
    </item>
-   <item row="6" column="3" >
-    <widget class="QPushButton" name="mUpdatePreviewButton" >
-     <property name="text" >
+   <item row="6" column="4">
+    <widget class="QPushButton" name="mUpdatePreviewButton">
+     <property name="text">
       <string>Update preview</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="2" colspan="2" >
+   <item row="7" column="0" colspan="4">
+    <widget class="QCheckBox" name="mKeepLayerListCheckBox">
+     <property name="text">
+      <string>Keep layer list</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2" colspan="3">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>458</width>
        <height>31</height>
@@ -236,7 +241,7 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>mWidthLineEdit</tabstop>
   <tabstop>mHeightLineEdit</tabstop>
