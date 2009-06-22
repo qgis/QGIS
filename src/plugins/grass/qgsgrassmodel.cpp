@@ -118,6 +118,7 @@ QString QgsGrassModelItem::info()
       break;
     case QgsGrassModel::Vectors:
     case QgsGrassModel::Rasters:
+    case QgsGrassModel::Regions:
       return QObject::tr( "Location: %1<br>Mapset: %2" ).arg( mLocation ).arg( mMapset );
       break;
     case QgsGrassModel::Raster:
@@ -364,6 +365,60 @@ QString QgsGrassModelItem::info()
       str += "</table>";
 
       Vect_close( &Map );
+      return str;
+    }
+    break;
+    
+    case QgsGrassModel::Region:
+    {
+      QString str = tblStart;
+      str += htmlTableRow( QObject::tr( "<b>Region</b>" ), QString( "<b>%1</b>" ).arg( mMap ) );
+      
+      struct Cell_head window;
+      QgsGrass::setLocation( mGisbase, mLocation );
+      if ( G__get_window( &window, "windows", mMap.toLocal8Bit().data(), mMapset.toLocal8Bit().data()) != NULL)
+      {
+        str += "<tr><td colspan=2>" + QObject::tr( "Cannot open region header" ) + "</td></tr>";
+      }
+      else
+      {
+        QString proj;
+        switch (window.proj){
+          case PROJECTION_XY:
+            proj = QObject::tr("XY");
+            break;
+          case PROJECTION_UTM:
+            proj = QObject::tr("UTM");
+            break;
+          case PROJECTION_SP:
+            proj = QObject::tr("SP");
+            break;
+          case PROJECTION_LL:
+            proj = QObject::tr("LL");
+            break;
+          default:
+            proj = QObject::tr("Other");
+        }
+        str += htmlTableRow( QObject::tr( "Projection Type" ), proj );
+        if ( window.proj == PROJECTION_UTM)
+          str += htmlTableRow( QObject::tr( "Zone" ), QString::number( window.zone ) );
+        str += htmlTableRow( QObject::tr( "North" ), QString::number( window.north, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "South" ), QString::number( window.south, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "East" ), QString::number( window.east, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "West" ), QString::number( window.west, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "Columns" ), QString::number( window.cols ) );
+        str += htmlTableRow( QObject::tr( "Rows" ), QString::number( window.rows ) );
+        str += htmlTableRow( QObject::tr( "E-W resolution" ), QString::number( window.ew_res, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "N-S resolution" ), QString::number( window.ns_res, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "Top" ), QString::number( window.top ) );
+        str += htmlTableRow( QObject::tr( "Bottom" ), QString::number( window.bottom ) );
+        str += htmlTableRow( QObject::tr( "3D Cols" ), QString::number( window.cols3 ) );
+        str += htmlTableRow( QObject::tr( "3D Rows" ), QString::number( window.rows3 ) );
+        str += htmlTableRow( QObject::tr( "Depths" ), QString::number( window.depths ) );
+        str += htmlTableRow( QObject::tr( "E-W 3D resolution"), QString::number( window.ew_res3, 'f', 8 ) );
+        str += htmlTableRow( QObject::tr( "N-S 3D resolution"), QString::number( window.ns_res3, 'f', 8 ) );
+      }  
+      str += "</table>";
       return str;
     }
     break;
