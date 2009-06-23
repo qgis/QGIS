@@ -228,6 +228,13 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      */
     QgsPoint getClosestVertex(QgsPoint point);
 
+  public slots:
+    /**
+     * Slot to count with layer change
+     * @param layer layer to which selection changed
+     */
+    void currentLayerChanged( QgsMapLayer* layer);
+
   protected slots:
     /**
      * Processing incomming signal of deleted feature (for deletion of selected feature)
@@ -245,6 +252,11 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      * Processing when layers are changed problem when layer is closed
      */
     void layersChanged();
+
+    /**
+     * Changed coordinates to markers need to be redrawn to correct position
+     */
+    void coordinatesChanged();
 
   private:
 
