@@ -1983,8 +1983,9 @@ QByteArray QgsPostgresProvider::paramValue( QString fieldValue, const QString &d
     }
     else
     {
+      QString val = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
       PQclear( result );
-      return QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toUtf8();
+      return val.toUtf8();
     }
   }
 
