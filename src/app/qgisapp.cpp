@@ -1659,6 +1659,8 @@ void QgisApp::setupConnections()
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer* ) ) );
   connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            mUndoWidget, SLOT( layerChanged( QgsMapLayer* ) ) );
+  connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+           mMapTools.mNodeTool, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
 
 
   //signal when mouse moved over window (coords display in status bar)
