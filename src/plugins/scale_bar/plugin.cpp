@@ -103,7 +103,7 @@ void QgsScaleBarPlugin::initGui()
   setCurrentTheme( "" );
   myQActionPointer->setWhatsThis( tr( "Creates a scale bar that is displayed on the map canvas" ) );
   // Connect the action to the run
-  connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
+  connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   //render the scale bar each time the map is rendered
   connect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderScaleBar( QPainter * ) ) );
   //this resets this plugin up if a project is loaded

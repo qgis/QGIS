@@ -59,7 +59,7 @@ class MapServerExport:
         "MapServer Export", self.iface.mainWindow())
     #self.action.setWhatsThis("Configuration for Zoom To Point plugin")
     # connect the action to the run method
-    QObject.connect(self.action, SIGNAL("activated()"), self.run) 
+    QObject.connect(self.action, SIGNAL("triggered()"), self.run) 
     QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
 
     # Add toolbar button and menu item

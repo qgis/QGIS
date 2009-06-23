@@ -80,7 +80,7 @@ void QgsCopyrightLabelPlugin::initGui()
   setCurrentTheme( "" );
   myQActionPointer->setWhatsThis( tr( "Creates a copyright label that is displayed on the map canvas." ) );
   // Connect the action to the run
-  connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
+  connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // This calls the renderer everytime the cnavas has drawn itself
   connect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderLabel( QPainter * ) ) );
   //this resets this plugin up if a project is loaded
