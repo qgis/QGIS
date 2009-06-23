@@ -93,8 +93,8 @@ void QgsGPSPlugin::initGui()
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
   mCreateGPXAction->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
-  connect( mQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
-  connect( mCreateGPXAction, SIGNAL( activated() ), this, SLOT( createGPX() ) );
+  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
+  connect( mCreateGPXAction, SIGNAL( triggered() ), this, SLOT( createGPX() ) );
 
   mQGisInterface->fileToolBar()->addAction( mQActionPointer );
   mQGisInterface->addPluginToMenu( tr( "&Gps" ), mQActionPointer );
