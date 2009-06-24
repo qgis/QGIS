@@ -15984,6 +15984,7 @@
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
+					"$(SPATIALITE_INC)",
 					"$(SQLITE_INC)",
 					"$(PGSQL_INC)",
 				);
@@ -16035,6 +16036,7 @@
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
+					"$(SPATIALITE_INC)",
 					"$(SQLITE_INC)",
 					"$(PGSQL_INC)",
 				);
