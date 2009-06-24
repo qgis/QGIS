@@ -53,8 +53,6 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + GDALVersionInfo( "RELEASE_NAME" )
   + ")";
 
-
-
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
     : QgsVectorDataProvider( uri ),
     ogrDataSource( 0 ),
@@ -768,7 +766,11 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
       }
     }
 
-    OGR_L_SetFeature( ogrLayer, of );
+    OGRErr res;
+    if (( res = OGR_L_SetFeature( ogrLayer, of ) ) != OGRERR_NONE )
+    {
+      QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, setting the feature failed: " + QString::number( res ) );
+    }
   }
 
   OGR_L_SyncToDisk( ogrLayer );
@@ -778,6 +780,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
 bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 {
+  OGRErr res;
   OGRFeatureH theOGRFeature = 0;
   OGRGeometryH theNewGeometry = 0;
 
@@ -809,15 +812,23 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     }
 
     //set the new geometry
-    if ( OGR_F_SetGeometryDirectly( theOGRFeature, theNewGeometry ) != OGRERR_NONE )
+    if (( res = OGR_F_SetGeometryDirectly( theOGRFeature, theNewGeometry ) ) != OGRERR_NONE )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, error while replacing geometry" );
+      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, error while replacing geometry: " + QString::number( res ) );
       OGR_G_DestroyGeometry( theNewGeometry );
       theNewGeometry = 0;
       continue;
     }
 
-    OGR_L_SetFeature( ogrLayer, theOGRFeature );
+
+    if (( res = OGR_L_SetFeature( ogrLayer, theOGRFeature ) ) != OGRERR_NONE )
+    {
+      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, error while setting feature: " + QString::number( res ) );
+      OGR_G_DestroyGeometry( theNewGeometry );
+      theNewGeometry = 0;
+      continue;
+    }
+
     OGR_F_Destroy( theOGRFeature );
   }
   OGR_L_SyncToDisk( ogrLayer );
@@ -914,7 +925,7 @@ int QgsOgrProvider::capabilities() const
       // TODO And test appropriately.
 
       ability |= ChangeAttributeValues;
-      ability |= QgsVectorDataProvider::ChangeGeometries;
+      ability |= ChangeGeometries;
     }
 
     if ( OGR_L_TestCapability( ogrLayer, "FastSpatialFilter" ) )
@@ -1505,48 +1516,42 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues )
 {
   QgsField fld = mAttributeFields[index];
-  QFileInfo fi( dataSourceUri() );
-  if ( !fi.exists() )
-    return;
+  QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
 
   QString sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" )
                 .arg( quotedIdentifier( fld.name() ) )
-                .arg( quotedIdentifier( fi.completeBaseName() ) );
+                .arg( quotedIdentifier( theLayerName ) );
 
   uniqueValues.clear();
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGRLayerH lyr = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
-  if ( 0 == lyr )
-    return;
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
+  if ( l == 0 )
+    return QgsVectorDataProvider::uniqueValues( index, uniqueValues );
 
   OGRFeatureH f;
-  while ( 0 != ( f = OGR_L_GetNextFeature( lyr ) ) )
+  while ( 0 != ( f = OGR_L_GetNextFeature( l ) ) )
   {
     uniqueValues << convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
     OGR_F_Destroy( f );
   }
 
-  OGR_DS_ReleaseResultSet( ogrDataSource, lyr );
+  OGR_DS_ReleaseResultSet( ogrDataSource, l );
 }
-
-
 
 QVariant QgsOgrProvider::minimumValue( int index )
 {
   QgsField fld = mAttributeFields[index];
-  QFileInfo fi( dataSourceUri() );
-  if ( !fi.exists() )
-    return QVariant();
+  QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
 
   QString sql = QString( "SELECT MIN(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
-                .arg( quotedIdentifier( fi.completeBaseName() ) );
+                .arg( quotedIdentifier( theLayerName ) );
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
 
   if ( l == 0 )
-    return QVariant();
+    return QgsVectorDataProvider::minimumValue( index );
 
   OGRFeatureH f = OGR_L_GetNextFeature( l );
   if ( f == 0 )
@@ -1566,17 +1571,15 @@ QVariant QgsOgrProvider::minimumValue( int index )
 QVariant QgsOgrProvider::maximumValue( int index )
 {
   QgsField fld = mAttributeFields[index];
-  QFileInfo fi( dataSourceUri() );
-  if ( !fi.exists() )
-    return QVariant();
+  QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
 
   QString sql = QString( "SELECT MAX(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
-                .arg( quotedIdentifier( fi.completeBaseName() ) );
+                .arg( quotedIdentifier( theLayerName ) );
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
   if ( l == 0 )
-    return QVariant();
+    return QgsVectorDataProvider::maximumValue( index );
 
   OGRFeatureH f = OGR_L_GetNextFeature( l );
   if ( f == 0 )
