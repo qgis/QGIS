@@ -170,6 +170,7 @@ class QgsVectorDataProvider : QgsDataProvider
        * Adds new attributes
        * @param attributes map with attribute name as key and type as value
        * @return true in case of success and false in case of failure
+       * @note changed in 1.2
        */
       virtual bool addAttributes(const QList<QgsField> & attributes);
 
