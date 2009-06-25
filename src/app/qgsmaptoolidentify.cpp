@@ -46,6 +46,8 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
+
+  mLayer = 0; // Initialize mLayer, useful in removeLayer SLOT
 }
 
 QgsMapToolIdentify::~QgsMapToolIdentify()
@@ -510,4 +512,23 @@ void QgsMapToolIdentify::editFeature( QgsFeature &f )
 
   delete ad;
   mCanvas->refresh();
+}
+
+void QgsMapToolIdentify::removeLayer( QString layerID )
+{
+  if ( mLayer )
+  {
+    if ( mLayer->type() == QgsMapLayer::VectorLayer )
+    {
+      if ( mLayer->getLayerID() == layerID )
+      {
+        if ( mResults )
+        {
+          mResults->clear();
+          delete mRubberBand;
+          mRubberBand = 0;
+        }
+      }
+    }
+  }
 }

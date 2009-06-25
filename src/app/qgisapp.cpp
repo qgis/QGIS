@@ -1662,6 +1662,9 @@ void QgisApp::setupConnections()
   connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            mMapTools.mNodeTool, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
 
+  // connect map layer registry signal to identify
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
+           mMapTools.mIdentify, SLOT( removeLayer( QString ) ) );
 
   //signal when mouse moved over window (coords display in status bar)
   connect( mMapCanvas, SIGNAL( xyCoordinates( QgsPoint & ) ), this, SLOT( showMouseCoordinate( QgsPoint & ) ) );
