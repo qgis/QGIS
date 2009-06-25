@@ -192,7 +192,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param index the index of the attribute
      * @param enumList reference to the list to fill
       @note: added in version 1.2*/
-    virtual void enumValues( int index, QStringList& enumList ) { enumList.clear(); }
+    virtual void enumValues( int index, QStringList& enumList ) { Q_UNUSED(index); enumList.clear(); }
 
     /**
      * Adds a list of features
@@ -211,6 +211,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Adds new attributes
      * @param attributes map with attribute name as key and type as value
      * @return true in case of success and false in case of failure
+     * @note changed in 1.2
      */
     virtual bool addAttributes( const QList<QgsField> &attributes );
 
