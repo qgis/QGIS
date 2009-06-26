@@ -324,8 +324,16 @@ public:
   bool changeAttributeValue(int fid, int field, QVariant value, bool emitSignal = true);
 
   /** add an attribute field (but does not commit it) 
-      returns the field index or -1 in case of failure */
+      returns true in case of success
+      @note added in 1.2
+      */
   bool addAttribute( const QgsField &field );
+
+  /** add an attribute field (but does not commit it) 
+      returns true in case of success
+      @note deprecated
+      */
+  bool addAttribute( QString name, QString type );
 
   /** delete an attribute field (but does not commit it) */
   bool deleteAttribute(int attr);

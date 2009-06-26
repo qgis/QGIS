@@ -396,6 +396,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2 */
     bool addAttribute( const QgsField &field );
 
+    /** add an attribute field (but does not commit it)
+      returns true if the field was added
+      @note deprecated */
+    bool addAttribute( QString name, QString type );
+
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 

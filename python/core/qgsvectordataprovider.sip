@@ -168,11 +168,19 @@ class QgsVectorDataProvider : QgsDataProvider
 
       /**
        * Adds new attributes
-       * @param attributes map with attribute name as key and type as value
+       * @param attributes list of new attribute fields
        * @return true in case of success and false in case of failure
        * @note changed in 1.2
        */
-      virtual bool addAttributes(const QList<QgsField> & attributes);
+      virtual bool addAttributes(const QList<QgsField> &attributes);
+
+      /**
+       * Adds new attributes
+       * @param attributes map with attribute name as key and type as value
+       * @return true in case of success and false in case of failure
+       * @note deprecated
+       */
+      virtual bool addAttributes(const QMap<QString, QString> &attributes);
 
       /**
        * Deletes existing attributes
