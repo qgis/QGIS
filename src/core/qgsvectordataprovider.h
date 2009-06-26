@@ -192,7 +192,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param index the index of the attribute
      * @param enumList reference to the list to fill
       @note: added in version 1.2*/
-    virtual void enumValues( int index, QStringList& enumList ) { Q_UNUSED(index); enumList.clear(); }
+    virtual void enumValues( int index, QStringList& enumList ) { Q_UNUSED( index ); enumList.clear(); }
 
     /**
      * Adds a list of features

@@ -667,7 +667,7 @@ class QgisApp : public QMainWindow
     bool saveDirty();
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
       @return 0 in case of error*/
-    QgsGeometry* unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& featureList);
+    QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList );
 
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );

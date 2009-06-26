@@ -21,8 +21,8 @@ class QgsMapLayer;
  */
 class QgsUndoWidget : public QDockWidget
 {
-	Q_OBJECT
-public:
+    Q_OBJECT
+  public:
     QWidget *dockWidgetContents;
     QGridLayout *gridLayout;
     QSpacerItem *spacerItem;
@@ -30,40 +30,40 @@ public:
     QPushButton *redoButton;
     QSpacerItem *spacerItem1;
 
-    QgsUndoWidget(QWidget * parent, QgsMapCanvas* mapCanvas);
-    void setupUi(QDockWidget *UndoWidget);
-    void retranslateUi(QDockWidget *UndoWidget);
+    QgsUndoWidget( QWidget * parent, QgsMapCanvas* mapCanvas );
+    void setupUi( QDockWidget *UndoWidget );
+    void retranslateUi( QDockWidget *UndoWidget );
 
     /**
      * Setting new undo stack for undo view
      */
-    void setUndoStack(QUndoStack * undoStack);
+    void setUndoStack( QUndoStack * undoStack );
 
     /**
      * Handles destroying of stack when active layer is changed
      */
     void destroyStack();
 
-public slots:
+  public slots:
     /**
      * Changes undo stack which is displayed by undo view
      */
-    void layerChanged( QgsMapLayer * layer);
+    void layerChanged( QgsMapLayer * layer );
 
     /**
      * Slot to handle undo changed signal
      */
-    void undoChanged(bool value);
+    void undoChanged( bool value );
 
     /**
      * Slot to handle redo changed signal
      */
-    void redoChanged(bool value);
+    void redoChanged( bool value );
 
     /**
      * Slot to handle index changed signal
      */
-    void indexChanged(int value);
+    void indexChanged( int value );
 
     /**
      * Undo operation called from button push
@@ -75,10 +75,10 @@ public slots:
      */
     void redo();
 
-signals:
+  signals:
     void undoStackChanged();
 
-private:
+  private:
     QUndoView * mUndoView;
     QUndoStack * mUndoStack;
     QgsMapCanvas* mMapCanvas;

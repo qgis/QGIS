@@ -491,7 +491,7 @@ void QgsMapToolIdentify::editFeature( QgsFeature &f )
 
   QgsAttributeMap src = f.attributeMap();
 
-  layer->beginEditCommand( tr("Attribute changed") );
+  layer->beginEditCommand( tr( "Attribute changed" ) );
   QgsAttributeDialog *ad = new QgsAttributeDialog( layer, &f );
   if ( ad->exec() )
   {

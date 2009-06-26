@@ -71,7 +71,7 @@ void QgsMapCanvasMap::render()
 
     // clear the pixmap so that old map won't be displayed while rendering
     // TODO: do the canvas updates wisely -> this wouldn't be needed
-    mPixmap = QPixmap(mImage.size());
+    mPixmap = QPixmap( mImage.size() );
     mPixmap.fill( mBgColor.rgb() );
 
     QPainter paint;
@@ -88,7 +88,7 @@ void QgsMapCanvasMap::render()
     paint.end();
 
     // convert QImage to QPixmap to acheive faster drawing on screen
-    mPixmap = QPixmap::fromImage(mImage);
+    mPixmap = QPixmap::fromImage( mImage );
   }
   else
   {
@@ -112,7 +112,7 @@ void QgsMapCanvasMap::updateContents()
 {
   // make sure we're using current contents
   if ( mUseQImageToRender )
-    mPixmap = QPixmap::fromImage(mImage);
+    mPixmap = QPixmap::fromImage( mImage );
 
   // trigger update of this item
   update();

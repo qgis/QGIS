@@ -27,17 +27,17 @@ class QgsRubberBand;
 /**
  * Structure to store entry about vertex of the feature
  */
-struct VertexEntry 
+struct VertexEntry
 {
-   bool selected;
-   QgsPoint point;
-   int equals;
-   //QgsRubberBand *vertexMarker;
-   QgsVertexMarker* vertexMarker;
-   bool inRubberBand;
-   int rubberBandNr;
-   int index;
-   int originalIndex;
+  bool selected;
+  QgsPoint point;
+  int equals;
+  //QgsRubberBand *vertexMarker;
+  QgsVertexMarker* vertexMarker;
+  bool inRubberBand;
+  int rubberBandNr;
+  int index;
+  int originalIndex;
 };
 
 /**
@@ -58,7 +58,7 @@ class SelectionFeature
      * @param canvas mapCanvas on which we are working
      * @param feature feature with which we work this parameter is not mandatory if it's not filled feature will be loaded
      */
-    void setSelectedFeature( int featureId,  QgsVectorLayer* vlayer,  QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature = NULL);
+    void setSelectedFeature( int featureId,  QgsVectorLayer* vlayer,  QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature = NULL );
 
     /**
      * Function to select vertex with number
@@ -99,14 +99,14 @@ class SelectionFeature
      * Updates vertex markers position accoording to changed feature geometry
      * @param canvas map canvas we are working with
      */
-    void updateVertexMarkersPosition( QgsMapCanvas* canvas);
+    void updateVertexMarkersPosition( QgsMapCanvas* canvas );
 
     /**
      * Tells if vertex is selected
      * @param vertexNr number of vertex for which we are getting info
      * @return true if vertex is selected, false otherwise
      */
-    bool isSelected(int vertexNr);
+    bool isSelected( int vertexNr );
 
     /**
      * Getting feature Id of feature selected
@@ -138,7 +138,7 @@ class SelectionFeature
      * @param rubberBandNr number of geometry (rubber band) in which this vertex should be)
      * @param indexInRubberBand
      */
-    void setRubberBandValues(int index, bool inRubberBand, int rubberBandNr, int indexInRubberBand );
+    void setRubberBandValues( int index, bool inRubberBand, int rubberBandNr, int indexInRubberBand );
 
     /**
      * Clears data about vertexes if they are in rubber band for moving etc.
@@ -150,7 +150,7 @@ class SelectionFeature
      * @param center center of marker
      * @return created vertex marker
      */
-    QgsVertexMarker* createVertexMarker(QgsPoint center);
+    QgsVertexMarker* createVertexMarker( QgsPoint center );
 
     /**
      * Getter for getting vector layer which selection is working
@@ -226,14 +226,14 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     /**
      * Returns closest vertex to given point from selected feature
      */
-    QgsPoint getClosestVertex(QgsPoint point);
+    QgsPoint getClosestVertex( QgsPoint point );
 
   public slots:
     /**
      * Slot to count with layer change
      * @param layer layer to which selection changed
      */
-    void currentLayerChanged( QgsMapLayer* layer);
+    void currentLayerChanged( QgsMapLayer* layer );
 
   protected slots:
     /**
@@ -260,7 +260,7 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
 
   private:
 
-    void connectSignals(QgsVectorLayer* vlayer);
+    void connectSignals( QgsVectorLayer* vlayer );
 
     /** Deletes the rubber band pointers
      and clears mRubberBands*/
@@ -271,13 +271,13 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      * @param center coordinates of point to be moved
      * @param vlayer vector layer on which we are working
      */
-    QgsRubberBand* createRubberBandMarker(QgsPoint center, QgsVectorLayer* vlayer);
+    QgsRubberBand* createRubberBandMarker( QgsPoint center, QgsVectorLayer* vlayer );
 
     /**
      * Function to check if selected feature exists and is same with original one
      * @param vlayer vector layer for checking
      */
-    bool checkCorrectnessOfFeature(QgsVectorLayer* vlayer);
+    bool checkCorrectnessOfFeature( QgsVectorLayer* vlayer );
 
     /**
      * Creates rubberbands for moving points

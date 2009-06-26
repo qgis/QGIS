@@ -95,7 +95,7 @@ QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
   mTree = new QTreeView( 0 );
   mTree->header()->hide();
   mTree->setModel( mModel );
-  mTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  mTree->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   mTextBrowser = new QTextBrowser( 0 );
   mTextBrowser->setReadOnly( TRUE );

@@ -120,7 +120,7 @@ bool QgsAttributeTableMemoryModel::setData( const QModelIndex &index, const QVar
 // QgsDebugMsg(mFeatureMap[rowToId(index.row())].id());
     mFeatureMap[rowToId( index.row() )].changeAttribute( mAttributes[ index.column()], value );
     // propagate back to the layer
-    mLayer->beginEditCommand( tr("Attribute changed") );
+    mLayer->beginEditCommand( tr( "Attribute changed" ) );
     mLayer->changeAttributeValue( rowToId( index.row() ), mAttributes[ index.column()], value, true );
     mLayer->endEditCommand();
   }

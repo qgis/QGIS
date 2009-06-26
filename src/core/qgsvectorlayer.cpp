@@ -102,7 +102,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mRenderer( 0 ),
     mLabel( 0 ),
     mLabelOn( false ),
-    mVertexMarkerOnlyForSelection(false),
+    mVertexMarkerOnlyForSelection( false ),
     mFetching( false ),
     mActiveCommand( NULL )
 {
@@ -757,7 +757,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
           // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
           mCachedGeometries[fet.id()] = *fet.geometry();
 
-          if(mVertexMarkerOnlyForSelection && !sel)
+          if ( mVertexMarkerOnlyForSelection && !sel )
           {
             mCurrentVertexMarkerType = QgsVectorLayer::NoMarker;
           }
@@ -1522,7 +1522,7 @@ bool QgsVectorLayer::insertVertex( double x, double y, int atFeatureId, int befo
     }
     geometry.insertVertex( x, y, beforeVertex );
     mCachedGeometries[atFeatureId] = geometry;
-    editGeometryChange(atFeatureId, geometry);
+    editGeometryChange( atFeatureId, geometry );
 
     setModified( true, true ); // only geometry was changed
 
@@ -1559,7 +1559,7 @@ bool QgsVectorLayer::moveVertex( double x, double y, int atFeatureId, int atVert
 
     geometry.moveVertex( x, y, atVertex );
     mCachedGeometries[atFeatureId] = geometry;
-    editGeometryChange(atFeatureId, geometry);
+    editGeometryChange( atFeatureId, geometry );
 
     setModified( true, true ); // only geometry was changed
 
@@ -1595,7 +1595,7 @@ bool QgsVectorLayer::deleteVertex( int atFeatureId, int atVertex )
 
     geometry.deleteVertex( atVertex );
     mCachedGeometries[atFeatureId] = geometry;
-    editGeometryChange(atFeatureId, geometry);
+    editGeometryChange( atFeatureId, geometry );
 
     setModified( true, true ); // only geometry was changed
 
@@ -1788,7 +1788,7 @@ int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
       int errorCode = translateGeom.translate( dx, dy );
       if ( errorCode == 0 )
       {
-        editGeometryChange(featureId, translateGeom);
+        editGeometryChange( featureId, translateGeom );
         setModified( true, true );
       }
       return errorCode;
@@ -2658,7 +2658,7 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
 
   mMaxUpdatedIndex++;
 
-  if (mActiveCommand != NULL)
+  if ( mActiveCommand != NULL )
   {
     mActiveCommand->storeAttributeAdd( mMaxUpdatedIndex, field );
   }
@@ -2685,7 +2685,7 @@ bool QgsVectorLayer::deleteAttribute( int index )
        !mDataProvider->fields().contains( index ) )
     return false;
 
-  if (mActiveCommand != NULL)
+  if ( mActiveCommand != NULL )
   {
     mActiveCommand->storeAttributeDelete( index, mUpdatedFields[index] );
   }
@@ -3739,44 +3739,44 @@ QgsVectorOverlay* QgsVectorLayer::findOverlayByType( const QString& typeName )
 
 void QgsVectorLayer::editGeometryChange( int featureId, QgsGeometry& geometry )
 {
-   if (mActiveCommand != NULL)
-   {
-     mActiveCommand->storeGeometryChange( featureId, mChangedGeometries[ featureId ], geometry );
-   }
-   mChangedGeometries[ featureId ] = geometry;
+  if ( mActiveCommand != NULL )
+  {
+    mActiveCommand->storeGeometryChange( featureId, mChangedGeometries[ featureId ], geometry );
+  }
+  mChangedGeometries[ featureId ] = geometry;
 }
 
 
-void QgsVectorLayer::editFeatureAdd(QgsFeature& feature)
+void QgsVectorLayer::editFeatureAdd( QgsFeature& feature )
 {
-  if (mActiveCommand != NULL)
-   {
-     mActiveCommand->storeFeatureAdd( feature );
-   }
-   mAddedFeatures.append( feature );
+  if ( mActiveCommand != NULL )
+  {
+    mActiveCommand->storeFeatureAdd( feature );
+  }
+  mAddedFeatures.append( feature );
 }
 
-void QgsVectorLayer::editFeatureDelete(int featureId)
+void QgsVectorLayer::editFeatureDelete( int featureId )
 {
-  if (mActiveCommand != NULL)
-   {
-     mActiveCommand->storeFeatureDelete( featureId );
-   }
-   mDeletedFeatureIds.insert( featureId );
+  if ( mActiveCommand != NULL )
+  {
+    mActiveCommand->storeFeatureDelete( featureId );
+  }
+  mDeletedFeatureIds.insert( featureId );
 }
 
-void QgsVectorLayer::editAttributeChange( int featureId, int field, QVariant value)
+void QgsVectorLayer::editAttributeChange( int featureId, int field, QVariant value )
 {
-  if (mActiveCommand != NULL)
+  if ( mActiveCommand != NULL )
   {
     QVariant original;
     bool isFirstChange = true;
-    if (featureId < 0)
+    if ( featureId < 0 )
     {
       // work with added feature
-      for (int i = 0; i < mAddedFeatures.size(); i++ )
+      for ( int i = 0; i < mAddedFeatures.size(); i++ )
       {
-        if ( mAddedFeatures[i].id() == featureId && mAddedFeatures[i].attributeMap().contains(field) )
+        if ( mAddedFeatures[i].id() == featureId && mAddedFeatures[i].attributeMap().contains( field ) )
         {
           original = mAddedFeatures[i].attributeMap()[field];
           isFirstChange = false;
@@ -3786,7 +3786,7 @@ void QgsVectorLayer::editAttributeChange( int featureId, int field, QVariant val
     }
     else
     {
-      if (mChangedAttributeValues.contains(featureId) && mChangedAttributeValues[featureId].contains(field))
+      if ( mChangedAttributeValues.contains( featureId ) && mChangedAttributeValues[featureId].contains( field ) )
       {
         original = mChangedAttributeValues[featureId][field];
         isFirstChange = false;
@@ -3819,19 +3819,19 @@ void QgsVectorLayer::editAttributeChange( int featureId, int field, QVariant val
   }
 }
 
-void QgsVectorLayer::beginEditCommand(QString text)
+void QgsVectorLayer::beginEditCommand( QString text )
 {
-  if (mActiveCommand == NULL)
+  if ( mActiveCommand == NULL )
   {
-    mActiveCommand = new QgsUndoCommand(this, text);
+    mActiveCommand = new QgsUndoCommand( this, text );
   }
 }
 
 void QgsVectorLayer::endEditCommand()
 {
-  if (mActiveCommand != NULL)
+  if ( mActiveCommand != NULL )
   {
-    undoStack()->push(mActiveCommand);
+    undoStack()->push( mActiveCommand );
     mActiveCommand = NULL;
   }
 
@@ -3839,7 +3839,7 @@ void QgsVectorLayer::endEditCommand()
 
 void QgsVectorLayer::destroyEditCommand()
 {
-  if (mActiveCommand != NULL)
+  if ( mActiveCommand != NULL )
   {
     delete mActiveCommand;
     mActiveCommand = NULL;
@@ -3847,7 +3847,7 @@ void QgsVectorLayer::destroyEditCommand()
 
 }
 
-void QgsVectorLayer::redoEditCommand(QgsUndoCommand* cmd)
+void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
 {
   QMap<int, QgsUndoCommand::GeometryChangeEntry>& geometryChange = cmd->mGeometryChange;
   QgsFeatureIds& deletedFeatureIdChange = cmd->mDeletedFeatureIdChange;
@@ -3861,13 +3861,13 @@ void QgsVectorLayer::redoEditCommand(QgsUndoCommand* cmd)
   QMap<int, QgsUndoCommand::GeometryChangeEntry>::iterator it = geometryChange.begin();
   for ( ; it != geometryChange.end(); ++it )
   {
-    if (it.value().target == NULL)
+    if ( it.value().target == NULL )
     {
-      mChangedGeometries.remove(it.key());
+      mChangedGeometries.remove( it.key() );
     }
     else
     {
-      mChangedGeometries[it.key()] = *(it.value().target);
+      mChangedGeometries[it.key()] = *( it.value().target );
     }
   }
 
@@ -3875,37 +3875,37 @@ void QgsVectorLayer::redoEditCommand(QgsUndoCommand* cmd)
   QgsFeatureIds::iterator delIt = deletedFeatureIdChange.begin();
   for ( ; delIt != deletedFeatureIdChange.end(); ++delIt )
   {
-    mDeletedFeatureIds.insert(*delIt);
+    mDeletedFeatureIds.insert( *delIt );
   }
 
   // added features
   QgsFeatureList::iterator addIt = addedFeatures.begin();
   for ( ; addIt != addedFeatures.end(); ++addIt )
   {
-    mAddedFeatures.append(*addIt);
+    mAddedFeatures.append( *addIt );
   }
 
   // changed attributes
   QMap<int, QgsUndoCommand::AttributeChanges>::iterator attrFeatIt = attributeChange.begin();
-  for  ( ; attrFeatIt != attributeChange.end(); ++attrFeatIt )
+  for ( ; attrFeatIt != attributeChange.end(); ++attrFeatIt )
   {
     int fid = attrFeatIt.key();
     // for every changed attribute in feature
     QMap<int, QgsUndoCommand::AttributeChangeEntry>::iterator  attrChIt = attrFeatIt.value().begin();
     for ( ; attrChIt != attrFeatIt.value().end(); ++attrChIt )
     {
-      if (fid >= 0)
+      if ( fid >= 0 )
       {
         // existing feature
-        if (attrChIt.value().target.isNull())
+        if ( attrChIt.value().target.isNull() )
         {
-          mChangedAttributeValues[fid].remove(attrChIt.key());
+          mChangedAttributeValues[fid].remove( attrChIt.key() );
         }
         else
         {
           mChangedAttributeValues[fid][attrChIt.key()] = attrChIt.value().target;
           QgsFeature f;
-          featureAtId(fid, f, false, true);
+          featureAtId( fid, f, false, true );
           f.changeAttribute( attrChIt.key(), attrChIt.value().target );
         }
       }
@@ -3914,7 +3914,7 @@ void QgsVectorLayer::redoEditCommand(QgsUndoCommand* cmd)
         // added feature
         for ( int i = 0; i < mAddedFeatures.size(); i++ )
         {
-          if (mAddedFeatures[i].id() == fid)
+          if ( mAddedFeatures[i].id() == fid )
           {
             mAddedFeatures[i].changeAttribute( attrChIt.key(), attrChIt.value().target );
             break;
@@ -3940,8 +3940,8 @@ void QgsVectorLayer::redoEditCommand(QgsUndoCommand* cmd)
   for ( ; dAttrIt != deletedAttributes.end(); ++dAttrIt )
   {
     int attrIndex = dAttrIt.key();
-    mDeletedAttributeIds.insert(attrIndex);
-    mUpdatedFields.remove(attrIndex);
+    mDeletedAttributeIds.insert( attrIndex );
+    mUpdatedFields.remove( attrIndex );
   }
   setModified( true );
 
@@ -3949,7 +3949,7 @@ void QgsVectorLayer::redoEditCommand(QgsUndoCommand* cmd)
   triggerRepaint();
 }
 
-void QgsVectorLayer::undoEditCommand(QgsUndoCommand* cmd)
+void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
 {
   QMap<int, QgsUndoCommand::GeometryChangeEntry>& geometryChange = cmd->mGeometryChange;
   QgsFeatureIds& deletedFeatureIdChange = cmd->mDeletedFeatureIdChange;
@@ -3980,13 +3980,13 @@ void QgsVectorLayer::undoEditCommand(QgsUndoCommand* cmd)
   QMap<int, QgsUndoCommand::GeometryChangeEntry>::iterator it = geometryChange.begin();
   for ( ; it != geometryChange.end(); ++it )
   {
-    if (it.value().original == NULL)
+    if ( it.value().original == NULL )
     {
-      mChangedGeometries.remove(it.key());
+      mChangedGeometries.remove( it.key() );
     }
     else
     {
-      mChangedGeometries[it.key()] = *(it.value().original);
+      mChangedGeometries[it.key()] = *( it.value().original );
     }
   }
 
@@ -3994,7 +3994,7 @@ void QgsVectorLayer::undoEditCommand(QgsUndoCommand* cmd)
   QgsFeatureIds::iterator delIt = deletedFeatureIdChange.begin();
   for ( ; delIt != deletedFeatureIdChange.end(); ++delIt )
   {
-    mDeletedFeatureIds.remove(*delIt);
+    mDeletedFeatureIds.remove( *delIt );
   }
 
   // added features
@@ -4004,9 +4004,9 @@ void QgsVectorLayer::undoEditCommand(QgsUndoCommand* cmd)
     QgsFeatureList::iterator addedIt = mAddedFeatures.begin();
     for ( ; addedIt != mAddedFeatures.end(); ++addedIt )
     {
-      if (addedIt->id() == addIt->id())
+      if ( addedIt->id() == addIt->id() )
       {
-        mAddedFeatures.erase(addedIt);
+        mAddedFeatures.erase( addedIt );
         break; // feature was found so move to next one
       }
     }
@@ -4014,17 +4014,17 @@ void QgsVectorLayer::undoEditCommand(QgsUndoCommand* cmd)
 
   // updated attributes
   QMap<int, QgsUndoCommand::AttributeChanges>::iterator attrFeatIt = attributeChange.begin();
-  for  ( ; attrFeatIt != attributeChange.end(); ++attrFeatIt )
+  for ( ; attrFeatIt != attributeChange.end(); ++attrFeatIt )
   {
     int fid = attrFeatIt.key();
     QMap<int, QgsUndoCommand::AttributeChangeEntry>::iterator  attrChIt = attrFeatIt.value().begin();
     for ( ; attrChIt != attrFeatIt.value().end(); ++attrChIt )
     {
-      if (fid >= 0)
+      if ( fid >= 0 )
       {
-        if (attrChIt.value().isFirstChange)
+        if ( attrChIt.value().isFirstChange )
         {
-          mChangedAttributeValues[fid].remove(attrChIt.key());
+          mChangedAttributeValues[fid].remove( attrChIt.key() );
         }
         else
         {
