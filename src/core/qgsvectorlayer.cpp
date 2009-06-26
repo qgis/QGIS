@@ -752,22 +752,18 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         // TODO: create a mechanism to let layer know whether it's current layer or not [MD]
         bool sel = mSelectedFeatureIds.contains( fet.id() );
 
+        mCurrentVertexMarkerType = QgsVectorLayer::NoMarker;
+
         if ( mEditable )
         {
           // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
           mCachedGeometries[fet.id()] = *fet.geometry();
 
-          if ( mVertexMarkerOnlyForSelection && !sel )
-          {
-            mCurrentVertexMarkerType = QgsVectorLayer::NoMarker;
-          }
-          else
+          if ( !mVertexMarkerOnlyForSelection || sel )
           {
             mCurrentVertexMarkerType = vertexMarker;
           }
         }
-
-
 
         //QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
         // markerScalerFactore reflects the wanted scaling of the marker
@@ -2671,6 +2667,16 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
   emit attributeAdded( mMaxUpdatedIndex );
 
   return true;
+}
+
+bool QgsVectorLayer::addAttribute( QString name, QString type )
+{
+  const QMap<QString, QVariant::Type> &map = mDataProvider->supportedNativeTypes();
+
+  if ( !map.contains( type ) )
+    return false;
+
+  return addAttribute( QgsField( name, map[ type ], type ) );
 }
 
 bool QgsVectorLayer::deleteAttribute( int index )

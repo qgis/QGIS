@@ -83,6 +83,22 @@ bool QgsVectorDataProvider::addAttributes( const QList<QgsField> & attributes )
   return false;
 }
 
+bool QgsVectorDataProvider::addAttributes( const QMap<QString, QString> &attributes )
+{
+  const QMap<QString, QVariant::Type> &map = supportedNativeTypes();
+  QList< QgsField > list;
+
+  for ( QMap<QString, QString>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); it++ )
+  {
+    if ( !map.contains( it.value() ) )
+      return false;
+
+    list << QgsField( it.key(), map[ it.value()], it.value() );
+  }
+
+  return addAttributes( list );
+}
+
 bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds& attributes )
 {
   return false;
@@ -267,6 +283,22 @@ const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeT
   return mNativeTypes;
 }
 
+const QMap<QString, QVariant::Type> &QgsVectorDataProvider::supportedNativeTypes() const
+{
+  if ( mOldTypeList.size() > 0 )
+    return mOldTypeList;
+
+  QgsVectorDataProvider *p = ( QgsVectorDataProvider * )this;
+
+  const QList< QgsVectorDataProvider::NativeType > &types = nativeTypes();
+
+  for ( QList< QgsVectorDataProvider::NativeType >::const_iterator it = types.constBegin(); it != types.constEnd(); it++ )
+  {
+    p->mOldTypeList.insert( it->mTypeName, it->mType );
+  }
+
+  return p->mOldTypeList;
+}
 
 bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
