@@ -69,7 +69,7 @@ QgsMapToolNodeTool::~QgsMapToolNodeTool()
 
 void QgsMapToolNodeTool::layersChanged()
 {
-  QgsVectorLayer* vlayer = vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
   if ( mSelectionFeature != NULL && mSelectionFeature->vlayer() != vlayer )
   {
     delete mSelectionFeature;
@@ -79,7 +79,7 @@ void QgsMapToolNodeTool::layersChanged()
 
 void QgsMapToolNodeTool::currentLayerChanged( QgsMapLayer* layer )
 {
-  QgsVectorLayer* vlayer = vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
   if ( mSelectionFeature != NULL && mSelectionFeature->vlayer() != vlayer )
   {
     delete mSelectionFeature;
@@ -102,7 +102,7 @@ void QgsMapToolNodeTool::featureDeleted( int featureId )
 void QgsMapToolNodeTool::layerModified( bool onlyGeometry )
 {
   QgsFeature feat;
-  QgsVectorLayer* vlayer = vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
   if ( mSelectionFeature != NULL && !mChangingGeometry && ( vlayer->featureAtId( mSelectionFeature->featureId(), feat, true, false ) ) )
   {
     if ( !GEOSEquals( feat.geometry()->asGeos(), mSelectionFeature->feature()->geometry()->asGeos() ) )
