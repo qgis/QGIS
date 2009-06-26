@@ -254,16 +254,16 @@ void QgsComposerMapWidget::updateGuiElements()
     mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
 
     //keep layer list check box
-    mKeepLayerListCheckBox->blockSignals(true);
-    if(mComposerMap->keepLayerSet())
+    mKeepLayerListCheckBox->blockSignals( true );
+    if ( mComposerMap->keepLayerSet() )
     {
-      mKeepLayerListCheckBox->setCheckState(Qt::Checked);
+      mKeepLayerListCheckBox->setCheckState( Qt::Checked );
     }
     else
     {
-      mKeepLayerListCheckBox->setCheckState(Qt::Unchecked);
+      mKeepLayerListCheckBox->setCheckState( Qt::Unchecked );
     }
-    mKeepLayerListCheckBox->blockSignals(false);
+    mKeepLayerListCheckBox->blockSignals( false );
   }
 }
 
@@ -311,22 +311,22 @@ void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
   mUpdatePreviewButton->setEnabled( true );
 }
 
-void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged(int state)
+void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
 {
-  if(!mComposerMap)
+  if ( !mComposerMap )
   {
     return;
   }
 
-  if(state == Qt::Checked)
+  if ( state == Qt::Checked )
   {
     mComposerMap->storeCurrentLayerSet();
-    mComposerMap->setKeepLayerSet(true);
+    mComposerMap->setKeepLayerSet( true );
   }
   else
   {
     QStringList emptyLayerSet;
-    mComposerMap->setLayerSet(emptyLayerSet);
-    mComposerMap->setKeepLayerSet(false);
+    mComposerMap->setLayerSet( emptyLayerSet );
+    mComposerMap->setKeepLayerSet( false );
   }
 }

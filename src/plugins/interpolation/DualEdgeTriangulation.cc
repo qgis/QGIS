@@ -1121,7 +1121,7 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, Point3D* p1, Point3
       int ptnr1 = mHalfEdge[edge1]->getPoint();
       int ptnr2 = mHalfEdge[edge2]->getPoint();
       int ptnr3 = mHalfEdge[edge3]->getPoint();
-      if(ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1)
+      if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
       {
         return false;
       }

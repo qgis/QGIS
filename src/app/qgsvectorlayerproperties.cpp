@@ -188,8 +188,8 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
   cb->addItem( tr( "range (editable)" ), QgsVectorLayer::EditRange );
   cb->addItem( tr( "range (slider)" ), QgsVectorLayer::SliderRange );
   cb->addItem( tr( "file name" ), QgsVectorLayer::FileName );
-  cb->addItem( tr( "enumeration" ), QgsVectorLayer::Enumeration);
-  cb->addItem( tr( "immutable" ), QgsVectorLayer::Immutable);
+  cb->addItem( tr( "enumeration" ), QgsVectorLayer::Enumeration );
+  cb->addItem( tr( "immutable" ), QgsVectorLayer::Immutable );
   cb->setSizeAdjustPolicy( QComboBox::AdjustToContentsOnFirstShow );
   cb->setCurrentIndex( layer->editType( idx ) );
 
@@ -273,7 +273,7 @@ void QgsVectorLayerProperties::addAttribute()
 bool QgsVectorLayerProperties::addAttribute( const QgsField &field )
 {
   QgsDebugMsg( "inserting attribute " + field.name() + " of type " + field.typeName() );
-  layer->beginEditCommand( tr("Added attribute") );
+  layer->beginEditCommand( tr( "Added attribute" ) );
   if ( layer->addAttribute( field ) )
   {
     layer->endEditCommand();
@@ -299,7 +299,7 @@ void QgsVectorLayerProperties::deleteAttribute()
 
   for ( QList<int>::const_iterator it = idxs.begin(); it != idxs.end(); it++ )
   {
-    layer->beginEditCommand( tr("Deleted attribute") );
+    layer->beginEditCommand( tr( "Deleted attribute" ) );
     layer->deleteAttribute( *it );
     layer->endEditCommand();
   }

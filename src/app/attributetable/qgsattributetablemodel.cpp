@@ -393,7 +393,7 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   {
     mLastRowId = rowToId( index.row() );
     mLastRow = ( QgsAttributeMap * )( &( mFeat.attributeMap() ) );
-    mLayer->beginEditCommand( tr("Attribute changed") );
+    mLayer->beginEditCommand( tr( "Attribute changed" ) );
     mLayer->changeAttributeValue( rowToId( index.row() ), mAttributes[ index.column()], value, true );
     mLayer->endEditCommand();
   }

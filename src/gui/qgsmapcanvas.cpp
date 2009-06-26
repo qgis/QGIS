@@ -613,14 +613,14 @@ void QgsMapCanvas::mapUnitsChanged()
   refresh();
 }
 
-void QgsMapCanvas::zoomToSelected(QgsVectorLayer* layer)
+void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
 {
   if ( mDrawing )
   {
     return;
   }
 
-  if (layer == NULL)
+  if ( layer == NULL )
   {
     // use current layer by default
     layer = dynamic_cast < QgsVectorLayer * >( mCurrentLayer );

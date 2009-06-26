@@ -463,7 +463,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * Create edit command for undo/redo operations
      * @param text text which is to be displayed in undo window
      */
-    void beginEditCommand(QString text);
+    void beginEditCommand( QString text );
 
     /** Finish edit command and add it to undo/redo stack */
     void endEditCommand();
@@ -472,10 +472,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void destroyEditCommand();
 
     /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand. */
-    void undoEditCommand(QgsUndoCommand* cmd);
+    void undoEditCommand( QgsUndoCommand* cmd );
 
     /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand. */
-    void redoEditCommand(QgsUndoCommand* cmd);
+    void redoEditCommand( QgsUndoCommand* cmd );
 
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
@@ -605,10 +605,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void editGeometryChange( int featureId, QgsGeometry& geometry );
 
     /** Record added feature, store in active command (if any) */
-    void editFeatureAdd(QgsFeature& feature);
+    void editFeatureAdd( QgsFeature& feature );
 
     /** Record deleted feature, store in active command (if any) */
-    void editFeatureDelete(int featureId);
+    void editFeatureDelete( int featureId );
 
     /** Record changed attribute, store in active command (if any) */
     void editAttributeChange( int featureId, int field, QVariant value );

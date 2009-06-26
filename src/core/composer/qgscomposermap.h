@@ -106,14 +106,14 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     bool keepLayerSet() const {return mKeepLayerSet;}
     /**Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
     @note this function was added in version 1.2*/
-    void setKeepLayerSet(bool enabled) {mKeepLayerSet = enabled;}
+    void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
 
     /**Getter for stored layer set that is used if mKeepLayerSet is true
     @note this function was added in version 1.2*/
     QStringList layerSet() const {return mLayerSet;}
     /**Setter for stored layer set that is used if mKeepLayerSet is true
     @note this function was added in version 1.2*/
-    void setLayerSet(const QStringList& layerSet) {mLayerSet = layerSet;}
+    void setLayerSet( const QStringList& layerSet ) {mLayerSet = layerSet;}
     /**Stores the current layer set of the qgis mapcanvas in mLayerSet*/
     void storeCurrentLayerSet();
 

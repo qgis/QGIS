@@ -81,7 +81,7 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
     //close polygon
     mCaptureList.push_back( *mCaptureList.begin() );
 
-    vlayer->beginEditCommand( tr("Ring added") );
+    vlayer->beginEditCommand( tr( "Ring added" ) );
     int addRingReturnCode = vlayer->addRing( mCaptureList );
     vlayer->endEditCommand();
     if ( addRingReturnCode != 0 )

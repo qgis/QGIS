@@ -366,8 +366,8 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
   // create undo widget
-  mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas);
-  addDockWidget(Qt::LeftDockWidgetArea, mUndoWidget);
+  mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
+  addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
 
   // set application's icon
@@ -606,13 +606,13 @@ void QgisApp::createActions()
   connect( mActionPaste, SIGNAL( triggered ), this, SLOT( paste() ) );
 #endif
 
-  mActionUndo = new QAction( getThemeIcon( "mActionUndo.png"), tr( "&Undo" ), this );
+  mActionUndo = new QAction( getThemeIcon( "mActionUndo.png" ), tr( "&Undo" ), this );
   shortcuts->registerAction( mActionUndo, tr( "Ctrl+Z" ) );
   mActionUndo->setStatusTip( tr( "Undo the last operation" ) );
   mActionUndo->setEnabled( false );
   // action connected to mUndoWidget::undo slot in setupConnections()
 
-  mActionRedo = new QAction( getThemeIcon( "mActionRedo.png"), tr( "&Redo" ), this );
+  mActionRedo = new QAction( getThemeIcon( "mActionRedo.png" ), tr( "&Redo" ), this );
   shortcuts->registerAction( mActionRedo, tr( "Ctrl+Shift+Z" ) );
   mActionRedo->setStatusTip( tr( "Redo the last operation" ) );
   mActionRedo->setEnabled( false );
@@ -720,11 +720,11 @@ void QgisApp::createActions()
   connect( mActionDeletePart, SIGNAL( triggered() ), this, SLOT( deletePart() ) );
   mActionDeletePart->setEnabled( false );
 
-  mActionMergeFeatures = new QAction( getThemeIcon("mActionMergeFeatures.png"), tr("Merge selected features"), this);
-  shortcuts->registerAction(mActionMergeFeatures);
-  mActionMergeFeatures->setStatusTip( tr("Merge selected features"));
-  connect( mActionMergeFeatures, SIGNAL(triggered()), this, SLOT(mergeSelectedFeatures()));
-  mActionMergeFeatures->setEnabled(false);
+  mActionMergeFeatures = new QAction( getThemeIcon( "mActionMergeFeatures.png" ), tr( "Merge selected features" ), this );
+  shortcuts->registerAction( mActionMergeFeatures );
+  mActionMergeFeatures->setStatusTip( tr( "Merge selected features" ) );
+  connect( mActionMergeFeatures, SIGNAL( triggered() ), this, SLOT( mergeSelectedFeatures() ) );
+  mActionMergeFeatures->setEnabled( false );
 
   mActionNodeTool = new QAction( getThemeIcon( "mActionNodeTool.png" ), tr( "Node Tool" ), this );
   shortcuts->registerAction( mActionNodeTool );
@@ -1081,7 +1081,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionDeleteRing );
   mActionDeletePart->setCheckable( true );
   mMapToolGroup->addAction( mActionDeletePart );
-  mMapToolGroup->addAction( mActionMergeFeatures);
+  mMapToolGroup->addAction( mActionMergeFeatures );
   mActionNodeTool->setCheckable( true );
   mMapToolGroup->addAction( mActionNodeTool );
 
@@ -1178,7 +1178,7 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionSplitFeatures );
   mEditMenu->addAction( mActionMergeFeatures );
   mEditMenu->addAction( mActionNodeTool );
-  
+
   if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
   {
     mActionEditSeparator3 = mEditMenu->addSeparator();
@@ -1693,7 +1693,7 @@ void QgisApp::setupConnections()
   // setup undo/redo actions
   connect( mActionUndo, SIGNAL( triggered() ), mUndoWidget, SLOT( undo() ) );
   connect( mActionRedo, SIGNAL( triggered() ), mUndoWidget, SLOT( redo() ) );
-  connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT(updateUndoActions()) );
+  connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
 }
 
 void QgisApp::createCanvas()
@@ -2428,11 +2428,11 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
       }
       else  // there is 1 layer of data available
       {
-        //set friendly name for datasources with only one layer 
+        //set friendly name for datasources with only one layer
         QStringList sublayers = layer->dataProvider()->subLayers();
-		QString ligne = sublayers.at( 0 );
-        QStringList elements = ligne.split( ":" );        
-		layer->setLayerName(elements.at(1));  
+        QString ligne = sublayers.at( 0 );
+        QStringList elements = ligne.split( ":" );
+        layer->setLayerName( elements.at( 1 ) );
         // Register this layer with the layers registry
         QgsMapLayerRegistry::instance()->addMapLayer( layer );
         // notify the project we've made a change
@@ -3348,7 +3348,7 @@ bool QgisApp::addProject( QString projectFile )
 
   //clear the composer
   delete mComposer;
-  mComposer = new QgsComposer(this);
+  mComposer = new QgsComposer( this );
 
   try
   {
@@ -3659,7 +3659,7 @@ bool QgisApp::openLayer( const QString & fileName )
     ok = addRasterLayer( fileName, fileInfo.completeBaseName() );
   else // nope - try to load it as a shape/ogr
     ok = addVectorLayer( fileName, fileInfo.completeBaseName(), "ogr" );
-   
+
   CPLPopErrorHandler();
 
   if ( !ok )
@@ -4117,7 +4117,7 @@ void QgisApp::deleteSelected()
     return;
   }
 
-  vlayer->beginEditCommand( tr("Features deleted") );
+  vlayer->beginEditCommand( tr( "Features deleted" ) );
   if ( !vlayer->deleteSelectedFeatures() )
   {
     QMessageBox::information( this, tr( "Problem deleting features" ),
@@ -4149,40 +4149,40 @@ void QgisApp::deletePart()
   mMapCanvas->setMapTool( mMapTools.mDeletePart );
 }
 
-QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& featureList)
+QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList )
 {
-  if(!vl || featureList.size() < 2)
+  if ( !vl || featureList.size() < 2 )
   {
     return 0;
   }
 
   QgsGeometry* unionGeom = featureList[0].geometry();
   QgsGeometry* backupPtr = 0; //pointer to delete intermediate results
-  if(!unionGeom)
+  if ( !unionGeom )
   {
     return 0;
   }
 
-  QProgressDialog progress(tr("Merging features..."), tr("Abort"), 0, featureList.size(), this);
-  progress.setWindowModality(Qt::WindowModal);
+  QProgressDialog progress( tr( "Merging features..." ), tr( "Abort" ), 0, featureList.size(), this );
+  progress.setWindowModality( Qt::WindowModal );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  for(int i = 1; i < featureList.size(); ++i)
+  for ( int i = 1; i < featureList.size(); ++i )
   {
-    if(progress.wasCanceled())
+    if ( progress.wasCanceled() )
     {
       delete unionGeom;
       QApplication::restoreOverrideCursor();
       return 0;
     }
-    progress.setValue(i);
+    progress.setValue( i );
     QgsGeometry* currentGeom = featureList[i].geometry();
-    if(currentGeom)
+    if ( currentGeom )
     {
       backupPtr = unionGeom;
-      unionGeom = unionGeom->combine(currentGeom);
-      if(i > 1) //delete previous intermediate results
+      unionGeom = unionGeom->combine( currentGeom );
+      if ( i > 1 ) //delete previous intermediate results
       {
         delete backupPtr;
         backupPtr = 0;
@@ -4191,114 +4191,114 @@ QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& 
   }
 
   QApplication::restoreOverrideCursor();
-  progress.setValue(featureList.size());
+  progress.setValue( featureList.size() );
   return unionGeom;
 }
 
 void QgisApp::mergeSelectedFeatures()
 {
-    //get active layer (hopefully vector)
-    QgsMapLayer* activeMapLayer = activeLayer();
-    if(!activeMapLayer)
-    {
-        QMessageBox::information(0, tr("No active layer"), tr("No active layer found. Please select a layer in the layer list"));
-        return;
-    }
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>(activeMapLayer);
-    if(!vl)
-    {
-        QMessageBox::information(0, tr("Active layer is not vector"), tr("The merge features tool only works on vector layers. Please select a vector layer from the layer list"));
-        return;
-    }
-    if(!vl->isEditable())
-    {
-        QMessageBox::information(0, tr("Layer not editable"), tr("Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer->Toggle editing"));
-        return;
-    }
+  //get active layer (hopefully vector)
+  QgsMapLayer* activeMapLayer = activeLayer();
+  if ( !activeMapLayer )
+  {
+    QMessageBox::information( 0, tr( "No active layer" ), tr( "No active layer found. Please select a layer in the layer list" ) );
+    return;
+  }
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( activeMapLayer );
+  if ( !vl )
+  {
+    QMessageBox::information( 0, tr( "Active layer is not vector" ), tr( "The merge features tool only works on vector layers. Please select a vector layer from the layer list" ) );
+    return;
+  }
+  if ( !vl->isEditable() )
+  {
+    QMessageBox::information( 0, tr( "Layer not editable" ), tr( "Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer->Toggle editing" ) );
+    return;
+  }
 
-    //get selected feature ids (as a QSet<int> )
-    const QgsFeatureIds& featureIdSet = vl->selectedFeaturesIds();
-    if(featureIdSet.size() < 2)
-    {
-        QMessageBox::information(0, "Not enough features selected", tr("The merge tool requires at least two selected features"));
-        return;
-    }
+  //get selected feature ids (as a QSet<int> )
+  const QgsFeatureIds& featureIdSet = vl->selectedFeaturesIds();
+  if ( featureIdSet.size() < 2 )
+  {
+    QMessageBox::information( 0, "Not enough features selected", tr( "The merge tool requires at least two selected features" ) );
+    return;
+  }
 
-    //get initial selection (may be altered by attribute merge dialog later)
-    QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
-    QgsGeometry* unionGeom = unionGeometries(vl, featureList);
-    if(!unionGeom)
+  //get initial selection (may be altered by attribute merge dialog later)
+  QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
+  QgsGeometry* unionGeom = unionGeometries( vl, featureList );
+  if ( !unionGeom )
+  {
+    return;
+  }
+
+  //make a first geometry union and notify the user straight away if the union geometry type does not match the layer one
+  QGis::WkbType originalType = vl->wkbType();
+  QGis::WkbType newType = unionGeom->wkbType();
+  if ( unionGeom->wkbType() != vl->wkbType() )
+  {
+    QMessageBox::critical( 0, "Union operation canceled", tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );
+    delete unionGeom;
+    return;
+  }
+
+  //merge the attributes together
+  QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
+  if ( d.exec() == QDialog::Rejected )
+  {
+    return;
+  }
+
+  QgsFeatureList featureListAfter = vl->selectedFeatures();
+
+  if ( featureListAfter.size() < 2 )
+  {
+    QMessageBox::information( 0, "Not enough features selected", tr( "The merge tool requires at least two selected features" ) );
+    delete unionGeom;
+    return;
+  }
+
+  //if the user changed the feature selection in the merge dialog, we need to repead the union and check the type
+  if ( featureList.size() != featureListAfter.size() )
+  {
+    delete unionGeom;
+    unionGeom = unionGeometries( vl, featureListAfter );
+    if ( !unionGeom )
     {
       return;
     }
 
-    //make a first geometry union and notify the user straight away if the union geometry type does not match the layer one
-    QGis::WkbType originalType = vl->wkbType();
-    QGis::WkbType newType = unionGeom->wkbType();
-    if(unionGeom->wkbType() != vl->wkbType())
+    originalType = vl->wkbType();
+    newType = unionGeom->wkbType();
+    if ( unionGeom->wkbType() != vl->wkbType() )
     {
-        QMessageBox::critical(0, "Union operation canceled", tr("The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled"));
-        delete unionGeom;
-        return;
-    }
-
-    //merge the attributes together
-    QgsMergeAttributesDialog d(featureList, vl, mapCanvas());
-    if(d.exec() == QDialog::Rejected)
-    {
-        return;
-    }
-
-    QgsFeatureList featureListAfter = vl->selectedFeatures();
-
-    if(featureListAfter.size() < 2)
-    {
-        QMessageBox::information(0, "Not enough features selected", tr("The merge tool requires at least two selected features"));
-        delete unionGeom;
-        return;
-    }
-
-    //if the user changed the feature selection in the merge dialog, we need to repead the union and check the type
-    if(featureList.size() != featureListAfter.size())
-    {
+      QMessageBox::critical( 0, "Union operation canceled", tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );
       delete unionGeom;
-      unionGeom = unionGeometries(vl, featureListAfter);
-      if(!unionGeom)
-      {
-        return;
-      }
-
-      originalType = vl->wkbType();
-      newType = unionGeom->wkbType();
-      if(unionGeom->wkbType() != vl->wkbType())
-      {
-        QMessageBox::critical(0, "Union operation canceled", tr("The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled"));
-        delete unionGeom;
-        return;
-      }
+      return;
     }
+  }
 
-    vl->beginEditCommand( tr("Merged features") );
+  vl->beginEditCommand( tr( "Merged features" ) );
 
-    //create new feature
-    QgsFeature newFeature;
-    newFeature.setGeometry(unionGeom);
-    newFeature.setAttributeMap(d.mergedAttributesMap());
+  //create new feature
+  QgsFeature newFeature;
+  newFeature.setGeometry( unionGeom );
+  newFeature.setAttributeMap( d.mergedAttributesMap() );
 
-    QgsFeatureList::const_iterator feature_it = featureListAfter.constBegin();
-    for(; feature_it != featureListAfter.constEnd(); ++feature_it)
-    {
-        vl->deleteFeature(feature_it->id());
-    }
+  QgsFeatureList::const_iterator feature_it = featureListAfter.constBegin();
+  for ( ; feature_it != featureListAfter.constEnd(); ++feature_it )
+  {
+    vl->deleteFeature( feature_it->id() );
+  }
 
-    vl->addFeature(newFeature, false);
+  vl->addFeature( newFeature, false );
 
-    vl->endEditCommand();;
+  vl->endEditCommand();;
 
-    if(mapCanvas())
-    {
-      mapCanvas()->refresh();
-    }
+  if ( mapCanvas() )
+  {
+    mapCanvas()->refresh();
+  }
 }
 
 void QgisApp::nodeTool()
@@ -4415,7 +4415,7 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
     {
       QgsFeatureList features = selectionVectorLayer->selectedFeatures();
       clipboard()->replaceWithCopyOf( selectionVectorLayer->dataProvider()->fields(), features );
-      selectionVectorLayer->beginEditCommand( tr("Features cut") );
+      selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
       selectionVectorLayer->deleteSelectedFeatures();
       selectionVectorLayer->endEditCommand();
     }
@@ -4466,7 +4466,7 @@ void QgisApp::editPaste( QgsMapLayer * destinationLayer )
 
     if ( pasteVectorLayer != 0 )
     {
-      pasteVectorLayer->beginEditCommand( tr("Features pasted") );
+      pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
       pasteVectorLayer->addFeatures( clipboard()->copyOf() );
       pasteVectorLayer->endEditCommand();
       mMapCanvas->refresh();
@@ -4989,9 +4989,9 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
   QgsDebugMsg( "Creating new vector layer using " + vectorLayerPath
                + " with baseName of " + baseName
                + " and providerKey of " + providerKey );
-  
-  layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey );  
-  
+
+  layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey );
+
   if ( layer && layer->isValid() )
   {
     // Register this layer with the layers registry
@@ -5542,10 +5542,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
 
       //merge tool needs editable layer and provider with the capability of adding and deleting features
-      if ( vlayer->isEditable() && (dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures) \
-           &&  QgsVectorDataProvider::AddFeatures)
+      if ( vlayer->isEditable() && ( dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) \
+           &&  QgsVectorDataProvider::AddFeatures )
       {
-        mActionMergeFeatures->setEnabled(layerHasSelection);
+        mActionMergeFeatures->setEnabled( layerHasSelection );
       }
       else
       {
@@ -6204,7 +6204,7 @@ void QgisApp::updateUndoActions()
 {
   bool canUndo = false, canRedo = false;
   QgsMapLayer* layer = this->activeLayer();
-  if (layer)
+  if ( layer )
   {
     QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
     if ( vlayer && vlayer->isEditable() )

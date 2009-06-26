@@ -175,7 +175,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
       }
 
-      vlayer->beginEditCommand( tr("Feature added") );
+      vlayer->beginEditCommand( tr( "Feature added" ) );
 
       // show the dialog to enter attribute values
       QSettings settings;
@@ -465,7 +465,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
       if ( isDisabledAttributeValuesDlg )
       {
-        vlayer->beginEditCommand( tr("Feature added") );
+        vlayer->beginEditCommand( tr( "Feature added" ) );
         if ( vlayer->addFeature( *f ) )
         {
           //add points to other features to keep topology up-to-date
@@ -482,7 +482,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
         if ( mypDialog->exec() )
         {
-          vlayer->beginEditCommand( tr("Feature added") );
+          vlayer->beginEditCommand( tr( "Feature added" ) );
           if ( vlayer->addFeature( *f ) )
           {
             //add points to other features to keep topology up-to-date
