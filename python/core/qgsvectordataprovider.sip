@@ -253,6 +253,21 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       bool supportedType( const QgsField &field ) const;
 
+      struct NativeType
+      {
+	NativeType( QString typeDesc, QString typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
+      };
+
+      /**
+       * Returns the names of the supported types
+       * @note added in 1.2
+       */
+      const QList< QgsVectorDataProvider::NativeType > &nativeTypes() const;
+
+      /**Returns the names of the numerical types
+         @note deprecated */
+      const QMap<QString,QVariant::Type> &supportedNativeTypes() const; 
+
       /**
        * Set whether provider should return also features that don't have
        * associated geometry. FALSE by default
