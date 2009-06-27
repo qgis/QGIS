@@ -200,7 +200,7 @@ void QgsUniqueValueDialog::setSymbolColor( QgsSymbol *symbol, QColor thecolor )
 void QgsUniqueValueDialog::addClass( QString value )
 {
   QgsDebugMsg( "called." );
-  if ( value.isNull() || mValues.contains( value ) )
+  if ( mValues.contains( value ) )
   {
     int i;
     for ( i = 0; mValues.contains( value + QString::number( i ) ); i++ )
@@ -208,7 +208,7 @@ void QgsUniqueValueDialog::addClass( QString value )
     value += QString::number( i );
   }
 
-  QgsSymbol *symbol = new QgsSymbol( mVectorLayer->geometryType(), value );
+  QgsSymbol *symbol = new QgsSymbol( mVectorLayer->geometryType(), value, value, value.isNull() ? tr( "default" ) : "" );
   mValues.insert( value, symbol );
 
   QListWidgetItem *item = new QListWidgetItem( value );
@@ -306,6 +306,9 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
       if ( !mValues.contains( values[i].toString() ) )
         addClass( values[i].toString() );
     }
+
+    if ( !mValues.contains( QString::null ) )
+      addClass( QString::null );
   }
 }
 
