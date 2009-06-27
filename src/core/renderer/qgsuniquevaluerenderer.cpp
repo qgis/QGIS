@@ -185,6 +185,11 @@ QgsSymbol *QgsUniqueValueRenderer::symbolForFeature( const QgsFeature *f )
   QMap<QString, QgsSymbol*>::iterator it = mSymbols.find( value );
   if ( it == mSymbols.end() )
   {
+    it = mSymbols.find( QString::null );
+  }
+
+  if ( it == mSymbols.end() )
+  {
     return 0;
   }
   else
