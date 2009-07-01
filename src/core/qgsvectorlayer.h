@@ -401,6 +401,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note deprecated */
     bool addAttribute( QString name, QString type );
 
+    /**Sets an alias (a display name) for attributes to display in dialogs
+      @note added in version 1.2*/
+    void addAttributeAlias(int attIndex, QString aliasString);
+
+    /**Returns the alias of an attribute name or an empty string if there is no alias
+      @note added in version 1.2*/
+    QString attributeAlias(int attributeIndex) const;
+
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
@@ -681,6 +689,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** field map to commit */
     QgsFieldMap mUpdatedFields;
+
+    /**Map that stores the aliases for attributes. Key is the attribute index and value the alias for that attribute*/
+    QMap<int, QString> mAttributeAliasMap;
 
     /** max field index */
     int mMaxUpdatedIndex;

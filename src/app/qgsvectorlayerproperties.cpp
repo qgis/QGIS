@@ -146,7 +146,7 @@ void QgsVectorLayerProperties::loadRows()
 
   tblAttributes->clear();
 
-  tblAttributes->setColumnCount( 8 );
+  tblAttributes->setColumnCount( 9 );
   tblAttributes->setRowCount( fields.size() );
   tblAttributes->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "id" ) ) );
   tblAttributes->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "name" ) ) );
@@ -156,6 +156,7 @@ void QgsVectorLayerProperties::loadRows()
   tblAttributes->setHorizontalHeaderItem( 5, new QTableWidgetItem( tr( "comment" ) ) );
   tblAttributes->setHorizontalHeaderItem( 6, new QTableWidgetItem( tr( "edit widget" ) ) );
   tblAttributes->setHorizontalHeaderItem( 7, new QTableWidgetItem( tr( "values" ) ) );
+  tblAttributes->setHorizontalHeaderItem( 8, new QTableWidgetItem( tr( "alias" ) ) );
 
   tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
   tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
@@ -174,7 +175,7 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
   tblAttributes->setItem( row, 2, new QTableWidgetItem( field.typeName() ) );
   tblAttributes->setItem( row, 3, new QTableWidgetItem( QString::number( field.length() ) ) );
   tblAttributes->setItem( row, 4, new QTableWidgetItem( QString::number( field.precision() ) ) );
-  tblAttributes->setItem( row, 5, new QTableWidgetItem( field.comment() ) );
+  tblAttributes->setItem( row, 5, new QTableWidgetItem( field.comment() ) ); 
 
   for ( int i = 0; i < 6; i++ )
     tblAttributes->item( row, i )->setFlags( tblAttributes->item( row, i )->flags() & ~Qt::ItemIsEditable );
@@ -223,6 +224,9 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
                           )
     );
   }
+
+  //set the alias for the attribute
+  tblAttributes->setItem( row, 8, new QTableWidgetItem(layer->attributeAlias(idx)));
 }
 
 
@@ -381,6 +385,8 @@ void QgsVectorLayerProperties::setDisplayField( QString name )
 //! @note in raster props, this method is called sync()
 void QgsVectorLayerProperties::reset( void )
 {
+  QObject::disconnect(tblAttributes, SIGNAL(cellChanged(int, int)), this, SLOT(on_tblAttributes_cellChanged(int,int)));
+
   // populate the general information
   txtDisplayName->setText( layer->name() );
   pbnQueryBuilder->setWhatsThis( tr( "This button opens the PostgreSQL query "
@@ -487,6 +493,7 @@ void QgsVectorLayerProperties::reset( void )
   sliderTransparency_valueChanged( 255 - layer->getTransparency() );
 
   loadRows();
+  QObject::connect(tblAttributes, SIGNAL(cellChanged(int, int)), this, SLOT(on_tblAttributes_cellChanged(int,int)));
 } // reset()
 
 
@@ -1063,6 +1070,27 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
     }
 
     myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
+  }
+}
+
+void QgsVectorLayerProperties::on_tblAttributes_cellChanged(int row, int column)
+{
+  if(column == 8 && layer) //only consider attribute aliases in this function
+  {
+    const QgsFieldMap &fields = layer->pendingFields();
+    if(row >= fields.size())
+    {
+      return; //index must be wrong
+    }
+
+    QgsFieldMap::const_iterator f_it = fields.constBegin();
+    f_it += row;
+    int index = f_it.key();
+    QTableWidgetItem* aliasItem = tblAttributes->item(row, column);
+    if(aliasItem)
+    {
+      layer->addAttributeAlias(index, aliasItem->text());
+    }
   }
 }
 
