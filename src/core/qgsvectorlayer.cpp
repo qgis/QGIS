@@ -583,26 +583,6 @@ unsigned char *QgsVectorLayer::drawPolygon(
       delete rings[i];
     }
 
-#ifdef QGISDEBUGVERBOSE
-    // this is only for verbose debug output -- no optimzation is
-    // needed :)
-    QgsDebugMsg( "Pixel points are:" );
-    for ( int i = 0; i < pa.size(); ++i )
-    {
-      QgsDebugMsgLevel( "i" + QString::number( i ), 2 );
-      QgsDebugMsgLevel( "pa[i].x()" + QString::number( pa[i].x() ), 2 );
-      QgsDebugMsgLevel( "pa[i].y()" + QString::number( pa[i].y() ), 2 );
-    }
-    QgsDebugMsg( "Ring positions are:" );
-    QgsDebugMsg( "Ring positions are:" );
-    for ( int i = 0; i < ringDetails.size(); ++i )
-    {
-      QgsDebugMsgLevel( "ringDetails[i].first" + QString::number( ringDetails[i].first ), 2 );
-      QgsDebugMsgLevel( "ringDetails[i].second" + QString::number( ringDetails[i].second ), 2 );
-    }
-    QgsDebugMsg( "Outer ring point is " + QString::number( outerRingPt.x() ) + ", " + QString::number( outerRingPt.y() ) );
-#endif
-
 #if 0
     // A bit of code to aid in working out what values of
     // QgsClipper::minX, etc cause the X11 zoom bug.
@@ -1062,17 +1042,6 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
          retval.yMinimum() == 0.0 && retval.yMaximum() == 0.0 )
     {
       retval.set( -1.0, -1.0, 1.0, 1.0 );
-    }
-    else
-    {
-      const double padFactor = 1e-8;
-      double widthPad = retval.xMinimum() * padFactor;
-      double heightPad = retval.yMinimum() * padFactor;
-      double xmin = retval.xMinimum() - widthPad;
-      double xmax = retval.xMaximum() + widthPad;
-      double ymin = retval.yMinimum() - heightPad;
-      double ymax = retval.yMaximum() + heightPad;
-      retval.set( xmin, ymin, xmax, ymax );
     }
   }
 

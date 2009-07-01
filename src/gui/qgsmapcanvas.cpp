@@ -626,28 +626,33 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
     layer = dynamic_cast < QgsVectorLayer * >( mCurrentLayer );
   }
 
-  if ( layer )
+  if ( layer == NULL )
   {
-    QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
-
-    // no selected features, only one selected point feature
-    //or two point features with the same x- or y-coordinates
-    if ( rect.isEmpty() )
-    {
-      return;
-    }
-    //zoom to an area
-    else
-    {
-      // Expand rect to give a bit of space around the selected
-      // objects so as to keep them clear of the map boundaries
-      // The same 5% should apply to all margins.
-      rect.scale( 1.05 );
-      setExtent( rect );
-      refresh();
-      return;
-    }
+    return;
   }
+
+  QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+
+  // no selected features, only one selected point feature
+  //or two point features with the same x- or y-coordinates
+  if ( rect.isEmpty() )
+  {
+    // zoom in
+    QgsPoint c = rect.center();
+    rect = extent();
+    rect.expand( 0.25, &c );
+  }
+  //zoom to an area
+  else
+  {
+    // Expand rect to give a bit of space around the selected
+    // objects so as to keep them clear of the map boundaries
+    // The same 5% should apply to all margins.
+    rect.scale( 1.05 );
+  }
+
+  setExtent( rect );
+  refresh();
 } // zoomToSelected
 
 void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
