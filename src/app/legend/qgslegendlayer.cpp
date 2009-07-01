@@ -370,11 +370,14 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
     if ( renderer->needsAttributes() )
     {
       QgsAttributeList classfieldlist = renderer->classificationAttributes();
-      const QgsFieldMap& fields = layer->dataProvider()->fields();
+      const QgsFieldMap& fields = layer->pendingFields();
       for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
       {
-        const QgsField& theField = fields[*it];
-        QString classfieldname = theField.name();
+        QString classfieldname = layer->attributeAlias(*it);
+        if(classfieldname.isEmpty())
+        {
+            classfieldname = fields[*it].name();
+        }
         itemList.push_front( std::make_pair( classfieldname, QPixmap() ) );
       }
     }

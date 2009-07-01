@@ -32,66 +32,65 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
 {
   setupUi( this );
   setOrientation( Qt::Vertical );
-  //find out the fields of mVectorLayer
-  QgsVectorDataProvider *provider;
-  if (( provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() ) ) )
-  {
-    const QgsFieldMap & fields = provider->fields();
-    QString str;
 
-    for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  //find out the fields of mVectorLayer
+  if(mVectorLayer)
+  {
+    //we cannot use unique values for not-commited fields because QgsVectorLayer has no 'unique values' method...
+    QgsVectorDataProvider* provider = mVectorLayer->dataProvider();
+    if(provider)
     {
-      str = ( *it ).name();
-      mClassificationComboBox->addItem( str );
+      const QgsFieldMap & fields = provider->fields();
+      QString str;
+
+      for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+      {
+        str = ( *it ).name();
+        str = mVectorLayer->attributeDisplayName(it.key());
+        mClassificationComboBox->addItem( str, it.key() );
+      }
     }
   }
-  else
-  {
-    QgsDebugMsg( "data provider is null" );
-    return;
-  }
+
 
   mClassListWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mClassListWidget->setEditTriggers( QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed | QAbstractItemView::AnyKeyPressed );
   mClassListWidget->setSortingEnabled( true );
 
-  const QgsUniqueValueRenderer* renderer = dynamic_cast < const QgsUniqueValueRenderer * >( mVectorLayer->renderer() );
-
-  if ( renderer )
+  if(mVectorLayer)
   {
-    mClassListWidget->clear();
+    const QgsUniqueValueRenderer* renderer = dynamic_cast < const QgsUniqueValueRenderer * >( mVectorLayer->renderer() );
 
-    // XXX - mloskot - fix for Ticket #31 (bug)
-    //QgsAttributeList attributes = renderer->classificationAttributes();
-    //QgsAttributeList::iterator iter = attributes.begin();
-    //int classattr = *iter;
-    //QString field = provider->fields()[ classattr ].name();
-    QString field = provider->fields()[ renderer->classificationField()].name();
-    mOldClassificationAttribute = field;
-    mClassificationComboBox->setCurrentIndex( mClassificationComboBox->findText( field ) );
-
-    const QList<QgsSymbol*> list = renderer->symbols();
-    //fill the items of the renderer into mValues
-    for ( QList<QgsSymbol*>::const_iterator iter = list.begin(); iter != list.end(); ++iter )
+    if ( renderer )
     {
-      QgsSymbol* symbol = ( *iter );
-      QString symbolvalue = symbol->lowerValue();
-      QgsSymbol* sym = new QgsSymbol( mVectorLayer->geometryType(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );
-      sym->setPen( symbol->pen() );
-      sym->setCustomTexture( symbol->customTexture() );
-      sym->setBrush( symbol->brush() );
-      sym->setNamedPointSymbol( symbol->pointSymbolName() );
-      sym->setPointSize( symbol->pointSize() );
-      sym->setScaleClassificationField( symbol->scaleClassificationField() );
-      sym->setRotationClassificationField( symbol->rotationClassificationField() );
-      mValues.insert( symbolvalue, sym );
+      mClassListWidget->clear();
+      QString field = mVectorLayer->attributeDisplayName(renderer->classificationField());
+      mOldClassificationAttribute = field;
+      mClassificationComboBox->setCurrentIndex( mClassificationComboBox->findText( field ) );
 
-      QListWidgetItem *item = new QListWidgetItem( symbolvalue );
-      mClassListWidget->addItem( item );
-      updateEntryIcon( symbol, item );
-      item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
-      item->setData( Qt::UserRole, symbol->lowerValue() );
-      item->setToolTip( symbol->label() );
+      const QList<QgsSymbol*> list = renderer->symbols();
+      //fill the items of the renderer into mValues
+      for ( QList<QgsSymbol*>::const_iterator iter = list.begin(); iter != list.end(); ++iter )
+      {
+        QgsSymbol* symbol = ( *iter );
+        QString symbolvalue = symbol->lowerValue();
+        QgsSymbol* sym = new QgsSymbol( mVectorLayer->geometryType(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );
+        sym->setPen( symbol->pen() );
+        sym->setCustomTexture( symbol->customTexture() );
+        sym->setBrush( symbol->brush() );
+        sym->setNamedPointSymbol( symbol->pointSymbolName() );
+        sym->setPointSize( symbol->pointSize() );
+        sym->setScaleClassificationField( symbol->scaleClassificationField() );
+        sym->setRotationClassificationField( symbol->rotationClassificationField() );
+        mValues.insert( symbolvalue, sym );
+
+        QListWidgetItem *item = new QListWidgetItem( symbolvalue );
+        mClassListWidget->addItem( item );
+        updateEntryIcon( symbol, item );
+        item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
+        item->setData( Qt::UserRole, symbol->lowerValue() );
+        item->setToolTip( symbol->label() );
+      }
     }
   }
 
@@ -149,7 +148,7 @@ void QgsUniqueValueDialog::apply()
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
   if ( provider )
   {
-    int fieldIndex = provider->fieldNameIndex( mClassificationComboBox->currentText() );
+    int fieldIndex = mClassificationComboBox->itemData( mClassificationComboBox->currentIndex() ).toInt();
     if ( fieldIndex != -1 )
     {
       renderer->setClassificationField( fieldIndex );
@@ -292,7 +291,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
   if ( provider )
   {
-    int nr = provider->fieldNameIndex( attributeName );
+    int nr = mClassificationComboBox->itemData(mClassificationComboBox->currentIndex()).toInt();
     if ( nr == -1 )
     {
       return;

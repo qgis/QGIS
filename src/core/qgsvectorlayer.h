@@ -409,6 +409,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2*/
     QString attributeAlias(int attributeIndex) const;
 
+    /**Convenience function that returns the attribute alias if defined or the field name else
+      @note added in version 1.2*/
+    QString attributeDisplayName(int attributeIndex) const;
+
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
