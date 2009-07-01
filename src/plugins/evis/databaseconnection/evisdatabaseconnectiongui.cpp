@@ -279,7 +279,7 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked( )
     //Try to connect the database connection object
     if( mDatabaseConnection->connect( ) )
     {
-      teditConsole->append( tr( "Connection to" ) +" ["+ leDatabaseHost->text( ) +"."+ leDatabaseName->text( ) +"] "+ tr( "established" ) );
+      teditConsole->append( tr( "Connection to [%1.%2] established" ).arg( leDatabaseHost->text() ).arg( leDatabaseName->text() ) );
       lblConnectionStatus->setText( tr( "connected" ) );
       
       //List the tables in the database
@@ -292,7 +292,8 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked( )
     }
     else
     {
-      teditConsole->append( tr( "Connection to [" )+ leDatabaseHost->text( ) +"."+ leDatabaseName->text( ) +tr( "] failed: " )+ mDatabaseConnection->lastError( ) );
+      teditConsole->append( tr( "Connection to [%1.%2] failed: %3" )
+		              .arg( leDatabaseHost->text() ).arg( leDatabaseName->text( ) ).arg( mDatabaseConnection->lastError() ) );
     }
   }
 }
@@ -410,7 +411,7 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked( )
     }
     else
     {
-      teditConsole->append( tr( "Error: Unabled to open file" ) + " ["+ myFilename +"]" );
+      teditConsole->append( tr( "Error: Unabled to open file [%1]" ).arg( myFilename ) );
     }
   }
 }
@@ -466,7 +467,7 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked( )
       QSqlQuery* myResults = mDatabaseConnection->query( teditSqlStatement->toPlainText( ) );
       if( 0 == myResults )
       {
-        teditConsole->append( tr( "Error: Query failed: " )+ mDatabaseConnection->lastError( ) );
+        teditConsole->append( tr( "Error: Query failed: %1" ).arg( mDatabaseConnection->lastError( ) ) );
       }
       else if( myResults->isSelect( ) )
       {
@@ -520,7 +521,7 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked( )
           }
           else
           {
-            teditConsole->append( tr( "Error: Counld not create temporary file, process halted" ) );
+            teditConsole->append( tr( "Error: Could not create temporary file, process halted" ) );
           }
         }
       }

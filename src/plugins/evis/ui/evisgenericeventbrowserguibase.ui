@@ -264,7 +264,7 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <property name="whatsThis">
-          <string>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.  </string>
+          <string>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</string>
          </property>
          <property name="text">
           <string>Path Is Relative</string>
@@ -690,7 +690,7 @@ p, li { white-space: pre-wrap; }
             </sizepolicy>
            </property>
            <property name="toolTip">
-            <string>Base path</string>
+            <string>Base Path</string>
            </property>
            <property name="whatsThis">
             <string>The Base Path onto which the relative path defined above will be appended.</string>
@@ -747,7 +747,7 @@ p, li { white-space: pre-wrap; }
           <string>Reset to default</string>
          </property>
          <property name="whatsThis">
-          <string>Enters the default “Base Path” which is the  path to the directory of the vector layer containing the image information.</string>
+          <string>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</string>
          </property>
          <property name="text">
           <string/>
@@ -849,7 +849,7 @@ Base Path (i.e. keep only filename from attribute)</string>
           <string/>
          </property>
          <property name="whatsThis">
-          <string>If checked, the same path rules that are defined  for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</string>
+          <string>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</string>
          </property>
          <property name="text">
           <string>Apply Path to Image rules when loading docs in external applications</string>
