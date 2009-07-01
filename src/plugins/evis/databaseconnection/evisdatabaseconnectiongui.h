@@ -73,7 +73,7 @@ private slots:
     void drawNewVectorLayer( QString, QString, QString );
 
     void on_buttonBox_accepted( );
-    void on_buttonBox_helpRequested( );
+    void on_buttonBox_helpRequested( ) { /* TODO: implement me */ };
 
     void on_cboxDatabaseType_currentIndexChanged( int );
     void on_cboxPredefinedQueryList_currentIndexChanged( int );
