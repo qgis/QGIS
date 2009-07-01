@@ -41,13 +41,15 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
 
   //find out the numerical fields of mVectorLayer
   const QgsFieldMap & fields = mVectorLayer->pendingFields();
+  QString displayName;
 
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
   {
     QVariant::Type type = it->type();
     if ( type == QVariant::Int || type == QVariant::Double )
     {
-      classificationComboBox->addItem( it->name(), it.key() );
+      displayName = mVectorLayer->attributeDisplayName(it.key());
+      classificationComboBox->addItem( displayName, it.key() );
     }
   }
 
@@ -144,7 +146,7 @@ void QgsContinuousColorDialog::apply()
   }
   else
   {
-    minimumString = QString::number( minimum );
+    minimumString = QString::number( minimum, 'f', 0 );
   }
   QgsSymbol* minsymbol = new QgsSymbol( mVectorLayer->geometryType(), minimumString, "", "" );
   QPen minPen;
@@ -167,7 +169,7 @@ void QgsContinuousColorDialog::apply()
   }
   else
   {
-    maximumString = QString::number( maximum );
+    maximumString = QString::number( maximum, 'f', 0 );
   }
   QgsSymbol* maxsymbol = new QgsSymbol( mVectorLayer->geometryType(), maximumString, "", "" );
   QPen maxPen;

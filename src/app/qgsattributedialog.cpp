@@ -103,11 +103,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     const QgsField &field = theFieldMap[it.key()];
 
     //show attribute alias if available
-    QString myFieldName = vl->attributeAlias(it.key());
-    if(myFieldName.isEmpty())
-    {
-      myFieldName = field.name();
-    }
+    QString myFieldName = vl->attributeDisplayName(it.key());
     int myFieldType = field.type();
     QLabel * mypLabel = new QLabel();
     mypInnerLayout->addWidget( mypLabel, index, 0 );

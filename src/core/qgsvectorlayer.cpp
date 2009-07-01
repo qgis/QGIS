@@ -2732,6 +2732,21 @@ QString QgsVectorLayer::attributeAlias(int attributeIndex) const
   }
 }
 
+QString QgsVectorLayer::attributeDisplayName(int attributeIndex) const
+{
+  QString displayName = attributeAlias(attributeIndex);
+  if(displayName.isEmpty())
+  {
+    const QgsFieldMap& fields = pendingFields();
+    QgsFieldMap::const_iterator fieldIt = fields.find( attributeIndex );
+    if ( fieldIt != fields.constEnd() )
+    {
+      displayName = fieldIt->name();
+    }
+  }
+  return displayName;
+}
+
 bool QgsVectorLayer::deleteAttribute( int index )
 {
   if ( !isEditable() )

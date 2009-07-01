@@ -37,15 +37,16 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
 
   //find out the numerical fields of mVectorLayer
   const QgsFieldMap & fields = layer->pendingFields();
-  QString str;
+  QString displayName;
 
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
     {
       QVariant::Type type = ( *it ).type();
       if ( type == QVariant::Int || type == QVariant::Double )
       {
-        classificationComboBox->addItem( it->name() );
-        mFieldMap.insert( std::make_pair( it->name(), it.key() ) );
+        displayName = layer->attributeDisplayName(it.key());
+        classificationComboBox->addItem( displayName );
+        mFieldMap.insert( std::make_pair( displayName, it.key() ) );
       }
     }
 
@@ -350,7 +351,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
         }
         else
         {
-          lowerString = QString::number(*last_it);
+          lowerString = QString::number(*last_it, 'f', 0);
         }
         ( *symbol_it )->setLowerValue(lowerString);
 
@@ -360,7 +361,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
         }
         else
         {
-          upperString = QString::number(*it);
+          upperString = QString::number(*it, 'f', 0);
         }
         ( *symbol_it )->setUpperValue(upperString);
 
@@ -391,7 +392,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
       }
       else
       {
-            lowerString = QString::number(lower);
+            lowerString = QString::number(lower, 'f', 0);
       }
 
       ( *symbol_it )->setLowerValue(lowerString);
@@ -403,7 +404,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
       }
       else
       {
-        upperString = QString::number(upper);
+        upperString = QString::number(upper, 'f', 0);
       }
 
       ( *symbol_it )->setUpperValue(upperString);

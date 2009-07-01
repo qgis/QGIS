@@ -102,22 +102,17 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
   QSettings settings;
   if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
   {
-    QgsVectorDataProvider* provider = vectorLayer->dataProvider();
-
-    if ( provider )
+    QgsFieldMap layerFields = vectorLayer->pendingFields();
+    QgsAttributeList attributes = vectorRenderer->classificationAttributes();
+    QgsAttributeList::const_iterator att_it = attributes.constBegin();
+    for ( ; att_it != attributes.constEnd(); ++att_it )
     {
-      QgsFieldMap providerFields = provider->fields();
-      QgsAttributeList attributes = vectorRenderer->classificationAttributes();
-      QgsAttributeList::const_iterator att_it = attributes.constBegin();
-      for ( ; att_it != attributes.constEnd(); ++att_it )
+      QgsFieldMap::const_iterator fieldIt = layerFields.find( *att_it );
+      if ( fieldIt != layerFields.constEnd() )
       {
-        QgsFieldMap::const_iterator fieldIt = providerFields.find( *att_it );
-        if ( fieldIt != providerFields.constEnd() )
-        {
-          QString attributeName = fieldIt.value().name();
-          QStandardItem* attributeItem = new QStandardItem( attributeName );
-          layerItem->setChild( layerItem->rowCount(), 0, attributeItem );
-        }
+        QString attributeName = vectorLayer->attributeDisplayName(fieldIt.key());
+        QStandardItem* attributeItem = new QStandardItem( attributeName );
+        layerItem->setChild( layerItem->rowCount(), 0, attributeItem );
       }
     }
   }
