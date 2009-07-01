@@ -1893,72 +1893,72 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="375"/>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;Region&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="381"/>
         <source>Cannot open region header</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kann Kopf der Region nicht öffnen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="389"/>
         <source>XY</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">XY</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="392"/>
         <source>UTM</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">UTM</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="395"/>
         <source>SP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SP</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="398"/>
         <source>LL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">LL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="401"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Andere</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="403"/>
         <source>Projection Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Projektionstyp</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="405"/>
         <source>Zone</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zone</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="416"/>
         <source>3D Cols</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">3D-Spalten</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="417"/>
         <source>3D Rows</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">3D-Zeilen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="418"/>
         <source>Depths</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tiefen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="419"/>
         <source>E-W 3D resolution</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">O-W 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="420"/>
         <source>N-S 3D resolution</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">N-S 3D-Auflösung</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="442"/>
@@ -1983,12 +1983,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
         <source>This tool only supports vector data</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Diese Werkzeug unterstützt nur Vektordaten.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="81"/>
         <source>No active layers found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Keine aktiven Layer gefunden.</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="970"/>
@@ -2259,27 +2259,27 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="732"/>
         <source>Deleted vertices</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gelöschte Stützpunkte</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="758"/>
         <source>Moved vertices</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verschobene Stützpunkte</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="84"/>
         <source>eVis</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="85"/>
         <source>An event visualization tool - view images associated with vector features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">An Ereignisvisualisierungswerkzeug - Bilder anzeigen, die Vektorobjekte zugeordnet sind.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="86"/>
         <source>Version 1.1.0</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Version 1.1.0</translation>
     </message>
 </context>
 <context>
@@ -3511,29 +3511,29 @@ Bitte kontaktieren Sie die Entwickler.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="615"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Wiederholen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="616"/>
         <source>Ctrl+Shift+Z</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Strg+Umschalt+Z</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="617"/>
         <source>Redo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Letzte Operation wiederholen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="723"/>
         <location filename="../src/app/qgisapp.cpp" line="725"/>
         <source>Merge selected features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gewählte Objekte verschmelzen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="729"/>
         <location filename="../src/app/qgisapp.cpp" line="731"/>
         <source>Node Tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Knotenwerkzeug</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="765"/>
@@ -3726,12 +3726,12 @@ Bitte kontaktieren Sie die Entwickler.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4120"/>
         <source>Features deleted</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekt gelöscht</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4166"/>
         <source>Merging features...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekte werden verschmolzen...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4166"/>
@@ -3746,49 +3746,49 @@ Bitte kontaktieren Sie die Entwickler.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4204"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Keinen aktiven Layer gefunden.  Bitte wählen Sie einen Layer aus der Layerliste</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4210"/>
         <source>Active layer is not vector</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kein Vektorlayer aktiv.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4210"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Das Verschmelzen von Objekte funktioniert nur mit Vektorlayern. Bitte wählen Sie einen Vektorlayer aus der Layerliste</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4215"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekte können nur auf Layern um Bearbeitungsmodus verschmolzen werden.  Benutzen Sie Layer-&gt;Bearbeitungsmodus umschalten um das Verschmelzungswerkzeug zu benutzen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4223"/>
         <location filename="../src/app/qgisapp.cpp" line="4256"/>
         <source>The merge tool requires at least two selected features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Das Verschmelzungswerkzeug erfordert mindestens zwei gewählte Objekte.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4240"/>
         <location filename="../src/app/qgisapp.cpp" line="4275"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die Vereinigungsoperation würde zu einem Geometrietyp führen, der nicht zum aktuellen Layer paßt, und wurde daher abgebrochen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4281"/>
         <source>Merged features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekte verschmelzen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4418"/>
         <source>Features cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekte ausgeschnitten</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4469"/>
         <source>Features pasted</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekte eingefügte</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4533"/>
@@ -5003,7 +5003,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetablememorymodel.cpp" line="123"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Attribut geändert</translation>
     </message>
 </context>
 <context>
@@ -5011,7 +5011,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="402"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Attribut geändert</translation>
     </message>
 </context>
 <context>
@@ -5844,7 +5844,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="225"/>
         <source>Keep layer list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Layerliste erhalten</translation>
     </message>
 </context>
 <context>
@@ -11939,7 +11939,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="468"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="485"/>
         <source>Feature added</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekt hinzugefügt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="217"/>
@@ -12011,7 +12011,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="104"/>
         <source>Island added</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Insel hinzugefügt</translation>
     </message>
 </context>
 <context>
@@ -12049,7 +12049,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="84"/>
         <source>Ring added</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ring hinzugefügt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="93"/>
@@ -12092,7 +12092,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdvertex.cpp" line="125"/>
         <source>Added vertex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stützpunkt hinzugefügt</translation>
     </message>
 </context>
 <context>
@@ -12111,7 +12111,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="109"/>
         <source>Part of multipart feature deleted</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Teil eine mehrteiligen Objekts gelöscht</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="116"/>
@@ -12124,7 +12124,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="114"/>
         <source>Ring deleted</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ring gelöscht</translation>
     </message>
 </context>
 <context>
@@ -12132,7 +12132,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooldeletevertex.cpp" line="82"/>
         <source>Vertex deleted</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stützpunkt gelöscht</translation>
     </message>
 </context>
 <context>
@@ -12216,7 +12216,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="495"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Attribut geändert</translation>
     </message>
 </context>
 <context>
@@ -12234,7 +12234,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="140"/>
         <source>Feature moved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekte verschoben</translation>
     </message>
 </context>
 <context>
@@ -12242,7 +12242,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolmovevertex.cpp" line="167"/>
         <source>Vertex moved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stützpunkt verschoben</translation>
     </message>
 </context>
 <context>
@@ -12250,18 +12250,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="298"/>
         <source>Node tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Knotenwerkzeug</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="299"/>
         <source>Feature was deleted on background.
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekt wurde vom Hintergrund entfernt.
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="623"/>
         <source>Inserted vertex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stützpunkt eingefügt</translation>
     </message>
 </context>
 <context>
@@ -12292,7 +12293,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="114"/>
         <source>Geometry simplified</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geometrie vereinfacht</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="278"/>
@@ -12325,7 +12326,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="82"/>
         <source>Features split</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekte geteilt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
@@ -12686,14 +12687,14 @@ Soll sie überschrieben werden?</translation>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="106"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verschmelzen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="124"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="428"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="480"/>
         <source>feature %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekt %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="129"/>
@@ -12711,13 +12712,13 @@ Soll sie überschrieben werden?</translation>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="131"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="235"/>
         <source>Median</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mittel</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="135"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="239"/>
         <source>Concatenation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verkettung</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="139"/>
@@ -12731,17 +12732,17 @@ Soll sie überschrieben werden?</translation>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="13"/>
         <source>Merge feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objektattribute verschmelzen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="37"/>
         <source>Take attributes from selected feature</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Attribute des gewählten Objekts übernehmen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="68"/>
         <source>Remove feature from selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Objekt aus der Auswahl entfernen</translation>
     </message>
 </context>
 <context>
@@ -13978,7 +13979,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="789"/>
         <source>Show markers only for selected features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Markierungen nur für gewähltes Objekt anzeigen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="796"/>
@@ -16237,7 +16238,7 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="275"/>
         <source>save absolute paths</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Absolute Pfade speichern</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="283"/>
@@ -17553,12 +17554,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1476"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1479"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koordinatenbezugsssystem der Geometrie des Layers angeben.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1482"/>
         <source>Specify...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Angeben...</translation>
     </message>
     <message>
         <source>Change ...</source>
@@ -19385,7 +19386,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsuniquevaluedialog.cpp" line="210"/>
         <source>default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Andere</translation>
     </message>
     <message>
         <location filename="../src/app/qgsuniquevaluedialog.cpp" line="281"/>
@@ -19629,7 +19630,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="159"/>
         <source>alias</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alias</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="184"/>
@@ -19674,12 +19675,12 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="192"/>
         <source>enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aufzählung</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="193"/>
         <source>immutable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">nicht veränderbar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="272"/>
@@ -19694,12 +19695,12 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="280"/>
         <source>Added attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Attribut hinzugefügt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="306"/>
         <source>Deleted attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Attribute gelöscht</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="341"/>
@@ -19976,12 +19977,12 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="169"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="172"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koordinatenbezugsssystem der Geometrie des Layers angeben.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="175"/>
         <source>Specify CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">KBS angeben</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="185"/>
@@ -20746,17 +20747,17 @@ URL %1 versucht</translation>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="159"/>
         <source>Undo/Redo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rücknahme/Wiederholung</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="160"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zurücknehmen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="161"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wiederholen</translation>
     </message>
 </context>
 <context>
@@ -20968,32 +20969,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="105"/>
         <source>eVis Database Connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">eVis-Datenbankverbindung</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="106"/>
         <source>eVis Event Id Tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">eVis-Ereignis-ID-Werkzeug</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="107"/>
         <source>eVis Event Browser</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">eVis-Ereignisbrowser</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="110"/>
         <source>Create layer from a database query</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Layer aus einer Datenbankabfrage erzeugen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="111"/>
         <source>Open an Event Browers and display the selected feature</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Einen Ereignisbrowser öffnen und gewählte Objekte anzeigen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="112"/>
         <source>Open an Event Browser to explore the current layer&apos;s features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Einen Ereignisbrowser öffnen, um die Objekte des aktuellen Layers zu erforschen</translation>
     </message>
 </context>
 <context>
@@ -21002,12 +21003,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="71"/>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="223"/>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Undefiniert</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="73"/>
         <source>No predefined queries loaded</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Keine verdefinierten Abfragen geladen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="78"/>
@@ -21016,37 +21017,32 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="449"/>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="451"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Datei öffnen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="220"/>
         <source>New Database connection requested...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neue Datenbankverbindung angefordert...</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="225"/>
         <source>Error: You must select a database type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Sie müssen einen Datenbanktyp auswählen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="233"/>
         <source>Error: No host name entered</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Kein Hostname eingegeben</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="240"/>
         <source>Error: No database name entered</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Kein Datenbankname eingegeben</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="282"/>
-        <source>Connection to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="282"/>
-        <source>established</source>
-        <translation type="unfinished"></translation>
+        <source>Connection to [%1.%2] established</source>
+        <translation type="unfinished">Verbindung zu [%1.%2] aufgebaut</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="283"/>
@@ -21056,42 +21052,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="286"/>
         <source>Tables</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tabellen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="295"/>
-        <source>Connection to [</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="295"/>
-        <source>] failed: </source>
-        <translation type="unfinished"></translation>
+        <source>Connection to [%1.%2] failed: %3</source>
+        <translation type="unfinished">Verbindung zu [%1.%2] gescheitert: %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="408"/>
         <source>Error: Parse error at line %1, column %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Parserfehler in Zeile %1, Spalte %2: %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="413"/>
         <source>Error: Unabled to open file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Konnte Datei nicht öffnen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="469"/>
-        <source>Error: Query failed: </source>
-        <translation type="unfinished"></translation>
+        <source>Error: Query failed: %1</source>
+        <translation type="unfinished">Fehler: Abfrage gescheitert: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="523"/>
-        <source>Error: Counld not create temporary file, process halted</source>
-        <translation type="unfinished"></translation>
+        <source>Error: Could not create temporary file, process halted</source>
+        <translation type="unfinished">Fehler: Konnte Temporärdatei nicht erzeugen, Prozess angehalten</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="530"/>
         <source>Error: A database connection is not currently established</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler: Eine Datenbankverbindung ist derzeitig nicht aufgebaut</translation>
     </message>
 </context>
 <context>
@@ -21100,37 +21091,37 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="13"/>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="153"/>
         <source>Database Connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Datenbankverbindung</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="47"/>
-        <source>Predfined Queries</source>
-        <translation type="unfinished"></translation>
+        <source>Predefined Queries</source>
+        <translation type="unfinished">Vordefinierte Abfragen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="65"/>
         <source>Load predefined queries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vordefinierte Abfragen laden</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="68"/>
         <source>Loads an XML file with predefined queries. Use the Open File window to locate the XML file that contains one or more predefined queries using the format described in the user guide.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Läd eine XML-Datei mit vordefinierten Abfragen. Nutzen Sie das Datei öffnen-Fenster, um die XML-Datei aufzufinden, die eine oder mehrere vordefinierte Abfragen in dem im Benutzerhandbuch definierten Format enthält.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="98"/>
         <source>The description of the selected query.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die Beschreibung der gewählten Abfrage.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="108"/>
-        <source>Select the predefined query you want to use from the drop-down list containing queries identified form the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
-        <translation type="unfinished"></translation>
+        <source>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
+        <translation type="unfinished">Wählen Sie die gewünschte vordefinierte Abfragen aus der Drop-Down-Liste mit den Abfragen, die über Datei öffnen  geladen wurden. Um die Abfrage auszuführen müssen Sie auf die SQL-Abfrage-Reiter klicken. Die Abfrage wird automatisch in das Abfragefenster übernommen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="165"/>
         <source>not connected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nicht verbunden</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="175"/>
@@ -21138,27 +21129,30 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Connection Status: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Verbindungstatus: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="185"/>
         <source>Database Host</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Datenbank-Host</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Einen Datenbank-Host eingeben. Wenn die Datenbank sich auf Ihrer Arbeitsstation befindet sollten sie "localhost" eingeben. Wenn Sie "MSAccess" als Datenbanktyp gewählt haben, ist dies Option nicht verfügbar.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="202"/>
         <source>Password to access the database.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Paßwort zum Zugriff auf die Datenbank</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="212"/>
         <source>Enter the name of the database.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Name der Datenbank eingeben</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="232"/>
@@ -21168,12 +21162,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="239"/>
         <source>Enter the port through which the database must be accessed if a MYSQL database is used.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Port über den die Datenbank angesprochen werden soll, wenn eine MySQL-Datenbank benutzt wird.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="249"/>
         <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verbindung zur Datenbank mit den oben angegebenen Parametern aufnehmen.  Wenn die Verbindung erfolgreich war, wird in der Ausgabekonsole unten eine entsprechende Nachricht angezeigt.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
@@ -21183,27 +21177,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="262"/>
         <source>User name to access the database.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Benutzernamen für Datenbankzugriff angeben</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="269"/>
         <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wählen Sie eine Datenbanktyp aus der Liste der unterstützten Datenbanken aus dem Drop-Down-Menü.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="289"/>
         <source>Database Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Datenbankname</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="296"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Paßwort</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="303"/>
         <source>Database Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Datenbanktyp</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="310"/>
@@ -21213,32 +21207,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="350"/>
         <source>SQL Query</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SQL-Abfrage</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="375"/>
         <source>Run the query entered above. The status of the query will be displayed in the Output  Console below.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die obige Abfrage ausführen. Der Status der Abfrage wird in der Ausgabekonsole unten angezeigt.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="378"/>
         <source>Run Query</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Abfrage ausführen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="388"/>
         <source>Enter the query you want to run in this window.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">In diesem Fenster die Abfrage eingeben, die Sie ausführen wollen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="435"/>
         <source>A window for status messages to be displayed.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ein Fenster für anzuzeigende Statusnachrichten.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="458"/>
         <source>Output Console</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ausgabekonsole</translation>
     </message>
 </context>
 <context>
@@ -21246,22 +21240,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="16"/>
         <source>Database File Selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Datenbankdatei-Auswahl</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="45"/>
         <source>The name of the field that contains the Y coordinate of the points.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Name des Feldes, das die Y-Koordinate der Punkte enthält.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="58"/>
         <source>The name of the field that contains the X coordinate of the points.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Name des Feldes, das die X-Koordinate der Punkte enthält.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="68"/>
         <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Einen Name für den Layer eingeben, der in QGIS erstellt und angezeigt werden wird.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="75"/>
@@ -21276,7 +21270,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="89"/>
         <source>Name of New Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Name des neuen Layers</translation>
     </message>
 </context>
 <context>
@@ -21284,7 +21278,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="135"/>
         <source>Generic Event Browser</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Allgemeiner Ereignisbrowser</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="159"/>
@@ -21308,13 +21302,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="210"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="233"/>
         <source>This tool only supports vector data</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Diese Werkzeug unterstützt nur Vektordaten</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="216"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="239"/>
         <source>No active layers found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Keine aktiven Layer gefunden</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="245"/>
@@ -21325,23 +21319,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="245"/>
         <source>Unable to connect to either the map canvas or application interface</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konnte keine Verbindung zum Kartenfenster oder der Applikationsschnittstelle aufnehmen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="274"/>
         <source>An invalid feature was received during initialization</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ein ungültiges Objekt wurde während der Initialisierung empfangen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="311"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="315"/>
-        <source>Event Browser - Displaying records 01 of</source>
-        <translation type="unfinished"></translation>
+        <source>Event Browser - Displaying records 01 of %1</source>
+        <translation type="unfinished">Ereignis-Browser - Zeige 01 von %1 Datensätzen an</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="796"/>
         <source>Attribute Contents</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Attributinhalt</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1003"/>
@@ -21352,30 +21346,18 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1049"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1056"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1060"/>
-        <source>Event Browser - Displaying records </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1003"/>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1007"/>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1014"/>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1018"/>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1045"/>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1049"/>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1056"/>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1060"/>
-        <source>of</source>
-        <translation type="unfinished"></translation>
+        <source>Event Browser - Displaying records %1 of %2</source>
+        <translation type="unfinished">Ereignis-Browser - Zeige %1 von %2 Datensätze an</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1134"/>
         <source>Select Application</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anwendung auswählen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1134"/>
         <source>All ( * )</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alle ( * )</translation>
     </message>
 </context>
 <context>
@@ -21383,32 +21365,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="34"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anzeigen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="78"/>
         <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Benutzen Sie den Knopf "Vorheriges", um das vorherige Foto anzuzeigen, wenn mehr als ein Foto zur Anzeige verfügbar ist.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="81"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vorheriges</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="97"/>
         <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Benutzen Sie den Knopf "Nächstes", um das folgende Foto anzuzeigen, wenn mehr als ein Foto zur Anzeige verfügbar ist.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="100"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nächstes</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="134"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alle Attributinformation des mit dem angezeigten Foto verknüpften Punktes wird hier angezeigt.  Wenn der durch den anzezeigten Datensatz referenzierte Dateityp kein Bild ist, aber er in "Externe Anwendungen konfigurieren"-Reiter definiert ist, kann über eine Doppelklick auf den Feldwert mit dem Dateipfad die Anwendung zur Anzeige oder Abspielung des Dateiinhalts geöffnet. Wenn die Dateierweiterung erkannt wurde, werden die Attributdaten in grün angezeigt.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="138"/>
@@ -21418,12 +21400,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="152"/>
         <source>Image display area</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bildanzeigebereich</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="155"/>
         <source>Display area for the image.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bereich in dem das Bild angezeigt wird</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="186"/>
@@ -21436,32 +21418,35 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Save?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Speichern?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="228"/>
         <source>Attribute Containing Path to File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dateipfad-Attribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="257"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nutzen Sie die Drop-Down-List, um das Felder zur wählen, dass das Bildverzeichnis enthält. Dieser kann ein absoluter oder relativer Pfad sein.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="267"/>
-        <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.  </source>
-        <translation type="unfinished"></translation>
+        <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
+	<translation type="unfinished">Wenn angehakt wird der Pfad zum Bild durch anhängenen des in der "Dateipfad-Attribut"-Drop-Down-Liste ausgewählten Attributs an "Grundpfad" unten definiert.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="270"/>
         <source>Path Is Relative</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pfad ist relativ</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="311"/>
         <source>If checked, the relative path values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wenn angehakt werden relative Pfadwerte für die nächste Sitzung gespart.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="332"/>
@@ -21471,191 +21456,186 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="826"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="904"/>
         <source>Reset to default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Auf Voreinstellung zurücksetzen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="338"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="458"/>
         <source>Resets the values on this line to the default setting.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Setzt die Werte dieser Zeilte auf die Voreinstellungen zurück.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="361"/>
         <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wenn angehakt wird ein Pfeil in der Richtung des Attributwert aus dem in der Drop-Down-Liste gewählten Feld im QGIS Fenster über dem Punkt dieses Bildes angezeigt.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="364"/>
         <source>Display Compass Bearing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kompaßrichtung anzeigen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="393"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nutzen Sie die Drop-Down-Liste um das Feld der Kompaßrichtung des Bildes zu wählen. Dies Richtung bezieht sich normalerweise auf die Richtung in die die Kamera zeigte als das Bild aufgenommen wurde.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="434"/>
         <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wenn angehakt, werden die Kompaßrichtungswerte für die nächste Sitzung gespeichert.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="478"/>
         <source>Compass Offset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kompaßversatz</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="490"/>
         <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+	<translation type="unfinished">Ein Wert, der zur Kompaßrichtung addiert wird. Dies gestattet den Ausgleich der Deklination (Richtungsanpassung von magnetischer zur echter Nord-Richtung).  Östliche Deklinationen sollten positive und westliche negative Werte eingeben.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="512"/>
         <source>Define the compass offset using a field from the vector layer attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kompaßversatz gemäß eines Feldes der Vektorlayerattributetabelle</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="515"/>
         <source> From Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> Aus Attribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="544"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die Drop-Down-Liste benutzen, um das Feld, das die Kompaßrichtung enthält, festzulegen. Dies gestattet Ihnen die Deklination zur kompensieren (Richtungsanpassung von magnetischer zur echter Nord-Richtung). Östliche Deklinationen sollten positive und westliche negative Werte eingeben.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="554"/>
         <source>Define the compass offset manually.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Den Kompaßversatz manuell angeben</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="557"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Manuell</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="601"/>
         <source>If checked, the compass offset values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wenn angehakt, wird der Kompaßversatz bis zur nächsten Sitzung gespeichert.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="625"/>
         <source>Resets the compass offset values to the default settings.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kompaßversatzwerte auf die Voreinstellung zurücksetzen</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="671"/>
         <source>The base path or url from which images and documents can be “relative”</source>
-        <translation type="unfinished"></translation>
+	<translation type="unfinished">Der Grundpfad oder URL zu denen auf den sich "relative" Bilder und Dokumente beziehen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="680"/>
         <source>Base Path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="693"/>
-        <source>Base path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grundpfad</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="696"/>
         <source>The Base Path onto which the relative path defined above will be appended.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Der Grundpfad an den oben angegebene relative Pfade angehängt werden.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="726"/>
         <source>If checked, the Base Path will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wenn angehakt wird der Grundpfad zur nächsten Sitzung gespeichert.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="750"/>
-        <source>Enters the default “Base Path” which is the  path to the directory of the vector layer containing the image information.</source>
-        <translation type="unfinished"></translation>
+        <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
+        <translation type="unfinished">Legt den voreingestellten Grundpfad fest, der das Verzeichnis des Vektorlayers mit den Bildinformationen ist.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="773"/>
         <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
-        <translation type="unfinished"></translation>
+	<translation type="unfinished">Wenn angehakt, wird der Grundpfad nur dem Dateiname statt dem ganzen, oben festgelegten, relativen Pfad vorangestellt, um den vollständigen Verzeichnispfad der Datei zu erzeugen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="776"/>
         <source>Replace entire path/url stored in image path attribute with user defined
 Base Path (i.e. keep only filename from attribute)</source>
-        <translation type="unfinished"></translation>
+	<translation type="unfinished">Gesamten im Bildpfadattribut gespeicherten Pfad/URL ersetzen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="805"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="883"/>
         <source>If checked, the  current check-box setting will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wenn angehakt, wird die aktuelle Einstellung zur nächsten Sitzung gespeichert.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="829"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="907"/>
         <source>Clears the check-box on this line.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Löscht die Auswahl dieser Zeile.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="852"/>
-        <source>If checked, the same path rules that are defined  for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
-        <translation type="unfinished"></translation>
+        <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
+        <translation type="unfinished">Wenn angehakt, werden die gleiche Pfadregel die für Bilder definiert sind auf für andere Dokumente wie Filme, Textdokumente und Audiodatei verwendet. Wenn nicht angehakt werden die Pfadregeln nur auf Bilder angewendet und für andere ignoriert.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="855"/>
         <source>Apply Path to Image rules when loading docs in external applications</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bildpfadregel auch anwenden, wenn Dokumente mit externen Anwendungen geladen werden.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="963"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Speichern sichert die Einstellungen ohne die Optionsseite zu schließen. "Voreinstellungen wiederherstellen" wird alle Felder auf ihre Voreinstellungen zurücksetzen.  Es hat den gleichen Effekt wie alle "Auf Voreinstellungen zurücksetzen" einzel anzuklicken.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="974"/>
         <source>Configure External Applications</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Externe Applikationen konfigurieren</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="995"/>
         <source>File extension and external application in which to load a document of that type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dateierweitungen und externe Applikationen mit der Dateien dieses Typs geladen werden sollen festlegen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1020"/>
         <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eine Tabelle, die Dateitypen enthält, die mit eVis geöffnet werden können. Jeder Dateityp braucht eine Dateierweiterung und einen Pfad zur Applikation, die diesen Typ öffnen kann. Dies ermöglicht es eine große Breite von Dateien wie Filmen, Audioaufnahmen und Textdokumenten statt nur Bildern zu öffnen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1024"/>
         <source>Extension</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Erweiterung</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1029"/>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Applikation</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1039"/>
         <source>Add new file type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neuen Dateityp hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1042"/>
         <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eine neuen Dateityp anlegen mit einer eindeutigen Erweiterung und der Applikation, die die Datei öffnen kann.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1056"/>
         <source>Delete current row</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aktuelle Zeile löschen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1059"/>
         <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Den in der Tabelle hervorgehobenen Dateityp löschen</translation>
     </message>
 </context>
 <context>
@@ -21667,8 +21647,8 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="53"/>
-        <source>Zoom in to see more detal.</source>
-        <translation type="unfinished"></translation>
+        <source>Zoom in to see more detail.</source>
+        <translation type="unfinished">Hineinzoomen um mehr Details zu sehen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="54"/>
@@ -21678,17 +21658,17 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="55"/>
         <source>Zoom out to see more area.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Herauszoomen, um einen größeren Bereich zu sehen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="56"/>
         <source>Zoom to full extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zur vollen Ausdehnung zoomen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="57"/>
         <source>Zoom to display the entire image.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zoomen um das ganze Bild zu sehen</translation>
     </message>
 </context>
 <context>
