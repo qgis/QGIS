@@ -337,7 +337,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
       {
         featureNode->setText( 1, it->toString() );
       }
-      QString attributeName = layer->attributeDisplayName(it.key());
+      QString attributeName = layer->attributeDisplayName( it.key() );
       mResults->addAttribute( featureNode, attributeName, it->isNull() ? "NULL" : it->toString() );
     }
 

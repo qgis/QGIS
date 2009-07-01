@@ -48,7 +48,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
     QVariant::Type type = it->type();
     if ( type == QVariant::Int || type == QVariant::Double )
     {
-      displayName = mVectorLayer->attributeDisplayName(it.key());
+      displayName = mVectorLayer->attributeDisplayName( it.key() );
       classificationComboBox->addItem( displayName, it.key() );
     }
   }
@@ -140,7 +140,7 @@ void QgsContinuousColorDialog::apply()
 
   //create the render items for minimum and maximum value
   QString minimumString;
-  if(minimum - floor(minimum) > 0)
+  if ( minimum - floor( minimum ) > 0 )
   {
     minimumString = QString::number( minimum, 'f' );
   }
@@ -163,7 +163,7 @@ void QgsContinuousColorDialog::apply()
   }
 
   QString maximumString;
-  if(maximum - floor(maximum) > 0)
+  if ( maximum - floor( maximum ) > 0 )
   {
     maximumString = QString::number( maximum, 'f' );
   }

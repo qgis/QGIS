@@ -9,7 +9,7 @@
 ** and/or modify it under the terms of the GNU Library General Public
 ** License as published by the Free Software Foundation; either
 ** version 2 of the License, or ( at your option ) any later version.
-** 
+**
 ** This library/program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -95,7 +95,7 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WFlags fl )
   mHttpBuffer = new QBuffer( );
   mHttpConnection = new QHttp( );
   mHttpBuffer->open( QBuffer::ReadWrite );
-  connect( mHttpConnection, SIGNAL( requestFinished ( int, bool ) ), this, SLOT( displayUrlImage( int, bool ) ) );
+  connect( mHttpConnection, SIGNAL( requestFinished( int, bool ) ), this, SLOT( displayUrlImage( int, bool ) ) );
 
   //initialize remaining variables
   mScaleByHeight = false;
@@ -131,11 +131,11 @@ void eVisImageDisplayWidget::resizeEvent( QResizeEvent *event )
 void eVisImageDisplayWidget::displayImage( QString path )
 {
   mImageLoaded = mImage->load( path, 0, Qt::AutoColor );
-  
+
   mCurrentZoomStep = 0;
   pbtnZoomOut->setEnabled( false );
   pbtnZoomFull->setEnabled( false );
-  if( mImageLoaded )
+  if ( mImageLoaded )
   {
     pbtnZoomIn->setEnabled( true );
   }
@@ -155,25 +155,25 @@ void eVisImageDisplayWidget::displayImage( QString path )
 void eVisImageDisplayWidget::displayImage( )
 {
   QSize mySize;
-  if( mImageLoaded )
+  if ( mImageLoaded )
   {
     //TODO: See about migrating these nasty scaling routines to use a QMatrix
-    if( mScaleByWidth )
+    if ( mScaleByWidth )
     {
-      mySize.setWidth( static_cast<int> ( mImage->width( ) * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
-      mySize.setHeight( static_cast<int> ( ( double )mySize.width( ) * mImageSizeRatio ) );
+      mySize.setWidth( static_cast<int>( mImage->width( ) * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
+      mySize.setHeight( static_cast<int>(( double )mySize.width( ) * mImageSizeRatio ) );
     }
     else
     {
-      mySize.setHeight( static_cast<int> ( mImage->height( ) * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
-      mySize.setWidth( static_cast<int> ( ( double )mySize.height( ) * mImageSizeRatio ) );
+      mySize.setHeight( static_cast<int>( mImage->height( ) * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
+      mySize.setWidth( static_cast<int>(( double )mySize.height( ) * mImageSizeRatio ) );
     }
   }
   else
   {
     mySize.setWidth( mDisplayArea->size( ).width( ) );
     mySize.setHeight( mDisplayArea->size( ).height( ) );
-    mImage->fill( );  
+    mImage->fill( );
   }
   //the minus 4 is there to keep scroll bars from appearing at full extent view
   mImageLabel->resize( mySize.width( ) - 4, mySize.height( ) - 4 );
@@ -196,25 +196,25 @@ void eVisImageDisplayWidget::displayUrlImage( QString url )
 */
 void eVisImageDisplayWidget::setScalers( )
 {
-  if( mImageLoaded )
+  if ( mImageLoaded )
   {
     double xRatio = ( double )mDisplayArea->size( ).width( ) / ( double )mImage->width( );
     double yRatio = ( double )mDisplayArea->size( ).height( ) / ( double )mImage->height( );
-    if( xRatio < yRatio )
-    { 
+    if ( xRatio < yRatio )
+    {
       mScaleByWidth = true;
       mScaleByHeight = false;
-      mImageSizeRatio = ( double )mImage->height( )/( double )mImage->width( );
-      mScaleToFit = ( double )mDisplayArea->size( ).width( )/( double )mImage->width( );
-      mScaleFactor = ( 1.0 - mScaleToFit )/( double )ZOOM_STEPS;
+      mImageSizeRatio = ( double )mImage->height( ) / ( double )mImage->width( );
+      mScaleToFit = ( double )mDisplayArea->size( ).width( ) / ( double )mImage->width( );
+      mScaleFactor = ( 1.0 - mScaleToFit ) / ( double )ZOOM_STEPS;
     }
     else
     {
       mScaleByWidth = false;
       mScaleByHeight = true;
-      mImageSizeRatio = ( double )mImage->width( )/( double )mImage->height( );
-      mScaleToFit = ( double )mDisplayArea->size( ).height( )/( double )mImage->height( );
-      mScaleFactor = ( 1.0 - mScaleToFit )/( double )ZOOM_STEPS;
+      mImageSizeRatio = ( double )mImage->width( ) / ( double )mImage->height( );
+      mScaleToFit = ( double )mDisplayArea->size( ).height( ) / ( double )mImage->height( );
+      mScaleFactor = ( 1.0 - mScaleToFit ) / ( double )ZOOM_STEPS;
     }
   }
 }
@@ -232,17 +232,17 @@ void eVisImageDisplayWidget::setScalers( )
 void eVisImageDisplayWidget::displayUrlImage( int requestId, bool error )
 {
   //only process if no error and the request id matches the request id stored in displayUrlImage
-  if( !error && requestId == mCurrentHttpImageRequestId )
+  if ( !error && requestId == mCurrentHttpImageRequestId )
   {
     //reset to be beginning of the buffer
     mHttpBuffer->seek( 0 );
     //load the image data from the buffer
     mImageLoaded = mImage->loadFromData( mHttpBuffer->buffer( ) );
-    
+
     mCurrentZoomStep = 0;
     pbtnZoomOut->setEnabled( false );
     pbtnZoomFull->setEnabled( false );
-    if( mImageLoaded )
+    if ( mImageLoaded )
     {
       pbtnZoomIn->setEnabled( true );
     }
@@ -251,9 +251,9 @@ void eVisImageDisplayWidget::displayUrlImage( int requestId, bool error )
       pbtnZoomIn->setEnabled( false );
     }
   }
-  
+
   setScalers( );
-  
+
   displayImage( );
 }
 
@@ -262,7 +262,7 @@ void eVisImageDisplayWidget::displayUrlImage( int requestId, bool error )
 */
 void eVisImageDisplayWidget::on_pbtnZoomIn_clicked( )
 {
-  if( mCurrentZoomStep < ZOOM_STEPS )
+  if ( mCurrentZoomStep < ZOOM_STEPS )
   {
     pbtnZoomOut->setEnabled( true );
     pbtnZoomFull->setEnabled( true );
@@ -270,7 +270,7 @@ void eVisImageDisplayWidget::on_pbtnZoomIn_clicked( )
     displayImage( );
   }
 
-  if( mCurrentZoomStep == ZOOM_STEPS )
+  if ( mCurrentZoomStep == ZOOM_STEPS )
   {
     pbtnZoomIn->setEnabled( false );
   }
@@ -281,14 +281,14 @@ void eVisImageDisplayWidget::on_pbtnZoomIn_clicked( )
 */
 void eVisImageDisplayWidget::on_pbtnZoomOut_clicked( )
 {
-  if( mCurrentZoomStep > 0 )
+  if ( mCurrentZoomStep > 0 )
   {
     pbtnZoomIn->setEnabled( true );
     mCurrentZoomStep--;
     displayImage( );
   }
 
-  if( mCurrentZoomStep == 0 )
+  if ( mCurrentZoomStep == 0 )
   {
     pbtnZoomOut->setEnabled( false );
     pbtnZoomFull->setEnabled( false );

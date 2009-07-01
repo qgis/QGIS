@@ -40,15 +40,15 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
   QString displayName;
 
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  {
+    QVariant::Type type = ( *it ).type();
+    if ( type == QVariant::Int || type == QVariant::Double )
     {
-      QVariant::Type type = ( *it ).type();
-      if ( type == QVariant::Int || type == QVariant::Double )
-      {
-        displayName = layer->attributeDisplayName(it.key());
-        classificationComboBox->addItem( displayName );
-        mFieldMap.insert( std::make_pair( displayName, it.key() ) );
-      }
+      displayName = layer->attributeDisplayName( it.key() );
+      classificationComboBox->addItem( displayName );
+      mFieldMap.insert( std::make_pair( displayName, it.key() ) );
     }
+  }
 
   //restore the correct settings
   const QgsGraduatedSymbolRenderer* renderer = dynamic_cast < const QgsGraduatedSymbolRenderer * >( layer->renderer() );
@@ -345,25 +345,25 @@ void QgsGraduatedSymbolDialog::adjustClassification()
     {
       if ( last_it != quantileBorders.end() )
       {
-        if(*last_it - floor(*last_it) > 0)
+        if ( *last_it - floor( *last_it ) > 0 )
         {
-          lowerString = QString::number(*last_it, 'f');
+          lowerString = QString::number( *last_it, 'f' );
         }
         else
         {
-          lowerString = QString::number(*last_it, 'f', 0);
+          lowerString = QString::number( *last_it, 'f', 0 );
         }
-        ( *symbol_it )->setLowerValue(lowerString);
+        ( *symbol_it )->setLowerValue( lowerString );
 
-        if(*it - floor(*it) > 0)
+        if ( *it - floor( *it ) > 0 )
         {
-          upperString = QString::number(*it, 'f');
+          upperString = QString::number( *it, 'f' );
         }
         else
         {
-          upperString = QString::number(*it, 'f', 0);
+          upperString = QString::number( *it, 'f', 0 );
         }
-        ( *symbol_it )->setUpperValue(upperString);
+        ( *symbol_it )->setUpperValue( upperString );
 
 
         listBoxText = lowerString + " - " + upperString;
@@ -386,28 +386,28 @@ void QgsGraduatedSymbolDialog::adjustClassification()
       double upper = minimum + ( maximum - minimum ) / numberofclassesspinbox->value() * ( i + 1 );
 
       QString lowerString;
-      if(lower - floor(lower) > 0)
+      if ( lower - floor( lower ) > 0 )
       {
-           lowerString = QString::number(lower, 'f');
+        lowerString = QString::number( lower, 'f' );
       }
       else
       {
-            lowerString = QString::number(lower, 'f', 0);
+        lowerString = QString::number( lower, 'f', 0 );
       }
 
-      ( *symbol_it )->setLowerValue(lowerString);
+      ( *symbol_it )->setLowerValue( lowerString );
 
       QString upperString;
-      if(upper - floor(upper) > 0)
+      if ( upper - floor( upper ) > 0 )
       {
-        upperString = QString::number(upper, 'f');
+        upperString = QString::number( upper, 'f' );
       }
       else
       {
-        upperString = QString::number(upper, 'f', 0);
+        upperString = QString::number( upper, 'f', 0 );
       }
 
-      ( *symbol_it )->setUpperValue(upperString);
+      ( *symbol_it )->setUpperValue( upperString );
       listBoxText = lowerString + " - " + upperString;
 
       QListWidgetItem * mypItem = new QListWidgetItem( listBoxText );

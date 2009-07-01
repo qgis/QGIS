@@ -110,7 +110,7 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
       QgsFieldMap::const_iterator fieldIt = layerFields.find( *att_it );
       if ( fieldIt != layerFields.constEnd() )
       {
-        QString attributeName = vectorLayer->attributeDisplayName(fieldIt.key());
+        QString attributeName = vectorLayer->attributeDisplayName( fieldIt.key() );
         QStandardItem* attributeItem = new QStandardItem( attributeName );
         layerItem->setChild( layerItem->rowCount(), 0, attributeItem );
       }
