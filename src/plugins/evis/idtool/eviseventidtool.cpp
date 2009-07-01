@@ -4,23 +4,23 @@
 ** Creation Date: 2007-03-19
 **
 ** Copyright ( c ) 2007, American Museum of Natural History. All rights reserved.
-** 
-** This library/program is free software; you can redistribute it 
+**
+** This library/program is free software; you can redistribute it
 ** and/or modify it under the terms of the GNU Library General Public
 ** License as published by the Free Software Foundation; either
 ** version 2 of the License, or ( at your option ) any later version.
-** 
+**
 ** This library/program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ** Library General Public License for more details.
 **
-** This work was made possible through a grant by the The John D. and 
-** Catherine T. MacArthur Foundation. Additionally, this program was prepared by 
-** the American Museum of Natural History under award No. NA05SEC46391002 
-** from the National Oceanic and Atmospheric Administration, U.S. Department 
-** of Commerce.  The statements, findings, conclusions, and recommendations 
-** are those of the author( s ) and do not necessarily reflect the views of the 
+** This work was made possible through a grant by the The John D. and
+** Catherine T. MacArthur Foundation. Additionally, this program was prepared by
+** the American Museum of Natural History under award No. NA05SEC46391002
+** from the National Oceanic and Atmospheric Administration, U.S. Department
+** of Commerce.  The statements, findings, conclusions, and recommendations
+** are those of the author( s ) and do not necessarily reflect the views of the
 ** National Oceanic and Atmospheric Administration or the Department of Commerce.
 **
 **/
@@ -41,16 +41,16 @@
 * @param theCanvas - Pointer to the QGIS map canvas
 */
 eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
-: QgsMapTool( theCanvas )
+    : QgsMapTool( theCanvas )
 {
   //set cursor
-  QPixmap myIdentifyQPixmap = QPixmap( ( const char ** ) identify_cursor );
+  QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
   //set the current tool to this object
-  if( 0 != mCanvas )
+  if ( 0 != mCanvas )
   {
-   mCanvas->setMapTool( this );
+    mCanvas->setMapTool( this );
   }
 }
 
@@ -61,13 +61,13 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
 void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
 {
 
-  if( 0 == mCanvas || 0 == theMouseEvent) { return; }
+  if ( 0 == mCanvas || 0 == theMouseEvent ) { return; }
 
   //Check to see if there is a layer selected
-  if( mCanvas->currentLayer( ) )
+  if ( mCanvas->currentLayer( ) )
   {
     //Check to see if the current layer is a vector layer
-    if( QgsMapLayer::VectorLayer == mCanvas->currentLayer( )->type( ) )
+    if ( QgsMapLayer::VectorLayer == mCanvas->currentLayer( )->type( ) )
     {
       select( mCanvas->getCoordinateTransform( )->toMapCoordinates( theMouseEvent->x( ), theMouseEvent->y( ) ) );
     }
@@ -89,12 +89,12 @@ void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
 void eVisEventIdTool::select( QgsPoint thePoint )
 {
 
-  if( 0 == mCanvas ) { return; }
+  if ( 0 == mCanvas ) { return; }
 
   QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer( );
 
   // create the search rectangle. this was modeled after the QgsMapIdentifyTool in core QGIS application
-  double searchWidth = mCanvas->extent( ).width( ) * ( ( double )QGis::DEFAULT_IDENTIFY_RADIUS/100.0 );
+  double searchWidth = mCanvas->extent( ).width( ) * (( double )QGis::DEFAULT_IDENTIFY_RADIUS / 100.0 );
 
   QgsRectangle myRectangle;
   myRectangle.setXMinimum( thePoint.x( ) - searchWidth );

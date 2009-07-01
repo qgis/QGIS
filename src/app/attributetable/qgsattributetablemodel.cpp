@@ -144,7 +144,7 @@ void QgsAttributeTableModel::layerModified( bool onlyGeometry )
 
   loadLayer();
   emit modelChanged();
-  emit headerDataChanged ( Qt::Horizontal, 0, columnCount());
+  emit headerDataChanged( Qt::Horizontal, 0, columnCount() );
 }
 
 void QgsAttributeTableModel::loadLayer()
@@ -274,12 +274,12 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     else
     {
       QString attributeName = mLayer->attributeAlias( mAttributes[section] );
-      if(attributeName.isEmpty())
+      if ( attributeName.isEmpty() )
       {
         QgsField field = mLayer->pendingFields()[ mAttributes[section] ];
         attributeName = field.name();
       }
-      return QVariant(attributeName);
+      return QVariant( attributeName );
     }
   }
   else return QVariant();

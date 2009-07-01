@@ -4,23 +4,23 @@
 ** Creation Date: 2007-03-06
 **
 ** Copyright ( c ) 2007, American Museum of Natural History. All rights reserved.
-** 
-** This library/program is free software; you can redistribute it 
+**
+** This library/program is free software; you can redistribute it
 ** and/or modify it under the terms of the GNU Library General Public
 ** License as published by the Free Software Foundation; either
 ** version 2 of the License, or ( at your option ) any later version.
-** 
+**
 ** This library/program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ** Library General Public License for more details.
 **
-** This work was made possible through a grant by the the John D. and 
-** Catherine T. MacArthur Foundation. Additionally, this program was prepared by 
-** the American Museum of Natural History under award No. NA05SEC46391002 
-** from the National Oceanic and Atmospheric Administration, U.S. Department 
-** of Commerce.  The statements, findings, conclusions, and recommendations 
-** are those of the author( s ) and do not necessarily reflect the views of the 
+** This work was made possible through a grant by the the John D. and
+** Catherine T. MacArthur Foundation. Additionally, this program was prepared by
+** the American Museum of Natural History under award No. NA05SEC46391002
+** from the National Oceanic and Atmospheric Administration, U.S. Department
+** of Commerce.  The statements, findings, conclusions, and recommendations
+** are those of the author( s ) and do not necessarily reflect the views of the
 ** National Oceanic and Atmospheric Administration or the Department of Commerce.
 **
 **/
@@ -29,7 +29,7 @@
 //is based on and a modification of the default plugin.h file which carried the
 //following header
 /***************************************************************************
-  evis.cpp 
+  evis.cpp
   An event visualization plugin for QGIS
 
   -------------------
@@ -88,8 +88,8 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 
 eVis::eVis( QgisInterface * theQgisInterface ):
-                 QgisPlugin( sName,sDescription,sPluginVersion,sPluginType ),
-                 mQGisIface( theQgisInterface )
+    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    mQGisIface( theQgisInterface )
 {
   mIdTool = 0;
 }
@@ -102,9 +102,9 @@ void eVis::initGui( )
 {
 
   // Create the action for tool
-  mDatabaseConnectionActionPointer = new QAction( QIcon( ":/evis/eVisDatabaseConnection.png" ),tr( "eVis Database Connection" ), this );
-  mEventIdToolActionPointer = new QAction( QIcon( ":/evis/eVisEventIdTool.png" ),tr( "eVis Event Id Tool" ), this );
-  mEventBrowserActionPointer = new QAction( QIcon( ":/evis/eVisEventBrowser.png" ),tr( "eVis Event Browser" ), this );
+  mDatabaseConnectionActionPointer = new QAction( QIcon( ":/evis/eVisDatabaseConnection.png" ), tr( "eVis Database Connection" ), this );
+  mEventIdToolActionPointer = new QAction( QIcon( ":/evis/eVisEventIdTool.png" ), tr( "eVis Event Id Tool" ), this );
+  mEventBrowserActionPointer = new QAction( QIcon( ":/evis/eVisEventBrowser.png" ), tr( "eVis Event Browser" ), this );
 
   // Set the what's this text
   mDatabaseConnectionActionPointer->setWhatsThis( tr( "Create layer from a database query" ) );
@@ -140,13 +140,13 @@ void eVis::launchDatabaseConnection( )
   eVisDatabaseConnectionGui *myPluginGui = new eVisDatabaseConnectionGui( &mTemporaryFileList, mQGisIface->mainWindow( ), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
-  connect( myPluginGui, SIGNAL( drawVectorLayer( QString,QString,QString ) ), this, SLOT( drawVectorLayer( QString,QString,QString ) ) );
+  connect( myPluginGui, SIGNAL( drawVectorLayer( QString, QString, QString ) ), this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
   myPluginGui->show( );
 }
 
 void eVis::launchEventIdTool( )
 {
-  if( 0 == mIdTool )
+  if ( 0 == mIdTool )
   {
     mIdTool = new eVisEventIdTool( mQGisIface->mapCanvas( ) );
     mIdTool->setAction( mEventIdToolActionPointer );
@@ -166,24 +166,24 @@ void eVis::launchEventBrowser( )
 void eVis::unload( )
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( "&eVis",mDatabaseConnectionActionPointer );
+  mQGisIface->removePluginMenu( "&eVis", mDatabaseConnectionActionPointer );
   mQGisIface->removeToolBarIcon( mDatabaseConnectionActionPointer );
   delete mDatabaseConnectionActionPointer;
 
-  mQGisIface->removePluginMenu( "&eVis",mEventIdToolActionPointer );
+  mQGisIface->removePluginMenu( "&eVis", mEventIdToolActionPointer );
   mQGisIface->removeToolBarIcon( mEventIdToolActionPointer );
   delete mEventIdToolActionPointer;
 
-  mQGisIface->removePluginMenu( "&eVis",mEventBrowserActionPointer );
+  mQGisIface->removePluginMenu( "&eVis", mEventBrowserActionPointer );
   mQGisIface->removeToolBarIcon( mEventBrowserActionPointer );
   delete mEventBrowserActionPointer;
 
-  while( mTemporaryFileList.size( ) > 0 )
+  while ( mTemporaryFileList.size( ) > 0 )
   {
     delete( mTemporaryFileList.takeLast( ) );
   }
 
-  if( 0 != mIdTool )
+  if ( 0 != mIdTool )
   {
     delete mIdTool;
   }
@@ -205,8 +205,8 @@ void eVis::drawVectorLayer( QString thePathNameQString, QString theBaseNameQStri
 //
 //////////////////////////////////////////////////////////////////////////
 
-/** 
- * Required extern functions needed  for every plugin 
+/**
+ * Required extern functions needed  for every plugin
  * These functions can be called prior to creating an instance
  * of the plugin class
  */

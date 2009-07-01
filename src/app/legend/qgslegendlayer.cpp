@@ -373,10 +373,10 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
       const QgsFieldMap& fields = layer->pendingFields();
       for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
       {
-        QString classfieldname = layer->attributeAlias(*it);
-        if(classfieldname.isEmpty())
+        QString classfieldname = layer->attributeAlias( *it );
+        if ( classfieldname.isEmpty() )
         {
-            classfieldname = fields[*it].name();
+          classfieldname = fields[*it].name();
         }
         itemList.push_front( std::make_pair( classfieldname, QPixmap() ) );
       }
