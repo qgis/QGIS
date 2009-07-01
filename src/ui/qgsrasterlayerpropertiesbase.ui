@@ -1472,8 +1472,14 @@
           </property>
           <item row="0" column="1" >
            <widget class="QPushButton" name="pbnChangeSpatialRefSys" >
+            <property name="toolTip">
+             <string>Specify the coordinate reference system of the layer's geometry.</string>
+            </property>
+            <property name="whatsThis">
+             <string>Specify the coordinate reference system of the layer's geometry.</string>
+            </property>
             <property name="text" >
-             <string>Change ...</string>
+             <string>Specify...</string>
             </property>
            </widget>
           </item>
