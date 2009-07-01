@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="vi">
-<defaultcodec></defaultcodec>
+<!DOCTYPE TS>
+<TS version="2.0" language="vi">
 <context>
     <name></name>
     <message>
@@ -1097,6 +1097,10 @@ p, li { white-space: pre-wrap; }
         <source>Unique value count</source>
         <translation>Đếm giá trị không trùng</translation>
     </message>
+    <message>
+        <source>Use only selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GeometryDialog</name>
@@ -1122,7 +1126,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation>Tập tin shape đã được tạo ra</translation>
+        <translation type="obsolete">Tập tin shape đã được tạo ra</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
@@ -1182,15 +1186,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Function not found</source>
-        <translation type="unfinished">Không tìm thấy hàm</translation>
+        <translation type="obsolete">Không tìm thấy hàm</translation>
     </message>
     <message>
         <source>Error writing output shapefile</source>
-        <translation>Lỗi khi ghi tập tin shape đầu ra</translation>
+        <translation type="obsolete">Lỗi khi ghi tập tin shape đầu ra</translation>
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
-        <translation>Không thể xoá lớp hiện có...</translation>
+        <translation type="obsolete">Không thể xoá lớp hiện có...</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation type="unfinished">Lớp vector điểm đầu vào</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete incomplete shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error writing output shapefile.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1221,15 +1261,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
-        <translation>Không thể tạo kết quả xử lý địa lý.</translation>
+        <translation type="obsolete">Không thể tạo kết quả xử lý địa lý.</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation>Tập tin shape đầu ra được tạo thành</translation>
+        <translation type="obsolete">Tập tin shape đầu ra được tạo thành</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation>Bạn có muốn thêm lớp mới vào TOC?</translation>
+        <translation type="obsolete">Bạn có muốn thêm lớp mới vào TOC?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -1253,7 +1293,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Erase layer</source>
-        <translation>Lớp xoá</translation>
+        <translation type="obsolete">Lớp xoá</translation>
     </message>
     <message>
         <source>Difference</source>
@@ -1290,6 +1330,51 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Union</source>
         <translation>Hợp</translation>
+    </message>
+    <message>
+        <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Warnings:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Some output geometries may be missing or invalid.
+
+Would you like to add the new layer anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Feature geometry error: One or more output features ignored due to invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+GEOS geoprocessing error: One or more input features have invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1694,7 +1779,7 @@ p, li { white-space: pre-wrap; }
 &lt;p&gt;Selected text can also be formatted using the &apos;Font&apos; button.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>© QGIS 2004</source>
         <translation type="obsolete">© QGIS 2004</translation>
     </message>
@@ -3271,6 +3356,90 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <source>Access Oracle Spatial GeoRaster</source>
         <translation>Truy nhập Oracle Spatial GeoRaster</translation>
+    </message>
+    <message>
+        <source>Deleted vertices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Moved vertices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Region&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open region header</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UTM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Other</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projection Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3D Cols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>3D Rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Depths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E-W 3D resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N-S 3D resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eVis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An event visualization tool - view images associated with vector features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version 1.1.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This tool only supports vector data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No active layers found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5257,6 +5426,102 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
         <source>Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.</source>
         <translation>Hỗ trợ chồng vector để có thể vẽ các biểu đồ tròn và biểu đồ cột trên lớp vector dựa theo dự liệu thuộc tính.</translation>
     </message>
+    <message>
+        <source>&amp;Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redo the last operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Ring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Part</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node Tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure shortcuts...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced Digitizing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Features deleted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merging features...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">Bỏ</translation>
+    </message>
+    <message>
+        <source>No active layer</source>
+        <translation type="unfinished">Không có lớp kích hoạt</translation>
+    </message>
+    <message>
+        <source>No active layer found. Please select a layer in the layer list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active layer is not vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The merge tool requires at least two selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merged features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Features cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Features pasted</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -6191,6 +6456,18 @@ p, li { white-space: pre-wrap; }
         <source>Cancel</source>
         <translation type="obsolete">Hủy</translation>
     </message>
+    <message>
+        <source>Comment:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsApplication</name>
@@ -6695,6 +6972,10 @@ p, li { white-space: pre-wrap; }
         <source>...</source>
         <translation>...</translation>
     </message>
+    <message>
+        <source>Search selected records only</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
@@ -6808,6 +7089,20 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsAttributeTableMemoryModel</name>
+    <message>
+        <source>Attribute changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeTableModel</name>
+    <message>
+        <source>Attribute changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsBookmarks</name>
     <message>
         <source>Really Delete?</source>
@@ -6882,7 +7177,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Id</translation>
     </message>
     <message>
         <source>Zoom To</source>
@@ -7830,6 +8125,10 @@ p, li { white-space: pre-wrap; }
         <source>Update preview</source>
         <translation>Cập nhật xem trước</translation>
     </message>
+    <message>
+        <source>Keep layer list</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerPicture</name>
@@ -8374,6 +8673,53 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     </message>
 </context>
 <context>
+    <name>QgsConfigureShortcutsDialog</name>
+    <message>
+        <source>None</source>
+        <translation type="unfinished">Không có</translation>
+    </message>
+    <message>
+        <source>Set default (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation type="unfinished">Thay đổi</translation>
+    </message>
+    <message>
+        <source>Shortcut conflict</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This shortcut is already assigned to action %1. Reassign?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set none</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set default</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsConnectionDialog</name>
     <message>
         <source>SPIT - Help</source>
@@ -8693,7 +9039,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Chữ nghiêng &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(ghi chú: &amp;amp;copy; nhập ký hiệu bản quyền)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>© QGIS 2008</source>
         <translation type="obsolete">© QGIS 2008</translation>
     </message>
@@ -8714,11 +9060,11 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Nhập nhãn bản quyền của bạn vào bên dưới. Phần mở rộng này hỗ trợ các thẻ đánh dấu kiểm html cơ bản để định dạng nhãn. Ví dụ:&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Chữ đậm &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Nghiêng &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(ghi chú: &amp;amp;copy; cho ta biểu tượng bản quyền)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&#xa9; QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8948,7 +9294,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X</translation>
     </message>
     <message>
         <source>North</source>
@@ -11017,6 +11363,14 @@ p, li { white-space: pre-wrap; }
         <source>Add attribute</source>
         <translation>Thêm thuộc tính</translation>
     </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGeorefDescriptionDialogBase</name>
@@ -12793,6 +13147,10 @@ tại dòng %2 cột %3</translation>
         <source>%1:&amp;nbsp;no input</source>
         <translation>%1:&amp;nbsp;không có đầu vào</translation>
     </message>
+    <message>
+        <source>Input</source>
+        <translation type="unfinished">Đầu vào</translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassModuleOption</name>
@@ -12809,7 +13167,11 @@ tại dòng %2 cột %3</translation>
     <name>QgsGrassModuleSelection</name>
     <message>
         <source>Attribute field</source>
-        <translation>Trường thuộc tính</translation>
+        <translation type="obsolete">Trường thuộc tính</translation>
+    </message>
+    <message>
+        <source>Selected categories</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13702,14 +14064,29 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGrassShell</name>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassShellBase</name>
     <message>
         <source>GRASS Shell</source>
-        <translation>Shell của GRASS</translation>
+        <translation type="obsolete">Shell của GRASS</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Đóng</translation>
+        <translation type="obsolete">Đóng</translation>
     </message>
 </context>
 <context>
@@ -14716,8 +15093,12 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>Tỷ lệ lớn nhất mà tại đó lớp sẽ được trình bày.</translation>
     </message>
+    <message utf8="true">
+        <source>°</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
-        <source>&#xb0;</source>
+        <source>&amp;Color</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15357,6 +15738,10 @@ p, li { white-space: pre-wrap; }
         <source>Could not remove polygon intersection</source>
         <translation>Không thể loại bỏ phần giao của vùng</translation>
     </message>
+    <message>
+        <source>Feature added</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolAddIsland</name>
@@ -15387,6 +15772,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation>Không thể chuyển đổi điểm này thành hệ tọa độ của các lớp</translation>
+    </message>
+    <message>
+        <source>Island added</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15442,6 +15831,50 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Error, could not add ring</source>
         <translation>Lỗi, không thể thêm &apos;ring&apos;</translation>
+    </message>
+    <message>
+        <source>Ring added</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolAddVertex</name>
+    <message>
+        <source>Added vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolDeletePart</name>
+    <message>
+        <source>Delete part</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This isn&apos;t a multipart geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Part of multipart feature deleted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t remove the selected part.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolDeleteRing</name>
+    <message>
+        <source>Ring deleted</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolDeleteVertex</name>
+    <message>
+        <source>Vertex deleted</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15529,6 +15962,10 @@ p, li { white-space: pre-wrap; }
         <translation>Không thể nhận diện các đối tượng %1 vì:
 %2</translation>
     </message>
+    <message>
+        <source>Attribute changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolMoveFeature</name>
@@ -15539,6 +15976,33 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
         <translation>Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
+    </message>
+    <message>
+        <source>Feature moved</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolMoveVertex</name>
+    <message>
+        <source>Vertex moved</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolNodeTool</name>
+    <message>
+        <source>Node tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature was deleted on background.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inserted vertex</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15558,6 +16022,21 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation>Phép chọn ra ngoài HTĐ của lớp.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolSimplify</name>
+    <message>
+        <source>Geometry simplified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsupported operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multipart features are not supported for simplification.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15601,6 +16080,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation>Không thể chuyển đổi điểm này thành hệ tọa độ của lớp</translation>
+    </message>
+    <message>
+        <source>Features split</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15934,6 +16417,56 @@ Bạn có muốn ghi đè nó không?</translation>
     <message>
         <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
         <translation>&lt;p&gt;Bản đồ này được định nghĩa bằng hệ tọa độ địa lý (kinh/vĩ độ) nhưng phạm vi của bản đồ lại cho thấy nó thực ra là một hệ tọa độ đã quy chiếu (ví dụ như Mercator). Nếu đúng vậy, kết quả từ các phép đo đường và vùng sẽ không đúng.&lt;/p&gt;&lt;p&gt;Để sửa điều này, hãy thiết lập chính xác hệ tọa độ của bản đồ bằng cách dùng menu &lt;tt&gt;Thiết lập: Tính chất phép chiếu&lt;/tt&gt;.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMergeAttributesDialog</name>
+    <message>
+        <source>Id</source>
+        <translation type="unfinished">Id</translation>
+    </message>
+    <message>
+        <source>Merge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>feature %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished">Nhỏ nhất</translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished">Lớn nhất</translation>
+    </message>
+    <message>
+        <source>Median</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Concatenation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean</source>
+        <translation type="unfinished">Trung bình</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMergeAttributesDialogBase</name>
+    <message>
+        <source>Merge feature attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take attributes from selected feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove feature from selection</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16272,6 +16805,18 @@ Thông tin bổ sung về lỗi:
         <source>Connection details</source>
         <translation>Chi tiết về kết nối</translation>
     </message>
+    <message>
+        <source>If the WMS requires basic authentication, enter a user name and optional password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished">Mật mã</translation>
+    </message>
 </context>
 <context>
     <name>QgsNewOgrConnection</name>
@@ -16520,6 +17065,21 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <source>1</source>
         <translation>1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOgrProvider</name>
+    <message>
+        <source>Integer</source>
+        <translation type="unfinished">Số nguyên</translation>
+    </message>
+    <message>
+        <source>Real</source>
+        <translation type="unfinished">Số thực</translation>
+    </message>
+    <message>
+        <source>String</source>
+        <translation type="unfinished">Chuỗi</translation>
     </message>
 </context>
 <context>
@@ -17470,6 +18030,10 @@ p, li { white-space: pre-wrap; }
         <source>pixels</source>
         <translation>điểm ảnh</translation>
     </message>
+    <message>
+        <source>Show markers only for selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOraclePlugin</name>
@@ -17905,7 +18469,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
-        <translation>Không thể mở thư mục phần mở rộng của hệ thống</translation>
+        <translation type="obsolete">Không thể mở thư mục phần mở rộng của hệ thống</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -17957,7 +18521,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
-        <translation>Trình Cài đặt Phần mở rộng đã phát hiện một phần mở rộng đã lỗi thời làm che mất phiên bản mới hơn được đóng gói chung với phiên bản QGIS này. Có thể nó là một phần còn lại của bản cài đặt QGIS cũ. Vui lòng dùng Trình Cài đặt để loại bỏ nó để gỡ phần che với phiên bản này QGIS.</translation>
+        <translation type="obsolete">Trình Cài đặt Phần mở rộng đã phát hiện một phần mở rộng đã lỗi thời làm che mất phiên bản mới hơn được đóng gói chung với phiên bản QGIS này. Có thể nó là một phần còn lại của bản cài đặt QGIS cũ. Vui lòng dùng Trình Cài đặt để loại bỏ nó để gỡ phần che với phiên bản này QGIS.</translation>
+    </message>
+    <message>
+        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18013,12 +18581,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>plural</comment>
-        <translation>không được cài đặt</translation>
+        <translation type="obsolete">không được cài đặt</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>plural</comment>
-        <translation>được cài đặt</translation>
+        <translation type="obsolete">được cài đặt</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
@@ -18051,27 +18619,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>singular</comment>
-        <translation>không được cài đặt</translation>
+        <translation type="obsolete">không được cài đặt</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>singular</comment>
-        <translation>được cài đặt</translation>
+        <translation type="obsolete">được cài đặt</translation>
     </message>
     <message>
         <source>upgradeable</source>
         <comment>singular</comment>
-        <translation>có thể nâng cấp</translation>
+        <translation type="obsolete">có thể nâng cấp</translation>
     </message>
     <message>
         <source>new!</source>
         <comment>singular</comment>
-        <translation>mới!</translation>
+        <translation type="obsolete">mới!</translation>
     </message>
     <message>
         <source>invalid</source>
         <comment>singular</comment>
-        <translation>không hợp lệ</translation>
+        <translation type="obsolete">không hợp lệ</translation>
     </message>
     <message>
         <source>installed version</source>
@@ -18228,6 +18796,30 @@ Bạn cần phải khởi động lại Quantum GIS để nạp lại nó.</tran
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
         <translation>Bạn đang chuẩn bị thêm một số kho chứa phần mở rộng không được kiểm chứng hoặc không được nhóm phát triển Quantum GIS hỗ trợ. Các tác giả của các phần mở rộng có những nỗ lực để đảm bảo rằng việc sử dụng chúng hữu ích và an toàn, tuy nhiên, chúng tôi không chịu trách nhiệm về chúng.</translation>
+    </message>
+    <message>
+        <source>not installed</source>
+        <translation type="unfinished">không được cài đặt</translation>
+    </message>
+    <message>
+        <source>installed</source>
+        <translation type="unfinished">được cài đặt</translation>
+    </message>
+    <message>
+        <source>upgradeable</source>
+        <translation type="unfinished">có thể nâng cấp</translation>
+    </message>
+    <message>
+        <source>new!</source>
+        <translation type="unfinished">mới!</translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished">không hợp lệ</translation>
+    </message>
+    <message>
+        <source>at least</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19363,6 +19955,46 @@ int4 với khống chế không trùng (bao gồm khoá sơ cấp),
 có một cột oid PostgreSQL hoặc có một cột ctid với số block
 16bit.</translation>
     </message>
+    <message>
+        <source>smallint (16bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>integer (32bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>integer (64bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>numeric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>decimal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>double</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>char</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>varchar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>text</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPostgresProvider::Conn</name>
@@ -19606,6 +20238,10 @@ Vui lòng cài đặt PostGIS có hỗ trợ GEOS (http://geos.refractions.net)<
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
         <translation>Kích hoạt việc chuyển đổi HTĐ khi mở bản đồ</translation>
     </message>
+    <message>
+        <source>save absolute paths</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectionSelector</name>
@@ -19738,6 +20374,26 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
         <translation>Để truy nhập vào môi trường Quantum GIS từ console python này hãy dùng đối tượng trên phạm vi toàn cục, đây là một &apos;bản thể&apos; của QggisInterface. &lt;br&gt;Cách dùng ví dụ: iface.zoomFull()</translation>
+    </message>
+    <message>
+        <source>&amp;Execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21150,7 +21806,7 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Change ...</source>
-        <translation>Thay đổi...</translation>
+        <translation type="obsolete">Thay đổi...</translation>
     </message>
     <message>
         <source>Legend</source>
@@ -21174,6 +21830,14 @@ p, li { white-space: pre-wrap; }(new line)
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21643,6 +22307,10 @@ p, li { white-space: pre-wrap; }
         <source>Confirm Overwrite</source>
         <translation>Xác nhận ghi đè</translation>
     </message>
+    <message>
+        <source>WMS Password for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsServerSourceSelectBase</name>
@@ -21761,6 +22429,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Add selected row to WMS list</source>
         <translation>Thêm hàng được chọn và danh sách WMS</translation>
+    </message>
+    <message>
+        <source>Layer Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">Lớp</translation>
+    </message>
+    <message>
+        <source>Style</source>
+        <translation type="unfinished">Stil</translation>
     </message>
 </context>
 <context>
@@ -22161,6 +22841,22 @@ SQL: %2</source>
         <translation>Lỗi SQLite: %1
 
 SQL: %2</translation>
+    </message>
+    <message>
+        <source>BLOB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Double</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Integer</source>
+        <translation type="unfinished">Số nguyên</translation>
     </message>
 </context>
 <context>
@@ -22910,6 +23606,21 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsTabWidget</name>
+    <message>
+        <source>Tab text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter new tab text:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canvas %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsUValDialogBase</name>
     <message>
         <source>Form1</source>
@@ -22950,6 +23661,10 @@ p, li { white-space: pre-wrap; }
 Should the existing classes be deleted before classification?</source>
         <translation>Trường phân loại đã bị thay đổi từ &apos;%1&apos; thành &apos;%2&apos;.
 Có nên xoá các lớp hiện có trước khi phân loại?</translation>
+    </message>
+    <message>
+        <source>default</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23511,6 +24226,26 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
         <source>Save layer properties as style file (.qml)</source>
         <translation>Lưu các tính chất của lớp thành tập tin kiểu (.qml)</translation>
     </message>
+    <message>
+        <source>alias</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>enumeration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>immutable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deleted attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -23684,7 +24419,7 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     </message>
     <message>
         <source>Change CRS</source>
-        <translation>Thay đổi HTĐ</translation>
+        <translation type="obsolete">Thay đổi HTĐ</translation>
     </message>
     <message>
         <source>Attributes</source>
@@ -23696,7 +24431,7 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+N</translation>
     </message>
     <message>
         <source>Delete column</source>
@@ -23713,6 +24448,14 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <source>Click to toggle table editing</source>
         <translation>Nhắp chuột để bật/tắt chỉnh sửa bảng</translation>
+    </message>
+    <message>
+        <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specify CRS</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24305,6 +25048,21 @@ Tried URL: %1</source>
     </message>
 </context>
 <context>
+    <name>SimplifyLineDialog</name>
+    <message>
+        <source>Simplify line tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SplashScreen</name>
     <message>
         <source>Quantum GIS - </source>
@@ -24313,6 +25071,21 @@ Tried URL: %1</source>
     <message>
         <source>Version </source>
         <translation type="obsolete">Phiên bản </translation>
+    </message>
+</context>
+<context>
+    <name>UndoWidget</name>
+    <message>
+        <source>Undo/Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24343,11 +25116,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values:</source>
-        <translation>Các giá trị không trùng:</translation>
+        <translation type="obsolete">Các giá trị không trùng:</translation>
     </message>
     <message>
         <source>Total unique values:</source>
-        <translation>Tổng số giá trị không trùng:</translation>
+        <translation type="obsolete">Tổng số giá trị không trùng:</translation>
     </message>
     <message>
         <source>Basics statistics</source>
@@ -24367,31 +25140,39 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation>Khoảng cách trung bình ghi nhận được:</translation>
+        <translation type="obsolete">Khoảng cách trung bình ghi nhận được:</translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation>Khoảng cách trung bình mong đợi:</translation>
+        <translation type="obsolete">Khoảng cách trung bình mong đợi:</translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation>Chỉ mục lân cận gần nhất :</translation>
+        <translation type="obsolete">Chỉ mục lân cận gần nhất :</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation>Đối tượng %1 chứa một lỗ không lồng (unnested hole)</translation>
+        <translation type="obsolete">Đối tượng %1 chứa một lỗ không lồng (unnested hole)</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation>Đối tượng %1 không khép kín</translation>
+        <translation type="obsolete">Đối tượng %1 không khép kín</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation>Đối tượng %1 tự giao nhau</translation>
+        <translation type="obsolete">Đối tượng %1 tự giao nhau</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation>Đối tượng %1 có thứ tự nốt không đúng</translation>
+        <translation type="obsolete">Đối tượng %1 có thứ tự nốt không đúng</translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total unique values</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24662,6 +25443,566 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
     </message>
 </context>
 <context>
+    <name>eVis</name>
+    <message>
+        <source>eVis Database Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eVis Event Id Tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>eVis Event Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create layer from a database query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open an Event Browers and display the selected feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open an Event Browser to explore the current layer&apos;s features</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisDatabaseConnectionGui</name>
+    <message>
+        <source>Undefined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No predefined queries loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New Database connection requested...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: You must select a database type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: No host name entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: No database name entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>established</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>connected</source>
+        <translation type="unfinished">đã kết nối</translation>
+    </message>
+    <message>
+        <source>Tables</source>
+        <translation type="unfinished">Tabellen</translation>
+    </message>
+    <message>
+        <source>Connection to [</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>] failed: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Parse error at line %1, column %2: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Unabled to open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Query failed: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Counld not create temporary file, process halted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: A database connection is not currently established</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisDatabaseConnectionGuiBase</name>
+    <message>
+        <source>Database Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Predfined Queries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load predefined queries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loads an XML file with predefined queries. Use the Open File window to locate the XML file that contains one or more predefined queries using the format described in the user guide.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The description of the selected query.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the predefined query you want to use from the drop-down list containing queries identified form the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>not connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Connection Status: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database Host</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password to access the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the name of the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation type="unfinished">Tên người dùng</translation>
+    </message>
+    <message>
+        <source>Enter the port through which the database must be accessed if a MYSQL database is used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished">Kết nối</translation>
+    </message>
+    <message>
+        <source>User name to access the database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished">Mật mã</translation>
+    </message>
+    <message>
+        <source>Database Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQL Query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run the query entered above. The status of the query will be displayed in the Output  Console below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run Query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the query you want to run in this window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A window for status messages to be displayed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output Console</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisDatabaseLayerFieldSelectionGuiBase</name>
+    <message>
+        <source>Database File Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The name of the field that contains the Y coordinate of the points.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The name of the field that contains the X coordinate of the points.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y Coordinate</source>
+        <translation type="unfinished">Toạ độ Y</translation>
+    </message>
+    <message>
+        <source>X Coordinate</source>
+        <translation type="unfinished">Toạ độ X</translation>
+    </message>
+    <message>
+        <source>Name of New Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisGenericEventBrowserGui</name>
+    <message>
+        <source>Generic Event Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Cảnh báo</translation>
+    </message>
+    <message>
+        <source>This tool only supports vector data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No active layers found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Lỗi</translation>
+    </message>
+    <message>
+        <source>Unable to connect to either the map canvas or application interface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An invalid feature was received during initialization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Event Browser - Displaying records 01 of</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute Contents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Event Browser - Displaying records </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>of</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All ( * )</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisGenericEventBrowserGuiBase</name>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished">Trình bày</translation>
+    </message>
+    <message>
+        <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type="unfinished">Trước đó</translation>
+    </message>
+    <message>
+        <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <source>Image display area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display area for the image.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Save?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute Containing Path to File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.  </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path Is Relative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, the relative path values will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset to default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resets the values on this line to the default setting.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display Compass Bearing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compass Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Define the compass offset using a field from the vector layer attribute table.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> From Attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Define the compass offset manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, the compass offset values will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resets the compass offset values to the default settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>The base path or url from which images and documents can be “relative”</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Base Path onto which the relative path defined above will be appended.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, the Base Path will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Enters the default “Base Path” which is the  path to the directory of the vector layer containing the image information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace entire path/url stored in image path attribute with user defined
+Base Path (i.e. keep only filename from attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, the  current check-box setting will be saved for the next session.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clears the check-box on this line.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, the same path rules that are defined  for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply Path to Image rules when loading docs in external applications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure External Applications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File extension and external application in which to load a document of that type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add new file type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete current row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>eVisImageDisplayWidget</name>
+    <message>
+        <source>Zoom in</source>
+        <translation type="unfinished">Phóng to</translation>
+    </message>
+    <message>
+        <source>Zoom in to see more detal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom out</source>
+        <translation type="unfinished">Thu nhỏ</translation>
+    </message>
+    <message>
+        <source>Zoom out to see more area.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to full extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to display the entire image.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
@@ -24669,11 +26010,11 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
-        <translation>Phiên bản fTools này yêu cầu phiên bản QGIS tối thiểu là 1.0.0</translation>
+        <translation type="obsolete">Phiên bản fTools này yêu cầu phiên bản QGIS tối thiểu là 1.0.0</translation>
     </message>
     <message>
         <source>Plugin will not be enabled.</source>
-        <translation>Phần mở rộng này sẽ không được kích hoạt.</translation>
+        <translation type="obsolete">Phần mở rộng này sẽ không được kích hoạt.</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
@@ -24717,7 +26058,7 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
-        <translation>Các công cụ thu &amp;mẫu</translation>
+        <translation type="obsolete">Các công cụ thu &amp;mẫu</translation>
     </message>
     <message>
         <source>Random selection</source>
@@ -24841,7 +26182,28 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
     </message>
     <message>
         <source>About fTools</source>
-        <translation>Nói về fTools</translation>
+        <translation type="obsolete">Nói về fTools</translation>
+    </message>
+    <message>
+        <source>This version of fTools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fTools Information</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24861,6 +26223,64 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
     <message>
         <source>Replace this with a short description of what the plugin does</source>
         <translation>Thay phần này bằng một mô tả ngắn về chức năng của phần mở rộng</translation>
+    </message>
+</context>
+<context>
+    <name>statResult</name>
+    <message>
+        <source>Max. len.      : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. len.       : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean. len     : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filled             : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty           : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N                   : </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>visualThread</name>
+    <message>
+        <source>Observed mean distance : </source>
+        <translation type="unfinished">Khoảng cách trung bình ghi nhận được:</translation>
+    </message>
+    <message>
+        <source>Expected mean distance : </source>
+        <translation type="unfinished">Khoảng cách trung bình mong đợi:</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index : </source>
+        <translation type="unfinished">Chỉ mục lân cận gần nhất :</translation>
+    </message>
+    <message>
+        <source>Feature %1 contains an unnested hole</source>
+        <translation type="unfinished">Đối tượng %1 chứa một lỗ không lồng (unnested hole)</translation>
+    </message>
+    <message>
+        <source>Feature %1 is not closed</source>
+        <translation type="unfinished">Đối tượng %1 không khép kín</translation>
+    </message>
+    <message>
+        <source>Feature %1 is self intersecting</source>
+        <translation type="unfinished">Đối tượng %1 tự giao nhau</translation>
+    </message>
+    <message>
+        <source>Feature %1 has incorrect node ordering</source>
+        <translation type="unfinished">Đối tượng %1 có thứ tự nốt không đúng</translation>
     </message>
 </context>
 </TS>
