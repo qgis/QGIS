@@ -7,6 +7,8 @@
 # name is reserved for the Windows qmake project file
 # update_ts_files.sh,v 1.3 2004/07/14 18:16:24 gsherman Exp
 
+set -e
+
 PATH=$QTDIR/bin:$PATH
 
 #first tar the qt_xx.ts files in i18n folder such that lupdate does not 
@@ -17,9 +19,9 @@ rm i18n/qt_*.ts
 echo Updating python plugin translations
 for i in python/plugins/*/.; do
 	cd $i
-	pylupdate4 $(find . -name "*.py") -ts i18n.ts
-	perl ../../../scripts/ts2cpp.pl i18n.ts i18n.cpp
-	rm i18n.ts
+	pylupdate4 $(find . -name "*.py") -ts python-i18n.ts
+	perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
+	rm python-i18n.ts
 	cd ../../..
 done
 echo Creating qmake project file
@@ -27,7 +29,8 @@ qmake -project -o qgis_ts.pro -nopwd src python i18n
 echo Updating translation files
 lupdate -verbose qgis_ts.pro
 echo Removing temporary python plugin translation files
-rm python/plugins/*/i18n.cpp
+perl -i.bak -pe '$_="" if /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
+rm python/plugins/*/python-i18n.cpp i18n/qgis_*.ts.bak
 echo Removing qmake project file
 rm qgis_ts.pro
 echo Unpacking qt_ts.tar
