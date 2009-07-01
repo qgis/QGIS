@@ -337,7 +337,12 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
       {
         featureNode->setText( 1, it->toString() );
       }
-      mResults->addAttribute( featureNode, fields[it.key()].name(), it->isNull() ? "NULL" : it->toString() );
+      QString attributeName = layer->attributeAlias(it.key());
+      if(attributeName.isEmpty())
+      {
+        attributeName = fields[it.key()].name();
+      }
+      mResults->addAttribute( featureNode, attributeName, it->isNull() ? "NULL" : it->toString() );
     }
 
     // Calculate derived attributes and insert:

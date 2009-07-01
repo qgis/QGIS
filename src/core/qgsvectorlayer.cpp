@@ -2401,6 +2401,24 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
+  mAttributeAliasMap.clear();
+  QDomNode aliasesNode = node.namedItem("aliases");
+  if(!aliasesNode.isNull())
+  {
+    QDomElement aliasElem;
+    int index;
+    QString name;
+
+    QDomNodeList aliasNodeList = aliasesNode.toElement().elementsByTagName("alias");
+    for(int i = 0; i < aliasNodeList.size(); ++i)
+    {
+      aliasElem = aliasNodeList.at(i).toElement();
+      index = aliasElem.attribute("index").toInt();
+      name = aliasElem.attribute("name");
+      mAttributeAliasMap.insert(index, name);
+    }
+  }
+
   // create and bind a renderer to this layer
 
   QDomNode singlenode = node.namedItem( "singlesymbol" );
@@ -2492,6 +2510,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     node.appendChild( classificationElement );
   }
 
+  //edit types
   if ( mEditTypes.size() > 0 )
   {
     QDomElement editTypesElement = doc.createElement( "edittypes" );
@@ -2531,6 +2550,21 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     }
 
     node.appendChild( editTypesElement );
+  }
+
+  //attribute aliases
+  if(mAttributeAliasMap.size() > 0)
+  {
+    QDomElement aliasElem = doc.createElement("aliases");
+    QMap<int, QString>::const_iterator a_it = mAttributeAliasMap.constBegin();
+    for(; a_it != mAttributeAliasMap.constEnd(); ++a_it)
+    {
+      QDomElement aliasEntryElem = doc.createElement("alias");
+      aliasEntryElem.setAttribute("index", QString::number(a_it.key()));
+      aliasEntryElem.setAttribute("name", a_it.value());
+      aliasElem.appendChild(aliasEntryElem);
+    }
+    node.appendChild(aliasElem);
   }
 
   // add the display field
@@ -2679,6 +2713,25 @@ bool QgsVectorLayer::addAttribute( QString name, QString type )
   return addAttribute( QgsField( name, map[ type ], type ) );
 }
 
+void QgsVectorLayer::addAttributeAlias(int attIndex, QString aliasString)
+{
+  mAttributeAliasMap.insert(attIndex, aliasString);
+  emit layerModified(false);
+}
+
+QString QgsVectorLayer::attributeAlias(int attributeIndex) const
+{
+  QMap<int, QString>::const_iterator alias_it = mAttributeAliasMap.find(attributeIndex);
+  if(alias_it != mAttributeAliasMap.constEnd())
+  {
+    return alias_it.value();
+  }
+  else
+  {
+    return QString();
+  }
+}
+
 bool QgsVectorLayer::deleteAttribute( int index )
 {
   if ( !isEditable() )
@@ -2699,6 +2752,7 @@ bool QgsVectorLayer::deleteAttribute( int index )
   mDeletedAttributeIds.insert( index );
   mAddedAttributeIds.remove( index );
   mUpdatedFields.remove( index );
+  mAttributeAliasMap.remove(index);
 
   setModified( true, false );
 

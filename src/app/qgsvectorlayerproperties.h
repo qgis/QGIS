@@ -96,6 +96,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_pbnSaveDefaultStyle_clicked();
     void on_pbnLoadStyle_clicked();
     void on_pbnSaveStyleAs_clicked();
+    void on_tblAttributes_cellChanged(int row, int column);
 
     void addAttribute();
     void deleteAttribute();
