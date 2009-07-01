@@ -50,7 +50,7 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WFlags fl )
   pbtnZoomFull->setEnabled( false );
   QString myThemePath = QgsApplication::activeThemePath( );
   pbtnZoomIn->setToolTip( tr( "Zoom in" ) );
-  pbtnZoomIn->setWhatsThis( tr( "Zoom in to see more detal." ) );
+  pbtnZoomIn->setWhatsThis( tr( "Zoom in to see more detail." ) );
   pbtnZoomOut->setToolTip( tr( "Zoom out" ) );
   pbtnZoomOut->setWhatsThis( tr( "Zoom out to see more area." ) );
   pbtnZoomFull->setToolTip( tr( "Zoom to full extent" ) );

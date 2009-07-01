@@ -44,7 +44,7 @@
        </rect>
       </property>
       <attribute name="label" >
-       <string>Predfined Queries</string>
+       <string>Predefined Queries</string>
       </attribute>
       <layout class="QGridLayout" >
        <property name="margin" >
@@ -105,7 +105,7 @@
           <string/>
          </property>
          <property name="whatsThis" >
-          <string>Select the predefined query you want to use from the drop-down list containing queries identified form the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</string>
+          <string>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</string>
          </property>
         </widget>
        </item>
