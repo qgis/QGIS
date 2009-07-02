@@ -1729,30 +1729,22 @@ namespace pal
 
   void PointSet::getCentroid( double &px, double &py )
   {
-    double ix, iy;
-    double mesh = min(( xmax - xmin ) / 10, ( ymax - ymin ) / 10 );
-    bool ptOk = false;
+    // for explanation see this page:
+    // http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
 
-    while ( !ptOk )
+    int i,j;
+    double cx=0, cy=0, A=0, tmp;
+    for ( i = 0; i < nbPoints; i++ )
     {
-      double best = -DBL_MAX;
-      double dist;
-      for ( ix = xmin;ix < xmax;ix = ix + mesh )
-      {
-        for ( iy = ymin;iy < ymax;iy = iy + mesh )
-        {
-          dist = getDist( ix, iy, NULL, NULL );
-          if ( dist > 0 && dist > best )
-          {
-            ptOk = true;
-            best = dist;
-            px = ix;
-            py = iy;
-          }
-        }
-      }
-      mesh /= 10;
+      j = i+1; if (j == nbPoints) j = 0;
+      tmp = (x[i]*y[j]-x[j]*y[i]);
+      cx += (x[i] + x[j]) * tmp;
+      cy += (y[i] + y[j]) * tmp;
+      A += tmp;
     }
+
+    px = cx / (3*A);
+    py = cy / (3*A);
   }
 
 } // end namespace
