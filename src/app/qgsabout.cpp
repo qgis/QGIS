@@ -114,8 +114,8 @@ void QgsAbout::init()
   if ( sponsorFile.open( QIODevice::ReadOnly ) )
   {
     QString sponsorHTML = ""
-                          + tr( "<p>The following have sponsored QGIS by contributing "
-                                "money to fund development and other project costs</p>" )
+                          + tr( "<p>QGIS sponsorship programme:"
+                                "contribute to QGIS development</p>" )
                           + "<hr>"
                           "<table width='100%'>"
                           "<tr><th>" + tr( "Name" ) + "</th>"
@@ -163,8 +163,8 @@ void QgsAbout::init()
   if ( donorsFile.open( QIODevice::ReadOnly ) )
   {
     QString donorsHTML = ""
-                          + tr( "<p>The following have sponsored QGIS by contributing "
-                                "money to fund development and other project costs</p>" )
+                          + tr( "<p>The following individuals and institutions have contributed "
+                                "money to fund QGIS development and other project costs</p>" )
                           + "<hr>"
                           "<table width='100%'>"
                           "<tr><th>" + tr( "Name" ) + "</th>"
