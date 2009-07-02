@@ -61,21 +61,22 @@
 			buildPhases = (
 			);
 			dependencies = (
+				7256F1900F411B110022BE1F /* PBXTargetDependency */,
 				7256F1960F411B110022BE1F /* PBXTargetDependency */,
 				7256F1940F411B110022BE1F /* PBXTargetDependency */,
 				7256F1920F411B110022BE1F /* PBXTargetDependency */,
-				7256F1900F411B110022BE1F /* PBXTargetDependency */,
+				7256F1C30F411C7C0022BE1F /* PBXTargetDependency */,
 				7256F1B30F411C120022BE1F /* PBXTargetDependency */,
 				7256F1B10F411C120022BE1F /* PBXTargetDependency */,
+				720383870F8BA92B0083B883 /* PBXTargetDependency */,
+				7256F1C10F411C7C0022BE1F /* PBXTargetDependency */,
+				72FB0B6D0FFD6B8F0052360B /* PBXTargetDependency */,
 				7256F1AD0F411C120022BE1F /* PBXTargetDependency */,
 				7256F1AB0F411C120022BE1F /* PBXTargetDependency */,
-				7256F1A90F411C120022BE1F /* PBXTargetDependency */,
-				7256F1C50F411C7C0022BE1F /* PBXTargetDependency */,
-				7256F1C30F411C7C0022BE1F /* PBXTargetDependency */,
-				7256F1C10F411C7C0022BE1F /* PBXTargetDependency */,
 				7256F1BF0F411C7C0022BE1F /* PBXTargetDependency */,
-				720383870F8BA92B0083B883 /* PBXTargetDependency */,
 				7223B7A60F96AA6C00D905B4 /* PBXTargetDependency */,
+				7256F1C50F411C7C0022BE1F /* PBXTargetDependency */,
+				7256F1A90F411C120022BE1F /* PBXTargetDependency */,
 			);
 			name = "Base Plugins";
 			productName = "Base Plugins";
@@ -87,16 +88,16 @@
 			);
 			dependencies = (
 				7256F1A60F411B480022BE1F /* PBXTargetDependency */,
-				7256F1A40F411B480022BE1F /* PBXTargetDependency */,
-				727E6B7B0FEACF5100DF6F64 /* PBXTargetDependency */,
 				7256F1A20F411B480022BE1F /* PBXTargetDependency */,
 				7256F1A00F411B480022BE1F /* PBXTargetDependency */,
 				72F07FEA0F5112D8008D3148 /* PBXTargetDependency */,
-				7256F1BD0F411C4B0022BE1F /* PBXTargetDependency */,
-				7256F1BB0F411C4B0022BE1F /* PBXTargetDependency */,
-				7256F1B90F411C4B0022BE1F /* PBXTargetDependency */,
+				727E6B7B0FEACF5100DF6F64 /* PBXTargetDependency */,
+				7256F1A40F411B480022BE1F /* PBXTargetDependency */,
 				7256F1B70F411C4B0022BE1F /* PBXTargetDependency */,
+				7256F1BB0F411C4B0022BE1F /* PBXTargetDependency */,
 				7256F1B50F411C4B0022BE1F /* PBXTargetDependency */,
+				7256F1BD0F411C4B0022BE1F /* PBXTargetDependency */,
+				7256F1B90F411C4B0022BE1F /* PBXTargetDependency */,
 			);
 			name = "Optional Plugins";
 			productName = "Optional Plugins";
@@ -1401,6 +1402,7 @@
 		72A892CC0FAF7B8500108152 /* qgsconfigureshortcutsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CA0FAF7B6100108152 /* qgsconfigureshortcutsdialog.cpp */; };
 		72A892CD0FAF7B8500108152 /* qgsshortcutsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */; };
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
+		72DBAB500FFD744400E587DC /* DONORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 72FDF1640FB4720400580178 /* DONORS */; };
 		72E4DF0D0FE00FB600D3505D /* qgis.v.out.ogr.pg.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 72E4DF0C0FE00FAD00D3505D /* qgis.v.out.ogr.pg.py */; };
 		72E707040F42691B00142011 /* __init__.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 7209ED860F39E5D9003DC336 /* __init__.py */; };
 		72E7070A0F426A5C00142011 /* __init__.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD30F39E5D9003DC336 /* __init__.py */; };
@@ -1751,6 +1753,23 @@
 		72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */; };
 		72F22FB90FDAC249000E8CB0 /* mActionNodeTool.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */; };
 		72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */; };
+		72FB0B4E0FFD680F0052360B /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		72FB0B4F0FFD680F0052360B /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
+		72FB0B570FFD686F0052360B /* evisdatabaseconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B1A0FFD657D0052360B /* evisdatabaseconnection.cpp */; };
+		72FB0B580FFD686F0052360B /* evisdatabaseconnectiongui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B1C0FFD657D0052360B /* evisdatabaseconnectiongui.cpp */; };
+		72FB0B590FFD686F0052360B /* evisdatabaselayerfieldselectiongui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B1E0FFD657D0052360B /* evisdatabaselayerfieldselectiongui.cpp */; };
+		72FB0B5A0FFD686F0052360B /* evisquerydefinition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B200FFD657D0052360B /* evisquerydefinition.cpp */; };
+		72FB0B5B0FFD688C0052360B /* evisconfiguration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B230FFD657D0052360B /* evisconfiguration.cpp */; };
+		72FB0B5C0FFD688C0052360B /* evisgenericeventbrowsergui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B250FFD657D0052360B /* evisgenericeventbrowsergui.cpp */; };
+		72FB0B5D0FFD688C0052360B /* evisimagedisplaywidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B270FFD657D0052360B /* evisimagedisplaywidget.cpp */; };
+		72FB0B5E0FFD68970052360B /* eviseventidtool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B2C0FFD657D0052360B /* eviseventidtool.cpp */; };
+		72FB0B5F0FFD68EB0052360B /* evis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B290FFD657D0052360B /* evis.cpp */; };
+		72FB0B600FFD68F80052360B /* evis.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B2A0FFD657D0052360B /* evis.h */; };
+		72FB0B610FFD69130052360B /* evisdatabaseconnectiongui.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B1D0FFD657D0052360B /* evisdatabaseconnectiongui.h */; };
+		72FB0B620FFD69130052360B /* evisdatabaselayerfieldselectiongui.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B1F0FFD657D0052360B /* evisdatabaselayerfieldselectiongui.h */; };
+		72FB0B630FFD69230052360B /* evisgenericeventbrowsergui.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B260FFD657D0052360B /* evisgenericeventbrowsergui.h */; };
+		72FB0B640FFD69230052360B /* evisimagedisplaywidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B280FFD657D0052360B /* evisimagedisplaywidget.h */; };
+		72FB0B650FFD69350052360B /* evis.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 72FB0B300FFD657D0052360B /* evis.qrc */; };
 		72FB54C90FAF3AD400AB2F8D /* qgsattributetabledelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C30FAF3A5D00AB2F8D /* qgsattributetabledelegate.cpp */; };
 		72FB54CA0FAF3AD800AB2F8D /* qgsattributetablefiltermodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C80FAF3A5D00AB2F8D /* qgsattributetablefiltermodel.cpp */; };
 		72FB54CB0FAF3ADA00AB2F8D /* qgsattributetableidcolumnpair.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C70FAF3A5D00AB2F8D /* qgsattributetableidcolumnpair.cpp */; };
@@ -2300,6 +2319,28 @@
 			);
 			script = "$QTMOC -nw $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
+		72FB0B500FFD680F0052360B /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.qrc";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/qrc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTRCC -name $INPUT_FILE_BASE -o \"$DERIVED_FILES_DIR/qrc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		72FB0B510FFD680F0052360B /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
 /* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2575,6 +2616,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 72A07D880F3BDF9C004FC2A4;
 			remoteInfo = postgresprovider;
+		};
+		72FB0B6C0FFD6B8F0052360B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72FB0B4A0FFD680F0052360B;
+			remoteInfo = evisplugin;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -3796,6 +3844,7 @@
 			files = (
 				7299E8BA0F90F06C002F58DE /* AUTHORS in Copy - doc */,
 				7299E8BB0F90F06C002F58DE /* CODING in Copy - doc */,
+				72DBAB500FFD744400E587DC /* DONORS in Copy - doc */,
 				7299E8BC0F90F06C002F58DE /* SPONSORS in Copy - doc */,
 				7299E8BD0F90F06C002F58DE /* TRANSLATORS in Copy - doc */,
 				72EBCB3B0F49E8240016BA3C /* favicon.ico in Copy - doc */,
@@ -6849,6 +6898,36 @@
 		72F8D9590F89268C00D10CE5 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = ../../src/core/spatialite/headers/spatialite/sqlite3.h; sourceTree = SOURCE_ROOT; };
 		72F8D95A0F89268C00D10CE5 /* sqlite3ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3ext.h; path = ../../src/core/spatialite/headers/spatialite/sqlite3ext.h; sourceTree = SOURCE_ROOT; };
 		72F8D95B0F89268C00D10CE5 /* spatialite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spatialite.h; path = ../../src/core/spatialite/headers/spatialite.h; sourceTree = SOURCE_ROOT; };
+		72FB0B180FFD657D0052360B /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/evis/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		72FB0B1A0FFD657D0052360B /* evisdatabaseconnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = evisdatabaseconnection.cpp; path = ../../src/plugins/evis/databaseconnection/evisdatabaseconnection.cpp; sourceTree = SOURCE_ROOT; };
+		72FB0B1B0FFD657D0052360B /* evisdatabaseconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = evisdatabaseconnection.h; path = ../../src/plugins/evis/databaseconnection/evisdatabaseconnection.h; sourceTree = SOURCE_ROOT; };
+		72FB0B1C0FFD657D0052360B /* evisdatabaseconnectiongui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = evisdatabaseconnectiongui.cpp; path = ../../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp; sourceTree = SOURCE_ROOT; };
+		72FB0B1D0FFD657D0052360B /* evisdatabaseconnectiongui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = evisdatabaseconnectiongui.h; path = ../../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.h; sourceTree = SOURCE_ROOT; };
+		72FB0B1E0FFD657D0052360B /* evisdatabaselayerfieldselectiongui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = evisdatabaselayerfieldselectiongui.cpp; path = ../../src/plugins/evis/databaseconnection/evisdatabaselayerfieldselectiongui.cpp; sourceTree = SOURCE_ROOT; };
+		72FB0B1F0FFD657D0052360B /* evisdatabaselayerfieldselectiongui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = evisdatabaselayerfieldselectiongui.h; path = ../../src/plugins/evis/databaseconnection/evisdatabaselayerfieldselectiongui.h; sourceTree = SOURCE_ROOT; };
+		72FB0B200FFD657D0052360B /* evisquerydefinition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = evisquerydefinition.cpp; path = ../../src/plugins/evis/databaseconnection/evisquerydefinition.cpp; sourceTree = SOURCE_ROOT; };
+		72FB0B210FFD657D0052360B /* evisquerydefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = evisquerydefinition.h; path = ../../src/plugins/evis/databaseconnection/evisquerydefinition.h; sourceTree = SOURCE_ROOT; };
+		72FB0B230FFD657D0052360B /* evisconfiguration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = evisconfiguration.cpp; path = ../../src/plugins/evis/eventbrowser/evisconfiguration.cpp; sourceTree = SOURCE_ROOT; };
+		72FB0B240FFD657D0052360B /* evisconfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = evisconfiguration.h; path = ../../src/plugins/evis/eventbrowser/evisconfiguration.h; sourceTree = SOURCE_ROOT; };
+		72FB0B250FFD657D0052360B /* evisgenericeventbrowsergui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = evisgenericeventbrowsergui.cpp; path = ../../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp; sourceTree = SOURCE_ROOT; };
+		72FB0B260FFD657D0052360B /* evisgenericeventbrowsergui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = evisgenericeventbrowsergui.h; path = ../../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.h; sourceTree = SOURCE_ROOT; };
+		72FB0B270FFD657D0052360B /* evisimagedisplaywidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = evisimagedisplaywidget.cpp; path = ../../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp; sourceTree = SOURCE_ROOT; };
+		72FB0B280FFD657D0052360B /* evisimagedisplaywidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = evisimagedisplaywidget.h; path = ../../src/plugins/evis/eventbrowser/evisimagedisplaywidget.h; sourceTree = SOURCE_ROOT; };
+		72FB0B290FFD657D0052360B /* evis.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = evis.cpp; path = ../../src/plugins/evis/evis.cpp; sourceTree = SOURCE_ROOT; };
+		72FB0B2A0FFD657D0052360B /* evis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = evis.h; path = ../../src/plugins/evis/evis.h; sourceTree = SOURCE_ROOT; };
+		72FB0B2C0FFD657D0052360B /* eviseventidtool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = eviseventidtool.cpp; path = ../../src/plugins/evis/idtool/eviseventidtool.cpp; sourceTree = SOURCE_ROOT; };
+		72FB0B2D0FFD657D0052360B /* eviseventidtool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = eviseventidtool.h; path = ../../src/plugins/evis/idtool/eviseventidtool.h; sourceTree = SOURCE_ROOT; };
+		72FB0B2E0FFD657D0052360B /* README.TXT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.TXT; path = ../../src/plugins/evis/README.TXT; sourceTree = SOURCE_ROOT; };
+		72FB0B300FFD657D0052360B /* evis.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = evis.qrc; path = ../../src/plugins/evis/resources/evis.qrc; sourceTree = SOURCE_ROOT; };
+		72FB0B310FFD657D0052360B /* eVisDatabaseConnection.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eVisDatabaseConnection.png; path = ../../src/plugins/evis/resources/eVisDatabaseConnection.png; sourceTree = SOURCE_ROOT; };
+		72FB0B320FFD657D0052360B /* eVisEventBrowser.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eVisEventBrowser.png; path = ../../src/plugins/evis/resources/eVisEventBrowser.png; sourceTree = SOURCE_ROOT; };
+		72FB0B330FFD657D0052360B /* eVisEventIdTool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eVisEventIdTool.png; path = ../../src/plugins/evis/resources/eVisEventIdTool.png; sourceTree = SOURCE_ROOT; };
+		72FB0B340FFD657D0052360B /* eVisHighlightSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eVisHighlightSymbol.png; path = ../../src/plugins/evis/resources/eVisHighlightSymbol.png; sourceTree = SOURCE_ROOT; };
+		72FB0B350FFD657D0052360B /* eVisPointerSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eVisPointerSymbol.png; path = ../../src/plugins/evis/resources/eVisPointerSymbol.png; sourceTree = SOURCE_ROOT; };
+		72FB0B370FFD657D0052360B /* evisdatabaseconnectionguibase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = evisdatabaseconnectionguibase.ui; path = ../../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui; sourceTree = SOURCE_ROOT; };
+		72FB0B380FFD657D0052360B /* evisdatabaselayerfieldselectionguibase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = evisdatabaselayerfieldselectionguibase.ui; path = ../../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui; sourceTree = SOURCE_ROOT; };
+		72FB0B390FFD657D0052360B /* evisgenericeventbrowserguibase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = evisgenericeventbrowserguibase.ui; path = ../../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui; sourceTree = SOURCE_ROOT; };
+		72FB0B550FFD680F0052360B /* libevisplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libevisplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72FB54C10FAF3A5D00AB2F8D /* qgsattributetablememorymodel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetablememorymodel.cpp; path = ../../src/app/attributetable/qgsattributetablememorymodel.cpp; sourceTree = SOURCE_ROOT; };
 		72FB54C20FAF3A5D00AB2F8D /* qgsattributetablememorymodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetablememorymodel.h; path = ../../src/app/attributetable/qgsattributetablememorymodel.h; sourceTree = SOURCE_ROOT; };
 		72FB54C30FAF3A5D00AB2F8D /* qgsattributetabledelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetabledelegate.cpp; path = ../../src/app/attributetable/qgsattributetabledelegate.cpp; sourceTree = SOURCE_ROOT; };
@@ -7136,6 +7215,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		72FB0B4D0FFD680F0052360B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72FB0B4E0FFD680F0052360B /* libqgis_core.dylib in Frameworks */,
+				72FB0B4F0FFD680F0052360B /* libqgis_gui.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D0C4E910486CD37000505A6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7187,6 +7275,7 @@
 				7262ED9C0F7A770300498385 /* libspatialiteprovider.so */,
 				720383580F8B905D0083B883 /* libdiagramoverlayplugin.so */,
 				7223B78D0F96A96500D905B4 /* liboracleplugin.so */,
+				72FB0B550FFD680F0052360B /* libevisplugin.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8048,25 +8137,26 @@
 		7209E7980F39E57A003DC336 /* plugins */ = {
 			isa = PBXGroup;
 			children = (
-				7209E79A0F39E57A003DC336 /* CMakeLists.txt */,
+				7209E79B0F39E57A003DC336 /* coordinate_capture */,
 				7209E7AE0F39E57A003DC336 /* copyright_label */,
 				7209E7BB0F39E57B003DC336 /* delimited_text */,
 				720383210F8B8FC40083B883 /* diagram_overlay */,
+				7209E7C60F39E57B003DC336 /* dxf2shp_converter */,
+				72FB0B170FFD657D0052360B /* evis */,
 				7209EBB90F39E57B003DC336 /* interpolation */,
 				7209EBE90F39E57B003DC336 /* north_arrow */,
-				7209EC1E0F39E57B003DC336 /* scale_bar */,
-				7209EC2A0F39E57B003DC336 /* spit */,
-				7209E8160F39E57B003DC336 /* gps_importer */,
-				7209EC3D0F39E57B003DC336 /* wfs */,
-				7209E7F50F39E57B003DC336 /* georeferencer */,
-				7209E82D0F39E57B003DC336 /* grass */,
-				7209EC150F39E57B003DC336 /* quick_print */,
-				7209E79B0F39E57A003DC336 /* coordinate_capture */,
-				7209E7C60F39E57B003DC336 /* dxf2shp_converter */,
 				7209EBF90F39E57B003DC336 /* ogr_converter */,
-				7209E7EA0F39E57B003DC336 /* geoprocessing */,
 				7223B7720F969A9D00D905B4 /* oracle_raster */,
+				7209EC150F39E57B003DC336 /* quick_print */,
+				7209EC1E0F39E57B003DC336 /* scale_bar */,
+				7209E79A0F39E57A003DC336 /* CMakeLists.txt */,
+				7209E7F50F39E57B003DC336 /* georeferencer */,
+				7209E8160F39E57B003DC336 /* gps_importer */,
+				7209E82D0F39E57B003DC336 /* grass */,
+				7209EC2A0F39E57B003DC336 /* spit */,
+				7209EC3D0F39E57B003DC336 /* wfs */,
 				7209EC070F39E57B003DC336 /* plugin_builder.py */,
+				7209E7EA0F39E57B003DC336 /* geoprocessing */,
 				7209EC080F39E57B003DC336 /* plugin_template */,
 				7209EC130F39E57B003DC336 /* qgisplugin.h */,
 				7209EC140F39E57B003DC336 /* qgsrendererplugin.h */,
@@ -8677,16 +8767,16 @@
 		7209EC460F39E57B003DC336 /* providers */ = {
 			isa = PBXGroup;
 			children = (
-				7209EC480F39E57B003DC336 /* CMakeLists.txt */,
+				7209EC490F39E57B003DC336 /* delimitedtext */,
 				7209EC5D0F39E57B003DC336 /* memory */,
 				7209EC610F39E57B003DC336 /* ogr */,
 				7209EC7A0F39E57B003DC336 /* wms */,
-				7209EC490F39E57B003DC336 /* delimitedtext */,
-				7209EC660F39E57B003DC336 /* postgres */,
+				7209EC480F39E57B003DC336 /* CMakeLists.txt */,
 				7209EC4E0F39E57B003DC336 /* gpx */,
-				7209EC740F39E57B003DC336 /* wfs */,
 				7209EC550F39E57B003DC336 /* grass */,
+				7209EC660F39E57B003DC336 /* postgres */,
 				7262ED8C0F7A767400498385 /* spatialite */,
+				7209EC740F39E57B003DC336 /* wfs */,
 			);
 			name = providers;
 			path = ../../src/providers;
@@ -11427,6 +11517,88 @@
 			path = ../../src/core/spatialite/headers/spatialite;
 			sourceTree = SOURCE_ROOT;
 		};
+		72FB0B170FFD657D0052360B /* evis */ = {
+			isa = PBXGroup;
+			children = (
+				72FB0B180FFD657D0052360B /* CMakeLists.txt */,
+				72FB0B190FFD657D0052360B /* databaseconnection */,
+				72FB0B220FFD657D0052360B /* eventbrowser */,
+				72FB0B290FFD657D0052360B /* evis.cpp */,
+				72FB0B2A0FFD657D0052360B /* evis.h */,
+				72FB0B2B0FFD657D0052360B /* idtool */,
+				72FB0B2E0FFD657D0052360B /* README.TXT */,
+				72FB0B2F0FFD657D0052360B /* resources */,
+				72FB0B360FFD657D0052360B /* ui */,
+			);
+			name = evis;
+			path = ../../src/plugins/evis;
+			sourceTree = SOURCE_ROOT;
+		};
+		72FB0B190FFD657D0052360B /* databaseconnection */ = {
+			isa = PBXGroup;
+			children = (
+				72FB0B1A0FFD657D0052360B /* evisdatabaseconnection.cpp */,
+				72FB0B1B0FFD657D0052360B /* evisdatabaseconnection.h */,
+				72FB0B1C0FFD657D0052360B /* evisdatabaseconnectiongui.cpp */,
+				72FB0B1D0FFD657D0052360B /* evisdatabaseconnectiongui.h */,
+				72FB0B1E0FFD657D0052360B /* evisdatabaselayerfieldselectiongui.cpp */,
+				72FB0B1F0FFD657D0052360B /* evisdatabaselayerfieldselectiongui.h */,
+				72FB0B200FFD657D0052360B /* evisquerydefinition.cpp */,
+				72FB0B210FFD657D0052360B /* evisquerydefinition.h */,
+			);
+			name = databaseconnection;
+			path = ../../src/plugins/evis/databaseconnection;
+			sourceTree = SOURCE_ROOT;
+		};
+		72FB0B220FFD657D0052360B /* eventbrowser */ = {
+			isa = PBXGroup;
+			children = (
+				72FB0B230FFD657D0052360B /* evisconfiguration.cpp */,
+				72FB0B240FFD657D0052360B /* evisconfiguration.h */,
+				72FB0B250FFD657D0052360B /* evisgenericeventbrowsergui.cpp */,
+				72FB0B260FFD657D0052360B /* evisgenericeventbrowsergui.h */,
+				72FB0B270FFD657D0052360B /* evisimagedisplaywidget.cpp */,
+				72FB0B280FFD657D0052360B /* evisimagedisplaywidget.h */,
+			);
+			name = eventbrowser;
+			path = ../../src/plugins/evis/eventbrowser;
+			sourceTree = SOURCE_ROOT;
+		};
+		72FB0B2B0FFD657D0052360B /* idtool */ = {
+			isa = PBXGroup;
+			children = (
+				72FB0B2C0FFD657D0052360B /* eviseventidtool.cpp */,
+				72FB0B2D0FFD657D0052360B /* eviseventidtool.h */,
+			);
+			name = idtool;
+			path = ../../src/plugins/evis/idtool;
+			sourceTree = SOURCE_ROOT;
+		};
+		72FB0B2F0FFD657D0052360B /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				72FB0B300FFD657D0052360B /* evis.qrc */,
+				72FB0B310FFD657D0052360B /* eVisDatabaseConnection.png */,
+				72FB0B320FFD657D0052360B /* eVisEventBrowser.png */,
+				72FB0B330FFD657D0052360B /* eVisEventIdTool.png */,
+				72FB0B340FFD657D0052360B /* eVisHighlightSymbol.png */,
+				72FB0B350FFD657D0052360B /* eVisPointerSymbol.png */,
+			);
+			name = resources;
+			path = ../../src/plugins/evis/resources;
+			sourceTree = SOURCE_ROOT;
+		};
+		72FB0B360FFD657D0052360B /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				72FB0B370FFD657D0052360B /* evisdatabaseconnectionguibase.ui */,
+				72FB0B380FFD657D0052360B /* evisdatabaselayerfieldselectionguibase.ui */,
+				72FB0B390FFD657D0052360B /* evisgenericeventbrowserguibase.ui */,
+			);
+			name = ui;
+			path = ../../src/plugins/evis/ui;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -12135,6 +12307,25 @@
 			productReference = 72A56DA30F3CCAF700BA32A1 /* libplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
+		72FB0B4A0FFD680F0052360B /* evisplugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 72FB0B520FFD680F0052360B /* Build configuration list for PBXNativeTarget "evisplugin" */;
+			buildPhases = (
+				72FB0B4B0FFD680F0052360B /* Script - ui */,
+				72FB0B4C0FFD680F0052360B /* Sources */,
+				72FB0B4D0FFD680F0052360B /* Frameworks */,
+			);
+			buildRules = (
+				72FB0B500FFD680F0052360B /* PBXBuildRule */,
+				72FB0B510FFD680F0052360B /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = evisplugin;
+			productName = testprog;
+			productReference = 72FB0B550FFD680F0052360B /* libevisplugin.so */;
+			productType = "com.apple.product-type.tool";
+		};
 		8D0C4E890486CD37000505A6 /* Qgis */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C0E91AC508A95435008D54AB /* Build configuration list for PBXNativeTarget "Qgis" */;
@@ -12221,22 +12412,23 @@
 				72A07DAC0F3BDFA4004FC2A4 /* grassprovider */,
 				7262ED920F7A770300498385 /* spatialiteprovider */,
 				72A56D950F3CCAF700BA32A1 /* plugin template */,
+				72A56BEA0F3C886100BA32A1 /* coordinatecaptureplugin */,
 				72A07E570F3BF35F004FC2A4 /* copyrightlabelplugin */,
 				72A56B290F3C810600BA32A1 /* delimitedtextplugin */,
+				720383490F8B905D0083B883 /* diagramoverlayplugin */,
+				72A56BFB0F3C887000BA32A1 /* dxf2shpconverterplugin */,
+				72FB0B4A0FFD680F0052360B /* evisplugin */,
 				72A56B6C0F3C824400BA32A1 /* interpolationplugin */,
 				72A56B760F3C824400BA32A1 /* northarrowplugin */,
-				72A56B8A0F3C824900BA32A1 /* scalebarplugin */,
-				72A56B940F3C824900BA32A1 /* spitplugin */,
-				72A56B4E0F3C823800BA32A1 /* gpsimporterplugin */,
-				72A56B9E0F3C824900BA32A1 /* wfsplugin */,
-				72A56B430F3C822800BA32A1 /* georeferencerplugin */,
-				72A56B580F3C823800BA32A1 /* grassplugin */,
-				72A56B800F3C824400BA32A1 /* quickprintplugin */,
-				72A56BEA0F3C886100BA32A1 /* coordinatecaptureplugin */,
-				72A56BFB0F3C887000BA32A1 /* dxf2shpconverterplugin */,
 				72A56C060F3C887300BA32A1 /* ogrconverterplugin */,
-				720383490F8B905D0083B883 /* diagramoverlayplugin */,
 				7223B77E0F96A96500D905B4 /* oracleplugin */,
+				72A56B800F3C824400BA32A1 /* quickprintplugin */,
+				72A56B8A0F3C824900BA32A1 /* scalebarplugin */,
+				72A56B430F3C822800BA32A1 /* georeferencerplugin */,
+				72A56B4E0F3C823800BA32A1 /* gpsimporterplugin */,
+				72A56B580F3C823800BA32A1 /* grassplugin */,
+				72A56B940F3C824900BA32A1 /* spitplugin */,
+				72A56B9E0F3C824900BA32A1 /* wfsplugin */,
 			);
 		};
 /* End PBXProject section */
@@ -12752,6 +12944,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# copy Qt frameworks\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tcp -f \"/Library/Frameworks/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rf \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tcp -f \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"/Library/Frameworks/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tcp -Rf \"/Library/Frameworks/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tcp -f \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tcp -f \"$PYSITE/sip.so\" \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tcp -f \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/\"\n\t\tfi\n\tdone\n\tcp -f \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls *.dylib`\n\n# main Qt framework loop\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tqq=\"$q.framework/Versions/$QT_FWVER/$q\"\n\t# app\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/Qgis\"\n\t# bin\n\t# qgis_help qt linking done with symlinks\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t# libs\n\tfor ql in $qgliblist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\tdone\n\t# plugins\n\tfor qp in $pluglist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\tdone\n\t# qt fw\n\tfor qf in $QTLISTQG\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\tdone\n\t# qt plugs\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t# PyQt\n\tif [ \"$PYSITE\" ] ; then\n\tfor pq in $PYQTLIST\n\t\tdo\n\t\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\tdone\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/core.so\"\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/gui.so\"\n\tfi\ndone\n";
+			showEnvVarsInLog = 0;
+		};
+		72FB0B4B0FFD680F0052360B /* Script - ui */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - ui";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/ui\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -13382,6 +13589,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		72FB0B4C0FFD680F0052360B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72FB0B5F0FFD68EB0052360B /* evis.cpp in Sources */,
+				72FB0B570FFD686F0052360B /* evisdatabaseconnection.cpp in Sources */,
+				72FB0B580FFD686F0052360B /* evisdatabaseconnectiongui.cpp in Sources */,
+				72FB0B590FFD686F0052360B /* evisdatabaselayerfieldselectiongui.cpp in Sources */,
+				72FB0B5A0FFD686F0052360B /* evisquerydefinition.cpp in Sources */,
+				72FB0B5B0FFD688C0052360B /* evisconfiguration.cpp in Sources */,
+				72FB0B5C0FFD688C0052360B /* evisgenericeventbrowsergui.cpp in Sources */,
+				72FB0B5D0FFD688C0052360B /* evisimagedisplaywidget.cpp in Sources */,
+				72FB0B5E0FFD68970052360B /* eviseventidtool.cpp in Sources */,
+				72FB0B600FFD68F80052360B /* evis.h in Sources */,
+				72FB0B610FFD69130052360B /* evisdatabaseconnectiongui.h in Sources */,
+				72FB0B620FFD69130052360B /* evisdatabaselayerfieldselectiongui.h in Sources */,
+				72FB0B630FFD69230052360B /* evisgenericeventbrowsergui.h in Sources */,
+				72FB0B640FFD69230052360B /* evisimagedisplaywidget.h in Sources */,
+				72FB0B650FFD69350052360B /* evis.qrc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D0C4E8F0486CD37000505A6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -13754,6 +13983,11 @@
 			isa = PBXTargetDependency;
 			target = 72A07D880F3BDF9C004FC2A4 /* postgresprovider */;
 			targetProxy = 72F07FE90F5112D8008D3148 /* PBXContainerItemProxy */;
+		};
+		72FB0B6D0FFD6B8F0052360B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72FB0B4A0FFD680F0052360B /* evisplugin */;
+			targetProxy = 72FB0B6C0FFD6B8F0052360B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -15958,6 +16192,79 @@
 			};
 			name = Release;
 		};
+		72FB0B530FFD680F0052360B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/evis,
+					../../src/plugins/evis/databaseconnection,
+					../../src/plugins/evis/eventbrowser,
+					../../src/plugins/evis/idtool,
+					../../src/core,
+					../../src/core/raster,
+					../../src/gui,
+					"$(GDAL_INC)",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_SQL)",
+					"$(QT_LIB_XML)",
+					"$(QT_LIB_NET)",
+				);
+				PRODUCT_NAME = evisplugin.so;
+				TARGET_PLUGINDIR = evis;
+			};
+			name = Debug;
+		};
+		72FB0B540FFD680F0052360B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/evis,
+					../../src/plugins/evis/databaseconnection,
+					../../src/plugins/evis/eventbrowser,
+					../../src/plugins/evis/idtool,
+					../../src/core,
+					../../src/core/raster,
+					../../src/gui,
+					"$(GDAL_INC)",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_SQL)",
+					"$(QT_LIB_XML)",
+					"$(QT_LIB_NET)",
+				);
+				PRODUCT_NAME = evisplugin.so;
+				TARGET_PLUGINDIR = evis;
+			};
+			name = Release;
+		};
 		C0E91AC608A95435008D54AB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -16445,6 +16752,15 @@
 			buildConfigurations = (
 				72E706F30F42611800142011 /* Debug */,
 				72E706F40F42611800142011 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		72FB0B520FFD680F0052360B /* Build configuration list for PBXNativeTarget "evisplugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72FB0B530FFD680F0052360B /* Debug */,
+				72FB0B540FFD680F0052360B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
