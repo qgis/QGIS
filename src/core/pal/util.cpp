@@ -443,10 +443,9 @@ namespace pal
 
 
 
-  LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id )
+  LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id, bool check_valid )
   {
     LinkedList <Feat*> *fCoordQueue = new LinkedList<Feat*> ( ptrFeatCompare );
-    LinkedList <Feat*> *finalQueue = new LinkedList<Feat*> ( ptrFeatCompare );
 
     LinkedList <const GEOSGeometry*> *simpleGeometries = unmulti( the_geom );
 
@@ -464,6 +463,13 @@ namespace pal
     while ( simpleGeometries->size() > 0 )
     {
       geom = simpleGeometries->pop_front();
+
+      // ignore invalid geometries (e.g. polygons with self-intersecting rings)
+      if (check_valid && GEOSisValid( geom ) != 1) // 0=invalid, 1=valid, 2=exception
+      {
+        continue;
+      }
+
       //std::cout << "    split->typeid : " << geom->getGeometryTypeId() << std::endl;
       switch ( GEOSGeomTypeId( geom ) )
       {
@@ -538,92 +544,7 @@ namespace pal
 
     delete simpleGeometries;
 
-    cX = 0.0;
-    cY = 0.0;
-
-    while ( fCoordQueue->size() > 0 )
-    {
-      f = fCoordQueue->pop_front();
-
-      if ( f->type == GEOS_POLYGON )
-      {
-#ifdef _DEBUG_FULL_
-        std::cout << "New feature coordinates:" << std::endl;
-        for ( i = 0;i < f->nbPoints;i++ )
-          std::cout << f->x[i] << ";" << f->y[i] << std::endl;
-#endif
-
-        // Butterfly detector
-        //
-        //   3____0
-        //    \  /
-        //     \/  <--- not allowed
-        //     /\
-        //   1/__\2
-        //
-        //   1____0
-        //    \  /
-        //    2\/5  <--- allowed
-        //     /\
-        //   3/__\4
-        //
-        pt_a = -1;
-        pt_b = -1;
-        for ( i = 0;i < f->nbPoints - 2;i++ )
-        {
-          j = i + 1;
-          j2 = ( j + 1 ) % f->nbPoints;
-          for ( k = i + 2;k < f->nbPoints - ( i == 0 );k++ )
-          {
-            l = ( k + 1 ) % f->nbPoints;
-            l2 = ( l + 1 ) % f->nbPoints;
-
-            //std::cout << "   " << i << "->" << j << "     " << k << "->" << l << std::endl;
-            if ( computeSegIntersectionExt( f->x[i], f->y[i],
-                                            f->x[j], f->y[j],
-                                            f->x[j2], f->y[j2],
-                                            f->x[k], f->y[k],
-                                            f->x[l], f->y[l],
-                                            f->x[l2], f->y[l2],
-                                            &tmpX, &tmpY ) )
-            {
-#ifdef _DEBUG_FULL_
-              std::cout << i << "->" << j << "  intersect " << k << "->" << l << std::endl;
-#endif
-              pt_a = i;
-              pt_b = k;
-              cX = tmpX;
-              cY = tmpY;
-              i = k = f->nbPoints;
-            }
-          }
-        }
-
-        if ( pt_a == -1 && pt_b == -1 )
-        {
-          finalQueue->push_back( f );
-        }
-        else
-        {
-          //fCoordQueue->push_back(splitButterflyPolygon (f, (pt_a+1)%f->nbPoints, (pt_b+1)%f->nbPoints, cX, cY));
-          //fCoordQueue->push_back(splitButterflyPolygon (f, (pt_b+1)%f->nbPoints, (pt_a+1)%f->nbPoints, cX, cY));
-          for ( i = 0;i < f->nbHoles;i++ )
-            delete f->holes[i];
-          delete f->holes;
-          delete[] f->x;
-          delete[] f->y;
-          delete f;
-        }
-      }
-      else
-      {
-        finalQueue->push_back( f );
-      }
-
-    }
-    delete fCoordQueue;
-    //delete the_geom;
-    return finalQueue;
+    return fCoordQueue;
   }
 
 } // namespace

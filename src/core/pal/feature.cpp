@@ -859,7 +859,7 @@ namespace pal
     {
       //std::cout << "fetch feat " << layer->name << "/" << uid << std::endl;
       the_geom = userGeom->getGeosGeometry();
-      LinkedList<Feat*> *feats = splitGeom( the_geom, this->uid );
+      LinkedList<Feat*> *feats = splitGeom( the_geom, this->uid, false );
       int id = 0;
       while ( feats->size() > 0 )
       {

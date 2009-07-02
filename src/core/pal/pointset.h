@@ -103,7 +103,7 @@ namespace pal
       friend bool obstacleCallback( PointSet *feat, void *ctx );
       friend bool extractFeatCallback( Feature*, void* );
       friend void extractXYCoord( Feat *f );
-      friend LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id );
+      friend LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id, bool check_valid );
       friend void releaseAllInIndex( RTree<PointSet*, double, 2, double> *obstacles );
       friend bool releaseCallback( PointSet *pset, void *ctx );
       friend bool filteringCallback( PointSet*, void* );

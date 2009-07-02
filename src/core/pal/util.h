@@ -82,7 +82,7 @@ namespace pal
   /**
    * \brief split GEOS geom (multilinestring, multipoint, multipolygon) => (point, linestring, polygone)
    */
-  LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id );
+  LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id, bool check_valid );
 
   typedef struct _feats
   {

@@ -324,7 +324,8 @@ void Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
     /* Split MULTI GEOM and Collection in simple geometries*/
     GEOSGeometry *the_geom = userGeom->getGeosGeometry();
 
-    LinkedList<Feat*> *finalQueue = splitGeom( the_geom, geom_id );
+    // also check whether the geometry is valid
+    LinkedList<Feat*> *finalQueue = splitGeom( the_geom, geom_id, true );
 
     int nGeom = finalQueue->size();
     int part = 0;
