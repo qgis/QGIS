@@ -384,7 +384,7 @@ ENDIF (ENABLE_TESTS)
 #############################################################
 # install stuff
 
-INSTALL (FILES AUTHORS SPONSORS TRANSLATORS INSTALL CODING
+INSTALL (FILES AUTHORS SPONSORS DONORS TRANSLATORS INSTALL CODING
          DESTINATION ${QGIS_DATA_DIR}/doc)
 
 # manual page - makes sense only on unix systems

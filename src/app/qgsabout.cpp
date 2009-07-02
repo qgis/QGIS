@@ -133,7 +133,7 @@ void QgsAbout::init()
       QStringList myTokens = sline.split( "|", QString::SkipEmptyParts );
       if ( myTokens.size() > 1 )
       {
-        website = myTokens[1];
+        website = "<a href=\"" + myTokens[1].remove(' ') + "\">" + myTokens[1] + "</a>";
       }
       else
       {
@@ -153,7 +153,55 @@ void QgsAbout::init()
     QgsDebugMsg( QString( "sponsorHTML:%1" ).arg( sponsorHTML.toAscii().constData() ) );
     QgsDebugMsg( QString( "txtSponsors:%1" ).arg( txtSponsors->toHtml().toAscii().constData() ) );
   }
+  
+  // read the DONORS file and populate the text widget
+  QFile donorsFile( QgsApplication::donorsFilePath() );
+#ifdef QGISDEBUG
+  printf( "Reading donors file %s.............................................\n",
+          donorsFile.fileName().toLocal8Bit().constData() );
+#endif
+  if ( donorsFile.open( QIODevice::ReadOnly ) )
+  {
+    QString donorsHTML = ""
+                          + tr( "<p>The following have sponsored QGIS by contributing "
+                                "money to fund development and other project costs</p>" )
+                          + "<hr>"
+                          "<table width='100%'>"
+                          "<tr><th>" + tr( "Name" ) + "</th>"
+                          "<th>" + tr( "Website" ) + "</th></tr>";
+    QString website;
+    QTextStream donorsStream( &donorsFile );
+    // Always use UTF-8
+    donorsStream.setCodec( "UTF-8" );
+    QString sline;
+    while ( !donorsStream.atEnd() )
+    {
+      sline = donorsStream.readLine(); // line of text excluding '\n'
+      //ignore the line if it starts with a hash....
+      if ( sline.left( 1 ) == "#" ) continue;
+      QStringList myTokens = sline.split( "|", QString::SkipEmptyParts );
+      if ( myTokens.size() > 1 )
+      {
+        website = "<a href=\"" + myTokens[1].remove(' ') + "\">" + myTokens[1] + "</a>";
+      }
+      else
+      {
+        website = "&nbsp;";
+      }
+      donorsHTML += "<tr>";
+      donorsHTML += "<td>" + myTokens[0] + "</td><td>" + website + "</td>";
+      // close the row
+      donorsHTML += "</tr>";
+    }
+    donorsHTML += "</table>";
 
+    QString myStyle = QgsApplication::reportStyleSheet();
+    txtDonors->clear();
+    txtDonors->document()->setDefaultStyleSheet( myStyle );
+    txtDonors->setHtml( donorsHTML );
+    QgsDebugMsg( QString( "donorsHTML:%1" ).arg( donorsHTML.toAscii().constData() ) );
+    QgsDebugMsg( QString( "txtDonors:%1" ).arg( txtDonors->toHtml().toAscii().constData() ) );
+  }
 
   // read the TRANSLATORS file and populate the text widget
   QFile translatorFile( QgsApplication::translatorsFilePath() );
