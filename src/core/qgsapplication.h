@@ -57,6 +57,9 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to the sponsors file.
     static const QString sponsorsFilePath();
 
+    //! Returns the path to the donors file.
+    static const QString donorsFilePath();
+    
     /**
      * Returns the path to the sponsors file.
      * @note This was added in QGIS 1.1
