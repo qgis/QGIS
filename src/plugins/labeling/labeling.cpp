@@ -83,7 +83,7 @@ public:
     for (int i = 0; i < cand.count(); i++)
     {
       const LabelCandidate& c = cand[i];
-      if (c.rect.contains(pt))
+      if (c.rect.contains(pt)) // TODO: handle rotated candidates
       {
         QToolTip::showText( mCanvas->mapToGlobal(e->pos()), QString::number(c.cost), mCanvas);
         break;

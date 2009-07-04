@@ -66,14 +66,34 @@ protected:
 // -------------
 
 LayerSettings::LayerSettings()
-  : palLayer(NULL), fontMetrics(NULL)
+  : palLayer(NULL), fontMetrics(NULL), ct(NULL)
 {
 }
+
+LayerSettings::LayerSettings(const LayerSettings& s)
+{
+  // copy only permanent stuff
+  layerId = s.layerId;
+  fieldName = s.fieldName;
+  placement = s.placement;
+  textFont = s.textFont;
+  textColor = s.textColor;
+  enabled = s.enabled;
+  priority = s.priority;
+  obstacle = s.obstacle;
+  dist = s.dist;
+
+  fontMetrics = NULL;
+  ct = NULL;
+}
+
 
 LayerSettings::~LayerSettings()
 {
   // pal layer is deleted internally in PAL
+
   delete fontMetrics;
+  delete ct;
 }
 
 void LayerSettings::calculateLabelSize(QString text, double& labelX, double& labelY)
@@ -93,7 +113,11 @@ void LayerSettings::registerFeature(QgsFeature& f)
   double labelX, labelY; // will receive label size
   calculateLabelSize(labelText, labelX, labelY);
 
-  MyLabel* lbl = new MyLabel(f.id(), labelText, GEOSGeom_clone( f.geometry()->asGeos() ) );
+  QgsGeometry* geom = f.geometry();
+  if (ct != NULL) // reproject the geometry if necessary
+    geom->transform(*ct);
+
+  MyLabel* lbl = new MyLabel(f.id(), labelText, GEOSGeom_clone( geom->asGeos() ) );
 
   // record the created geometry - it will be deleted at the end.
   geometries.append(lbl);
@@ -103,7 +127,7 @@ void LayerSettings::registerFeature(QgsFeature& f)
 
   // TODO: allow layer-wide feature dist in PAL...?
   if (dist != 0)
-    palLayer->setFeatureDistlabel(lbl->strId(), dist);
+    palLayer->setFeatureDistlabel(lbl->strId(), fabs(ptOne.x()-ptZero.x())* dist);
 }
 
 
@@ -171,7 +195,7 @@ void PalLabeling::removeLayer(QString layerId)
   }
 }
 
-LayerSettings PalLabeling::layer(QString layerId)
+const LayerSettings& PalLabeling::layer(QString layerId)
 {
   for (int i = 0; i < mLayers.count(); i++)
   {
@@ -180,7 +204,7 @@ LayerSettings PalLabeling::layer(QString layerId)
       return mLayers.at(i);
     }
   }
-  return LayerSettings();
+  return mInvalidLayer;
 }
 
 
@@ -225,7 +249,12 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
   lyr->fontMetrics = new QFontMetrics(lyr->textFont);
   lyr->fontBaseline = lyr->fontMetrics->boundingRect("X").bottom(); // dummy text to find out how many pixels of the text are below the baseline
   lyr->xform = thisClass->mMapRenderer->coordinateTransform();
+  if (thisClass->mMapRenderer->hasCrsTransformEnabled())
+    lyr->ct = new QgsCoordinateTransform( vlayer->srs(), thisClass->mMapRenderer->destinationSrs() );
+  else
+    lyr->ct = NULL;
   lyr->ptZero = lyr->xform->toMapCoordinates( 0,0 );
+  lyr->ptOne = lyr->xform->toMapCoordinates( 1,0 );
 
   return 1; // init successful
 }
@@ -255,7 +284,6 @@ void PalLabeling::initPal()
     case Falp: s = FALP; break;
   }
   mPal->setSearch(s);
-  //mPal->setSearch(FALP);
 
   // set number of candidates generated per feature
   mPal->setPointP(mCandPoint);
@@ -271,15 +299,6 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   QTime t;
   t.start();
 
-  // make sure to delete fontmetrics otherwise it crashes inside Qt when drawing... :-(
-  // probably gets invalid when setting fonts in the label drawing loop
-  for (int i = 0; i < mLayers.count(); i++)
-  {
-    LayerSettings& lyr = mLayers[i];
-    delete lyr.fontMetrics;
-    lyr.fontMetrics = NULL;
-  }
-
   // do the labeling itself
   double scale = 1; // scale denominator
   QgsRectangle r = extent;
@@ -289,16 +308,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   pal::Problem* problem;
   try
   {
-     //labels = mPal->labeller(scale, bbox, NULL, false);
     problem = mPal->extractProblem(scale, bbox);
-    if ( problem )
-    {
-      // TODO: other methods
-      problem->chain_search();
-      labels = problem->getSolution(false);
-    }
-    else
-      labels = new std::list<Label*>();
   }
   catch ( std::exception& e )
   {

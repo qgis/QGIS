@@ -42,7 +42,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
   populatePlacementMethods();
   populateFieldNames();
 
-  LayerSettings lyr = lbl->layer(layerId);
+  const LayerSettings& lyr = lbl->layer(layerId);
   if (!lyr.layerId.isEmpty())
   {
     // load the labeling settings

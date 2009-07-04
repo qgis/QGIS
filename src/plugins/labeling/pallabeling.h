@@ -4,6 +4,7 @@
 class QPainter;
 class QgsMapRenderer;
 class QgsRectangle;
+class QgsCoordinateTransform;
 
 #include <QString>
 #include <QFont>
@@ -27,6 +28,7 @@ class LayerSettings
 {
 public:
   LayerSettings();
+  LayerSettings(const LayerSettings& s);
   ~LayerSettings();
 
   enum Placement
@@ -46,7 +48,7 @@ public:
   bool enabled;
   int priority; // 0 = low, 10 = high
   bool obstacle; // whether it's an obstacle
-  double dist; // distance from the feature
+  double dist; // distance from the feature (in pixels)
 
   // called from register feature hook
   void calculateLabelSize(QString text, double& labelX, double& labelY);
@@ -60,7 +62,8 @@ public:
   QFontMetrics* fontMetrics;
   int fontBaseline;
   const QgsMapToPixel* xform;
-  QgsPoint ptZero;
+  const QgsCoordinateTransform* ct;
+  QgsPoint ptZero, ptOne;
   QList<MyLabel*> geometries;
 };
 
@@ -85,7 +88,7 @@ public:
 
     void removeLayer(QString layerId);
 
-    LayerSettings layer(QString layerId);
+    const LayerSettings& layer(QString layerId);
 
     void numCandidatePositions(int& candPoint, int& candLine, int& candPolygon);
     void setNumCandidatePositions(int candPoint, int candLine, int candPolygon);
@@ -110,6 +113,8 @@ protected:
 
 protected:
     QList<LayerSettings> mLayers;
+    LayerSettings mInvalidLayer;
+
     QgsMapRenderer* mMapRenderer;
     int mCandPoint, mCandLine, mCandPolygon;
     Search mSearch;
