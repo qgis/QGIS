@@ -84,7 +84,8 @@ namespace pal
     CHAIN = 0, /**< is the worst but fastest method */
     POPMUSIC_TABU_CHAIN = 1, /**< is the best but slowest */
     POPMUSIC_TABU = 2, /**< is a little bit better than CHAIN but slower*/
-    POPMUSIC_CHAIN = 3 /**< is slower and best than TABU, worse and faster than TABU_CHAIN */
+    POPMUSIC_CHAIN = 3, /**< is slower and best than TABU, worse and faster than TABU_CHAIN */
+    FALP = 4 /** only initial solution */
   };
 
   /** Typedef for _Units enumeration */
@@ -329,6 +330,11 @@ namespace pal
                                    double scale, double bbox[4],
                                    PalStat **stat,
                                    bool displayAll );
+
+
+      Problem* extractProblem(double scale, double bbox[4]);
+
+      std::list<Label*>* solveProblem(Problem* prob);
 
       /**
        * \brief Set map resolution

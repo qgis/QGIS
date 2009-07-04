@@ -467,6 +467,7 @@ namespace pal
       // ignore invalid geometries (e.g. polygons with self-intersecting rings)
       if (check_valid && GEOSisValid( geom ) != 1) // 0=invalid, 1=valid, 2=exception
       {
+        std::cerr << "ignoring invalid feature " << geom_id << std::endl;
         continue;
       }
 

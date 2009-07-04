@@ -31,6 +31,10 @@
 #include <config.h>
 #endif
 
+//#define _VERBOSE_
+//#define _EXPORT_MAP_
+#include <QTime>
+
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <cstdarg>
@@ -38,7 +42,6 @@
 #include <fstream>
 #include <cstring>
 #include <cfloat>
-#include <ctime>
 #include <list>
 //#include <geos/geom/Geometry.h>
 #include <geos_c.h>
@@ -114,7 +117,6 @@ namespace pal
     std::cout.precision( 12 );
     std::cerr.precision( 12 );
 
-    tmpTime = 0;
   }
 
   std::list<Layer*> *Pal::getLayers()
@@ -153,8 +155,6 @@ namespace pal
 
   Pal::~Pal()
   {
-
-    std::cout << "Acces/Concvert time: " << ( double ) tmpTime / CLOCKS_PER_SEC << std::endl;
 
     lyrsMutex->lock();
     while ( layers->size() > 0 )
@@ -280,6 +280,9 @@ namespace pal
 
         LinkedList<Feats*> *feats = new LinkedList<Feats*> ( ptrFeatsCompare );
 
+          QTime t;
+          t.start();
+
         if (( ft_ptr->type == GEOS_LINESTRING )
             || ft_ptr->type == GEOS_POLYGON )
         {
@@ -299,8 +302,6 @@ namespace pal
           ft_ptr->fetchCoordinates();
           PointSet *shape = ft_ptr->createProblemSpecificPointSet( bbx, bby, &outside, &inside );
           ft_ptr->releaseCoordinates();
-
-
 
 
           if ( inside )
@@ -771,7 +772,6 @@ namespace pal
     delete context;
     lyrsMutex->unlock();
 
-
     prob->nbLabelledLayers = labLayers->size();
     prob->labelledLayersName = new char*[prob->nbLabelledLayers];
     for ( i = 0;i < prob->nbLabelledLayers;i++ )
@@ -980,13 +980,6 @@ namespace pal
               << prob->nbOverlap << "\t";
 #endif
 
-    prob->reduce();
-
-#ifdef _VERBOSE_
-    std::cerr << prob->nblp << "\t"
-              << prob->nbOverlap;
-#endif
-
     return prob;
   }
 
@@ -1063,6 +1056,9 @@ namespace pal
     << "height=\"" << convert2pt( bbox[3] - bbox[1], scale, dpi )  << "\">" << std::endl; // TODO xmax ymax
 #endif
 
+    QTime t;
+    t.start();
+
     // First, extract the problem
     // TODO which is the minimum scale ? (> 0, >= 0, >= 1, >1 )
     if ( scale < 1 || ( prob = extract( nbLayers, layersName, layersFactor, bbox[0], bbox[1], bbox[2], bbox[3], scale,
@@ -1092,6 +1088,19 @@ namespace pal
       return new std::list<Label*>();
     }
 
+    std::cout << "PAL EXTRACT: " << t.elapsed() / 1000.0 << " s" << std::endl;
+    t.restart();
+
+    // reduce number of candidates
+    // (remove candidates which surely won't be used)
+    prob->reduce();
+
+#ifdef _VERBOSE_
+    std::cerr << prob->nblp << "\t"
+              << prob->nbOverlap;
+#endif
+
+
     prob->displayAll = displayAll;
 
 #ifdef _VERBOSE_
@@ -1102,10 +1111,15 @@ namespace pal
 #endif
 
     // search a solution
-    if ( searchMethod != CHAIN )
-      prob->popmusic();
-    else
+    if ( searchMethod == FALP )
+      prob->init_sol_falp();
+    else if ( searchMethod == CHAIN )
       prob->chain_search();
+    else
+      prob->popmusic();
+
+    std::cout << "PAL SEARCH (" << searchMethod << "): " << t.elapsed() / 1000.0 << " s" << std::endl;
+    t.restart();
 
     // Post-Optimization
     //prob->post_optimization();
@@ -1138,6 +1152,51 @@ namespace pal
 
     return solution;
   }
+
+  Problem* Pal::extractProblem(double scale, double bbox[4])
+  {
+    // find out: nbLayers, layersName, layersFactor
+    lyrsMutex->lock();
+    int nbLayers = layers->size();
+
+    char **layersName = new char*[nbLayers];
+    double *priorities = new double[nbLayers];
+    Layer *layer;
+    int i = 0;
+    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end();it++ )
+    {
+      layer = *it;
+      layersName[i] = layer->name;
+      priorities[i] = layer->defaultPriority;
+      i++;
+    }
+    lyrsMutex->unlock();
+
+    Problem* prob = extract( nbLayers, layersName, priorities, bbox[0], bbox[1], bbox[2], bbox[3], scale, NULL);
+
+    delete[] layersName;
+    delete[] priorities;
+
+    return prob;
+  }
+
+  std::list<Label*>* Pal::solveProblem(Problem* prob)
+  {
+    if (prob == NULL)
+      return new std::list<Label*>();
+
+    prob->reduce();
+
+    if ( searchMethod == FALP )
+      prob->init_sol_falp();
+    else if ( searchMethod == CHAIN )
+      prob->chain_search();
+    else
+      prob->popmusic();
+
+    return prob->getSolution( false );
+  }
+
 
   void Pal::setPointP( int point_p )
   {
@@ -1267,6 +1326,9 @@ namespace pal
         tenure = 10;
         ejChainDeg = 50;
         candListSize = 0.2;
+        break;
+      case FALP:
+        searchMethod = method;
         break;
       default:
         std::cerr << "Unknown search method..." << std::endl;

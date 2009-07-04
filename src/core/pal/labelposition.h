@@ -103,6 +103,7 @@ namespace pal
       //LabelPosition (int id, double x1, double y1, double w, double h, double cost, Feature *feature);
       //LabelPosition (int id, int nbPart, double *x, double *y, double *alpha,
 
+    public:
       /**
        * \brief create a new LabelPosition
        *
@@ -181,6 +182,8 @@ namespace pal
        */
       double getY();
 
+      double getWidth() { return w; }
+      double getHeight() { return h; }
 
       /**
        * \brief get alpha
