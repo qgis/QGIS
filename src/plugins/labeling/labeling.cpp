@@ -65,13 +65,46 @@ Labeling::~Labeling()
 {
 }
 
+/////////
+
+#include <qgsmaptool.h>
+#include <QMouseEvent>
+#include <QToolTip>
+
+class LabelingTool : public QgsMapTool
+{
+public:
+  LabelingTool(PalLabeling* lbl, QgsMapCanvas* canvas) : QgsMapTool(canvas), mLBL(lbl) {}
+
+  virtual void canvasPressEvent( QMouseEvent * e )
+  {
+    const QList<LabelCandidate>& cand = mLBL->candidates();
+    QPointF pt = e->posF();
+    for (int i = 0; i < cand.count(); i++)
+    {
+      const LabelCandidate& c = cand[i];
+      if (c.rect.contains(pt))
+      {
+        QToolTip::showText( mCanvas->mapToGlobal(e->pos()), QString::number(c.cost), mCanvas);
+        break;
+      }
+    }
+  }
+
+protected:
+  PalLabeling* mLBL;
+};
+
+///////////
+
+
 /*
  * Initialize the GUI interface for the plugin - this is only called once when the plugin is
  * added to the plugin registry in the QGIS application.
  */
 void Labeling::initGui()
 {
-  mLBL = new PalLabeling(mQGisIface->mapCanvas());
+  mLBL = new PalLabeling(mQGisIface->mapCanvas()->mapRenderer());
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/labeling/labeling.png" ), tr( "Labeling" ), this );
@@ -83,13 +116,19 @@ void Labeling::initGui()
   mQGisIface->addToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Labeling" ), mQActionPointer );
 
+  mActionTool = new QAction( "Ltool", this );
+  mQGisIface->addToolBarIcon( mActionTool );
+  connect( mActionTool, SIGNAL( triggered() ), this, SLOT( setTool() ) );
+
+  mTool = new LabelingTool(mLBL, mQGisIface->mapCanvas());
+
   connect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( doLabeling( QPainter * ) ) );
 
 }
 
 void Labeling::doLabeling( QPainter * painter )
 {
-  mLBL->doLabeling(painter);
+  mLBL->doLabeling(painter, mQGisIface->mapCanvas()->extent());
 }
 
 // Slot called when the menu item is triggered
@@ -119,13 +158,25 @@ void Labeling::run()
   }
 }
 
+
+void Labeling::setTool()
+{
+  mQGisIface->mapCanvas()->setMapTool(mTool);
+}
+
 // Unload the plugin by cleaning up the GUI
 void Labeling::unload()
 {
+  mQGisIface->mapCanvas()->unsetMapTool(mTool);
+  delete mTool;
+
   // remove the GUI
   mQGisIface->removePluginMenu( "&Labeling", mQActionPointer );
   mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
+
+  mQGisIface->removeToolBarIcon( mActionTool );
+  delete mActionTool;
 
   delete mLBL;
 }

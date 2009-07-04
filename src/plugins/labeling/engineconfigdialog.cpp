@@ -18,6 +18,8 @@ EngineConfigDialog::EngineConfigDialog(PalLabeling* lbl, QWidget* parent)
   spinCandPoint->setValue(candPoint);
   spinCandLine->setValue(candLine);
   spinCandPolygon->setValue(candPolygon);
+
+  chkShowCandidates->setChecked( mLBL->isShowingCandidates() );
 }
 
 
@@ -29,6 +31,8 @@ void EngineConfigDialog::onOK()
   mLBL->setNumCandidatePositions(spinCandPoint->value(),
                                  spinCandLine->value(),
                                  spinCandPolygon->value());
+
+  mLBL->setShowingCandidates( chkShowCandidates->isChecked() );
 
   accept();
 }

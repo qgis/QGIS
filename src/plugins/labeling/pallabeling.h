@@ -2,12 +2,14 @@
 #define PALLABELING_H
 
 class QPainter;
-class QgsMapCanvas;
+class QgsMapRenderer;
+class QgsRectangle;
 
 #include <QString>
 #include <QFont>
 #include <QColor>
 #include <QList>
+#include <QRectF>
 
 namespace pal
 {
@@ -62,13 +64,22 @@ public:
   QList<MyLabel*> geometries;
 };
 
+class LabelCandidate
+{
+public:
+  LabelCandidate(QRectF r, double c): rect(r), cost(c) {}
+
+  QRectF rect;
+  double cost;
+};
+
 class PalLabeling
 {
 public:
-    PalLabeling(QgsMapCanvas* mapCanvas);
+    PalLabeling(QgsMapRenderer* renderer);
     ~PalLabeling();
 
-    void doLabeling(QPainter* painter);
+    void doLabeling(QPainter* painter, QgsRectangle extent);
 
     void addLayer(LayerSettings layerSettings);
 
@@ -79,11 +90,14 @@ public:
     void numCandidatePositions(int& candPoint, int& candLine, int& candPolygon);
     void setNumCandidatePositions(int candPoint, int candLine, int candPolygon);
 
-    enum Search { Chain, Popmusic_Tabu, Popmusic_Chain, Popmusic_Tabu_Chain };
+    enum Search { Chain, Popmusic_Tabu, Popmusic_Chain, Popmusic_Tabu_Chain, Falp };
 
     void setSearchMethod(Search s);
     Search searchMethod() const;
 
+    bool isShowingCandidates() const { return mShowingCandidates; }
+    void setShowingCandidates(bool showing) { mShowingCandidates = showing; }
+    const QList<LabelCandidate>& candidates() { return mCandidates; }
 
     //! hook called when drawing layer before issuing select()
     static int prepareLayerHook(void* context, void* layerContext, int& attrIndex);
@@ -96,11 +110,15 @@ protected:
 
 protected:
     QList<LayerSettings> mLayers;
-    QgsMapCanvas* mMapCanvas;
+    QgsMapRenderer* mMapRenderer;
     int mCandPoint, mCandLine, mCandPolygon;
     Search mSearch;
 
     pal::Pal* mPal;
+
+    // list of candidates from last labeling
+    QList<LabelCandidate> mCandidates;
+    bool mShowingCandidates;
 };
 
 #endif // PALLABELING_H

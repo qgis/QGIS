@@ -32,6 +32,7 @@ class QToolBar;
 class QgisInterface;
 
 class PalLabeling;
+class LabelingTool;
 
 class Labeling: public QObject, public QgisPlugin
 {
@@ -58,14 +59,20 @@ class Labeling: public QObject, public QgisPlugin
     //! hook to renderComplete signal
     void doLabeling(QPainter* painter);
 
+    //! start labeling map tool
+    void setTool();
+
   private:
 
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //! Pointer to the qaction for this plugin
     QAction * mQActionPointer;
+    QAction * mActionTool;
 
     PalLabeling* mLBL;
+
+    LabelingTool* mTool;
 };
 
 #endif //Labeling_H

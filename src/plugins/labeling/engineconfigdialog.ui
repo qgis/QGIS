@@ -27,7 +27,7 @@
       <widget class="QComboBox" name="cboSearchMethod">
        <item>
         <property name="text">
-         <string>Chain (fastest)</string>
+         <string>Chain (fast)</string>
         </property>
        </item>
        <item>
@@ -43,6 +43,11 @@
        <item>
         <property name="text">
          <string>Popmusic Tabu Chain</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>FALP (fastest)</string>
         </property>
        </item>
       </widget>
@@ -88,6 +93,9 @@
           <property name="minimum">
            <number>1</number>
           </property>
+          <property name="maximum">
+           <number>999</number>
+          </property>
          </widget>
         </item>
         <item row="1" column="0">
@@ -105,6 +113,9 @@
           <property name="minimum">
            <number>1</number>
           </property>
+          <property name="maximum">
+           <number>999</number>
+          </property>
          </widget>
         </item>
         <item row="2" column="0">
@@ -121,6 +132,9 @@
          <widget class="QSpinBox" name="spinCandPolygon">
           <property name="minimum">
            <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>999</number>
           </property>
          </widget>
         </item>
@@ -159,6 +173,13 @@
     </spacer>
    </item>
    <item>
+    <widget class="QCheckBox" name="chkShowCandidates">
+     <property name="text">
+      <string>Show label candidates (for debugging)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -170,6 +191,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>cboSearchMethod</tabstop>
+  <tabstop>spinCandPoint</tabstop>
+  <tabstop>spinCandLine</tabstop>
+  <tabstop>spinCandPolygon</tabstop>
+  <tabstop>chkShowCandidates</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

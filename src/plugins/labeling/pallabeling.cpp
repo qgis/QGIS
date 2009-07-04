@@ -7,6 +7,8 @@
 #include <pal/layer.h>
 #include <pal/palgeometry.h>
 #include <pal/palexception.h>
+#include <pal/problem.h>
+#include <pal/labelposition.h>
 
 #include <geos_c.h>
 
@@ -15,12 +17,14 @@
 #include <QByteArray>
 #include <QString>
 #include <QFontMetrics>
+#include <QTime>
+#include <QPainter>
 
 #include <qgsvectorlayer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsvectordataprovider.h>
 #include <qgsgeometry.h>
-#include <qgsmapcanvas.h>
+#include <qgsmaprenderer.h>
 
 using namespace pal;
 
@@ -105,8 +109,8 @@ void LayerSettings::registerFeature(QgsFeature& f)
 
 // -------------
 
-PalLabeling::PalLabeling(QgsMapCanvas* mapCanvas)
-  : mMapCanvas(mapCanvas), mPal(NULL)
+PalLabeling::PalLabeling(QgsMapRenderer* mapRenderer)
+  : mMapRenderer(mapRenderer), mPal(NULL)
 {
 
   // find out engine defaults
@@ -121,7 +125,10 @@ PalLabeling::PalLabeling(QgsMapCanvas* mapCanvas)
     case POPMUSIC_TABU: mSearch = Popmusic_Tabu; break;
     case POPMUSIC_CHAIN: mSearch = Popmusic_Chain; break;
     case POPMUSIC_TABU_CHAIN: mSearch = Popmusic_Tabu_Chain; break;
+    case FALP: mSearch = Falp; break;
   }
+
+  mShowingCandidates = FALSE;
 
   initPal();
 }
@@ -217,7 +224,7 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
   lyr->fieldIndex = fldIndex;
   lyr->fontMetrics = new QFontMetrics(lyr->textFont);
   lyr->fontBaseline = lyr->fontMetrics->boundingRect("X").bottom(); // dummy text to find out how many pixels of the text are below the baseline
-  lyr->xform = thisClass->mMapCanvas->mapRenderer()->coordinateTransform();
+  lyr->xform = thisClass->mMapRenderer->coordinateTransform();
   lyr->ptZero = lyr->xform->toMapCoordinates( 0,0 );
 
   return 1; // init successful
@@ -245,6 +252,7 @@ void PalLabeling::initPal()
     case Popmusic_Tabu: s = POPMUSIC_TABU; break;
     case Popmusic_Chain: s = POPMUSIC_CHAIN; break;
     case Popmusic_Tabu_Chain: s = POPMUSIC_TABU_CHAIN; break;
+    case Falp: s = FALP; break;
   }
   mPal->setSearch(s);
   //mPal->setSearch(FALP);
@@ -257,7 +265,7 @@ void PalLabeling::initPal()
 
 
 
-void PalLabeling::doLabeling(QPainter* painter)
+void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
 {
 
   QTime t;
@@ -274,13 +282,23 @@ void PalLabeling::doLabeling(QPainter* painter)
 
   // do the labeling itself
   double scale = 1; // scale denominator
-  QgsRectangle r = mMapCanvas->extent();
+  QgsRectangle r = extent;
   double bbox[] = { r.xMinimum(), r.yMinimum(), r.xMaximum(), r.yMaximum() };
 
   std::list<Label*>* labels;
+  pal::Problem* problem;
   try
   {
-     labels = mPal->labeller(scale, bbox, NULL, false);
+     //labels = mPal->labeller(scale, bbox, NULL, false);
+    problem = mPal->extractProblem(scale, bbox);
+    if ( problem )
+    {
+      // TODO: other methods
+      problem->chain_search();
+      labels = problem->getSolution(false);
+    }
+    else
+      labels = new std::list<Label*>();
   }
   catch ( std::exception& e )
   {
@@ -288,11 +306,46 @@ void PalLabeling::doLabeling(QPainter* painter)
     return;
   }
 
+  const QgsMapToPixel* xform = mMapRenderer->coordinateTransform();
+
+  // draw rectangles with all candidates
+  // this is done before actual solution of the problem
+  // before number of candidates gets reduced
+  mCandidates.clear();
+  if (mShowingCandidates && problem)
+  {
+    painter->setPen(QColor(0,0,0,64));
+    painter->setBrush(Qt::NoBrush);
+    for (int i = 0; i < problem->getNumFeatures(); i++)
+    {
+      for (int j = 0; j < problem->getFeatureCandidateCount(i); j++)
+      {
+        pal::LabelPosition* lp = problem->getFeatureCandidate(i, j);
+
+        QgsPoint outPt = xform->transform(lp->getX(), lp->getY());
+        QgsPoint outPt2 = xform->transform(lp->getX()+lp->getWidth(), lp->getY()+lp->getHeight());
+
+        painter->save();
+        painter->translate( QPointF(outPt.x(), outPt.y()) );
+        painter->rotate(-lp->getAlpha() * 180 / M_PI );
+        QRectF rect(0,0, outPt2.x()-outPt.x(), outPt2.y()-outPt.y());
+        painter->drawRect(rect);
+        painter->restore();
+
+        // save the rect
+        rect.moveTo(outPt.x(),outPt.y());
+        mCandidates.append( LabelCandidate(rect, lp->getCost() * 1000) );
+      }
+    }
+  }
+
+  // find the solution
+  labels = mPal->solveProblem( problem );
+
   std::cout << "LABELING work:   " << t.elapsed() << "ms  ... labels# " << labels->size() << std::endl;
   t.restart();
 
   // draw the labels
-  const QgsMapToPixel* xform = mMapCanvas->mapRenderer()->coordinateTransform();
   std::list<Label*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it)
   {
@@ -317,6 +370,7 @@ void PalLabeling::doLabeling(QPainter* painter)
 
   std::cout << "LABELING draw:   " << t.elapsed() << "ms" << std::endl;
 
+  delete problem;
   delete labels;
 
   // delete all allocated geometries for features
