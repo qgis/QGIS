@@ -255,7 +255,7 @@ namespace pal
 
 
     // feature has to be labeled ?
-    if ( context->layer->toLabel )
+    if ( context->layer->toLabel && context->layer->isScaleValid( context->scale ) )
     {
       // is the feature well defined ? // TODO Check epsilon
       if ( ft_ptr->label_x > 0.0000001 && ft_ptr->label_y > 0.0000001 )
@@ -479,10 +479,11 @@ namespace pal
 
     double dist;
 
-    double distlabel = unit_convert( double( lp->feature->distlabel ),
+    double distlabel = lp->feature->distlabel;
+    /*unit_convert( double( lp->feature->distlabel ),
                                      pal::PIXEL,
                                      pal->map_unit,
-                                     pal->dpi, scale, 1 );
+                                     pal->dpi, scale, 1 );*/
 
 
 
