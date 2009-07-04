@@ -75,6 +75,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
     mypItem->setText( "" );
     //store the symbol offset in the UserData role for later retrieval
     mypItem->setData( Qt::UserRole, *it );
+    mypItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
     if ( layer->geometryType() != QGis::Point )
     {
       break;
