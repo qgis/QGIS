@@ -1,4 +1,3 @@
-
 /***************************************************************************
                           qgslegend.cpp  -  description
                              -------------------
@@ -89,15 +88,10 @@ QgsLegend::QgsLegend( QWidget * parent, const char *name )
   header()->setHidden( 1 );
   setRootIsDecorated( true );
   initPixmaps();
-
-
 }
-
-
 
 QgsLegend::~QgsLegend()
 {}
-
 
 void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
@@ -551,8 +545,8 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   doItemsLayout();
 
   // setup connections that will update the layer icons
-  connect(layer, SIGNAL(editingStarted()), llayer, SLOT(updateIcon()));
-  connect(layer, SIGNAL(editingStopped()), llayer, SLOT(updateIcon()));
+  connect( layer, SIGNAL( editingStarted() ), llayer, SLOT( updateIcon() ) );
+  connect( layer, SIGNAL( editingStopped() ), llayer, SLOT( updateIcon() ) );
 }
 
 QgsLegendLayerFile* QgsLegend::currentLayerFile()
@@ -1563,7 +1557,6 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     return;
   }
 
-  closePersistentEditor( item, row );
   //if the text of a QgsLegendLayer has changed, change the display names of all its maplayers
   QgsLegendLayer* theLegendLayer = dynamic_cast<QgsLegendLayer*>( item ); //item is a legend layer
   if ( theLegendLayer )
@@ -1705,7 +1698,7 @@ void QgsLegend::openEditor()
   QTreeWidgetItem* theItem = currentItem();
   if ( theItem )
   {
-    openPersistentEditor( theItem, 0 );
+    editItem( theItem, 0 );
   }
 }
 
