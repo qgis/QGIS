@@ -400,7 +400,6 @@ void QgsLegendLayer::updateIcon()
   QPixmap newIcon( getOriginalPixmap() );
 
   QgsMapLayer* theLayer = firstMapLayer();
-  QgsLegendLayerFile* theFile = firstLayerFile();
 
   if ( mapLayers().size() == 1 )
   {
