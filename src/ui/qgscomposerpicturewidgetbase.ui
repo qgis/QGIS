@@ -36,7 +36,7 @@
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>101</width>
           <height>20</height>
@@ -85,6 +85,12 @@
      <layout class="QGridLayout" >
       <item row="0" column="0" >
        <widget class="QListWidget" name="mPreviewListWidget" >
+        <property name="showDropIndicator" stdset="0" >
+         <bool>false</bool>
+        </property>
+        <property name="dragDropMode" >
+         <enum>QAbstractItemView::NoDragDrop</enum>
+        </property>
         <property name="movement" >
          <enum>QListView::Free</enum>
         </property>
@@ -116,16 +122,7 @@
      <property name="spacing" >
       <number>6</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin" >
       <number>0</number>
      </property>
      <item>

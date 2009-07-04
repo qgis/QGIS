@@ -265,6 +265,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
     }
 
     QListWidgetItem * listItem = new QListWidgetItem( mPreviewListWidget );
+    listItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
     if ( fileIsSvg )
     {
