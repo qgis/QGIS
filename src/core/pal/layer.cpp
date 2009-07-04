@@ -422,7 +422,7 @@ Cell<Feature*>* Layer::getFeatureIt( const char * geom_id )
     return NULL;
 }
 
-void Layer::setFeatureDistlabel( const char * geom_id, int distlabel )
+void Layer::setFeatureDistlabel( const char * geom_id, double distlabel )
 {
   int i;
 
@@ -459,7 +459,7 @@ void Layer::setFeatureDistlabel( const char * geom_id, int distlabel )
 }
 
 
-int Layer::getFeatureDistlabel( const char *geom_id )
+double Layer::getFeatureDistlabel( const char *geom_id )
 {
   modMutex->lock();
   Cell<Feature*>* it = getFeatureIt( geom_id );

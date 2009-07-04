@@ -326,7 +326,7 @@ namespace pal
        * @throws PalException::UnknownFeature
        * @throws PalException::ValueNotInRange
        */
-      void setFeatureDistlabel( const char *geom_id, int distlabel );
+      void setFeatureDistlabel( const char *geom_id, double distlabel );
 
       /**
        * \brief get the symbol size (pixel) for a specific feature
@@ -336,7 +336,7 @@ namespace pal
        *
        * @throws PalException::UnknownFeature
        */
-      int getFeatureDistlabel( const char *geom_id );
+      double getFeatureDistlabel( const char *geom_id );
 
   };
 

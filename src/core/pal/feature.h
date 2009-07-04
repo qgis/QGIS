@@ -84,7 +84,7 @@ namespace pal
       char *uid;
       Layer *layer;
 
-      int distlabel;
+      double distlabel;
 
       GEOSGeometry *the_geom;
       int currentAccess;
