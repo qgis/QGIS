@@ -25,7 +25,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
-#include <cmath>
 
 #include <QColorDialog>
 
@@ -139,16 +138,7 @@ void QgsContinuousColorDialog::apply()
 
 
   //create the render items for minimum and maximum value
-  QString minimumString;
-  if ( minimum - floor( minimum ) > 0 )
-  {
-    minimumString = QString::number( minimum, 'f' );
-  }
-  else
-  {
-    minimumString = QString::number( minimum, 'f', 0 );
-  }
-  QgsSymbol* minsymbol = new QgsSymbol( mVectorLayer->geometryType(), minimumString, "", "" );
+  QgsSymbol* minsymbol = new QgsSymbol( mVectorLayer->geometryType(), QVariant( minimum ).toString(), "", "" );
   QPen minPen;
   minPen.setColor( btnMinValue->color() );
   minPen.setWidthF( outlinewidthspinbox->value() );
@@ -162,16 +152,7 @@ void QgsContinuousColorDialog::apply()
     minsymbol->setPen( minPen );
   }
 
-  QString maximumString;
-  if ( maximum - floor( maximum ) > 0 )
-  {
-    maximumString = QString::number( maximum, 'f' );
-  }
-  else
-  {
-    maximumString = QString::number( maximum, 'f', 0 );
-  }
-  QgsSymbol* maxsymbol = new QgsSymbol( mVectorLayer->geometryType(), maximumString, "", "" );
+  QgsSymbol* maxsymbol = new QgsSymbol( mVectorLayer->geometryType(), QVariant( maximum ).toString(), "", "" );
   QPen maxPen;
   maxPen.setColor( btnMaxValue->color() );
   maxPen.setWidthF( outlinewidthspinbox->value() );
