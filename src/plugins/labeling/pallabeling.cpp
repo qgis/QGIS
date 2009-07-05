@@ -68,6 +68,7 @@ protected:
 LayerSettings::LayerSettings()
   : palLayer(NULL), fontMetrics(NULL), ct(NULL)
 {
+  bufferColor = Qt::white;
 }
 
 LayerSettings::LayerSettings(const LayerSettings& s)
@@ -82,6 +83,10 @@ LayerSettings::LayerSettings(const LayerSettings& s)
   priority = s.priority;
   obstacle = s.obstacle;
   dist = s.dist;
+  scaleMin = s.scaleMin;
+  scaleMax = s.scaleMax;
+  bufferSize = s.bufferSize;
+  bufferColor = s.bufferColor;
 
   fontMetrics = NULL;
   ct = NULL;
@@ -241,7 +246,14 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
 
   // create the pal layer
   double priority = 1 - lyr->priority/10.0; // convert 0..10 --> 1..0
-  Layer* l = thisClass->mPal->addLayer(lyr->layerId.toLocal8Bit().data(), -1, -1, arrangement, METER, priority, lyr->obstacle, true, true);
+  double min_scale = -1, max_scale = -1;
+  if (lyr->scaleMin != 0 && lyr->scaleMax != 0)
+  {
+    min_scale = lyr->scaleMin;
+    max_scale = lyr->scaleMax;
+  }
+
+  Layer* l = thisClass->mPal->addLayer(lyr->layerId.toLocal8Bit().data(), min_scale, max_scale, arrangement, METER, priority, lyr->obstacle, true, true);
 
   // save the pal layer to our layer context (with some additional info)
   lyr->palLayer = l;
@@ -300,7 +312,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   t.start();
 
   // do the labeling itself
-  double scale = 1; // scale denominator
+  double scale = mMapRenderer->scale(); // scale denominator
   QgsRectangle r = extent;
   double bbox[] = { r.xMinimum(), r.yMinimum(), r.xMaximum(), r.yMaximum() };
 
@@ -366,13 +378,19 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
     // TODO: optimize access :)
     const LayerSettings& lyr = layer(label->getLayerName());
 
+    QString text = ((MyLabel*)label->getGeometry())->text();
+
     // shift by one as we have 2px border
     painter->save();
-    painter->setPen( lyr.textColor );
-    painter->setFont( lyr.textFont );
     painter->translate( QPointF(outPt.x()+1, outPt.y()-1-lyr.fontBaseline) );
     painter->rotate(-label->getRotation() * 180 / M_PI );
-    painter->drawText(0,0, ((MyLabel*)label->getGeometry())->text());
+    painter->setFont( lyr.textFont );
+
+    if (lyr.bufferSize != 0)
+      drawLabelBuffer(painter, text, lyr.bufferSize, lyr.bufferColor);
+
+    painter->setPen( lyr.textColor );
+    painter->drawText(0,0, text);
     painter->restore();
 
     delete label;
@@ -418,4 +436,14 @@ void PalLabeling::setSearchMethod(PalLabeling::Search s)
 PalLabeling::Search PalLabeling::searchMethod() const
 {
   return mSearch;
+}
+
+void PalLabeling::drawLabelBuffer(QPainter* p, QString text, int size, QColor color)
+{
+  p->save();
+  p->setPen(color);
+  for (int x = -size; x <= size; x++)
+    for (int y = -size; y <= size; y++)
+      p->drawText(x,y, text);
+  p->restore();
 }

@@ -41,11 +41,15 @@ class LabelingGui : public QDialog, private Ui::LabelingGuiBase
     void changeTextColor();
     void changeTextFont();
     void showEngineConfigDialog();
+    void changeBufferColor();
+
+    void updateUi();
+    void updatePreview();
 
   protected:
     void populatePlacementMethods();
     void populateFieldNames();
-    void updateFontPreview(QFont font);
+    void updateFont(QFont font);
 
     QgsVectorLayer* layer();
 

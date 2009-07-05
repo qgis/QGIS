@@ -49,6 +49,9 @@ public:
   int priority; // 0 = low, 10 = high
   bool obstacle; // whether it's an obstacle
   double dist; // distance from the feature (in pixels)
+  int scaleMin, scaleMax; // disabled if both are zero
+  int bufferSize;
+  QColor bufferColor;
 
   // called from register feature hook
   void calculateLabelSize(QString text, double& labelX, double& labelY);
@@ -106,6 +109,9 @@ public:
     static int prepareLayerHook(void* context, void* layerContext, int& attrIndex);
     //! hook called when drawing for every feature in a layer
     static void registerFeatureHook(QgsFeature& f, void* layerContext);
+
+
+    static void drawLabelBuffer(QPainter* p, QString text, int size, QColor color);
 
 protected:
 

@@ -30,6 +30,8 @@
 #include <iostream>
 #include <QApplication>
 
+
+
 LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
     : QDialog( parent ), mLBL( lbl ), mLayerId( layerId )
 {
@@ -37,6 +39,9 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
 
   connect(btnTextColor, SIGNAL(clicked()), this, SLOT(changeTextColor()) );
   connect(btnChangeFont, SIGNAL(clicked()), this, SLOT(changeTextFont()) );
+  connect(chkBuffer, SIGNAL(toggled(bool)), this, SLOT(updatePreview()) );
+  connect(btnBufferColor, SIGNAL(clicked()), this, SLOT(changeBufferColor()) );
+  connect(spinBufferSize, SIGNAL(valueChanged(int)), this, SLOT(updatePreview()) );
   connect(btnEngineSettings, SIGNAL(clicked()), this, SLOT(showEngineConfigDialog()) );
 
   populatePlacementMethods();
@@ -52,11 +57,25 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
     sliderPriority->setValue( lyr.priority );
     chkNoObstacle->setChecked( !lyr.obstacle );
     spinDist->setValue( lyr.dist );
+
+    bool scaleBased = (lyr.scaleMin != 0 && lyr.scaleMax != 0);
+    chkScaleBasedVisibility->setChecked(scaleBased);
+    if (scaleBased)
+    {
+      spinScaleMin->setValue(lyr.scaleMin);
+      spinScaleMax->setValue(lyr.scaleMax);
+    }
+
+    bool buffer = (lyr.bufferSize != 0);
+    chkBuffer->setChecked(buffer);
+    if (buffer)
+      spinBufferSize->setValue(lyr.bufferSize);
   }
   else
   {
     // set enabled by default
     chkEnableLabeling->setChecked( true );
+
   }
 
   // feature distance available only for points and lines
@@ -66,7 +85,12 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
   }
 
   btnTextColor->setColor( lyr.textColor );
-  updateFontPreview( lyr.textFont );
+  btnBufferColor->setColor( lyr.bufferColor );
+  updateFont( lyr.textFont );
+  updateUi();
+
+  connect(chkBuffer, SIGNAL(toggled(bool)), this, SLOT(updateUi()) );
+  connect(chkScaleBasedVisibility, SIGNAL(toggled(bool)), this, SLOT(updateUi()) );
 }
 
 LabelingGui::~LabelingGui()
@@ -93,6 +117,24 @@ LayerSettings LabelingGui::layerSettings()
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
   lyr.dist = spinDist->value();
+  if (chkScaleBasedVisibility->isChecked())
+  {
+    lyr.scaleMin = spinScaleMin->value();
+    lyr.scaleMax = spinScaleMax->value();
+  }
+  else
+  {
+    lyr.scaleMin = lyr.scaleMax = 0;
+  }
+  if (chkBuffer->isChecked())
+  {
+    lyr.bufferSize = spinBufferSize->value();
+    lyr.bufferColor = btnBufferColor->color();
+  }
+  else
+  {
+    lyr.bufferSize = 0;
+  }
 
   return lyr;
 }
@@ -134,7 +176,7 @@ void LabelingGui::changeTextColor()
     return;
 
   btnTextColor->setColor(color);
-  updateFontPreview( lblFontPreview->font() );
+  updatePreview();
 }
 
 void LabelingGui::changeTextFont()
@@ -142,23 +184,50 @@ void LabelingGui::changeTextFont()
   bool ok;
   QFont font = QFontDialog::getFont(&ok, lblFontPreview->font(), this);
   if (ok)
-    updateFontPreview( font );
+    updateFont( font );
 }
 
-void LabelingGui::updateFontPreview(QFont font)
+void LabelingGui::updateFont(QFont font)
 {
   lblFontName->setText( QString("%1, %2").arg(font.family()).arg(font.pointSize()) );
   lblFontPreview->setFont(font);
 
-  QPalette palette = lblFontPreview->palette();
-  QBrush brush(btnTextColor->color());
-  palette.setBrush(QPalette::Active, QPalette::WindowText, brush);
-  palette.setBrush(QPalette::Inactive, QPalette::WindowText, brush);
-  lblFontPreview->setPalette(palette);
+  updatePreview();
+}
+
+void LabelingGui::updatePreview()
+{
+  lblFontPreview->setTextColor(btnTextColor->color());
+  if (chkBuffer->isChecked())
+    lblFontPreview->setBuffer(spinBufferSize->value(), btnBufferColor->color());
+  else
+    lblFontPreview->setBuffer(0, Qt::white);
 }
 
 void LabelingGui::showEngineConfigDialog()
 {
   EngineConfigDialog dlg(mLBL, this);
   dlg.exec();
+}
+
+void LabelingGui::updateUi()
+{
+  // enable/disable scale-based, buffer
+  bool buf = chkBuffer->isChecked();
+  spinBufferSize->setEnabled(buf);
+  btnBufferColor->setEnabled(buf);
+
+  bool scale = chkScaleBasedVisibility->isChecked();
+  spinScaleMin->setEnabled(scale);
+  spinScaleMax->setEnabled(scale);
+}
+
+void LabelingGui::changeBufferColor()
+{
+  QColor color = QColorDialog::getColor( btnBufferColor->color(), this);
+  if (!color.isValid())
+    return;
+
+  btnBufferColor->setColor(color);
+  updatePreview();
 }

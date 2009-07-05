@@ -7,6 +7,7 @@ SET (labeling_SRCS
      labelinggui.cpp
      pallabeling.cpp
      engineconfigdialog.cpp
+     labelpreview.cpp
 )
 
 SET (labeling_UIS labelingguibase.ui engineconfigdialog.ui)
@@ -35,6 +36,7 @@ INCLUDE_DIRECTORIES(
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui
      ..
+     .
 )
 
 TARGET_LINK_LIBRARIES(labelingplugin
