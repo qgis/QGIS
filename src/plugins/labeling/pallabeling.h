@@ -30,7 +30,7 @@ public:
   LayerSettings();
   LayerSettings(const LayerSettings& s);
   ~LayerSettings();
-
+  
   enum Placement
   {
     AroundPoint, // Point / Polygon

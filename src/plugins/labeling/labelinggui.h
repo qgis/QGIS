@@ -45,6 +45,7 @@ class LabelingGui : public QDialog, private Ui::LabelingGuiBase
 
     void updateUi();
     void updatePreview();
+    void updateOptions();
 
   protected:
     void populatePlacementMethods();

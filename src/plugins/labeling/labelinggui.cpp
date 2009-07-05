@@ -44,19 +44,64 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
   connect(spinBufferSize, SIGNAL(valueChanged(int)), this, SLOT(updatePreview()) );
   connect(btnEngineSettings, SIGNAL(clicked()), this, SLOT(showEngineConfigDialog()) );
 
-  populatePlacementMethods();
+  // set placement methods page based on geometry type
+  switch (layer()->geometryType())
+  {
+    case QGis::Point:
+      stackedPlacement->setCurrentWidget(pagePoint);
+      break;
+    case QGis::Line:
+      stackedPlacement->setCurrentWidget(pageLine);
+      break;
+    case QGis::Polygon:
+      stackedPlacement->setCurrentWidget(pagePolygon);
+      break;
+    default:
+      Q_ASSERT(0 && "NOOOO!");
+  }
+
   populateFieldNames();
 
   const LayerSettings& lyr = lbl->layer(layerId);
   if (!lyr.layerId.isEmpty())
   {
     // load the labeling settings
-    cboPlacement->setCurrentIndex( cboPlacement->findData( QVariant( (int)lyr.placement ) ) );
+
+    // placement
+    switch (lyr.placement)
+    {
+      case LayerSettings::AroundPoint:
+        radAroundPoint->setChecked(true);
+        radAroundCentroid->setChecked(true);
+        spinDistPoint->setValue(lyr.dist);
+        //spinAngle->setValue(lyr.angle);
+        break;
+      case LayerSettings::AroundLine:
+      case LayerSettings::OnLine:
+        radLineParallel->setChecked(true);
+        radPolygonPerimeter->setChecked(true);
+        if ( lyr.placement == LayerSettings::AroundLine )
+        {
+          radAroundLine->setChecked(true);
+          spinDistLine->setValue(lyr.dist);
+        }
+        else
+          radOnLine->setChecked(true);
+        break;
+      case LayerSettings::Horizontal:
+        radPolygonHorizontal->setChecked(true);
+        break;
+      case LayerSettings::Free:
+        radPolygonFree->setChecked(true);
+        break;
+      default:
+        Q_ASSERT(0 && "NOOO!");
+    }
+
     cboFieldName->setCurrentIndex( cboFieldName->findText(lyr.fieldName) );
     chkEnableLabeling->setChecked( lyr.enabled );
     sliderPriority->setValue( lyr.priority );
     chkNoObstacle->setChecked( !lyr.obstacle );
-    spinDist->setValue( lyr.dist );
 
     bool scaleBased = (lyr.scaleMin != 0 && lyr.scaleMax != 0);
     chkScaleBasedVisibility->setChecked(scaleBased);
@@ -78,19 +123,24 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
 
   }
 
-  // feature distance available only for points and lines
-  if (layer()->geometryType() == QGis::Polygon)
-  {
-    spinDist->setEnabled( false );
-  }
-
   btnTextColor->setColor( lyr.textColor );
   btnBufferColor->setColor( lyr.bufferColor );
   updateFont( lyr.textFont );
   updateUi();
 
+  updateOptions();
+
   connect(chkBuffer, SIGNAL(toggled(bool)), this, SLOT(updateUi()) );
   connect(chkScaleBasedVisibility, SIGNAL(toggled(bool)), this, SLOT(updateUi()) );
+
+  // setup connection to changes in the placement
+  QRadioButton* placementRadios[] = {
+    radAroundPoint, radOverPoint, // point
+    radLineParallel, radLineHorizontal, // line
+    radAroundCentroid, radPolygonHorizontal, radPolygonFree, radPolygonPerimeter // polygon
+  };
+  for (int i = 0; i < sizeof(placementRadios)/sizeof(QRadioButton*); i++)
+    connect( placementRadios[i], SIGNAL(toggled(bool)), this, SLOT(updateOptions()) );
 }
 
 LabelingGui::~LabelingGui()
@@ -110,13 +160,44 @@ LayerSettings LabelingGui::layerSettings()
   LayerSettings lyr;
   lyr.layerId = mLayerId;
   lyr.fieldName = cboFieldName->currentText();
-  lyr.placement = (LayerSettings::Placement) cboPlacement->itemData(cboPlacement->currentIndex()).toInt();
+
+  lyr.dist = 0;
+
+  if ( (stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked())
+    || (stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked()) )
+  {
+    lyr.placement = LayerSettings::AroundPoint;
+    lyr.dist = spinDistPoint->value();
+    //lyr.angle = spinAngle->value();
+  }
+  else if ( (stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked())
+    || (stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked()) )
+  {
+    if (radAroundLine->isChecked())
+    {
+      lyr.placement = LayerSettings::AroundLine;
+      lyr.dist = spinDistLine->value();
+    }
+    else
+      lyr.placement = LayerSettings::OnLine;
+  }
+  else
+  {
+    // this must be polygon - horizontal / free
+    if (radPolygonHorizontal->isChecked())
+      lyr.placement = LayerSettings::Horizontal;
+    else if (radPolygonFree->isChecked())
+      lyr.placement = LayerSettings::Free;
+    else
+      Q_ASSERT(0 && "NOOO!");
+  }
+
+
   lyr.textColor = btnTextColor->color();
   lyr.textFont = lblFontPreview->font();
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
-  lyr.dist = spinDist->value();
   if (chkScaleBasedVisibility->isChecked())
   {
     lyr.scaleMin = spinScaleMin->value();
@@ -139,26 +220,6 @@ LayerSettings LabelingGui::layerSettings()
   return lyr;
 }
 
-void LabelingGui::populatePlacementMethods()
-{
-  switch (layer()->geometryType())
-  {
-    case QGis::Point:
-      cboPlacement->addItem(tr("Around the point"), QVariant(LayerSettings::AroundPoint));
-      break;
-    case QGis::Line:
-      cboPlacement->addItem(tr("On the line"), QVariant(LayerSettings::OnLine));
-      cboPlacement->addItem(tr("Around the line"), QVariant(LayerSettings::AroundLine));
-      break;
-    case QGis::Polygon:
-      cboPlacement->addItem(tr("Horizontal"), QVariant(LayerSettings::Horizontal));
-      cboPlacement->addItem(tr("Free"), QVariant(LayerSettings::Free));
-      cboPlacement->addItem(tr("Around the centroid"), QVariant(LayerSettings::AroundPoint));
-      cboPlacement->addItem(tr("On the perimeter"), QVariant(LayerSettings::OnLine));
-      cboPlacement->addItem(tr("Around the perimeter"), QVariant(LayerSettings::AroundLine));
-      break;
-  }
-}
 
 void LabelingGui::populateFieldNames()
 {
@@ -230,4 +291,22 @@ void LabelingGui::changeBufferColor()
 
   btnBufferColor->setColor(color);
   updatePreview();
+}
+
+void LabelingGui::updateOptions()
+{
+  if ( (stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked())
+    || (stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked()) )
+  {
+    stackedOptions->setCurrentWidget(pageOptionsPoint);
+  }
+  else if ( (stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked())
+    || (stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked()) )
+  {
+    stackedOptions->setCurrentWidget(pageOptionsLine);
+  }
+  else
+  {
+    stackedOptions->setCurrentWidget(pageOptionsEmpty);
+  }
 }

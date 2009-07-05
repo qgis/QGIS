@@ -128,7 +128,8 @@ void LayerSettings::registerFeature(QgsFeature& f)
   geometries.append(lbl);
 
   // register feature to the layer
-  palLayer->registerFeature(lbl->strId(), lbl, labelX, labelY);
+  if (!palLayer->registerFeature(lbl->strId(), lbl, labelX, labelY))
+    return;
 
   // TODO: allow layer-wide feature dist in PAL...?
   if (dist != 0)
