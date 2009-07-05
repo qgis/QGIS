@@ -277,8 +277,10 @@ namespace pal
        * @param userGeom user's geometry that implements the PalGeometry interface
        *
        * @throws PalException::FeatureExists
+       *
+       * @return true on success (i.e. valid geometry)
        */
-      void registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1 );
+      bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1 );
 
       // TODO implement
       //void unregisterFeature (const char *geom_id);

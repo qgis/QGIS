@@ -305,9 +305,10 @@ namespace pal
 }
 #endif
 
-void Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y )
+bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y )
 {
   int j;
+  int part = 0;
 
   if ( geom_id && label_x >= 0 && label_y >= 0 )
   {
@@ -318,7 +319,7 @@ void Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
     {
       modMutex->unlock();
       throw new PalException::FeatureExists();
-      return;
+      return false;
     }
 
     /* Split MULTI GEOM and Collection in simple geometries*/
@@ -328,7 +329,6 @@ void Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
     LinkedList<Feat*> *finalQueue = splitGeom( the_geom, geom_id, true );
 
     int nGeom = finalQueue->size();
-    int part = 0;
 
     bool first_feat = true;
 
@@ -409,6 +409,8 @@ void Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
     userGeom->releaseGeosGeometry( the_geom );
   }
   modMutex->unlock();
+
+  return (part > 0); // true if we've added something
 }
 
 
