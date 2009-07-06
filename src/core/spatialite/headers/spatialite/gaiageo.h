@@ -553,7 +553,7 @@ extern "C"
 					unsigned int size, double *maxy);
     GAIAGEO_DECLARE gaiaGeomCollPtr gaiaBuildRings (gaiaGeomCollPtr geom);
 
-#if OMIT_PROJ == 0		/* including PROJ.4 */
+#ifndef OMIT_PROJ		/* including PROJ.4 */
 
     GAIAGEO_DECLARE double gaiaRadsToDegs (double rads);
     GAIAGEO_DECLARE double gaiaDegsToRads (double degs);
@@ -563,7 +563,7 @@ extern "C"
 
 #endif				/* end including PROJ.4 */
 
-#if OMIT_GEOS == 0		/* including GEOS */
+#ifndef OMIT_GEOS		/* including GEOS */
 
     GAIAGEO_DECLARE int gaiaGeomCollEquals (gaiaGeomCollPtr geom1,
 					    gaiaGeomCollPtr geom2);
