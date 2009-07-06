@@ -52,7 +52,7 @@ void QgsSimplifyDialog::setRange( int minValue, int maxValue )
   // let's have 20 page steps
   horizontalSlider->setPageStep(( maxValue - minValue ) / 20 );
 
-  horizontalSlider->setMinimum( minValue - 1 );// -1 for count with minimum tolerance end caused by double imprecision
+  horizontalSlider->setMinimum( (minValue - 1 < 0 ? 0: minValue - 1 ) );// -1 for count with minimum tolerance end caused by double imprecision
   horizontalSlider->setMaximum( maxValue );
 
 }
@@ -355,6 +355,7 @@ bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature,  double to
   {
     return FALSE;
   }
+
   QVector<QgsPoint> resultPoints = simplifyPoints( polygon->asPolygon()[0], tolerance );
   //resultPoints.push_back(resultPoints[0]);
   QVector<QgsPolyline> poly;
@@ -366,6 +367,9 @@ bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature,  double to
 
 QVector<QgsPoint> QgsSimplifyFeature::simplifyPoints( const QVector<QgsPoint>& pts, double tolerance )
 {
+  //just safety precaution
+  if (tolerance < 0)
+    return pts;
   // Douglas-Peucker simplification algorithm
 
   int anchor  = 0;
