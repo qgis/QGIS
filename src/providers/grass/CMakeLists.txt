@@ -7,18 +7,6 @@ SET(GRASS_PROVIDER_SRCS provider.cpp)
 
 SET(GRASS_LIB_SRCS qgsgrassprovider.cpp qgsgrass.cpp)
 
-IF (NOT MSVC)
-  IF (PEDANTIC)
-    MESSAGE("providers/grass : -Werror removed for qgsgrassprovider.cpp for now - please get rid of any compiler warnings!")
-  ENDIF (PEDANTIC)
-  # The warnings are caused by multiple definitions of NDEBUG in grass sources
-  # I have submitted a bug to the grass folks in the meantime we need to
-  # disable treating warnings as errors for the affected files
-  SET_SOURCE_FILES_PROPERTIES(qgsgrassprovider.cpp PROPERTIES COMPILE_FLAGS -Wno-error )
-  SET_SOURCE_FILES_PROPERTIES(qgsgrass.cpp PROPERTIES COMPILE_FLAGS -Wno-error )   
-  SET_SOURCE_FILES_PROPERTIES(provider.cpp PROPERTIES COMPILE_FLAGS -Wno-error )
-ENDIF (NOT MSVC)
-
 ########################################################
 # Build
 

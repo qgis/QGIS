@@ -134,6 +134,13 @@ IF (WITH_INTERNAL_SPATIALITE)
     spatialite/spatialite.c
     )
 
+  IF(MSVC)
+    # dirty code
+    SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS /W0)
+  ELSE(MSVC)
+    SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS -w)
+  ENDIF(MSVC)
+
   INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
