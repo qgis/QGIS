@@ -3022,6 +3022,11 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   {
     mType = Multiple;
   }
+  
+  if ( qdesc.attribute( "type" ).toLower() == "directory")
+  {
+    mType = Directory; 
+  }
 
   if ( !qdesc.attribute( "filters" ).isNull() )
   {
@@ -3090,6 +3095,10 @@ void QgsGrassModuleFile::browse()
       break;
     case Multiple:
       fd->setFileMode( QFileDialog::ExistingFiles );
+      fd->setAcceptMode( QFileDialog::AcceptOpen );
+      break;
+    case Directory:
+      fd->setFileMode( QFileDialog::Directory );
       fd->setAcceptMode( QFileDialog::AcceptOpen );
       break;
     default:
