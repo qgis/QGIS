@@ -22,6 +22,7 @@
 				<grass name="r.in.aster"/>
 				<grass name="r.external"/>
 				<grass name="r.external.qgis"/>
+				<grass name="qgis.r.external.all"/>
 			</section>
 			 <section label="Import vector">
                                 <grass name="v.in.ogr.qgis"/>
