@@ -1399,6 +1399,7 @@
 		72A56DEC0F3CFEA400BA32A1 /* getInsertions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7E00F39E57B003DC336 /* getInsertions.cpp */; };
 		72A56DED0F3CFEAC00BA32A1 /* dl_dxf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7D80F39E57B003DC336 /* dl_dxf.cpp */; };
 		72A56DEE0F3CFEAE00BA32A1 /* dl_writer_ascii.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7DE0F39E57B003DC336 /* dl_writer_ascii.cpp */; };
+		72A6A45A1005992500855EA6 /* qgis.r.external.all.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 72A6A4591005990500855EA6 /* qgis.r.external.all.py */; };
 		72A892CC0FAF7B8500108152 /* qgsconfigureshortcutsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CA0FAF7B6100108152 /* qgsconfigureshortcutsdialog.cpp */; };
 		72A892CD0FAF7B8500108152 /* qgsshortcutsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */; };
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
@@ -2634,6 +2635,7 @@
 			dstSubfolderSpec = 0;
 			files = (
 				723FD06B0FBCBA3500EFA55D /* qgis.db.connect-login.pg.py in Copy - scripts */,
+				72A6A45A1005992500855EA6 /* qgis.r.external.all.py in Copy - scripts */,
 				72E4DF0D0FE00FB600D3505D /* qgis.v.out.ogr.pg.py in Copy - scripts */,
 			);
 			name = "Copy - scripts";
@@ -6667,6 +6669,9 @@
 		72A56C040F3C887000BA32A1 /* libdxf2shpconverterplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libdxf2shpconverterplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56C0F0F3C887300BA32A1 /* libogrconverterplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libogrconverterplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56DA30F3CCAF700BA32A1 /* libplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		72A6A4591005990500855EA6 /* qgis.r.external.all.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = qgis.r.external.all.py; path = ../../src/plugins/grass/scripts/qgis.r.external.all.py; sourceTree = SOURCE_ROOT; };
+		72A6A45C1005995300855EA6 /* qgis.r.external.all.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis.r.external.all.qgm; path = "../../src/plugins/grass/modules-6.4/qgis.r.external.all.qgm"; sourceTree = SOURCE_ROOT; };
+		72A6A45D1005995300855EA6 /* qgis.r.external.all.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = qgis.r.external.all.1.png; path = "../../src/plugins/grass/modules-6.4/qgis.r.external.all.1.png"; sourceTree = SOURCE_ROOT; };
 		72A892C70FAF7B3800108152 /* qgsconfigureshortcutsdialog.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsconfigureshortcutsdialog.ui; path = ../../src/ui/qgsconfigureshortcutsdialog.ui; sourceTree = SOURCE_ROOT; };
 		72A892C80FAF7B6100108152 /* qgsshortcutsmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsshortcutsmanager.h; path = ../../src/app/qgsshortcutsmanager.h; sourceTree = SOURCE_ROOT; };
 		72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsshortcutsmanager.cpp; path = ../../src/app/qgsshortcutsmanager.cpp; sourceTree = SOURCE_ROOT; };
@@ -10325,6 +10330,7 @@
 			children = (
 				723FD0660FBCB94600EFA55D /* CMakeLists.txt */,
 				723FD0670FBCB94600EFA55D /* qgis.db.connect-login.pg.py */,
+				72A6A4591005990500855EA6 /* qgis.r.external.all.py */,
 				72E4DF0C0FE00FAD00D3505D /* qgis.v.out.ogr.pg.py */,
 			);
 			name = scripts;
@@ -10429,6 +10435,8 @@
 			children = (
 				7299397B0FE3037600244D1A /* CMakeLists.txt */,
 				72F6FCDF0FE7D79C00D5B53B /* default.qgc */,
+				72A6A45C1005995300855EA6 /* qgis.r.external.all.qgm */,
+				72A6A45D1005995300855EA6 /* qgis.r.external.all.1.png */,
 				7299397C0FE3037600244D1A /* r.external.1.png */,
 				7299397D0FE3037600244D1A /* r.external.qgis.1.png */,
 				7299397E0FE3037600244D1A /* r.external.qgis.qgm */,
