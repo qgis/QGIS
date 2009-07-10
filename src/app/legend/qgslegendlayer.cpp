@@ -346,7 +346,7 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
       values += lw;
     }
     uv = ( *it )->upperValue();
-    if ( !uv.isEmpty() )
+    if ( !uv.isEmpty() && lw != uv )
     {
       values += " - ";
       values += uv;
