@@ -34,6 +34,7 @@ public:
   enum Placement
   {
     AroundPoint, // Point / Polygon
+    OverPoint, // Point / Polygon
     OnLine, // Line / Polygon
     AroundLine, // Line / Polygon
     Horizontal, // Polygon

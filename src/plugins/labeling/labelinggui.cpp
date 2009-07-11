@@ -76,6 +76,10 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
         spinDistPoint->setValue(lyr.dist);
         //spinAngle->setValue(lyr.angle);
         break;
+      case LayerSettings::OverPoint:
+        radOverPoint->setChecked(true);
+        radOverCentroid->setChecked(true);
+        break;
       case LayerSettings::AroundLine:
       case LayerSettings::OnLine:
         radLineParallel->setChecked(true);
@@ -169,6 +173,11 @@ LayerSettings LabelingGui::layerSettings()
     lyr.placement = LayerSettings::AroundPoint;
     lyr.dist = spinDistPoint->value();
     //lyr.angle = spinAngle->value();
+  }
+  else if ( (stackedPlacement->currentWidget() == pagePoint && radOverPoint->isChecked())
+    || (stackedPlacement->currentWidget() == pagePolygon && radOverCentroid->isChecked()) )
+  {
+    lyr.placement = LayerSettings::OverPoint;
   }
   else if ( (stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked())
     || (stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked()) )

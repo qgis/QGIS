@@ -151,6 +151,28 @@ namespace pal
     return uid;
   }
 
+  int Feature::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width )
+  {
+    int nbp = 3;
+    *lPos = new LabelPosition *[nbp];
+
+    double lx = x - label_x / 2;
+    double ly = y - label_y / 2;
+    double cost = 0.0001;
+    int id = 0;
+    double alpha = 0;
+
+    double offset = label_x / 4;
+
+    // at the center
+    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, alpha, cost,  this );
+    // shifted to the sides - with higher cost
+    cost = 0.0021;
+    ( *lPos )[1] = new LabelPosition( id, lx+offset, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[2] = new LabelPosition( id, lx-offset, ly, label_x, label_y, alpha, cost,  this );
+    return nbp;
+  }
+
   int Feature::setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width )
   {
 
@@ -793,7 +815,10 @@ namespace pal
     {
       case GEOS_POINT:
         fetchCoordinates();
-        nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta );
+        if ( layer->getArrangement() == P_POINT_OVER )
+          nbp = setPositionOverPoint( x[0], y[0], scale, lPos, delta );
+        else
+          nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta );
 #ifdef _EXPORT_MAP_
         toSVGPath( nbPoints, type, x, y, dpi , scale,
                    convert2pt( bbox_min[0], scale, dpi ),
@@ -810,9 +835,13 @@ namespace pal
         switch ( layer->getArrangement() )
         {
           case P_POINT:
+          case P_POINT_OVER:
             double cx, cy;
             mapShape->getCentroid( cx, cy );
-            nbp = setPositionForPoint( cx, cy, scale, lPos, delta );
+            if (P_POINT_OVER)
+              nbp = setPositionOverPoint( cx, cy, scale, lPos, delta );
+            else
+              nbp = setPositionForPoint( cx, cy, scale, lPos, delta );
             break;
           case P_LINE:
           case P_LINE_AROUND:

@@ -108,6 +108,11 @@ namespace pal
       int setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width );
 
       /**
+       * generate one candidate over specified point
+       */
+      int setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width );
+
+      /**
        * \brief generate candidates for line feature
        * Generate candidates for line features
        * \param scale map scale is 1:scale

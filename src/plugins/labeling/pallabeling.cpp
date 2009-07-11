@@ -239,6 +239,7 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
   switch (lyr->placement)
   {
     case LayerSettings::AroundPoint: arrangement = P_POINT; break;
+    case LayerSettings::OverPoint: arrangement = P_POINT_OVER; break;
     case LayerSettings::OnLine:      arrangement = P_LINE; break;
     case LayerSettings::AroundLine:  arrangement = P_LINE_AROUND; break;
     case LayerSettings::Horizontal:  arrangement = P_HORIZ; break;
