@@ -224,6 +224,7 @@ void QgsDbSourceSelect::editConnection()
   {
     nc->saveConnection();
   }
+  populateConnectionList();
 }
 
 void QgsDbSourceSelect::deleteConnection()
