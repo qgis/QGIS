@@ -94,7 +94,8 @@ namespace pal
   {
       friend class Feature;
       friend class LabelPosition;
-      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
+      friend class CostCalculator;
+      friend class PolygonCostCalculator;
       friend void extractXYCoord( Feat *f );
 
     protected:

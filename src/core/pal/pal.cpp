@@ -53,6 +53,7 @@
 #include "linkedlist.hpp"
 #include "rtree.hpp"
 
+#include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
@@ -63,14 +64,6 @@
 
 namespace pal
 {
-
-  typedef struct
-  {
-    //LabelPosition *lp;
-    double scale;
-    Pal* pal;
-    PointSet *obstacle;
-  } PruneCtx;
 
   void geosError( const char *fmt, ... )
   {
@@ -393,164 +386,6 @@ namespace pal
   }
 
 
-  double dist_pointToLabel( double xp, double yp, LabelPosition *lp )
-  {
-
-    int i;
-    int j;
-
-    double mx[4];
-    double my[4];
-
-    double dist_min = DBL_MAX;
-    double dist;
-
-    for ( i = 0;i < 4;i++ )
-    {
-      j = ( i + 1 ) % 4;
-      mx[i] = ( lp->x[i] + lp->x[j] ) / 2.0;
-      my[i] = ( lp->y[i] + lp->y[j] ) / 2.0;
-    }
-
-
-    if ( vabs( cross_product( mx[0], my[0], my[2], my[2], xp, yp ) / lp->h ) < lp->w / 2 )
-    {
-      dist = cross_product( lp->x[0], lp->y[0], lp->x[1], lp->y[1], xp, yp ) / lp->w;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-
-      dist = cross_product( lp->x[2], lp->y[2], lp->x[3], lp->y[3], xp, yp ) / lp->w;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-    }
-
-    if ( vabs( cross_product( mx[1], my[1], my[3], my[3], xp, yp ) / lp->w ) < lp->h / 2 )
-    {
-      dist = cross_product( lp->x[1], lp->y[1], lp->x[2], lp->y[2], xp, yp ) / lp->h;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-
-      dist = cross_product( lp->x[3], lp->y[3], lp->x[0], lp->y[0], xp, yp ) / lp->h;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-    }
-
-    for ( i = 0;i < 4;i++ )
-    {
-      dist = dist_euc2d( lp->x[i], lp->y[i], xp, yp );
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-    }
-
-    return dist_min;
-  }
-
-
-  /*
-   *  Check wheter the candidate in ctx overlap with obstacle feat
-   */
-  bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx )
-  {
-
-    PointSet *feat = (( PruneCtx* ) ctx )->obstacle;
-    double scale = (( PruneCtx* ) ctx )->scale;
-    Pal* pal = (( PruneCtx* ) ctx )->pal;
-
-    if (( feat == lp->feature ) || ( feat->getHoleOf() && feat->getHoleOf() != lp->feature ) )
-    {
-      return true;
-    }
-
-    int n;
-
-    int i, j;
-    double ca, cb;
-
-    n = 0;
-
-    //if (!feat->holeOf)
-    //((Feature*)feat)->fetchCoordinates();
-
-    double dist;
-
-    double distlabel = lp->feature->getLabelDistance();
-    /*unit_convert( double( lp->feature->distlabel ),
-                                     pal::PIXEL,
-                                     pal->map_unit,
-                                     pal->dpi, scale, 1 );*/
-
-
-
-    switch ( feat->getGeosType() )
-    {
-        //case geos::geom::GEOS_POINT:
-      case GEOS_POINT:
-
-#ifdef _DEBUG_FULL
-        std::cout << "    POINT" << std::endl;
-#endif
-
-        dist = dist_pointToLabel( feat->x[0], feat->y[0], lp );
-
-        if ( dist < 0 )
-          n = 2;
-        else if ( dist < distlabel )
-          n = 1;
-        else
-          n = 0;
-
-        break;
-
-        //case geos::geom::GEOS_LINESTRING:
-      case GEOS_LINESTRING:
-#ifdef _DEBUG_FULL
-        std::cout << "    LINE" << std::endl;
-#endif
-        // Is one of label's boarder cross the line ?
-        for ( i = 0;i < 4;i++ )
-        {
-          for ( j = 0;j < feat->getNumPoints() - 1;j++ )
-          {
-            ca = cross_product( lp->x[i], lp->y[i], lp->x[( i+1 ) %4], lp->y[( i+1 ) %4],
-                                feat->x[j], feat->y[j] );
-            cb = cross_product( lp->x[i], lp->y[i], lp->x[( i+1 ) %4], lp->y[( i+1 ) %4],
-                                feat->x[j+1], feat->y[j+1] );
-
-            if (( ca < 0 && cb > 0 ) || ( ca > 0 && cb < 0 ) )
-            {
-              ca = cross_product( feat->x[j], feat->y[j], feat->x[j+1], feat->y[j+1],
-                                  lp->x[i], lp->y[i] );
-              cb = cross_product( feat->x[j], feat->y[j], feat->x[j+1], feat->y[j+1],
-                                  lp->x[( i+1 ) %4], lp->y[( i+1 ) %4] );
-              if (( ca < 0 && cb > 0 ) || ( ca > 0 && cb < 0 ) )
-              {
-                n = 1;
-                i = 4;
-                break;
-              }
-            }
-          }
-        }
-        break;
-        //case geos::geom::GEOS_POLYGON:
-      case GEOS_POLYGON:
-#ifdef _DEBUG_FULL
-        std::cout << "    POLY" << std::endl;
-#endif
-        n =  nbLabelPointInPolygon( feat->getNumPoints(), feat->x, feat->y, lp->x, lp->y );
-
-        //n<1?n=0:n=1;
-        break;
-    }
-
-    // label cost is penalized
-    lp->cost += double( n );
-
-    //if (!feat->holeOf)
-    //((Feature*)feat)->releaseCoordinates();
-
-    return true;
-  }
 
   bool releaseCallback( PointSet *pset, void *ctx )
   {
@@ -611,12 +446,12 @@ namespace pal
     double amin[2], amax[2];
     pset->getBoundingBox(amin, amax);
 
-    PruneCtx pruneContext;
+    LabelPosition::PruneCtx pruneContext;
 
     pruneContext.scale = scale;
     pruneContext.obstacle = pset;
     pruneContext.pal = pal;
-    cdtsIndex->Search( amin, amax, pruneLabelPositionCallback, ( void* ) &pruneContext );
+    cdtsIndex->Search( amin, amax, LabelPosition::pruneCallback, ( void* ) &pruneContext );
 
     if ( pset->getHoleOf() == NULL )
     {
@@ -828,40 +663,8 @@ namespace pal
           break;
       }
 
-      // If candidates list is smaller than expected
-      if ( max_p > feat->nblp )
-        max_p = feat->nblp;
-      //
-      // sort candidates list, best label to worst
-      sort(( void** ) feat->lPos, feat->nblp, LabelPosition::costGrow );
-
-      // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
-      double discrim = 0.0;
-      int stop;
-      do
-      {
-        discrim += 1.0;
-        for ( stop = 0;stop < feat->nblp && feat->lPos[stop]->getCost() < discrim;stop++ );
-      }
-      while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->getCost() + 2.0 );
-
-      if ( discrim > 1.5 )
-      {
-        int k;
-        for ( k = 0;k < stop;k++ )
-          feat->lPos[k]->cost = 0.0021;
-      }
-
-      if ( max_p > stop )
-        max_p = stop;
-
-#ifdef _DEBUG_FULL_
-      std::cout << "Nblabel kept for feat " << feat->feature->uid << "/" << feat->feature->layer->name << ": " << max_p << "/" << feat->nblp << std::endl;
-#endif
-
-      // Sets costs for candidates of polygon
-      if ( feat->feature->getGeosType() == GEOS_POLYGON && ( feat->feature->getLayer()->arrangement == P_FREE || feat->feature->getLayer()->arrangement == P_HORIZ ) )
-        LabelPosition::setCost( stop, feat->lPos, max_p, obstacles, bbx, bby );
+      // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
+      max_p = CostCalculator::finalizeCandidatesCosts( feat, max_p, obstacles, bbx, bby );
 
 #ifdef _DEBUG_FULL_
       std::cout << "All Cost are setted" << std::endl;
@@ -884,8 +687,7 @@ namespace pal
       {
         lp = feat->lPos[j];
         //lp->insertIntoIndex(prob->candidates);
-        lp->id = idlp;
-        lp->setProblemFeatureId( i ); // bugfix #1 (maxence 10/23/2008)
+        lp->setProblemIds( i, idlp ); // bugfix #1 (maxence 10/23/2008)
       }
       fFeats->push_back( feat );
     }

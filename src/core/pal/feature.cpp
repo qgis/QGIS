@@ -579,6 +579,7 @@ namespace pal
       LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
       int it;
 
+      int id = 0; // ids for candidates
       double dlx, dly; // delta from label center and bottom-left corner
       double alpha = 0.0; // rotation for the label
       double px, py;
@@ -719,7 +720,8 @@ namespace pal
               // Only accept candidate that center is in the polygon
               if ( isPointInPolygon( mapShape->nbPoints, mapShape->x, mapShape->y, rx,  ry ) )
               {
-                positions->push_back( new LabelPosition( 0, rx - dlx, ry - dly , xrm, yrm, alpha, 0.0001, this ) ); // Polygon
+                // cost is set to minimal value, evaluated later
+                positions->push_back( new LabelPosition( id++, rx - dlx, ry - dly , xrm, yrm, alpha, 0.0001, this ) ); // Polygon
               }
             }
           }
@@ -741,7 +743,6 @@ namespace pal
       for ( i = 0;i < nbp;i++ )
       {
         ( *lPos )[i] = positions->pop_front();
-        ( *lPos )[i]->id = i;
       }
 
       for ( bbid = 0;bbid < j;bbid++ )
@@ -838,7 +839,7 @@ namespace pal
           case P_POINT_OVER:
             double cx, cy;
             mapShape->getCentroid( cx, cy );
-            if (P_POINT_OVER)
+            if ( layer->getArrangement() == P_POINT_OVER )
               nbp = setPositionOverPoint( cx, cy, scale, lPos, delta );
             else
               nbp = setPositionForPoint( cx, cy, scale, lPos, delta );
@@ -861,7 +862,7 @@ namespace pal
       if ( !( *lPos )[i]->isIn( bbox ) )
       {
         rnbp--;
-        ( *lPos )[i]->cost = DBL_MAX;
+        ( *lPos )[i]->setCost( DBL_MAX ); // infinite cost => do not use
       }
       else   // this one is OK
       {

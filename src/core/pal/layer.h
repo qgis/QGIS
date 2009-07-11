@@ -72,10 +72,7 @@ namespace pal
 
       friend class LabelPosition;
       friend bool extractFeatCallback( Feature *ft_ptr, void *ctx );
-      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
-      friend bool obstacleCallback( PointSet *feat, void *ctx );
       friend void toSVGPath( int nbPoints, double *x, double *y, int dpi, Layer *layer, int type, char *uid, std::ostream &out, double scale, int xmin, int ymax, bool exportInfo, char *color );
-      friend bool filteringCallback( PointSet*, void* );
 
     protected:
       char *name; /* unique */

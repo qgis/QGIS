@@ -84,14 +84,15 @@ namespace pal
    */
   LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id, bool check_valid );
 
-  typedef struct _feats
+  class Feats
   {
+  public:
     Feature *feature;
     PointSet *shape;
     double priority;
     int nblp;
     LabelPosition **lPos;
-  } Feats;
+  };
 
 
   typedef struct _elementary_transformation

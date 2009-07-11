@@ -45,7 +45,6 @@ namespace pal
   class Feature;
   class Pal;
   class Label;
-  class PriorityQueue;
 
 
   /**
@@ -54,10 +53,8 @@ namespace pal
   class LabelPosition
   {
 
-      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
-      friend double dist_pointToLabel( double, double, LabelPosition* );
-      friend class Pal;
-      friend class Feature;
+      friend class CostCalculator;
+      friend class PolygonCostCalculator;
 
     private:
 
@@ -105,15 +102,6 @@ namespace pal
       LabelPosition( int id, Feature *feature, std::ifstream *file );
 
       /**
-       * \brief Set cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field
-       */
-      void setCostFromPolygon( RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
-
-      static void setCost( int nblp, LabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
-
-
-
-      /**
        * \brief is the labelposition in the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
@@ -131,7 +119,7 @@ namespace pal
       /** \brief return id
        * \return id
        */
-      int getId();
+      int getId() const;
 
 
       /** \brief return the feature corresponding to this labelposition
@@ -143,22 +131,23 @@ namespace pal
        * \brief get the down-left x coordinate
        * \return x coordinate
        */
-      double getX();
+      double getX() const;
       /**
        * \brief get the down-left y coordinate
        * \return y coordinate
        */
-      double getY();
+      double getY() const;
 
-      double getWidth() { return w; }
-      double getHeight() { return h; }
+      double getWidth() const { return w; }
+      double getHeight() const { return h; }
 
       double getNumOverlaps() const { return nbOverlap; }
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
 
       int getProblemFeatureId() const { return probFeat; }
-      /** set problem feature ID. called from pal.cpp during extraction */
-      void setProblemFeatureId( int probFid ) { probFeat = probFid; }
+      /** set problem feature ID and assigned label candidate ID.
+       *  called from pal.cpp during extraction */
+      void setProblemIds( int probFid, int lpId ) { probFeat = probFid; id = lpId; }
 
       /** return pointer to layer's name. used for stats */
       char* getLayerName() const;
@@ -167,12 +156,16 @@ namespace pal
        * \brief get alpha
        * \return alpha to rotate text (in rad)
        */
-      double getAlpha();
+      double getAlpha() const;
+
       /**
        * \brief get the position geographical cost
        * \return geographical cost
        */
-      double getCost();
+      double getCost() const;
+
+      /** Modify candidate's cost */
+      void setCost( double newCost ) { cost = newCost; }
 
       /** Make sure the cost is less than 1 */
       void validateCost();
@@ -191,36 +184,15 @@ namespace pal
       void removeFromIndex( RTree<LabelPosition*, double, 2, double> *index );
       void insertIntoIndex( RTree<LabelPosition*, double, 2, double> *index );
 
-      /**
-       * \brief Data structure to compute polygon's candidates costs
-       *
-       *  eight segment from center of candidat to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
-       *  dist store the shortest square distance from the center to an object
-       *  ok[i] is the to true whether the corresponding dist[i] is set
-       */
-      class PolygonCostCalculator
+      typedef struct
       {
-          LabelPosition *lp;
-          double px, py;
-          double dist[8];
-          double rpx[8];
-          double rpy[8];
-          bool ok[8];
+        double scale;
+        Pal* pal;
+        PointSet *obstacle;
+      } PruneCtx;
 
-          double dLp[3];
-
-          void updatePoint( PointSet *pset );
-          double updateLinePoly( PointSet *pset );
-        public:
-          PolygonCostCalculator( LabelPosition *lp );
-
-          void update( PointSet *pset );
-
-          double getCost();
-
-          LabelPosition *getLabel();
-      };
-
+      /** Check wheter the candidate in ctx overlap with obstacle feat */
+      static bool pruneCallback( LabelPosition *lp, void *ctx );
 
       // for sorting
       static bool costShrink( void *l, void *r );
@@ -246,7 +218,16 @@ namespace pal
       static bool removeOverlapCallback( LabelPosition *lp, void *ctx );
 
       // for polygon cost calculation
-      static bool obstacleCallback( PointSet *feat, void *ctx );
+      static bool polygonObstacleCallback( PointSet *feat, void *ctx );
+
+      /** get distance from this label to a point */
+      double getDistanceToPoint( double xp, double yp );
+
+      /** returns true if this label crosses the specified line */
+      bool isBorderCrossingLine( PointSet* feat );
+
+      /** returns number of intersections with polygon (testing border and center) */
+      int getNumPointsInPolygon( int npol, double *xp, double *yp );
 
   };
 } // end namespac

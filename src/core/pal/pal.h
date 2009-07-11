@@ -122,9 +122,6 @@ namespace pal
       friend class Problem;
       friend class Feature;
       friend class Layer;
-      friend class LabelPosition;
-      friend class PointSet;
-      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
     private:
       std::list<Layer*> * layers;
 

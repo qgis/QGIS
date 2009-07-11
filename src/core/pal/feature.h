@@ -49,11 +49,6 @@
 namespace pal
 {
 
-  class Pal;
-  class Layer;
-  class LabelPosition;
-  class SimpleMutex;
-
   /**
    * \brief Main class to handle feature
    */
