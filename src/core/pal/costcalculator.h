@@ -38,8 +38,6 @@ namespace pal
       double rpy[8];
       bool ok[8];
 
-      double dLp[3];
-
       void updatePoint( PointSet *pset );
       double updateLinePoly( PointSet *pset );
     public:

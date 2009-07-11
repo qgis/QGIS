@@ -206,9 +206,6 @@ namespace pal
 
     px = ( lp->x[0] + lp->x[2] ) / 2.0;
     py = ( lp->y[0] + lp->y[2] ) / 2.0;
-    dLp[0] = lp->w / 2;
-    dLp[1] = lp->h / 2;
-    dLp[2] = dLp[0] / cos( M_PI / 4 );
 
     /*
                3  2  1
@@ -323,10 +320,18 @@ namespace pal
 
     for ( i = 0;i < 8;i++ )
     {
-      dist[i] -= (( i % 2 ) ? dLp[2] : (( i == 0 || i == 4 ) ? dLp[0] : dLp[1] ) );
-      if ( !ok[i] || dist[i] < 0.1 )
+      /*
+      if ( i == 0 || i == 4 ) // horizontal directions
+        dist[i] -= lp->w / 2;
+      else if (i == 2 || i == 6 ) // vertical directions
+        dist[i] -= lp->h / 2;
+      else // other directions
+        dist[i] -= ( lp->w / 2 ) / cos( M_PI / 4 );
+      */
+
+      if ( !ok[i] || dist[i] < EPSILON )
       {
-        dist[i] = 0.1;
+        dist[i] = EPSILON;
       }
     }
 
@@ -337,7 +342,8 @@ namespace pal
     c = min( dist[2], dist[6] );
     d = min( dist[3], dist[7] );
 
-    //return (a+b+c+d);
+    //if (a!=EPSILON || b!=EPSILON || c!=EPSILON || d!=EPSILON)
+    //  std::cout << "res " << (a*b*c*d) << "       " << a << " " << b << " " << c << " " << d << std::endl;
     return ( a*b*c*d );
   }
 
