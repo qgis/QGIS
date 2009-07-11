@@ -185,38 +185,6 @@ namespace pal
 
 
 
-  bool countOverlapCallback( LabelPosition *lp, void *ctx )
-  {
-    LabelPosition *lp2 = ( LabelPosition* ) ctx;
-
-    if ( lp2->isInConflict( lp ) )
-    {
-      lp2->nbOverlap++;
-    }
-
-    return true;
-  }
-
-  bool countFullOverlapCallback( LabelPosition *lp, void *ctx )
-  {
-    LabelPosition *lp2 = (( CountContext* ) ctx )->lp;
-    double *cost = (( CountContext* ) ctx )->cost;
-    //int *feat = ((CountContext*)ctx)->feat;
-    int *nbOv = (( CountContext* ) ctx )->nbOv;
-    double *inactiveCost = (( CountContext* ) ctx )->inactiveCost;
-    if ( lp2->isInConflict( lp ) )
-    {
-#ifdef _DEBUG_FULL_
-      std::cout <<  "count overlap : " << lp->id << "<->" << lp2->id << std::endl;
-#endif
-      ( *nbOv ) ++;
-      *cost += inactiveCost[lp->probFeat] + lp->cost;
-
-    }
-
-    return true;
-  }
-
 
 //inline bool ptrGeomEq (const geos::geom::Geometry *l, const geos::geom::Geometry *r){
   inline bool ptrGeomEq( const GEOSGeometry *l, const GEOSGeometry *r )

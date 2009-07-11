@@ -60,19 +60,6 @@ namespace pal
   class Feature : public PointSet
   {
 
-      friend class Pal;
-      friend class Layer;
-      friend class Problem;
-      friend class LabelPosition;
-
-      friend bool extractFeatCallback( Feature *ft_ptr, void *ctx );
-      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
-      friend bool obstacleCallback( PointSet *feat, void *ctx );
-      //friend void setCost (int nblp, LabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4]);
-      friend void releaseAllInIndex( RTree<PointSet*, double, 2, double, 8, 4>* );
-      friend bool releaseCallback( PointSet *pset, void *ctx );
-      friend bool filteringCallback( PointSet*, void* );
-
     protected:
       //int id;   /* feature no id into layer */
       double label_x;
@@ -96,6 +83,7 @@ namespace pal
 
       SimpleMutex *accessMutex;
 
+public:
       /**
        * \brief generate candidates for point feature
        * Generate candidates for point features
@@ -244,6 +232,23 @@ namespace pal
 
       void fetchCoordinates();
       void releaseCoordinates();
+
+
+
+      PalGeometry* getUserGeometry() { return userGeom; }
+
+      void setLabelSize(double x, double y) { label_x = x; label_y = y; }
+      double getLabelWidth() const { return label_x; }
+      double getLabelHeight() const { return label_y; }
+
+      int getNumParts() const { return nPart; }
+
+      void setLabelDistance(double dist) { distlabel = dist; }
+      double getLabelDistance() const { return distlabel; }
+
+      int getNumSelfObstacles() const { return nbSelfObs; }
+      PointSet* getSelfObstacle(int i) { return selfObs[i]; }
+
   };
 
 } // end namespace pal

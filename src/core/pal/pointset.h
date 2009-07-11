@@ -93,22 +93,11 @@ namespace pal
   class PointSet
   {
       friend class Feature;
-      friend class Pal;
-      friend class Layer;
       friend class LabelPosition;
-      friend class PolygonCostCalculator;
-      friend class Problem;
       friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
-      //friend Feat *splitButterflyPolygon (Feat *f, int pt_a, int pt_b, double cx, double cy);
-      friend bool obstacleCallback( PointSet *feat, void *ctx );
-      friend bool extractFeatCallback( Feature*, void* );
       friend void extractXYCoord( Feat *f );
-      friend LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id, bool check_valid );
-      friend void releaseAllInIndex( RTree<PointSet*, double, 2, double> *obstacles );
-      friend bool releaseCallback( PointSet *pset, void *ctx );
-      friend bool filteringCallback( PointSet*, void* );
-      /*protected*/
-    public:
+
+    protected:
       int nbPoints;
       double *x;
       double *y;   // points order is counterclockwise
@@ -128,13 +117,12 @@ namespace pal
 
       PointSet( PointSet &ps );
 
-
-//public:
       double xmin;
       double xmax;
       double ymin;
       double ymax;
 
+public:
       PointSet();
       PointSet( int nbPoints, double *x, double *y );
       ~PointSet();
@@ -196,7 +184,21 @@ namespace pal
       void getCentroid( double &px, double &py );
 
 
+      /** delete x and y coordinate arrays */
+      void deleteCoords();
 
+      int getGeosType() const { return type; }
+
+      void getBoundingBox(double min[2], double max[2]) const
+      {
+          min[0] = xmin; min[1] = ymin;
+          max[0] = xmax; max[1] = ymax;
+      }
+
+      /** returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
+      PointSet* getHoleOf() { return holeOf; }
+
+      int getNumPoints() const { return nbPoints; }
 
       /*
        * Iterate on line by real step of dl on x,y points

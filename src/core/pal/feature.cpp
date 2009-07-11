@@ -869,7 +869,7 @@ namespace pal
       }
     }
 
-    sort(( void** )( *lPos ), nbp, costGrow );
+    sort(( void** )( *lPos ), nbp, LabelPosition::costGrow );
 
     for ( i = rnbp;i < nbp;i++ )
     {
@@ -944,10 +944,7 @@ namespace pal
       y = NULL;
       for ( i = 0;i < nbSelfObs;i++ )
       {
-        delete[] selfObs[i]->x;
-        delete[] selfObs[i]->y;
-        selfObs[i]->x = NULL;
-        selfObs[i]->y = NULL;
+        selfObs[i]->deleteCoords();
       }
     }
   }

@@ -54,39 +54,15 @@ namespace pal
   class LabelPosition
   {
 
-      friend bool extractFeatCallback( Feature *ft_ptr, void*ctx );
-      friend bool xGrow( void *l, void *r );
-      friend bool yGrow( void *l, void *r );
-      friend bool xShrink( void *l, void *r );
-      friend bool yShrink( void *l, void *r );
-      friend bool costShrink( void *l, void *r );
-      friend bool costGrow( void *l, void *r );
       friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
-      //friend void setCost (int nblp, LabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4]);
-      friend bool countOverlapCallback( LabelPosition *lp, void *ctx );
-      friend bool countFullOverlapCallback( LabelPosition *lp, void *ctx );
-      friend bool removeOverlapCallback( LabelPosition *lp, void *ctx );
-      friend bool falpCallback1( LabelPosition *lp, void * ctx );
-      friend bool falpCallback2( LabelPosition *lp, void * ctx );
-      friend bool subPartCallback( LabelPosition *lp, void *ctx );
-      friend bool chainCallback( LabelPosition *lp, void *context );
-      friend void ignoreLabel( LabelPosition*, PriorityQueue*, RTree<LabelPosition*, double, 2, double, 8, 4>* );
-      friend bool obstacleCallback( PointSet *feat, void *ctx );
-
-      friend bool updateCandidatesCost( LabelPosition *lp, void *context );
-      friend bool nokCallback( LabelPosition*, void* );
-
-      friend class Pal;
-      friend class Problem;
-      friend class Feature;
       friend double dist_pointToLabel( double, double, LabelPosition* );
+      friend class Pal;
+      friend class Feature;
+
     private:
-      //LabelPosition **overlaped;
-      //int nbOverlap;
 
       int id;
       double cost;
-      //double workingCost;
       double x[4], y[4];
 
       double alpha;
@@ -99,9 +75,6 @@ namespace pal
 
       double w;
       double h;
-
-      //LabelPosition (int id, double x1, double y1, double w, double h, double cost, Feature *feature);
-      //LabelPosition (int id, int nbPart, double *x, double *y, double *alpha,
 
     public:
       /**
@@ -160,11 +133,6 @@ namespace pal
        */
       int getId();
 
-      /** \brief return the feature id which the labelposition is
-       * \return feature id
-       */
-      //int getFeatureId();
-
 
       /** \brief return the feature corresponding to this labelposition
        * \return the feature
@@ -185,6 +153,16 @@ namespace pal
       double getWidth() { return w; }
       double getHeight() { return h; }
 
+      double getNumOverlaps() const { return nbOverlap; }
+      void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
+
+      int getProblemFeatureId() const { return probFeat; }
+      /** set problem feature ID. called from pal.cpp during extraction */
+      void setProblemFeatureId( int probFid ) { probFeat = probFid; }
+
+      /** return pointer to layer's name. used for stats */
+      char* getLayerName() const;
+
       /**
        * \brief get alpha
        * \return alpha to rotate text (in rad)
@@ -195,6 +173,12 @@ namespace pal
        * \return geographical cost
        */
       double getCost();
+
+      /** Make sure the cost is less than 1 */
+      void validateCost();
+
+      /** return bounding box - amin: xmin,ymin - amax: xmax,ymax */
+      void getBoundingBox(double amin[2], double amax[2]) const;
 
       /**
        * \brief get a final lable from this
@@ -238,57 +222,33 @@ namespace pal
       };
 
 
+      // for sorting
+      static bool costShrink( void *l, void *r );
+      static bool costGrow( void *l, void *r );
+
+      // for counting number of overlaps
+      typedef struct
+      {
+        LabelPosition *lp;
+        int *nbOv;
+        double *cost;
+        double *inactiveCost;
+        //int *feat;
+      } CountContext;
+
+      /*
+       * count overlap, ctx = p_lp
+       */
+      static bool countOverlapCallback( LabelPosition *lp, void *ctx );
+
+      static bool countFullOverlapCallback( LabelPosition *lp, void *ctx );
+
+      static bool removeOverlapCallback( LabelPosition *lp, void *ctx );
+
+      // for polygon cost calculation
+      static bool obstacleCallback( PointSet *feat, void *ctx );
 
   };
-
-  /**
-   * \brief LabelPosition cmp
-   *
-   * \return true if l.id < r.id
-   * \see Util::sort()
-   */
-  bool idGrow( void *l, void *r );
-  /**
-   * \brief LabelPosition cmp
-   *
-   * \return true if l.id < r.id
-   * \see sort
-   */
-  bool xGrow( void *l, void *r );
-  /**
-   * \brief LabelPosition cmp
-   *
-   * \return true if l.id > r.id
-   * \see sort
-   */
-  bool yGrow( void *l, void *r );
-  /**
-   * \brief LabelPosition cmp
-   *
-   * \return true if l.id < r.id
-   * \see sort
-   */
-  bool xShrink( void *l, void *r );
-  /**
-   * \brief LabelPosition cmp
-   *
-   * \return true if l.id < r.id
-   * \see sort
-   */
-  bool yShrink( void *l, void *r );
-  /**
-   * \brief LabelPosition cmp
-   *
-   * \return true if l.id < r.id
-   * \see sort
-   */
-//bool nboGrow (void *l, void *r);
-
-
-  bool costShrink( void *l, void *r );
-  bool costGrow( void *l, void *r );
-
-
 } // end namespac
 
 #endif

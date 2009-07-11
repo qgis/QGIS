@@ -244,10 +244,7 @@ namespace pal
     // all feature which are obstacle will be inserted into obstacles
     if ( context->layer->obstacle )
     {
-      min[0] = ft_ptr->xmin;
-      min[1] = ft_ptr->ymin;
-      max[0] = ft_ptr->xmax;
-      max[1] = ft_ptr->ymax;
+      ft_ptr->getBoundingBox(min, max);
       context->obstacles->Insert( min, max, ft_ptr );
 
       ft_ptr->fetchCoordinates();
@@ -258,20 +255,17 @@ namespace pal
     if ( context->layer->toLabel && context->layer->isScaleValid( context->scale ) )
     {
       // is the feature well defined ? // TODO Check epsilon
-      if ( ft_ptr->label_x > 0.0000001 && ft_ptr->label_y > 0.0000001 )
+      if ( ft_ptr->getLabelWidth() > 0.0000001 && ft_ptr->getLabelHeight() > 0.0000001 )
       {
 
         int i;
         // Hole of the feature are obstacles
-        for ( i = 0;i < ft_ptr->nbSelfObs;i++ )
+        for ( i = 0;i < ft_ptr->getNumSelfObstacles();i++ )
         {
-          min[0] = ft_ptr->selfObs[i]->xmin;
-          min[1] = ft_ptr->selfObs[i]->ymin;
-          max[0] = ft_ptr->selfObs[i]->xmax;
-          max[1] = ft_ptr->selfObs[i]->ymax;
-          context->obstacles->Insert( min, max, ft_ptr->selfObs[i] );
+          ft_ptr->getSelfObstacle(i)->getBoundingBox(min, max);
+          context->obstacles->Insert( min, max, ft_ptr->getSelfObstacle(i) );
 
-          if ( !ft_ptr->selfObs[i]->holeOf )
+          if ( !ft_ptr->getSelfObstacle(i)->getHoleOf() )
           {
             std::cout << "ERROR: SHOULD HAVE A PARENT!!!!!" << std::endl;
           }
@@ -283,8 +277,8 @@ namespace pal
           QTime t;
           t.start();
 
-        if (( ft_ptr->type == GEOS_LINESTRING )
-            || ft_ptr->type == GEOS_POLYGON )
+        if (( ft_ptr->getGeosType() == GEOS_LINESTRING )
+            || ft_ptr->getGeosType() == GEOS_POLYGON )
         {
 
           double bbx[4], bby[4];
@@ -312,7 +306,7 @@ namespace pal
           else
           {
             // feature isn't completly in the math
-            if ( ft_ptr->type == GEOS_LINESTRING )
+            if ( ft_ptr->getGeosType() == GEOS_LINESTRING )
               PointSet::reduceLine( shape, shapes, bbx, bby );
             else
             {
@@ -462,7 +456,7 @@ namespace pal
     double scale = (( PruneCtx* ) ctx )->scale;
     Pal* pal = (( PruneCtx* ) ctx )->pal;
 
-    if (( feat == lp->feature ) || ( feat->holeOf && feat->holeOf != lp->feature ) )
+    if (( feat == lp->feature ) || ( feat->getHoleOf() && feat->getHoleOf() != lp->feature ) )
     {
       return true;
     }
@@ -479,7 +473,7 @@ namespace pal
 
     double dist;
 
-    double distlabel = lp->feature->distlabel;
+    double distlabel = lp->feature->getLabelDistance();
     /*unit_convert( double( lp->feature->distlabel ),
                                      pal::PIXEL,
                                      pal->map_unit,
@@ -487,7 +481,7 @@ namespace pal
 
 
 
-    switch ( feat->type )
+    switch ( feat->getGeosType() )
     {
         //case geos::geom::GEOS_POINT:
       case GEOS_POINT:
@@ -515,7 +509,7 @@ namespace pal
         // Is one of label's boarder cross the line ?
         for ( i = 0;i < 4;i++ )
         {
-          for ( j = 0;j < feat->nbPoints - 1;j++ )
+          for ( j = 0;j < feat->getNumPoints() - 1;j++ )
           {
             ca = cross_product( lp->x[i], lp->y[i], lp->x[( i+1 ) %4], lp->y[( i+1 ) %4],
                                 feat->x[j], feat->y[j] );
@@ -543,7 +537,7 @@ namespace pal
 #ifdef _DEBUG_FULL
         std::cout << "    POLY" << std::endl;
 #endif
-        n =  nbLabelPointInPolygon( feat->nbPoints, feat->x, feat->y, lp->x, lp->y );
+        n =  nbLabelPointInPolygon( feat->getNumPoints(), feat->x, feat->y, lp->x, lp->y );
 
         //n<1?n=0:n=1;
         break;
@@ -560,7 +554,7 @@ namespace pal
 
   bool releaseCallback( PointSet *pset, void *ctx )
   {
-    if ( pset->holeOf == NULL )
+    if ( pset->getHoleOf() == NULL )
     {
       (( Feature* ) pset )->releaseCoordinates();
     }
@@ -605,21 +599,17 @@ namespace pal
     double scale = (( FilterContext* ) ctx )->scale;
     Pal* pal = (( FilterContext* )ctx )->pal;
 
-    if ( pset->holeOf == NULL )
+    if ( pset->getHoleOf() == NULL )
     {
       (( Feature* ) pset )->fetchCoordinates();
     }
     else
     {
-      (( Feature* ) pset->holeOf )->fetchCoordinates();
+      (( Feature* ) pset->getHoleOf() )->fetchCoordinates();
     }
 
     double amin[2], amax[2];
-
-    amin[0] = pset->xmin;
-    amin[1] = pset->ymin;
-    amax[0] = pset->xmax;
-    amax[1] = pset->ymax;
+    pset->getBoundingBox(amin, amax);
 
     PruneCtx pruneContext;
 
@@ -628,13 +618,13 @@ namespace pal
     pruneContext.pal = pal;
     cdtsIndex->Search( amin, amax, pruneLabelPositionCallback, ( void* ) &pruneContext );
 
-    if ( pset->holeOf == NULL )
+    if ( pset->getHoleOf() == NULL )
     {
       (( Feature* ) pset )->releaseCoordinates();
     }
     else
     {
-      (( Feature* ) pset->holeOf )->releaseCoordinates();
+      (( Feature* ) pset->getHoleOf() )->releaseCoordinates();
     }
 
     return true;
@@ -825,7 +815,7 @@ namespace pal
       prob->featStartId[i] = idlp;
       prob->inactiveCost[i] = pow( 2, 10 - 10 * feat->priority );
 
-      switch ( feat->feature->type )
+      switch ( feat->feature->getGeosType() )
       {
         case GEOS_POINT:
           max_p = point_p;
@@ -843,7 +833,7 @@ namespace pal
         max_p = feat->nblp;
       //
       // sort candidates list, best label to worst
-      sort(( void** ) feat->lPos, feat->nblp, costGrow );
+      sort(( void** ) feat->lPos, feat->nblp, LabelPosition::costGrow );
 
       // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
       double discrim = 0.0;
@@ -851,9 +841,9 @@ namespace pal
       do
       {
         discrim += 1.0;
-        for ( stop = 0;stop < feat->nblp && feat->lPos[stop]->cost < discrim;stop++ );
+        for ( stop = 0;stop < feat->nblp && feat->lPos[stop]->getCost() < discrim;stop++ );
       }
-      while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->cost + 2.0 );
+      while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->getCost() + 2.0 );
 
       if ( discrim > 1.5 )
       {
@@ -870,7 +860,7 @@ namespace pal
 #endif
 
       // Sets costs for candidates of polygon
-      if ( feat->feature->type == GEOS_POLYGON && ( feat->feature->layer->arrangement == P_FREE || feat->feature->layer->arrangement == P_HORIZ ) )
+      if ( feat->feature->getGeosType() == GEOS_POLYGON && ( feat->feature->getLayer()->arrangement == P_FREE || feat->feature->getLayer()->arrangement == P_HORIZ ) )
         LabelPosition::setCost( stop, feat->lPos, max_p, obstacles, bbx, bby );
 
 #ifdef _DEBUG_FULL_
@@ -895,7 +885,7 @@ namespace pal
         lp = feat->lPos[j];
         //lp->insertIntoIndex(prob->candidates);
         lp->id = idlp;
-        lp->probFeat = i; // bugfix #1 (maxence 10/23/2008)
+        lp->setProblemFeatureId( i ); // bugfix #1 (maxence 10/23/2008)
       }
       fFeats->push_back( feat );
     }
@@ -922,37 +912,20 @@ namespace pal
       for ( i = 0;i < feat->nblp;i++, idlp++ )  // foreach label candidate
       {
         lp = feat->lPos[i];
-        lp->nbOverlap = 0;
+        lp->resetNumOverlaps();
 
-        if ( lp->cost >= 1 )
-        {
-          std::cout << " Warning: lp->cost == " << lp->cost << " (from feat: " << lp->feature->uid << "/" << lp->feature->layer->name << ")" << std::endl;
-          lp->cost -= int ( lp->cost ); // label cost up to 1
-        }
+        // make sure that candidate's cost is less than 1
+        lp->validateCost();
 
         prob->labelpositions[idlp] = lp;
         //prob->feat[idlp] = j;
 
+        lp->getBoundingBox(amin, amax);
 
-        amin[0] = DBL_MAX;
-        amax[0] = -DBL_MAX;
-        amin[1] = DBL_MAX;
-        amax[1] = -DBL_MAX;
-        for ( c = 0;c < 4;c++ )
-        {
-          if ( lp->x[c] < amin[0] )
-            amin[0] = lp->x[c];
-          if ( lp->x[c] > amax[0] )
-            amax[0] = lp->x[c];
-          if ( lp->y[c] < amin[1] )
-            amin[1] = lp->y[c];
-          if ( lp->y[c] > amax[1] )
-            amax[1] = lp->y[c];
-        }
         // lookup for overlapping candidate
-        prob->candidates->Search( amin, amax, countOverlapCallback, ( void* ) lp );
+        prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, ( void* ) lp );
 
-        nbOverlaps += lp->nbOverlap;
+        nbOverlaps += lp->getNumOverlaps();
 #ifdef _DEBUG_FULL_
         std::cout << "Nb overlap for " << idlp << "/" << prob->nblp - 1 << " : " << lp->nbOverlap << std::endl;
 #endif

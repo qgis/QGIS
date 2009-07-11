@@ -298,22 +298,6 @@ namespace pal
                const double* const prob, int *cx, int *cy, double *p );
 
 
-  typedef struct
-  {
-    LabelPosition *lp;
-    int *nbOv;
-    double *cost;
-    double *inactiveCost;
-    //int *feat;
-  } CountContext;
-
-  /*
-   * count overlap, ctx = p_lp
-   */
-  bool countOverlapCallback( LabelPosition *lp, void *ctx );
-
-  bool countFullOverlapCallback( LabelPosition *lp, void *ctx );
-
 } // namespace
 
 #endif

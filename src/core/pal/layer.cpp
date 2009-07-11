@@ -371,14 +371,9 @@ bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
 
       double bmin[2];
       double bmax[2];
-      bmin[0] = ft->xmin;
-      bmin[1] = ft->ymin;
+      ft->getBoundingBox(bmin, bmax);
 
-      bmax[0] = ft->xmax;
-      bmax[1] = ft->ymax;
-
-      ft->label_x = label_x;
-      ft->label_y = label_y;
+      ft->setLabelSize(label_x, label_y);
 
       features->push_back( ft );
 
@@ -442,12 +437,12 @@ void Layer::setFeatureDistlabel( const char * geom_id, double distlabel )
   {
     // log
     Feature *feat = it->item;
-    int nb = feat->nPart;
+    int nb = feat->getNumParts();
 
     for ( i = 0;i < nb;i++ )
     {
       feat = it->item;
-      feat->distlabel = distlabel;
+      feat->setLabelDistance(distlabel);
       it = it->next;
     }
   }
@@ -468,7 +463,7 @@ double Layer::getFeatureDistlabel( const char *geom_id )
 
   int ret = -1;
   if ( it )
-    ret = it->item->distlabel;
+    ret = it->item->getLabelDistance();
   else
   {
     modMutex->unlock();
@@ -496,13 +491,12 @@ void Layer::setFeatureLabelSize( const char * geom_id, double label_x, double la
   if ( it )
   {
     Feature *feat = it->item;
-    int nb = feat->nPart;
+    int nb = feat->getNumParts();
 
     for ( i = 0;i < nb;i++ )
     {
       feat = it->item;
-      feat->label_x = label_x;
-      feat->label_y = label_y;
+      feat->setLabelSize(label_x, label_y);
       it = it->next;
     }
   }
@@ -523,7 +517,7 @@ double Layer::getFeatureLabelHeight( const char *geom_id )
   double ret = -1;
 
   if ( it )
-    ret = it->item->label_y;
+    ret = it->item->getLabelHeight();
   else
   {
     modMutex->unlock();
@@ -542,7 +536,7 @@ double Layer::getFeatureLabelWidth( const char *geom_id )
   double ret = -1;
 
   if ( it )
-    ret = it->item->label_x;
+    ret = it->item->getLabelWidth();
   else
   {
     modMutex->unlock();

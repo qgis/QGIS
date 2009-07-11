@@ -213,37 +213,50 @@ namespace pal
     return cost;
   }
 
+  void LabelPosition::validateCost()
+  {
+    if ( cost >= 1 )
+    {
+      std::cout << " Warning: lp->cost == " << cost << " (from feat: " << feature->getUID() << "/" << getLayerName() << ")" << std::endl;
+      cost -= int ( cost ); // label cost up to 1
+    }
+  }
+
   Feature * LabelPosition::getFeature()
   {
     return feature;
   }
 
-  bool xGrow( void *l, void *r )
+  void LabelPosition::getBoundingBox(double amin[2], double amax[2]) const
   {
-    return (( LabelPosition* ) l )->x[0] > (( LabelPosition* ) r )->x[0];
+    amin[0] = DBL_MAX;
+    amax[0] = -DBL_MAX;
+    amin[1] = DBL_MAX;
+    amax[1] = -DBL_MAX;
+    for ( int c = 0;c < 4;c++ )
+    {
+      if ( x[c] < amin[0] )
+        amin[0] = x[c];
+      if ( x[c] > amax[0] )
+        amax[0] = x[c];
+      if ( y[c] < amin[1] )
+        amin[1] = y[c];
+      if ( y[c] > amax[1] )
+        amax[1] = y[c];
+    }
   }
 
-  bool yGrow( void *l, void *r )
+  char* LabelPosition::getLayerName() const
   {
-    return (( LabelPosition* ) l )->y[0] > (( LabelPosition* ) r )->y[0];
+    return feature->getLayer()->name;
   }
 
-  bool xShrink( void *l, void *r )
-  {
-    return (( LabelPosition* ) l )->x[0] < (( LabelPosition* ) r )->x[0];
-  }
-
-  bool yShrink( void *l, void *r )
-  {
-    return (( LabelPosition* ) l )->y[0] < (( LabelPosition* ) r )->y[0];
-  }
-
-  bool costShrink( void *l, void *r )
+  bool LabelPosition::costShrink( void *l, void *r )
   {
     return (( LabelPosition* ) l )->cost < (( LabelPosition* ) r )->cost;
   }
 
-  bool costGrow( void *l, void *r )
+  bool LabelPosition::costGrow( void *l, void *r )
   {
     return (( LabelPosition* ) l )->cost > (( LabelPosition* ) r )->cost;
   }
@@ -269,23 +282,23 @@ namespace pal
 //#warning retourner les coord projeté ou pas ?
     //feature->layer->pal->proj->getLatLong(this->x[0], this->y[0], &x, &y);
 
-    return new Label( this->x, this->y, alpha, feature->uid, feature->layer->name, feature->userGeom );
+    return new Label( this->x, this->y, alpha, feature->getUID(), feature->getLayer()->getName(), feature->getUserGeometry() );
   }
 
 
-  bool obstacleCallback( PointSet *feat, void *ctx )
+  bool LabelPosition::obstacleCallback( PointSet *feat, void *ctx )
   {
     LabelPosition::PolygonCostCalculator *pCost = ( LabelPosition::PolygonCostCalculator* ) ctx;
 
     LabelPosition *lp = pCost->getLabel();
-    if (( feat == lp->feature ) || ( feat->holeOf && feat->holeOf != lp->feature ) )
+    if (( feat == lp->feature ) || ( feat->getHoleOf() && feat->getHoleOf() != lp->feature ) )
     {
       return true;
     }
 
     // if the feature is not a hole we have to fetch corrdinates
     // otherwise holes coordinates are still in memory (feature->selfObs)
-    if ( feat->holeOf == NULL )
+    if ( feat->getHoleOf() == NULL )
     {
       (( Feature* ) feat )->fetchCoordinates();
     }
@@ -293,7 +306,7 @@ namespace pal
     pCost->update( feat );
 
 
-    if ( feat->holeOf == NULL )
+    if ( feat->getHoleOf() == NULL )
     {
       (( Feature* ) feat )->releaseCoordinates();
     }
@@ -332,10 +345,7 @@ namespace pal
         amax[0] = amin[0] + 2 * dist;
         amax[1] = amin[1] + 2 * dist;
     } else {*/
-    amin[0] = feature->xmin;
-    amin[1] = feature->ymin;
-    amax[0] = feature->xmax;
-    amax[1] = feature->ymax;
+    feature->getBoundingBox(amin, amax);
     //}
 
     //std::cout << amin[0] << " " << amin[1] << " " << amax[0] << " " <<  amax[1] << std::endl;
@@ -351,24 +361,7 @@ namespace pal
   {
     double amin[2];
     double amax[2];
-    int c;
-
-    amin[0] = DBL_MAX;
-    amax[0] = -DBL_MAX;
-    amin[1] = DBL_MAX;
-    amax[1] = -DBL_MAX;
-    for ( c = 0;c < 4;c++ )
-    {
-      if ( x[c] < amin[0] )
-        amin[0] = x[c];
-      if ( x[c] > amax[0] )
-        amax[0] = x[c];
-      if ( y[c] < amin[1] )
-        amin[1] = y[c];
-      if ( y[c] > amax[1] )
-        amax[1] = y[c];
-    }
-
+    getBoundingBox(amin, amax);
     index->Remove( amin, amax, this );
   }
 
@@ -377,24 +370,7 @@ namespace pal
   {
     double amin[2];
     double amax[2];
-    int c;
-
-    amin[0] = DBL_MAX;
-    amax[0] = -DBL_MAX;
-    amin[1] = DBL_MAX;
-    amax[1] = -DBL_MAX;
-    for ( c = 0;c < 4;c++ )
-    {
-      if ( x[c] < amin[0] )
-        amin[0] = x[c];
-      if ( x[c] > amax[0] )
-        amax[0] = x[c];
-      if ( y[c] < amin[1] )
-        amin[1] = y[c];
-      if ( y[c] > amax[1] )
-        amax[1] = y[c];
-    }
-
+    getBoundingBox(amin, amax);
     index->Insert( amin, amax, this );
   }
 
@@ -603,5 +579,56 @@ namespace pal
     //return (a+b+c+d);
     return ( a*b*c*d );
   }
+
+  //////////
+
+  bool LabelPosition::countOverlapCallback( LabelPosition *lp, void *ctx )
+  {
+    LabelPosition *lp2 = ( LabelPosition* ) ctx;
+
+    if ( lp2->isInConflict( lp ) )
+    {
+      lp2->nbOverlap++;
+    }
+
+    return true;
+  }
+
+  bool LabelPosition::countFullOverlapCallback( LabelPosition *lp, void *ctx )
+  {
+    LabelPosition *lp2 = (( CountContext* ) ctx )->lp;
+    double *cost = (( CountContext* ) ctx )->cost;
+    //int *feat = ((CountContext*)ctx)->feat;
+    int *nbOv = (( CountContext* ) ctx )->nbOv;
+    double *inactiveCost = (( CountContext* ) ctx )->inactiveCost;
+    if ( lp2->isInConflict( lp ) )
+    {
+#ifdef _DEBUG_FULL_
+      std::cout <<  "count overlap : " << lp->id << "<->" << lp2->id << std::endl;
+#endif
+      ( *nbOv ) ++;
+      *cost += inactiveCost[lp->probFeat] + lp->getCost();
+
+    }
+
+    return true;
+  }
+
+
+  bool LabelPosition::removeOverlapCallback( LabelPosition *lp, void *ctx )
+  {
+    LabelPosition *lp2 = ( LabelPosition * ) ctx;
+
+    if ( lp2->isInConflict( lp ) )
+    {
+      //std::cout << "   hit !" << std::endl;
+      lp->nbOverlap--;
+      lp2->nbOverlap--;
+    }
+
+    return true;
+  }
+
+
 } // end namespace
 
