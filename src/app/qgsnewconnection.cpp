@@ -31,7 +31,7 @@ extern "C"
 }
 
 QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt::WFlags fl )
-    : QDialog( parent, fl )
+    : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
 
@@ -141,6 +141,11 @@ void QgsNewConnection::saveConnection()
   QSettings settings;
   QString baseKey = "/PostgreSQL/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
+  //delete original entry first
+  if ( !mOriginalConnName.isNull() && mOriginalConnName != txtName->text() )
+  {
+    settings.remove( baseKey + mOriginalConnName );
+  }
   baseKey += txtName->text();
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
