@@ -220,7 +220,7 @@ namespace pal
       // for polygon cost calculation
       static bool polygonObstacleCallback( PointSet *feat, void *ctx );
 
-      /** get distance from this label to a point */
+      /** get distance from this label to a point. If point lies inside, returns negative number. */
       double getDistanceToPoint( double xp, double yp );
 
       /** returns true if this label crosses the specified line */
