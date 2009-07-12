@@ -80,6 +80,7 @@ SET(QGIS_CORE_SRCS
   composer/qgsticksscalebarstyle.cpp
   composer/qgscomposition.cpp
 
+  pal/costcalculator.cpp
   pal/feature.cpp
   pal/geomfunction.cpp
   pal/label.cpp
