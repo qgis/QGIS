@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>454</width>
-    <height>514</height>
+    <height>526</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -175,7 +175,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedOptions">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="pageOptionsPoint">
          <layout class="QGridLayout" name="gridLayout_2">
@@ -232,9 +232,9 @@
         <widget class="QWidget" name="pageOptionsLine">
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QRadioButton" name="radOnLine">
+           <widget class="QCheckBox" name="chkLineAbove">
             <property name="text">
-             <string>on line</string>
+             <string>above line</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -242,11 +242,46 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radAroundLine">
+           <widget class="QCheckBox" name="chkLineOn">
             <property name="text">
-             <string>around line</string>
+             <string>on line</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chkLineBelow">
+            <property name="text">
+             <string>below line</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Orientation</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radOrientationMap">
+              <property name="text">
+               <string>map</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radOrientationLine">
+              <property name="text">
+               <string>line</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -693,8 +728,6 @@
   <tabstop>radPolygonFree</tabstop>
   <tabstop>spinDistPoint</tabstop>
   <tabstop>spinAngle</tabstop>
-  <tabstop>radOnLine</tabstop>
-  <tabstop>radAroundLine</tabstop>
   <tabstop>spinDistLine</tabstop>
   <tabstop>btnChangeFont</tabstop>
   <tabstop>btnTextColor</tabstop>

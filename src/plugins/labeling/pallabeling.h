@@ -35,15 +35,23 @@ public:
   {
     AroundPoint, // Point / Polygon
     OverPoint, // Point / Polygon
-    OnLine, // Line / Polygon
-    AroundLine, // Line / Polygon
+    Line, // Line / Polygon
     Horizontal, // Polygon
     Free // Polygon
+  };
+
+  enum LinePlacementFlags
+  {
+    OnLine    = 1,
+    AboveLine = 2,
+    BelowLine = 4,
+    MapOrientation = 8
   };
 
   QString layerId;
   QString fieldName;
   Placement placement;
+  unsigned long placementFlags;
   QFont textFont;
   QColor textColor;
   bool enabled;

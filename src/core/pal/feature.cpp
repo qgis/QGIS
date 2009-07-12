@@ -372,6 +372,11 @@ namespace pal
     double alpha;
     double cost;
 
+    unsigned long flags = layer->getArrangementFlags();
+    if ( flags == 0 )
+      flags = FLAG_ON_LINE; // default flag
+    bool reversed = false;
+
     //LinkedList<PointSet*> *shapes_final;
 
     //shapes_final     = new LinkedList<PointSet*>(ptrPSetCompare);
@@ -476,10 +481,18 @@ namespace pal
 #ifdef _DEBUG_FULL_
       std::cout << "  Create new label" << std::endl;
 #endif
-      if ( layer->arrangement == P_LINE_AROUND )
+      if ( layer->arrangement == P_LINE )
       {
-        positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this ) ); // Line
-        positions->push_back( new LabelPosition( i, bx - cos( beta ) * ( distlabel + yrm ) , by - sin( beta ) * ( distlabel + yrm ), xrm, yrm, alpha, cost, this ) ); // Line
+        std::cout << alpha*180/M_PI << std::endl;
+        if ( flags & FLAG_MAP_ORIENTATION )
+          reversed = ( alpha >= M_PI/2 || alpha < -M_PI/2 );
+
+        if ( (!reversed && (flags & FLAG_ABOVE_LINE)) || (reversed && (flags & FLAG_BELOW_LINE)) )
+          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this ) ); // Line
+        if ( (!reversed && (flags & FLAG_BELOW_LINE)) || (reversed && (flags & FLAG_ABOVE_LINE)) )
+          positions->push_back( new LabelPosition( i, bx - cos( beta ) * ( distlabel + yrm ) , by - sin( beta ) * ( distlabel + yrm ), xrm, yrm, alpha, cost, this ) ); // Line
+        if ( flags & FLAG_ON_LINE )
+          positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
       }
       else if (layer->arrangement == P_HORIZ)
       {
@@ -488,7 +501,7 @@ namespace pal
       }
       else
       {
-        positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
+        // an invalid arrangement?
       }
 
       l += dist;
@@ -846,7 +859,6 @@ namespace pal
               nbp = setPositionForPoint( cx, cy, scale, lPos, delta );
             break;
           case P_LINE:
-          case P_LINE_AROUND:
             nbp = setPositionForLine( scale, lPos, mapShape, delta );
             break;
           default:

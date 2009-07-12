@@ -95,6 +95,9 @@ namespace pal
 
       Arrangement arrangement;
 
+      /** optional flags used for some placement methods */
+      unsigned long arrangementFlags;
+
       // indexes (spatial and id)
       RTree<Feature*, double, 2, double, 8, 4> *rtree;
       HashTable<Cell<Feature*>*> *hashtable;
@@ -165,6 +168,9 @@ namespace pal
        * @param arrangement arrangement policy
        */
       void setArrangement( Arrangement arrangement );
+
+      unsigned long getArrangementFlags() const { return arrangementFlags; }
+      void setArrangementFlags( unsigned long flags ) { arrangementFlags = flags; }
 
       /**
        * \brief get units for label size

@@ -80,17 +80,18 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
         radOverPoint->setChecked(true);
         radOverCentroid->setChecked(true);
         break;
-      case LayerSettings::AroundLine:
-      case LayerSettings::OnLine:
+      case LayerSettings::Line:
         radLineParallel->setChecked(true);
         radPolygonPerimeter->setChecked(true);
-        if ( lyr.placement == LayerSettings::AroundLine )
-        {
-          radAroundLine->setChecked(true);
-          spinDistLine->setValue(lyr.dist);
-        }
+
+        spinDistLine->setValue(lyr.dist);
+        chkLineAbove->setChecked( lyr.placementFlags & LayerSettings::AboveLine );
+        chkLineBelow->setChecked( lyr.placementFlags & LayerSettings::BelowLine );
+        chkLineOn->setChecked( lyr.placementFlags & LayerSettings::OnLine );
+        if ( lyr.placementFlags & LayerSettings::MapOrientation )
+          radOrientationMap->setChecked(true);
         else
-          radOnLine->setChecked(true);
+          radOrientationLine->setChecked(true);
         break;
       case LayerSettings::Horizontal:
         radPolygonHorizontal->setChecked(true);
@@ -167,6 +168,7 @@ LayerSettings LabelingGui::layerSettings()
   lyr.fieldName = cboFieldName->currentText();
 
   lyr.dist = 0;
+  lyr.placementFlags = 0;
 
   if ( (stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked())
     || (stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked()) )
@@ -183,13 +185,17 @@ LayerSettings LabelingGui::layerSettings()
   else if ( (stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked())
     || (stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked()) )
   {
-    if (radAroundLine->isChecked())
-    {
-      lyr.placement = LayerSettings::AroundLine;
-      lyr.dist = spinDistLine->value();
-    }
-    else
-      lyr.placement = LayerSettings::OnLine;
+    lyr.placement = LayerSettings::Line;
+    lyr.dist = spinDistLine->value();
+    if (chkLineAbove->isChecked())
+      lyr.placementFlags |= LayerSettings::AboveLine;
+    if (chkLineBelow->isChecked())
+      lyr.placementFlags |= LayerSettings::BelowLine;
+    if (chkLineOn->isChecked())
+      lyr.placementFlags |= LayerSettings::OnLine;
+
+    if (radOrientationMap->isChecked())
+      lyr.placementFlags |= LayerSettings::MapOrientation;
   }
   else if ( (stackedPlacement->currentWidget() == pageLine && radLineHorizontal->isChecked())
     || (stackedPlacement->currentWidget() == pagePolygon && radPolygonHorizontal->isChecked()) )

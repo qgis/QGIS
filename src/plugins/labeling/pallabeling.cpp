@@ -77,6 +77,7 @@ LayerSettings::LayerSettings(const LayerSettings& s)
   layerId = s.layerId;
   fieldName = s.fieldName;
   placement = s.placement;
+  placementFlags = s.placementFlags;
   textFont = s.textFont;
   textColor = s.textColor;
   enabled = s.enabled;
@@ -239,9 +240,8 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
   switch (lyr->placement)
   {
     case LayerSettings::AroundPoint: arrangement = P_POINT; break;
-    case LayerSettings::OverPoint: arrangement = P_POINT_OVER; break;
-    case LayerSettings::OnLine:      arrangement = P_LINE; break;
-    case LayerSettings::AroundLine:  arrangement = P_LINE_AROUND; break;
+    case LayerSettings::OverPoint:   arrangement = P_POINT_OVER; break;
+    case LayerSettings::Line:        arrangement = P_LINE; break;
     case LayerSettings::Horizontal:  arrangement = P_HORIZ; break;
     case LayerSettings::Free:        arrangement = P_FREE; break;
   }
@@ -256,6 +256,9 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
   }
 
   Layer* l = thisClass->mPal->addLayer(lyr->layerId.toLocal8Bit().data(), min_scale, max_scale, arrangement, METER, priority, lyr->obstacle, true, true);
+
+  if ( lyr->placementFlags )
+    l->setArrangementFlags( lyr->placementFlags );
 
   // save the pal layer to our layer context (with some additional info)
   lyr->palLayer = l;

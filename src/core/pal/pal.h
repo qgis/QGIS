@@ -101,13 +101,20 @@ namespace pal
     P_POINT_OVER, /** arranges candidates over a point (centroid for polygon)*/
     P_LINE, /**< Only for lines and polygons, arranges candidates over the line or the polygon perimeter */
     P_HORIZ, /**< Only for polygon, arranges candidates horizontaly */
-    P_FREE, /**< Only for polygon, arranges candidates with respect of polygon orientation */
-    P_LINE_AROUND /**< Only for lines and polygons, arranges candidates above and below the line or the polygon perimeter */
+    P_FREE /**< Only for polygon, arranges candidates with respect of polygon orientation */
   };
 
   /** typedef for _arrangement enumeration */
   typedef enum _arrangement Arrangement;
 
+  /** enumeration line arrangement flags. Flags can be combined. */
+  enum LineArrangementFlags
+  {
+    FLAG_ON_LINE     = 1,
+    FLAG_ABOVE_LINE  = 2,
+    FLAG_BELOW_LINE  = 4,
+    FLAG_MAP_ORIENTATION = 8
+  };
 
   /**
    *  \brief Pal main class.
