@@ -94,6 +94,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
         break;
       case LayerSettings::Horizontal:
         radPolygonHorizontal->setChecked(true);
+        radLineHorizontal->setChecked(true);
         break;
       case LayerSettings::Free:
         radPolygonFree->setChecked(true);
@@ -190,16 +191,17 @@ LayerSettings LabelingGui::layerSettings()
     else
       lyr.placement = LayerSettings::OnLine;
   }
-  else
+  else if ( (stackedPlacement->currentWidget() == pageLine && radLineHorizontal->isChecked())
+    || (stackedPlacement->currentWidget() == pagePolygon && radPolygonHorizontal->isChecked()) )
   {
-    // this must be polygon - horizontal / free
-    if (radPolygonHorizontal->isChecked())
       lyr.placement = LayerSettings::Horizontal;
-    else if (radPolygonFree->isChecked())
-      lyr.placement = LayerSettings::Free;
-    else
-      Q_ASSERT(0 && "NOOO!");
   }
+  else if (radPolygonFree->isChecked())
+  {
+    lyr.placement = LayerSettings::Free;
+  }
+  else
+    Q_ASSERT(0 && "NOOO!");
 
 
   lyr.textColor = btnTextColor->color();

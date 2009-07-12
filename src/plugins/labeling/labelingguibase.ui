@@ -77,7 +77,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedPlacement">
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="pagePoint">
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -114,9 +114,6 @@
           </item>
           <item>
            <widget class="QRadioButton" name="radLineHorizontal">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
             <property name="text">
              <string>horizontal</string>
             </property>
