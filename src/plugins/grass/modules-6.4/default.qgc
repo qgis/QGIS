@@ -12,54 +12,65 @@
                                 <grass name="r.in.gdal.qgis.loc"/>
 				<grass name="r.in.gdal"/>
 				<grass name="r.in.gdal.loc"/>
+				<grass name="r.in.xyz"/>
 				<grass name="r.in.ascii"/>
 				<grass name="r.in.poly"/>
+				<grass name="r.in.bin"/>
 				<grass name="r.in.arc"/>
 				<grass name="r.in.gridatb"/>
 				<grass name="r.in.mat"/>
 				<grass name="i.in.spotvgt"/>
 				<grass name="r.in.srtm"/>
 				<grass name="r.in.aster"/>
-				<grass name="r.external"/>
-				<grass name="r.external.qgis"/>
-				<grass name="qgis.r.external.all"/>
+				<grass name="r.in.wms"/>
 			</section>
-			 <section label="Import vector">
+			<section label="Import vector">
                                 <grass name="v.in.ogr.qgis"/>
-                                <grass name="v.in.ogr"/>
                                 <grass name="v.in.ogr.qgis.loc"/>
-                                <grass name="v.in.ogr.loc"/>
+				<grass name="v.in.ogr"/>
+				<grass name="v.in.ogr.loc"/>
                                 <grass name="v.in.ogr.all"/> 
-				<grass name="v.in.ogr.all.loc"/> 
-                                <grass name="v.in.dxf"/>
-                                <grass name="v.in.e00"/>
-                                <grass name="v.in.mapgen"/>
-                                <grass name="v.in.db"/>
-                                <grass name="v.in.garmin"/>
-                                <grass name="v.in.gpsbabel"/>
-                        </section>
+                                <grass name="v.in.ogr.all.loc"/> 
+				<grass name="v.in.dxf"/>
+				<grass name="v.in.e00"/>
+				<grass name="v.in.mapgen"/>
+				<grass name="v.in.db"/>
+				<grass name="v.in.garmin"/>
+				<grass name="v.in.gpsbabel"/>
+				<grass name="v.in.geonames"/>
+				<grass name="v.in.gns"/>
+			</section>
 		</section>
 		<section label="Export">
 			<section label="Export raster">
-				<grass name="r.out.gdal.gtiff"/>
+				<grass name="r.out.gdal"/>
+				<grass name="r.out.ascii"/>
+				<grass name="r.out.xyz"/>
 				<grass name="r.out.arc"/>
 				<grass name="r.out.gridatb"/>
 				<grass name="r.out.mat"/>
 				<grass name="r.out.bin"/>
+				<grass name="r.out.mpeg"/>
 				<grass name="r.out.png"/>
 				<grass name="r.out.ppm"/>
 				<grass name="r.out.ppm3"/>
 				<grass name="r.out.pov"/>
 				<grass name="r.out.tiff"/>
 				<grass name="r.out.vrml"/>
+				<grass name="r.out.vtk"/>
 			</section>
 			<section label="Export vector">
 				<grass name="v.out.ogr"/>
 				<grass name="qgis.v.out.ogr.pg"/>
-				<grass name="v.out.ogr.gml"/>
-				<grass name="v.out.ogr.mapinfo"/>
+				<grass name="v.out.ogr.postgis"/>
 				<grass name="v.out.ascii"/>
 				<grass name="v.out.dxf"/>
+				<grass name="v.out.pov"/>
+				<grass name="v.out.svg"/>
+				<grass name="v.out.vtk"/>
+			</section>
+			<section label="Export vector table">
+				<grass name="db.out.ogr"/>
 			</section>
 		</section>
 		<section label="Map type conversion">
@@ -82,15 +93,14 @@
                                 <grass name="g.region.zoom"/> 
                                 <grass name="g.region.multiple.raster"/> 
                                 <grass name="g.region.multiple.vector"/>
-                        </section>
+			</section>
 			<section label="Projection management">
-                                <section label="Print projection information of the current location">
-                                        <grass name="g.proj.print"/>
-			        </section>
+                                <section label="Print projection information of the current location"> 					<grass name="g.proj.print"/>
+				</section>
                                 <section label="Print projection information from a georeferenced file"> 
-			                <grass name="g.proj.geo"/>
+					<grass name="g.proj.geo"/>
                                         <grass name="g.proj.ascii"/> 
-				        <grass name="g.proj.proj"/>
+					<grass name="g.proj.proj"/>
 				</section>
                                 <section label="Print projection information from a georeferenced file and create a new location based on it"> 
                                         <grass name="g.proj.geo.new"/> 
@@ -98,7 +108,7 @@
 					<grass name="g.proj.proj.new"/>
 				</section>
 			</section>
-			<section label="Convert coordinates">
+			<section label="Converte coordinates">
 				<grass name="m.cogo"/>
 			</section>
 		</section>
@@ -139,6 +149,7 @@
 			<grass name="r.colors.table"/>
 			<grass name="r.colors.rules"/>
 			<grass name="r.colors.rast"/>
+			<grass name="r.colors.stddev"/>
 			<grass name="r.blend"/>
 			<grass name="r.composite"/>
 			<grass name="r.his"/>
@@ -164,6 +175,10 @@
                                 <grass name="r.patch"/> 
 				<grass name="r.statistics"/>
 			</section>
+			<section label="Solar and irradiation model">
+                                <grass name="r.sunmask.position"/> 
+                                <grass name="r.sunmask.date.time"/> 
+			</section>
 			<section label="Terrain analysis">
 				<grass name="r.cost"/>
 				<grass name="r.drain"/>
@@ -174,6 +189,7 @@
 				<grass name="r.texture"/>
 				<grass name="r.texture.bis"/>
 				<grass name="r.los"/>
+			      <grass name="r.grow.distance"/>
 			</section>
 			<section label="Transform features">
 				<grass name="r.clump"/>
@@ -183,7 +199,6 @@
 		</section>
 		<section label="Spatial models">
 			<section label="Hydrologic modelling">
-				<grass name="r.watershed"/>
 				<grass name="r.carve"/>
 				<grass name="r.fill.dir"/>
 				<grass name="r.lake.xy"/>
@@ -201,6 +216,9 @@
 			<grass name="r.rescale"/>
 		</section>
 		<section label="Surface management">
+			<section label="Concentric circles">
+				<grass name="r.circle"/>
+			</section>
 			<section label="Create random points">
 				<grass name="r.random"/>
 				<grass name="r.random.cells"/>
@@ -209,6 +227,7 @@
 				<grass name="v.kernel"/>
 				<grass name="r.surf.fractal"/>
 				<grass name="r.surf.gauss"/>
+				<grass name="r.plane"/>
 				<grass name="r.surf.random"/>
 			</section>
 			<section label="Generate vector contour lines">
@@ -216,6 +235,7 @@
 				<grass name="r.contour2"/>
 			</section>
 			<section label="Interpolate surface">
+				<grass name="r.bilinear"/>
 				<grass name="v.surf.bspline"/>
 				<grass name="r.surf.idw"/>
 				<grass name="r.surf.idw2"/>
@@ -311,8 +331,11 @@
 				<grass name="v.distance"/>
 			</section>
 			<section label="Network analysis">
-				<grass name="v.net.nodes"/>
 				<grass name="v.net.alloc"/>
+				<grass name="v.net"/>
+				<grass name="v.net.nodes"/>
+				<grass name="v.net.visibility"/>
+				<grass name="v.net.path"/>
 				<grass name="v.net.iso"/>
 				<grass name="v.net.salesman"/>
 				<grass name="v.net.steiner"/>
@@ -342,7 +365,9 @@
 				<grass name="v.mkgrid.region"/>
 			</section>
 			<section label="Create points">
+				<grass name="v.in.db"/>
 				<grass name="v.random"/>
+				<grass name="v.perturb"/>
 			</section>
 			<section label="Manage training dataset">
 				<grass name="v.kcv"/>
@@ -411,6 +436,7 @@
 			<grass name="db.in.ogr"/>
 		</section>
 		<section label="Tables management">
+			<grass name="db.copy"/>
 			<grass name="v.db.addtable"/>
 			<grass name="v.db.droptable"/>
 		</section>
