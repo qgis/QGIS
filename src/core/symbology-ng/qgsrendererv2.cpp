@@ -294,6 +294,11 @@ QString QgsSingleSymbolRendererV2::dump()
 
 ///////////////////
 
+QgsRendererCategoryV2::QgsRendererCategoryV2(QVariant value, QgsSymbolV2* symbol, QString label)
+  : mValue(value), mSymbol(symbol), mLabel(label)
+{
+}
+
 QgsRendererCategoryV2::QgsRendererCategoryV2(const QgsRendererCategoryV2& cat)
   : mValue(cat.mValue), mLabel(cat.mLabel)
 {
@@ -306,10 +311,32 @@ QgsRendererCategoryV2::~QgsRendererCategoryV2()
   delete mSymbol;
 }
 
+QVariant QgsRendererCategoryV2::value() const
+{
+  return mValue;
+}
+
+QgsSymbolV2* QgsRendererCategoryV2::symbol() const
+{
+  return mSymbol;
+}
+
+QString QgsRendererCategoryV2::label() const
+{
+  return mLabel;
+}
+
 void QgsRendererCategoryV2::setSymbol(QgsSymbolV2* s)
 {
+  if (mSymbol == s)
+    return;
   delete mSymbol;
   mSymbol = s;
+}
+
+void QgsRendererCategoryV2::setLabel(QString label)
+{
+  mLabel = label;
 }
 
 QString QgsRendererCategoryV2::dump()
@@ -474,6 +501,40 @@ QgsRendererRangeV2::~QgsRendererRangeV2()
   delete mSymbol;
 }
 
+double QgsRendererRangeV2::lowerValue() const
+{
+  return mLowerValue;
+}
+
+double QgsRendererRangeV2::upperValue() const
+{
+  return mUpperValue;
+}
+
+QgsSymbolV2* QgsRendererRangeV2::symbol() const
+{
+  return mSymbol;
+}
+
+QString QgsRendererRangeV2::label() const
+{
+  return mLabel;
+}
+
+void QgsRendererRangeV2::setSymbol(QgsSymbolV2* s)
+{
+  if (mSymbol == s)
+    return;
+  delete mSymbol;
+  mSymbol = s;
+}
+
+void QgsRendererRangeV2::setLabel(QString label)
+{
+  mLabel = label;
+}
+
+
 ///////////
 
 
@@ -535,6 +596,21 @@ QList<int> QgsGraduatedSymbolRendererV2::usedAttributes()
   return lst;
 }
 
+bool QgsGraduatedSymbolRendererV2::updateRangeSymbol(int rangeIndex, QgsSymbolV2* symbol)
+{
+  if (rangeIndex < 0 || rangeIndex >= mRanges.size())
+    return false;
+  mRanges[rangeIndex].setSymbol(symbol);
+  return true;
+}
+
+bool QgsGraduatedSymbolRendererV2::updateRangeLabel(int rangeIndex, QString label)
+{
+  if (rangeIndex < 0 || rangeIndex >= mRanges.size())
+    return false;
+  mRanges[rangeIndex].setLabel(label);
+  return true;
+}
 
 
 static QList<double> _calcEqualIntervalBreaks(double minimum, double maximum, int classes)

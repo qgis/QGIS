@@ -111,20 +111,19 @@ class QgsRendererCategoryV2
 public:
   
   //! takes ownership of symbol
-  QgsRendererCategoryV2(QVariant value, QgsSymbolV2* symbol, QString label)
-  : mValue(value), mSymbol(symbol), mLabel(label) { }
+  QgsRendererCategoryV2(QVariant value, QgsSymbolV2* symbol, QString label);
   
   //! copy constructor
   QgsRendererCategoryV2(const QgsRendererCategoryV2& cat);
   
   ~QgsRendererCategoryV2();
   
-  QVariant value() const { return mValue; }
-  QgsSymbolV2* symbol() const { return mSymbol; }
-  QString label() const { return mLabel; }
+  QVariant value() const;
+  QgsSymbolV2* symbol() const;
+  QString label() const;
   
   void setSymbol(QgsSymbolV2* s);
-  void setLabel(QString label) { mLabel = label; }
+  void setLabel(QString label);
 
   // debugging
   QString dump();
@@ -192,12 +191,15 @@ public:
   
   ~QgsRendererRangeV2();
   
-  double lowerValue() const { return mLowerValue; }
-  double upperValue() const { return mUpperValue; }
+  double lowerValue() const;
+  double upperValue() const;
   
-  QgsSymbolV2* symbol() const { return mSymbol; }
-  QString label() const { return mLabel; }
+  QgsSymbolV2* symbol() const;
+  QString label() const;
   
+  void setSymbol(QgsSymbolV2* s);
+  void setLabel(QString label);
+
 protected:
   double mLowerValue, mUpperValue;
   QgsSymbolV2* mSymbol;
@@ -229,6 +231,9 @@ public:
   
   const QgsRangeList& ranges() { return mRanges; }
   
+  bool updateRangeSymbol(int rangeIndex, QgsSymbolV2* symbol);
+  bool updateRangeLabel(int rangeIndex, QString label);
+
   enum Mode
   {
     EqualInterval,

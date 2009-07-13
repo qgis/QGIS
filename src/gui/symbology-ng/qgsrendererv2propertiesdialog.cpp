@@ -72,6 +72,8 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   
   mGraduatedSymbol = createDefaultSymbol();
   
+  connect(viewGraduated, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(rangesDoubleClicked(const QModelIndex &)));
+
   connect(btnGraduatedClassify, SIGNAL(clicked()), this, SLOT(classifyGraduated()));
   connect(btnChangeGraduatedSymbol, SIGNAL(clicked()), this, SLOT(changeGraduatedSymbol()));
 
@@ -152,11 +154,11 @@ void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
       stackedWidget->setCurrentWidget(pageCategorized);
       updateCategorizedSymbolIcon();
 
+      disconnect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
       {
         int idx = rendererCategorized()->attributeIndex();
         cboCategorizedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
       }
-      disconnect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
       connect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
       populateCategories();
       break;
@@ -494,6 +496,41 @@ void QgsRendererV2PropertiesDialog::populateRanges()
   // make sure that the "range" column has visible context
   viewGraduated->resizeColumnToContents(0);
 }
+
+/*
+int QgsRendererV2PropertiesDialog::currentRangeRow()
+{
+  QModelIndex idx = viewGraduated->selectionModel()->currentIndex();
+  if (!idx.isValid())
+    return -1;
+  return idx.row();
+}
+*/
+
+void QgsRendererV2PropertiesDialog::rangesDoubleClicked(const QModelIndex & idx)
+{
+  if (idx.isValid() && idx.column() == 0)
+    changeRangeSymbol(idx.row());
+}
+
+void QgsRendererV2PropertiesDialog::changeRangeSymbol(int rangeIdx)
+{
+
+  QgsGraduatedSymbolRendererV2* r = rendererGraduated();
+  QgsSymbolV2* newSymbol = r->ranges()[rangeIdx].symbol()->clone();
+
+  QgsSymbolV2SelectorDialog dlg(newSymbol, mStyle, this);
+  if (!dlg.exec())
+  {
+    delete newSymbol;
+    return;
+  }
+
+  r->updateRangeSymbol(rangeIdx, newSymbol);
+
+  populateRanges();
+}
+
 
 void QgsRendererV2PropertiesDialog::symbolLevels()
 {

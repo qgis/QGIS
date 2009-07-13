@@ -32,6 +32,7 @@ public slots:
 
   void changeGraduatedSymbol();
   void classifyGraduated();
+  void rangesDoubleClicked(const QModelIndex & idx);
 
   void symbolLevels();
 
@@ -65,7 +66,9 @@ protected:
   QVariant currentCategory();
   
   void changeCategorySymbol();
-  
+
+  void changeRangeSymbol(int rangeIdx);
+
   QgsSingleSymbolRendererV2* rendererSingle();
   QgsCategorizedSymbolRendererV2* rendererCategorized();
   QgsGraduatedSymbolRendererV2* rendererGraduated();

@@ -87,7 +87,7 @@ public:
 	virtual QList<int> usedAttributes();
 
   QgsSymbolV2* symbol() const;
-  void setSymbol(QgsSymbolV2* s);
+  void setSymbol(QgsSymbolV2* s /Transfer/);
 };
 
 //////////
@@ -101,7 +101,7 @@ class QgsRendererCategoryV2
 public:
   
   //! takes ownership of symbol
-  QgsRendererCategoryV2(QVariant value, QgsSymbolV2* symbol, QString label);
+  QgsRendererCategoryV2(QVariant value, QgsSymbolV2* symbol /Transfer/, QString label);
   
   QgsRendererCategoryV2(const QgsRendererCategoryV2& cat);
   
@@ -111,7 +111,7 @@ public:
   QgsSymbolV2* symbol();
   QString label() const;
   
-  void setSymbol(QgsSymbolV2* s);
+  void setSymbol(QgsSymbolV2* s /Transfer/);
   void setLabel(QString label);
   
 };
@@ -143,7 +143,7 @@ public:
   //! return index of category with specified value (-1 if not found)
   int categoryIndexForValue(QVariant val);
   
-  bool updateCategorySymbol(int catIndex, QgsSymbolV2* symbol);
+  bool updateCategorySymbol(int catIndex, QgsSymbolV2* symbol /Transfer/);
   bool updateCategoryLabel(int catIndex, QString label);
   
   bool deleteCategory(int catIndex);
@@ -155,6 +155,81 @@ public:
 protected:
   
   QgsSymbolV2* symbolForValue(QVariant value);
+};
+
+//////////
+
+class QgsRendererRangeV2
+{
+%TypeHeaderCode
+#include <qgsrendererv2.h>
+%End
+
+public:
+  QgsRendererRangeV2(double lowerValue, double upperValue, QgsSymbolV2* symbol /Transfer/, QString label);
+  QgsRendererRangeV2(const QgsRendererRangeV2& range);
+
+  ~QgsRendererRangeV2();
+
+  double lowerValue() const;
+  double upperValue() const;
+
+  QgsSymbolV2* symbol() const;
+  QString label() const;
+
+  void setSymbol(QgsSymbolV2* s /Transfer/);
+  void setLabel(QString label);
+};
+
+typedef QList<QgsRendererRangeV2> QgsRangeList;
+
+class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
+{
+%TypeHeaderCode
+#include <qgsrendererv2.h>
+%End
+
+public:
+  QgsGraduatedSymbolRendererV2(int attrNum = -1, QgsRangeList ranges = QgsRangeList());
+
+  virtual ~QgsGraduatedSymbolRendererV2();
+
+  virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature);
+
+  virtual void startRender(QgsRenderContext& context);
+
+  virtual void stopRender(QgsRenderContext& context);
+
+  virtual QList<int> usedAttributes();
+
+  int attributeIndex() const;
+  void setAttributeIndex(int attr);
+
+  const QgsRangeList& ranges();
+
+  bool updateRangeSymbol(int rangeIndex, QgsSymbolV2* symbol /Transfer/);
+  bool updateRangeLabel(int rangeIndex, QString label);
+
+  enum Mode
+  {
+    EqualInterval,
+    Quantile,
+    Custom
+  };
+
+  Mode mode() const;
+  void setMode(Mode mode);
+
+  static QgsGraduatedSymbolRendererV2* createRenderer(
+                  QgsVectorLayer* vlayer,
+                  int attrNum,
+                  int classes,
+                  Mode mode,
+                  QgsSymbolV2* symbol,
+                  QgsVectorColorRampV2* ramp);
+
+protected:
+  QgsSymbolV2* symbolForValue(double value);
 };
 
 //////////
