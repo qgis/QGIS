@@ -180,11 +180,8 @@
          </item>
          <item row="0" column="1" >
           <widget class="QLabel" name="textLabel5_2_2_3_2" >
-           <property name="enabled" >
-            <bool>false</bool>
-           </property>
            <property name="text" >
-            <string>Font transparency</string>
+            <string>Font size</string>
            </property>
            <property name="alignment" >
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -192,10 +189,7 @@
           </widget>
          </item>
          <item row="0" column="2" >
-          <widget class="QSpinBox" name="spinFontTransparency" >
-           <property name="enabled" >
-            <bool>false</bool>
-           </property>
+          <widget class="QDoubleSpinBox" name="spinFontSize" >
            <property name="sizePolicy" >
             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
              <horstretch>0</horstretch>
@@ -207,12 +201,6 @@
              <width>50</width>
              <height>0</height>
             </size>
-           </property>
-           <property name="suffix" >
-            <string>%</string>
-           </property>
-           <property name="maximum" >
-            <number>100</number>
            </property>
            <property name="value" >
             <number>0</number>
@@ -469,7 +457,7 @@
         </widget>
        </item>
        <item row="1" column="1" >
-        <widget class="QSpinBox" name="spinBufferSize" />
+        <widget class="QDoubleSpinBox" name="spinBufferSize" />
        </item>
        <item row="2" column="0" >
         <widget class="QLabel" name="textLabel5_2_2_3" >
@@ -575,7 +563,7 @@
         </widget>
        </item>
        <item row="0" column="1" >
-        <widget class="QSpinBox" name="spinXOffset" >
+        <widget class="QDoubleSpinBox" name="spinXOffset" >
          <property name="minimum" >
           <number>-99</number>
          </property>
@@ -589,7 +577,7 @@
         </widget>
        </item>
        <item row="1" column="1" >
-        <widget class="QSpinBox" name="spinYOffset" >
+        <widget class="QDoubleSpinBox" name="spinYOffset" >
          <property name="minimum" >
           <number>-99</number>
          </property>
@@ -1055,7 +1043,7 @@
   <tabstop>leDefaultLabel</tabstop>
   <tabstop>btnDefaultFont</tabstop>
   <tabstop>pbnDefaultFontColor</tabstop>
-  <tabstop>spinFontTransparency</tabstop>
+  <tabstop>spinFontSize</tabstop>
   <tabstop>radioFontSizeUnitsPoints</tabstop>
   <tabstop>radioFontSizeUnitsMap</tabstop>
   <tabstop>spinAngle</tabstop>
