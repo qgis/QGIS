@@ -152,7 +152,7 @@ void QgsLabelDialog::init( )
   mFont.setFamily( myLabelAttributes->family() );
   if ( myLabelAttributes->sizeIsSet() )
   {
-    mFont.setPointSize( static_cast<int>( myLabelAttributes->size() ) );
+    mFont.setPointSizeF( myLabelAttributes->size() );
 
     int myTypeInt = myLabelAttributes->sizeType();
     if ( myTypeInt == QgsLabelAttributes::PointUnits )
@@ -166,9 +166,11 @@ void QgsLabelDialog::init( )
   }
   else //defaults for when no size has been set
   {
-    mFont.setPointSize( static_cast<int>( myLabelAttributes->size() ) );
+    mFont.setPointSizeF( myLabelAttributes->size() );
     radioFontSizeUnitsPoints->setChecked( true );
   }
+
+  spinFontSize->setValue( myLabelAttributes->size() );
 
   if ( myLabelAttributes->boldIsSet() )
   {
@@ -200,8 +202,8 @@ void QgsLabelDialog::init( )
     {
       radioOffsetUnitsMap->setChecked( true );
     }
-    spinXOffset->setValue( static_cast<int>( myLabelAttributes->xOffset() ) );
-    spinYOffset->setValue( static_cast<int>( myLabelAttributes->yOffset() ) );
+    spinXOffset->setValue( myLabelAttributes->xOffset() );
+    spinYOffset->setValue( myLabelAttributes->yOffset() );
   }
   else //defaults for when no offset is defined
   {
@@ -247,7 +249,7 @@ void QgsLabelDialog::init( )
     {
       radioBufferUnitsMap->setChecked( true );
     }
-    spinBufferSize->setValue( static_cast<int>( myLabelAttributes->bufferSize() ) );
+    spinBufferSize->setValue( myLabelAttributes->bufferSize() );
   }
   else //defaults for when no offset is defined
   {
@@ -259,7 +261,7 @@ void QgsLabelDialog::init( )
   chkUseBuffer->setChecked( myLabelAttributes->bufferEnabled() );
 
   //NOTE: do we need this line too? TS
-  spinBufferSize->setValue( static_cast<int>( myLabelAttributes->bufferSize() ) );
+  spinBufferSize->setValue( myLabelAttributes->bufferSize() );
   //TODO - transparency attributes for buffers
 
   listWidget->setItemSelected( listWidget->item( 0 ), true );
@@ -271,11 +273,16 @@ void QgsLabelDialog::changeFont( void )
 {
   QgsDebugMsg( "entering." );
 
+  qreal fontSize = mFont.pointSizeF();
   bool resultFlag;
   mFont = QFontDialog::getFont( &resultFlag, mFont, this );
   if ( resultFlag )
   {
-    // font is set to the font the user selected
+    if ( mFont.pointSizeF() != fontSize )
+    {
+      // font is set to the font the user selected
+      spinFontSize->setValue( mFont.pointSizeF() );
+    }
   }
   else
   {
@@ -341,7 +348,7 @@ void QgsLabelDialog::apply()
   {
     myTypeInt = QgsLabelAttributes::MapUnits;
   }
-  myLabelAttributes->setSize( mFont.pointSize(), myTypeInt );
+  myLabelAttributes->setSize( mFont.pointSizeF(), myTypeInt );
   myLabelAttributes->setBold( mFont.bold() );
   myLabelAttributes->setItalic( mFont.italic() );
   myLabelAttributes->setUnderline( mFont.underline() );

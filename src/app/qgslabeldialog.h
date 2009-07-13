@@ -74,8 +74,10 @@ class QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
 
     void on_cboLabelField_activated( int ) {emit labelSourceSet(); }
 
+    void on_spinFontSize_valueChanged( double d ) { mFont.setPointSizeF( d ); lblSample->setFont( mFont ); }
+
   signals:
-    /* emitted when anitem in label source list is chosen */
+    /* emitted when an item in label source list is chosen */
     void labelSourceSet();
 
   protected:
