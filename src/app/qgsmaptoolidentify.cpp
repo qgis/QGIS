@@ -352,13 +352,13 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
       {
         // Add the start and end points in as derived attributes
         str.setNum( f_it->geometry()->asPolyline().first().x(), 'g', 10 );
-        mResults->addDerivedAttribute( featureNode, "startX", str );
+        mResults->addDerivedAttribute( featureNode, tr("firstX"), str );
         str.setNum( f_it->geometry()->asPolyline().first().y(), 'g', 10 );
-        mResults->addDerivedAttribute( featureNode, "startY", str );
+        mResults->addDerivedAttribute( featureNode, tr("firstY"), str );
         str.setNum( f_it->geometry()->asPolyline().last().x(), 'g', 10 );
-        mResults->addDerivedAttribute( featureNode, "endX", str );
+        mResults->addDerivedAttribute( featureNode, tr("lastX"), str );
         str.setNum( f_it->geometry()->asPolyline().last().y(), 'g', 10 );
-        mResults->addDerivedAttribute( featureNode, "endY", str );
+        mResults->addDerivedAttribute( featureNode, tr("lastY"), str );
       }
     }
     else if ( layer->geometryType() == QGis::Polygon )
