@@ -4338,7 +4338,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="117"/>
         <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;QGIS-Sponsorenprogramm:tragen Sie zur QGIS-Entwicklung bei&lt;/p&gt;</source</translation>
+        <translation type="unfinished">&lt;p&gt;QGIS-Sponsorenprogramm:tragen Sie zur QGIS-Entwicklung bei&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="166"/>
