@@ -106,6 +106,9 @@ public:
   /** set whether to use renderer V2 for drawing. Added in QGIS 1.2 */
   void setUsingRendererV2(bool usingRendererV2);
     
+  void drawRendererV2( QgsRenderContext& rendererContext, bool labeling );
+  void drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling );
+
   /** Returns point, line or polygon */
   QGis::GeometryType geometryType() const;
 
