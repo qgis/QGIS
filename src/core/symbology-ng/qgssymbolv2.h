@@ -94,7 +94,7 @@ public:
 	void setSize(double size);
 	double size();
 	
-	void renderPoint(const QPointF& point, QgsRenderContext& context);
+  void renderPoint(const QPointF& point, QgsRenderContext& context, int layer = -1);
 
   virtual QgsSymbolV2* clone() const;
 };
@@ -109,7 +109,7 @@ public:
 	void setWidth(int width);
 	int width();
 	
-	void renderPolyline(const QPolygonF& points, QgsRenderContext& context);
+  void renderPolyline(const QPolygonF& points, QgsRenderContext& context, int layer = -1);
 	
   virtual QgsSymbolV2* clone() const;
 };
@@ -121,7 +121,7 @@ class QgsFillSymbolV2 : public QgsSymbolV2
 public:
   QgsFillSymbolV2(QgsSymbolLayerV2List layers = QgsSymbolLayerV2List());
 	
-	void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context);
+  void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer = -1);
 
   virtual QgsSymbolV2* clone() const;
 };

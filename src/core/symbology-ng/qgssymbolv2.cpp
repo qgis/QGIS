@@ -276,8 +276,15 @@ double QgsMarkerSymbolV2::size()
   return maxSize;
 }
 	
-void QgsMarkerSymbolV2::renderPoint(const QPointF& point, QgsRenderContext& context)
+void QgsMarkerSymbolV2::renderPoint(const QPointF& point, QgsRenderContext& context, int layer)
 {
+  if (layer != -1)
+  {
+    if ( layer >= 0 && layer < mLayers.count() )
+      ((QgsMarkerSymbolLayerV2*) mLayers[layer])->renderPoint(point, context);
+    return;
+  }
+
   for (QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it)
   {
     QgsMarkerSymbolLayerV2* layer = (QgsMarkerSymbolLayerV2*) *it;
@@ -324,8 +331,15 @@ int QgsLineSymbolV2::width()
   return maxWidth;
 }
 	
-void QgsLineSymbolV2::renderPolyline(const QPolygonF& points, QgsRenderContext& context)
+void QgsLineSymbolV2::renderPolyline(const QPolygonF& points, QgsRenderContext& context, int layer)
 {
+  if (layer != -1)
+  {
+    if ( layer >= 0 && layer < mLayers.count() )
+      ((QgsLineSymbolLayerV2*) mLayers[layer])->renderPolyline(points, context);
+    return;
+  }
+
   for (QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it)
   {
     QgsLineSymbolLayerV2* layer = (QgsLineSymbolLayerV2*) *it;
@@ -349,8 +363,15 @@ QgsFillSymbolV2::QgsFillSymbolV2(QgsSymbolLayerV2List layers)
     mLayers.append(new QgsSimpleFillSymbolLayerV2());
 }
 
-void QgsFillSymbolV2::renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context)
+void QgsFillSymbolV2::renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer)
 {
+  if (layer != -1)
+  {
+    if ( layer >= 0 && layer < mLayers.count() )
+      ((QgsFillSymbolLayerV2*) mLayers[layer])->renderPolygon(points, rings, context);
+    return;
+  }
+
   for (QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it)
   {
     QgsFillSymbolLayerV2* layer = (QgsFillSymbolLayerV2*) *it;

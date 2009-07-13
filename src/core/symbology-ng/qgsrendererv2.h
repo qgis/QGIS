@@ -11,6 +11,31 @@ class QgsSymbolV2;
 class QgsRenderContext;
 class QgsFeature;
 
+
+////////
+// symbol levels
+
+class QgsSymbolV2LevelItem
+{
+public:
+  QgsSymbolV2LevelItem( QgsSymbolV2* symbol, int layer ) : mSymbol(symbol), mLayer(layer) {}
+  QgsSymbolV2* symbol() { return mSymbol; }
+  int layer() { return mLayer; }
+protected:
+  QgsSymbolV2* mSymbol;
+  int mLayer;
+};
+
+// every level has list of items: symbol + symbol layer num
+typedef QList< QgsSymbolV2LevelItem > QgsSymbolV2Level;
+
+// this is a list of levels
+typedef QList< QgsSymbolV2Level > QgsSymbolV2LevelOrder;
+
+
+//////////////
+// renderers
+
 class QgsFeatureRendererV2
 {
 public:
@@ -37,17 +62,22 @@ public:
 	
 	virtual ~QgsFeatureRendererV2() {}
 	
-	void renderFeature(QgsFeature& feature, QgsRenderContext& context);
+  void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1);
 
   //! for debugging
   virtual QString dump();
 	
 	//TODO: symbols() for symbol levels
+
+  QgsSymbolV2LevelOrder& symbolLevels() { return mLevelOrder; }
+  void setSymbolLevels(const QgsSymbolV2LevelOrder& levelOrder) { mLevelOrder = levelOrder; }
   
 protected:
   QgsFeatureRendererV2(RendererType type);
   
   RendererType mType;
+
+  QgsSymbolV2LevelOrder mLevelOrder;
 };
 
 class QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2

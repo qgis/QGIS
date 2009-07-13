@@ -33,6 +33,8 @@ public slots:
   void changeGraduatedSymbol();
   void classifyGraduated();
 
+  void symbolLevels();
+
 protected:
   
   //! update UI to reflect changes in renderer

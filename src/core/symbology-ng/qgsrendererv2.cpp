@@ -116,7 +116,7 @@ QgsFeatureRendererV2::QgsFeatureRendererV2(RendererType type)
 }
 
 
-void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& context)
+void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer)
 {
   QgsSymbolV2* symbol = symbolForFeature(feature);
   if (symbol == NULL)
@@ -136,7 +136,7 @@ void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& 
         }
         QPointF pt;
         _getPoint(pt, context.mapToPixel(), geom->asWkb());
-        ((QgsMarkerSymbolV2*)symbol)->renderPoint(pt, context);
+        ((QgsMarkerSymbolV2*)symbol)->renderPoint(pt, context, layer);
       }
       break;
       
@@ -149,7 +149,7 @@ void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& 
         }
         QPolygonF pts;
         _getLineString(pts, context.mapToPixel(), geom->asWkb());
-        ((QgsLineSymbolV2*)symbol)->renderPolyline(pts, context);
+        ((QgsLineSymbolV2*)symbol)->renderPolyline(pts, context, layer);
       }
       break;
 	   
@@ -163,7 +163,7 @@ void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& 
         QPolygonF pts;
         QList<QPolygonF> holes;
         _getPolygon(pts, holes, context.mapToPixel(), geom->asWkb());
-        ((QgsFillSymbolV2*)symbol)->renderPolygon(pts, (holes.count() ? &holes : NULL), context);
+        ((QgsFillSymbolV2*)symbol)->renderPolygon(pts, (holes.count() ? &holes : NULL), context, layer);
       }
       break;
       
@@ -183,7 +183,7 @@ void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& 
         for (unsigned int i = 0; i < num; ++i)
         {
           ptr = _getPoint(pt, context.mapToPixel(), ptr);
-          ((QgsMarkerSymbolV2*)symbol)->renderPoint(pt, context);
+          ((QgsMarkerSymbolV2*)symbol)->renderPoint(pt, context, layer);
         }
       }
       break;
@@ -204,7 +204,7 @@ void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& 
         for (unsigned int i = 0; i < num; ++i)
         {
           ptr = _getLineString(pts, context.mapToPixel(), ptr);
-          ((QgsLineSymbolV2*)symbol)->renderPolyline(pts, context);
+          ((QgsLineSymbolV2*)symbol)->renderPolyline(pts, context, layer);
         }
       }
       break;
@@ -226,7 +226,7 @@ void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& 
         for (unsigned int i = 0; i < num; ++i)
         {
           ptr = _getPolygon(pts, holes, context.mapToPixel(), ptr);
-          ((QgsFillSymbolV2*)symbol)->renderPolygon(pts, (holes.count() ? &holes : NULL), context);
+          ((QgsFillSymbolV2*)symbol)->renderPolygon(pts, (holes.count() ? &holes : NULL), context, layer);
         }
       }
       break;
@@ -357,7 +357,10 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue(QVariant value)
   QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find(value.toString());
   if (it == mSymbolHash.end())
   {
-    QgsDebugMsg("attribute value not found: " + value.toString());
+    if (mSymbolHash.count() == 0)
+      QgsDebugMsg("there are no hashed symbols!!!");
+    else
+      QgsDebugMsg("attribute value not found: " + value.toString());
     return NULL;
   }
   else

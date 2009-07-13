@@ -680,6 +680,68 @@ unsigned char *QgsVectorLayer::drawPolygon(
   return ptr;
 }
 
+void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool labeling )
+{
+  mRendererV2->startRender(rendererContext);
+
+  QgsFeature fet;
+  while ( nextFeature( fet ) )
+  {
+    mRendererV2->renderFeature(fet, rendererContext);
+
+    if ( labeling )
+      mLabelingRegisterFeatureHook(fet, mLabelingLayerContext);
+  }
+
+  mRendererV2->stopRender(rendererContext);
+}
+
+void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
+{
+  QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
+
+  // startRender must be called before symbolForFeature() calls to make sure renderer is ready
+  mRendererV2->startRender(rendererContext);
+
+  // 1. fetch features
+  QgsFeature fet;
+  while ( nextFeature(fet) )
+  {
+    QgsSymbolV2* sym = mRendererV2->symbolForFeature(fet);
+    if ( !features.contains(sym) )
+    {
+      features.insert( sym, QList<QgsFeature>() );
+    }
+    features[sym].append( fet );
+
+    if ( labeling )
+      mLabelingRegisterFeatureHook(fet, mLabelingLayerContext);
+  }
+
+  // 2. draw features in correct order
+  QgsSymbolV2LevelOrder& levels = mRendererV2->symbolLevels();
+  for (int l = 0; l < levels.count(); l++)
+  {
+    QgsSymbolV2Level& level = levels[l];
+    for (int i = 0; i < level.count(); i++)
+    {
+      QgsSymbolV2LevelItem& item = level[i];
+      if (!features.contains(item.symbol()))
+      {
+        QgsDebugMsg("level item's symbol not found!");
+        continue;
+      }
+      int layer = item.layer();
+      QList<QgsFeature>& lst = features[item.symbol()];
+      QList<QgsFeature>::iterator fit;
+      for ( fit = lst.begin(); fit != lst.end(); ++fit )
+        mRendererV2->renderFeature(*fit, rendererContext, layer);
+    }
+  }
+
+  mRendererV2->stopRender(rendererContext);
+}
+
 bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
   if (mUsingRendererV2)
@@ -688,19 +750,18 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       return FALSE;
 
     QgsDebugMsg("rendering v2:\n" + mRendererV2->dump());
-    
-    mRendererV2->startRender(rendererContext);
-    
+
     // TODO: really needed?
     updateFeatureCount();
     int totalFeatures = pendingFeatureCount();
     int featureCount = 0;
     
-    QgsFeature fet;
     QgsAttributeList attributes = mRendererV2->usedAttributes();
+    if (attributes.count() > 0)
+      QgsDebugMsg("attrs: " + QString::number(attributes[0]));
 
     bool labeling = FALSE;
-    if (mLabelingPrepareLayerHook)
+    if ( mLabelingPrepareLayerHook && mLabelingRegisterFeatureHook )
     {
       int attrIndex;
       if (mLabelingPrepareLayerHook(mLabelingContext, mLabelingLayerContext, attrIndex))
@@ -713,17 +774,11 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
     select( attributes, rendererContext.extent() );
 
-    while ( nextFeature( fet ) )
-    {
-      mRendererV2->renderFeature(fet, rendererContext);
+    if (mRendererV2->symbolLevels().isEmpty())
+      drawRendererV2(rendererContext, labeling);
+    else
+      drawRendererV2Levels(rendererContext, labeling);
 
-      if (labeling && mLabelingRegisterFeatureHook)
-      {
-        mLabelingRegisterFeatureHook(fet, mLabelingLayerContext);
-      }
-    }
-    
-    mRendererV2->stopRender(rendererContext);
     return TRUE;
   }
   

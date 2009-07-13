@@ -7,6 +7,7 @@ symbology-ng/qgssymbollayerv2widget.cpp
 symbology-ng/qgssymbolv2propertiesdialog.cpp
 symbology-ng/qgsrendererv2propertiesdialog.cpp
 symbology-ng/qgsstylev2managerdialog.cpp
+symbology-ng/qgssymbollevelsv2dialog.cpp
 symbology-ng/qgssymbolv2selectordialog.cpp
 symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp
 symbology-ng/qgsvectorrandomcolorrampv2dialog.cpp
@@ -45,6 +46,7 @@ symbology-ng/qgssymbollayerv2widget.h
 symbology-ng/qgssymbolv2propertiesdialog.h
 symbology-ng/qgsrendererv2propertiesdialog.h
 symbology-ng/qgsstylev2managerdialog.h
+symbology-ng/qgssymbollevelsv2dialog.h
 symbology-ng/qgssymbolv2selectordialog.h
 symbology-ng/qgsvectorgradientcolorrampv2dialog.h
 symbology-ng/qgsvectorrandomcolorrampv2dialog.h

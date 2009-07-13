@@ -8,6 +8,7 @@
 #include "qgsstylev2.h"
 
 #include "qgssymbolv2selectordialog.h"
+#include "qgssymbollevelsv2dialog.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
@@ -29,6 +30,8 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   }
   
   setupUi(this);
+
+  connect(btnSymbolLevels, SIGNAL(clicked()), this, SLOT(symbolLevels()));
 
   connect(radSingleSymbol, SIGNAL(clicked()), this, SLOT(updateRenderer()));
   connect(radCategorized, SIGNAL(clicked()), this, SLOT(updateRenderer()));
@@ -490,4 +493,55 @@ void QgsRendererV2PropertiesDialog::populateRanges()
 
   // make sure that the "range" column has visible context
   viewGraduated->resizeColumnToContents(0);
+}
+
+void QgsRendererV2PropertiesDialog::symbolLevels()
+{
+  QgsSymbolV2List symbols;
+
+  switch (mLayer->rendererV2()->type())
+  {
+    case QgsFeatureRendererV2::RendererSingleSymbol:
+    {
+      QgsSingleSymbolRendererV2* r = rendererSingle();
+      symbols.append(r->symbol());
+    }
+      break;
+
+    case QgsFeatureRendererV2::RendererCategorizedSymbol:
+    {
+      QgsCategorizedSymbolRendererV2* r = rendererCategorized();
+      int i, count = r->categories().count();
+
+      for (i = 0; i < count; i++)
+      {
+        const QgsRendererCategoryV2& cat = r->categories()[i];
+        symbols.append(cat.symbol());
+      }
+    }
+      break;
+
+    case QgsFeatureRendererV2::RendererGraduatedSymbol:
+    {
+      QgsGraduatedSymbolRendererV2* r = rendererGraduated();
+      int i, count = r->ranges().count();
+
+      for (i = 0; i < count; i++)
+      {
+        const QgsRendererRangeV2& range = r->ranges()[i];
+        symbols.append(range.symbol());
+      }
+    }
+      break;
+
+    default:
+      break;
+  }
+
+  // TODO: get symbol level order from layer!
+  QgsSymbolLevelsV2Dialog dlg(symbols, mLayer->rendererV2()->symbolLevels(), this);
+  if (dlg.exec())
+  {
+    mLayer->rendererV2()->setSymbolLevels( dlg.levels() );
+  }
 }
