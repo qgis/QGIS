@@ -45,6 +45,45 @@ Qt::PenStyle QgsSymbolLayerV2Utils::decodePenStyle(QString str)
   return Qt::SolidLine;
 }
 
+QString QgsSymbolLayerV2Utils::encodePenJoinStyle(Qt::PenJoinStyle style)
+{
+  switch (style)
+  {
+    case Qt::BevelJoin: return "bevel";
+    case Qt::MiterJoin: return "miter";
+    case Qt::RoundJoin: return "round";
+    default: return "???";
+  }
+}
+
+Qt::PenJoinStyle QgsSymbolLayerV2Utils::decodePenJoinStyle(QString str)
+{
+  if (str == "bevel") return Qt::BevelJoin;
+  if (str == "miter") return Qt::MiterJoin;
+  if (str == "round") return Qt::RoundJoin;
+  return Qt::BevelJoin;
+}
+
+QString QgsSymbolLayerV2Utils::encodePenCapStyle(Qt::PenCapStyle style)
+{
+  switch (style)
+  {
+    case Qt::SquareCap: return "square";
+    case Qt::FlatCap:   return "flat";
+    case Qt::RoundCap:  return "round";
+    default: return "???";
+  }
+}
+
+Qt::PenCapStyle QgsSymbolLayerV2Utils::decodePenCapStyle(QString str)
+{
+  if (str == "square") return Qt::SquareCap;
+  if (str == "flat") return Qt::FlatCap;
+  if (str == "round") return Qt::RoundCap;
+  return Qt::SquareCap;
+}
+
+
 QString QgsSymbolLayerV2Utils::encodeBrushStyle(Qt::BrushStyle style)
 {
   switch (style)

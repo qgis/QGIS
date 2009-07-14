@@ -18,4 +18,24 @@ protected:
     
 };
 
+class QgsPenJoinStyleComboBox : public QComboBox
+{
+public:
+  QgsPenJoinStyleComboBox(QWidget* parent = NULL);
+
+  Qt::PenJoinStyle penJoinStyle() const;
+
+  void setPenJoinStyle(Qt::PenJoinStyle style);
+};
+
+class QgsPenCapStyleComboBox : public QComboBox
+{
+public:
+  QgsPenCapStyleComboBox(QWidget* parent = NULL);
+
+  Qt::PenCapStyle penCapStyle() const;
+
+  void setPenCapStyle(Qt::PenCapStyle style);
+};
+
 #endif

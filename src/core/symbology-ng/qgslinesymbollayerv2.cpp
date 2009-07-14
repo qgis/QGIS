@@ -9,7 +9,7 @@
 #include <cmath>
 
 QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2(QColor color, double width, Qt::PenStyle penStyle)
- : mPenStyle(penStyle), mOffset(0)
+ : mPenStyle(penStyle), mPenJoinStyle(DEFAULT_SIMPLELINE_JOINSTYLE), mPenCapStyle(DEFAULT_SIMPLELINE_CAPSTYLE), mOffset(0)
 {
   mColor = color;
   mWidth = width;
@@ -21,17 +21,24 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create(const QgsStringMap& props)
   QColor color = DEFAULT_SIMPLELINE_COLOR;
   double width = DEFAULT_SIMPLELINE_WIDTH;
   Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE;
-  
+  Qt::PenJoinStyle joinStyle = DEFAULT_SIMPLELINE_JOINSTYLE;
+  Qt::PenCapStyle capStyle = DEFAULT_SIMPLELINE_CAPSTYLE;
+
   if (props.contains("color"))
     color = QgsSymbolLayerV2Utils::decodeColor(props["color"]);
   if (props.contains("width"))
     width = props["width"].toDouble();
   if (props.contains("penstyle"))
     penStyle = QgsSymbolLayerV2Utils::decodePenStyle(props["penstyle"]);
+
   
   QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2(color, width, penStyle);
   if (props.contains("offset"))
     l->setOffset( props["offset"].toDouble() );
+  if (props.contains("joinstyle"))
+    l->setPenJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle(props["joinstyle"]) );
+  if (props.contains("capstyle"))
+    l->setPenCapStyle( QgsSymbolLayerV2Utils::decodePenCapStyle(props["capstyle"]) );
   return l;
 }
 	
@@ -47,6 +54,8 @@ void QgsSimpleLineSymbolLayerV2::startRender(QgsRenderContext& context)
   mPen.setColor(mColor);
   mPen.setWidth(mWidth);
   mPen.setStyle(mPenStyle);
+  mPen.setJoinStyle(mPenJoinStyle);
+  mPen.setCapStyle(mPenCapStyle);
 }
 	
 void QgsSimpleLineSymbolLayerV2::stopRender(QgsRenderContext& context)
@@ -72,6 +81,8 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
   map["color"] = QgsSymbolLayerV2Utils::encodeColor(mColor);
   map["width"] = QString::number(mWidth);
   map["penstyle"] = QgsSymbolLayerV2Utils::encodePenStyle(mPenStyle);
+  map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle(mPenJoinStyle);
+  map["capstyle"] = QgsSymbolLayerV2Utils::encodePenCapStyle(mPenCapStyle);
   map["offset"] = QString::number(mOffset);
   return map;
 }
@@ -80,6 +91,8 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
 {
   QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2(mColor, mWidth, mPenStyle);
   l->setOffset(mOffset);
+  l->setPenJoinStyle(mPenJoinStyle);
+  l->setPenCapStyle(mPenCapStyle);
   return l;
 }
 

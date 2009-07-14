@@ -1,6 +1,8 @@
 
 #include "qgspenstylecombobox.h"
 
+#include "qgsapplication.h"
+
 #include <QList>
 #include <QPair>
 
@@ -53,4 +55,52 @@ QIcon QgsPenStyleComboBox::iconForPen(Qt::PenStyle style)
   p.end();
   
   return QIcon(pix);
+}
+
+
+/////////
+// join
+
+QgsPenJoinStyleComboBox::QgsPenJoinStyleComboBox(QWidget* parent)
+  : QComboBox(parent)
+{
+  QString path = QgsApplication::defaultThemePath();
+  addItem(QIcon(path + "/join_bevel.png"), tr("Bevel"), QVariant(Qt::BevelJoin));
+  addItem(QIcon(path + "/join_miter.png"), tr("Miter"), QVariant(Qt::MiterJoin));
+  addItem(QIcon(path + "/join_round.png"), tr("Round"), QVariant(Qt::RoundJoin));
+}
+
+Qt::PenJoinStyle QgsPenJoinStyleComboBox::penJoinStyle() const
+{
+  return (Qt::PenJoinStyle) itemData(currentIndex()).toInt();
+}
+
+void QgsPenJoinStyleComboBox::setPenJoinStyle(Qt::PenJoinStyle style)
+{
+  int idx = findData(QVariant(style));
+  setCurrentIndex( idx == -1 ? 0 : idx );
+}
+
+
+/////////
+// cap
+
+QgsPenCapStyleComboBox::QgsPenCapStyleComboBox(QWidget* parent)
+  : QComboBox(parent)
+{
+  QString path = QgsApplication::defaultThemePath();
+  addItem(QIcon(path + "/cap_square.png"), tr("Square"), QVariant(Qt::SquareCap));
+  addItem(QIcon(path + "/cap_flat.png"), tr("Flat"), QVariant(Qt::FlatCap));
+  addItem(QIcon(path + "/cap_round.png"), tr("Round"), QVariant(Qt::RoundCap));
+}
+
+Qt::PenCapStyle QgsPenCapStyleComboBox::penCapStyle() const
+{
+  return (Qt::PenCapStyle) itemData(currentIndex()).toInt();
+}
+
+void QgsPenCapStyleComboBox::setPenCapStyle(Qt::PenCapStyle style)
+{
+  int idx = findData(QVariant(style));
+  setCurrentIndex( idx == -1 ? 0 : idx );
 }

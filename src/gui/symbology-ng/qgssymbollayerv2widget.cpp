@@ -36,6 +36,9 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget(QWidget* pare
   connect(btnChangeColor, SIGNAL(clicked()), this, SLOT(colorChanged()));
   connect(cboPenStyle, SIGNAL(currentIndexChanged(int)), this, SLOT(penStyleChanged()));
   connect(spinOffset, SIGNAL(valueChanged(double)), this, SLOT(offsetChanged()));
+  connect(cboCapStyle, SIGNAL(currentIndexChanged(int)), this, SLOT(penStyleChanged()));
+  connect(cboJoinStyle, SIGNAL(currentIndexChanged(int)), this, SLOT(penStyleChanged()));
+
 }
 
 void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
@@ -51,6 +54,8 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
   updateColorButton(btnChangeColor, mLayer->color());
   cboPenStyle->setPenStyle(mLayer->penStyle());
   spinOffset->setValue(mLayer->offset());
+  cboJoinStyle->setPenJoinStyle(mLayer->penJoinStyle());
+  cboCapStyle->setPenCapStyle(mLayer->penCapStyle());
 }
 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2Widget::symbolLayer()
@@ -77,6 +82,8 @@ void QgsSimpleLineSymbolLayerV2Widget::colorChanged()
 void QgsSimpleLineSymbolLayerV2Widget::penStyleChanged()
 {
   mLayer->setPenStyle(cboPenStyle->penStyle());
+  mLayer->setPenJoinStyle(cboJoinStyle->penJoinStyle());
+  mLayer->setPenCapStyle(cboCapStyle->penCapStyle());
   emit changed();
 }
 

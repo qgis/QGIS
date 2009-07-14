@@ -9,6 +9,8 @@
 #define DEFAULT_SIMPLELINE_COLOR     QColor(0,0,0)
 #define DEFAULT_SIMPLELINE_WIDTH     1
 #define DEFAULT_SIMPLELINE_PENSTYLE  Qt::SolidLine
+#define DEFAULT_SIMPLELINE_JOINSTYLE Qt::BevelJoin
+#define DEFAULT_SIMPLELINE_CAPSTYLE  Qt::SquareCap
 
 
 class QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
@@ -17,7 +19,7 @@ public:
 	QgsSimpleLineSymbolLayerV2(QColor color = DEFAULT_SIMPLELINE_COLOR,
                              double width = DEFAULT_SIMPLELINE_WIDTH,
                              Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE);
-	
+
 	// static stuff
 	
 	static QgsSymbolLayerV2* create(const QgsStringMap& properties = QgsStringMap());
@@ -41,11 +43,19 @@ public:
   Qt::PenStyle penStyle() const { return mPenStyle; }
   void setPenStyle(Qt::PenStyle style) { mPenStyle = style; }
 
+  Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
+  void setPenJoinStyle(Qt::PenJoinStyle style) { mPenJoinStyle = style; }
+
+  Qt::PenCapStyle penCapStyle() const { return mPenCapStyle; }
+  void setPenCapStyle(Qt::PenCapStyle style) { mPenCapStyle = style; }
+
   double offset() const { return mOffset; }
   void setOffset(double offset) { mOffset = offset; }
 	
 protected:
 	Qt::PenStyle mPenStyle;
+  Qt::PenJoinStyle mPenJoinStyle;
+  Qt::PenCapStyle mPenCapStyle;
 	QPen mPen;
   double mOffset;
 };

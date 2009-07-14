@@ -28,6 +28,12 @@ public:
   static QString encodePenStyle(Qt::PenStyle style);
   static Qt::PenStyle decodePenStyle(QString str);
 
+  static QString encodePenJoinStyle(Qt::PenJoinStyle style);
+  static Qt::PenJoinStyle decodePenJoinStyle(QString str);
+
+  static QString encodePenCapStyle(Qt::PenCapStyle style);
+  static Qt::PenCapStyle decodePenCapStyle(QString str);
+
   static QString encodeBrushStyle(Qt::BrushStyle style);
   static Qt::BrushStyle decodeBrushStyle(QString str);
 
