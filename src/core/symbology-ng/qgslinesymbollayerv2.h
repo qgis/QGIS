@@ -15,7 +15,7 @@ class QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 {
 public:
 	QgsSimpleLineSymbolLayerV2(QColor color = DEFAULT_SIMPLELINE_COLOR,
-                             int width = DEFAULT_SIMPLELINE_WIDTH,
+                             double width = DEFAULT_SIMPLELINE_WIDTH,
                              Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE);
 	
 	// static stuff

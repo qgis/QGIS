@@ -106,8 +106,8 @@ class QgsLineSymbolV2 : public QgsSymbolV2
 public:
 	QgsLineSymbolV2(QgsSymbolLayerV2List layers = QgsSymbolLayerV2List());
 	
-	void setWidth(int width);
-	int width();
+  void setWidth(double width);
+  double width();
 	
   void renderPolyline(const QPolygonF& points, QgsRenderContext& context, int layer = -1);
 	

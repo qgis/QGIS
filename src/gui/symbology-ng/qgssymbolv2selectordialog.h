@@ -28,8 +28,8 @@ public slots:
   void setSymbolFromStyle(const QModelIndex & index);
   void setSymbolColor();
   void setMarkerAngle(double angle);
-  void setMarkerSize(int size);
-  void setLineWidth(int width);
+  void setMarkerSize(double size);
+  void setLineWidth(double width);
 
 protected:
   QgsStyleV2* mStyle;

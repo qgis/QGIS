@@ -32,7 +32,7 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget(QWidget* pare
   
   setupUi(this);
   
-  connect(spinWidth, SIGNAL(valueChanged(int)), this, SLOT(penWidthChanged()));
+  connect(spinWidth, SIGNAL(valueChanged(double)), this, SLOT(penWidthChanged()));
   connect(btnChangeColor, SIGNAL(clicked()), this, SLOT(colorChanged()));
   connect(cboPenStyle, SIGNAL(currentIndexChanged(int)), this, SLOT(penStyleChanged()));
   connect(spinOffset, SIGNAL(valueChanged(double)), this, SLOT(offsetChanged()));
@@ -114,7 +114,7 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget(QWidget* 
   connect(lstNames, SIGNAL(currentRowChanged(int)), this, SLOT(setName()));
   connect(btnChangeColorBorder, SIGNAL(clicked()), this, SLOT(setColorBorder()));
   connect(btnChangeColorFill, SIGNAL(clicked()), this, SLOT(setColorFill()));
-  connect(spinSize, SIGNAL(valueChanged(int)), this, SLOT(setSize()));
+  connect(spinSize, SIGNAL(valueChanged(double)), this, SLOT(setSize()));
   connect(spinAngle, SIGNAL(valueChanged(double)), this, SLOT(setAngle()));
   connect(spinOffsetX, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));
   connect(spinOffsetY, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));
@@ -270,7 +270,7 @@ QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget(QWidget* pare
   
   setupUi(this);
   
-  connect(spinInterval, SIGNAL(valueChanged(int)), this, SLOT(setInterval(int)));
+  connect(spinInterval, SIGNAL(valueChanged(double)), this, SLOT(setInterval(double)));
   connect(btnChangeMarker, SIGNAL(clicked()), this, SLOT(setMarker()));
   connect(chkRotateMarker, SIGNAL(clicked()), this, SLOT(setRotate()));
   connect(spinOffset, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));
@@ -296,7 +296,7 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2Widget::symbolLayer()
   return mLayer;
 }
 
-void QgsMarkerLineSymbolLayerV2Widget::setInterval(int val)
+void QgsMarkerLineSymbolLayerV2Widget::setInterval(double val)
 {
   mLayer->setInterval(val);
   emit changed();
@@ -345,7 +345,7 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget(QWidget* parent
   populateList();
   
   connect(viewImages->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(setName(const QModelIndex&)));
-  connect(spinSize, SIGNAL(valueChanged(int)), this, SLOT(setSize()));
+  connect(spinSize, SIGNAL(valueChanged(double)), this, SLOT(setSize()));
   connect(spinAngle, SIGNAL(valueChanged(double)), this, SLOT(setAngle()));
   connect(spinOffsetX, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));
   connect(spinOffsetY, SIGNAL(valueChanged(double)), this, SLOT(setOffset()));

@@ -95,7 +95,7 @@
    <item row="0" column="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pageSingleSymbol">
       <layout class="QGridLayout">
@@ -394,7 +394,11 @@
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="viewGraduated"/>
+        <widget class="QTreeView" name="viewGraduated">
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout">

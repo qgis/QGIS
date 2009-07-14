@@ -89,15 +89,15 @@ class QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
 public:
 	virtual void renderPolyline(const QPolygonF& points, QgsRenderContext& context) = 0;
 	
-  void setWidth(int width) { mWidth = width; }
-  int width() const { return mWidth; }
+  void setWidth(double width) { mWidth = width; }
+  double width() const { return mWidth; }
 		
   void drawPreviewIcon(QPainter* painter, QSize size);
   
 protected:
   QgsLineSymbolLayerV2(bool locked = false);
   
-  int mWidth;
+  double mWidth;
 };
 
 class QgsFillSymbolLayerV2 : public QgsSymbolLayerV2

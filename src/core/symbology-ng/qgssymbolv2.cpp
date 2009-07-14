@@ -252,13 +252,21 @@ double QgsMarkerSymbolV2::angle()
   return 0;
 }
 
-void QgsMarkerSymbolV2::setSize(double size)
+void QgsMarkerSymbolV2::setSize(double s)
 {
-  // TODO: proportionally set size of layers
+  double origSize = size();
+
   for (QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it)
   {
     QgsMarkerSymbolLayerV2* layer = (QgsMarkerSymbolLayerV2*) *it;
-    layer->setSize(size);
+    if (layer->size() == origSize)
+      layer->setSize(s);
+    else
+    {
+      // proportionally scale size
+      if (origSize != 0)
+        layer->setSize(layer->size() * s / origSize);
+    }
   }
 }
 
@@ -308,24 +316,34 @@ QgsLineSymbolV2::QgsLineSymbolV2(QgsSymbolLayerV2List layers)
     mLayers.append(new QgsSimpleLineSymbolLayerV2());
 }
 
-void QgsLineSymbolV2::setWidth(int width)
+void QgsLineSymbolV2::setWidth(double w)
 {
-  // TODO: proportionally set width of layers
+  double origWidth = width();
+
   for (QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it)
   {
     QgsLineSymbolLayerV2* layer = (QgsLineSymbolLayerV2*) *it;
-    layer->setWidth(width);
+    if (layer->width() == origWidth)
+    {
+      layer->setWidth(w);
+    }
+    else
+    {
+      // proportionally scale the width
+      if (origWidth != 0)
+        layer->setWidth( layer->width() * w / origWidth );
+    }
   }
 }
 
-int QgsLineSymbolV2::width()
+double QgsLineSymbolV2::width()
 {
-  int maxWidth = 0;
+  double maxWidth = 0;
   for (QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it)
   {
     const QgsLineSymbolLayerV2* layer = (const QgsLineSymbolLayerV2*) *it;
-    int width = layer->width();
-    if (maxWidth > width)
+    double width = layer->width();
+    if (width > maxWidth)
       maxWidth = width;
   }
   return maxWidth;

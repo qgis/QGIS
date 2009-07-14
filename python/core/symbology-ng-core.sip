@@ -315,8 +315,8 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
 public:
   virtual void renderPolyline(const QPolygonF& points, QgsRenderContext& context) = 0;
 	
-  void setWidth(int width);
-  int width() const;
+  void setWidth(double width);
+  double width() const;
 		
   void drawPreviewIcon(QPainter* painter, QSize size);
   
@@ -450,8 +450,8 @@ class QgsLineSymbolV2 : QgsSymbolV2
 public:
 	QgsLineSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
 	
-	void setWidth(int width);
-	int width();
+  void setWidth(double width);
+  double width();
 	
   void renderPolyline(const QPolygonF& points, QgsRenderContext& context, int layer = -1);
 	

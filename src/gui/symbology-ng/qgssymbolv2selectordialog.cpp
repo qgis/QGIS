@@ -36,8 +36,8 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsSty
   
   connect(btnSetColor, SIGNAL(clicked()), this, SLOT(setSymbolColor()));
   connect(spinAngle, SIGNAL(valueChanged(double)), this, SLOT(setMarkerAngle(double)));
-  connect(spinSize, SIGNAL(valueChanged(int)), this, SLOT(setMarkerSize(int)));
-  connect(spinWidth, SIGNAL(valueChanged(int)), this, SLOT(setLineWidth(int)));
+  connect(spinSize, SIGNAL(valueChanged(double)), this, SLOT(setMarkerSize(double)));
+  connect(spinWidth, SIGNAL(valueChanged(double)), this, SLOT(setLineWidth(double)));
 
 }
 
@@ -154,7 +154,7 @@ void QgsSymbolV2SelectorDialog::setMarkerAngle(double angle)
   updateSymbolPreview();
 }
 
-void QgsSymbolV2SelectorDialog::setMarkerSize(int size)
+void QgsSymbolV2SelectorDialog::setMarkerSize(double size)
 {
   QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>(mSymbol);
   if (markerSymbol->size() == size)
@@ -163,7 +163,7 @@ void QgsSymbolV2SelectorDialog::setMarkerSize(int size)
   updateSymbolPreview();
 }
 
-void QgsSymbolV2SelectorDialog::setLineWidth(int width)
+void QgsSymbolV2SelectorDialog::setLineWidth(double width)
 {
   QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>(mSymbol);
   if (lineSymbol->width() == width)

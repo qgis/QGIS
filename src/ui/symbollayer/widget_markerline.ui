@@ -53,13 +53,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QSpinBox" name="spinInterval">
-       <property name="minimum">
-        <number>1</number>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="0" colspan="2">
       <widget class="QCheckBox" name="chkRotateMarker">
        <property name="text">
@@ -76,8 +69,21 @@
      </item>
      <item row="3" column="1">
       <widget class="QDoubleSpinBox" name="spinOffset">
+       <property name="decimals">
+        <number>1</number>
+       </property>
        <property name="minimum">
-        <double>-99.989999999999995</double>
+        <double>-100.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="spinInterval">
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
        </property>
       </widget>
      </item>

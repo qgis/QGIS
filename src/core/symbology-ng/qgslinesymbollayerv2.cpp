@@ -8,7 +8,7 @@
 
 #include <cmath>
 
-QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2(QColor color, int width, Qt::PenStyle penStyle)
+QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2(QColor color, double width, Qt::PenStyle penStyle)
  : mPenStyle(penStyle), mOffset(0)
 {
   mColor = color;
@@ -19,13 +19,13 @@ QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2(QColor color, int width, 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create(const QgsStringMap& props)
 {
   QColor color = DEFAULT_SIMPLELINE_COLOR;
-  int width = DEFAULT_SIMPLELINE_WIDTH;
+  double width = DEFAULT_SIMPLELINE_WIDTH;
   Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE;
   
   if (props.contains("color"))
     color = QgsSymbolLayerV2Utils::decodeColor(props["color"]);
   if (props.contains("width"))
-    width = props["width"].toInt();
+    width = props["width"].toDouble();
   if (props.contains("penstyle"))
     penStyle = QgsSymbolLayerV2Utils::decodePenStyle(props["penstyle"]);
   

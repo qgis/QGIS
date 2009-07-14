@@ -131,7 +131,7 @@ class QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private 
     
   public slots:
     
-    void setInterval(int val);
+    void setInterval(double val);
     void setMarker();
     void setRotate();
     void setOffset();
