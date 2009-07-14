@@ -61,6 +61,8 @@ public:
 	virtual QList<int> usedAttributes()=0;
 	
 	virtual ~QgsFeatureRendererV2() {}
+
+  virtual QgsFeatureRendererV2* clone()=0;
 	
   void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1);
 
@@ -100,6 +102,8 @@ public:
   void setSymbol(QgsSymbolV2* s);
 
   virtual QString dump();
+
+  virtual QgsFeatureRendererV2* clone();
 
 protected:
 	QgsSymbolV2* mSymbol;
@@ -154,6 +158,8 @@ public:
   
   virtual QString dump();
 
+  virtual QgsFeatureRendererV2* clone();
+
   const QgsCategoryList& categories() { return mCategories; }
   
   //! return index of category with specified value (-1 if not found)
@@ -200,6 +206,9 @@ public:
   void setSymbol(QgsSymbolV2* s);
   void setLabel(QString label);
 
+  // debugging
+  QString dump();
+
 protected:
   double mLowerValue, mUpperValue;
   QgsSymbolV2* mSymbol;
@@ -225,7 +234,11 @@ public:
   virtual void stopRender(QgsRenderContext& context);
 	
   virtual QList<int> usedAttributes();
-  
+
+  virtual QString dump();
+
+  virtual QgsFeatureRendererV2* clone();
+
   int attributeIndex() const { return mAttrNum; }
   void setAttributeIndex(int attr) { mAttrNum = attr; }
   

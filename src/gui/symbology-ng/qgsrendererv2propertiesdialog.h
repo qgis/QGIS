@@ -7,6 +7,8 @@
 class QgsVectorLayer;
 class QgsStyleV2;
 class QgsSymbolV2;
+
+class QgsFeatureRendererV2;
 class QgsSingleSymbolRendererV2;
 class QgsCategorizedSymbolRendererV2;
 class QgsGraduatedSymbolRendererV2;
@@ -35,6 +37,8 @@ public slots:
   void rangesDoubleClicked(const QModelIndex & idx);
 
   void symbolLevels();
+
+  void onOK();
 
 protected:
   
@@ -73,6 +77,9 @@ protected:
   QgsCategorizedSymbolRendererV2* rendererCategorized();
   QgsGraduatedSymbolRendererV2* rendererGraduated();
   
+  //! temporary renderer in current dialog
+  QgsFeatureRendererV2* mRenderer;
+
   QgsVectorLayer* mLayer;
   
   QgsStyleV2* mStyle;

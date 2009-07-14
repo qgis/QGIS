@@ -241,7 +241,6 @@ QString QgsFeatureRendererV2::dump()
   return "UNKNOWN RENDERER\n";
 }
 
-
 ///////////////////
 
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2(QgsSymbolV2* symbol)
@@ -291,6 +290,12 @@ QString QgsSingleSymbolRendererV2::dump()
   return QString("SINGLE: %1").arg(mSymbol->dump());
 }
 
+QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone()
+{
+  QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( mSymbol->clone() );
+  r->setSymbolLevels( symbolLevels() );
+  return r;
+}
 
 ///////////////////
 
@@ -480,6 +485,13 @@ QString QgsCategorizedSymbolRendererV2::dump()
   return s;
 }
 
+QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
+{
+  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( mAttrNum, mCategories );
+  r->setSymbolLevels( symbolLevels() );
+  return r;
+}
+
 
 /////////////////////////
 // graduated
@@ -534,6 +546,10 @@ void QgsRendererRangeV2::setLabel(QString label)
   mLabel = label;
 }
 
+QString QgsRendererRangeV2::dump()
+{
+  return QString("%1 - %2::%3::%4\n").arg(mLowerValue).arg(mUpperValue).arg(mLabel).arg(mSymbol->dump());
+}
 
 ///////////
 
@@ -610,6 +626,21 @@ bool QgsGraduatedSymbolRendererV2::updateRangeLabel(int rangeIndex, QString labe
     return false;
   mRanges[rangeIndex].setLabel(label);
   return true;
+}
+
+QString QgsGraduatedSymbolRendererV2::dump()
+{
+  QString s = QString("GRADUATED: idx %1\n").arg(mAttrNum);
+  for (int i=0; i<mRanges.count();i++)
+    s += mRanges[i].dump();
+  return s;
+}
+
+QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
+{
+  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( mAttrNum, mRanges );
+  r->setSymbolLevels( symbolLevels() );
+  return r;
 }
 
 

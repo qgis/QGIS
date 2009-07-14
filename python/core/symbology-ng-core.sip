@@ -53,7 +53,8 @@ public:
 	
 	virtual QString dump();
 
-	
+  virtual QgsFeatureRendererV2* clone()=0 /Factory/;
+
   void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1);
 
   QgsSymbolV2LevelOrder& symbolLevels();
@@ -88,6 +89,10 @@ public:
 
   QgsSymbolV2* symbol() const;
   void setSymbol(QgsSymbolV2* s /Transfer/);
+
+  virtual QString dump();
+
+  virtual QgsFeatureRendererV2* clone() /Factory/;
 };
 
 //////////
@@ -114,6 +119,7 @@ public:
   void setSymbol(QgsSymbolV2* s /Transfer/);
   void setLabel(QString label);
   
+  QString dump();
 };
 
 typedef QList<QgsRendererCategoryV2> QgsCategoryList;
@@ -138,6 +144,10 @@ public:
 	
 	virtual QList<int> usedAttributes();
   
+  virtual QString dump();
+
+  virtual QgsFeatureRendererV2* clone() /Factory/;
+
   const QgsCategoryList& categories();
   
   //! return index of category with specified value (-1 if not found)
@@ -179,6 +189,8 @@ public:
 
   void setSymbol(QgsSymbolV2* s /Transfer/);
   void setLabel(QString label);
+
+  QString dump();
 };
 
 typedef QList<QgsRendererRangeV2> QgsRangeList;
@@ -201,6 +213,10 @@ public:
   virtual void stopRender(QgsRenderContext& context);
 
   virtual QList<int> usedAttributes();
+
+  virtual QString dump();
+
+  virtual QgsFeatureRendererV2* clone() /Factory/;
 
   int attributeIndex() const;
   void setAttributeIndex(int attr);

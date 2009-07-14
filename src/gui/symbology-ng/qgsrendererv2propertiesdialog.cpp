@@ -28,8 +28,12 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
     mLayer->setRendererV2(new QgsSingleSymbolRendererV2( createDefaultSymbol() ));
     mLayer->setUsingRendererV2(true);
   }
+
+  mRenderer = mLayer->rendererV2()->clone();
   
   setupUi(this);
+
+  connect(buttonBox, SIGNAL(accepted()), this, SLOT(onOK()));
 
   connect(btnSymbolLevels, SIGNAL(clicked()), this, SLOT(symbolLevels()));
 
@@ -83,28 +87,34 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
 
 QgsRendererV2PropertiesDialog::~QgsRendererV2PropertiesDialog()
 {
-  //delete mGraduatedSymbol;
+  // delete the temporary renderer (if exists)
+  delete mRenderer;
+}
+
+void QgsRendererV2PropertiesDialog::onOK()
+{
+  mLayer->setRendererV2(mRenderer);
+  mRenderer = NULL;
+
+  accept();
 }
 
 QgsSingleSymbolRendererV2* QgsRendererV2PropertiesDialog::rendererSingle()
 {
-  QgsFeatureRendererV2* r = mLayer->rendererV2();
-  Q_ASSERT(r != NULL && r->type() == QgsFeatureRendererV2::RendererSingleSymbol);
-  return static_cast<QgsSingleSymbolRendererV2*>(r);
+  Q_ASSERT(mRenderer != NULL && mRenderer->type() == QgsFeatureRendererV2::RendererSingleSymbol);
+  return static_cast<QgsSingleSymbolRendererV2*>(mRenderer);
 }
 
 QgsCategorizedSymbolRendererV2* QgsRendererV2PropertiesDialog::rendererCategorized()
 {
-  QgsFeatureRendererV2* r = mLayer->rendererV2();
-  Q_ASSERT(r != NULL && r->type() == QgsFeatureRendererV2::RendererCategorizedSymbol);
-  return static_cast<QgsCategorizedSymbolRendererV2*>(r);
+  Q_ASSERT(mRenderer != NULL && mRenderer->type() == QgsFeatureRendererV2::RendererCategorizedSymbol);
+  return static_cast<QgsCategorizedSymbolRendererV2*>(mRenderer);
 }
 
 QgsGraduatedSymbolRendererV2* QgsRendererV2PropertiesDialog::rendererGraduated()
 {
-  QgsFeatureRendererV2* r = mLayer->rendererV2();
-  Q_ASSERT(r != NULL && r->type() == QgsFeatureRendererV2::RendererGraduatedSymbol);
-  return static_cast<QgsGraduatedSymbolRendererV2*>(r);
+  Q_ASSERT(mRenderer != NULL && mRenderer->type() == QgsFeatureRendererV2::RendererGraduatedSymbol);
+  return static_cast<QgsGraduatedSymbolRendererV2*>(mRenderer);
 }
 
 void QgsRendererV2PropertiesDialog::changeSingleSymbol()
@@ -125,12 +135,14 @@ void QgsRendererV2PropertiesDialog::updateSingleSymbolIcon()
 
 void QgsRendererV2PropertiesDialog::updateRenderer()
 {
+  delete mRenderer;
+
   if (radSingleSymbol->isChecked())
-    mLayer->setRendererV2( new QgsSingleSymbolRendererV2( createDefaultSymbol() ) );
+    mRenderer = new QgsSingleSymbolRendererV2( createDefaultSymbol() );
   else if (radCategorized->isChecked())
-    mLayer->setRendererV2( new QgsCategorizedSymbolRendererV2(-1, QgsCategoryList()) );
+    mRenderer = new QgsCategorizedSymbolRendererV2(-1, QgsCategoryList());
   else if (radGraduated->isChecked())
-    mLayer->setRendererV2( new QgsGraduatedSymbolRendererV2(-1, QgsRangeList()) );
+    mRenderer = new QgsGraduatedSymbolRendererV2(-1, QgsRangeList());
   else
     Q_ASSERT(false);
     
@@ -139,7 +151,7 @@ void QgsRendererV2PropertiesDialog::updateRenderer()
 
 void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
 {
-  switch (mLayer->rendererV2()->type())
+  switch (mRenderer->type())
   {
     case QgsFeatureRendererV2::RendererSingleSymbol:
       radSingleSymbol->setChecked(true);
@@ -354,7 +366,8 @@ void QgsRendererV2PropertiesDialog::addCategories()
   */
       
   // recreate renderer
-  mLayer->setRendererV2(new QgsCategorizedSymbolRendererV2(idx, cats));
+  delete mRenderer;
+  mRenderer = new QgsCategorizedSymbolRendererV2(idx, cats);
   
   populateCategories();
 }
@@ -443,7 +456,8 @@ void QgsRendererV2PropertiesDialog::classifyGraduated()
       mLayer, idx, classes, mode, mGraduatedSymbol, ramp);
   r->setMode(mode);
   
-  mLayer->setRendererV2(r);
+  delete mRenderer;
+  mRenderer = r;
   
   populateRanges();
 }
@@ -536,7 +550,7 @@ void QgsRendererV2PropertiesDialog::symbolLevels()
 {
   QgsSymbolV2List symbols;
 
-  switch (mLayer->rendererV2()->type())
+  switch (mRenderer->type())
   {
     case QgsFeatureRendererV2::RendererSingleSymbol:
     {
@@ -575,10 +589,9 @@ void QgsRendererV2PropertiesDialog::symbolLevels()
       break;
   }
 
-  // TODO: get symbol level order from layer!
-  QgsSymbolLevelsV2Dialog dlg(symbols, mLayer->rendererV2()->symbolLevels(), this);
+  QgsSymbolLevelsV2Dialog dlg(symbols, mRenderer->symbolLevels(), this);
   if (dlg.exec())
   {
-    mLayer->rendererV2()->setSymbolLevels( dlg.levels() );
+    mRenderer->setSymbolLevels( dlg.levels() );
   }
 }
