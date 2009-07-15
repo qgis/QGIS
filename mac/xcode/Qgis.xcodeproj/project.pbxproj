@@ -547,7 +547,7 @@
 		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
 		72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 72267A500F9A1D3100010C18 /* mActionZoomNext.png */; };
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
-		723FD06B0FBCBA3500EFA55D /* qgis.db.connect-login.pg.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 723FD0670FBCB94600EFA55D /* qgis.db.connect-login.pg.py */; };
+		723FD06B0FBCBA3500EFA55D /* db.connect-login.pg.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
 		7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */; };
 		7256F2FB0F4148FC0022BE1F /* Christoph_Spoerri.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE010F39E5D9003DC336 /* Christoph_Spoerri.jpg */; };
@@ -1399,12 +1399,12 @@
 		72A56DEC0F3CFEA400BA32A1 /* getInsertions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7E00F39E57B003DC336 /* getInsertions.cpp */; };
 		72A56DED0F3CFEAC00BA32A1 /* dl_dxf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7D80F39E57B003DC336 /* dl_dxf.cpp */; };
 		72A56DEE0F3CFEAE00BA32A1 /* dl_writer_ascii.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7DE0F39E57B003DC336 /* dl_writer_ascii.cpp */; };
-		72A6A45A1005992500855EA6 /* qgis.r.external.all.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 72A6A4591005990500855EA6 /* qgis.r.external.all.py */; };
+		72A6A45A1005992500855EA6 /* r.external.all.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 72A6A4591005990500855EA6 /* r.external.all.py */; };
 		72A892CC0FAF7B8500108152 /* qgsconfigureshortcutsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CA0FAF7B6100108152 /* qgsconfigureshortcutsdialog.cpp */; };
 		72A892CD0FAF7B8500108152 /* qgsshortcutsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */; };
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
 		72DBAB500FFD744400E587DC /* DONORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 72FDF1640FB4720400580178 /* DONORS */; };
-		72E4DF0D0FE00FB600D3505D /* qgis.v.out.ogr.pg.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 72E4DF0C0FE00FAD00D3505D /* qgis.v.out.ogr.pg.py */; };
+		72E4DF0D0FE00FB600D3505D /* v.out.ogr.pg.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 72E4DF0C0FE00FAD00D3505D /* v.out.ogr.pg.py */; };
 		72E707040F42691B00142011 /* __init__.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 7209ED860F39E5D9003DC336 /* __init__.py */; };
 		72E7070A0F426A5C00142011 /* __init__.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD30F39E5D9003DC336 /* __init__.py */; };
 		72E7070B0F426A5C00142011 /* mapserver_export.png in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD50F39E5D9003DC336 /* mapserver_export.png */; };
@@ -2634,9 +2634,9 @@
 			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/scripts";
 			dstSubfolderSpec = 0;
 			files = (
-				723FD06B0FBCBA3500EFA55D /* qgis.db.connect-login.pg.py in Copy - scripts */,
-				72A6A45A1005992500855EA6 /* qgis.r.external.all.py in Copy - scripts */,
-				72E4DF0D0FE00FB600D3505D /* qgis.v.out.ogr.pg.py in Copy - scripts */,
+				723FD06B0FBCBA3500EFA55D /* db.connect-login.pg.py in Copy - scripts */,
+				72A6A45A1005992500855EA6 /* r.external.all.py in Copy - scripts */,
+				72E4DF0D0FE00FB600D3505D /* v.out.ogr.pg.py in Copy - scripts */,
 			);
 			name = "Copy - scripts";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5752,7 +5752,8 @@
 		723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspalgeometry.cpp; path = ../../src/core/qgspalgeometry.cpp; sourceTree = SOURCE_ROOT; };
 		723FD05E0FBCB85D00EFA55D /* qgspalgeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspalgeometry.h; path = ../../src/core/qgspalgeometry.h; sourceTree = SOURCE_ROOT; };
 		723FD0660FBCB94600EFA55D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/scripts/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		723FD0670FBCB94600EFA55D /* qgis.db.connect-login.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "qgis.db.connect-login.pg.py"; path = "../../src/plugins/grass/scripts/qgis.db.connect-login.pg.py"; sourceTree = SOURCE_ROOT; };
+		723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "db.connect-login.pg.py"; path = "../../src/plugins/grass/scripts/db.connect-login.pg.py"; sourceTree = SOURCE_ROOT; };
+		7249E1C2100E0E8700104B74 /* qgis_icon_new.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_icon_new.svg; path = ../../images/icons/qgis_icon_new.svg; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
 		7256F2DD0F4147890022BE1F /* SPONSORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SPONSORS; path = ../../SPONSORS; sourceTree = SOURCE_ROOT; };
 		7256F2DE0F4147890022BE1F /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../README; sourceTree = SOURCE_ROOT; };
@@ -5974,11 +5975,11 @@
 		729939EC0FE3037600244D1A /* m.proj.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = m.proj.qgm; path = "../../src/plugins/grass/modules-common/m.proj.qgm"; sourceTree = SOURCE_ROOT; };
 		729939ED0FE3037600244D1A /* nviz.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = nviz.1.png; path = "../../src/plugins/grass/modules-common/nviz.1.png"; sourceTree = SOURCE_ROOT; };
 		729939EE0FE3037600244D1A /* nviz.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = nviz.qgm; path = "../../src/plugins/grass/modules-common/nviz.qgm"; sourceTree = SOURCE_ROOT; };
-		729939EF0FE3037600244D1A /* qgis.db.connect-login.pg.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "qgis.db.connect-login.pg.1.png"; path = "../../src/plugins/grass/modules-common/qgis.db.connect-login.pg.1.png"; sourceTree = SOURCE_ROOT; };
-		729939F00FE3037600244D1A /* qgis.db.connect-login.pg.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "qgis.db.connect-login.pg.qgm"; path = "../../src/plugins/grass/modules-common/qgis.db.connect-login.pg.qgm"; sourceTree = SOURCE_ROOT; };
-		729939F10FE3037600244D1A /* qgis.v.out.ogr.pg.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = qgis.v.out.ogr.pg.1.png; path = "../../src/plugins/grass/modules-common/qgis.v.out.ogr.pg.1.png"; sourceTree = SOURCE_ROOT; };
-		729939F20FE3037600244D1A /* qgis.v.out.ogr.pg.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = qgis.v.out.ogr.pg.2.png; path = "../../src/plugins/grass/modules-common/qgis.v.out.ogr.pg.2.png"; sourceTree = SOURCE_ROOT; };
-		729939F30FE3037600244D1A /* qgis.v.out.ogr.pg.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis.v.out.ogr.pg.qgm; path = "../../src/plugins/grass/modules-common/qgis.v.out.ogr.pg.qgm"; sourceTree = SOURCE_ROOT; };
+		729939EF0FE3037600244D1A /* db.connect-login.pg.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "db.connect-login.pg.1.png"; path = "../../src/plugins/grass/modules-6.4/db.connect-login.pg.1.png"; sourceTree = SOURCE_ROOT; };
+		729939F00FE3037600244D1A /* db.connect-login.pg.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "db.connect-login.pg.qgm"; path = "../../src/plugins/grass/modules-6.4/db.connect-login.pg.qgm"; sourceTree = SOURCE_ROOT; };
+		729939F10FE3037600244D1A /* v.out.ogr.pg.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.ogr.pg.1.png; path = "../../src/plugins/grass/modules-6.4/v.out.ogr.pg.1.png"; sourceTree = SOURCE_ROOT; };
+		729939F20FE3037600244D1A /* v.out.ogr.pg.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.ogr.pg.2.png; path = "../../src/plugins/grass/modules-6.4/v.out.ogr.pg.2.png"; sourceTree = SOURCE_ROOT; };
+		729939F30FE3037600244D1A /* v.out.ogr.pg.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.ogr.pg.qgm; path = "../../src/plugins/grass/modules-6.4/v.out.ogr.pg.qgm"; sourceTree = SOURCE_ROOT; };
 		729939F40FE3037600244D1A /* r.average.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.average.1.png; path = "../../src/plugins/grass/modules-common/r.average.1.png"; sourceTree = SOURCE_ROOT; };
 		729939F50FE3037600244D1A /* r.average.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.average.2.png; path = "../../src/plugins/grass/modules-common/r.average.2.png"; sourceTree = SOURCE_ROOT; };
 		729939F60FE3037600244D1A /* r.average.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.average.qgm; path = "../../src/plugins/grass/modules-common/r.average.qgm"; sourceTree = SOURCE_ROOT; };
@@ -6515,9 +6516,9 @@
 		72993C090FE3037800244D1A /* v.out.ogr.mapinfo.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.ogr.mapinfo.1.png; path = "../../src/plugins/grass/modules-common/v.out.ogr.mapinfo.1.png"; sourceTree = SOURCE_ROOT; };
 		72993C0A0FE3037800244D1A /* v.out.ogr.mapinfo.2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.ogr.mapinfo.2.svg; path = "../../src/plugins/grass/modules-common/v.out.ogr.mapinfo.2.svg"; sourceTree = SOURCE_ROOT; };
 		72993C0B0FE3037800244D1A /* v.out.ogr.mapinfo.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.ogr.mapinfo.qgm; path = "../../src/plugins/grass/modules-common/v.out.ogr.mapinfo.qgm"; sourceTree = SOURCE_ROOT; };
-		72993C0C0FE3037800244D1A /* v.out.ogr.postgis.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.ogr.postgis.1.png; path = "../../src/plugins/grass/modules-common/v.out.ogr.postgis.1.png"; sourceTree = SOURCE_ROOT; };
-		72993C0D0FE3037800244D1A /* v.out.ogr.postgis.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.ogr.postgis.2.png; path = "../../src/plugins/grass/modules-common/v.out.ogr.postgis.2.png"; sourceTree = SOURCE_ROOT; };
-		72993C0E0FE3037800244D1A /* v.out.ogr.postgis.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.ogr.postgis.qgm; path = "../../src/plugins/grass/modules-common/v.out.ogr.postgis.qgm"; sourceTree = SOURCE_ROOT; };
+		72993C0C0FE3037800244D1A /* v.out.ogr.postgis.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.ogr.postgis.1.png; path = "../../src/plugins/grass/modules-6.3/v.out.ogr.postgis.1.png"; sourceTree = SOURCE_ROOT; };
+		72993C0D0FE3037800244D1A /* v.out.ogr.postgis.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.ogr.postgis.2.png; path = "../../src/plugins/grass/modules-6.3/v.out.ogr.postgis.2.png"; sourceTree = SOURCE_ROOT; };
+		72993C0E0FE3037800244D1A /* v.out.ogr.postgis.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.ogr.postgis.qgm; path = "../../src/plugins/grass/modules-6.3/v.out.ogr.postgis.qgm"; sourceTree = SOURCE_ROOT; };
 		72993C0F0FE3037800244D1A /* v.out.ogr.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.ogr.qgm; path = "../../src/plugins/grass/modules-common/v.out.ogr.qgm"; sourceTree = SOURCE_ROOT; };
 		72993C100FE3037800244D1A /* v.out.ogr.shape.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.ogr.shape.1.png; path = "../../src/plugins/grass/modules-common/v.out.ogr.shape.1.png"; sourceTree = SOURCE_ROOT; };
 		72993C110FE3037800244D1A /* v.out.ogr.shape.2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.ogr.shape.2.svg; path = "../../src/plugins/grass/modules-common/v.out.ogr.shape.2.svg"; sourceTree = SOURCE_ROOT; };
@@ -6669,14 +6670,91 @@
 		72A56C040F3C887000BA32A1 /* libdxf2shpconverterplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libdxf2shpconverterplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56C0F0F3C887300BA32A1 /* libogrconverterplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libogrconverterplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56DA30F3CCAF700BA32A1 /* libplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		72A6A4591005990500855EA6 /* qgis.r.external.all.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = qgis.r.external.all.py; path = ../../src/plugins/grass/scripts/qgis.r.external.all.py; sourceTree = SOURCE_ROOT; };
-		72A6A45C1005995300855EA6 /* qgis.r.external.all.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis.r.external.all.qgm; path = "../../src/plugins/grass/modules-6.4/qgis.r.external.all.qgm"; sourceTree = SOURCE_ROOT; };
-		72A6A45D1005995300855EA6 /* qgis.r.external.all.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = qgis.r.external.all.1.png; path = "../../src/plugins/grass/modules-6.4/qgis.r.external.all.1.png"; sourceTree = SOURCE_ROOT; };
+		72A6A4591005990500855EA6 /* r.external.all.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = r.external.all.py; path = ../../src/plugins/grass/scripts/r.external.all.py; sourceTree = SOURCE_ROOT; };
+		72A6A45C1005995300855EA6 /* r.external.all.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.external.all.qgm; path = "../../src/plugins/grass/modules-6.4/r.external.all.qgm"; sourceTree = SOURCE_ROOT; };
+		72A6A45D1005995300855EA6 /* r.external.all.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.external.all.1.png; path = "../../src/plugins/grass/modules-6.4/r.external.all.1.png"; sourceTree = SOURCE_ROOT; };
 		72A892C70FAF7B3800108152 /* qgsconfigureshortcutsdialog.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsconfigureshortcutsdialog.ui; path = ../../src/ui/qgsconfigureshortcutsdialog.ui; sourceTree = SOURCE_ROOT; };
 		72A892C80FAF7B6100108152 /* qgsshortcutsmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsshortcutsmanager.h; path = ../../src/app/qgsshortcutsmanager.h; sourceTree = SOURCE_ROOT; };
 		72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsshortcutsmanager.cpp; path = ../../src/app/qgsshortcutsmanager.cpp; sourceTree = SOURCE_ROOT; };
 		72A892CA0FAF7B6100108152 /* qgsconfigureshortcutsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsconfigureshortcutsdialog.cpp; path = ../../src/app/qgsconfigureshortcutsdialog.cpp; sourceTree = SOURCE_ROOT; };
 		72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsconfigureshortcutsdialog.h; path = ../../src/app/qgsconfigureshortcutsdialog.h; sourceTree = SOURCE_ROOT; };
+		72ACC813100E126A00894938 /* r.bilinear.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.bilinear.qgm; path = "../../src/plugins/grass/modules-6.4/r.bilinear.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC814100E126A00894938 /* r.grow.distance.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.grow.distance.qgm; path = "../../src/plugins/grass/modules-6.4/r.grow.distance.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC815100E126A00894938 /* r.grow.distance.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.grow.distance.2.png; path = "../../src/plugins/grass/modules-6.4/r.grow.distance.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC816100E126A00894938 /* r.grow.distance.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.grow.distance.1.png; path = "../../src/plugins/grass/modules-6.4/r.grow.distance.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC817100E126A00894938 /* v.in.geonames.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.geonames.1.svg; path = "../../src/plugins/grass/modules-6.4/v.in.geonames.1.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC818100E126A00894938 /* db.out.ogr.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = db.out.ogr.1.png; path = "../../src/plugins/grass/modules-6.4/db.out.ogr.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC819100E126A00894938 /* r.colors.stddev.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.colors.stddev.2.png; path = "../../src/plugins/grass/modules-6.4/r.colors.stddev.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC81A100E126A00894938 /* v.in.gns.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.gns.qgm; path = "../../src/plugins/grass/modules-6.4/v.in.gns.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC81B100E126A00894938 /* v.in.geonames.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.in.geonames.2.png; path = "../../src/plugins/grass/modules-6.4/v.in.geonames.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC81C100E126A00894938 /* v.in.gns.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.in.gns.2.png; path = "../../src/plugins/grass/modules-6.4/v.in.gns.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC81D100E126A00894938 /* db.out.ogr.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = db.out.ogr.2.png; path = "../../src/plugins/grass/modules-6.4/db.out.ogr.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC81E100E126A00894938 /* r.colors.stddev.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.colors.stddev.qgm; path = "../../src/plugins/grass/modules-6.4/r.colors.stddev.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC81F100E126A00894938 /* r.colors.stddev.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.colors.stddev.1.png; path = "../../src/plugins/grass/modules-6.4/r.colors.stddev.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC820100E126A00894938 /* r.bilinear.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.bilinear.1.png; path = "../../src/plugins/grass/modules-6.4/r.bilinear.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC821100E126A00894938 /* v.in.geonames.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.geonames.qgm; path = "../../src/plugins/grass/modules-6.4/v.in.geonames.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC822100E126A00894938 /* r.bilinear.idw.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.bilinear.idw.2.png; path = "../../src/plugins/grass/modules-6.4/r.bilinear.idw.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC823100E126A00894938 /* v.in.gns.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.gns.1.svg; path = "../../src/plugins/grass/modules-6.4/v.in.gns.1.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC824100E126A00894938 /* db.out.ogr.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = db.out.ogr.qgm; path = "../../src/plugins/grass/modules-6.4/db.out.ogr.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC825100E143400894938 /* r.out.mpeg.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.out.mpeg.qgm; path = "../../src/plugins/grass/modules-common/r.out.mpeg.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC826100E143400894938 /* r.out.mpeg.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.mpeg.2.png; path = "../../src/plugins/grass/modules-common/r.out.mpeg.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC827100E143400894938 /* r.out.mpeg.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.mpeg.1.png; path = "../../src/plugins/grass/modules-common/r.out.mpeg.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC828100E143400894938 /* r.out.gdal.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.out.gdal.qgm; path = "../../src/plugins/grass/modules-common/r.out.gdal.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC829100E143400894938 /* r.out.gdal.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.gdal.2.png; path = "../../src/plugins/grass/modules-common/r.out.gdal.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC82A100E143400894938 /* r.out.gdal.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.gdal.1.png; path = "../../src/plugins/grass/modules-common/r.out.gdal.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC82B100E143400894938 /* r.out.ascii.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.out.ascii.qgm; path = "../../src/plugins/grass/modules-common/r.out.ascii.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC82C100E143400894938 /* r.out.ascii.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.ascii.2.png; path = "../../src/plugins/grass/modules-common/r.out.ascii.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC82D100E143400894938 /* r.out.ascii.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.ascii.1.png; path = "../../src/plugins/grass/modules-common/r.out.ascii.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC82E100E143400894938 /* r.sunmask.position.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.sunmask.position.2.png; path = "../../src/plugins/grass/modules-common/r.sunmask.position.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC82F100E143400894938 /* r.sunmask.position.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.sunmask.position.1.png; path = "../../src/plugins/grass/modules-common/r.sunmask.position.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC830100E143400894938 /* r.sunmask.date.time.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.sunmask.date.time.qgm; path = "../../src/plugins/grass/modules-common/r.sunmask.date.time.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC831100E143400894938 /* r.sunmask.date.time.3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.sunmask.date.time.3.png; path = "../../src/plugins/grass/modules-common/r.sunmask.date.time.3.png"; sourceTree = SOURCE_ROOT; };
+		72ACC832100E143400894938 /* r.sunmask.date.time.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.sunmask.date.time.2.png; path = "../../src/plugins/grass/modules-common/r.sunmask.date.time.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC833100E143400894938 /* r.sunmask.date.time.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.sunmask.date.time.1.png; path = "../../src/plugins/grass/modules-common/r.sunmask.date.time.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC834100E143400894938 /* v.net.visibility.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.net.visibility.qgm; path = "../../src/plugins/grass/modules-common/v.net.visibility.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC835100E143400894938 /* v.net.visibility.2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.net.visibility.2.svg; path = "../../src/plugins/grass/modules-common/v.net.visibility.2.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC836100E143400894938 /* v.net.visibility.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.net.visibility.1.svg; path = "../../src/plugins/grass/modules-common/v.net.visibility.1.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC837100E143400894938 /* v.net.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.net.qgm; path = "../../src/plugins/grass/modules-common/v.net.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC838100E143400894938 /* v.net.path.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.net.path.qgm; path = "../../src/plugins/grass/modules-common/v.net.path.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC839100E143400894938 /* v.net.path.2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.net.path.2.svg; path = "../../src/plugins/grass/modules-common/v.net.path.2.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC83A100E143400894938 /* v.net.path.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.net.path.1.svg; path = "../../src/plugins/grass/modules-common/v.net.path.1.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC83B100E143400894938 /* v.net.2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.net.2.svg; path = "../../src/plugins/grass/modules-common/v.net.2.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC83C100E143400894938 /* r.in.xyz.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.in.xyz.qgm; path = "../../src/plugins/grass/modules-common/r.in.xyz.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC83D100E143400894938 /* r.in.xyz.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.xyz.2.png; path = "../../src/plugins/grass/modules-common/r.in.xyz.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC83E100E143400894938 /* r.in.xyz.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.xyz.1.png; path = "../../src/plugins/grass/modules-common/r.in.xyz.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC83F100E143400894938 /* r.in.wms.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.in.wms.qgm; path = "../../src/plugins/grass/modules-common/r.in.wms.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC840100E143400894938 /* r.in.wms.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.wms.2.png; path = "../../src/plugins/grass/modules-common/r.in.wms.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC841100E143400894938 /* r.in.wms.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.wms.1.png; path = "../../src/plugins/grass/modules-common/r.in.wms.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC842100E143400894938 /* r.in.bin.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.in.bin.qgm; path = "../../src/plugins/grass/modules-common/r.in.bin.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC843100E143400894938 /* r.in.bin.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.bin.2.png; path = "../../src/plugins/grass/modules-common/r.in.bin.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC844100E143400894938 /* r.out.xyz.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.out.xyz.qgm; path = "../../src/plugins/grass/modules-common/r.out.xyz.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC845100E143400894938 /* r.out.xyz.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.xyz.2.png; path = "../../src/plugins/grass/modules-common/r.out.xyz.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC846100E143400894938 /* r.out.xyz.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.xyz.1.png; path = "../../src/plugins/grass/modules-common/r.out.xyz.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC847100E143400894938 /* r.out.vtk.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.out.vtk.qgm; path = "../../src/plugins/grass/modules-common/r.out.vtk.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC848100E143400894938 /* r.out.vtk.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.vtk.2.png; path = "../../src/plugins/grass/modules-common/r.out.vtk.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC849100E143400894938 /* r.out.vtk.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.out.vtk.1.png; path = "../../src/plugins/grass/modules-common/r.out.vtk.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC84A100E143400894938 /* v.net.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.net.1.svg; path = "../../src/plugins/grass/modules-common/v.net.1.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC84B100E143400894938 /* r.plane.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.plane.qgm; path = "../../src/plugins/grass/modules-common/r.plane.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC84C100E143400894938 /* v.out.vtk.2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.vtk.2.svg; path = "../../src/plugins/grass/modules-common/v.out.vtk.2.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC84D100E143400894938 /* v.out.vtk.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.vtk.1.png; path = "../../src/plugins/grass/modules-common/v.out.vtk.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC84E100E143400894938 /* v.out.svg.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.svg.qgm; path = "../../src/plugins/grass/modules-common/v.out.svg.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC84F100E143400894938 /* v.out.svg.2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.svg.2.svg; path = "../../src/plugins/grass/modules-common/v.out.svg.2.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC850100E143400894938 /* v.out.svg.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.svg.1.png; path = "../../src/plugins/grass/modules-common/v.out.svg.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC851100E143400894938 /* v.out.pov.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.pov.qgm; path = "../../src/plugins/grass/modules-common/v.out.pov.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC852100E143400894938 /* v.out.pov.2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.pov.2.svg; path = "../../src/plugins/grass/modules-common/v.out.pov.2.svg"; sourceTree = SOURCE_ROOT; };
+		72ACC853100E143400894938 /* v.out.pov.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.out.pov.1.png; path = "../../src/plugins/grass/modules-common/v.out.pov.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC854100E143400894938 /* v.out.vtk.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.out.vtk.qgm; path = "../../src/plugins/grass/modules-common/v.out.vtk.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC855100E143400894938 /* v.perturb.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.perturb.qgm; path = "../../src/plugins/grass/modules-common/v.perturb.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC856100E143400894938 /* v.perturb.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.perturb.1.png; path = "../../src/plugins/grass/modules-common/v.perturb.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC857100E143400894938 /* r.plane.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.plane.1.png; path = "../../src/plugins/grass/modules-common/r.plane.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC858100E143400894938 /* r.sunmask.position.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.sunmask.position.qgm; path = "../../src/plugins/grass/modules-common/r.sunmask.position.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC859100E143400894938 /* r.sunmask.position.3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.sunmask.position.3.png; path = "../../src/plugins/grass/modules-common/r.sunmask.position.3.png"; sourceTree = SOURCE_ROOT; };
+		72ACC85A100E143400894938 /* r.in.bin.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.bin.1.png; path = "../../src/plugins/grass/modules-common/r.in.bin.1.png"; sourceTree = SOURCE_ROOT; };
+		72ACC85B100E143400894938 /* r.circle.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.circle.qgm; path = "../../src/plugins/grass/modules-common/r.circle.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC85C100E143400894938 /* r.circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.circle.png; path = "../../src/plugins/grass/modules-common/r.circle.png"; sourceTree = SOURCE_ROOT; };
+		72ACC85D100E143400894938 /* db.copy.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = db.copy.qgm; path = "../../src/plugins/grass/modules-common/db.copy.qgm"; sourceTree = SOURCE_ROOT; };
+		72ACC85E100E143400894938 /* db.copy.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = db.copy.2.png; path = "../../src/plugins/grass/modules-common/db.copy.2.png"; sourceTree = SOURCE_ROOT; };
+		72ACC85F100E143400894938 /* db.copy.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = db.copy.1.png; path = "../../src/plugins/grass/modules-common/db.copy.1.png"; sourceTree = SOURCE_ROOT; };
 		72B4DDC30F9F4C0D009351FE /* qgis_help.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; name = qgis_help.1; path = ../../qgis_help.1; sourceTree = SOURCE_ROOT; };
 		72B4DDC40F9F4C0D009351FE /* qgis.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; name = qgis.1; path = ../../qgis.1; sourceTree = SOURCE_ROOT; };
 		72B4DDC50F9F4C0D009351FE /* qgis.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis.dtd; path = ../../qgis.dtd; sourceTree = SOURCE_ROOT; };
@@ -6686,7 +6764,7 @@
 		72B602A80FA0CB4100E00BC9 /* ts2cpp.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = ts2cpp.pl; path = ../../scripts/ts2cpp.pl; sourceTree = SOURCE_ROOT; };
 		72B957270F45C24200E3FF98 /* ReadMe.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = SOURCE_ROOT; };
 		72D232D30F4A206E000B9039 /* qgis_user-template.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "qgis_user-template.xcconfig"; sourceTree = SOURCE_ROOT; };
-		72E4DF0C0FE00FAD00D3505D /* qgis.v.out.ogr.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = qgis.v.out.ogr.pg.py; path = ../../src/plugins/grass/scripts/qgis.v.out.ogr.pg.py; sourceTree = SOURCE_ROOT; };
+		72E4DF0C0FE00FAD00D3505D /* v.out.ogr.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = v.out.ogr.pg.py; path = ../../src/plugins/grass/scripts/v.out.ogr.pg.py; sourceTree = SOURCE_ROOT; };
 		72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = qgscomposerview.sip; sourceTree = "<group>"; };
 		72E9A3BE0F5AE63500E78E3C /* qgsscalebarstyle.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsscalebarstyle.sip; path = ../../python/core/qgsscalebarstyle.sip; sourceTree = SOURCE_ROOT; };
 		72E9A3BF0F5AE63500E78E3C /* qgscomposeritem.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposeritem.sip; path = ../../python/core/qgscomposeritem.sip; sourceTree = SOURCE_ROOT; };
@@ -9503,6 +9581,7 @@
 				7209EE1B0F39E5D9003DC336 /* qgis-icon.png */,
 				7209EE1C0F39E5D9003DC336 /* qgis-mime-icon.png */,
 				7209EE1D0F39E5D9003DC336 /* qgis_icon.svg */,
+				7249E1C2100E0E8700104B74 /* qgis_icon_new.svg */,
 			);
 			name = icons;
 			path = ../../images/icons;
@@ -10329,9 +10408,9 @@
 			isa = PBXGroup;
 			children = (
 				723FD0660FBCB94600EFA55D /* CMakeLists.txt */,
-				723FD0670FBCB94600EFA55D /* qgis.db.connect-login.pg.py */,
-				72A6A4591005990500855EA6 /* qgis.r.external.all.py */,
-				72E4DF0C0FE00FAD00D3505D /* qgis.v.out.ogr.pg.py */,
+				723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */,
+				72A6A4591005990500855EA6 /* r.external.all.py */,
+				72E4DF0C0FE00FAD00D3505D /* v.out.ogr.pg.py */,
 			);
 			name = scripts;
 			path = ../../src/plugins/grass/scripts;
@@ -10422,6 +10501,9 @@
 				729939740FE3037600244D1A /* v.db.select.where.1.png */,
 				729939750FE3037600244D1A /* v.db.select.where.2.png */,
 				729939760FE3037600244D1A /* v.db.select.where.qgm */,
+				72993C0C0FE3037800244D1A /* v.out.ogr.postgis.1.png */,
+				72993C0D0FE3037800244D1A /* v.out.ogr.postgis.2.png */,
+				72993C0E0FE3037800244D1A /* v.out.ogr.postgis.qgm */,
 				729939770FE3037600244D1A /* v.to.db.1.png */,
 				729939780FE3037600244D1A /* v.to.db.2.png */,
 				729939790FE3037600244D1A /* v.to.db.qgm */,
@@ -10435,12 +10517,29 @@
 			children = (
 				7299397B0FE3037600244D1A /* CMakeLists.txt */,
 				72F6FCDF0FE7D79C00D5B53B /* default.qgc */,
-				72A6A45C1005995300855EA6 /* qgis.r.external.all.qgm */,
-				72A6A45D1005995300855EA6 /* qgis.r.external.all.1.png */,
+				729939EF0FE3037600244D1A /* db.connect-login.pg.1.png */,
+				729939F00FE3037600244D1A /* db.connect-login.pg.qgm */,
+				72ACC818100E126A00894938 /* db.out.ogr.1.png */,
+				72ACC81D100E126A00894938 /* db.out.ogr.2.png */,
+				72ACC824100E126A00894938 /* db.out.ogr.qgm */,
+				729939F10FE3037600244D1A /* v.out.ogr.pg.1.png */,
+				729939F20FE3037600244D1A /* v.out.ogr.pg.2.png */,
+				729939F30FE3037600244D1A /* v.out.ogr.pg.qgm */,
+				72ACC820100E126A00894938 /* r.bilinear.1.png */,
+				72ACC822100E126A00894938 /* r.bilinear.idw.2.png */,
+				72ACC813100E126A00894938 /* r.bilinear.qgm */,
+				72ACC81F100E126A00894938 /* r.colors.stddev.1.png */,
+				72ACC819100E126A00894938 /* r.colors.stddev.2.png */,
+				72ACC81E100E126A00894938 /* r.colors.stddev.qgm */,
 				7299397C0FE3037600244D1A /* r.external.1.png */,
 				7299397D0FE3037600244D1A /* r.external.qgis.1.png */,
 				7299397E0FE3037600244D1A /* r.external.qgis.qgm */,
 				7299397F0FE3037600244D1A /* r.external.qgm */,
+				72A6A45C1005995300855EA6 /* r.external.all.qgm */,
+				72A6A45D1005995300855EA6 /* r.external.all.1.png */,
+				72ACC815100E126A00894938 /* r.grow.distance.2.png */,
+				72ACC816100E126A00894938 /* r.grow.distance.1.png */,
+				72ACC814100E126A00894938 /* r.grow.distance.qgm */,
 				729939800FE3037600244D1A /* r.surf.fractal.1.png */,
 				729939810FE3037600244D1A /* r.surf.fractal.2.png */,
 				729939820FE3037600244D1A /* r.surf.fractal.qgm */,
@@ -10453,6 +10552,12 @@
 				729939890FE3037600244D1A /* v.db.select.where.1.png */,
 				7299398A0FE3037600244D1A /* v.db.select.where.2.png */,
 				7299398B0FE3037600244D1A /* v.db.select.where.qgm */,
+				72ACC817100E126A00894938 /* v.in.geonames.1.svg */,
+				72ACC81B100E126A00894938 /* v.in.geonames.2.png */,
+				72ACC821100E126A00894938 /* v.in.geonames.qgm */,
+				72ACC823100E126A00894938 /* v.in.gns.1.svg */,
+				72ACC81C100E126A00894938 /* v.in.gns.2.png */,
+				72ACC81A100E126A00894938 /* v.in.gns.qgm */,
 				7299398C0FE3037600244D1A /* v.to.db.1.png */,
 				7299398D0FE3037600244D1A /* v.to.db.2.png */,
 				7299398E0FE3037600244D1A /* v.to.db.qgm */,
@@ -10559,11 +10664,6 @@
 				729939EC0FE3037600244D1A /* m.proj.qgm */,
 				729939ED0FE3037600244D1A /* nviz.1.png */,
 				729939EE0FE3037600244D1A /* nviz.qgm */,
-				729939EF0FE3037600244D1A /* qgis.db.connect-login.pg.1.png */,
-				729939F00FE3037600244D1A /* qgis.db.connect-login.pg.qgm */,
-				729939F10FE3037600244D1A /* qgis.v.out.ogr.pg.1.png */,
-				729939F20FE3037600244D1A /* qgis.v.out.ogr.pg.2.png */,
-				729939F30FE3037600244D1A /* qgis.v.out.ogr.pg.qgm */,
 				729939F40FE3037600244D1A /* r.average.1.png */,
 				729939F50FE3037600244D1A /* r.average.2.png */,
 				729939F60FE3037600244D1A /* r.average.qgm */,
@@ -11100,9 +11200,6 @@
 				72993C090FE3037800244D1A /* v.out.ogr.mapinfo.1.png */,
 				72993C0A0FE3037800244D1A /* v.out.ogr.mapinfo.2.svg */,
 				72993C0B0FE3037800244D1A /* v.out.ogr.mapinfo.qgm */,
-				72993C0C0FE3037800244D1A /* v.out.ogr.postgis.1.png */,
-				72993C0D0FE3037800244D1A /* v.out.ogr.postgis.2.png */,
-				72993C0E0FE3037800244D1A /* v.out.ogr.postgis.qgm */,
 				72993C0F0FE3037800244D1A /* v.out.ogr.qgm */,
 				72993C100FE3037800244D1A /* v.out.ogr.shape.1.png */,
 				72993C110FE3037800244D1A /* v.out.ogr.shape.2.svg */,
@@ -11216,6 +11313,65 @@
 				72993C7D0FE3037800244D1A /* v.what.vect.1.png */,
 				72993C7E0FE3037800244D1A /* v.what.vect.2.png */,
 				72993C7F0FE3037800244D1A /* v.what.vect.qgm */,
+				72ACC825100E143400894938 /* r.out.mpeg.qgm */,
+				72ACC826100E143400894938 /* r.out.mpeg.2.png */,
+				72ACC827100E143400894938 /* r.out.mpeg.1.png */,
+				72ACC828100E143400894938 /* r.out.gdal.qgm */,
+				72ACC829100E143400894938 /* r.out.gdal.2.png */,
+				72ACC82A100E143400894938 /* r.out.gdal.1.png */,
+				72ACC82B100E143400894938 /* r.out.ascii.qgm */,
+				72ACC82C100E143400894938 /* r.out.ascii.2.png */,
+				72ACC82D100E143400894938 /* r.out.ascii.1.png */,
+				72ACC82E100E143400894938 /* r.sunmask.position.2.png */,
+				72ACC82F100E143400894938 /* r.sunmask.position.1.png */,
+				72ACC830100E143400894938 /* r.sunmask.date.time.qgm */,
+				72ACC831100E143400894938 /* r.sunmask.date.time.3.png */,
+				72ACC832100E143400894938 /* r.sunmask.date.time.2.png */,
+				72ACC833100E143400894938 /* r.sunmask.date.time.1.png */,
+				72ACC834100E143400894938 /* v.net.visibility.qgm */,
+				72ACC835100E143400894938 /* v.net.visibility.2.svg */,
+				72ACC836100E143400894938 /* v.net.visibility.1.svg */,
+				72ACC837100E143400894938 /* v.net.qgm */,
+				72ACC838100E143400894938 /* v.net.path.qgm */,
+				72ACC839100E143400894938 /* v.net.path.2.svg */,
+				72ACC83A100E143400894938 /* v.net.path.1.svg */,
+				72ACC83B100E143400894938 /* v.net.2.svg */,
+				72ACC83C100E143400894938 /* r.in.xyz.qgm */,
+				72ACC83D100E143400894938 /* r.in.xyz.2.png */,
+				72ACC83E100E143400894938 /* r.in.xyz.1.png */,
+				72ACC83F100E143400894938 /* r.in.wms.qgm */,
+				72ACC840100E143400894938 /* r.in.wms.2.png */,
+				72ACC841100E143400894938 /* r.in.wms.1.png */,
+				72ACC842100E143400894938 /* r.in.bin.qgm */,
+				72ACC843100E143400894938 /* r.in.bin.2.png */,
+				72ACC844100E143400894938 /* r.out.xyz.qgm */,
+				72ACC845100E143400894938 /* r.out.xyz.2.png */,
+				72ACC846100E143400894938 /* r.out.xyz.1.png */,
+				72ACC847100E143400894938 /* r.out.vtk.qgm */,
+				72ACC848100E143400894938 /* r.out.vtk.2.png */,
+				72ACC849100E143400894938 /* r.out.vtk.1.png */,
+				72ACC84A100E143400894938 /* v.net.1.svg */,
+				72ACC84B100E143400894938 /* r.plane.qgm */,
+				72ACC84C100E143400894938 /* v.out.vtk.2.svg */,
+				72ACC84D100E143400894938 /* v.out.vtk.1.png */,
+				72ACC84E100E143400894938 /* v.out.svg.qgm */,
+				72ACC84F100E143400894938 /* v.out.svg.2.svg */,
+				72ACC850100E143400894938 /* v.out.svg.1.png */,
+				72ACC851100E143400894938 /* v.out.pov.qgm */,
+				72ACC852100E143400894938 /* v.out.pov.2.svg */,
+				72ACC853100E143400894938 /* v.out.pov.1.png */,
+				72ACC854100E143400894938 /* v.out.vtk.qgm */,
+				72ACC855100E143400894938 /* v.perturb.qgm */,
+				72ACC856100E143400894938 /* v.perturb.1.png */,
+				72ACC857100E143400894938 /* r.plane.1.png */,
+				72ACC858100E143400894938 /* r.sunmask.position.qgm */,
+				72ACC859100E143400894938 /* r.sunmask.position.3.png */,
+				72ACC85A100E143400894938 /* r.in.bin.1.png */,
+				72ACC85B100E143400894938 /* r.circle.qgm */,
+				72ACC85C100E143400894938 /* r.circle.png */,
+				72ACC85D100E143400894938 /* db.copy.qgm */,
+				72ACC85E100E143400894938 /* db.copy.2.png */,
+				72ACC85F100E143400894938 /* db.copy.1.png */,
 			);
 			name = "modules-common";
 			path = "../../src/plugins/grass/modules-common";
