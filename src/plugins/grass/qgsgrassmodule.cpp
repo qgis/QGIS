@@ -195,7 +195,11 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QDomElement qDocElem = qDoc.documentElement();
 
   // Read GRASS module description
-  QString xName = qDocElem.attribute( "module" );
+  QString xName = qDocElem.attribute( "manual" );
+  if ( xName.isEmpty() )
+  {
+      xName = qDocElem.attribute( "module" );
+  }
 
   // Binary modules on windows has .exe extension
   // but not all modules have to be binary (can be scripts)

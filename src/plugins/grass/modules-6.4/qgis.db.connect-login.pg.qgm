@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Set PostgreSQL DB connection" module="qgis.db.connect-login.pg.py">
+<qgisgrassmodule label="Set PostgreSQL DB connection" module="qgis.db.connect-login.pg.py" manual="db.connect">
 	<option key="database" />
 	<option key="schema" />
 	<option key="host" />
