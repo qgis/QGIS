@@ -26,7 +26,6 @@
 				<grass name="r.external"/>
 				<grass name="r.external.qgis"/>
 				<grass name="r.external.all"/>
-				<grass name="r.in.wms"/>
 			</section>
 			<section label="Import vector">
                                 <grass name="v.in.ogr.qgis"/>
