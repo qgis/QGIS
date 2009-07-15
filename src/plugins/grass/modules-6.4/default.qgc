@@ -25,7 +25,7 @@
 				<grass name="r.in.wms"/>
 				<grass name="r.external"/>
 				<grass name="r.external.qgis"/>
-				<grass name="r.external.qgis.all"/>
+				<grass name="r.external.all"/>
 				<grass name="r.in.wms"/>
 			</section>
 			<section label="Import vector">
@@ -66,7 +66,7 @@
 			</section>
 			<section label="Export vector">
 				<grass name="v.out.ogr"/>
-				<grass name="qgis.v.out.ogr.pg"/>
+				<grass name="v.out.ogr.pg"/>
 				<grass name="v.out.ogr.gml"/>
 				<grass name="v.out.ogr.mapinfo"/>
 				<grass name="v.out.ogr.postgis"/>
@@ -439,7 +439,7 @@
 		<section label="Database management">
 			<grass name="db.connect"/>
 			<grass name="db.connect.schema"/>
-			<grass name="qgis.db.connect-login.pg"/>
+			<grass name="db.connect-login.pg"/>
 			<grass name="v.db.reconnect.all"/>
 			<grass name="db.login"/>
 			<grass name="db.in.ogr"/>
