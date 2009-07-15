@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Convert a GRASS binary vector map to VTK Ascii outpt" module="v.out.vtk">
+<qgisgrassmodule label="Export vector to VTK-ASCII" module="v.out.vtk">
 	<option key="input" layeroption="layer" typeoption="type" />
 	<option key="scale" />
 	<file key="output" filters="VTK (*.vtk)"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Download and imports data from WMS servers" module="r.in.wms">
+<qgisgrassmodule label="Download and import data from WMS server" module="r.in.wms">
 	<option key="mapserver" />
 	<option key="layers" />
 	<option key="srs" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Export raster series to MPGEG Conversion Program" module="r.out.mpeg">
+<qgisgrassmodule label="Export raster series to MPEG movie" module="r.out.mpeg">
 	<file key="view1" label="Type in map names separated by a comma" />
 	<option key="qual" />
 	<flag key="c" />

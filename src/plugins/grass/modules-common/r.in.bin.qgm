@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Import a binary raster file" module="r.in.bin">
+<qgisgrassmodule label="Import binary raster" module="r.in.bin">
 	<file key="input" type="old" filters="Binary (*.bin)" />
 	<option key="bytes" />
 	<option key="anull" />
