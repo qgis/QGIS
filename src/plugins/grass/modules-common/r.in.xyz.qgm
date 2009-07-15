@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Create a raster map from an assemblage of many coordinates using univariate statistics" module="r.in.xyz">
+<qgisgrassmodule label="Import raster from coordinates using univariate statistics" module="r.in.xyz">
 	<file key="input" type="old" filters="TXT (*.txt), CSV (*.csv)"/>
 	<option key="method" />
 	<option key="type" />

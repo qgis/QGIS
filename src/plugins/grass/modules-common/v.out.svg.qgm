@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Export a GRASS vector map to SVG" module="v.out.svg">
+<qgisgrassmodule label="Export vector to SVG" module="v.out.svg">
 	<option key="input" layeroption="layer" />
 	<option key="type" />
 	<option key="precision" />
