@@ -834,7 +834,7 @@ void QgsGrassMapcalc::updateMaps()
   QgsDebugMsg( "entered." );
   QString current = mMapComboBox->currentText();
   mMapComboBox->clear();
-  mMaps.resize( 0 );
+  mMaps.clear();
 
   QgsMapCanvas *canvas = mIface->mapCanvas();
 
@@ -882,7 +882,7 @@ void QgsGrassMapcalc::updateMaps()
     //if ( mUpdate && mapset != QgsGrass::getDefaultMapset() ) continue;
 
     mMapComboBox->addItem( layer->name() );
-    if ( layer->name() == current ) mMapComboBox->setItemText( mMapComboBox->currentIndex(), current );
+    //if ( layer->name() == current ) mMapComboBox->setItemText( mMapComboBox->currentIndex(), current );
     mMaps.push_back( map + "@" + mapset );
   }
 }
