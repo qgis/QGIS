@@ -41,6 +41,7 @@
 		</section>
 		<section label="Export">
 			<section label="Export raster">
+				<grass name="r.out.gdal.gtiff"/>
 				<grass name="r.out.gdal"/>
 				<grass name="r.out.ascii"/>
 				<grass name="r.out.xyz"/>
@@ -60,6 +61,8 @@
 			<section label="Export vector">
 				<grass name="v.out.ogr"/>
 				<grass name="qgis.v.out.ogr.pg"/>
+				<grass name="v.out.ogr.gml"/>
+				<grass name="v.out.ogr.mapinfo"/>
 				<grass name="v.out.ogr.postgis"/>
 				<grass name="v.out.ascii"/>
 				<grass name="v.out.dxf"/>
@@ -90,7 +93,8 @@
                                 <grass name="g.region.multiple.vector"/>
 			</section>
 			<section label="Projection management">
-                                <section label="Print projection information of the current location"> 					<grass name="g.proj.print"/>
+                                <section label="Print projection information of the current location">
+ 					<grass name="g.proj.print"/>
 				</section>
                                 <section label="Print projection information from a georeferenced file"> 
 					<grass name="g.proj.geo"/>
@@ -103,7 +107,7 @@
 					<grass name="g.proj.proj.new"/>
 				</section>
 			</section>
-			<section label="Converte coordinates">
+			<section label="Convert coordinates">
 				<grass name="m.cogo"/>
 			</section>
 		</section>
@@ -192,6 +196,7 @@
 		</section>
 		<section label="Spatial models">
 			<section label="Hydrologic modelling">
+				<grass name="r.watershed"/>
 				<grass name="r.carve"/>
 				<grass name="r.fill.dir"/>
 				<grass name="r.lake.xy"/>
