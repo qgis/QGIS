@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Finds shortest path on vecto network" module="v.net.path">
+<qgisgrassmodule label="Finds shortest path on vector network" module="v.net.path">
 	<option key="input" />
 	<option key="alayer" answer="1" />
 	<option key="nlayer" answer="2" />
