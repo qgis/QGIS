@@ -33,10 +33,11 @@ ADD_LIBRARY (labelingplugin MODULE ${labeling_SRCS} ${labeling_MOC_SRCS} ${label
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ../../core ../../core/pal ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui
      ..
      .
+     ${GEOS_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(labelingplugin
