@@ -4,5 +4,4 @@
 <qgisgrassmodule label="Calculate linear regression from two rasters: y = a + b*x" module="r.regression.line">
 	<option key="map1" />
 	<option key="map2"/>
-	<file key="output" type="new" label="Output ASCII file" filters="txt (*.txt)" />
 </qgisgrassmodule>
