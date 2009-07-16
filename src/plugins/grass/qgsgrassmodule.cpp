@@ -1899,14 +1899,15 @@ QString QgsGrassModuleOption::value()
   else if ( mControlType == CheckBoxes )
   {
     int cnt = 0;
-    for ( unsigned int i = 0; i < mCheckBoxes.size(); i++ )
+    QStringList values;
+    for ( unsigned int i = 0; i < mCheckBoxes.size(); ++i )
     {
       if ( mCheckBoxes[i]->isChecked() )
       {
-        if ( cnt > 0 ) value.append( "," );
-        value.append( mValues[i] );
+        values.append( mValues[i] );
       }
     }
+    value = values.join(",");
   }
   return value;
 }
