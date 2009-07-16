@@ -292,6 +292,7 @@
 				<grass name="v.centroids"/>
 				<grass name="v.build.polylines"/>
 				<grass name="v.segment"/>
+				<grass name="v.split"/>
 				<grass name="v.to.points"/>
 				<grass name="v.parallel"/>
 				<grass name="v.dissolve"/>
