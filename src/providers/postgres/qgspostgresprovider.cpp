@@ -1770,7 +1770,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList& enumValues, c
     Result domainCheckRes = connectionRO->PQexec( domainCheckDefinitionSql );
     if ( PQresultStatus( domainCheckRes ) == PGRES_TUPLES_OK && PQntuples( domainCheckRes ) > 0 )
     {
-      QString checkDefinition = PQgetvalue( domainCheckRes, 0, 0 );
+      QString checkDefinition = QString::fromUtf8( PQgetvalue( domainCheckRes, 0, 0 ) );
 
       //we assume that the constraint is of the following form:
       //(VALUE = ANY (ARRAY['a'::text, 'b'::text, 'c'::text, 'd'::text]))
