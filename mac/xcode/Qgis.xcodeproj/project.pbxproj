@@ -6633,6 +6633,9 @@
 		72993C7E0FE3037800244D1A /* v.what.vect.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.what.vect.2.png; path = "../../src/plugins/grass/modules-common/v.what.vect.2.png"; sourceTree = SOURCE_ROOT; };
 		72993C7F0FE3037800244D1A /* v.what.vect.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.what.vect.qgm; path = "../../src/plugins/grass/modules-common/v.what.vect.qgm"; sourceTree = SOURCE_ROOT; };
 		7299E8B70F90EFB9002F58DE /* TRANSLATORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TRANSLATORS; path = ../../TRANSLATORS; sourceTree = SOURCE_ROOT; };
+		729AEE701010B4ED0046ADB9 /* v.split.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.split.1.png; path = "../../src/plugins/grass/modules-common/v.split.1.png"; sourceTree = SOURCE_ROOT; };
+		729AEE711010B4ED0046ADB9 /* v.split.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.split.2.png; path = "../../src/plugins/grass/modules-common/v.split.2.png"; sourceTree = SOURCE_ROOT; };
+		729AEE721010B4ED0046ADB9 /* v.split.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.split.qgm; path = "../../src/plugins/grass/modules-common/v.split.qgm"; sourceTree = SOURCE_ROOT; };
 		729BBEFF0F40770B001BCB63 /* qgis_help.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = qgis_help.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		729BBF010F40770B001BCB63 /* qgis_help-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "qgis_help-Info.plist"; sourceTree = "<group>"; };
 		729BBF3D0F407CBA001BCB63 /* libqgispython.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libqgispython.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -11260,6 +11263,9 @@
 				72993C480FE3037800244D1A /* v.select.overlap.2.svg */,
 				72993C490FE3037800244D1A /* v.select.overlap.3.svg */,
 				72993C4A0FE3037800244D1A /* v.select.overlap.qgm */,
+				729AEE701010B4ED0046ADB9 /* v.split.1.png */,
+				729AEE711010B4ED0046ADB9 /* v.split.2.png */,
+				729AEE721010B4ED0046ADB9 /* v.split.qgm */,
 				72993C4B0FE3037800244D1A /* v.support.1.svg */,
 				72993C4C0FE3037800244D1A /* v.support.2.png */,
 				72993C4D0FE3037800244D1A /* v.support.qgm */,
