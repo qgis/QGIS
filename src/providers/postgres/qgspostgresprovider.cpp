@@ -543,7 +543,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
       if ( fld.name() == primaryKey )
       {
         // primary key was already processed
-        feature.addAttribute( *it, QString::number( oid ) );
+        feature.addAttribute( *it, convertValue( fld.type(), QString::number(oid) ) );
         continue;
       }
 
