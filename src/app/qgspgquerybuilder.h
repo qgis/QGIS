@@ -153,8 +153,8 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase
     QStandardItemModel *mModelFields;
     //! Model for values ListView
     QStandardItemModel *mModelValues;
-    //! Actual field char?
-    bool mActualFieldIsChar;
+    //! value needs to be quoted (char, boolean)
+    bool mQuoteValue;
     //! Previous field row to delete model
     int mPreviousFieldRow;
 };
