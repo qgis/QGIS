@@ -152,7 +152,7 @@ class QgsGrass
     static GRASS_EXPORT bool isMapset( QString path );
 
     // ! Get the lock file
-    static GRASS_EXPORT QString lockFileParh();
+    static GRASS_EXPORT QString lockFilePath();
 
     //! Library version
     static GRASS_EXPORT int versionMajor();
