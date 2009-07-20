@@ -11,6 +11,7 @@ class QgsSymbolV2;
 class QgsRenderContext;
 class QgsFeature;
 
+typedef QList<QgsSymbolV2*> QgsSymbolV2List;
 
 ////////
 // symbol levels
@@ -69,7 +70,8 @@ public:
   //! for debugging
   virtual QString dump();
 	
-	//TODO: symbols() for symbol levels
+  //! for symbol levels
+  virtual QgsSymbolV2List symbols()=0;
 
   QgsSymbolV2LevelOrder& symbolLevels() { return mLevelOrder; }
   void setSymbolLevels(const QgsSymbolV2LevelOrder& levelOrder) { mLevelOrder = levelOrder; }
@@ -104,6 +106,8 @@ public:
   virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone();
+
+  virtual QgsSymbolV2List symbols();
 
 protected:
 	QgsSymbolV2* mSymbol;
@@ -159,6 +163,8 @@ public:
   virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone();
+
+  virtual QgsSymbolV2List symbols();
 
   const QgsCategoryList& categories() { return mCategories; }
   
@@ -238,6 +244,8 @@ public:
   virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone();
+
+  virtual QgsSymbolV2List symbols();
 
   int attributeIndex() const { return mAttrNum; }
   void setAttributeIndex(int attr) { mAttrNum = attr; }

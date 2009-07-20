@@ -548,46 +548,7 @@ void QgsRendererV2PropertiesDialog::changeRangeSymbol(int rangeIdx)
 
 void QgsRendererV2PropertiesDialog::symbolLevels()
 {
-  QgsSymbolV2List symbols;
-
-  switch (mRenderer->type())
-  {
-    case QgsFeatureRendererV2::RendererSingleSymbol:
-    {
-      QgsSingleSymbolRendererV2* r = rendererSingle();
-      symbols.append(r->symbol());
-    }
-      break;
-
-    case QgsFeatureRendererV2::RendererCategorizedSymbol:
-    {
-      QgsCategorizedSymbolRendererV2* r = rendererCategorized();
-      int i, count = r->categories().count();
-
-      for (i = 0; i < count; i++)
-      {
-        const QgsRendererCategoryV2& cat = r->categories()[i];
-        symbols.append(cat.symbol());
-      }
-    }
-      break;
-
-    case QgsFeatureRendererV2::RendererGraduatedSymbol:
-    {
-      QgsGraduatedSymbolRendererV2* r = rendererGraduated();
-      int i, count = r->ranges().count();
-
-      for (i = 0; i < count; i++)
-      {
-        const QgsRendererRangeV2& range = r->ranges()[i];
-        symbols.append(range.symbol());
-      }
-    }
-      break;
-
-    default:
-      break;
-  }
+  QgsSymbolV2List symbols = mRenderer->symbols();
 
   QgsSymbolLevelsV2Dialog dlg(symbols, mRenderer->symbolLevels(), this);
   if (dlg.exec())

@@ -8,8 +8,6 @@
 
 #include "ui_qgssymbollevelsv2dialogbase.h"
 
-typedef QList<QgsSymbolV2*> QgsSymbolV2List;
-
 
 class QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbolLevelsV2DialogBase
 {

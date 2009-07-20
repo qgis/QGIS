@@ -1,4 +1,6 @@
 
+typedef QList<QgsSymbolV2*> QgsSymbolV2List;
+
 ///////////////
 
 
@@ -54,6 +56,8 @@ public:
 	virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone()=0 /Factory/;
+
+  virtual QgsSymbolV2List symbols()=0;
 
   void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1);
 

@@ -241,6 +241,7 @@ QString QgsFeatureRendererV2::dump()
   return "UNKNOWN RENDERER\n";
 }
 
+
 ///////////////////
 
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2(QgsSymbolV2* symbol)
@@ -295,6 +296,13 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone()
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( mSymbol->clone() );
   r->setSymbolLevels( symbolLevels() );
   return r;
+}
+
+QgsSymbolV2List QgsSingleSymbolRendererV2::symbols()
+{
+  QgsSymbolV2List lst;
+  lst.append(mSymbol);
+  return lst;
 }
 
 ///////////////////
@@ -492,6 +500,13 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
   return r;
 }
 
+QgsSymbolV2List QgsCategorizedSymbolRendererV2::symbols()
+{
+  QgsSymbolV2List lst;
+  for (int i = 0; i < mCategories.count(); i++)
+    lst.append(mCategories[i].symbol());
+  return lst;
+}
 
 /////////////////////////
 // graduated
@@ -643,6 +658,13 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
   return r;
 }
 
+QgsSymbolV2List QgsGraduatedSymbolRendererV2::symbols()
+{
+  QgsSymbolV2List lst;
+  for (int i = 0; i < mRanges.count(); i++)
+    lst.append(mRanges[i].symbol());
+  return lst;
+}
 
 static QList<double> _calcEqualIntervalBreaks(double minimum, double maximum, int classes)
 {
