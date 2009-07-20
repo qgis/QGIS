@@ -83,7 +83,9 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
   QStringList env("");
   QStringList args("");
 
-  terminal->setShellProgram("/usr/bin/grass64");
+  QString shellProgram = QString("/usr/bin/grass%1%2").arg(QgsGrass::versionMajor()).arg(QgsGrass::versionMinor());
+
+  terminal->setShellProgram(shellProgram);
   env << "TERM=vt100";
   env << "GISRC_MODE_MEMORY";
 
