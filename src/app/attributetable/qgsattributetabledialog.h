@@ -45,42 +45,124 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
     Q_OBJECT
 
   public:
+    /**
+     * Constructor
+     * @param theLayer layer pointer
+     * @param parent parent object
+     * @param flags window flags
+     */
     QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent = 0, Qt::WindowFlags flags = Qt::Window );
     ~QgsAttributeTableDialog();
 
   public slots:
+    /**
+     * Toggles editing mode
+     */
     void editingToggled();
 
   private slots:
+    /**
+     * submits the data
+     */
     void submit();
+    /**
+     * Reverts the changes
+     */
     void revert();
+    /**
+     * Launches search
+     */
     void search();
+    /**
+     * Launches advanced search
+     */
     void on_mAdvancedSearchButton_clicked();
+    /**
+     * Updates the selection
+     */
     void updateSelection();
+    /**
+     * Reads the selection from the layer
+     */
     void updateSelectionFromLayer();
+    /**
+     * Updates selection of a row
+     */
     void updateRowSelection( int index );
+    /**
+     * Updates selection of specifed rows
+     * @param first first row
+     * @param last last row
+     * @param startNewSelection if true, then new selection is started
+     */
     void updateRowSelection( int first, int last, bool startNewSelection );
 
+    /**
+     * Toggle showing of selected line only
+     * @param theFlag toggle on if true
+     */
     void on_cbxShowSelectedOnly_toggled( bool theFlag );
+    /**
+     * Copies selected rows to the clipboard
+     */
     void on_mCopySelectedRowsButton_clicked();
 
+    /**
+     * Toggles editing mode
+     */
     void on_mToggleEditingButton_toggled();
+    /**
+     * Inverts selection
+     */
     void on_mInvertSelectionButton_clicked();
+    /**
+     * Clears selection
+     */
     void on_mRemoveSelectionButton_clicked();
+    /**
+     * Zooms to selected features
+     */
     void on_mZoomMapToSelectedRowsButton_clicked();
+    /**
+     * Moves selected lines to the top
+     */
     void on_mSelectedToTopButton_clicked();
+    /**
+     * Shows advanced actions
+     */
     void showAdvanced();
+    /**
+     * Starts editing mode
+     */
     void startEditing();
 
   signals:
-    void editingToggled( QgsMapLayer * );
+    /**
+     * Informs that editing mode ha been toggled
+     * @param layer layer that has been toggled
+     */
+    void editingToggled( QgsMapLayer *layer );
 
   protected:
+    /**
+     * Handle closing of the window
+     * @param event unused
+     */
     void closeEvent( QCloseEvent* event );
 
   private:
+    /**
+     * Initialize column box
+     */
     void columnBoxInit();
+    /**
+     * Returns id of a column
+     */
     int columnBoxColumnId();
+    /**
+     * Performs the search
+     * @param searchString search query string
+     */
     void doSearch( QString searchString );
 
     QIcon getThemeIcon( const QString theName );
