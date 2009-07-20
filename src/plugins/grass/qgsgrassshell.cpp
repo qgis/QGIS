@@ -14,14 +14,10 @@
  ***************************************************************************/
 #include <QTabWidget>
 #include <QVBoxLayout>
-#include <QPushButton>
 #include <QShortcut>
 #include <QKeySequence>
-#include <QSizePolicy>
 
-#include "qgsgrasstools.h"
 #include "qtermwidget/qtermwidget.h"
-#include "qgsapplication.h"
 #include "qgsgrass.h"
 
 #include "qgsgrassshell.h"
@@ -83,7 +79,7 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
   QStringList env("");
   QStringList args("");
 
-  QString shellProgram = QString("/usr/bin/grass%1%2").arg(QgsGrass::versionMajor()).arg(QgsGrass::versionMinor());
+  QString shellProgram = QString("%1/etc/Init.sh").arg(::getenv("GISBASE"));
 
   terminal->setShellProgram(shellProgram);
   env << "TERM=vt100";
