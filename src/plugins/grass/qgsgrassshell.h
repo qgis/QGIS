@@ -27,12 +27,6 @@ class QgsGrassShell : public QFrame
     QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent = 0, const char *name = 0 );
     virtual ~QgsGrassShell();
 
-    /* TODO: Implement something that resizes the terminal without
-     *       crashes.
-    public slots:
-        void resizeTerminal();
-    */
-
   private slots:
     void closeShell();
 
@@ -42,4 +36,5 @@ class QgsGrassShell : public QFrame
     QTermWidget *mTerminal;
     QgsGrassTools *mTools;
     QTabWidget *mTabWidget;
+    QString mLockFilename;
 };
