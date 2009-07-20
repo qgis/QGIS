@@ -48,7 +48,7 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
   connect( copyShortcut, SIGNAL( activated() ), mTerminal, SLOT( copyClipboard() ) );
 
   // TODO: find a better way to manage the lockfile.
-  mLockFilename = QgsGrass::lockFileParh();
+  mLockFilename = QgsGrass::lockFilePath();
   QFile::remove(mLockFilename + ".qgis");
   if (!QFile::rename(mLockFilename, mLockFilename + ".qgis"))
   {

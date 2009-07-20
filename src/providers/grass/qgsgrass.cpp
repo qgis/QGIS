@@ -1082,7 +1082,7 @@ bool GRASS_EXPORT QgsGrass::isMapset( QString path )
   return false;
 }
 
-QString GRASS_EXPORT QgsGrass::lockFileParh()
+QString GRASS_EXPORT QgsGrass::lockFilePath()
 {
     return mMapsetLock;
 }
