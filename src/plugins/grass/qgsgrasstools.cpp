@@ -150,25 +150,6 @@ void QgsGrassTools::runModule( QString name )
   QWidget *m;
   if ( name == "shell" )
   {
-    // Set history file
-    QString mapsetPath = QgsGrass::getDefaultGisdbase() + "/"
-                         + QgsGrass::getDefaultLocation() + "/"
-                         + QgsGrass::getDefaultMapset();
-
-    // bash
-    QString hist = "HISTFILE=" + mapsetPath + "/.bash_history";
-    char *histChar = new char[hist.length()+1];
-    strcpy( histChar, hist.toAscii().constData() );
-    putenv( histChar );
-
-    // csh/tcsh
-#ifndef WIN32
-    hist = "histfile=" + mapsetPath + "/.history";
-    histChar = new char[hist.length()+1];
-    strcpy( histChar, hist.toAscii().constData() );
-    putenv( histChar );
-#endif
-
 #ifdef WIN32
     if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
     {
