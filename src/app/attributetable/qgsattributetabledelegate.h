@@ -27,7 +27,9 @@ class QgsAttributeTableDelegate : public QItemDelegate
 {
     Q_OBJECT;
   public:
-    /** Constructor */
+    /** Constructor
+     * @param parent parent object
+     */
     QgsAttributeTableDelegate( QObject* parent = NULL ) :
         QItemDelegate( parent ) {};
     /** Used to create an editor for when the user tries to
