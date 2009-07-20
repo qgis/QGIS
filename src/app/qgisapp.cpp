@@ -1045,6 +1045,8 @@ void QgisApp::toggleRendererV2()
   if (!dlg.exec())
     return;
   
+  mMapLegend->refreshLayerSymbology( vlayer->getLayerID(), false );
+
   refreshMapCanvas();
 }
 

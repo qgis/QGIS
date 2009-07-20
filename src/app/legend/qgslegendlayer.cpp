@@ -36,6 +36,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
+
 #include <iostream>
 #include <QAction>
 #include <QCoreApplication>
@@ -271,7 +274,10 @@ void QgsLegendLayer::refreshSymbology( const QString& key, double widthScale )
   if ( theMapLayer->type() == QgsMapLayer::VectorLayer ) // VECTOR
   {
     QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
-    vectorLayerSymbology( vlayer, widthScale ); // get and change symbology
+    if ( vlayer->isUsingRendererV2() )
+      vectorLayerSymbologyV2( vlayer );
+    else
+      vectorLayerSymbology( vlayer, widthScale ); // get and change symbology
   }
   else // RASTER
   {
@@ -383,6 +389,83 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
         itemList.push_front( std::make_pair( classfieldname, QPixmap() ) );
       }
     }
+  }
+
+  changeSymbologySettings( layer, itemList );
+}
+
+static QPixmap _symbolPreviewPixmap(QgsSymbolV2* sym, QSize iconSize)
+{
+  QPainter p;
+  QPixmap pix(iconSize);
+  pix.fill(Qt::white);
+  p.begin(&pix);
+  sym->drawPreviewIcon(&p, iconSize);
+  p.end();
+  return pix;
+}
+
+void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
+{
+  SymbologyList itemList;
+
+  QSize iconSize(16,16);
+
+  QSettings settings;
+  bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
+
+  QgsFeatureRendererV2* renderer = layer->rendererV2();
+  switch (renderer->type())
+  {
+    case QgsFeatureRendererV2::RendererSingleSymbol:
+      {
+        QgsSingleSymbolRendererV2* r = static_cast<QgsSingleSymbolRendererV2*>(renderer);
+        QPixmap pix = _symbolPreviewPixmap(r->symbol(), iconSize);
+
+        itemList.push_back( std::make_pair( "", pix ) );
+      }
+      break;
+    case QgsFeatureRendererV2::RendererCategorizedSymbol:
+      {
+        QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>(renderer);
+        if (showClassifiers)
+        {
+          const QgsFieldMap& fields = layer->dataProvider()->fields();
+          QString fieldName = fields[r->attributeIndex()].name();
+          itemList.push_back( std::make_pair( fieldName, QPixmap() ) );
+        }
+
+        int count = r->categories().count();
+        for (int i = 0; i < count; i++)
+        {
+          const QgsRendererCategoryV2& cat = r->categories()[i];
+          QPixmap pix = _symbolPreviewPixmap( cat.symbol(), iconSize );
+          itemList.push_back( std::make_pair( cat.label(), pix ) );
+        }
+      }
+      break;
+    case QgsFeatureRendererV2::RendererGraduatedSymbol:
+      {
+        QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>(renderer);
+        if (showClassifiers)
+        {
+          const QgsFieldMap& fields = layer->dataProvider()->fields();
+          QString fieldName = fields[r->attributeIndex()].name();
+          itemList.push_back( std::make_pair( fieldName, QPixmap() ) );
+        }
+
+        int count = r->ranges().count();
+        for (int i = 0; i < count; i++)
+        {
+          const QgsRendererRangeV2& range = r->ranges()[i];
+          QPixmap pix = _symbolPreviewPixmap( range.symbol(), iconSize );
+          itemList.push_back( std::make_pair( range.label(), pix ) );
+        }
+      }
+      break;
+    default:
+      // nothing for unknown renderers
+      break;
   }
 
   changeSymbologySettings( layer, itemList );

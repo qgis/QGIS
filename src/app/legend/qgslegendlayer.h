@@ -96,6 +96,8 @@ class QgsLegendLayer : public QgsLegendItem
     /** Prepare and change symbology for vector layer */
     void vectorLayerSymbology( const QgsVectorLayer* mapLayer, double widthScale = 1.0 );
 
+    void vectorLayerSymbologyV2( QgsVectorLayer* vlayer );
+
     /** Prepare and change symbology for raster layer */
     void rasterLayerSymbology( QgsRasterLayer* mapLayer );
 
