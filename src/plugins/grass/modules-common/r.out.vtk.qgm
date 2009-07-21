@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Export raster to VTK-ASCII" module="r.out.vtk">
+	<option key="input" />
+	<option key="elevation" />
+	<flag key="p" answer="off" />
+	<option key="null" />
+	<option key="elevation2d" />
+	<option key="elevscale" />
+	<option key="dp" />
+	<file key="output" type="new" filters="VTK (*.vtk)" />
+</qgisgrassmodule>

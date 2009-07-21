@@ -13,6 +13,9 @@ public:
     Classification,
     EditRange,
     SliderRange
+    FileName,
+    Enumeration,
+    Immutable
   };
    
   struct RangeData {

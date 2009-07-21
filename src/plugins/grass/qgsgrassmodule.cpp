@@ -195,7 +195,11 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QDomElement qDocElem = qDoc.documentElement();
 
   // Read GRASS module description
-  QString xName = qDocElem.attribute( "module" );
+  QString xName = qDocElem.attribute( "manual" );
+  if ( xName.isEmpty() )
+  {
+      xName = qDocElem.attribute( "module" );
+  }
 
   // Binary modules on windows has .exe extension
   // but not all modules have to be binary (can be scripts)
@@ -1895,14 +1899,15 @@ QString QgsGrassModuleOption::value()
   else if ( mControlType == CheckBoxes )
   {
     int cnt = 0;
-    for ( unsigned int i = 0; i < mCheckBoxes.size(); i++ )
+    QStringList values;
+    for ( unsigned int i = 0; i < mCheckBoxes.size(); ++i )
     {
       if ( mCheckBoxes[i]->isChecked() )
       {
-        if ( cnt > 0 ) value.append( "," );
-        value.append( mValues[i] );
+        values.append( mValues[i] );
       }
     }
+    value = values.join(",");
   }
   return value;
 }

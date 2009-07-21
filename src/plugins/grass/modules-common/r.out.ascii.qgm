@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Export raster to ASCII text file" module="r.out.ascii">
+	<option key="input" />
+	<option key="dp" answer="2"/>
+	<option key="null" />
+	<file key="output" type="new" />
+	<flag key="h" />
+	<flag key="s" />
+	<flag key="m" />
+	<flag key="i" />
+</qgisgrassmodule>

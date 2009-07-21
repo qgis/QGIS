@@ -133,9 +133,9 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // http://www.address.bit:80), so remove that from the url before
   // executing an http GET.
 
-  QString pathAndQuery = httpurl.remove( 0, httpurl.indexOf( qurl.path() ) );
-
-
+  //Path could be just '/' so we remove the 'http://' first
+  QString pathAndQuery = httpurl.remove( 0, httpurl.indexOf( qurl.host() ) );
+  pathAndQuery = httpurl.remove( 0, pathAndQuery.indexOf( qurl.path() ) );
   if ( !postData ) //do request with HTTP GET
   {
     header.setRequest( "GET", pathAndQuery );

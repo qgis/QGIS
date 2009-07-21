@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Network maintenance" module="v.net">
+	<option key="input" />
+	<option key="points" />
+	<option key="operation" />
+	<option key="alayer" answer="1" />
+	<option key="nlayer" answer="2" />
+	<option key="thresh" />
+	<flag key="c" />
+	<option key="output" />
+</qgisgrassmodule>
