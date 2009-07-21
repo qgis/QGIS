@@ -82,7 +82,7 @@ void QgsAttributeTableModel::featureDeleted( int fid )
 #endif
 
   QgsDebugMsg( "id->row" );
-  QMap<int, int>::iterator it;
+  QHash<int, int>::iterator it;
   for ( it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
     QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
 
@@ -175,6 +175,10 @@ void QgsAttributeTableModel::loadLayer()
 
   mLayer->select( QgsAttributeList(), QgsRectangle(), false );
 
+  // preallocate data before inserting
+  mRowIdMap.reserve(pendingFeatureCount + 50);
+  mIdRowMap.reserve(pendingFeatureCount + 50);
+
   for ( int i = 0; mLayer->nextFeature( f ); ++i )
   {
     mRowIdMap.insert( i, f.id() );
@@ -198,7 +202,7 @@ void QgsAttributeTableModel::loadLayer()
 
 #if 0
   QgsDebugMsg( "id->row" );
-  QMap<int, int>::iterator it;
+  QHash<int, int>::iterator it;
   for ( it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
     QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
 
@@ -248,7 +252,8 @@ int QgsAttributeTableModel::rowToId( const int id ) const
   if ( !mRowIdMap.contains( id ) )
   {
     QgsDebugMsg( QString( "rowToId: row %1 not in the map" ).arg( id ) );
-    return -1;
+    // return negative infinite (to avoid collision with newly added features)
+    return -999999;
   }
 
   return mRowIdMap[id];

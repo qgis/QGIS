@@ -20,6 +20,7 @@
 #include <QAbstractTableModel>
 #include <QModelIndex>
 #include <QObject>
+#include <QHash>
 
 //QGIS Includes
 #include "qgsfeature.h" //QgsAttributeMap
@@ -185,8 +186,8 @@ class QgsAttributeTableModel: public QAbstractTableModel
     QgsAttributeList mAttributes;
 
     QList<QgsAttributeTableIdColumnPair> mSortList;
-    QMap<int, int> mIdRowMap;
-    QMap<int, int> mRowIdMap;
+    QHash<int, int> mIdRowMap;
+    QHash<int, int> mRowIdMap;
 
     /**
      * Initializes id <-> row maps
