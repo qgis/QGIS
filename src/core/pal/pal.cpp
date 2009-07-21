@@ -759,7 +759,7 @@ namespace pal
     return prob;
   }
 
-  std::list<Label*>* Pal::labeller( double scale, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( double scale, double bbox[4], PalStat **stats, bool displayAll )
   {
 
 #ifdef _DEBUG_FULL_
@@ -783,7 +783,7 @@ namespace pal
     }
     lyrsMutex->unlock();
 
-    std::list<Label*> * solution = labeller( nbLayers, layersName, priorities, scale, bbox, stats, displayAll );
+    std::list<LabelPosition*> * solution = labeller( nbLayers, layersName, priorities, scale, bbox, stats, displayAll );
 
     delete[] layersName;
     delete[] priorities;
@@ -794,7 +794,7 @@ namespace pal
   /*
    * BIG MACHINE
    */
-  std::list<Label*>* Pal::labeller( int nbLayers, char **layersName , double *layersFactor, double scale, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( int nbLayers, char **layersName , double *layersFactor, double scale, double bbox[4], PalStat **stats, bool displayAll )
   {
 #ifdef _DEBUG_
     std::cout << "LABELLER (selection)" << std::endl;
@@ -861,7 +861,7 @@ namespace pal
       // nothing to be done => return an empty result set
       if ( stats )
         ( *stats ) = new PalStat();
-      return new std::list<Label*>();
+      return new std::list<LabelPosition*>();
     }
 
     std::cout << "PAL EXTRACT: " << t.elapsed() / 1000.0 << " s" << std::endl;
@@ -901,7 +901,7 @@ namespace pal
     //prob->post_optimization();
 
 
-    std::list<Label*> * solution = prob->getSolution( displayAll );
+    std::list<LabelPosition*> * solution = prob->getSolution( displayAll );
 
     if ( stats )
       *stats = prob->getStats();
@@ -956,10 +956,10 @@ namespace pal
     return prob;
   }
 
-  std::list<Label*>* Pal::solveProblem(Problem* prob)
+  std::list<LabelPosition*>* Pal::solveProblem(Problem* prob)
   {
     if (prob == NULL)
-      return new std::list<Label*>();
+      return new std::list<LabelPosition*>();
 
     prob->reduce();
 

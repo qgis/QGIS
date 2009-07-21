@@ -52,17 +52,13 @@ namespace pal
    */
   class LabelPosition
   {
-
       friend class CostCalculator;
       friend class PolygonCostCalculator;
 
-    private:
+    protected:
 
       int id;
       double cost;
-      double x[4], y[4];
-
-      double alpha;
       Feature *feature;
 
       // bug # 1 (maxence 10/23/2008)
@@ -70,43 +66,24 @@ namespace pal
 
       int nbOverlap;
 
-      double w;
-      double h;
-
     public:
       /**
        * \brief create a new LabelPosition
        *
        * \param id id of this labelposition
-       * \param x1 down-left x coordinate
-       * \param y1 down-left y coordinate
-       * \param w label width
-       * \param h label height
-       * \param alpha rotation in rad
        * \param cost geographic cost
        * \param feature labelpos owners
        */
-      LabelPosition( int id, double x1, double y1,
-                     double w, double h,
-                     double alpha, double cost,
-                     Feature *feature );
+      LabelPosition( int id, double cost, Feature *feature );
 
-      /**
-       * \brief load a stored labelposition
-       *
-       * Load a labelPosition from a file
-       * \param id id of this labelPosition
-       * \param feature  this labelposition is for feature
-       * \param file load from this stream
-       */
-      LabelPosition( int id, Feature *feature, std::ifstream *file );
+      // virtual functions
 
       /**
        * \brief is the labelposition in the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
-      bool isIn( double *bbox );
+      virtual bool isIn( double *bbox ) = 0;
 
       /**
        * \brief Check whether or not this overlap with another labelPosition
@@ -114,7 +91,21 @@ namespace pal
        * \param ls other labelposition
        * \return true or false
        */
-      bool isInConflict( LabelPosition *ls );
+      virtual bool isInConflict( LabelPosition *ls ) = 0;
+
+      /** return bounding box - amin: xmin,ymin - amax: xmax,ymax */
+      virtual void getBoundingBox(double amin[2], double amax[2]) const = 0;
+
+      /** get distance from this label to a point. If point lies inside, returns negative number. */
+      virtual double getDistanceToPoint( double xp, double yp ) = 0;
+
+      /** returns true if this label crosses the specified line */
+      virtual bool isBorderCrossingLine( PointSet* feat ) = 0;
+
+      /** returns number of intersections with polygon (testing border and center) */
+      virtual int getNumPointsInPolygon( int npol, double *xp, double *yp ) = 0;
+
+      // end of virtual functions
 
       /** \brief return id
        * \return id
@@ -126,20 +117,6 @@ namespace pal
        * \return the feature
        */
       Feature * getFeature();
-
-      /**
-       * \brief get the down-left x coordinate
-       * \return x coordinate
-       */
-      double getX() const;
-      /**
-       * \brief get the down-left y coordinate
-       * \return y coordinate
-       */
-      double getY() const;
-
-      double getWidth() const { return w; }
-      double getHeight() const { return h; }
 
       double getNumOverlaps() const { return nbOverlap; }
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
@@ -153,12 +130,6 @@ namespace pal
       char* getLayerName() const;
 
       /**
-       * \brief get alpha
-       * \return alpha to rotate text (in rad)
-       */
-      double getAlpha() const;
-
-      /**
        * \brief get the position geographical cost
        * \return geographical cost
        */
@@ -170,16 +141,11 @@ namespace pal
       /** Make sure the cost is less than 1 */
       void validateCost();
 
-      /** return bounding box - amin: xmin,ymin - amax: xmax,ymax */
-      void getBoundingBox(double amin[2], double amax[2]) const;
-
       /**
        * \brief get a final lable from this
        * \return a new Label() object
        */
-      Label* toLabel( bool active );
-
-      void print();
+      //Label* toLabel( bool active );
 
       void removeFromIndex( RTree<LabelPosition*, double, 2, double> *index );
       void insertIntoIndex( RTree<LabelPosition*, double, 2, double> *index );
@@ -220,16 +186,80 @@ namespace pal
       // for polygon cost calculation
       static bool polygonObstacleCallback( PointSet *feat, void *ctx );
 
+  };
+
+
+  class StraightLabelPosition : public LabelPosition
+  {
+      friend class CostCalculator;
+      friend class PolygonCostCalculator;
+
+    public:
+      /**
+       * \brief create a new LabelPosition
+       *
+       * \param id id of this labelposition
+       * \param x1 down-left x coordinate
+       * \param y1 down-left y coordinate
+       * \param w label width
+       * \param h label height
+       * \param alpha rotation in rad
+       * \param cost geographic cost
+       * \param feature labelpos owners
+       */
+      StraightLabelPosition( int id, double x1, double y1,
+                             double w, double h,
+                             double alpha, double cost,
+                             Feature *feature );
+
+      // virtual functions
+
+      virtual bool isIn( double *bbox );
+      virtual bool isInConflict( LabelPosition *ls );
+
+      virtual void getBoundingBox(double amin[2], double amax[2]) const;
+
       /** get distance from this label to a point. If point lies inside, returns negative number. */
-      double getDistanceToPoint( double xp, double yp );
+      virtual double getDistanceToPoint( double xp, double yp );
 
       /** returns true if this label crosses the specified line */
-      bool isBorderCrossingLine( PointSet* feat );
+      virtual bool isBorderCrossingLine( PointSet* feat );
 
       /** returns number of intersections with polygon (testing border and center) */
-      int getNumPointsInPolygon( int npol, double *xp, double *yp );
+      virtual int getNumPointsInPolygon( int npol, double *xp, double *yp );
 
-  };
+      // new functions
+
+      /**
+       * \brief get the down-left x coordinate
+       * \return x coordinate
+       */
+      double getX( int i = 0 ) const;
+      /**
+       * \brief get the down-left y coordinate
+       * \return y coordinate
+       */
+      double getY( int i = 0 ) const;
+
+      double getWidth() const { return w; }
+      double getHeight() const { return h; }
+
+      /**
+       * \brief get alpha
+       * \return alpha to rotate text (in rad)
+       */
+      double getAlpha() const;
+
+      void print();
+
+    protected:
+      double x[4], y[4];
+      double alpha;
+      double w;
+      double h;
+
+    };
+
 } // end namespac
 
 #endif

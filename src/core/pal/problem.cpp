@@ -2961,20 +2961,20 @@ namespace pal
 //#undef _DEBUG_FULL_
 #endif
 
-  std::list<Label*> * Problem::getSolution( bool returnInactive )
+  std::list<LabelPosition*> * Problem::getSolution( bool returnInactive )
   {
 
     int i;
-    std::list<Label*> *solList = new std::list<Label*>();
+    std::list<LabelPosition*> *solList = new std::list<LabelPosition*>();
 
     if ( nbft == 0 )
       return solList;
 
     for ( i = 0;i < nbft;i++ )
       if ( sol->s[i] != -1 )
-        solList->push_back( labelpositions[sol->s[i]]->toLabel( true ) );
+        solList->push_back( labelpositions[sol->s[i]] ); // active labels
       else if ( returnInactive )
-        solList->push_back( labelpositions[featStartId[i]]->toLabel( false ) );
+        solList->push_back( labelpositions[featStartId[i]] ); // unplaced label
 
     return solList;
   }

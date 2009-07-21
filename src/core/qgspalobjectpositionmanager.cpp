@@ -21,7 +21,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectoroverlay.h"
 #include "pal.h"
-#include "label.h"
+#include "labelposition.h"
+#include "feature.h"
 #include "layer.h"
 
 QgsPALObjectPositionManager::QgsPALObjectPositionManager(): mNumberOfLayers( 0 )
@@ -126,7 +127,7 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   mPositionEngine.setMapUnit( mapUnits );
   mPositionEngine.setDpi(renderContext.scaleFactor() * 25.4);
 
-  std::list<pal::Label*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, &stat, false );
+  std::list<pal::LabelPosition*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, &stat, false );
   delete stat;
 
   //and read the positions back to the overlay objects
@@ -137,18 +138,20 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
 
   QgsOverlayObject* currentOverlayObject = 0;
 
-  std::list<pal::Label*>::iterator labelIt = resultLabelList->begin();
+  std::list<pal::LabelPosition*>::iterator labelIt = resultLabelList->begin();
   for ( ; labelIt != resultLabelList->end(); ++labelIt )
   {
-    currentOverlayObject = dynamic_cast<QgsOverlayObject*>(( *labelIt )->getGeometry() );
+    currentOverlayObject = dynamic_cast<QgsOverlayObject*>(( *labelIt )->getFeature()->getUserGeometry() );
     if ( !currentOverlayObject )
     {
       continue;
     }
 
+    pal::StraightLabelPosition* lp = (pal::StraightLabelPosition*) *labelIt;
+
     //QGIS takes the coordinates of the middle points
-    double x = (( *labelIt )->getX( 0 ) + ( *labelIt )->getX( 1 ) + ( *labelIt )->getX( 2 ) + ( *labelIt )->getX( 3 ) ) / 4;
-    double y = (( *labelIt )->getY( 0 ) + ( *labelIt )->getY( 1 ) + ( *labelIt )->getY( 2 ) + ( *labelIt )->getY( 3 ) ) / 4;
+    double x = (lp->getX( 0 ) + lp->getX( 1 ) + lp->getX( 2 ) + lp->getX( 3 ) ) / 4;
+    double y = (lp->getY( 0 ) + lp->getY( 1 ) + lp->getY( 2 ) + lp->getY( 3 ) ) / 4;
     currentOverlayObject->addPosition( QgsPoint( x, y ) );
   }
 }

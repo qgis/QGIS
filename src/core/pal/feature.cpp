@@ -165,11 +165,11 @@ namespace pal
     double offset = label_x / 4;
 
     // at the center
-    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[0] = new StraightLabelPosition( id, lx, ly, label_x, label_y, alpha, cost,  this );
     // shifted to the sides - with higher cost
     cost = 0.0021;
-    ( *lPos )[1] = new LabelPosition( id, lx+offset, ly, label_x, label_y, alpha, cost,  this );
-    ( *lPos )[2] = new LabelPosition( id, lx-offset, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[1] = new StraightLabelPosition( id, lx+offset, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[2] = new StraightLabelPosition( id, lx-offset, ly, label_x, label_y, alpha, cost,  this );
     return nbp;
   }
 
@@ -316,7 +316,7 @@ namespace pal
       else
         cost =  0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
 
-      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, 0, cost,  this );
+      ( *lPos )[i] = new StraightLabelPosition( i, lx, ly, xrm, yrm, 0, cost,  this );
 
       icost += inc;
 
@@ -488,15 +488,15 @@ namespace pal
           reversed = ( alpha >= M_PI/2 || alpha < -M_PI/2 );
 
         if ( (!reversed && (flags & FLAG_ABOVE_LINE)) || (reversed && (flags & FLAG_BELOW_LINE)) )
-          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this ) ); // Line
+          positions->push_back( new StraightLabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this ) ); // Line
         if ( (!reversed && (flags & FLAG_BELOW_LINE)) || (reversed && (flags & FLAG_ABOVE_LINE)) )
-          positions->push_back( new LabelPosition( i, bx - cos( beta ) * ( distlabel + yrm ) , by - sin( beta ) * ( distlabel + yrm ), xrm, yrm, alpha, cost, this ) ); // Line
+          positions->push_back( new StraightLabelPosition( i, bx - cos( beta ) * ( distlabel + yrm ) , by - sin( beta ) * ( distlabel + yrm ), xrm, yrm, alpha, cost, this ) ); // Line
         if ( flags & FLAG_ON_LINE )
-          positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
+          positions->push_back( new StraightLabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
       }
       else if (layer->arrangement == P_HORIZ)
       {
-        positions->push_back( new LabelPosition(i, bx - xrm/2, by - yrm/2, xrm, yrm, 0, cost, this) ); // Line
+        positions->push_back( new StraightLabelPosition(i, bx - xrm/2, by - yrm/2, xrm, yrm, 0, cost, this) ); // Line
         //positions->push_back( new LabelPosition(i, bx -yrm/2, by - yrm*sin(beta)/2, xrm, yrm, alpha, cost, this, line)); // Line
       }
       else
@@ -735,7 +735,7 @@ namespace pal
               if ( isPointInPolygon( mapShape->nbPoints, mapShape->x, mapShape->y, rx,  ry ) )
               {
                 // cost is set to minimal value, evaluated later
-                positions->push_back( new LabelPosition( id++, rx - dlx, ry - dly , xrm, yrm, alpha, 0.0001, this ) ); // Polygon
+                positions->push_back( new StraightLabelPosition( id++, rx - dlx, ry - dly , xrm, yrm, alpha, 0.0001, this ) ); // Polygon
               }
             }
           }

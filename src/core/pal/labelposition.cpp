@@ -55,10 +55,14 @@
 
 namespace pal
 {
-
-  LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, Feature *feature ) : id( id ), cost( cost ), /*workingCost (0),*/ alpha( alpha ), feature( feature ), nbOverlap( 0 ), w( w ), h( h )
+  LabelPosition::LabelPosition( int id, double cost, Feature *feature )
+   : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 )
   {
+  }
 
+  StraightLabelPosition::StraightLabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, Feature *feature )
+    : LabelPosition( id, cost, feature ), alpha( alpha ), w( w ), h( h )
+  {
 
     // alpha take his value bw 0 and 2*pi rad
     while ( this->alpha > 2*M_PI )
@@ -119,7 +123,7 @@ namespace pal
     }
   }
 
-  bool LabelPosition::isIn( double *bbox )
+  bool StraightLabelPosition::isIn( double *bbox )
   {
     int i;
 
@@ -134,7 +138,7 @@ namespace pal
 
   }
 
-  void LabelPosition::print()
+  void StraightLabelPosition::print()
   {
     std::cout << feature->getLayer()->getName() << "/" << feature->getUID() << "/" << id;
     std::cout << " cost: " << cost;
@@ -146,8 +150,11 @@ namespace pal
     std::cout << std::endl;
   }
 
-  bool LabelPosition::isInConflict( LabelPosition *ls )
+  bool StraightLabelPosition::isInConflict( LabelPosition *lp )
   {
+    // TODO: more types of labelposition
+    StraightLabelPosition* ls = (StraightLabelPosition*) lp;
+
     int i, i2, j;
     int d1, d2;
 
@@ -194,17 +201,17 @@ namespace pal
     return id;
   }
 
-  double LabelPosition::getX() const
+  double StraightLabelPosition::getX( int i ) const
   {
-    return x[0];
+    return (i >= 0 && i < 4 ? x[i] : -1);
   }
 
-  double LabelPosition::getY() const
+  double StraightLabelPosition::getY( int i ) const
   {
-    return y[0];
+    return (i >= 0 && i < 4 ? y[i] : -1);
   }
 
-  double LabelPosition::getAlpha() const
+  double StraightLabelPosition::getAlpha() const
   {
     return alpha;
   }
@@ -228,7 +235,7 @@ namespace pal
     return feature;
   }
 
-  void LabelPosition::getBoundingBox(double amin[2], double amax[2]) const
+  void StraightLabelPosition::getBoundingBox(double amin[2], double amax[2]) const
   {
     amin[0] = DBL_MAX;
     amax[0] = -DBL_MAX;
@@ -260,12 +267,6 @@ namespace pal
   bool LabelPosition::costGrow( void *l, void *r )
   {
     return (( LabelPosition* ) l )->cost > (( LabelPosition* ) r )->cost;
-  }
-
-
-  Label *LabelPosition::toLabel( bool active )
-  {
-    return new Label( this->x, this->y, alpha, feature->getUID(), feature->getLayer()->getName(), feature->getUserGeometry() );
   }
 
 
@@ -385,7 +386,7 @@ namespace pal
 
 
 
-  double LabelPosition::getDistanceToPoint( double xp, double yp )
+  double StraightLabelPosition::getDistanceToPoint( double xp, double yp )
   {
     int i;
     int j;
@@ -436,7 +437,7 @@ namespace pal
   }
 
 
-  bool LabelPosition::isBorderCrossingLine( PointSet* feat )
+  bool StraightLabelPosition::isBorderCrossingLine( PointSet* feat )
   {
     double ca, cb;
     for ( int i = 0;i < 4;i++ )
@@ -462,7 +463,7 @@ namespace pal
     return false;
   }
 
-  int LabelPosition::getNumPointsInPolygon( int npol, double *xp, double *yp )
+  int StraightLabelPosition::getNumPointsInPolygon( int npol, double *xp, double *yp )
   {
     int a, k, count = 0;
     double px, py;

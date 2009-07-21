@@ -4,6 +4,7 @@
 #include <list>
 
 #include <pal/pal.h>
+#include <pal/feature.h>
 #include <pal/layer.h>
 #include <pal/palgeometry.h>
 #include <pal/palexception.h>
@@ -321,7 +322,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   QgsRectangle r = extent;
   double bbox[] = { r.xMinimum(), r.yMinimum(), r.xMaximum(), r.yMaximum() };
 
-  std::list<Label*>* labels;
+  std::list<LabelPosition*>* labels;
   pal::Problem* problem;
   try
   {
@@ -347,7 +348,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
     {
       for (int j = 0; j < problem->getFeatureCandidateCount(i); j++)
       {
-        pal::LabelPosition* lp = problem->getFeatureCandidate(i, j);
+        pal::StraightLabelPosition* lp = (pal::StraightLabelPosition*) problem->getFeatureCandidate(i, j);
 
         QgsPoint outPt = xform->transform(lp->getX(), lp->getY());
         QgsPoint outPt2 = xform->transform(lp->getX()+lp->getWidth(), lp->getY()+lp->getHeight());
@@ -373,22 +374,22 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   t.restart();
 
   // draw the labels
-  std::list<Label*>::iterator it = labels->begin();
+  std::list<LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it)
   {
-    Label* label = *it;
+    StraightLabelPosition* label = (StraightLabelPosition*) *it;
 
-    QgsPoint outPt = xform->transform(label->getOrigX(), label->getOrigY());
+    QgsPoint outPt = xform->transform(label->getX(), label->getY());
 
     // TODO: optimize access :)
     const LayerSettings& lyr = layer(label->getLayerName());
 
-    QString text = ((MyLabel*)label->getGeometry())->text();
+    QString text = ((MyLabel*)label->getFeature()->getUserGeometry())->text();
 
     // shift by one as we have 2px border
     painter->save();
     painter->translate( QPointF(outPt.x()+1, outPt.y()-1-lyr.fontBaseline) );
-    painter->rotate(-label->getRotation() * 180 / M_PI );
+    painter->rotate(-label->getAlpha() * 180 / M_PI );
     painter->setFont( lyr.textFont );
 
     if (lyr.bufferSize != 0)
@@ -398,7 +399,6 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
     painter->drawText(0,0, text);
     painter->restore();
 
-    delete label;
   }
 
   std::cout << "LABELING draw:   " << t.elapsed() << "ms" << std::endl;

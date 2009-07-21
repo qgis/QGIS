@@ -93,7 +93,7 @@ namespace pal
   class PointSet
   {
       friend class Feature;
-      friend class LabelPosition;
+      friend class StraightLabelPosition;
       friend class CostCalculator;
       friend class PolygonCostCalculator;
       friend void extractXYCoord( Feat *f );
