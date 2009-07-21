@@ -403,14 +403,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** change feature's geometry
       @note added in version 1.2 */
-    bool changeGeometry(int fid, QgsGeometry* geom);
+    bool changeGeometry( int fid, QgsGeometry* geom );
 
     /** changed an attribute value (but does not commit it) */
     bool changeAttributeValue( int fid, int field, QVariant value, bool emitSignal = true );
 
     /** add an attribute field (but does not commit it)
-        returns the field index or -1 in case of failure */
-    bool addAttribute( QString name, QString type );
+        returns true if the field was added
+      @note added in version 1.2 */
+    bool addAttribute( const QgsField &field );
 
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
@@ -687,6 +688,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Display labels */
     bool mLabelOn;
+
+    /**The current type of editing marker*/
+    QgsVectorLayer::VertexMarkerType mCurrentVertexMarkerType;
+
+    /**Flag if the vertex markers should be drawn only for selection (true) or for all features (false)*/
+    bool mVertexMarkerOnlyForSelection;
 
     /**List of overlays. Vector overlays will be rendered on top of all maplayers*/
     QList<QgsVectorOverlay*> mOverlays;

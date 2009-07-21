@@ -271,30 +271,26 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds & id )
   return TRUE;
 }
 
-bool QgsMemoryProvider::addAttributes( const QgsNewAttributesMap & attributes )
+bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  for ( QgsNewAttributesMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    QString name = it.key();
-    QString typeName = it.value();
-    QVariant::Type type;
-    if ( typeName == "int" )
-      type = QVariant::Int;
-    else if ( typeName == "double" )
-      type = QVariant::Double;
-    else if ( typeName == "string" )
-      type = QVariant::String;
-    else
+    switch ( it->type() )
     {
-      QgsDebugMsg( "Field type not supported: " + typeName );
-      continue;
+      case QVariant::Int:
+      case QVariant::Double:
+      case QVariant::String:
+        break;
+      default:
+        QgsDebugMsg( "Field type not supported: " + it->typeName() );
+        continue;
     }
 
     // add new field as a last one
     int nextId = -1;
     for ( QgsFieldMap::iterator it2 = mFields.begin(); it2 != mFields.end(); ++it2 )
       if ( it2.key() > nextId ) nextId = it2.key();
-    mFields[nextId+1] = QgsField( name, type, typeName );
+    mFields[nextId+1] = *it;
   }
   return TRUE;
 }

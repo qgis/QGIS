@@ -30,6 +30,7 @@
 #include "qgisapp.h"
 #include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
 
 
 class QgsAttributeTableTableDock : public QDockWidget
@@ -201,7 +202,7 @@ void QgsAttributeTableDialog::on_mCopySelectedRowsButton_clicked()
 
 void QgsAttributeTableDialog::on_mZoomMapToSelectedRowsButton_clicked()
 {
-  QgisApp::instance()->zoomToSelected();
+  QgisApp::instance()->mapCanvas()->zoomToSelected(mLayer);
 }
 
 void QgsAttributeTableDialog::on_mInvertSelectionButton_clicked()
@@ -425,11 +426,11 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mSelectedFeatures.clear();
-  
+
   if ( cbxSearchSelectedOnly->isChecked() )
   {
     QgsFeatureList selectedFeatures = mLayer->selectedFeatures();
-    for (QgsFeatureList::ConstIterator it = selectedFeatures.begin(); it != selectedFeatures.end(); ++it)
+    for ( QgsFeatureList::ConstIterator it = selectedFeatures.begin(); it != selectedFeatures.end(); ++it )
     {
       if ( searchTree->checkAgainst( mLayer->pendingFields(), it->attributeMap() ) )
         mSelectedFeatures << it->id();
@@ -437,7 +438,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
       // check if there were errors during evaluating
       if ( searchTree->hasError() )
         break;
-    } 
+    }
   }
   else
   {

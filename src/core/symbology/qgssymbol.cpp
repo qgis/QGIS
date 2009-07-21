@@ -25,6 +25,7 @@
 #include "qgsmarkercatalogue.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 #include <QPainter>
 #include <QDomNode>
@@ -220,6 +221,19 @@ void QgsSymbol::setNamedPointSymbol( QString name )
     {
       name = "svg:" + myLocalPath;
       QgsDebugMsg( "Svg found in alternative path" );
+    }
+    else if ( myInfo.isRelative() )
+    {
+      QFileInfo pfi( QgsProject::instance()->fileName() );
+      if ( pfi.exists() && QFile( pfi.canonicalPath() + QDir::separator() + myTempName ).exists() )
+      {
+        name = "svg:" + pfi.canonicalPath() + QDir::separator() + myTempName;
+        QgsDebugMsg( "Svg found in alternative path" );
+      }
+      else
+      {
+        QgsDebugMsg( "Svg not found in project path" );
+      }
     }
     else
     {
@@ -445,7 +459,29 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document, const QgsVec
   appendText( symbol, document, "lowervalue", mLowerValue );
   appendText( symbol, document, "uppervalue", mUpperValue );
   appendText( symbol, document, "label", mLabel );
-  appendText( symbol, document, "pointsymbol", pointSymbolName() );
+
+  QString name = pointSymbolName();
+  if ( name.startsWith( "svg:" ) )
+  {
+    name = name.mid( 4 );
+
+    QFileInfo fi( name );
+    if ( fi.exists() )
+    {
+      name = fi.canonicalFilePath();
+
+      QString dir = QFileInfo( QgsApplication::svgPath() ).canonicalFilePath();
+
+      if ( !dir.isEmpty() && name.startsWith( dir ) )
+      {
+        name = name.mid( dir.size() );
+      }
+    }
+
+    name = "svg:" + name;
+  }
+
+  appendText( symbol, document, "pointsymbol", name );
   appendText( symbol, document, "pointsize", QString::number( pointSize() ) );
 
   if ( vl )

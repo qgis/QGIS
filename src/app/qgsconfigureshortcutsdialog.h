@@ -22,31 +22,31 @@
 
 class QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsConfigureShortcutsDialog
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-    QgsConfigureShortcutsDialog(QWidget* parent = NULL);
+  public:
+    QgsConfigureShortcutsDialog( QWidget* parent = NULL );
 
     void populateActions();
 
-protected:
+  protected:
     void keyPressEvent( QKeyEvent * event );
     void keyReleaseEvent( QKeyEvent * event );
 
     QAction* currentAction();
 
-    void setGettingShortcut(bool getting);
-    void setCurrentActionShortcut(QKeySequence s);
+    void setGettingShortcut( bool getting );
+    void setCurrentActionShortcut( QKeySequence s );
     void updateShortcutText();
 
-public slots:
+  public slots:
     void changeShortcut();
     void resetShortcut();
     void setNoShortcut();
 
-    void actionChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+    void actionChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
 
-protected:
+  protected:
     bool mGettingShortcut;
     int mModifiers, mKey;
 };

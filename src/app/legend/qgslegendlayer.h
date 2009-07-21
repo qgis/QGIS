@@ -49,9 +49,7 @@ class QgsLegendLayer : public QgsLegendItem
     QgsLegendLayer( QTreeWidget*, QString );
     QgsLegendLayer( QString name );
     ~QgsLegendLayer();
-    /**Sets an icon characterising the type of layer(s) it contains.
-     Note: cannot be in the constructor because layers are added after creation*/
-    void setLayerTypeIcon();
+
     bool isLeafNode();
     QgsLegendItem::DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
     QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
@@ -70,10 +68,6 @@ class QgsLegendLayer : public QgsLegendItem
     /**Updates symbology of the layer and copies symbology to other layer files in the group*/
     void refreshSymbology( const QString& key, double widthScale = 1.0 );
 
-    /**Goes through all the legendlayerfiles and adds editing/overview pixmaps to the icon. If not all layer files
-    have the same editing/overview state, a tristate is applied*/
-    void updateIcon();
-
     /** called to add appropriate menu items to legend's popup menu */
     void addToPopupMenu( QMenu& theMenu, QAction* toggleEditingAction );
 
@@ -90,6 +84,10 @@ class QgsLegendLayer : public QgsLegendItem
 
     void saveAsShapefile();
     void saveSelectionAsShapefile();
+
+    /**Goes through all the legendlayerfiles and adds editing/overview pixmaps to the icon. If not all layer files
+    have the same editing/overview state, a tristate is applied*/
+    void updateIcon();
 
   protected:
 

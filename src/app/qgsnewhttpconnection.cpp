@@ -59,7 +59,7 @@ void QgsNewHttpConnection::accept()
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
     settings.remove( mBaseKey + mOriginalConnName );
-    settings.remove ( "/Qgis/WMS/" + mOriginalConnName );
+    settings.remove( "/Qgis/WMS/" + mOriginalConnName );
   }
   settings.setValue( key + "/url", txtUrl->text().trimmed() );
   settings.setValue( credentialsKey + "/username", txtUserName->text() );

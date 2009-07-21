@@ -23,7 +23,7 @@ class QgsVectorLayer;
 
 class QgsAttributeTableView: public QTableView
 {
-  //private slots:
+    //private slots:
     //void setRows(int rows);
 
   public:

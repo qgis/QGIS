@@ -1165,11 +1165,11 @@ void QgsGrassProvider::closeMap( int mapId )
 
     if ( mMaps[mapId].valid )
     {
-      bool mapsetunset = G__getenv( "MAPSET" )==NULL || *G__getenv( "MAPSET" )==0;
-      if( mapsetunset )
+      bool mapsetunset = G__getenv( "MAPSET" ) == NULL || *G__getenv( "MAPSET" ) == 0;
+      if ( mapsetunset )
         G__setenv(( char * )"MAPSET", mMaps[mapId].mapset.toAscii().data() );
       Vect_close( mMaps[mapId].map );
-      if( mapsetunset )
+      if ( mapsetunset )
         G__setenv(( char * )"MAPSET", "" );
     }
     mMaps[mapId].valid = false;

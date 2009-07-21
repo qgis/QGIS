@@ -67,7 +67,7 @@ QgsWmsProvider::QgsWmsProvider( QString const & uri )
   // URL may contain username/password information for a WMS
   // requiring authentication. In this case the URL is prefixed
   // with username=user,password=pass,url=http://xxx.xxx.xx/yyy...
-  mUserName= "";
+  mUserName = "";
   mPassword = "";
   setAuthentication( httpuri );
 
@@ -111,7 +111,7 @@ QgsWmsProvider::QgsWmsProvider( QString const & uri )
 void QgsWmsProvider::setAuthentication( QString uri )
 {
   // Strip off and store the user name and password (if they exist)
-  if ( ! uri.startsWith(" http:" ) )
+  if ( ! uri.startsWith( " http:" ) )
   {
     // uri potentially contains username and password
     QStringList parts = uri.split( "," );
@@ -454,6 +454,12 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
   url += "&";
   url += "FORMAT=" + imageMimeType;
 
+  //DPI parameter is accepted by QGIS mapserver (and ignored by the other WMS servers)
+  if(mDpi != -1)
+  {
+    url += "&DPI=" + QString::number(mDpi);
+  }
+
   //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
   if ( !imageMimeType.contains( "jpeg", Qt::CaseInsensitive ) && !imageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
   {
@@ -687,7 +693,7 @@ QByteArray QgsWmsProvider::retrieveUrl( QString url )
   QgsHttpTransaction http( url );
   QgsDebugMsg( "Setting creds: " + mUserName + "/" + mPassword );
   http.setCredentials( mUserName, mPassword );
-  
+
   // Do a passthrough for the status bar text
   connect(
     &http, SIGNAL( statusChanged( QString ) ),

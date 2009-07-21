@@ -65,13 +65,13 @@ void QgsPythonDialog::on_pbnNext_clicked()
     pos++;
     edtCmdLine->setText( history[pos] );
   }
-} 
+}
 
 void QgsPythonDialog::on_pbnExecute_clicked()
 {
   QString command = edtCmdLine->toPlainText();
 
-  QgsDebugMsg( QString("command: |%1|").arg( command ) );
+  QgsDebugMsg( QString( "command: |%1|" ).arg( command ) );
 
   if ( !command.isEmpty() )
   {

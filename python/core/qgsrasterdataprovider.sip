@@ -120,6 +120,14 @@ public:
      */
     virtual QString lastError() = 0;
 
+      /**Returns the dpi of the output device.
+      @note: this method was added in version 1.2*/
+    int dpi();
+
+    /**Sets the output device resolution.
+      @note: this method was added in version 1.2*/
+    void setDpi(int dpi);
+
 
 protected:
 

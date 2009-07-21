@@ -25,34 +25,35 @@
 
 #include "qgsgrassshell.h"
 
-extern "C" {
+extern "C"
+{
 #include <stdlib.h>
 }
 
-QgsGrassShell::QgsGrassShell(QgsGrassTools *tools, QTabWidget *parent, const char *name)
-        : QFrame(parent)
+QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const char *name )
+    : QFrame( parent )
 {
-    mTools = tools;
-    mTabWidget = parent;
+  mTools = tools;
+  mTabWidget = parent;
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-    QTermWidget *mTerminal = new QTermWidget(0, this);
-    initTerminal(mTerminal);
-    QPushButton *closeButton = new QPushButton(tr("Close"), this);
-    QShortcut *pasteShortcut = new QShortcut(QKeySequence(tr("Ctrl+Shift+V")), mTerminal);
-    QShortcut *copyShortcut = new QShortcut(QKeySequence(tr("Ctrl+Shift+C")), mTerminal);
+  QVBoxLayout *mainLayout = new QVBoxLayout( this );
+  QTermWidget *mTerminal = new QTermWidget( 0, this );
+  initTerminal( mTerminal );
+  QPushButton *closeButton = new QPushButton( tr( "Close" ), this );
+  QShortcut *pasteShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+V" ) ), mTerminal );
+  QShortcut *copyShortcut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+C" ) ), mTerminal );
 
-    mainLayout->addWidget(mTerminal);
-    mainLayout->addWidget(closeButton);
-    setLayout(mainLayout);
+  mainLayout->addWidget( mTerminal );
+  mainLayout->addWidget( closeButton );
+  setLayout( mainLayout );
 
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(closeShell()));
-    connect(mTerminal, SIGNAL(finished()), this, SLOT(closeShell()));
-    connect(pasteShortcut, SIGNAL(activated()), mTerminal, SLOT(pasteClipboard()));
-    connect(copyShortcut, SIGNAL(activated()), mTerminal, SLOT(copyClipboard()));
+  connect( closeButton, SIGNAL( clicked() ), this, SLOT( closeShell() ) );
+  connect( mTerminal, SIGNAL( finished() ), this, SLOT( closeShell() ) );
+  connect( pasteShortcut, SIGNAL( activated() ), mTerminal, SLOT( pasteClipboard() ) );
+  connect( copyShortcut, SIGNAL( activated() ), mTerminal, SLOT( copyClipboard() ) );
 
-    mTerminal->startShellProgram();
-    mTerminal->setFocus(Qt::MouseFocusReason);
+  mTerminal->startShellProgram();
+  mTerminal->setFocus( Qt::MouseFocusReason );
 }
 
 QgsGrassShell::~QgsGrassShell()
@@ -71,43 +72,43 @@ void QgsGrassShell::resizeTerminal()
 
 void QgsGrassShell::closeShell()
 {
-    int index = mTabWidget->indexOf(this);
-    mTabWidget->removeTab(index);
-    delete this;
+  int index = mTabWidget->indexOf( this );
+  mTabWidget->removeTab( index );
+  delete this;
 }
 
-void QgsGrassShell::initTerminal(QTermWidget *terminal)
+void QgsGrassShell::initTerminal( QTermWidget *terminal )
 {
-    QStringList args("");
-    QStringList env("");
-    // Set the shell program
-    QString shell = ::getenv("SHELL");
-    if (shell.isEmpty() || shell.isNull())
-    {
-        // if the shell isn't specified use the default one (/bin/bash)
-        terminal->setShellProgram(shell);
-    }
+  QStringList args( "" );
+  QStringList env( "" );
+  // Set the shell program
+  QString shell = ::getenv( "SHELL" );
+  if ( shell.isEmpty() || shell.isNull() )
+  {
+    // if the shell isn't specified use the default one (/bin/bash)
+    terminal->setShellProgram( shell );
+  }
 
-    // Set shell program arguments
-    QFileInfo shellInfo(shell);
-    if (shellInfo.fileName() == "bash" || shellInfo.fileName() == "sh")
-    {
-        args << "--norc";
-    }
-    else if (shellInfo.fileName() == "tcsh" || shellInfo.fileName() == "csh")
-    {
-        args << "-f";
-    }
-    terminal->setArgs(args);
+  // Set shell program arguments
+  QFileInfo shellInfo( shell );
+  if ( shellInfo.fileName() == "bash" || shellInfo.fileName() == "sh" )
+  {
+    args << "--norc";
+  }
+  else if ( shellInfo.fileName() == "tcsh" || shellInfo.fileName() == "csh" )
+  {
+    args << "-f";
+  }
+  terminal->setArgs( args );
 
-    // Set shell program enviroment variables
-    env << "GRASS_MESSAGE_FORMAT=";
-    env << "GRASS_UI_TERM=1";
-    env << "GISRC_MODE_MEMORY";
-    env << "PS1=GRASS > ";
-    env << "TERM=vt100";
-    terminal->setEnvironment(env);
+  // Set shell program enviroment variables
+  env << "GRASS_MESSAGE_FORMAT=";
+  env << "GRASS_UI_TERM=1";
+  env << "GISRC_MODE_MEMORY";
+  env << "PS1=GRASS > ";
+  env << "TERM=vt100";
+  terminal->setEnvironment( env );
 
-    // Look & Feel
-    terminal->setScrollBarPosition(QTermWidget::ScrollBarRight);
+  // Look & Feel
+  terminal->setScrollBarPosition( QTermWidget::ScrollBarRight );
 }

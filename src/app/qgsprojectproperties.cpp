@@ -80,6 +80,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     radManual->setChecked( true );
   }
 
+  cbxAbsolutePath->setChecked( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true ) );
+
   int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
   spinBoxDP->setValue( dp );
 
@@ -118,12 +120,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mAvoidIntersectionsCheckBox->setCheckState( Qt::Unchecked );
   }
 
-  bool ok;
-  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &ok );
-  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &ok );
-  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", &ok );
-  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", &ok );
-  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &ok );
+  bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk;
+  QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &layerIdListOk );
+  QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &enabledListOk );
+  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", & toleranceListOk);
+  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", & toleranceUnitListOk);
+  QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &snapToListOk );
 
   QStringList::const_iterator idIter = layerIdList.constBegin();
   QStringList::const_iterator enabledIter = enabledList.constBegin();
@@ -134,35 +136,71 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QgsMapLayer* currentLayer = 0;
 
   //create the new layer entries
-  for ( ; idIter != layerIdList.constEnd(); ++idIter, ++enabledIter, ++tolIter, ++snapToIter )
+  for ( ; idIter != layerIdList.constEnd(); ++idIter, ++enabledIter, ++tolIter, ++tolUnitIter, ++snapToIter )
   {
-    currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
+    if(layerIdListOk)
+    {
+      currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
+    }
+    else
+    {
+      break;
+    }
+
     if ( currentLayer )
     {
       LayerEntry newEntry;
       newEntry.layerName = currentLayer->name();
-      if (( *enabledIter ) == "enabled" )
+
+      newEntry.checked = false;
+      if(enabledListOk && enabledIter != enabledList.constEnd())
       {
-        newEntry.checked = true;
+        if (( *enabledIter ) == "enabled" )
+        {
+          newEntry.checked = true;
+        }
+      }
+
+      //snap to vertex / segment / vertex and segment
+      if(snapToListOk &&snapToIter != snapToList.constEnd())
+      {
+        if (( *snapToIter ) == "to_vertex" )
+        {
+          newEntry.snapTo = 0;
+        }
+        else if (( *snapToIter ) == "to_segment" )
+        {
+          newEntry.snapTo = 1;
+        }
+        else //to vertex and segment
+        {
+          newEntry.snapTo = 2;
+        }
       }
       else
       {
-        newEntry.checked = false;
-      }
-      if (( *snapToIter ) == "to_vertex" )
-      {
         newEntry.snapTo = 0;
       }
-      else if (( *snapToIter ) == "to_segment" )
+
+      //snap tolerance
+      if(toleranceListOk && tolIter != toleranceList.constEnd())
       {
-        newEntry.snapTo = 1;
+        newEntry.tolerance = tolIter->toDouble();
       }
-      else //to vertex and segment
+      else
       {
-        newEntry.snapTo = 2;
+        newEntry.tolerance = 0;
       }
-      newEntry.tolerance = tolIter->toDouble();
-      newEntry.toleranceUnit = tolUnitIter->toInt();
+
+      //snap tolerance unit
+      if (toleranceUnitListOk && tolUnitIter != toleranceUnitList.constEnd())
+      {
+        newEntry.toleranceUnit = tolUnitIter->toInt();
+      }
+      else
+      {
+        newEntry.toleranceUnit = 0;
+      }
       mSnappingLayerSettings.insert( *idIter, newEntry );
     }
   }
@@ -274,13 +312,12 @@ void QgsProjectProperties::apply()
   // number of decimal places for the manual option
   // Note. Qt 3.2.3 and greater have a function selectedId() that
   // can be used instead of the two part technique here
-  if ( radAutomatic->isChecked() )
-    QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", true );
-  else
-    QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", false );
+  QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", radAutomatic->isChecked() );
   QgsProject::instance()->writeEntry( "PositionPrecision", "/DecimalPlaces", spinBoxDP->value() );
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
+
+  QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->isChecked() );
 
   //set the colour for selections
   QColor myColour = pbnSelectionColour->color();

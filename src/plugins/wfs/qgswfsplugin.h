@@ -35,8 +35,6 @@ class QgsWFSPlugin: public QObject, public QgisPlugin
     void initGui();
     /**Unload the plugin and cleanup the GUI*/
     void unload();
-    //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
 
   private:
     QgisInterface* mIface;
@@ -44,6 +42,8 @@ class QgsWFSPlugin: public QObject, public QgisPlugin
 
   private slots:
     void showSourceDialog();
+    //! update the plugins theme when the app tells us its theme is changed
+    void setCurrentTheme( QString theThemeName );
 };
 
 #endif

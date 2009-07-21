@@ -424,7 +424,7 @@ void QgsDataSourceURI::setDataSource( const QString &schema,
                                       const QString &table,
                                       const QString &geometryColumn,
                                       const QString &sql,
-                                      const QString &keyColumn)
+                                      const QString &keyColumn )
 {
   mSchema = schema;
   mTable = table;

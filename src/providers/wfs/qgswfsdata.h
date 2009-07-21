@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
+#include "qgsfield.h"
 #include "qgspoint.h"
 #include <list>
 #include <set>
@@ -40,7 +41,7 @@ class QgsWFSData: public QObject
       QgsCoordinateReferenceSystem* srs,
       QList<QgsFeature*> &features,
       const QString& geometryAttribute,
-      const QSet<QString>& thematicAttributes,
+      const QMap<QString, QPair<int, QgsField> >& thematicAttributes,
       QGis::WkbType* wkbType );
     ~QgsWFSData();
 
@@ -150,7 +151,7 @@ class QgsWFSData: public QObject
     QList<QgsFeature*> &mFeatures;
     /**Name of geometry attribute*/
     QString mGeometryAttribute;
-    const QSet<QString> &mThematicAttributes;
+    const QMap<QString, QPair<int, QgsField> > &mThematicAttributes;
     QGis::WkbType* mWkbType;
     /**True if the request is finished*/
     bool mFinished;
@@ -171,8 +172,6 @@ class QgsWFSData: public QObject
     /**Similar to mCurrentWKB, but only the size*/
     std::list< std::list<int> > mCurrentWKBFragmentSizes;
     QString mAttributeName;
-    /**Index where the current attribute should be inserted*/
-    int mAttributeIndex;
     QString mTypeName;
     QgsApplication::endian_t mEndian;
     /**Coordinate separator for coordinate strings. Usually "," */

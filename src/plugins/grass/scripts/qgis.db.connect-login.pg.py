@@ -85,13 +85,10 @@ def main():
     user = options['user']
     password = options['password']
 
-    #if not maptable:
-    #	grass.fatal("There is no table connected to this map. Cannot join any column.")
-
     # Test connection
     conn = "dbname=" + database
     if host: conn += ",host=" + host
-    if port: conn += ",port=" + host
+    if port: conn += ",port=" + port
 
     # Unfortunately we cannot test untill user/password is set 
     if user or password:

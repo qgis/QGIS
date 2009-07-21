@@ -168,7 +168,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
-    bool addAttributes( const QgsNewAttributesMap & name );
+    bool addAttributes( const QList<QgsField> &attributes );
 
     /**Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,

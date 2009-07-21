@@ -218,6 +218,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mSearchRadiusVertexEditComboBox->setCurrentIndex( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt() );
 
   //vertex marker
+  mMarkersOnlyForSelectedCheckBox->setChecked(settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool());
+
   mMarkerStyleComboBox->addItem( tr( "Semi transparent circle" ) );
   mMarkerStyleComboBox->addItem( tr( "Cross" ) );
   mMarkerStyleComboBox->addItem( tr( "None" ) );
@@ -436,6 +438,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/search_radius_vertex_edit_unit",
                      ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::MapUnits : QgsTolerance::Pixels ) );
 
+  settings.setValue( "/qgis/digitizing/marker_only_for_selected", mMarkersOnlyForSelectedCheckBox->isChecked() );
 
   QString markerComboText = mMarkerStyleComboBox->currentText();
   if ( markerComboText == tr( "Semi transparent circle" ) )

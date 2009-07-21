@@ -36,7 +36,7 @@ QgsWFSData::QgsWFSData(
   QgsCoordinateReferenceSystem* srs,
   QList<QgsFeature*> &features,
   const QString& geometryAttribute,
-  const QSet<QString>& thematicAttributes,
+  const QMap<QString, QPair<int, QgsField> >& thematicAttributes,
   QGis::WkbType* wkbType )
     : QObject(),
     mUri( uri ),
@@ -81,9 +81,9 @@ int QgsWFSData::getWFSData()
   XML_SetCharacterDataHandler( p, QgsWFSData::chars );
 
   //start with empty extent
-  if(mExtent)
+  if ( mExtent )
   {
-      mExtent->set(0, 0, 0, 0);
+    mExtent->set( 0, 0, 0, 0 );
   }
 
   //separate host from query string
@@ -139,13 +139,13 @@ int QgsWFSData::getWFSData()
 
   delete progressDialog;
 
-  if(mExtent)
+  if ( mExtent )
   {
-    if(mExtent->isEmpty())
-      {
-        //reading of bbox from the server failed, so we calculate it less efficiently by evaluating the features
-        calculateExtentFromFeatures();
-      }
+    if ( mExtent->isEmpty() )
+    {
+      //reading of bbox from the server failed, so we calculate it less efficiently by evaluating the features
+      calculateExtentFromFeatures();
+    }
   }
 
   return 0; //soon
@@ -174,7 +174,7 @@ void QgsWFSData::handleProgressEvent( int progress, int totalSteps )
 void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
 {
   QString elementName( el );
-    QString localName = elementName.section( NS_SEPARATOR, 1, 1 );
+  QString localName = elementName.section( NS_SEPARATOR, 1, 1 );
   if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "coordinates" )
   {
     mParseModeStack.push( QgsWFSData::coordinate );
@@ -193,7 +193,6 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
   {
     mCurrentFeature = new QgsFeature( mFeatureCount );
-    mAttributeIndex = 0;
     mParseModeStack.push( QgsWFSData::featureMember );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Box" && mParseModeStack.top() == QgsWFSData::boundingBox )
@@ -262,15 +261,35 @@ void QgsWFSData::endElement( const XML_Char* el )
       mParseModeStack.pop();
     }
   }
-  else if ( localName == mAttributeName )
+  else if ( localName == mAttributeName ) //add a thematic attribute to the feature
   {
     if ( !mParseModeStack.empty() )
     {
       mParseModeStack.pop();
     }
 
-    mCurrentFeature->addAttribute( mAttributeIndex, QVariant( mStringCash ) );
-    ++mAttributeIndex;
+    //find index with attribute name
+    QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.find( mAttributeName );
+    if ( att_it != mThematicAttributes.constEnd() )
+    {
+      QVariant var;
+      switch ( att_it.value().second.type() )
+      {
+        case QVariant::Double:
+          var = QVariant( mStringCash.toDouble() );
+          break;
+        case QVariant::Int:
+          var = QVariant( mStringCash.toInt() );
+          break;
+        case QVariant::LongLong:
+          var = QVariant( mStringCash.toLongLong() );
+          break;
+        default: //string type is default
+          var = QVariant( mStringCash );
+          break;
+      }
+      mCurrentFeature->addAttribute( att_it.value().first, QVariant( mStringCash ) );
+    }
   }
   else if ( localName == mGeometryAttribute )
   {
@@ -294,10 +313,24 @@ void QgsWFSData::endElement( const XML_Char* el )
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
   {
+    //MH090531: Check if all feature attributes are initialised, sometimes attribute values are missing.
+    //We fill the not initialized ones with empty strings, otherwise the feature cannot be exported to shp later
+    QgsAttributeMap currentFeatureAttributes = mCurrentFeature->attributeMap();
+    QMap<QString, QPair<int, QgsField> >::const_iterator att_it = mThematicAttributes.constBegin();
+    for ( ; att_it != mThematicAttributes.constEnd(); ++att_it )
+    {
+      int attIndex = att_it.value().first;
+      QgsAttributeMap::const_iterator findIt = currentFeatureAttributes.find( attIndex );
+      if ( findIt == currentFeatureAttributes.constEnd() )
+      {
+        mCurrentFeature->addAttribute( attIndex, QVariant( "" ) );
+      }
+    }
+
+
     mCurrentFeature->setGeometryAndOwnership( mCurrentWKB, mCurrentWKBSize );
     mFeatures << mCurrentFeature;
     ++mFeatureCount;
-    //qWarning("Removing featureMember from stack");
     mParseModeStack.pop();
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "Point" )
@@ -815,37 +848,37 @@ QWidget* QgsWFSData::findMainWindow() const
 
 void QgsWFSData::calculateExtentFromFeatures() const
 {
-    if(mFeatures.size() < 1)
+  if ( mFeatures.size() < 1 )
+  {
+    return;
+  }
+
+  QgsRectangle bbox;
+
+  QgsFeature* currentFeature = 0;
+  QgsGeometry* currentGeometry = 0;
+  bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
+
+  for ( int i = 0; i < mFeatures.size(); ++i )
+  {
+    currentFeature = mFeatures[i];
+    if ( !currentFeature )
     {
-        return;
+      continue;
     }
-
-    QgsRectangle bbox;
-
-    QgsFeature* currentFeature = 0;
-    QgsGeometry* currentGeometry = 0;
-    bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
-
-    for(int i = 0; i < mFeatures.size(); ++i)
+    currentGeometry = currentFeature->geometry();
+    if ( currentGeometry )
     {
-        currentFeature = mFeatures[i];
-        if(!currentFeature)
-        {
-            continue;
-        }
-        currentGeometry = currentFeature->geometry();
-        if(currentGeometry)
-        {
-            if(!bboxInitialised)
-            {
-                bbox = currentGeometry->boundingBox();
-                bboxInitialised = true;
-            }
-            else
-            {
-                bbox.unionRect(currentGeometry->boundingBox());
-            }
-        }
+      if ( !bboxInitialised )
+      {
+        bbox = currentGeometry->boundingBox();
+        bboxInitialised = true;
+      }
+      else
+      {
+        bbox.unionRect( currentGeometry->boundingBox() );
+      }
     }
-    (*mExtent) = bbox;
+  }
+  ( *mExtent ) = bbox;
 }

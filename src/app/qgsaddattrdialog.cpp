@@ -17,6 +17,7 @@
 
 #include "qgsaddattrdialog.h"
 #include "qgsvectordataprovider.h"
+#include "qgslogger.h"
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorDataProvider* provider, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ), mDataProvider( provider )
@@ -24,31 +25,66 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorDataProvider* provider, QWidget *pa
   setupUi( this );
 
   //fill data types into the combo box
-  const QgsNativeTypeMap &typelist = mDataProvider->supportedNativeTypes();
+  const QList< QgsVectorDataProvider::NativeType > &typelist = mDataProvider->nativeTypes();
 
-  for ( QgsNativeTypeMap::const_iterator it = typelist.constBegin(); it != typelist.constEnd(); ++it )
+  for ( int i = 0; i < typelist.size(); i++ )
   {
-    mTypeBox->addItem( it.key() );
+    QgsDebugMsg( QString( "name:%1 type:%2 typeName:%3 length:%4-%5 prec:%6-%7" )
+                 .arg( typelist[i].mTypeDesc )
+                 .arg( typelist[i].mType )
+                 .arg( typelist[i].mTypeName )
+                 .arg( typelist[i].mMinLen ).arg( typelist[i].mMaxLen )
+                 .arg( typelist[i].mMinPrec ).arg( typelist[i].mMaxPrec ) );
+
+    mTypeBox->addItem( typelist[i].mTypeDesc );
+    mTypeBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole );
+    mTypeBox->setItemData( i, typelist[i].mTypeName, Qt::UserRole + 1 );
+    mTypeBox->setItemData( i, typelist[i].mMinLen, Qt::UserRole + 2 );
+    mTypeBox->setItemData( i, typelist[i].mMaxLen, Qt::UserRole + 3 );
+    mTypeBox->setItemData( i, typelist[i].mMinPrec, Qt::UserRole + 4 );
+    mTypeBox->setItemData( i, typelist[i].mMaxPrec, Qt::UserRole + 5 );
   }
+
+  on_mTypeBox_currentIndexChanged( 0 );
 }
 
-QgsAddAttrDialog::QgsAddAttrDialog( const std::list<QString>& typelist, QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), mDataProvider( 0 )
+void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
 {
-  setupUi( this );
+  mTypeName->setText( mTypeBox->itemData( idx, Qt::UserRole + 1 ).toString() );
 
-  for ( std::list<QString>::const_iterator iter = typelist.begin();iter != typelist.end();++iter )
-  {
-    mTypeBox->addItem( *iter );
-  }
+  mLength->setMinimum( mTypeBox->itemData( idx, Qt::UserRole + 2 ).toInt() );
+  mLength->setMaximum( mTypeBox->itemData( idx, Qt::UserRole + 3 ).toInt() );
+  mLength->setVisible( mLength->minimum() < mLength->maximum() );
+  if ( mLength->value() < mLength->minimum() )
+    mLength->setValue( mLength->minimum() );
+  if ( mLength->value() > mLength->maximum() )
+    mLength->setValue( mLength->maximum() );
+
+  mPrec->setMinimum( mTypeBox->itemData( idx, Qt::UserRole + 4 ).toInt() );
+  mPrec->setMaximum( mTypeBox->itemData( idx, Qt::UserRole + 5 ).toInt() );
+  mPrec->setVisible( mPrec->minimum() < mPrec->maximum() );
+  if ( mPrec->value() < mPrec->minimum() )
+    mPrec->setValue( mPrec->minimum() );
+  if ( mPrec->value() > mPrec->maximum() )
+    mPrec->setValue( mPrec->maximum() );
 }
 
-QString QgsAddAttrDialog::name() const
+QgsField QgsAddAttrDialog::field() const
 {
-  return mNameEdit->text();
-}
+  QgsDebugMsg( QString( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" )
+               .arg( mTypeBox->currentIndex() )
+               .arg( mNameEdit->text() )
+               .arg( mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toInt() )
+               .arg( mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole + 1 ).toString() )
+               .arg( mLength->value() )
+               .arg( mPrec->value() )
+               .arg( mCommentEdit->text() ) );
 
-QString QgsAddAttrDialog::type() const
-{
-  return mTypeBox->currentText();
+  return QgsField(
+           mNameEdit->text(),
+           ( QVariant::Type ) mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toInt(),
+           mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole + 1 ).toString(),
+           mLength->value(),
+           mPrec->value(),
+           mCommentEdit->text() );
 }

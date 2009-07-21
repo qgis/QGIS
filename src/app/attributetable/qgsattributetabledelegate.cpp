@@ -22,10 +22,10 @@
 #include "qgsattributetabledelegate.h"
 #include "qgsvectordataprovider.h"
 
-QWidget * QgsAttributeTableDelegate::createEditor( 
-    QWidget *parent, 
-    const QStyleOptionViewItem &option, 
-    const QModelIndex &index ) const
+QWidget * QgsAttributeTableDelegate::createEditor(
+  QWidget *parent,
+  const QStyleOptionViewItem &option,
+  const QModelIndex &index ) const
 {
   QWidget *editor = QItemDelegate::createEditor( parent, option, index );
 
@@ -51,9 +51,9 @@ QWidget * QgsAttributeTableDelegate::createEditor(
 }
 
 
-void QgsAttributeTableDelegate::paint( QPainter * painter, 
-    const QStyleOptionViewItem & option, 
-    const QModelIndex & index ) const
+void QgsAttributeTableDelegate::paint( QPainter * painter,
+                                       const QStyleOptionViewItem & option,
+                                       const QModelIndex & index ) const
 {
   QItemDelegate::paint( painter, option, index );
 

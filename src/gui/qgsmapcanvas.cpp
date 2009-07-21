@@ -613,18 +613,22 @@ void QgsMapCanvas::mapUnitsChanged()
   refresh();
 }
 
-void QgsMapCanvas::zoomToSelected()
+void QgsMapCanvas::zoomToSelected(QgsVectorLayer* layer)
 {
   if ( mDrawing )
   {
     return;
   }
 
-  QgsVectorLayer *lyr = dynamic_cast < QgsVectorLayer * >( mCurrentLayer );
-
-  if ( lyr )
+  if (layer == NULL)
   {
-    QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( lyr, lyr->boundingBoxOfSelected() );
+    // use current layer by default
+    layer = dynamic_cast < QgsVectorLayer * >( mCurrentLayer );
+  }
+
+  if ( layer )
+  {
+    QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
 
     // no selected features, only one selected point feature
     //or two point features with the same x- or y-coordinates

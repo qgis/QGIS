@@ -26,36 +26,36 @@
   */
 class QgsShortcutsManager
 {
-public:
+  public:
 
-  //! return instance of the manager
-  static QgsShortcutsManager* instance();
+    //! return instance of the manager
+    static QgsShortcutsManager* instance();
 
-  //! add action to the manager so the shortcut can be changed in GUI
-  bool registerAction( QAction* action, QString defaultShortcut = QString() );
+    //! add action to the manager so the shortcut can be changed in GUI
+    bool registerAction( QAction* action, QString defaultShortcut = QString() );
 
-  //! remove action from the manager
-  bool unregisterAction( QAction* action );
+    //! remove action from the manager
+    bool unregisterAction( QAction* action );
 
-  //! get list of actions in the manager
-  QList<QAction*> listActions();
+    //! get list of actions in the manager
+    QList<QAction*> listActions();
 
-  //! return default shortcut for action. Empty string means no shortcut
-  QString actionDefaultShortcut( QAction* action );
+    //! return default shortcut for action. Empty string means no shortcut
+    QString actionDefaultShortcut( QAction* action );
 
-  //! modify action's shortcut
-  bool setActionShortcut( QAction* action, QString shortcut );
+    //! modify action's shortcut
+    bool setActionShortcut( QAction* action, QString shortcut );
 
-  //! return action which is associated for the shortcut, NULL if no action is associated
-  QAction* actionForShortcut( QKeySequence s );
+    //! return action which is associated for the shortcut, NULL if no action is associated
+    QAction* actionForShortcut( QKeySequence s );
 
-protected:
-  QgsShortcutsManager();
+  protected:
+    QgsShortcutsManager();
 
-  typedef QHash<QAction*, QString> ActionsHash;
+    typedef QHash<QAction*, QString> ActionsHash;
 
-  ActionsHash mActions;
-  static QgsShortcutsManager* mInstance;
+    ActionsHash mActions;
+    static QgsShortcutsManager* mInstance;
 };
 
 #endif // QGSSHORTCUTSMANAGER_H

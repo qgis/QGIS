@@ -160,17 +160,16 @@ void QgsComposerMap::cache( void )
     h = 5000;
   }
 
-  mCachePixmap = QPixmap( w, h );
+  mCacheImage = QImage( w, h,  QImage::Format_ARGB32);
+  mCacheImage.fill(brush().color().rgb()); //consider the item background brush
   double mapUnitsPerPixel = mExtent.width() / w;
 
   // WARNING: ymax in QgsMapToPixel is device height!!!
   QgsMapToPixel transform( mapUnitsPerPixel, h, mExtent.yMinimum(), mExtent.xMinimum() );
 
-  mCachePixmap.fill( QColor( 255, 255, 255 ) );
+  QPainter p( &mCacheImage );
 
-  QPainter p( &mCachePixmap );
-
-  draw( &p, mExtent, QSize( w, h ), mCachePixmap.logicalDpiX() );
+  draw( &p, mExtent, QSize( w, h ), mCacheImage.logicalDpiX() );
   p.end();
   mCacheUpdated = true;
 }
@@ -206,11 +205,11 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     //client functions
 
     // Scale so that the cache fills the map rectangle
-    double scale = 1.0 * QGraphicsRectItem::rect().width() / mCachePixmap.width();
+    double scale = 1.0 * QGraphicsRectItem::rect().width() / mCacheImage.width();
 
     painter->save();
     painter->scale( scale, scale );
-    painter->drawPixmap( mXOffset / scale, mYOffset / scale, mCachePixmap );
+    painter->drawImage( mXOffset / scale, mYOffset / scale, mCacheImage );
     painter->restore();
   }
   else if ( mComposition->plotStyle() == QgsComposition::Print ||

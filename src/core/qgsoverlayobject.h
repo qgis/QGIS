@@ -45,7 +45,7 @@ class CORE_EXPORT QgsOverlayObject
     @note: this function is deprecated. Please use geometry() and QgsGeometry::asGeos instead*/
     GEOSGeometry* getGeosGeometry();
     /**Feature geometry is released when object is destructed so this function is empty. This function is deprecated and does nothing*/
-    void releaseGeosGeometry( GEOSGeometry *the_geom ) {}
+    void releaseGeosGeometry( GEOSGeometry *the_geom ) { Q_UNUSED( the_geom ); }
 
     //getters
     int width() const {return mWidth;}
