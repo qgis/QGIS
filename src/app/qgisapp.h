@@ -56,6 +56,7 @@ class QgsPythonDialog;
 class QgsPythonUtils;
 class QgsRasterLayer;
 class QgsRectangle;
+class QgsUndoWidget;
 class QgsVectorLayer;
 
 #include <QMainWindow>
@@ -340,6 +341,8 @@ class QgisApp : public QMainWindow
     void zoomToNext();
     //! Zoom to selected features
     void zoomToSelected();
+
+    void updateUndoActions();
 
     //! cuts selected features on the active layer to the clipboard
     /**
@@ -667,7 +670,7 @@ class QgisApp : public QMainWindow
     bool saveDirty();
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
       @return 0 in case of error*/
-    QgsGeometry* unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& featureList) const;
+    QgsGeometry* unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& featureList);
 
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );
@@ -713,6 +716,9 @@ class QgisApp : public QMainWindow
     QAction *mActionFileSeparator4;
     QAction *mActionExit;
 
+    QAction *mActionUndo;
+    QAction *mActionRedo;
+    QAction *mActionEditSeparator0;
     QAction *mActionCutFeatures;
     QAction *mActionCopyFeatures;
     QAction *mActionPasteFeatures;
@@ -963,6 +969,8 @@ class QgisApp : public QMainWindow
     QgsPythonUtils* mPythonUtils;
 
     static QgisApp *smInstance;
+
+    QgsUndoWidget* mUndoWidget;
 
 };
 

@@ -28,7 +28,6 @@
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgssnapper.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
 
 class QPainter;
@@ -42,10 +41,10 @@ class QgsMapToPixel;
 class QgsLabel;
 class QgsRectangle;
 class QgsRenderer;
+class QgsUndoCommand;
 class QgsVectorDataProvider;
 class QgsVectorOverlay;
 
-class QgsGeometry;
 class QgsRectangle;
 
 class QgsFeatureRendererV2;
@@ -75,7 +74,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Classification,
       EditRange,
       SliderRange,
-      FileName
+      FileName,
+      Enumeration,
+      Immutable /*The attribute value should not be changed in the attribute form*/
     };
 
     struct RangeData
@@ -475,6 +476,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     */
     QgsVectorOverlay* findOverlayByType( const QString& typeName );
 
+
+    /**
+     * Create edit command for undo/redo operations
+     * @param text text which is to be displayed in undo window
+     */
+    void beginEditCommand(QString text);
+
+    /** Finish edit command and add it to undo/redo stack */
+    void endEditCommand();
+
+    /** Destroy active command and deletes all changes in it */
+    void destroyEditCommand();
+
+    /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand. */
+    void undoEditCommand(QgsUndoCommand* cmd);
+
+    /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand. */
+    void redoEditCommand(QgsUndoCommand* cmd);
+
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
     void select( int featureId, bool emitSignal = TRUE );
@@ -599,6 +619,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Update feature with uncommited geometry updates*/
     void updateFeatureGeometry( QgsFeature &f );
 
+    /** Record changed geometry, store in active command (if any) */
+    void editGeometryChange( int featureId, QgsGeometry& geometry );
+
+    /** Record added feature, store in active command (if any) */
+    void editFeatureAdd(QgsFeature& feature);
+
+    /** Record deleted feature, store in active command (if any) */
+    void editFeatureDelete(int featureId);
+
+    /** Record changed attribute, store in active command (if any) */
+    void editAttributeChange( int featureId, int field, QVariant value );
+
+
   private:                       // Private attributes
 
     /** Update threshold for drawing features as they are read. A value of zero indicates
@@ -712,6 +745,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QSet<int> mFetchConsidered;
     QgsGeometryMap::iterator mFetchChangedGeomIt;
     QgsFeatureList::iterator mFetchAddedFeaturesIt;
+
+    QgsUndoCommand * mActiveCommand;
 };
 
 #endif

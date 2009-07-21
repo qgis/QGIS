@@ -137,12 +137,12 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
 
   double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
   double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
-
+  vlayer->beginEditCommand( tr("Feature moved") );
   vlayer->translateFeature( mMovedFeature, dx, dy );
-
   delete mRubberBand;
   mRubberBand = 0;
   mCanvas->refresh();
+  vlayer->endEditCommand();
 }
 
 //! called when map tool is being deactivated

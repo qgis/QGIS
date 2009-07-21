@@ -18,6 +18,7 @@
 
 #include "qgsmaptoolvertexedit.h"
 #include "qgsfeature.h"
+#include "qgsvertexmarker.h"
 #include <QRect>
 #include <QRubberBand>
 
@@ -31,7 +32,8 @@ struct VertexEntry
    bool selected;
    QgsPoint point;
    int equals;
-   QgsRubberBand *vertexMarker;;
+   //QgsRubberBand *vertexMarker;
+   QgsVertexMarker* vertexMarker;
    bool inRubberBand;
    int rubberBandNr;
    int index;
@@ -143,10 +145,18 @@ class SelectionFeature
      */
     void cleanRubberBandsData();
 
-    void setMarkerCenter(QgsRubberBand* marker, QgsPoint center);
+    /**
+     * Function connecting all necessary thing to create vertex marker
+     * @param center center of marker
+     * @return created vertex marker
+     */
+    QgsVertexMarker* createVertexMarker(QgsPoint center);
 
-    QgsRubberBand* createRubberBandMarker(QgsPoint center);
-
+    /**
+     * Getter for getting vector layer which selection is working
+     * @return used vector layer
+     */
+    QgsVectorLayer* vlayer();
 
 
   private:
@@ -183,6 +193,7 @@ class SelectionFeature
 
     QgsFeature* mFeature;
     int mFeatureId;
+    bool mFeatureSelected;
     QgsVectorLayer* mVlayer;
     QgsRubberBand* mRubberBand;
     QList<VertexEntry> mVertexMap;
@@ -192,6 +203,7 @@ class SelectionFeature
 /**A maptool to move/deletes/adds vertices of line or polygon fetures*/
 class QgsMapToolNodeTool: public QgsMapToolVertexEdit
 {
+    Q_OBJECT
   public:
     QgsMapToolNodeTool( QgsMapCanvas* canvas );
     virtual ~QgsMapToolNodeTool();
@@ -215,13 +227,50 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      * Returns closest vertex to given point from selected feature
      */
     QgsPoint getClosestVertex(QgsPoint point);
-    
+
+  protected slots:
+    /**
+     * Processing incomming signal of deleted feature (for deletion of selected feature)
+     * @param featureId id of deleted feature
+     */
+    void featureDeleted( int featureId );
+
+    /**
+     * Processing incomming signal of deleted feature (for deletion of selected feature)
+     * @param featureId id of deleted feature
+     */
+    void layerModified( bool onlyGeometry );
+
+    /**
+     * Processing when layers are changed problem when layer is closed
+     */
+    void layersChanged();
 
   private:
+
+    void connectSignals(QgsVectorLayer* vlayer);
 
     /** Deletes the rubber band pointers
      and clears mRubberBands*/
     void removeRubberBands();
+
+    /**
+     * Creating rubber band marker for movin of point
+     * @param center coordinates of point to be moved
+     * @param vlayer vector layer on which we are working
+     */
+    QgsRubberBand* createRubberBandMarker(QgsPoint center, QgsVectorLayer* vlayer);
+
+    /**
+     * Function to check if selected feature exists and is same with original one
+     * @param vlayer vector layer for checking
+     */
+    bool checkCorrectnessOfFeature(QgsVectorLayer* vlayer);
+
+    /**
+     * Creates rubberbands for moving points
+     */
+    void createMovingRubberBands();
 
     /** The position of the vertex to move (in map coordinates) to exclude later from snapping*/
     QList<QgsPoint> mExcludePoint;
@@ -244,7 +293,7 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     /** flag if crtl is pressed */
     bool mCtrl;
 
-    /** flag if selection of another frature can occur */
+    /** flag if selection of another feature can occur */
     bool mSelectAnother;
 
     /** feature id of another feature where user clicked */
@@ -261,6 +310,12 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
 
     /** rectangle defining area for selecting vertexes */
     QRect* mRect;
+
+    /** flag that tells that tool is currently updating feature to do not act on change signal */
+    bool mChangingGeometry;
+
+    /** flag to tell if edition points */
+    bool mIsPoint;
 
 };
 

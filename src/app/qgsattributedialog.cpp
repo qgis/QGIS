@@ -132,6 +132,26 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       }
       break;
 
+      case QgsVectorLayer::Enumeration:
+      {
+        QStringList enumValues;
+        mLayer->dataProvider()->enumValues(it.key(), enumValues);
+
+        QComboBox *cb = new QComboBox();
+        QStringList::const_iterator s_it = enumValues.constBegin();
+        for(; s_it != enumValues.constEnd(); ++s_it)
+        {
+          cb->addItem(*s_it);
+        }
+        int idx = cb->findText( myFieldValue.toString() );
+        if ( idx >= 0 )
+        {
+          cb->setCurrentIndex( idx );
+        }
+        myWidget = cb;
+      }
+      break;
+
       case QgsVectorLayer::ValueMap:
       {
         const QMap<QString, QVariant> &map = vl->valueMap( it.key() );
@@ -218,10 +238,15 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       case QgsVectorLayer::LineEdit:
       case QgsVectorLayer::UniqueValuesEditable:
+      case QgsVectorLayer::Immutable:
       default:
       {
         QLineEdit *le = new QLineEdit( myFieldValue.toString() );
 
+        if ( editType == QgsVectorLayer::Immutable)
+        {
+          le->setEnabled(false);
+        }
         if ( editType == QgsVectorLayer::UniqueValuesEditable )
         {
           QList<QVariant> values;

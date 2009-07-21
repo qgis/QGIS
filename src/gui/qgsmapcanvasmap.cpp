@@ -33,10 +33,6 @@ QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
 void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* )
 {
   //refreshes the canvas map with the current offscreen image
-  if ( mUseQImageToRender )
-  {
-    mPixmap = QPixmap::fromImage( mImage );
-  }
   p->drawPixmap( 0, 0, mPixmap );
 }
 
@@ -73,6 +69,11 @@ void QgsMapCanvasMap::render()
     // use temporary image for rendering
     mImage.fill( mBgColor.rgb() );
 
+    // clear the pixmap so that old map won't be displayed while rendering
+    // TODO: do the canvas updates wisely -> this wouldn't be needed
+    mPixmap = QPixmap(mImage.size());
+    mPixmap.fill( mBgColor.rgb() );
+
     QPainter paint;
     paint.begin( &mImage );
     // Clip drawing to the QImage
@@ -87,7 +88,7 @@ void QgsMapCanvasMap::render()
     paint.end();
 
     // convert QImage to QPixmap to acheive faster drawing on screen
-    //mPixmap = QPixmap::fromImage(image);
+    mPixmap = QPixmap::fromImage(mImage);
   }
   else
   {
@@ -112,4 +113,14 @@ QPaintDevice& QgsMapCanvasMap::paintDevice()
   {
     return mPixmap;
   }
+}
+
+void QgsMapCanvasMap::updateContents()
+{
+  // make sure we're using current contents
+  if ( mUseQImageToRender )
+    mPixmap = QPixmap::fromImage(mImage);
+
+  // trigger update of this item
+  update();
 }

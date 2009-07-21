@@ -93,9 +93,9 @@ int QgsInterpolator::cacheBaseData()
       {
         QgsAttributeMap attMap = theFeature.attributeMap();
         QgsAttributeMap::const_iterator att_it = attMap.find( mValueAttribute );
-        if ( att_it == attMap.end() ) //attribute not found, something must be wrong
+        if ( att_it == attMap.end() ) //attribute not found, something must be wrong (e.g. NULL value)
         {
-          return 3;
+          continue;
         }
         attributeValue = att_it.value().toDouble( &attributeConversionOk );
         if ( !attributeConversionOk || isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation

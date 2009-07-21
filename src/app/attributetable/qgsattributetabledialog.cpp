@@ -114,6 +114,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
+  delete mSelectionModel;
 }
 
 void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
@@ -279,7 +280,7 @@ void QgsAttributeTableDialog::updateRowSelection( int index )
   // map index to filter model
   //index = mFilterModel->mapFromSource(mModel->index(index, 0)).row();
 
-  if ( mView->shiftPressed )
+  if ( mView->shiftPressed() )
   {
     QgsDebugMsg( "shift" );
     // get the first and last index of the rows to be selected/deselected
@@ -307,7 +308,7 @@ void QgsAttributeTableDialog::updateRowSelection( int index )
 
     mLastClickedHeaderIndex = last;
   }
-  else if ( mView->ctrlPressed )
+  else if ( mView->ctrlPressed() )
   {
     QgsDebugMsg( "ctrl" );
     // update the single row selection, without starting a new selection

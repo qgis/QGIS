@@ -191,6 +191,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      *  @param values reference to the list of unique values */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues );
 
+    /**Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
+      or if the given attribute is not an enum type.
+     * @param index the index of the attribute
+     * @param enumList reference to the list to fill
+      @note: added in version 1.2*/
+    virtual void enumValues( int index, QStringList& enumList);
+
     /**Returns true if layer is valid
     */
     bool isValid();
@@ -337,6 +344,19 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Load the field list
     */
     void loadFields();
+
+    /**Parses the enum_range of an attribute and inserts the possible values into a stringlist
+    @param enumValues the stringlist where the values are appended
+    @param attributeName the name of the enum attribute
+    @return true in case of success and fals in case of error (e.g. if the type is not an enum type)*/
+    bool parseEnumRange(QStringList& enumValues, const QString& attributeName) const;
+
+    /** Parses the possible enum values of a domain type (given in the check constraint of the domain type)
+    @param enumValues Reference to list that receives enum values
+    @param attributeName Name of the domain type attribute
+    @return true in case of success and false in case of error (e.g. if the attribute is not a domain type or does not have a check constraint)
+    */
+    bool parseDomainCheckConstraint(QStringList& enumValues, const QString& attributeName) const;
 
     bool mFetching;   // true if a cursor was declared
     std::vector < QgsFeature > features;

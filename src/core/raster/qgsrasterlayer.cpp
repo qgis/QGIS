@@ -1555,12 +1555,13 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
       int newTransparency;
       for ( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
       {
+        QRgb* myLineBuffer = ( QRgb* ) transparentImageCopy->scanLine( myHeightRunner );
         for ( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
         {
           myRgb = image->pixel( myWidthRunner, myHeightRunner );
           //combine transparency from WMS and layer transparency
           newTransparency = ( double ) mTransparencyLevel / 255.0 * ( double )( qAlpha( myRgb ) );
-          image->setPixel( myWidthRunner, myHeightRunner, qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), newTransparency ) );
+          myLineBuffer[ myWidthRunner ] = qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), newTransparency );
         }
       }
     }
@@ -2864,13 +2865,13 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
       double myValue = 0.0;
       for ( int myRow = 0; myRow < mySize; myRow++ )
       {
+        QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
         for ( int myCol = 0; myCol < mySize; myCol++ )
         {
-
           myValue = myStep * ( double )( myCol + myRow * mySize );
           int c1, c2, c3;
           myShader.shade( myValue, &c1, &c2, &c3 );
-          myQImage.setPixel( myCol, myRow, qRgb( c1, c2, c3 ) );
+          myLineBuffer[ myCol ] = qRgb( c1, c2, c3 );
         }
       }
 
@@ -4261,7 +4262,7 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   }
 
   QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
-  myQImage.fill( qRgba( 255, 255, 255, 0 ) ); // fill transparent
+  QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
   QgsRasterBandStats myRedBandStats;
   QgsRasterBandStats myGreenBandStats;
@@ -4318,30 +4319,34 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   QgsContrastEnhancement* myBlueContrastEnhancement = contrastEnhancement( myBlueBandNo );
 
   QgsDebugMsg( "Starting main render loop" );
-  for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
+  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
   {
-    for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaXDim; ++myRow )
+    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
+    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
     {
       myRedValue   = readValue( myGdalRedData, ( GDALDataType )myRedType,
-                                myColumn * theRasterViewPort->drawableAreaXDim + myRow );
+                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
       myGreenValue = readValue( myGdalGreenData, ( GDALDataType )myGreenType,
-                                myColumn * theRasterViewPort->drawableAreaXDim + myRow );
+                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
       myBlueValue  = readValue( myGdalBlueData, ( GDALDataType )myBlueType,
-                                myColumn * theRasterViewPort->drawableAreaXDim + myRow );
+                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
 
       if ( mValidNoDataValue && (( myRedValue == mNoDataValue || myRedValue != myRedValue ) || ( myGreenValue == mNoDataValue || myGreenValue != myGreenValue ) || ( myBlueValue == mNoDataValue || myBlueValue != myBlueValue ) ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       if ( !myRedContrastEnhancement->isValueInDisplayableRange( myRedValue ) || !myGreenContrastEnhancement->isValueInDisplayableRange( myGreenValue ) || !myBlueContrastEnhancement->isValueInDisplayableRange( myBlueValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myRedValue, myGreenValue, myBlueValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
@@ -4356,7 +4361,7 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
         myStretchedBlueValue = 255 - myStretchedBlueValue;
       }
 
-      myQImage.setPixel( myRow, myColumn, qRgba( myStretchedRedValue, myStretchedGreenValue, myStretchedBlueValue, myAlphaValue ) );
+      myLineBuffer[ myColumn ] = qRgba( myStretchedRedValue, myStretchedGreenValue, myStretchedBlueValue, myAlphaValue );
     }
   }
   //free the scanline memory
@@ -4432,7 +4437,7 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
   }
 
   QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
-  myQImage.fill( qRgba( 255, 255, 255, 0 ) ); // fill transparent
+  QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
   double myPixelValue = 0.0;
   int myRedValue = 0;
@@ -4441,41 +4446,45 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
   int myAlphaValue = 0;
 
   QgsDebugMsg( "Starting main render loop" );
-  for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
+  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
   {
-    for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaXDim; ++myRow )
+    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
+    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
     {
       myRedValue = 0;
       myGreenValue = 0;
       myBlueValue = 0;
       myPixelValue = readValue( myGdalScanData, ( GDALDataType )myDataType,
-                                myColumn * theRasterViewPort->drawableAreaXDim + myRow );
+                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
 
       if ( mValidNoDataValue && ( myPixelValue == mNoDataValue || myPixelValue != myPixelValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       if ( mInvertColor )
       {
         //Invert flag, flip blue and read
-        myQImage.setPixel( myRow, myColumn, qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue ) );
+        myLineBuffer[ myColumn ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
       }
       else
       {
         //Normal
-        myQImage.setPixel( myRow, myColumn, qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue ) );
+        myLineBuffer[ myColumn ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
       }
     }
   }
@@ -4516,7 +4525,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
   }
 
   QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
-  myQImage.fill( qRgba( 255, 255, 255, 0 ) ); // fill transparent
+  QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
   double myPixelValue = 0.0;
   int myRedValue = 0;
@@ -4525,29 +4534,33 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
   int myAlphaValue = 0;
 
   QgsDebugMsg( "Starting main render loop" );
-  for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
+  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
   {
-    for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaXDim; ++myRow )
+    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
+    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
     {
       myRedValue = 0;
       myGreenValue = 0;
       myBlueValue = 0;
       myPixelValue = readValue( myGdalScanData, ( GDALDataType )myDataType,
-                                myColumn * theRasterViewPort->drawableAreaXDim + myRow );
+                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
 
       if ( mValidNoDataValue && ( myPixelValue == mNoDataValue || myPixelValue != myPixelValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
@@ -4555,13 +4568,13 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
       {
         //Invert flag, flip blue and read
         double myGrayValue = ( 0.3 * ( double )myRedValue ) + ( 0.59 * ( double )myGreenValue ) + ( 0.11 * ( double )myBlueValue );
-        myQImage.setPixel( myRow, myColumn, qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue ) );
+        myLineBuffer[ myColumn ] = qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue );
       }
       else
       {
         //Normal
         double myGrayValue = ( 0.3 * ( double )myBlueValue ) + ( 0.59 * ( double )myGreenValue ) + ( 0.11 * ( double )myRedValue );
-        myQImage.setPixel( myRow, myColumn, qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue ) );
+        myLineBuffer[ myColumn ] = qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue );
       }
     }
   }
@@ -4600,7 +4613,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
   }
 
   QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
-  myQImage.fill( qRgba( 255, 255, 255, 0 ) ); // fill transparent
+  QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
   if ( NULL == mRasterShader )
   {
@@ -4631,41 +4644,45 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
   int myAlphaValue = 0;
 
   QgsDebugMsg( "Starting main render loop" );
-  for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
+  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
   {
-    for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaXDim; ++myRow )
+    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
+    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
     {
       myRedValue = 0;
       myGreenValue = 0;
       myBlueValue = 0;
       myPixelValue = readValue( myGdalScanData, ( GDALDataType )myDataType,
-                                myColumn * theRasterViewPort->drawableAreaXDim + myRow );
+                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
 
       if ( mValidNoDataValue && ( myPixelValue == mNoDataValue || myPixelValue != myPixelValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       if ( mInvertColor )
       {
         //Invert flag, flip blue and read
-        myQImage.setPixel( myRow, myColumn, qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue ) );
+        myLineBuffer[ myColumn ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
       }
       else
       {
         //Normal
-        myQImage.setPixel( myRow, myColumn, qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue ) );
+        myLineBuffer[ myColumn ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
       }
     }
   }
@@ -4706,7 +4723,7 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
   }
 
   QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
-  myQImage.fill( qRgba( 255, 255, 255, 0 ) ); // fill transparent
+  QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
   QgsRasterBandStats myGrayBandStats;
 
@@ -4735,12 +4752,13 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
   int myGrayVal = 0;
   int myAlphaValue = 0;
   QgsContrastEnhancement* myContrastEnhancement = contrastEnhancement( theBandNo );
-  for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
+  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
   {
-    for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaXDim; ++myRow )
+    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
+    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
     {
       myGrayValue = readValue( myGdalScanData, myDataType,
-                               myColumn * theRasterViewPort->drawableAreaXDim + myRow );
+                               myRow * theRasterViewPort->drawableAreaXDim + myColumn );
 
       // If mNoDataValue is 'nan', the comparison
       // against myGrayVal will always fail ( nan==nan always
@@ -4748,17 +4766,20 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
       // of myGrayVal against itself.
       if ( mValidNoDataValue && ( myGrayValue == mNoDataValue || myGrayValue != myGrayValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       if ( !myContrastEnhancement->isValueInDisplayableRange( myGrayValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myGrayValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
@@ -4770,8 +4791,7 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
         myGrayVal = 255 - myGrayVal;
       }
 
-      myQImage.setPixel( myRow, myColumn, qRgba( myGrayVal, myGrayVal, myGrayVal, myAlphaValue ) );
-
+      myLineBuffer[ myColumn ] = qRgba( myGrayVal, myGrayVal, myGrayVal, myAlphaValue );
     }
   }
 
@@ -4807,7 +4827,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
   }
 
   QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
-  myQImage.fill( qRgba( 255, 255, 255, 0 ) ); // fill transparent
+  QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
   if ( NULL == mRasterShader )
   {
@@ -4839,38 +4859,42 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
   double myPixelValue = 0.0;
   int myAlphaValue = 0;
   QgsDebugMsg( "Starting main render loop" );
-  for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
+  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
   {
-    for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaXDim; ++myRow )
+    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
+    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
     {
       myPixelValue = readValue( myGdalScanData, myDataType,
-                                myColumn * theRasterViewPort->drawableAreaXDim + myRow );
+                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
 
       if ( mValidNoDataValue && ( myPixelValue == mNoDataValue || myPixelValue != myPixelValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
+        myLineBuffer[ myColumn ] = myDefaultColor;
         continue;
       }
 
       if ( mInvertColor )
       {
         //Invert flag, flip blue and read
-        myQImage.setPixel( myRow, myColumn, qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue ) );
+        myLineBuffer[ myColumn ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
       }
       else
       {
         //Normal
-        myQImage.setPixel( myRow, myColumn, qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue ) );
+        myLineBuffer[ myColumn ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
       }
     }                       //end of columnwise loop
   }                           //end of rowwise loop

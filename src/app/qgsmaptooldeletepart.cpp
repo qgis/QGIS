@@ -106,7 +106,9 @@ void QgsMapToolDeletePart::deletePart( int fId, int beforeVertexNr, QgsVectorLay
 
   if ( g->deletePart( partNum ) )
   {
+    vlayer->beginEditCommand( tr("Part of multipart feature deleted") );
     vlayer->changeGeometry( fId, g );
+    vlayer->endEditCommand();
     mCanvas->refresh();
   }
   else

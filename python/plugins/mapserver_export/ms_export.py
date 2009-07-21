@@ -213,7 +213,7 @@ class Qgis2Map:
     # TODO allow user to configure this
     self.outFile.write("    # WMS server settings\n")
     self.outFile.write("    METADATA\n")
-    self.outFile.write("      'wms_title'           '" + self.mapName + "'\n")
+    self.outFile.write("      'wms_title'           '\"" + self.mapName + "\"'\n")
     self.outFile.write("      'wms_onlineresource'  'http://my.host.com/cgi-bin/mapserv?map=wms.map&'\n")
     self.outFile.write("      'wms_srs'             'EPSG:4326'\n")
     self.outFile.write("    END\n\n")

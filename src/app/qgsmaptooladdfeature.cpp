@@ -175,6 +175,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
       }
 
+      vlayer->beginEditCommand( tr("Feature added") );
+
       // show the dialog to enter attribute values
       QSettings settings;
       bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
@@ -182,6 +184,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       {
         QgsDebugMsg( "Adding feature to layer" );
         vlayer->addFeature( *f );
+        vlayer->endEditCommand();
       }
       else
       {
@@ -190,14 +193,17 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         {
           QgsDebugMsg( "Adding feature to layer" );
           vlayer->addFeature( *f );
+          vlayer->endEditCommand();
         }
         else
         {
+          vlayer->destroyEditCommand();
           QgsDebugMsg( "Adding feature to layer failed" );
           delete f;
         }
         delete mypDialog;
       }
+
       mCanvas->refresh();
     }
 
@@ -459,6 +465,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
       if ( isDisabledAttributeValuesDlg )
       {
+        vlayer->beginEditCommand( tr("Feature added") );
         if ( vlayer->addFeature( *f ) )
         {
           //add points to other features to keep topology up-to-date
@@ -468,12 +475,14 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
             vlayer->addTopologicalPoints( f->geometry() );
           }
         }
+        vlayer->endEditCommand();
       }
       else
       {
         QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
         if ( mypDialog->exec() )
         {
+          vlayer->beginEditCommand( tr("Feature added") );
           if ( vlayer->addFeature( *f ) )
           {
             //add points to other features to keep topology up-to-date
@@ -483,6 +492,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
               vlayer->addTopologicalPoints( f->geometry() );
             }
           }
+          vlayer->endEditCommand();
         }
         delete mypDialog;
       }

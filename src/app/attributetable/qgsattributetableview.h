@@ -18,14 +18,14 @@
 
 #include <QTableView>
 
+class QgsAttributeTableModel;
+class QgsAttributeTableFilterModel;
+
 class QgsVectorLayer;
 
 
 class QgsAttributeTableView: public QTableView
 {
-    //private slots:
-    //void setRows(int rows);
-
   public:
     QgsAttributeTableView( QWidget* parent = NULL );
     virtual ~QgsAttributeTableView();
@@ -35,10 +35,15 @@ class QgsAttributeTableView: public QTableView
     void closeEvent( QCloseEvent *event );
     void keyPressEvent( QKeyEvent *event );
     void keyReleaseEvent( QKeyEvent *event );
+    bool shiftPressed() { return mShiftPressed; }
+    bool ctrlPressed() { return mCtrlPressed; }
 
-    //make those private
-    bool shiftPressed;
-    bool ctrlPressed;
+  private:
+    bool mShiftPressed;
+    bool mCtrlPressed;
+
+    QgsAttributeTableModel* mModel;
+    QgsAttributeTableFilterModel* mFilterModel;
 };
 
 #endif

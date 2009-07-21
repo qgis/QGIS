@@ -60,6 +60,7 @@ SET(QGIS_APP_SRCS
   qgsshortcutsmanager.cpp
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
+  qgsundowidget.cpp
   qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
 
@@ -126,6 +127,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooladdisland.h
   qgsmaptooladdring.h
   qgsmaptoolmovefeature.h
+  qgsmaptoolnodetool.h
   qgsmaptoolselect.h
   qgsmaptoolsimplify.h
 
@@ -148,6 +150,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsvectorlayerproperties.h
   qgsdbtablemodel.h
   qgsspatialitetablemodel.h
+  qgsundowidget.h
 
   composer/qgscomposer.h
   composer/qgscomposeritemwidget.h

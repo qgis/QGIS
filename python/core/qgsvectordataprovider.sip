@@ -146,6 +146,13 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       virtual void uniqueValues(int index, QList<QVariant> &uniqueValues /Out/);
 
+      /**Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
+      or if the given attribute is not an enum type.
+      * @param index the index of the attribute
+      * @param enumList reference to the list to fill
+      @note: added in version 1.2*/
+      virtual void enumValues( int index, QStringList& enumList /Out/);
+
       /**
        * Adds a list of features
        * @return true in case of success and false in case of failure

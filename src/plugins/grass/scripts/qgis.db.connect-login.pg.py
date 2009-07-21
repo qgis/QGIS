@@ -73,9 +73,11 @@ import sys
 import os
 import string
 try:
+    from grass.script import core as grass
+except ImportError:
     import grass
 except:
-    raise Exception ("Cannot find 'grass' Python module. Python is supported by GRASS from version 6.4" )
+    raise Exception ("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4" )
 
 def main():
     host = options['host']

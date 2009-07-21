@@ -391,7 +391,7 @@ void QgsMapCanvas::updateMap()
 {
   if ( mMap )
   {
-    mMap->update();
+    mMap->updateContents();
   }
 }
 

@@ -715,3 +715,11 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
 
   return myErrorMessage;
 }
+
+
+
+
+QUndoStack* QgsMapLayer::undoStack()
+{
+  return &mUndoStack;
+}

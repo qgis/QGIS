@@ -710,7 +710,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     }
     OGR_Fld_Destroy( fielddefn );
   }
-
+  loadFields();
   return returnvalue;
 }
 

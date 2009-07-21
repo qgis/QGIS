@@ -53,6 +53,7 @@
 #include <QPrinter>
 #include <QProcess>
 #include <QProgressBar>
+#include <QProgressDialog>
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSettings>
@@ -132,6 +133,7 @@
 #include "qgsrenderer.h"
 #include "qgsserversourceselect.h"
 #include "qgsshortcutsmanager.h"
+#include "qgsundowidget.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -363,6 +365,11 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
+  // create undo widget
+  mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas);
+  addDockWidget(Qt::LeftDockWidgetArea, mUndoWidget);
+  mUndoWidget->hide();
+
   // set application's icon
   setWindowIcon( QPixmap( qgis_xpm ) );
 
@@ -583,11 +590,6 @@ void QgisApp::createActions()
   // Edit Menu Items
 
 #if 0
-  mActionUndo = new QAction( tr( "&Undo" ), this );
-  shortcuts->registerAction( mActionUndo, tr( "Ctrl+Z" ) );
-  mActionUndo->setStatusTip( tr( "Undo the last operation" ) );
-  connect( mActionUndo, SIGNAL( triggered ), this, SLOT( undo() ) );
-
   mActionCut = new QAction( tr( "Cu&t" ), this );
   shortcuts->registerAction( mActionCut, tr( "Ctrl+X" ) );
   mActionCut->setStatusTip( tr( "Cut the current selection's contents to the clipboard" ) );
@@ -603,6 +605,18 @@ void QgisApp::createActions()
   mActionPaste->setStatusTip( tr( "Paste the clipboard's contents into the current selection" ) );
   connect( mActionPaste, SIGNAL( triggered ), this, SLOT( paste() ) );
 #endif
+
+  mActionUndo = new QAction( getThemeIcon( "mActionUndo.png"), tr( "&Undo" ), this );
+  shortcuts->registerAction( mActionUndo, tr( "Ctrl+Z" ) );
+  mActionUndo->setStatusTip( tr( "Undo the last operation" ) );
+  mActionUndo->setEnabled( false );
+  // action connected to mUndoWidget::undo slot in setupConnections()
+
+  mActionRedo = new QAction( getThemeIcon( "mActionRedo.png"), tr( "&Redo" ), this );
+  shortcuts->registerAction( mActionRedo, tr( "Ctrl+Shift+Z" ) );
+  mActionRedo->setStatusTip( tr( "Redo the last operation" ) );
+  mActionRedo->setEnabled( false );
+  // action connected to mUndoWidget::redo slot in setupConnections()
 
   mActionCutFeatures = new QAction( getThemeIcon( "mActionEditCut.png" ), tr( "Cut Features" ), this );
   shortcuts->registerAction( mActionCutFeatures, tr( "Ctrl+X" ) );
@@ -1196,11 +1210,14 @@ void QgisApp::createMenus()
   mEditMenu = menuBar()->addMenu( tr( "&Edit" ) );
 
 #if 0
-  mEditMenu->addAction( mActionUndo );
   mEditMenu->addAction( mActionCut );
   mEditMenu->addAction( mActionCopy );
   mEditMenu->addAction( mActionPaste );
 #endif
+  mEditMenu->addAction( mActionUndo );
+  mEditMenu->addAction( mActionRedo );
+  mActionEditSeparator0 = mEditMenu->addSeparator();
+
   mEditMenu->addAction( mActionCutFeatures );
   mEditMenu->addAction( mActionCopyFeatures );
   mEditMenu->addAction( mActionPasteFeatures );
@@ -1210,7 +1227,6 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionCaptureLine );
   mEditMenu->addAction( mActionCapturePolygon );
   mEditMenu->addAction( mActionMoveFeature );
-  mEditMenu->addAction( mActionSplitFeatures );
   mEditMenu->addAction( mActionDeleteSelected );
   mEditMenu->addAction( mActionAddVertex );
   mEditMenu->addAction( mActionMoveVertex );
@@ -1223,6 +1239,7 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionAddIsland );
   mEditMenu->addAction( mActionDeleteRing );
   mEditMenu->addAction( mActionDeletePart );
+  mEditMenu->addAction( mActionSplitFeatures );
   mEditMenu->addAction( mActionMergeFeatures );
   mEditMenu->addAction( mActionNodeTool );
   
@@ -1412,7 +1429,6 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction( mActionCapturePoint );
   mDigitizeToolBar->addAction( mActionCaptureLine );
   mDigitizeToolBar->addAction( mActionCapturePolygon );
-  mDigitizeToolBar->addAction( mActionSplitFeatures );
   mDigitizeToolBar->addAction( mActionMoveFeature );
   mDigitizeToolBar->addAction( mActionMoveVertex );
   mDigitizeToolBar->addAction( mActionAddVertex );
@@ -1426,11 +1442,14 @@ void QgisApp::createToolBars()
   mAdvancedDigitizeToolBar = addToolBar( tr( "Advanced Digitizing" ) );
   mAdvancedDigitizeToolBar->setIconSize( myIconSize );
   mAdvancedDigitizeToolBar->setObjectName( "Advanced Digitizing" );
+  mAdvancedDigitizeToolBar->addAction( mActionUndo );
+  mAdvancedDigitizeToolBar->addAction( mActionRedo );
   mAdvancedDigitizeToolBar->addAction( mActionSimplifyFeature );
   mAdvancedDigitizeToolBar->addAction( mActionAddRing );
   mAdvancedDigitizeToolBar->addAction( mActionAddIsland );
   mAdvancedDigitizeToolBar->addAction( mActionDeleteRing );
   mAdvancedDigitizeToolBar->addAction( mActionDeletePart );
+  mAdvancedDigitizeToolBar->addAction( mActionSplitFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionMergeFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionNodeTool );
   mToolbarMenu->addAction( mAdvancedDigitizeToolBar->toggleViewAction() );
@@ -1704,6 +1723,8 @@ void QgisApp::setupConnections()
            mMapLegend, SLOT( addLayer( QgsMapLayer * ) ) );
   connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer* ) ) );
+  connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+           mUndoWidget, SLOT( layerChanged( QgsMapLayer* ) ) );
 
 
   //signal when mouse moved over window (coords display in status bar)
@@ -1730,7 +1751,12 @@ void QgisApp::setupConnections()
 
   connect( QgsProject::instance(), SIGNAL( layerLoaded( int, int ) ), this, SLOT( showProgress( int, int ) ) );
 
+  // setup undo/redo actions
+  connect( mActionUndo, SIGNAL( triggered() ), mUndoWidget, SLOT( undo() ) );
+  connect( mActionRedo, SIGNAL( triggered() ), mUndoWidget, SLOT( redo() ) );
+  connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT(updateUndoActions()) );
 }
+
 void QgisApp::createCanvas()
 {
   // "theMapCanvas" used to find this canonical instance later
@@ -2388,15 +2414,13 @@ void QgisApp::addVectorLayer()
   {
     QStringList selectedSources = ovl->dataSources();
     QString enc = ovl->encoding();
-    if ( selectedSources.isEmpty() )
+    if ( !selectedSources.isEmpty() )
     {
-      // no files were selected, so just bail
-      mMapCanvas->freeze( false );
-      return;
-    }
-    else
       addVectorLayers( selectedSources, enc, ovl->dataSourceType() );
+    }
   }
+
+  mMapCanvas->freeze( false );
 
   delete ovl;
   // update UI
@@ -2465,6 +2489,11 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
       }
       else  // there is 1 layer of data available
       {
+        //set friendly name for datasources with only one layer 
+        QStringList sublayers = layer->dataProvider()->subLayers();
+		QString ligne = sublayers.at( 0 );
+        QStringList elements = ligne.split( ":" );        
+		layer->setLayerName(elements.at(1));  
         // Register this layer with the layers registry
         QgsMapLayerRegistry::instance()->addMapLayer( layer );
         // notify the project we've made a change
@@ -3686,7 +3715,8 @@ bool QgisApp::openLayer( const QString & fileName )
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
     ok = addRasterLayer( fileName, fileInfo.completeBaseName() );
   else // nope - try to load it as a shape/ogr
-    ok = addVectorLayer( fileName, fileName, "ogr" );
+    ok = addVectorLayer( fileName, fileInfo.completeBaseName(), "ogr" );
+   
   CPLPopErrorHandler();
 
   if ( !ok )
@@ -4144,13 +4174,14 @@ void QgisApp::deleteSelected()
     return;
   }
 
-
+  vlayer->beginEditCommand( tr("Features deleted") );
   if ( !vlayer->deleteSelectedFeatures() )
   {
     QMessageBox::information( this, tr( "Problem deleting features" ),
                               tr( "A problem occured during deletion of features" ) );
   }
 
+  vlayer->endEditCommand();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
 }
@@ -4175,7 +4206,7 @@ void QgisApp::deletePart()
   mMapCanvas->setMapTool( mMapTools.mDeletePart );
 }
 
-QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& featureList) const
+QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& featureList)
 {
   if(!vl || featureList.size() < 2)
   {
@@ -4189,8 +4220,20 @@ QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& 
     return 0;
   }
 
+  QProgressDialog progress(tr("Merging features..."), tr("Abort"), 0, featureList.size(), this);
+  progress.setWindowModality(Qt::WindowModal);
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   for(int i = 1; i < featureList.size(); ++i)
   {
+    if(progress.wasCanceled())
+    {
+      delete unionGeom;
+      QApplication::restoreOverrideCursor();
+      return 0;
+    }
+    progress.setValue(i);
     QgsGeometry* currentGeom = featureList[i].geometry();
     if(currentGeom)
     {
@@ -4203,6 +4246,9 @@ QgsGeometry* QgisApp::unionGeometries(const QgsVectorLayer* vl, QgsFeatureList& 
       }
     }
   }
+
+  QApplication::restoreOverrideCursor();
+  progress.setValue(featureList.size());
   return unionGeom;
 }
 
@@ -4289,6 +4335,8 @@ void QgisApp::mergeSelectedFeatures()
       }
     }
 
+    vl->beginEditCommand( tr("Merged features") );
+
     //create new feature
     QgsFeature newFeature;
     newFeature.setGeometry(unionGeom);
@@ -4301,6 +4349,8 @@ void QgisApp::mergeSelectedFeatures()
     }
 
     vl->addFeature(newFeature, false);
+
+    vl->endEditCommand();;
 
     if(mapCanvas())
     {
@@ -4422,7 +4472,9 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
     {
       QgsFeatureList features = selectionVectorLayer->selectedFeatures();
       clipboard()->replaceWithCopyOf( selectionVectorLayer->dataProvider()->fields(), features );
+      selectionVectorLayer->beginEditCommand( tr("Features cut") );
       selectionVectorLayer->deleteSelectedFeatures();
+      selectionVectorLayer->endEditCommand();
     }
   }
 }
@@ -4471,7 +4523,9 @@ void QgisApp::editPaste( QgsMapLayer * destinationLayer )
 
     if ( pasteVectorLayer != 0 )
     {
+      pasteVectorLayer->beginEditCommand( tr("Features pasted") );
       pasteVectorLayer->addFeatures( clipboard()->copyOf() );
+      pasteVectorLayer->endEditCommand();
       mMapCanvas->refresh();
     }
   }
@@ -4992,9 +5046,9 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
   QgsDebugMsg( "Creating new vector layer using " + vectorLayerPath
                + " with baseName of " + baseName
                + " and providerKey of " + providerKey );
-
-  layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey );
-
+  
+  layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey );  
+  
   if ( layer && layer->isValid() )
   {
     // Register this layer with the layers registry
@@ -5481,6 +5535,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionLayerProperties->setEnabled( false );
     mActionAddToOverview->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
+    mActionUndo->setEnabled( false );
+    mActionRedo->setEnabled( false );
     return;
   }
 
@@ -6199,4 +6255,21 @@ QPixmap QgisApp::getThemePixmap( const QString theName )
     //doesnt exist in the default theme either!
     return QPixmap( myDefaultPath );
   }
+}
+
+void QgisApp::updateUndoActions()
+{
+  bool canUndo = false, canRedo = false;
+  QgsMapLayer* layer = this->activeLayer();
+  if (layer)
+  {
+    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+    if ( vlayer && vlayer->isEditable() )
+    {
+      canUndo = vlayer->undoStack()->canUndo();
+      canRedo = vlayer->undoStack()->canRedo();
+    }
+  }
+  mActionUndo->setEnabled( canUndo );
+  mActionRedo->setEnabled( canRedo );
 }
