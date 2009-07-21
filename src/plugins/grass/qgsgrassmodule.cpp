@@ -1557,8 +1557,7 @@ QDomNode QgsGrassModule::nodeByKey( QDomElement elem, QString key )
 QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
     QWidget * parent )
-    : QGroupBox( parent ),
-    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
+    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
     mControlType( NoControl ), mValueType( String ), mOutputType( None ), mHaveLimits( false ), mIsOutput( false )
 {
   QgsDebugMsg( "called." );
@@ -1567,18 +1566,6 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
   if ( mHidden ) hide();
 
   mLayout = new QVBoxLayout();
-
-  QString tit;
-  if ( mDescription.length() > 40 )
-  {
-    tit = mDescription.left( 40 ) + " ...";
-  }
-  else
-  {
-    tit = mDescription;
-  }
-
-  setTitle( " " + tit + " " );
 
   // Is it output?
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
@@ -1673,7 +1660,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
               }
               else
               {
-                QCheckBox *cb = new QCheckBox( desc, this );
+                QgsGrassModuleCheckBox *cb = new QgsGrassModuleCheckBox( desc, this );
                 mCheckBoxes.push_back( cb );
                 mLayout->addWidget( cb );
               }
@@ -1925,8 +1912,11 @@ QStringList QgsGrassModuleOption::options()
     list.push_back( mKey + "=" + mAnswer );
   }
   else
-  {
-    list.push_back( mKey + "=" + value() );
+  { 
+    QString val = value(); 
+    if ( !val.isEmpty() ) {
+        list.push_back( mKey + "=" + val );
+    }
   }
   return list;
 }
@@ -1939,7 +1929,7 @@ QString QgsGrassModuleOption::ready()
 
   if ( mControlType == LineEdit )
   {
-    if ( mLineEdits.at( 0 )->text().trimmed().length() == 0 )
+    if ( mLineEdits.at( 0 )->text().trimmed().length() == 0 && mRequired )
     {
       error.append( tr( "%1:&nbsp;missing value" ).arg( title() ) );
     }
@@ -1954,7 +1944,7 @@ QgsGrassModuleOption::~QgsGrassModuleOption()
 QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                                         QWidget * parent )
-    : QCheckBox( parent ), QgsGrassModuleItem( module, key, qdesc, gdesc, gnode )
+    : QgsGrassModuleCheckBox( "", parent ), QgsGrassModuleItem( module, key, qdesc, gdesc, gnode )
 {
   QgsDebugMsg( "called." );
 
@@ -1965,7 +1955,8 @@ QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
   else
     setChecked( false );
 
-  setText( mDescription );
+  setText( mTitle );
+  setToolTip ( mToolTip );
 }
 
 QStringList QgsGrassModuleFlag::options()
@@ -1988,8 +1979,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     QgsGrassModuleStandardOptions *options, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
     QWidget * parent )
-    : QGroupBox( parent ),
-    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
     mModuleStandardOptions( options ),
     mGeometryTypeOption( 0 ), mVectorLayerOption( 0 ),
     mRegionButton( 0 ), mUpdate( false )
@@ -1997,24 +1987,11 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   QgsDebugMsg( "called." );
   mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
 
-  QString tit;
-  if ( mDescription.isEmpty() )
+  if ( mTitle.isEmpty() )
   {
-    tit = "Input";
+    mTitle = tr( "Input" );
   }
-  else
-  {
-    if ( mDescription.length() > 40 )
-    {
-      tit = mDescription.left( 40 ) + " ...";
-    }
-    else
-    {
-      tit = mDescription;
-    }
-  }
-
-  setTitle( " " + tit + " " );
+  adjustTitle();
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
@@ -2517,7 +2494,8 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode )
     : mModule( module ),
     mKey( key ),
-    mHidden( false )
+    mHidden( false ),
+    mRequired (false)
 {
   //mAnswer = qdesc.attribute("answer", "");
 
@@ -2540,19 +2518,39 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
     mHidden = true;
   }
 
+  QString label, description;
   if ( !qdesc.attribute( "label" ).isEmpty() )
   {
-    mDescription = qdesc.attribute( "label" );
+    label = qdesc.attribute( "label" );
   }
-  else
+  if ( label.isEmpty() )
   {
-    QDomNode n = gnode.namedItem( "description" );
+    QDomNode n = gnode.namedItem( "label" );
     if ( !n.isNull() )
     {
       QDomElement e = n.toElement();
-      mDescription = e.text().trimmed();
-      mDescription.replace( 0, 1, mDescription.left( 1 ).toUpper() );
+      label = e.text().trimmed();
+      label.replace( 0, 1, label.left( 1 ).toUpper() );
     }
+  }
+  QDomNode n = gnode.namedItem( "description" );
+  if ( !n.isNull() )
+  {
+      QDomElement e = n.toElement();
+      description = e.text().trimmed();
+      description.replace( 0, 1, description.left( 1 ).toUpper() );
+  }
+
+  if ( !label.isEmpty() ) {
+      mTitle = label;
+      mToolTip = description;
+  } else {
+      mTitle = description;
+  }
+
+  if ( gnode.toElement().attribute( "required" ) == "yes" )
+  {
+    mRequired = true;
   }
 
   mId = qdesc.attribute( "id" );
@@ -2564,33 +2562,47 @@ QStringList QgsGrassModuleItem::options() { return QStringList(); }
 
 QgsGrassModuleItem::~QgsGrassModuleItem() {}
 
+/***************** QgsGrassModuleGroupBoxItem *********************/
+
+QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
+    QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
+    QWidget * parent )
+    : QGroupBox( parent ),
+    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode )
+{
+  adjustTitle();
+
+  setToolTip ( mToolTip );
+}
+
+QgsGrassModuleGroupBoxItem::~QgsGrassModuleGroupBoxItem() {}
+
+void QgsGrassModuleGroupBoxItem::resizeEvent ( QResizeEvent * event )
+{
+  adjustTitle();
+  setToolTip ( mToolTip );
+}
+
+void QgsGrassModuleGroupBoxItem::adjustTitle()
+{
+  QString tit = fontMetrics().elidedText ( mTitle, Qt::ElideRight, width() - 20  );
+
+  setTitle( tit );
+}
+
 /***************** QgsGrassModuleGdalInput *********************/
 
 QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   QgsGrassModule *module, int type, QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    : QGroupBox( parent ),
-    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
     mType( type ), mOgrLayerOption( 0 ), mOgrWhereOption( 0 )
 {
-  QString tit;
-  if ( mDescription.isEmpty() )
+  if ( mTitle.isEmpty() )
   {
-    tit = "OGR/PostGIS/GDAL Input";
+    mTitle = "OGR/PostGIS/GDAL Input";
   }
-  else
-  {
-    if ( mDescription.length() > 40 )
-    {
-      tit = mDescription.left( 40 ) + " ...";
-    }
-    else
-    {
-      tit = mDescription;
-    }
-  }
-
-  setTitle( " " + tit + " " );
+  adjustTitle();
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
@@ -2614,7 +2626,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   }
 
   // Read "whereoption" if defined
-  opt = qdesc.attribute( "whereoption" );
+  opt = qdesc.attribute( "where" );
   if ( !opt.isNull() )
   {
     QDomNode optNode = QgsGrassModule::nodeByKey( gdesc, opt );
@@ -2797,28 +2809,14 @@ QgsGrassModuleField::QgsGrassModuleField(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    : QGroupBox( parent ),
-    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
+    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
     mModuleStandardOptions( options ), mLayerInput( 0 )
 {
-  QString tit;
-  if ( mDescription.isEmpty() )
+  if ( mTitle.isEmpty() )
   {
-    tit = tr( "Attribute field" );
+    mTitle = tr( "Attribute field" );
   }
-  else
-  {
-    if ( mDescription.length() > 40 )
-    {
-      tit = mDescription.left( 40 ) + " ...";
-    }
-    else
-    {
-      tit = mDescription;
-    }
-  }
-
-  setTitle( " " + tit + " " );
+  adjustTitle();
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
@@ -2836,7 +2834,9 @@ QgsGrassModuleField::QgsGrassModuleField(
     connect( mLayerInput, SIGNAL( valueChanged() ), this, SLOT( updateFields() ) );
   }
 
-  mFieldComboBox = new QComboBox( this );
+  QHBoxLayout *l = new QHBoxLayout( this );
+  mFieldComboBox = new QComboBox( );
+  l->addWidget( mFieldComboBox );
 
   // Fill in layer current fields
   updateFields();
@@ -2888,29 +2888,15 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    : QGroupBox( parent ),
-    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
+    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
     mModuleStandardOptions( options ), mLayerInput( 0 ),
     mVectorLayer( 0 )
 {
-  QString tit;
-  if ( mDescription.isEmpty() )
+  if ( mTitle.isEmpty() )
   {
-    tit = tr( "Attribute field" );
+    mTitle = tr( "Selected categories" );
   }
-  else
-  {
-    if ( mDescription.length() > 40 )
-    {
-      tit = mDescription.left( 40 ) + " ...";
-    }
-    else
-    {
-      tit = mDescription;
-    }
-  }
-
-  setTitle( " " + tit + " " );
+  adjustTitle();
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
@@ -2928,7 +2914,9 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
     connect( mLayerInput, SIGNAL( valueChanged() ), this, SLOT( updateSelection() ) );
   }
 
+  QHBoxLayout *l = new QHBoxLayout( this );
   mLineEdit = new QLineEdit( this );
+  l->addWidget( mLineEdit );
 
   // Fill in layer current fields
   updateSelection();
@@ -3005,28 +2993,14 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   QgsGrassModule *module,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    : QGroupBox( parent ),
-    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
+    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
     mType( Old )
 {
-  QString tit;
-  if ( mDescription.isEmpty() )
+  if ( mTitle.isEmpty() )
   {
-    tit = tr( "File" );
+    mTitle = tr( "File" );
   }
-  else
-  {
-    if ( mDescription.length() > 40 )
-    {
-      tit = mDescription.left( 40 ) + " ...";
-    }
-    else
-    {
-      tit = mDescription;
-    }
-  }
-
-  setTitle( " " + tit + " " );
+  adjustTitle();
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
@@ -3126,7 +3100,7 @@ QString QgsGrassModuleFile::ready()
   QString path = mLineEdit->text().trimmed();
 
 
-  if ( path.length() == 0 )
+  if ( path.length() == 0 && mRequired )
   {
     error.append( tr( "%1:&nbsp;missing value" ).arg( title() ) );
     return error;
@@ -3143,4 +3117,45 @@ QString QgsGrassModuleFile::ready()
 
 QgsGrassModuleFile::~QgsGrassModuleFile()
 {
+}
+
+/***************************** QgsGrassModuleCheckBox *********************************/
+
+QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString & text, QWidget * parent )
+    : QCheckBox( text, parent ), mText(text)
+{
+  QgsDebugMsg( "called." );
+  adjustText();
+}
+
+QgsGrassModuleCheckBox::~QgsGrassModuleCheckBox()
+{
+}
+
+void QgsGrassModuleCheckBox::resizeEvent ( QResizeEvent * event )
+{
+  adjustText();
+}
+void QgsGrassModuleCheckBox::setText ( const QString & text )
+{
+    mText = text;
+    adjustText();
+}
+void QgsGrassModuleCheckBox::setToolTip ( const QString & text )
+{
+    mTip = text;
+    QWidget::setToolTip ( text );
+}
+void QgsGrassModuleCheckBox::adjustText()
+{
+  QString t = fontMetrics().elidedText ( mText , Qt::ElideRight, width() - iconSize().width() - 20  );
+  QCheckBox::setText( t );
+
+  if ( mTip.isEmpty() ) {
+    QString tt;
+    if ( t != mText ) {
+      tt = mText;
+    }
+    QWidget::setToolTip ( tt );
+  }
 }

@@ -21,6 +21,8 @@
 #include "qgsoverlayobjectpositionmanager.h"
 #include "pal.h"
 
+class QgsPALGeometry;
+
 /**A class that uses the PAL library for overlay object placement
 * \note This class has been added in version 1.1
 */
@@ -40,5 +42,9 @@ class QgsPALObjectPositionManager: public QgsOverlayObjectPositionManager
   private:
     pal::Pal mPositionEngine;
     int mNumberOfLayers;
+    /**Internal storage of the pal geometries between addLayer and findObjectPositions operations*/
+    QList<QgsPALGeometry*> mPALGeometries;
+
+    void deletePALGeometries();
 };
 #endif

@@ -41,6 +41,11 @@ QgsDiagramOverlay::QgsDiagramOverlay( QgsVectorLayer* vl ): QgsVectorOverlay( vl
 
 QgsDiagramOverlay::~QgsDiagramOverlay()
 {
+  //memory cleanup
+  for ( QMap<int, QgsOverlayObject*>::iterator it = mOverlayObjects.begin(); it != mOverlayObjects.end(); ++it )
+  {
+    delete it.value();
+  }
   delete mDiagramRenderer;
 }
 

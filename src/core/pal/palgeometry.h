@@ -38,9 +38,9 @@ namespace pal
 {
 
   /**
-   * \brief Interface that allow Pal to acces user's geometries
+   * \brief Interface that allows Pal to access user's geometries
    */
-  class PalGeometry
+  class CORE_EXPORT PalGeometry
   {
     public:
       /*

@@ -185,10 +185,6 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
-
-    /**Returns the zoom factor of the graphics view. If no
-     graphics view exists, the default 1 is returned*/
-    double horizontalViewScaleFactor() const;
 };
 
 #endif

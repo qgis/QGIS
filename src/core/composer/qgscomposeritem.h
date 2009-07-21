@@ -45,7 +45,8 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
       ResizeLeftUp,
       ResizeRightUp,
       ResizeLeftDown,
-      ResizeRightDown
+      ResizeRightDown,
+      NoAction
     };
 
     enum ItemPositionMode
@@ -155,6 +156,18 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     /**Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE*/
     QFont scaledFontPixelSize( const QFont& font ) const;
 
+    /**Locks / unlocks the item position for mouse drags
+    @note this method was added in version 1.2*/
+    void setPositionLock(bool lock){mItemPositionLocked = lock;}
+
+    /**Returns position lock for mouse drags (true means locked)
+    @note this method was added in version 1.2*/
+    bool positionLock() const {return mItemPositionLocked;}
+
+    /**Update mouse cursor at (item) position
+    @note this method was added in version 1.2*/
+    void updateCursor(const QPointF& itemPos);
+
   protected:
 
     QgsComposition* mComposition;
@@ -170,6 +183,10 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
 
     /**True if item fram needs to be painted*/
     bool mFrame;
+
+    /**True if item position  and size cannot be changed with mouse move
+    @note: this member was added in version 1.2*/
+    bool mItemPositionLocked;
 
     //event handlers
     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
@@ -202,6 +219,19 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
 
     /**Draw background*/
     virtual void drawBackground( QPainter* p );
+
+    /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the \
+    item border for resizing*/
+    double rectHandlerBorderTolerance() const;
+
+    /**Returns the size of the lock symbol depending on the composer zoom level and the item size
+    @note: this function was introduced in version 1.2*/
+    double lockSymbolSize() const;
+
+    /**Returns the zoom factor of the graphics view. If no
+     graphics view exists, the default 1 is returned
+    @note: this function was introduced in version 1.2*/
+    double horizontalViewScaleFactor() const;
 };
 
 #endif

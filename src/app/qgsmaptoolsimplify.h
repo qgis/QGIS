@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 
 #ifndef QGSMAPTOOLSIMPLIFY_H
 #define QGSMAPTOOLSIMPLIFY_H
@@ -30,21 +31,28 @@ class QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
   Q_OBJECT
 
 public:
+
   QgsSimplifyDialog( QWidget* parent = NULL );
 
+  /** Setting range of slide bar */
   void setRange(int minValue, int maxValue);
 
 signals:
+  /** Signal when slidebar is moved */
   void toleranceChanged( int tol );
+
+  /** Signal to accept changes */
   void storeSimplified();
 
 private slots:
+  /** Internal signal when value is changed */
   void valueChanged( int value );
+  /** Internal signal to store simplified feature */
   void simplify();
 };
 
 
-/**Map tool to add vertices to line/polygon features*/
+/** Map tool to simplify line/polygon features */
 class QgsMapToolSimplify: public QgsMapToolEdit
 {
   Q_OBJECT
@@ -62,27 +70,36 @@ public slots:
   void removeRubberBand();
 
 private:
-
+  /** Divider calculation, because slider can go only by whole numbers */
   int calculateDivider(double num);
 
-  void calculateSliderBoudaries();
+  /** Function to calculate tolerance boudaries for simplifying */
+  bool calculateSliderBoudaries();
 
+  /** Function to get list of vertexes from feature */
   QVector<QgsPoint> getPointList(QgsFeature& f);
 
   // data
-
+  /** Dialog with slider to set correct tolerance value */
   QgsSimplifyDialog* mSimplifyDialog;
 
+  /** Rubber band to draw current state of simplification */
   QgsRubberBand* mRubberBand;
 
+  /** Feature with which we are working */
   QgsFeature mSelectedFeature;
 
+  /** tolerance divider is value which tells with which delete value from sidebar */
   int toleranceDivider;
 
+  /** real value of tolerance */
   double mTolerance;
 
 private slots:
+  /** slot to change display when slidebar is moved */
   void toleranceChanged(int tolerance);
+
+  /** slot to store feture after simplification */
   void storeSimplified();
 
 };
@@ -92,6 +109,7 @@ private slots:
  */
 class QgsSimplifyFeature
 {
+   /** structure for one entry in stack for simplification algorithm */
    struct StackEntry {
      int anchor;
      int floater;
@@ -100,8 +118,8 @@ class QgsSimplifyFeature
 public:
   /** simplify line feature with specified tolerance. Returns TRUE on success */
   static bool simplifyLine(QgsFeature &lineFeature, double tolerance);
-  /** simplify a part of line feature specified by range of vertices with given tolerance. Returns TRUE on success */
-  static bool simplifyPartOfLine(QgsFeature &lineFeature, int fromVertexNr, int toVertexNr, double tolerance);
+  /** simplify polygon feature with specified tolerance. Returns TRUE on success */
+  static bool simplifyPolygon(QgsFeature &polygonFeature, double tolerance);
   /** simplify a line given by a vector of points and tolerance. Returns simplified vector of points */
   static QVector<QgsPoint> simplifyPoints (const QVector<QgsPoint>& pts, double tolerance);
 
