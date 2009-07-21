@@ -54,8 +54,13 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to the authors file.
     static const QString authorsFilePath();
 
-    //! Returns the path to the sponsors file.
+    /**Returns the path to the sponsors file.
+      @note this function was added in version 1.2*/
     static const QString sponsorsFilePath();
+
+    /** Returns the path to the donors file.
+      @note this function was added in version 1.2*/
+    static const QString donorsFilePath();
 
     /**
      * Returns the path to the sponsors file.

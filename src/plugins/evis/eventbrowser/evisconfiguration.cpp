@@ -4,23 +4,23 @@
 ** Creation Date: 2007-12-11
 **
 ** Copyright ( c ) 2007, American Museum of Natural History. All rights reserved.
-** 
-** This library/program is free software; you can redistribute it 
+**
+** This library/program is free software; you can redistribute it
 ** and/or modify it under the terms of the GNU Library General Public
 ** License as published by the Free Software Foundation; either
 ** version 2 of the License, or ( at your option ) any later version.
-** 
+**
 ** This library/program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ** Library General Public License for more details.
 **
-** This work was made possible through a grant by the the John D. and 
-** Catherine T. MacArthur Foundation. Additionally, this program was prepared by 
-** the American Museum of Natural History under award No. NA05SEC46391002 
-** from the National Oceanic and Atmospheric Administration, U.S. Department 
-** of Commerce.  The statements, findings, conclusions, and recommendations 
-** are those of the author( s ) and do not necessarily reflect the views of the 
+** This work was made possible through a grant by the the John D. and
+** Catherine T. MacArthur Foundation. Additionally, this program was prepared by
+** the American Museum of Natural History under award No. NA05SEC46391002
+** from the National Oceanic and Atmospheric Administration, U.S. Department
+** of Commerce.  The statements, findings, conclusions, and recommendations
+** are those of the author( s ) and do not necessarily reflect the views of the
 ** National Oceanic and Atmospheric Administration or the Department of Commerce.
 **
 **/
@@ -32,19 +32,19 @@
 eVisConfiguration::eVisConfiguration( )
 {
   QSettings myQSettings;
-  
+
   setApplyPathRulesToDocs( myQSettings.value( "/eVis/applypathrulestodocs", FALSE ).toBool( ) );
-  
+
   setEventImagePathField( myQSettings.value( "/eVis/eventimagepathfield", "" ).toString( ) );
   setEventImagePathRelative( myQSettings.value( "/eVis/eventimagepathrelative", FALSE ).toBool( ) );
-  
+
   setDisplayCompassBearing( myQSettings.value( "/eVis/displaycompassbearing", FALSE ).toBool( ) );
   setCompassBearingField( myQSettings.value( "/eVis/compassbearingfield", "" ).toString( ) );
-  
+
   setManualCompassOffset( myQSettings.value( "/eVis/manualcompassoffset", FALSE ).toBool( ) );
-  setCompassOffset( myQSettings.value( "/eVis/compassoffset", "0.0" ).toDouble( ) );  
+  setCompassOffset( myQSettings.value( "/eVis/compassoffset", "0.0" ).toDouble( ) );
   setAttributeCompassOffset( myQSettings.value( "/eVis/attributecompassoffset", FALSE ).toBool( ) );
-  setCompassOffsetField( myQSettings.value( "/eVis/compassoffsetfield","" ).toString( ) );
+  setCompassOffsetField( myQSettings.value( "/eVis/compassoffsetfield", "" ).toString( ) );
 
   setBasePath( myQSettings.value( "/eVis/basepath", "" ).toString( ) );
   mUseOnlyFilename = myQSettings.value( "/eVis/useonlyfilename", FALSE ).toBool( );
@@ -119,18 +119,18 @@ void eVisConfiguration::setBasePath( QString thePath )
 {
   QSettings myQSettings;
   mBasePath = thePath;
-  if( "" != mBasePath )
+  if ( "" != mBasePath )
   {
-    if( mBasePath.contains( '/' ) )
+    if ( mBasePath.contains( '/' ) )
     {
-      if( mBasePath[mBasePath.length( )-1] != '/' )
+      if ( mBasePath[mBasePath.length( )-1] != '/' )
       {
         mBasePath = mBasePath + "/";
       }
     }
     else
     {
-      if( mBasePath[mBasePath.length( )-1] != '\\' )
+      if ( mBasePath[mBasePath.length( )-1] != '\\' )
       {
         mBasePath = mBasePath + "\\";
       }

@@ -34,11 +34,11 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
   setOrientation( Qt::Vertical );
 
   //find out the fields of mVectorLayer
-  if(mVectorLayer)
+  if ( mVectorLayer )
   {
     //we cannot use unique values for not-commited fields because QgsVectorLayer has no 'unique values' method...
     QgsVectorDataProvider* provider = mVectorLayer->dataProvider();
-    if(provider)
+    if ( provider )
     {
       const QgsFieldMap & fields = provider->fields();
       QString str;
@@ -46,7 +46,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
       for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
       {
         str = ( *it ).name();
-        str = mVectorLayer->attributeDisplayName(it.key());
+        str = mVectorLayer->attributeDisplayName( it.key() );
         mClassificationComboBox->addItem( str, it.key() );
       }
     }
@@ -57,14 +57,14 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
   mClassListWidget->setEditTriggers( QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed | QAbstractItemView::AnyKeyPressed );
   mClassListWidget->setSortingEnabled( true );
 
-  if(mVectorLayer)
+  if ( mVectorLayer )
   {
     const QgsUniqueValueRenderer* renderer = dynamic_cast < const QgsUniqueValueRenderer * >( mVectorLayer->renderer() );
 
     if ( renderer )
     {
       mClassListWidget->clear();
-      QString field = mVectorLayer->attributeDisplayName(renderer->classificationField());
+      QString field = mVectorLayer->attributeDisplayName( renderer->classificationField() );
       mOldClassificationAttribute = field;
       mClassificationComboBox->setCurrentIndex( mClassificationComboBox->findText( field ) );
 
@@ -291,7 +291,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
   if ( provider )
   {
-    int nr = mClassificationComboBox->itemData(mClassificationComboBox->currentIndex()).toInt();
+    int nr = mClassificationComboBox->itemData( mClassificationComboBox->currentIndex() ).toInt();
     if ( nr == -1 )
     {
       return;

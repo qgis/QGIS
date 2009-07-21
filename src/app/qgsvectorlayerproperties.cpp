@@ -175,7 +175,7 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
   tblAttributes->setItem( row, 2, new QTableWidgetItem( field.typeName() ) );
   tblAttributes->setItem( row, 3, new QTableWidgetItem( QString::number( field.length() ) ) );
   tblAttributes->setItem( row, 4, new QTableWidgetItem( QString::number( field.precision() ) ) );
-  tblAttributes->setItem( row, 5, new QTableWidgetItem( field.comment() ) ); 
+  tblAttributes->setItem( row, 5, new QTableWidgetItem( field.comment() ) );
 
   for ( int i = 0; i < 6; i++ )
     tblAttributes->item( row, i )->setFlags( tblAttributes->item( row, i )->flags() & ~Qt::ItemIsEditable );
@@ -226,7 +226,7 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
   }
 
   //set the alias for the attribute
-  tblAttributes->setItem( row, 8, new QTableWidgetItem(layer->attributeAlias(idx)));
+  tblAttributes->setItem( row, 8, new QTableWidgetItem( layer->attributeAlias( idx ) ) );
 }
 
 
@@ -385,7 +385,7 @@ void QgsVectorLayerProperties::setDisplayField( QString name )
 //! @note in raster props, this method is called sync()
 void QgsVectorLayerProperties::reset( void )
 {
-  QObject::disconnect(tblAttributes, SIGNAL(cellChanged(int, int)), this, SLOT(on_tblAttributes_cellChanged(int,int)));
+  QObject::disconnect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
 
   // populate the general information
   txtDisplayName->setText( layer->name() );
@@ -493,7 +493,7 @@ void QgsVectorLayerProperties::reset( void )
   sliderTransparency_valueChanged( 255 - layer->getTransparency() );
 
   loadRows();
-  QObject::connect(tblAttributes, SIGNAL(cellChanged(int, int)), this, SLOT(on_tblAttributes_cellChanged(int,int)));
+  QObject::connect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
 } // reset()
 
 
@@ -1073,12 +1073,12 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
   }
 }
 
-void QgsVectorLayerProperties::on_tblAttributes_cellChanged(int row, int column)
+void QgsVectorLayerProperties::on_tblAttributes_cellChanged( int row, int column )
 {
-  if(column == 8 && layer) //only consider attribute aliases in this function
+  if ( column == 8 && layer ) //only consider attribute aliases in this function
   {
     const QgsFieldMap &fields = layer->pendingFields();
-    if(row >= fields.size())
+    if ( row >= fields.size() )
     {
       return; //index must be wrong
     }
@@ -1086,10 +1086,10 @@ void QgsVectorLayerProperties::on_tblAttributes_cellChanged(int row, int column)
     QgsFieldMap::const_iterator f_it = fields.constBegin();
     f_it += row;
     int index = f_it.key();
-    QTableWidgetItem* aliasItem = tblAttributes->item(row, column);
-    if(aliasItem)
+    QTableWidgetItem* aliasItem = tblAttributes->item( row, column );
+    if ( aliasItem )
     {
-      layer->addAttributeAlias(index, aliasItem->text());
+      layer->addAttributeAlias( index, aliasItem->text() );
     }
   }
 }

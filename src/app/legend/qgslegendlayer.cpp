@@ -352,7 +352,7 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
       values += lw;
     }
     uv = ( *it )->upperValue();
-    if ( !uv.isEmpty() )
+    if ( !uv.isEmpty() && lw != uv )
     {
       values += " - ";
       values += uv;
@@ -379,10 +379,10 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
       const QgsFieldMap& fields = layer->pendingFields();
       for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
       {
-        QString classfieldname = layer->attributeAlias(*it);
-        if(classfieldname.isEmpty())
+        QString classfieldname = layer->attributeAlias( *it );
+        if ( classfieldname.isEmpty() )
         {
-            classfieldname = fields[*it].name();
+          classfieldname = fields[*it].name();
         }
         itemList.push_front( std::make_pair( classfieldname, QPixmap() ) );
       }
@@ -483,7 +483,6 @@ void QgsLegendLayer::updateIcon()
   QPixmap newIcon( getOriginalPixmap() );
 
   QgsMapLayer* theLayer = firstMapLayer();
-  QgsLegendLayerFile* theFile = firstLayerFile();
 
   if ( mapLayers().size() == 1 )
   {

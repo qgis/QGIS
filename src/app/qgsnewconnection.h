@@ -44,6 +44,7 @@ class QgsNewConnection : public QDialog, private Ui::QgsNewConnectionBase
     void on_btnConnect_clicked();
     void on_cb_geometryColumnsOnly_clicked();
   private:
+    QString mOriginalConnName; //store initial name to delete entry in case of rename
     static const int context_id = 929865718;
 };
 
