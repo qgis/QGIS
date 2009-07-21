@@ -824,6 +824,8 @@ void QgsWFSData::calculateExtentFromFeatures() const
 
     QgsFeature* currentFeature = 0;
     QgsGeometry* currentGeometry = 0;
+    bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
+
     for(int i = 0; i < mFeatures.size(); ++i)
     {
         currentFeature = mFeatures[i];
@@ -834,9 +836,10 @@ void QgsWFSData::calculateExtentFromFeatures() const
         currentGeometry = currentFeature->geometry();
         if(currentGeometry)
         {
-            if(bbox.isEmpty())
+            if(!bboxInitialised)
             {
                 bbox = currentGeometry->boundingBox();
+                bboxInitialised = true;
             }
             else
             {

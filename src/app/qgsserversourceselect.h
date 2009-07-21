@@ -148,6 +148,9 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     //! Returns a textual description for the EpsgCrsId number
     QString descriptionForEpsg( long epsg );
 
+    //! Keeps the layer order list up-to-date with changed layers and styles
+    void updateLayerOrderTab(const QStringList& newLayerList, const QStringList& newStyleList);
+
     //! Name for selected connection
     QString m_connName;
 
@@ -166,8 +169,8 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     //! Proxy Pass for selected connection
     QString m_connProxyPass;
 
-    QStringList m_selectedLayers;
-    QStringList m_selectedStylesForSelectedLayers;
+    //QStringList m_selectedLayers;
+    //QStringList m_selectedStylesForSelectedLayers;
     long m_Epsg;
 
     QMap<QString, QString> m_selectedStyleIdForLayer;
@@ -194,6 +197,8 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     void on_btnSearch_clicked();
     void on_btnAddWMS_clicked();
     void wmsSelectionChanged();
+    void on_mLayerUpButton_clicked();
+    void on_mLayerDownButton_clicked();
 };
 
 

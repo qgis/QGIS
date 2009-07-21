@@ -574,7 +574,7 @@ class geometryThread( QThread ):
       if geom.isMultipart():
         multi_geom = geom.asMultiPolyline() 
         for i in multi_geom:
-          simple = self.simlifyLine( i, 1, tolerance )
+          simple = self.simplifyLine( i, 1, tolerance )
           if simple is None:
             return None
           else:

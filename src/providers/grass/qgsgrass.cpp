@@ -205,6 +205,15 @@ void GRASS_EXPORT QgsGrass::init( void )
   strcpy( pathEnvChar, path.toAscii().constData() );
   putenv( pathEnvChar );
 
+  // Set PYTHONPATH
+  QString pythonpath = "PYTHONPATH=" + gisBase + "/etc/python";
+  QString pp = getenv( "PATH" );
+  pythonpath.append( sep + pp );
+  QgsDebugMsg( QString( "set PYTHONPATH: %1" ).arg( pythonpath ) );
+  char *pythonpathEnvChar = new char[pythonpath.length()+1];
+  strcpy( pythonpathEnvChar, pythonpath.toAscii().constData() );
+  putenv( pythonpathEnvChar );
+
   // Set GRASS_PAGER if not set, it is necessary for some
   // modules printing to terminal, e.g. g.list
   // We use 'cat' because 'more' is not present in MSYS (Win)

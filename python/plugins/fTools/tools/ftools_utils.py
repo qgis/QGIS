@@ -19,6 +19,7 @@
 # addShapeToCanvas( QString *file path )
 # getUniqueValues( QgsVectorDataProvider, int *field id )
 # saveDialog( QWidget *parent )
+# getFieldType( QgsVectorLayer, QgsField.name() )
 #
 # -------------------------------------------------
 
@@ -260,3 +261,9 @@ def saveDialog( parent ):
 	settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
 	return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
 
+# Return field type from it's name
+def getFieldType(vlayer, fieldName):
+	fields = vlayer.dataProvider().fields()
+	for name, field in fields.iteritems():
+		if field.name() == fieldName:
+			return field.typeName()

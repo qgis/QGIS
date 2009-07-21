@@ -701,6 +701,7 @@ class Plugins(QObject):
             self.mPlugins[key]["status"] = "upgradeable"
           else:
             self.mPlugins[key]["status"] = "newer"
+    self.markNews()
 
 
   # ----------------------------------------- #
