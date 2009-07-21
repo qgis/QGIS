@@ -67,8 +67,12 @@ QgsDbSourceSelect::QgsDbSourceSelect( QWidget *parent, Qt::WFlags fl )
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
 
+  QSettings settings;
+  mTablesTreeView->setSelectionMode( settings.value( "/qgis/addPostgisDC", false ).toBool() ?
+                                     QAbstractItemView::ExtendedSelection :
+                                     QAbstractItemView::MultiSelection );
+
   mSearchGroupBox->hide();
-  connect( mTablesTreeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( setSql( const QModelIndex& ) ) );
 
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
@@ -108,6 +112,29 @@ void QgsDbSourceSelect::on_btnHelp_clicked()
 void QgsDbSourceSelect::on_cmbConnections_activated( int )
 {
   dbChanged();
+}
+
+void QgsDbSourceSelect::on_btnBuildQuery_clicked()
+{
+  setSql( mTablesTreeView->currentIndex() );
+}
+
+void QgsDbSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
+{
+  btnBuildQuery->setEnabled( index.parent().isValid() );
+}
+
+void QgsDbSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+{
+  QSettings settings;
+  if ( settings.value( "/qgis/addPostgisDC", false ).toBool() )
+  {
+    addTables();
+  }
+  else
+  {
+    setSql( index );
+  }
 }
 
 void QgsDbSourceSelect::on_mSearchOptionsButton_clicked()
