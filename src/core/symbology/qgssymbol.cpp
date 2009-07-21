@@ -445,6 +445,10 @@ void QgsSymbol::appendText( QDomElement &symbol, QDomDocument &document, QString
 {
   QDomElement node = document.createElement( name );
   QDomText txt = document.createTextNode( value );
+  if ( value.isNull() )
+  {
+    node.setAttribute( "null", "1" );
+  }
   symbol.appendChild( node );
   node.appendChild( txt );
 }
@@ -542,7 +546,14 @@ bool QgsSymbol::readXML( QDomNode &synode, const QgsVectorLayer *vl )
   if ( ! lvalnode.isNull() )
   {
     QDomElement lvalelement = lvalnode.toElement();
-    mLowerValue = lvalelement.text();
+    if ( lvalelement.attribute( "null" ).toInt() == 1 )
+    {
+      mLowerValue = QString::null;
+    }
+    else
+    {
+      mLowerValue = lvalelement.text();
+    }
   }
 
   QDomNode uvalnode = synode.namedItem( "uppervalue" );

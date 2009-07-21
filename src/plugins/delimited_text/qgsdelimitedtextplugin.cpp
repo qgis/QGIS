@@ -104,7 +104,7 @@ void QgsDelimitedTextPlugin::initGui()
                                       "The file must have a header row containing the field names. "
                                       "X and Y fields are required and must contain coordinates in decimal units." ) );
   // Connect the action to the run
-  connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
+  connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
   qGisInterface->addPluginToMenu( tr( "&Delimited text" ), myQActionPointer );

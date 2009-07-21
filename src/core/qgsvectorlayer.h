@@ -414,6 +414,23 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in version 1.2 */
     bool addAttribute( const QgsField &field );
 
+    /** add an attribute field (but does not commit it)
+      returns true if the field was added
+      @note deprecated */
+    bool addAttribute( QString name, QString type );
+
+    /**Sets an alias (a display name) for attributes to display in dialogs
+      @note added in version 1.2*/
+    void addAttributeAlias(int attIndex, QString aliasString);
+
+    /**Returns the alias of an attribute name or an empty string if there is no alias
+      @note added in version 1.2*/
+    QString attributeAlias(int attributeIndex) const;
+
+    /**Convenience function that returns the attribute alias if defined or the field name else
+      @note added in version 1.2*/
+    QString attributeDisplayName(int attributeIndex) const;
+
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
@@ -481,7 +498,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * Create edit command for undo/redo operations
      * @param text text which is to be displayed in undo window
      */
-    void beginEditCommand(QString text);
+    void beginEditCommand( QString text );
 
     /** Finish edit command and add it to undo/redo stack */
     void endEditCommand();
@@ -490,10 +507,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void destroyEditCommand();
 
     /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand. */
-    void undoEditCommand(QgsUndoCommand* cmd);
+    void undoEditCommand( QgsUndoCommand* cmd );
 
     /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand. */
-    void redoEditCommand(QgsUndoCommand* cmd);
+    void redoEditCommand( QgsUndoCommand* cmd );
 
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
@@ -623,10 +640,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void editGeometryChange( int featureId, QgsGeometry& geometry );
 
     /** Record added feature, store in active command (if any) */
-    void editFeatureAdd(QgsFeature& feature);
+    void editFeatureAdd( QgsFeature& feature );
 
     /** Record deleted feature, store in active command (if any) */
-    void editFeatureDelete(int featureId);
+    void editFeatureDelete( int featureId );
 
     /** Record changed attribute, store in active command (if any) */
     void editAttributeChange( int featureId, int field, QVariant value );
@@ -694,6 +711,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** field map to commit */
     QgsFieldMap mUpdatedFields;
+
+    /**Map that stores the aliases for attributes. Key is the attribute index and value the alias for that attribute*/
+    QMap<int, QString> mAttributeAliasMap;
 
     /** max field index */
     int mMaxUpdatedIndex;

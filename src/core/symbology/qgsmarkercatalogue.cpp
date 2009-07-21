@@ -145,6 +145,14 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
   //
   // Now pass the paintdevice along to have the marker rendered on it
   //
+  if ( fullName.left( 4 ) == "svg:" )
+  {
+    if ( svgMarker( &myPainter, fullName.mid( 4 ), size ) )
+      return myImage;
+
+    QgsDebugMsg( QString( "%1 not found - replacing with hard:circle" ).arg( fullName ) );
+    fullName = "hard:circle";
+  }
 
   if ( fullName.left( 5 ) == "hard:" )
   {
@@ -157,11 +165,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
 #endif
     return myImage;
   }
-  else if ( fullName.left( 4 ) == "svg:" )
-  {
-    svgMarker( &myPainter, fullName.mid( 4 ), size );
-    return myImage;
-  }
+
   return QImage(); // empty
 }
 
@@ -192,25 +196,33 @@ QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen 
   //
   // Now pass the paintdevice along to have the marker rndered on it
   //
+  if ( fullName.left( 4 ) == "svg:" )
+  {
+    if ( svgMarker( &myPainter, fullName.mid( 4 ), size ) )
+      return myPicture;
+
+    QgsDebugMsg( QString( "%1 not found - replacing with hard:circle" ).arg( fullName ) );
+    fullName = "hard:circle";
+  }
 
   if ( fullName.left( 5 ) == "hard:" )
   {
     hardMarker( &myPainter, ( int ) size, fullName.mid( 5 ), size, pen, brush, qtBug );
     return myPicture;
   }
-  else if ( fullName.left( 4 ) == "svg:" )
-  {
-    svgMarker( &myPainter, fullName.mid( 4 ), size );
-    return myPicture;
-  }
+
   return QPicture(); // empty
 }
 
-void QgsMarkerCatalogue::svgMarker( QPainter * thepPainter, QString fileName, double scaleFactor )
+bool QgsMarkerCatalogue::svgMarker( QPainter * thepPainter, QString fileName, double scaleFactor )
 {
   QSvgRenderer mySVG;
-  mySVG.load( fileName );
+  if ( !mySVG.load( fileName ) )
+    return false;
+
   mySVG.render( thepPainter );
+
+  return true;
 }
 
 void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, int imageSize, QString name, double s, QPen pen, QBrush brush, bool qtBug )

@@ -78,7 +78,7 @@ void QuickPrintPlugin::initGui()
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Provides a way to quickly produce a map with minimal user input." ) );
   // Connect the action to the run
-  connect( mQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
+  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Quick Print" ), mQActionPointer );

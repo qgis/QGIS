@@ -400,28 +400,28 @@ void QgsComposer::zoomFull( void )
   }
 }
 
-void QgsComposer::on_mActionZoomAll_activated( void )
+void QgsComposer::on_mActionZoomAll_triggered()
 {
   zoomFull();
   mView->update();
   emit zoomLevelChanged();
 }
 
-void QgsComposer::on_mActionZoomIn_activated( void )
+void QgsComposer::on_mActionZoomIn_triggered()
 {
   mView->scale( 2, 2 );
   mView->update();
   emit zoomLevelChanged();
 }
 
-void QgsComposer::on_mActionZoomOut_activated( void )
+void QgsComposer::on_mActionZoomOut_triggered()
 {
   mView->scale( .5, .5 );
   mView->update();
   emit zoomLevelChanged();
 }
 
-void QgsComposer::on_mActionRefreshView_activated( void )
+void QgsComposer::on_mActionRefreshView_triggered()
 {
   if ( mComposition )
   {
@@ -429,7 +429,7 @@ void QgsComposer::on_mActionRefreshView_activated( void )
   }
 }
 
-void QgsComposer::on_mActionPrint_activated( void )
+void QgsComposer::on_mActionPrint_triggered()
 {
   if ( !mComposition )
   {
@@ -508,7 +508,7 @@ void QgsComposer::on_mActionPrint_activated( void )
   }
 }
 
-void QgsComposer::on_mActionExportAsImage_activated( void )
+void QgsComposer::on_mActionExportAsImage_triggered()
 {
   if ( containsWMSLayer() )
   {
@@ -633,7 +633,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
 }
 
 
-void QgsComposer::on_mActionExportAsSVG_activated( void )
+void QgsComposer::on_mActionExportAsSVG_triggered()
 {
   if ( containsWMSLayer() )
   {
@@ -718,7 +718,7 @@ void QgsComposer::on_mActionExportAsSVG_activated( void )
 #endif
 }
 
-void QgsComposer::on_mActionSelectMoveItem_activated( void )
+void QgsComposer::on_mActionSelectMoveItem_triggered()
 {
   if ( mView )
   {
@@ -726,7 +726,7 @@ void QgsComposer::on_mActionSelectMoveItem_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAddNewMap_activated( void )
+void QgsComposer::on_mActionAddNewMap_triggered()
 {
   if ( mView )
   {
@@ -734,7 +734,7 @@ void QgsComposer::on_mActionAddNewMap_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAddNewLegend_activated( void )
+void QgsComposer::on_mActionAddNewLegend_triggered()
 {
   if ( mView )
   {
@@ -742,7 +742,7 @@ void QgsComposer::on_mActionAddNewLegend_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAddNewLabel_activated( void )
+void QgsComposer::on_mActionAddNewLabel_triggered()
 {
   if ( mView )
   {
@@ -750,7 +750,7 @@ void QgsComposer::on_mActionAddNewLabel_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAddNewScalebar_activated( void )
+void QgsComposer::on_mActionAddNewScalebar_triggered()
 {
   if ( mView )
   {
@@ -758,7 +758,7 @@ void QgsComposer::on_mActionAddNewScalebar_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAddImage_activated( void )
+void QgsComposer::on_mActionAddImage_triggered()
 {
   if ( mView )
   {
@@ -766,7 +766,7 @@ void QgsComposer::on_mActionAddImage_activated( void )
   }
 }
 
-void QgsComposer::on_mActionSaveAsTemplate_activated( void )
+void QgsComposer::on_mActionSaveAsTemplate_triggered()
 {
   //show file dialog
   QSettings settings;
@@ -801,7 +801,7 @@ void QgsComposer::on_mActionSaveAsTemplate_activated( void )
   }
 }
 
-void QgsComposer::on_mActionLoadFromTemplate_activated( void )
+void QgsComposer::on_mActionLoadFromTemplate_triggered()
 {
   QSettings settings;
   QString openFileDir = settings.value( "UI/lastComposerTemplateDir", "" ).toString();
@@ -835,7 +835,7 @@ void QgsComposer::on_mActionLoadFromTemplate_activated( void )
   cleanupAfterTemplateRead();
 }
 
-void QgsComposer::on_mActionMoveItemContent_activated( void )
+void QgsComposer::on_mActionMoveItemContent_triggered()
 {
   if ( mView )
   {
@@ -843,7 +843,7 @@ void QgsComposer::on_mActionMoveItemContent_activated( void )
   }
 }
 
-void QgsComposer::on_mActionGroupItems_activated( void )
+void QgsComposer::on_mActionGroupItems_triggered()
 {
   if ( mView )
   {
@@ -851,7 +851,7 @@ void QgsComposer::on_mActionGroupItems_activated( void )
   }
 }
 
-void QgsComposer::on_mActionUngroupItems_activated( void )
+void QgsComposer::on_mActionUngroupItems_triggered()
 {
   if ( mView )
   {
@@ -859,7 +859,7 @@ void QgsComposer::on_mActionUngroupItems_activated( void )
   }
 }
 
-void QgsComposer::on_mActionRaiseItems_activated( void )
+void QgsComposer::on_mActionRaiseItems_triggered()
 {
   if ( mComposition )
   {
@@ -867,7 +867,7 @@ void QgsComposer::on_mActionRaiseItems_activated( void )
   }
 }
 
-void QgsComposer::on_mActionLowerItems_activated( void )
+void QgsComposer::on_mActionLowerItems_triggered()
 {
   if ( mComposition )
   {
@@ -875,7 +875,7 @@ void QgsComposer::on_mActionLowerItems_activated( void )
   }
 }
 
-void QgsComposer::on_mActionMoveItemsToTop_activated( void )
+void QgsComposer::on_mActionMoveItemsToTop_triggered()
 {
   if ( mComposition )
   {
@@ -883,7 +883,7 @@ void QgsComposer::on_mActionMoveItemsToTop_activated( void )
   }
 }
 
-void QgsComposer::on_mActionMoveItemsToBottom_activated( void )
+void QgsComposer::on_mActionMoveItemsToBottom_triggered()
 {
   if ( mComposition )
   {
@@ -891,7 +891,7 @@ void QgsComposer::on_mActionMoveItemsToBottom_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAlignLeft_activated( void )
+void QgsComposer::on_mActionAlignLeft_triggered()
 {
   if ( mComposition )
   {
@@ -899,7 +899,7 @@ void QgsComposer::on_mActionAlignLeft_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAlignHCenter_activated( void )
+void QgsComposer::on_mActionAlignHCenter_triggered()
 {
   if ( mComposition )
   {
@@ -907,7 +907,7 @@ void QgsComposer::on_mActionAlignHCenter_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAlignRight_activated( void )
+void QgsComposer::on_mActionAlignRight_triggered()
 {
   if ( mComposition )
   {
@@ -915,7 +915,7 @@ void QgsComposer::on_mActionAlignRight_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAlignTop_activated( void )
+void QgsComposer::on_mActionAlignTop_triggered()
 {
   if ( mComposition )
   {
@@ -923,7 +923,7 @@ void QgsComposer::on_mActionAlignTop_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAlignVCenter_activated( void )
+void QgsComposer::on_mActionAlignVCenter_triggered()
 {
   if ( mComposition )
   {
@@ -931,7 +931,7 @@ void QgsComposer::on_mActionAlignVCenter_activated( void )
   }
 }
 
-void QgsComposer::on_mActionAlignBottom_activated( void )
+void QgsComposer::on_mActionAlignBottom_triggered()
 {
   if ( mComposition )
   {
@@ -1231,7 +1231,7 @@ void QgsComposer::deleteItem( QgsComposerItem* item )
 void QgsComposer::setSelectionTool()
 {
   mActionSelectMoveItem->setChecked( true );
-  on_mActionSelectMoveItem_activated();
+  on_mActionSelectMoveItem_triggered();
 }
 
 bool QgsComposer::containsWMSLayer() const

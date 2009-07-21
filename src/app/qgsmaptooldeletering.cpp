@@ -111,7 +111,7 @@ void QgsMapToolDeleteRing::deleteRing( int fId, int beforeVertexNr, QgsVectorLay
 
   if ( g->deleteRing( ringNum, partNum ) )
   {
-    vlayer->beginEditCommand( tr("Ring deleted") );
+    vlayer->beginEditCommand( tr( "Ring deleted" ) );
     vlayer->changeGeometry( fId, g );
     vlayer->endEditCommand();
     mCanvas->refresh();

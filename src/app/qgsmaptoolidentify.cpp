@@ -46,6 +46,8 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
+
+  mLayer = 0; // Initialize mLayer, useful in removeLayer SLOT
 }
 
 QgsMapToolIdentify::~QgsMapToolIdentify()
@@ -335,7 +337,8 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
       {
         featureNode->setText( 1, it->toString() );
       }
-      mResults->addAttribute( featureNode, fields[it.key()].name(), it->isNull() ? "NULL" : it->toString() );
+      QString attributeName = layer->attributeDisplayName(it.key());
+      mResults->addAttribute( featureNode, attributeName, it->isNull() ? "NULL" : it->toString() );
     }
 
     // Calculate derived attributes and insert:
@@ -489,7 +492,7 @@ void QgsMapToolIdentify::editFeature( QgsFeature &f )
 
   QgsAttributeMap src = f.attributeMap();
 
-  layer->beginEditCommand( tr("Attribute changed") );
+  layer->beginEditCommand( tr( "Attribute changed" ) );
   QgsAttributeDialog *ad = new QgsAttributeDialog( layer, &f );
   if ( ad->exec() )
   {
@@ -510,4 +513,23 @@ void QgsMapToolIdentify::editFeature( QgsFeature &f )
 
   delete ad;
   mCanvas->refresh();
+}
+
+void QgsMapToolIdentify::removeLayer( QString layerID )
+{
+  if ( mLayer )
+  {
+    if ( mLayer->type() == QgsMapLayer::VectorLayer )
+    {
+      if ( mLayer->getLayerID() == layerID )
+      {
+        if ( mResults )
+        {
+          mResults->clear();
+          delete mRubberBand;
+          mRubberBand = 0;
+        }
+      }
+    }
+  }
 }

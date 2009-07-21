@@ -4807,11 +4807,11 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
     intersectGeom = GEOSIntersection( mGeos, GEOSBuffer( testing, bufferDistance, DEFAULT_QUADRANT_SEGMENTS ) );
     double len;
     GEOSLength( intersectGeom, &len );
-     double testingLen;
-    GEOSLength( testing, &testingLen);
+    double testingLen;
+    GEOSLength( testing, &testingLen );
     double ratio = len / testingLen;
     //the ratios for geometries that belong to the original line are usually close to 1
-    if ( ratio >= 0.5 && ratio <= 1.5)
+    if ( ratio >= 0.5 && ratio <= 1.5 )
     {
       testedGeometries << GEOSGeom_clone( testing );
     }

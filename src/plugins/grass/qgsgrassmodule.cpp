@@ -19,6 +19,7 @@
 #include "qgsgrassselect.h"
 #include "qgsgrasstools.h"
 #include "qgsgrassprovider.h"
+#include "qgsgrassutils.h"
 #include "qgsgrass.h"
 
 #include "qgisinterface.h"
@@ -1498,8 +1499,10 @@ void QgsGrassModule::viewOutput()
       if ( onlyLayer1 && layers[j].left( 1 ) != "1" )
         continue;
 
-      // TODO vector layer name
-      mIface->addVectorLayer( uri, layers[j], "grass" );
+      QString name = QgsGrassUtils::vectorLayerName(
+                       map, layers[j], 1 );
+
+      mIface->addVectorLayer( uri, name, "grass" );
     }
   }
 
@@ -3013,7 +3016,7 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   if ( qdesc.attribute( "type" ).toLower() == "new" )
   {
     mType = New;
-  } 
+  }
   if ( qdesc.attribute( "type" ).toLower() == "multiple" )
   {
     mType = Multiple;
@@ -3078,7 +3081,8 @@ void QgsGrassModuleFile::browse()
   static QDir currentDir = QDir::current();
   fd->setDirectory( currentDir );
 
-  switch( mType ) {
+  switch ( mType )
+  {
     case New:
       fd->setFileMode( QFileDialog::AnyFile );
       fd->setAcceptMode( QFileDialog::AcceptSave );
@@ -3100,12 +3104,12 @@ void QgsGrassModuleFile::browse()
 
   if ( fd->exec() == QDialog::Accepted )
   {
-    QString selectedFile = fd->selectedFiles().first();
-    QFileInfo fi = QFileInfo(selectedFile);
+    QString selectedFile = fd->selectedFiles().last();
+    QFileInfo fi = QFileInfo( selectedFile );
     currentDir = fi.absoluteDir();
-    if (mType == Multiple)
+    if ( mType == Multiple )
     {
-      selectedFile = fd->selectedFiles().join(",");   
+      selectedFile = fd->selectedFiles().join( "," );
     }
     mLineEdit->setText( selectedFile );
   }

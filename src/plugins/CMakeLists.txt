@@ -26,11 +26,12 @@ INSTALL(FILES qgisplugin.h qgsrendererplugin.h DESTINATION ${QGIS_INCLUDE_DIR})
 
 SUBDIRS (quick_print)
 
-
 SUBDIRS (coordinate_capture dxf2shp_converter) 
 
 SUBDIRS (ogr_converter)
 
 SUBDIRS (diagram_overlay)
+
+SUBDIRS (evis)
 
 SUBDIRS (labeling)

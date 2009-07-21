@@ -25,6 +25,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include <cmath>
 
 #include <QColorDialog>
 
@@ -40,13 +41,15 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
 
   //find out the numerical fields of mVectorLayer
   const QgsFieldMap & fields = mVectorLayer->pendingFields();
+  QString displayName;
 
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
   {
     QVariant::Type type = it->type();
     if ( type == QVariant::Int || type == QVariant::Double )
     {
-      classificationComboBox->addItem( it->name(), it.key() );
+      displayName = mVectorLayer->attributeDisplayName(it.key());
+      classificationComboBox->addItem( displayName, it.key() );
     }
   }
 
@@ -136,7 +139,16 @@ void QgsContinuousColorDialog::apply()
 
 
   //create the render items for minimum and maximum value
-  QgsSymbol* minsymbol = new QgsSymbol( mVectorLayer->geometryType(), QString::number( minimum, 'f' ), "", "" );
+  QString minimumString;
+  if(minimum - floor(minimum) > 0)
+  {
+    minimumString = QString::number( minimum, 'f' );
+  }
+  else
+  {
+    minimumString = QString::number( minimum, 'f', 0 );
+  }
+  QgsSymbol* minsymbol = new QgsSymbol( mVectorLayer->geometryType(), minimumString, "", "" );
   QPen minPen;
   minPen.setColor( btnMinValue->color() );
   minPen.setWidthF( outlinewidthspinbox->value() );
@@ -150,7 +162,16 @@ void QgsContinuousColorDialog::apply()
     minsymbol->setPen( minPen );
   }
 
-  QgsSymbol* maxsymbol = new QgsSymbol( mVectorLayer->geometryType(), QString::number( maximum, 'f' ), "", "" );
+  QString maximumString;
+  if(maximum - floor(maximum) > 0)
+  {
+    maximumString = QString::number( maximum, 'f' );
+  }
+  else
+  {
+    maximumString = QString::number( maximum, 'f', 0 );
+  }
+  QgsSymbol* maxsymbol = new QgsSymbol( mVectorLayer->geometryType(), maximumString, "", "" );
   QPen maxPen;
   maxPen.setColor( btnMaxValue->color() );
   maxPen.setWidthF( outlinewidthspinbox->value() );

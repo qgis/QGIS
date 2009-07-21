@@ -96,7 +96,7 @@ void QgsNorthArrowPlugin::initGui()
   setCurrentTheme( "" );
   myQActionPointer->setWhatsThis( tr( "Creates a north arrow that is displayed on the map canvas" ) );
   // Connect the action to the run
-  connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
+  connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   //render the arrow each time the map is rendered
   connect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderNorthArrow( QPainter * ) ) );
   //this resets this plugin up if a project is loaded

@@ -99,87 +99,87 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
   public slots:
     //! Zoom to full extent of the paper
-    void on_mActionZoomAll_activated( void );
+    void on_mActionZoomAll_triggered();
 
     //! Zoom in
-    void on_mActionZoomIn_activated( void );
+    void on_mActionZoomIn_triggered();
 
     //! Zoom out
-    void on_mActionZoomOut_activated( void );
+    void on_mActionZoomOut_triggered();
 
     //! Refresh view
-    void on_mActionRefreshView_activated( void );
+    void on_mActionRefreshView_triggered();
 
     //! Print the composition
-    void on_mActionPrint_activated( void );
+    void on_mActionPrint_triggered();
 
     //! Print as image
-    void on_mActionExportAsImage_activated( void );
+    void on_mActionExportAsImage_triggered();
 
     //! Print as SVG
-    void on_mActionExportAsSVG_activated( void );
+    void on_mActionExportAsSVG_triggered();
 
     //! Select item
-    void on_mActionSelectMoveItem_activated( void );
+    void on_mActionSelectMoveItem_triggered();
 
     //! Add new map
-    void on_mActionAddNewMap_activated( void );
+    void on_mActionAddNewMap_triggered();
 
     //! Add new legend
-    void on_mActionAddNewLegend_activated( void );
+    void on_mActionAddNewLegend_triggered();
 
     //! Add new label
-    void on_mActionAddNewLabel_activated( void );
+    void on_mActionAddNewLabel_triggered();
 
     //! Add new scalebar
-    void on_mActionAddNewScalebar_activated( void );
+    void on_mActionAddNewScalebar_triggered();
 
     //! Add new picture
-    void on_mActionAddImage_activated( void );
+    void on_mActionAddImage_triggered();
 
     //! Save composer as template
-    void on_mActionSaveAsTemplate_activated( void );
+    void on_mActionSaveAsTemplate_triggered();
 
-    void on_mActionLoadFromTemplate_activated( void );
+    void on_mActionLoadFromTemplate_triggered();
 
     //! Set tool to move item content
-    void on_mActionMoveItemContent_activated( void );
+    void on_mActionMoveItemContent_triggered();
 
     //! Group selected items
-    void on_mActionGroupItems_activated( void );
+    void on_mActionGroupItems_triggered();
 
     //! Ungroup selected item group
-    void on_mActionUngroupItems_activated( void );
+    void on_mActionUngroupItems_triggered();
 
     //! Move selected items one position up
-    void on_mActionRaiseItems_activated( void );
+    void on_mActionRaiseItems_triggered();
 
     //!Move selected items one position down
-    void on_mActionLowerItems_activated( void );
+    void on_mActionLowerItems_triggered();
 
     //!Move selected items to top
-    void on_mActionMoveItemsToTop_activated( void );
+    void on_mActionMoveItemsToTop_triggered();
 
     //!Move selected items to bottom
-    void on_mActionMoveItemsToBottom_activated( void );
+    void on_mActionMoveItemsToBottom_triggered();
 
     //!Align selected composer items left
-    void on_mActionAlignLeft_activated( void );
+    void on_mActionAlignLeft_triggered();
 
     //!Align selected composere items horizontally centered
-    void on_mActionAlignHCenter_activated( void );
+    void on_mActionAlignHCenter_triggered();
 
     //!Align selected composer items right
-    void on_mActionAlignRight_activated( void );
+    void on_mActionAlignRight_triggered();
 
     //!Align selected composer items to top
-    void on_mActionAlignTop_activated( void );
+    void on_mActionAlignTop_triggered();
 
     //!Align selected composer items vertically centered
-    void on_mActionAlignVCenter_activated( void );
+    void on_mActionAlignVCenter_triggered();
 
     //!Align selected composer items to bottom
-    void on_mActionAlignBottom_activated( void );
+    void on_mActionAlignBottom_triggered();
 
     //! Save window state
     void saveWindowState();

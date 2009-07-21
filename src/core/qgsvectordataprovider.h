@@ -192,7 +192,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param index the index of the attribute
      * @param enumList reference to the list to fill
       @note: added in version 1.2*/
-    virtual void enumValues( int index, QStringList& enumList ) { enumList.clear(); }
+    virtual void enumValues( int index, QStringList& enumList ) { Q_UNUSED( index ); enumList.clear(); }
 
     /**
      * Adds a list of features
@@ -209,10 +209,19 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Adds new attributes
-     * @param attributes map with attribute name as key and type as value
+     * @param attributes list of new attributes
      * @return true in case of success and false in case of failure
+     * @note added in 1.2
      */
     virtual bool addAttributes( const QList<QgsField> &attributes );
+
+    /**
+     * Add new attributes
+     * @param attributes map of attributes name as key and type as value
+     * @return true in case of success and false in case of failure
+     * @note deprecated
+     */
+    virtual bool addAttributes( const QMap<QString, QString> &attributes );
 
     /**
      * Deletes existing attributes
@@ -309,10 +318,17 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
 
     /**
-     * Returns the names of the numerical types
+     * Returns the names of the supported types
      * @note added in 1.2
      */
     const QList< NativeType > &nativeTypes() const;
+
+
+    /**
+     * Returns the names of the supported types
+     * @note deprecated
+     */
+    const QMap<QString, QVariant::Type> &supportedNativeTypes() const;
 
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
@@ -336,6 +352,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**The names of the providers native types*/
     QList< NativeType > mNativeTypes;
+
+  private:
+    /** old notation **/
+    QMap<QString, QVariant::Type> mOldTypeList;
 };
 
 #endif

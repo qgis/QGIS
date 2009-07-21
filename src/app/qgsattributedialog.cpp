@@ -101,7 +101,9 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         ++it )
   {
     const QgsField &field = theFieldMap[it.key()];
-    QString myFieldName = field.name();
+
+    //show attribute alias if available
+    QString myFieldName = vl->attributeDisplayName(it.key());
     int myFieldType = field.type();
     QLabel * mypLabel = new QLabel();
     mypInnerLayout->addWidget( mypLabel, index, 0 );
@@ -135,13 +137,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       case QgsVectorLayer::Enumeration:
       {
         QStringList enumValues;
-        mLayer->dataProvider()->enumValues(it.key(), enumValues);
+        mLayer->dataProvider()->enumValues( it.key(), enumValues );
 
         QComboBox *cb = new QComboBox();
         QStringList::const_iterator s_it = enumValues.constBegin();
-        for(; s_it != enumValues.constEnd(); ++s_it)
+        for ( ; s_it != enumValues.constEnd(); ++s_it )
         {
-          cb->addItem(*s_it);
+          cb->addItem( *s_it );
         }
         int idx = cb->findText( myFieldValue.toString() );
         if ( idx >= 0 )
@@ -243,9 +245,9 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       {
         QLineEdit *le = new QLineEdit( myFieldValue.toString() );
 
-        if ( editType == QgsVectorLayer::Immutable)
+        if ( editType == QgsVectorLayer::Immutable )
         {
-          le->setEnabled(false);
+          le->setEnabled( false );
         }
         if ( editType == QgsVectorLayer::UniqueValuesEditable )
         {

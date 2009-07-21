@@ -69,7 +69,7 @@ class InstallerPlugin():
     else: # old plugin API
       nextAction = self.mainWindow().menuBar().actions()[4].menu().actions()[1]
       self.mainWindow().menuBar().actions()[4].menu().insertAction(nextAction,self.action)
-    QObject.connect(self.action, SIGNAL("activated()"), self.run)
+    QObject.connect(self.action, SIGNAL("triggered()"), self.run)
     QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
     self.statusLabel = None
 
