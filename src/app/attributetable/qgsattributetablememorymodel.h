@@ -20,6 +20,7 @@
 #include <QAbstractTableModel>
 #include <QModelIndex>
 #include <QObject>
+#include <QHash>
 
 //QGIS Includes
 #include "qgsfeature.h" //QgsAttributeMap
@@ -98,7 +99,7 @@ class QgsAttributeTableMemoryModel: public QgsAttributeTableModel
      */
     virtual void loadLayer();
 
-    QMap<int, QgsFeature> mFeatureMap;
+    QHash<int, QgsFeature> mFeatureMap;
 };
 
 #endif //QGSATTRIBUTETABLEMEMORYMODEL_H
