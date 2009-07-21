@@ -47,18 +47,31 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     enum Capability
     {
+      /** provider has no capabilities */
       NoCapabilities =                     0,
+      /** allows adding features */
       AddFeatures =                        1,
+      /** allows deletion of features */
       DeleteFeatures =               1 <<  1,
+      /** allows modification of attribute values */
       ChangeAttributeValues =        1 <<  2,
+      /** allows addition of new attributes (fields) */
       AddAttributes =                1 <<  3,
+      /** allows deletion of attributes (fields) */
       DeleteAttributes =             1 <<  4,
+      /** DEPRECATED - do not use */
       SaveAsShapefile =              1 <<  5,
+      /** allows creation of spatial index */
       CreateSpatialIndex =           1 <<  6,
+      /** fast access to features using their ID */
       SelectAtId =                   1 <<  7,
+      /** allows modifications of geometries */
       ChangeGeometries =             1 <<  8,
+      /** DEPRECATED - do not use */
       SelectGeometryAtId =           1 <<  9,
+      /** DEPRECATED - do not use */
       RandomSelectGeometryAtId =     1 << 10,
+      /** DEPRECATED - do not use */
       SequentialSelectGeometryAtId = 1 << 11
     };
 

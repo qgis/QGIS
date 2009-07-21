@@ -896,13 +896,9 @@ int QgsOgrProvider::capabilities() const
       // TODO: Perhaps influence if QGIS caches into memory
       //       (vs read from disk every time) based on this setting.
     {
-      ability |= QgsVectorDataProvider::RandomSelectGeometryAtId;
+      // the latter flag is here just for compatibility
+      ability |= QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
     }
-    else
-    {
-      ability |= QgsVectorDataProvider::SequentialSelectGeometryAtId;
-    }
-    ability |= QgsVectorDataProvider::SelectGeometryAtId;
 
     if ( OGR_L_TestCapability( ogrLayer, "SequentialWrite" ) )
       // TRUE if the CreateFeature() method works for this layer.

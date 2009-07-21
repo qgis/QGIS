@@ -131,7 +131,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     return;
   }
 
-  enabledCapabilities = QgsVectorDataProvider::SelectGeometryAtId;
+  // postgres has fast access to features at id (thanks to primary key / unique index)
+  // the latter flag is here just for compatibility
+  enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
 
   if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 0 ) ) == "t" )
   {
