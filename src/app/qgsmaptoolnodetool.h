@@ -32,7 +32,6 @@ struct VertexEntry
   bool selected;
   QgsPoint point;
   int equals;
-  //QgsRubberBand *vertexMarker;
   QgsVertexMarker* vertexMarker;
   bool inRubberBand;
   int rubberBandNr;
@@ -41,10 +40,21 @@ struct VertexEntry
 };
 
 /**
+ * Set representing set of vertex numbers
+ */
+typedef QSet<int> Vertexes;
+
+/**
+ * Constant representing zero value for distance. It's 0 because of error in double counting.
+ */
+const static double ZERO_TOLERANCE = 0.000000001;
+
+/**
  * Class that supports feature which is selected/
  */
-class SelectionFeature
+class SelectionFeature: public QObject
 {
+  Q_OBJECT
 
   public:
     SelectionFeature();
@@ -92,6 +102,7 @@ class SelectionFeature
     /**
      * Inverts selection of vertex with number
      * @param vertexNr number of vertex which is to be inverted
+     * @param invert flag if vertex selection should be inverted or not
      */
     void invertVertexSelection( int vertexNr, bool invert = true );
 
@@ -200,7 +211,7 @@ class SelectionFeature
     QgsMapCanvas* mCanvas;
 };
 
-/**A maptool to move/deletes/adds vertices of line or polygon fetures*/
+/**A maptool to move/deletes/adds vertices of line or polygon features*/
 class QgsMapToolNodeTool: public QgsMapToolVertexEdit
 {
     Q_OBJECT
@@ -260,22 +271,30 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
 
   private:
 
+    /**
+     * Connects signal which are required for correct work with bakground changes
+     * @param vlayer vector layer which is emiting these signals
+     */
     void connectSignals( QgsVectorLayer* vlayer );
 
-    /** Deletes the rubber band pointers
-     and clears mRubberBands*/
+    /**
+     * Deletes the rubber band pointers and clears mRubberBands
+     */
     void removeRubberBands();
 
     /**
      * Creating rubber band marker for movin of point
      * @param center coordinates of point to be moved
      * @param vlayer vector layer on which we are working
+     * @return rubber band marker
      */
     QgsRubberBand* createRubberBandMarker( QgsPoint center, QgsVectorLayer* vlayer );
 
     /**
      * Function to check if selected feature exists and is same with original one
+     * stored in internal structures
      * @param vlayer vector layer for checking
+     * @return if feature is same as one in internal structures
      */
     bool checkCorrectnessOfFeature( QgsVectorLayer* vlayer );
 
@@ -284,11 +303,28 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      */
     void createMovingRubberBands();
 
+    /**
+     * Creates rubber bands for ther features when topology editing is enabled
+     * @param vlayer vector layer for ehich rubber bands are created
+     * @param vertexMap map of vertexes
+     * @param vertex currently processed vertex
+     */
+    void createTopologyRubbedBands(QgsVectorLayer* vlayer, QList<VertexEntry> vertexMap, int vertex);
+
     /** The position of the vertex to move (in map coordinates) to exclude later from snapping*/
     QList<QgsPoint> mExcludePoint;
 
     /** rubber bands */
     QList<QgsRubberBand*> mQgsRubberBands;
+
+    /** list of topology rubber bands */
+    QList<QgsRubberBand*> mTopologyRubberBand;
+
+    /** vertexes of rubberbands which are to be moved */
+    QMap<int, Vertexes*> mTopologyMovingVertexes;
+
+    /** vertexes of features with int id which were already added tu rubber bands */
+    QMap<int, Vertexes*> mTopologyRubberBandVertexes;
 
     /** object containing selected feature and it's vertexes */
     SelectionFeature* mSelectionFeature;
@@ -316,6 +352,9 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
 
     /** closest vertex to click */
     QgsPoint mClosestVertex;
+
+    /** backup of map coordinates to be able to count change between moves */
+    QgsPoint mPosMapCoordBackup;
 
     /** active rubberband for selecting vertexes */
     QRubberBand* mQRubberBand;
