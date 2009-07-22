@@ -144,7 +144,7 @@ void QgsAttributeTableModel::layerModified( bool onlyGeometry )
 
   loadLayer();
   emit modelChanged();
-  emit headerDataChanged( Qt::Horizontal, 0, columnCount() );
+  emit headerDataChanged ( Qt::Horizontal, 0, columnCount() - 1);
 }
 
 void QgsAttributeTableModel::loadLayer()

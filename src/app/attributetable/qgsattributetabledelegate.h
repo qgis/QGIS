@@ -17,6 +17,7 @@
 #define QGSATTRIBUTETABLEDELEGATE_H
 
 #include <QItemDelegate>
+#include "qgsvectorlayer.h"
 class QPainter;
 /** \ingroup app
  * A delegate item class for QgsAttributeTable (see Qt documentation for
@@ -43,6 +44,22 @@ class QgsAttributeTableDelegate : public QItemDelegate
       QPainter * painter,
       const QStyleOptionViewItem & option,
       const QModelIndex & index ) const;
+
+    /**
+     * Sets data to editor widget. Overloads default metod
+     * @param editor editor which was created by create editor function in this class
+     * @param index index of field which is to be modified
+     */
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+
+    /**
+     * Sets data from editor backk to model. Overloads default metod
+     * @param editor editor which was created by create editor function in this class
+     * @param model model where data should be updated
+     * @param index index of field which is to be modified
+     */
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+
 };
 
 #endif //QGSATTRIBUTETABLEDELEGATE_H
