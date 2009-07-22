@@ -25,7 +25,9 @@
 #include "qgsrenderer.h"
 #include "qgsaddattrdialog.h"
 #include "qgsdelattrdialog.h"
+#include "qgsattributetypedialog.h"
 #include "qgsfield.h"
+#include "qgsmapcanvas.h"
 
 class QgsMapLayer;
 
@@ -39,7 +41,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 {
     Q_OBJECT
   public:
-    QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     ~QgsVectorLayerProperties();
     /**Sets the legend type to "single symbol", "graduated symbol" or "continuous color"*/
     void setLegendType( QString type );
@@ -60,6 +62,8 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     bool deleteAttribute( int attr );
 
   public slots:
+
+    void attributeTypeDialog();
 
     void alterLayerDialog( const QString& string );
 
@@ -123,6 +127,10 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     QgsAttributeActionDialog* actionDialog;
 
     QList<QgsApplyDialog*> mOverlayDialogs;
+    QMap<int, QPushButton*> mButtonMap;
+    QMap<int, QgsVectorLayer::EditType> mEditTypeMap;
+    QMap<int, QMap<QString, QVariant> > mValueMaps;
+    QMap<int, QgsVectorLayer::RangeData> mRanges;
 
     void updateButtons();
     void loadRows();
@@ -135,6 +143,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     //QPixmap bufferPixmap;
     static const int context_id = 94000531;
 
+    QgsVectorLayer::EditType getEditType(QString text);
 };
 
 inline QString QgsVectorLayerProperties::displayName()
