@@ -76,15 +76,24 @@ void QgsMapToolDeleteVertex::canvasReleaseEvent( QMouseEvent * e )
     vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
   }
 
+  bool success = true;
   if ( vlayer && mRecentSnappingResults.size() > 0 )
   {
     QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
     vlayer->beginEditCommand( tr( "Vertex deleted" ) );
     for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
     {
-      vlayer->deleteVertex( sr_it->snappedAtGeometry, sr_it->snappedVertexNr );
+      if (!vlayer->deleteVertex( sr_it->snappedAtGeometry, sr_it->snappedVertexNr ))
+      {
+        success = false;
+        vlayer->destroyEditCommand();
+        break;
+      }
     }
-    vlayer->endEditCommand();
+    if (success)
+    {
+      vlayer->endEditCommand();
+    }
   }
 
   mCanvas->refresh();
