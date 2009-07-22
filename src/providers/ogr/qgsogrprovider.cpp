@@ -211,7 +211,7 @@ QStringList QgsOgrProvider::subLayers() const
   }
   for ( unsigned int i = 0; i < layerCount() ; i++ )
   {
-    QString theLayerName = QString( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
+    QString theLayerName = QFile::decodeName( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) );
 
     int theLayerFeatureCount = OGR_L_GetFeatureCount( OGR_DS_GetLayer( ogrDataSource, i ), 1 ) ;
