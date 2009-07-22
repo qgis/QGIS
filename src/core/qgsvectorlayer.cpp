@@ -1558,7 +1558,10 @@ bool QgsVectorLayer::deleteVertex( int atFeatureId, int atVertex )
       geometry = mChangedGeometries[atFeatureId];
     }
 
-    geometry.deleteVertex( atVertex );
+    if (!geometry.deleteVertex( atVertex ))
+    {
+      return false;
+    }
     mCachedGeometries[atFeatureId] = geometry;
     editGeometryChange( atFeatureId, geometry );
 
@@ -3885,6 +3888,7 @@ void QgsVectorLayer::destroyEditCommand()
 {
   if ( mActiveCommand != NULL )
   {
+    undoEditCommand( mActiveCommand );
     delete mActiveCommand;
     mActiveCommand = NULL;
   }
