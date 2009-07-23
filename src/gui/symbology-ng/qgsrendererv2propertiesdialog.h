@@ -46,7 +46,6 @@ protected:
   //! update UI to reflect changes in renderer
   void updateUiFromRenderer();
   
-  void updateSingleSymbolIcon();
   void updateCategorizedSymbolIcon();
   void updateGraduatedSymbolIcon();
  
@@ -82,6 +81,7 @@ protected:
   
   QgsStyleV2* mStyle;
   
+  QgsSymbolV2* mSingleSymbol;
   QgsSymbolV2* mGraduatedSymbol;
   QgsSymbolV2* mCategorizedSymbol;
 };

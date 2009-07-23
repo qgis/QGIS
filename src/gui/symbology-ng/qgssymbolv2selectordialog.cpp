@@ -11,13 +11,19 @@
 #include <QPainter>
 #include <QStandardItemModel>
 
-QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent)
+QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent, bool embedded)
   : QDialog(parent)
 {
   mStyle = style;
   mSymbol = symbol;
   
   setupUi(this);
+
+  // can be embedded in renderer properties dialog
+  if (embedded)
+  {
+    buttonBox->hide();
+  }
   
   connect(btnSymbolProperties, SIGNAL(clicked()), this, SLOT(changeSymbolProperties()));
 
@@ -91,6 +97,7 @@ void QgsSymbolV2SelectorDialog::setSymbolFromStyle(const QModelIndex & index)
   
   updateSymbolPreview();
   updateSymbolInfo();
+  emit symbolModified();
 }
 
 void QgsSymbolV2SelectorDialog::updateSymbolPreview()
@@ -131,6 +138,7 @@ void QgsSymbolV2SelectorDialog::changeSymbolProperties()
   
   updateSymbolPreview();
   updateSymbolInfo();
+  emit symbolModified();
 }
 
 
@@ -143,6 +151,7 @@ void QgsSymbolV2SelectorDialog::setSymbolColor()
   mSymbol->setColor(color);
   updateSymbolColor();
   updateSymbolPreview();
+  emit symbolModified();
 }
  
 void QgsSymbolV2SelectorDialog::setMarkerAngle(double angle)
@@ -152,6 +161,7 @@ void QgsSymbolV2SelectorDialog::setMarkerAngle(double angle)
     return;
   markerSymbol->setAngle(angle);
   updateSymbolPreview();
+  emit symbolModified();
 }
 
 void QgsSymbolV2SelectorDialog::setMarkerSize(double size)
@@ -161,6 +171,7 @@ void QgsSymbolV2SelectorDialog::setMarkerSize(double size)
     return;
   markerSymbol->setSize(size);
   updateSymbolPreview();
+  emit symbolModified();
 }
 
 void QgsSymbolV2SelectorDialog::setLineWidth(double width)
@@ -170,4 +181,5 @@ void QgsSymbolV2SelectorDialog::setLineWidth(double width)
     return;
   lineSymbol->setWidth(width);
   updateSymbolPreview();
+  emit symbolModified();
 }

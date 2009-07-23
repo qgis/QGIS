@@ -47,10 +47,17 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   connect(radCategorized, SIGNAL(clicked()), this, SLOT(updateRenderer()));
   connect(radGraduated, SIGNAL(clicked()), this, SLOT(updateRenderer()));
   
-  //connect(btnSymbolLevels, SIGNAL(clicked()), this, SLOT(setSymbolLevels()));
-  
   // simple symbol page
-  connect(btnChangeSingleSymbol, SIGNAL(clicked()), this, SLOT(changeSingleSymbol()));
+  if (mRenderer->type() == QgsFeatureRendererV2::RendererSingleSymbol)
+    mSingleSymbol = ((QgsSingleSymbolRendererV2*)mRenderer)->symbol()->clone();
+  else
+    mSingleSymbol = QgsSymbolV2::defaultSymbol(mLayer->geometryType());
+
+  stackedWidget->removeWidget(pageSingleSymbol);
+  delete pageSingleSymbol;
+  pageSingleSymbol = new QgsSymbolV2SelectorDialog(mSingleSymbol, mStyle, NULL, true);
+  stackedWidget->addWidget( pageSingleSymbol );
+  connect(pageSingleSymbol, SIGNAL(symbolModified()), this, SLOT(changeSingleSymbol()));
 
   // categorized symbol page
   
@@ -95,6 +102,9 @@ QgsRendererV2PropertiesDialog::~QgsRendererV2PropertiesDialog()
 {
   // delete the temporary renderer (if exists)
   delete mRenderer;
+
+  delete mSingleSymbol;
+  // TODO: delete categorized, graduated symbol?
 }
 
 void QgsRendererV2PropertiesDialog::apply()
@@ -129,18 +139,8 @@ QgsGraduatedSymbolRendererV2* QgsRendererV2PropertiesDialog::rendererGraduated()
 
 void QgsRendererV2PropertiesDialog::changeSingleSymbol()
 {
-
-  QgsSymbolV2SelectorDialog dlg(rendererSingle()->symbol(), mStyle, this);
-  if (!dlg.exec())
-    return;
-  
-  updateSingleSymbolIcon();
-}
-
-void QgsRendererV2PropertiesDialog::updateSingleSymbolIcon()
-{
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon(rendererSingle()->symbol(), btnChangeSingleSymbol->iconSize());
-  btnChangeSingleSymbol->setIcon(icon);
+  // update symbol from the GUI
+  rendererSingle()->setSymbol( mSingleSymbol->clone() );
 }
 
 void QgsRendererV2PropertiesDialog::updateRenderer()
@@ -148,7 +148,7 @@ void QgsRendererV2PropertiesDialog::updateRenderer()
   delete mRenderer;
 
   if (radSingleSymbol->isChecked())
-    mRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol(mLayer->geometryType()) );
+    mRenderer = new QgsSingleSymbolRendererV2( mSingleSymbol->clone() );
   else if (radCategorized->isChecked())
     mRenderer = new QgsCategorizedSymbolRendererV2(-1, QgsCategoryList());
   else if (radGraduated->isChecked())
@@ -167,7 +167,7 @@ void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
       radSingleSymbol->setChecked(true);
     
       stackedWidget->setCurrentWidget(pageSingleSymbol);
-      updateSingleSymbolIcon();
+      //updateSingleSymbolIcon();
       break;
       
     case QgsFeatureRendererV2::RendererCategorizedSymbol:

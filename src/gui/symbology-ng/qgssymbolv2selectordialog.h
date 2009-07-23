@@ -14,7 +14,7 @@ class QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymbolV2Selecto
   Q_OBJECT
 
 public:
-  QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent = NULL);
+  QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent = NULL, bool embedded = false);
   
 protected:
   void populateSymbolView();
@@ -30,6 +30,9 @@ public slots:
   void setMarkerAngle(double angle);
   void setMarkerSize(double size);
   void setLineWidth(double width);
+
+signals:
+  void symbolModified();
 
 protected:
   QgsStyleV2* mStyle;
