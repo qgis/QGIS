@@ -14,6 +14,8 @@
 #include <QPainter>
 #include <QSize>
 
+#include <cmath>
+
 QgsSymbolV2::QgsSymbolV2(SymbolType type, QgsSymbolLayerV2List layers)
   : mType(type), mLayers(layers)
 {
@@ -43,13 +45,17 @@ QgsSymbolV2::~QgsSymbolV2()
 
 QgsSymbolV2* QgsSymbolV2::defaultSymbol(QGis::GeometryType geomType)
 {
+  QgsSymbolV2* s;
   switch (geomType)
   {
-    case QGis::Point: return new QgsMarkerSymbolV2();
-    case QGis::Line:  return new QgsLineSymbolV2();
-    case QGis::Polygon: return new QgsFillSymbolV2();
+    case QGis::Point: s = new QgsMarkerSymbolV2(); break;
+    case QGis::Line:  s = new QgsLineSymbolV2(); break;
+    case QGis::Polygon: s = new QgsFillSymbolV2(); break;
     default: QgsDebugMsg("unknown layer's geometry type"); return NULL;
   }
+
+  s->setColor( QColor::fromHsv(rand() % 360, 64 + rand() % 192, 128 + rand() % 128) );
+  return s;
 }
 
 
