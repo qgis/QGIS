@@ -50,9 +50,6 @@ protected:
   void updateCategorizedSymbolIcon();
   void updateGraduatedSymbolIcon();
  
-  //! create default symbol for the layer's geometry type (point/line/polygon)
-  QgsSymbolV2* createDefaultSymbol();
-  
   //! populate categories view
   void populateCategories();
   

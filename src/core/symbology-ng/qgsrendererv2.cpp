@@ -115,6 +115,11 @@ QgsFeatureRendererV2::QgsFeatureRendererV2(RendererType type)
 {
 }
 
+QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer(QGis::GeometryType geomType)
+{
+  return new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol(geomType) );
+}
+
 
 void QgsFeatureRendererV2::renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer)
 {

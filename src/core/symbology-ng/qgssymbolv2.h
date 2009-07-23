@@ -2,6 +2,7 @@
 #ifndef QGSSYMBOLV2_H
 #define QGSSYMBOLV2_H
 
+#include "qgis.h"
 #include <QList>
 
 class QColor;
@@ -30,6 +31,9 @@ public:
   
   virtual ~QgsSymbolV2();
   
+  //! return new default symbol for specified geometry type
+  static QgsSymbolV2* defaultSymbol(QGis::GeometryType geomType);
+
   SymbolType type() const { return mType; }
   
   // symbol layers handling

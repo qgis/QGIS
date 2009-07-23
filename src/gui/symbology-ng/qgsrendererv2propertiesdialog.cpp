@@ -25,7 +25,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   // if the layer doesn't use renderer V2, let's start using it!
   if (!mLayer->isUsingRendererV2())
   {
-    mLayer->setRendererV2(new QgsSingleSymbolRendererV2( createDefaultSymbol() ));
+    mLayer->setRendererV2( QgsFeatureRendererV2::defaultRenderer(mLayer->geometryType()) );
     mLayer->setUsingRendererV2(true);
   }
 
@@ -61,7 +61,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   m->setHorizontalHeaderLabels(labels);
   viewCategories->setModel(m);
 
-  mCategorizedSymbol = createDefaultSymbol();
+  mCategorizedSymbol = QgsSymbolV2::defaultSymbol(mLayer->geometryType());
 
   connect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
   
@@ -80,7 +80,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   mg->setHorizontalHeaderLabels(labels);
   viewGraduated->setModel(mg);
   
-  mGraduatedSymbol = createDefaultSymbol();
+  mGraduatedSymbol = QgsSymbolV2::defaultSymbol(mLayer->geometryType());
   
   connect(viewGraduated, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(rangesDoubleClicked(const QModelIndex &)));
 
@@ -148,7 +148,7 @@ void QgsRendererV2PropertiesDialog::updateRenderer()
   delete mRenderer;
 
   if (radSingleSymbol->isChecked())
-    mRenderer = new QgsSingleSymbolRendererV2( createDefaultSymbol() );
+    mRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol(mLayer->geometryType()) );
   else if (radCategorized->isChecked())
     mRenderer = new QgsCategorizedSymbolRendererV2(-1, QgsCategoryList());
   else if (radGraduated->isChecked())
@@ -221,17 +221,6 @@ void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
 }
 
  
-QgsSymbolV2* QgsRendererV2PropertiesDialog::createDefaultSymbol()
-{
-  switch (mLayer->geometryType())
-  {
-    case QGis::Point: return new QgsMarkerSymbolV2();
-    case QGis::Line:  return new QgsLineSymbolV2();
-    case QGis::Polygon: return new QgsFillSymbolV2();
-    default: QgsDebugMsg("unknown layer's geometry type"); return NULL;
-  }
-}
-
 void QgsRendererV2PropertiesDialog::changeCategorizedSymbol()
 {
   QgsSymbolV2SelectorDialog dlg(mCategorizedSymbol, mStyle, this);

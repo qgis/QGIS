@@ -123,16 +123,24 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
   }
   if ( mValid )
   {
+    setCoordinateSystem();
+
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
     //
-    if ( loadDefaultStyleFlag )
+    QSettings settings;
+    if ( settings.value( "/qgis/use_symbology_ng", false ).toBool() )
+    {
+      // using symbology-ng!
+      setUsingRendererV2(true);
+      setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
+    }
+    else if ( loadDefaultStyleFlag )
     {
       bool defaultLoadedFlag = false;
       loadDefaultStyle( defaultLoadedFlag );
       if ( !defaultLoadedFlag )
       {
-        setCoordinateSystem();
         // add single symbol renderer as default
         QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
         setRenderer( renderer );
@@ -140,7 +148,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     }
     else  // Otherwise use some very basic defaults
     {
-      setCoordinateSystem();
       // add single symbol renderer as default
       QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
       setRenderer( renderer );
@@ -2468,6 +2475,9 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
+  // TODO: load symbology-ng renderers
+  setUsingRendererV2(false);
+
   // process the attribute actions
   mActions->readXML( node );
 

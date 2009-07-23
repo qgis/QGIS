@@ -41,6 +41,9 @@ public:
     // TODO: user type?
   };
 
+  //! return a new renderer - used by default in vector layers
+  static QgsFeatureRendererV2* defaultRenderer(QGis::GeometryType geomType) /Factory/;
+
   RendererType type() const;
 
 	virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature)=0;
@@ -397,6 +400,9 @@ public:
   
   virtual ~QgsSymbolV2();
   
+  //! return new default symbol for specified geometry type
+  static QgsSymbolV2* defaultSymbol(QGis::GeometryType geomType) /Factory/;
+
   SymbolType type() const;
   
   // symbol layers handling

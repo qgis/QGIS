@@ -6,6 +6,7 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
 
+#include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
 
 #include <QColor>
@@ -38,6 +39,17 @@ QgsSymbolV2::~QgsSymbolV2()
   // delete all symbol layers (we own them, so it's okay)
   for (QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it)
     delete *it;
+}
+
+QgsSymbolV2* QgsSymbolV2::defaultSymbol(QGis::GeometryType geomType)
+{
+  switch (geomType)
+  {
+    case QGis::Point: return new QgsMarkerSymbolV2();
+    case QGis::Line:  return new QgsLineSymbolV2();
+    case QGis::Polygon: return new QgsFillSymbolV2();
+    default: QgsDebugMsg("unknown layer's geometry type"); return NULL;
+  }
 }
 
 

@@ -2,6 +2,8 @@
 #ifndef QGSRENDERERV2_H
 #define QGSRENDERERV2_H
 
+#include "qgis.h"
+
 #include <QList>
 #include <QHash>
 #include <QString>
@@ -49,6 +51,9 @@ public:
     RendererGraduatedSymbol
     // TODO: user type?
   };
+
+  //! return a new renderer - used by default in vector layers
+  static QgsFeatureRendererV2* defaultRenderer(QGis::GeometryType geomType);
   
   RendererType type() const { return mType; }
 	
