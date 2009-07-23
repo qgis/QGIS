@@ -22,14 +22,20 @@
 bool QgsAttributeTableIdColumnPair::operator<( const QgsAttributeTableIdColumnPair &b ) const
 {
   //QVariant thinks gid is a string!
-  QVariant::Type columnType = columnItem.type();
+  QVariant::Type columnType = mItem.type();
 
-  if ( columnType == QVariant::Int || columnType == QVariant::UInt || columnType == QVariant::LongLong || columnType == QVariant::ULongLong )
-    return columnItem.toLongLong() < b.columnItem.toLongLong();
+  switch ( columnType )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+      return mItem.toLongLong() < b.mItem.toLongLong();
 
-  if ( columnType == QVariant::Double )
-    return columnItem.toDouble() < b.columnItem.toDouble();
+    case QVariant::Double:
+      return mItem.toDouble() < b.mItem.toDouble();
 
-  return columnItem.toString() < b.columnItem.toString();
+    default:
+      return mItem.toString() < b.mItem.toString();
+  }
 }
-

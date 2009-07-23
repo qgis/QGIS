@@ -40,6 +40,9 @@ class QgsAttributeTableFilterModel: public QSortFilterProxyModel
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
     //QModelIndex mapToSource ( const QModelIndex & filterIndex ) const;
     //QModelIndex mapFromSource ( const QModelIndex & sourceIndex ) const;
+
+    QgsVectorLayer *layer() const { return mLayer; }
+
   protected:
     /**
      * Returns true if the source row will be accepted
