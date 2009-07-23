@@ -33,6 +33,7 @@
 #include "qgsrectangle.h"
 #include "qgsmaptopixel.h"
 #include "qgscoordinatetransform.h"
+#include "qgsrendercontext.h"
 
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
@@ -85,11 +86,9 @@ QString QgsLabel::fieldValue( int attr, QgsFeature &feature )
   }
 }
 
-void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
-                            const QgsCoordinateTransform* coordinateTransform,
-                            const QgsMapToPixel *transform,
-                            QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes,
-                            double sizeScale, double rasterScaleFactor )
+void QgsLabel::renderLabel( QgsRenderContext &renderContext,
+                            QgsFeature &feature, bool selected,
+                            QgsLabelAttributes *classAttributes )
 {
   QPen pen;
   QFont font;
@@ -98,9 +97,9 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
 
   /* Calc scale (not nice) */
   QgsPoint point;
-  point = transform->transform( 0, 0 );
+  point = renderContext.mapToPixel().transform( 0, 0 );
   double x1 = point.x();
-  point = transform->transform( 1000, 0 );
+  point = renderContext.mapToPixel().transform( 1000, 0 );
   double x2 = point.x();
   double scale = ( x2 - x1 ) * 0.001;
 
@@ -155,12 +154,12 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
   else //point units
   {
     double sizeMM = size * 0.3527;
-    size = sizeMM * sizeScale;
+    size = sizeMM * renderContext.scaleFactor();
   }
 
   //Request font larger (multiplied by rasterScaleFactor) as a workaround for the Qt font bug
   //and scale the painter down by rasterScaleFactor when drawing the label
-  size *= rasterScaleFactor;
+  size *= renderContext.rasterScaleFactor();
 
   if (( int )size <= 0 )
     // skip too small labels
@@ -333,8 +332,8 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
   }
   else
   {
-    xoffset = xoffset * 0.3527 * sizeScale;
-    yoffset = yoffset * 0.3527 * sizeScale;
+    xoffset = xoffset * 0.3527 * renderContext.scaleFactor();
+    yoffset = yoffset * 0.3527 * renderContext.scaleFactor();
   }
 
   // Angle
@@ -355,9 +354,8 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
   // part.
   if ( useOverridePoint )
   {
-    renderLabel( painter, overridePoint, coordinateTransform,
-                 transform, text, font, pen, dx, dy,
-                 xoffset, yoffset, ang, width, height, alignment, sizeScale, rasterScaleFactor );
+    renderLabel( renderContext, overridePoint, text, font, pen, dx, dy,
+                 xoffset, yoffset, ang, width, height, alignment );
   }
   else
   {
@@ -365,28 +363,28 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
     labelPoint( points, feature );
     for ( uint i = 0; i < points.size(); ++i )
     {
-      renderLabel( painter, points[i].p, coordinateTransform,
-                   transform, text, font, pen, dx, dy,
-                   xoffset, yoffset, mLabelAttributes->angleIsAuto() ? points[i].angle : ang, width, height, alignment, sizeScale, rasterScaleFactor );
+      renderLabel( renderContext, points[i].p, text, font, pen, dx, dy,
+                   xoffset, yoffset, mLabelAttributes->angleIsAuto() ? points[i].angle : ang, width, height, alignment );
     }
   }
 }
 
-void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
-                            const QgsCoordinateTransform* coordinateTransform,
-                            const QgsMapToPixel* transform,
+void QgsLabel::renderLabel( QgsRenderContext &renderContext,
+                            QgsPoint point,
                             QString text, QFont font, QPen pen,
                             int dx, int dy,
                             double xoffset, double yoffset,
                             double ang,
-                            int width, int height, int alignment, double sizeScale, double rasterScaleFactor )
+                            int width, int height, int alignment )
 {
+  QPainter *painter = renderContext.painter();
+
   // Convert point to projected units
-  if ( coordinateTransform )
+  if ( renderContext.coordinateTransform() )
   {
     try
     {
-      point = coordinateTransform->transform( point );
+      point = renderContext.coordinateTransform()->transform( point );
     }
     catch ( QgsCsException &cse )
     {
@@ -397,7 +395,7 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
   }
 
   // and then to canvas units
-  transform->transform( &point );
+  renderContext.mapToPixel().transform( &point );
   double x = point.x();
   double y = point.y();
 
@@ -411,7 +409,7 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
   painter->setFont( font );
   painter->translate( x, y );
   //correct oversampled font size back by scaling painter down
-  painter->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
+  painter->scale( 1.0 / renderContext.rasterScaleFactor(), 1.0 / renderContext.rasterScaleFactor() );
   painter->rotate( -ang );
 
   //
@@ -419,7 +417,7 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
   //
   if ( mLabelAttributes->bufferSizeIsSet() && mLabelAttributes->bufferEnabled() )
   {
-    double myBufferSize = mLabelAttributes->bufferSize() * 0.3527 * sizeScale * rasterScaleFactor;
+    double myBufferSize = mLabelAttributes->bufferSize() * 0.3527 * renderContext.scaleFactor() * renderContext.rasterScaleFactor();
     QPen bufferPen;
     if ( mLabelAttributes->bufferColorIsSet() )
     {
@@ -432,13 +430,13 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
     painter->setPen( bufferPen );
 
     double bufferStepSize; //hack to distinguish pixel devices from logical devices
-    if (( sizeScale - 1 ) > 1.5 )
+    if (( renderContext.scaleFactor() - 1 ) > 1.5 )
     {
       bufferStepSize = 1;
     }
     else //draw more dense in case of logical devices
     {
-      bufferStepSize = 1 / rasterScaleFactor;
+      bufferStepSize = 1 / renderContext.rasterScaleFactor();
     }
 
     for ( double i = dx - myBufferSize; i <= dx + myBufferSize; i += bufferStepSize )

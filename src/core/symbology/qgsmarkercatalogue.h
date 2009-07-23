@@ -27,9 +27,9 @@ class QPainter;
 
 
 /** Catalogue of point symbols */
-class CORE_EXPORT QgsMarkerCatalogue
+class CORE_EXPORT QgsMarkerCatalogue : public QObject
 {
-
+    Q_OBJECT
   public:
     //! Destructor
     ~QgsMarkerCatalogue();
@@ -53,6 +53,13 @@ class CORE_EXPORT QgsMarkerCatalogue
     /** Returns a pixmap given a file name of a svg marker
      *  NOTE: this method needs to be public static for QgsMarkerDialog::visualizeMarkers */
     static bool svgMarker( QPainter * thepPainter, QString name, double size );
+
+  public slots:
+    void refreshList();
+
+  signals:
+    void markersRefreshed();
+
   private:
 
     /**Constructor*/
@@ -65,6 +72,8 @@ class CORE_EXPORT QgsMarkerCatalogue
 
     /** Hard coded */
     void hardMarker( QPainter * thepPainter, int imageSize, QString name, double size, QPen pen, QBrush brush, bool qtBug = true );
+
+    bool fontMarker( QPainter * thepPainter, QString name, double size );
 
 };
 

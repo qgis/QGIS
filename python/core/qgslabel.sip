@@ -45,14 +45,24 @@ public:
       QgsPoint p;
       double angle;
     };
-    
+
+
     /** \brief render label
-     *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
-    */
+        \note deprecated
+      */
     void renderLabel ( QPainter* painter, QgsRectangle& viewExtent, 
                        QgsCoordinateTransform* coordinateTransform,
                        QgsMapToPixel *transform,
                        QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1, double rasterScaleFactor = 1);
+    
+    /** \brief render label
+     *  \param renderContext renderer context 
+     *  \param feature feature to render
+     *  \param selected is to be shown selected
+     *  \param classAttributes attributes to use for labeling
+     *  \note added in 1.2
+    */
+    void renderLabel ( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes=0);
 
     /** Reads the renderer configuration from an XML file
      @param rnode the Dom node to read 

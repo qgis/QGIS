@@ -43,13 +43,15 @@ QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QStr
     mLabel( label ),
     mType( t ),
     mPointSymbolName( "hard:circle" ),
-    mPointSize( DEFAULT_POINT_SIZE ),
+    mSize( DEFAULT_POINT_SIZE ),
+    mSizeInMapUnits( false ),
     mPointSymbolImage( 1, 1, QImage::Format_ARGB32_Premultiplied ),
     mWidthScale( -1.0 ),
     mCacheUpToDate( false ),
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
-    mScaleClassificationField( -1 )
+    mScaleClassificationField( -1 ),
+    mSymbolField( -1 )
 {
   mPen.setWidthF( DEFAULT_LINE_WIDTH );
 }
@@ -63,26 +65,30 @@ QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QStr
     mPen( c ),
     mBrush( c ),
     mPointSymbolName( "hard:circle" ),
-    mPointSize( DEFAULT_POINT_SIZE ),
+    mSize( DEFAULT_POINT_SIZE ),
+    mSizeInMapUnits( false ),
     mPointSymbolImage( 1, 1, QImage::Format_ARGB32_Premultiplied ),
     mWidthScale( -1.0 ),
     mCacheUpToDate( false ),
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
-    mScaleClassificationField( -1 )
+    mScaleClassificationField( -1 ),
+    mSymbolField( -1 )
 {
   mPen.setWidthF( DEFAULT_LINE_WIDTH );
 }
 
 QgsSymbol::QgsSymbol()
     : mPointSymbolName( "hard:circle" ),
-    mPointSize( DEFAULT_POINT_SIZE ),
+    mSize( DEFAULT_POINT_SIZE ),
+    mSizeInMapUnits( false ),
     mPointSymbolImage( 1, 1, QImage::Format_ARGB32_Premultiplied ),
     mWidthScale( -1.0 ),
     mCacheUpToDate( false ),
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
-    mScaleClassificationField( -1 )
+    mScaleClassificationField( -1 ),
+    mSymbolField( -1 )
 {
   mPen.setWidthF( DEFAULT_LINE_WIDTH );
 }
@@ -92,13 +98,15 @@ QgsSymbol::QgsSymbol( QColor c )
     : mPen( c ),
     mBrush( c ),
     mPointSymbolName( "hard:circle" ),
-    mPointSize( DEFAULT_POINT_SIZE ),
+    mSize( DEFAULT_POINT_SIZE ),
+    mSizeInMapUnits( false ),
     mPointSymbolImage( 1, 1, QImage::Format_ARGB32_Premultiplied ),
     mWidthScale( -1.0 ),
     mCacheUpToDate( false ),
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
-    mScaleClassificationField( -1 )
+    mScaleClassificationField( -1 ),
+    mSymbolField( -1 )
 {
   mPen.setWidthF( DEFAULT_LINE_WIDTH );
 }
@@ -115,7 +123,8 @@ QgsSymbol::QgsSymbol( const QgsSymbol& s )
     mBrush = s.mBrush;
     mTextureFilePath = s.mTextureFilePath;
     mPointSymbolName = s.mPointSymbolName;
-    mPointSize = s.mPointSize;
+    mSize = s.mSize;
+    mSizeInMapUnits = s.mSizeInMapUnits;
     mPointSymbolImage = s.mPointSymbolImage;
     mPointSymbolImageSelected = s.mPointSymbolImageSelected;
     mWidthScale = s.mWidthScale;
@@ -127,6 +136,7 @@ QgsSymbol::QgsSymbol( const QgsSymbol& s )
     mSelectionColor2 = s.mSelectionColor2;
     mRotationClassificationField = s.mRotationClassificationField;
     mScaleClassificationField = s.mScaleClassificationField;
+    mSymbolField = s.mSymbolField;
   }
 }
 
@@ -196,49 +206,52 @@ void QgsSymbol::setCustomTexture( QString path )
 
 void QgsSymbol::setNamedPointSymbol( QString name )
 {
-  // do some sanity checking for svgs...
-  QString myTempName = name;
-  myTempName.replace( "svg:", "" );
-  QFile myFile( myTempName );
-  if ( !myFile.exists() )
+  if ( name.startsWith( "svg:" ) )
   {
-    QgsDebugMsg( "\n\n\n *** Svg Symbol not found on fs ***" );
-    QgsDebugMsg( "Name: " + name );
-    //see if we can resolve the problem...
-    //by using the qgis svg dir from this local machine
-    //one day when user specified svg are allowed we need
-    //to adjust this logic probably...
-    QString svgPath = QgsApplication::svgPath();
-    QgsDebugMsg( "SvgPath: " + svgPath );
-    QFileInfo myInfo( myTempName );
-    QString myFileName = myInfo.fileName(); // foo.svg
-    QString myLowestDir = myInfo.dir().dirName();
-    QString myLocalPath = svgPath + QDir::separator() +
-                          myLowestDir + QDir::separator() +
-                          myFileName;
-    QgsDebugMsg( "Alternative svg path: " + myLocalPath );
-    if ( QFile( myLocalPath ).exists() )
+    // do some sanity checking for svgs...
+    QString myTempName = name;
+    myTempName.replace( "svg:", "" );
+    QFile myFile( myTempName );
+    if ( !myFile.exists() )
     {
-      name = "svg:" + myLocalPath;
-      QgsDebugMsg( "Svg found in alternative path" );
-    }
-    else if ( myInfo.isRelative() )
-    {
-      QFileInfo pfi( QgsProject::instance()->fileName() );
-      if ( pfi.exists() && QFile( pfi.canonicalPath() + QDir::separator() + myTempName ).exists() )
+      QgsDebugMsg( "\n\n\n *** Svg Symbol not found on fs ***" );
+      QgsDebugMsg( "Name: " + name );
+      //see if we can resolve the problem...
+      //by using the qgis svg dir from this local machine
+      //one day when user specified svg are allowed we need
+      //to adjust this logic probably...
+      QString svgPath = QgsApplication::svgPath();
+      QgsDebugMsg( "SvgPath: " + svgPath );
+      QFileInfo myInfo( myTempName );
+      QString myFileName = myInfo.fileName(); // foo.svg
+      QString myLowestDir = myInfo.dir().dirName();
+      QString myLocalPath = svgPath + QDir::separator() +
+                            myLowestDir + QDir::separator() +
+                            myFileName;
+      QgsDebugMsg( "Alternative svg path: " + myLocalPath );
+      if ( QFile( myLocalPath ).exists() )
       {
-        name = "svg:" + pfi.canonicalPath() + QDir::separator() + myTempName;
+        name = "svg:" + myLocalPath;
         QgsDebugMsg( "Svg found in alternative path" );
+      }
+      else if ( myInfo.isRelative() )
+      {
+        QFileInfo pfi( QgsProject::instance()->fileName() );
+        if ( pfi.exists() && QFile( pfi.canonicalPath() + QDir::separator() + myTempName ).exists() )
+        {
+          name = "svg:" + pfi.canonicalPath() + QDir::separator() + myTempName;
+          QgsDebugMsg( "Svg found in alternative path" );
+        }
+        else
+        {
+          QgsDebugMsg( "Svg not found in project path" );
+        }
       }
       else
       {
-        QgsDebugMsg( "Svg not found in project path" );
+        //couldnt find the file, no happy ending :-(
+        QgsDebugMsg( "Computed alternate path but no svg there either" );
       }
-    }
-    else
-    {
-      //couldnt find the file, no happy ending :-(
-      QgsDebugMsg( "Computed alternate path but no svg there either" );
     }
   }
   mPointSymbolName = name;
@@ -250,21 +263,34 @@ QString QgsSymbol::pointSymbolName() const
   return mPointSymbolName;
 }
 
+void QgsSymbol::setPointSizeUnits( bool sizeInMapUnits )
+{
+  mSizeInMapUnits = sizeInMapUnits;
+}
+
+bool QgsSymbol::pointSizeUnits() const
+{
+  return mSizeInMapUnits;
+}
+
 void QgsSymbol::setPointSize( double s )
 {
-  if ( s < MINIMUM_POINT_SIZE )
-    mPointSize = MINIMUM_POINT_SIZE;
+  if ( mSizeInMapUnits )
+  {
+    mSize = s;
+  }
+  else if ( s < MINIMUM_POINT_SIZE )
+    mSize = MINIMUM_POINT_SIZE;
   else
-    mPointSize = s;
+    mSize = s;
 
   mCacheUpToDate = mCacheUpToDate2 = false;
 }
 
 double QgsSymbol::pointSize() const
 {
-  return mPointSize;
+  return mSize;
 }
-
 
 QImage QgsSymbol::getLineSymbolAsImage()
 {
@@ -374,15 +400,19 @@ QImage QgsSymbol::getPointSymbolAsImage( double widthScale, bool selected, QColo
     pen.setColor( selectionColor );
     QBrush brush = mBrush;
     preRotateImage = QgsMarkerCatalogue::instance()->imageMarker(
-                       mPointSymbolName, ( float )( mPointSize * scale * widthScale *
-                                                    rasterScaleFactor ),
+                       mPointSymbolName,
+                       ( float )( mSize * scale * widthScale * rasterScaleFactor ),
                        pen, mBrush );
   }
   else
   {
+    QgsDebugMsg( QString( "marker:%1 mPointSize:%2 mPointSizeUnits:%3 scale:%4 widthScale:%5 rasterScaleFactor:%6" )
+                 .arg( mPointSymbolName )
+                 .arg( mSize ).arg( mSizeInMapUnits ? "true" : "false" )
+                 .arg( scale ).arg( widthScale ).arg( rasterScaleFactor ) );
     preRotateImage = QgsMarkerCatalogue::instance()->imageMarker(
-                       mPointSymbolName, ( float )( mPointSize * scale * widthScale *
-                                                    rasterScaleFactor ),
+                       mPointSymbolName,
+                       ( float )( mSize * scale * widthScale * rasterScaleFactor ),
                        pen, mBrush );
   }
 
@@ -403,11 +433,11 @@ void QgsSymbol::cache( QColor selectionColor )
   // composer. Not sure why...
   // brush.setColor ( selectionColor );
 
-  mPointSymbolImage = QgsMarkerCatalogue::instance()->imageMarker( mPointSymbolName, mPointSize,
+  mPointSymbolImage = QgsMarkerCatalogue::instance()->imageMarker( mPointSymbolName, mSize,
                       mPen, mBrush );
 
   mPointSymbolImageSelected = QgsMarkerCatalogue::instance()->imageMarker(
-                                mPointSymbolName, mPointSize, pen, brush );
+                                mPointSymbolName, mSize, pen, brush );
 
   mSelectionColor = selectionColor;
   mCacheUpToDate = true;
@@ -420,7 +450,7 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
   QPen pen = mPen;
   pen.setWidthF( widthScale * pen.widthF() );
 
-  mPointSymbolImage2 = QgsMarkerCatalogue::instance()->imageMarker( mPointSymbolName, mPointSize * widthScale,
+  mPointSymbolImage2 = QgsMarkerCatalogue::instance()->imageMarker( mPointSymbolName, mSize * widthScale,
                        pen, mBrush, false );
 
   QBrush brush = mBrush;
@@ -428,7 +458,7 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
   pen.setColor( selectionColor );
 
   mPointSymbolImageSelected2 = QgsMarkerCatalogue::instance()->imageMarker(
-                                 mPointSymbolName, mPointSize * widthScale, pen, brush,  false );
+                                 mPointSymbolName, mSize * widthScale, pen, brush,  false );
 
   mSelectionColor2 = selectionColor;
 
@@ -492,6 +522,7 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document, const QgsVec
   {
     appendField( symbol, document, *vl, "rotationclassificationfieldname", mRotationClassificationField );
     appendField( symbol, document, *vl, "scaleclassificationfieldname", mScaleClassificationField );
+    appendField( symbol, document, *vl, "symbolfieldname", mSymbolField );
   }
 
   QDomElement outlinecolor = document.createElement( "outlinecolor" );
@@ -580,16 +611,25 @@ bool QgsSymbol::readXML( QDomNode &synode, const QgsVectorLayer *vl )
 
   QDomNode psizenode = synode.namedItem( "pointsize" );
 
-  if ( !  psizenode.isNull() )
+  if ( ! psizenode.isNull() )
   {
     QDomElement psizeelement = psizenode.toElement();
     setPointSize( psizeelement.text().toFloat() );
+  }
+
+  QDomNode psizeunitnodes = synode.namedItem( "pointsizeunits" );
+  if ( ! psizeunitnodes.isNull() )
+  {
+    QDomElement psizeunitelement = psizeunitnodes.toElement();
+    QgsDebugMsg( QString( "psizeunitelement:%1" ).arg( psizeunitelement.text() ) );
+    setPointSizeUnits( psizeunitelement.text().compare( "mapunits", Qt::CaseInsensitive ) == 0 );
   }
 
   if ( vl )
   {
     mRotationClassificationField = readFieldName( synode, "rotationclassificationfield", *vl );
     mScaleClassificationField = readFieldName( synode, "scaleclassificationfield", *vl );
+    mSymbolField = readFieldName( synode, "symbolfield", *vl );
   }
   else
   {
@@ -649,4 +689,14 @@ int QgsSymbol::scaleClassificationField() const
 void QgsSymbol::setScaleClassificationField( int field )
 {
   mScaleClassificationField = field;
+}
+
+int QgsSymbol::symbolField() const
+{
+  return mSymbolField;
+}
+
+void QgsSymbol::setSymbolField( int field )
+{
+  mSymbolField = field;
 }

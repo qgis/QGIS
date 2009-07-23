@@ -48,6 +48,7 @@ class QgsSingleSymbolDialog: public QDialog, private Ui::QgsSingleSymbolDialogBa
 
   protected:
     QgsVectorLayer* mVectorLayer;
+    bool mDisabled;
 
   public slots:
     /* arrange the widgets on this dialog to reflect the current state of QgsSymbol */
@@ -64,6 +65,8 @@ class QgsSingleSymbolDialog: public QDialog, private Ui::QgsSingleSymbolDialogBa
      * disabled depending if the texture entry in the combo
      */
     void fillStyleChanged( int theIndex );
+
+    void refreshMarkers();
 
   protected slots:
     void selectOutlineColor();

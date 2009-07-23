@@ -1,6 +1,6 @@
 
 /** Catalogue of point symbols */
-class QgsMarkerCatalogue /NoDefaultCtors/
+class QgsMarkerCatalogue : QObject /NoDefaultCtors/
 {
 %TypeHeaderCode
 #include <qgsmarkercatalogue.h>
@@ -29,5 +29,15 @@ public:
     /** Returns a pixmap given a file name of a svg marker
      *  NOTE: this method needs to be public static for QgsMarkerDialog::visualizeMarkers */
     static void svgMarker (QPainter * thepPainter, QString name, int size );
+
+  public slots:
+    // reload the symbols
+    // added in 1.2
+    void refreshList();
+
+  signals:
+    // symbols were reloaded
+    // added in 1.2
+    void markersRefreshed();
 };
 
