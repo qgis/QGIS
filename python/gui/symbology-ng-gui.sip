@@ -34,7 +34,7 @@ class QgsRendererV2PropertiesDialog : QDialog //, private Ui::QgsRendererV2Props
 %End
 
 public:
-  QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = NULL);
+  QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = NULL, bool embedded = false);
   
 public slots:
   void changeSingleSymbol();

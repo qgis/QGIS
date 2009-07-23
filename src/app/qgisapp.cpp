@@ -1038,24 +1038,7 @@ void QgisApp::createActions()
 #include "qgsrendererv2propertiesdialog.h"
 #include "qgsstylev2managerdialog.h"
 
-static QgsStyleV2* gStyleV2 = NULL;
 
-static void _initStyle()
-{
-  if (gStyleV2 == NULL)
-  {
-    QString styleFilename = QgsApplication::userStyleV2Path();
-
-    // copy default style if user style doesn't exist
-    if ( !QFile::exists( styleFilename ) )
-    {
-      QFile::copy( QgsApplication::defaultStyleV2Path(), styleFilename );
-    }
-
-    gStyleV2 = new QgsStyleV2;
-    gStyleV2->load( styleFilename );
-  }
-}
 
 void QgisApp::toggleRendererV2()
 {
@@ -1067,9 +1050,7 @@ void QgisApp::toggleRendererV2()
   }
   QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>(layer);
   
-  _initStyle();
-  
-  QgsRendererV2PropertiesDialog dlg(vlayer, gStyleV2, this);
+  QgsRendererV2PropertiesDialog dlg(vlayer, QgsStyleV2::defaultStyle(), this);
   if (!dlg.exec())
     return;
   
@@ -1080,9 +1061,7 @@ void QgisApp::toggleRendererV2()
 
 void QgisApp::showStyleManagerV2()
 {
-  _initStyle();
-
-  QgsStyleV2ManagerDialog dlg(gStyleV2, QgsApplication::userStyleV2Path(), this);
+  QgsStyleV2ManagerDialog dlg(QgsStyleV2::defaultStyle(), QgsApplication::userStyleV2Path(), this);
   dlg.exec();
 }
 

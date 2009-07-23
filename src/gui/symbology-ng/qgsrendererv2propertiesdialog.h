@@ -18,7 +18,7 @@ class QgsRendererV2PropertiesDialog : public QDialog, private Ui::QgsRendererV2P
   Q_OBJECT
 
 public:
-  QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = NULL);
+  QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = NULL, bool embedded = false);
   ~QgsRendererV2PropertiesDialog();
   
 public slots:
@@ -39,6 +39,7 @@ public slots:
   void symbolLevels();
 
   void onOK();
+  void apply();
 
 protected:
   

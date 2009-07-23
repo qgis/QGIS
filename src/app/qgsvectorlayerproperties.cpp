@@ -56,6 +56,9 @@
 #include <QComboBox>
 #include <QCheckBox>
 
+#include "qgsrendererv2propertiesdialog.h"
+#include "qgsstylev2.h"
+
 #if QT_VERSION < 0x040300
 #define toPlainText() text()
 #endif
@@ -439,10 +442,24 @@ void QgsVectorLayerProperties::reset( void )
       legendtypecombobox->addItem( tr( "Unique Value" ) );
     }
   }
-
+  
   //find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
   delete mRendererDialog;
   mRendererDialog = 0;
+  
+  if (layer->isUsingRendererV2())
+  {
+    mRendererDialog = new QgsRendererV2PropertiesDialog(layer, QgsStyleV2::defaultStyle(), NULL, true);
+
+    // hide unused widgets
+    legendtypecombobox->hide();
+    legendtypelabel->hide();
+    lblTransparencyPercent->hide();
+    sliderTransparency->hide();
+  }
+  else
+  {
+  
   QString rtype = layer->renderer()->name();
   if ( rtype == "Single Symbol" )
   {
@@ -465,15 +482,16 @@ void QgsVectorLayerProperties::reset( void )
     legendtypecombobox->setCurrentIndex( 3 );
   }
 
+  QObject::connect( legendtypecombobox, SIGNAL( activated( const QString & ) ), this,
+                    SLOT( alterLayerDialog( const QString & ) ) );
+
+  }
+
   if ( mRendererDialog )
   {
     widgetStackRenderers->addWidget( mRendererDialog );
     widgetStackRenderers->setCurrentWidget( mRendererDialog );
   }
-
-
-  QObject::connect( legendtypecombobox, SIGNAL( activated( const QString & ) ), this,
-                    SLOT( alterLayerDialog( const QString & ) ) );
 
   // reset fields in label dialog
   layer->label()->setFields( layer->pendingFields() );
@@ -611,32 +629,43 @@ void QgsVectorLayerProperties::apply()
     }
   }
 
-  QgsSingleSymbolDialog *sdialog =
-    dynamic_cast < QgsSingleSymbolDialog * >( widgetStackRenderers->currentWidget() );
-  QgsGraduatedSymbolDialog *gdialog =
-    dynamic_cast < QgsGraduatedSymbolDialog * >( widgetStackRenderers->currentWidget() );
-  QgsContinuousColorDialog *cdialog =
-    dynamic_cast < QgsContinuousColorDialog * >( widgetStackRenderers->currentWidget() );
-  QgsUniqueValueDialog* udialog =
-    dynamic_cast< QgsUniqueValueDialog * >( widgetStackRenderers->currentWidget() );
+  if (layer->isUsingRendererV2())
+  {
+    QgsRendererV2PropertiesDialog* dlg =
+      static_cast<QgsRendererV2PropertiesDialog*>(widgetStackRenderers->currentWidget());
+    dlg->apply();
+  }
+  else
+  {
 
-  if ( sdialog )
-  {
-    sdialog->apply();
+    QgsSingleSymbolDialog *sdialog =
+      dynamic_cast < QgsSingleSymbolDialog * >( widgetStackRenderers->currentWidget() );
+    QgsGraduatedSymbolDialog *gdialog =
+      dynamic_cast < QgsGraduatedSymbolDialog * >( widgetStackRenderers->currentWidget() );
+    QgsContinuousColorDialog *cdialog =
+      dynamic_cast < QgsContinuousColorDialog * >( widgetStackRenderers->currentWidget() );
+    QgsUniqueValueDialog* udialog =
+      dynamic_cast< QgsUniqueValueDialog * >( widgetStackRenderers->currentWidget() );
+
+    if ( sdialog )
+    {
+      sdialog->apply();
+    }
+    else if ( gdialog )
+    {
+      gdialog->apply();
+    }
+    else if ( cdialog )
+    {
+      cdialog->apply();
+    }
+    else if ( udialog )
+    {
+      udialog->apply();
+    }
+    layer->setTransparency( static_cast < unsigned int >( 255 - sliderTransparency->value() ) );
+
   }
-  else if ( gdialog )
-  {
-    gdialog->apply();
-  }
-  else if ( cdialog )
-  {
-    cdialog->apply();
-  }
-  else if ( udialog )
-  {
-    udialog->apply();
-  }
-  layer->setTransparency( static_cast < unsigned int >( 255 - sliderTransparency->value() ) );
 
   //apply overlay dialogs
   for ( QList<QgsApplyDialog*>::iterator it = mOverlayDialogs.begin(); it != mOverlayDialogs.end(); ++it )

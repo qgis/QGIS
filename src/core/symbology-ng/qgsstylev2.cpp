@@ -6,6 +6,7 @@
 
 #include "qgssymbollayerv2registry.h"
 
+#include "qgsapplication.h"
 #include "qgslogger.h"
 
 #include <QDomDocument>
@@ -14,6 +15,8 @@
 #include <QTextStream>
 
 #define STYLE_CURRENT_VERSION  "0"
+
+QgsStyleV2* QgsStyleV2::mDefaultStyle = NULL;
 
 
 QgsStyleV2::QgsStyleV2()
@@ -24,6 +27,25 @@ QgsStyleV2::~QgsStyleV2()
 {
   clear();
 }
+
+QgsStyleV2* QgsStyleV2::defaultStyle() // static
+{
+  if (mDefaultStyle == NULL)
+  {
+    QString styleFilename = QgsApplication::userStyleV2Path();
+
+    // copy default style if user style doesn't exist
+    if ( !QFile::exists( styleFilename ) )
+    {
+      QFile::copy( QgsApplication::defaultStyleV2Path(), styleFilename );
+    }
+
+    mDefaultStyle = new QgsStyleV2;
+    mDefaultStyle->load( styleFilename );
+  }
+  return mDefaultStyle;
+}
+
 
 void QgsStyleV2::clear()
 {

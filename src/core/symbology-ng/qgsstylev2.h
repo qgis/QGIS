@@ -23,6 +23,9 @@ public:
   
   QgsStyleV2();
   ~QgsStyleV2();
+
+  //! return default application-wide style
+  static QgsStyleV2* defaultStyle();
   
   //! remove all contents of the style
   void clear();
@@ -90,6 +93,8 @@ protected:
   QgsVectorColorRampV2Map mColorRamps;
   
   QString mErrorString;
+
+  static QgsStyleV2* mDefaultStyle;
 };
 
 

@@ -17,7 +17,7 @@
 #include <QStandardItemModel>
 #include <QStandardItem>
 
-QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent)
+QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent, bool embedded)
   : QDialog(parent), mStyle(style)
 {
   mLayer = layer;
@@ -32,6 +32,12 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   mRenderer = mLayer->rendererV2()->clone();
   
   setupUi(this);
+
+  // can be embedded in vector layer properties
+  if (embedded)
+  {
+    buttonBox->hide();
+  }
 
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(onOK()));
 
@@ -91,11 +97,15 @@ QgsRendererV2PropertiesDialog::~QgsRendererV2PropertiesDialog()
   delete mRenderer;
 }
 
-void QgsRendererV2PropertiesDialog::onOK()
+void QgsRendererV2PropertiesDialog::apply()
 {
   mLayer->setRendererV2(mRenderer);
   mRenderer = NULL;
+}
 
+void QgsRendererV2PropertiesDialog::onOK()
+{
+  apply();
   accept();
 }
 
