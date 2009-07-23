@@ -49,13 +49,19 @@ public:
 	
   void setLocked(bool locked) { mLocked = locked; }
 	bool isLocked() const { return mLocked; }
+
+  // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
+  void setRenderingPass(int renderingPass) { mRenderingPass = renderingPass; }
+  int renderingPass() const { return mRenderingPass; }
 	
 protected:
-  QgsSymbolLayerV2(QgsSymbolV2::SymbolType type, bool locked = false) : mType(type), mLocked(locked) {}
+  QgsSymbolLayerV2(QgsSymbolV2::SymbolType type, bool locked = false)
+      : mType(type), mLocked(locked), mRenderingPass(0) {}
 	
   QgsSymbolV2::SymbolType mType;
 	bool mLocked;
   QColor mColor;
+  int mRenderingPass;
 };
 
 //////////////////////

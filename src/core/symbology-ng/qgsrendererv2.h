@@ -73,15 +73,15 @@ public:
   //! for symbol levels
   virtual QgsSymbolV2List symbols()=0;
 
-  QgsSymbolV2LevelOrder& symbolLevels() { return mLevelOrder; }
-  void setSymbolLevels(const QgsSymbolV2LevelOrder& levelOrder) { mLevelOrder = levelOrder; }
+  bool usingSymbolLevels() const { return mUsingSymbolLevels; }
+  void setUsingSymbolLevels(bool usingSymbolLevels) { mUsingSymbolLevels = usingSymbolLevels; }
   
 protected:
   QgsFeatureRendererV2(RendererType type);
   
   RendererType mType;
 
-  QgsSymbolV2LevelOrder mLevelOrder;
+  bool mUsingSymbolLevels;
 };
 
 class QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2

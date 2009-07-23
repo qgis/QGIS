@@ -111,7 +111,7 @@ static unsigned char* _getPolygon(QPolygonF& pts, QList<QPolygonF>& holes, const
 
 
 QgsFeatureRendererV2::QgsFeatureRendererV2(RendererType type)
-  : mType(type)
+  : mType(type), mUsingSymbolLevels(false)
 {
 }
 
@@ -294,7 +294,7 @@ QString QgsSingleSymbolRendererV2::dump()
 QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone()
 {
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( mSymbol->clone() );
-  r->setSymbolLevels( symbolLevels() );
+  r->setUsingSymbolLevels( usingSymbolLevels() );
   return r;
 }
 
@@ -496,7 +496,7 @@ QString QgsCategorizedSymbolRendererV2::dump()
 QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
 {
   QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( mAttrNum, mCategories );
-  r->setSymbolLevels( symbolLevels() );
+  r->setUsingSymbolLevels( usingSymbolLevels() );
   return r;
 }
 
@@ -654,7 +654,7 @@ QString QgsGraduatedSymbolRendererV2::dump()
 QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
 {
   QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( mAttrNum, mRanges );
-  r->setSymbolLevels( symbolLevels() );
+  r->setUsingSymbolLevels( usingSymbolLevels() );
   return r;
 }
 

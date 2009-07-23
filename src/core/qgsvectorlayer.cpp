@@ -73,6 +73,8 @@
 #include "qgsmaplayerregistry.h"
 
 #include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
+#include "qgssymbollayerv2.h"
 
 #ifdef Q_WS_X11
 #include "qgsclipper.h"
@@ -706,8 +708,23 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
       mLabelingRegisterFeatureHook(fet, mLabelingLayerContext);
   }
 
+  // find out the order
+  QgsSymbolV2LevelOrder levels;
+  QgsSymbolV2List symbols = mRendererV2->symbols();
+  for (int i = 0; i < symbols.count(); i++)
+  {
+    QgsSymbolV2* sym = symbols[i];
+    for (int j = 0; j < sym->symbolLayerCount(); j++)
+    {
+      int level = sym->symbolLayer(j)->renderingPass();
+      QgsSymbolV2LevelItem item(sym,j);
+      while (level >= levels.count()) // append new empty levels
+        levels.append( QgsSymbolV2Level() );
+      levels[level].append(item);
+    }
+  }
+
   // 2. draw features in correct order
-  QgsSymbolV2LevelOrder& levels = mRendererV2->symbolLevels();
   for (int l = 0; l < levels.count(); l++)
   {
     QgsSymbolV2Level& level = levels[l];
@@ -762,10 +779,10 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
     select( attributes, rendererContext.extent() );
 
-    if (mRendererV2->symbolLevels().isEmpty())
-      drawRendererV2(rendererContext, labeling);
-    else
+    if (mRendererV2->usingSymbolLevels())
       drawRendererV2Levels(rendererContext, labeling);
+    else
+      drawRendererV2(rendererContext, labeling);
 
     return TRUE;
   }

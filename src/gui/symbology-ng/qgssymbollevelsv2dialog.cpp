@@ -2,16 +2,17 @@
 #include "qgssymbollevelsv2dialog.h"
 
 #include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerv2.h"
 #include "qgssymbolv2.h"
 
 #include <QTableWidgetItem>
 
-QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog(QgsSymbolV2List symbols, QgsSymbolV2LevelOrder levels, QWidget* parent)
- : QDialog(parent), mSymbols(symbols), mLevels(levels)
+QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog(QgsSymbolV2List symbols, bool usingSymbolLevels, QWidget* parent)
+ : QDialog(parent), mSymbols(symbols)
 {
   setupUi(this);
 
-  chkEnable->setChecked( !levels.isEmpty() );
+  chkEnable->setChecked( usingSymbolLevels );
 
   connect(chkEnable, SIGNAL(clicked()), this, SLOT(updateUi()));
 
@@ -42,17 +43,14 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog(QgsSymbolV2List symbols, QgsSym
 
   updateUi();
 
-  connect(tableLevels, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(updateLevels(QTableWidgetItem*)));
+  if (!usingSymbolLevels)
+    setDefaultLevels();
+
   populateTable();
 }
 
 void QgsSymbolLevelsV2Dialog::populateTable()
 {
-  if (mLevels.isEmpty())
-    return;
-
-  disconnect(tableLevels, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(updateLevels(QTableWidgetItem*)));
-
   for (int row = 0; row < mSymbols.count(); row++)
   {
     QgsSymbolV2* sym = mSymbols[row];
@@ -66,81 +64,33 @@ void QgsSymbolLevelsV2Dialog::populateTable()
       }
       else
       {
-        item = new QTableWidgetItem( QString::number(levelForSymbolLayer(sym, layer)) );
+        item = new QTableWidgetItem( QString::number( sym->symbolLayer(layer)->renderingPass() ) );
       }
       tableLevels->setItem(row, layer, item);
     }
   }
 
-  connect(tableLevels, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(updateLevels(QTableWidgetItem*)));
-
 }
 
 void QgsSymbolLevelsV2Dialog::updateUi()
 {
-  if (chkEnable->isChecked())
-  {
-    if (mLevels.isEmpty())
-      setDefaultLevels();
-    populateTable();
-  }
-  else
-    mLevels.clear();
-
   tableLevels->setEnabled(chkEnable->isChecked());
 }
 
 void QgsSymbolLevelsV2Dialog::setDefaultLevels()
 {
-  mLevels.clear();
-  for (int col = 0; col < tableLevels->columnCount(); col++)
+  for (int i = 0; i < mSymbols.count(); i++)
   {
-    QgsSymbolV2Level level;
-    for (int i = 0; i < mSymbols.count(); i++)
+    QgsSymbolV2* sym = mSymbols[i];
+    for (int layer = 0; layer < sym->symbolLayerCount(); layer++)
     {
-      QgsSymbolV2* sym = mSymbols[i];
-      if (col < sym->symbolLayerCount())
-        level.append(QgsSymbolV2LevelItem(sym, col));
+      sym->symbolLayer(layer)->setRenderingPass(layer);
     }
-    mLevels.append(level);
   }
 }
 
-int QgsSymbolLevelsV2Dialog::levelForSymbolLayer(QgsSymbolV2* sym, int layer)
-{
-  for (int l = 0; l < mLevels.count(); l++)
-  {
-    QgsSymbolV2Level& level = mLevels[l];
-    for (int i = 0; i < level.count(); i++)
-    {
-      QgsSymbolV2LevelItem& item = level[i];
-      if (item.symbol() == sym && item.layer() == layer)
-        return l;
-    }
-  }
-  return -1;
-}
 
-void QgsSymbolLevelsV2Dialog::updateLevels(QTableWidgetItem* item)
+bool QgsSymbolLevelsV2Dialog::usingLevels() const
 {
-  int num = item->text().toInt();
-  if (num > 100)
-  {
-    item->setText("0");
-    return;
-  }
-
-  mLevels.clear();
-  for (int col = 0; col < tableLevels->columnCount(); col++)
-  {
-    for (int row = 0; row < mSymbols.count(); row++)
-    {
-      QgsSymbolV2* sym = mSymbols[row];
-      int level = tableLevels->item(row,col)->text().toInt();
-      QgsSymbolV2LevelItem item(sym,col);
-      while (level >= mLevels.count()) // append new empty levels
-        mLevels.append( QgsSymbolV2Level() );
-      mLevels[level].append(item);
-    }
-  }
+  return chkEnable->isChecked();
 }

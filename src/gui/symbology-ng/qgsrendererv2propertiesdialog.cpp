@@ -550,9 +550,9 @@ void QgsRendererV2PropertiesDialog::symbolLevels()
 {
   QgsSymbolV2List symbols = mRenderer->symbols();
 
-  QgsSymbolLevelsV2Dialog dlg(symbols, mRenderer->symbolLevels(), this);
+  QgsSymbolLevelsV2Dialog dlg(symbols, mRenderer->usingSymbolLevels(), this);
   if (dlg.exec())
   {
-    mRenderer->setSymbolLevels( dlg.levels() );
+    mRenderer->setUsingSymbolLevels( dlg.usingLevels() );
   }
 }

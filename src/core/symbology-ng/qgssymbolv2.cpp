@@ -216,6 +216,7 @@ QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
   {
     QgsSymbolLayerV2* layer = (*it)->clone();
     layer->setLocked( (*it)->isLocked() );
+    layer->setRenderingPass( (*it)->renderingPass() );
     lst.append( layer );
   }
   return lst;

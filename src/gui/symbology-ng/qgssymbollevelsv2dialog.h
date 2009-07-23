@@ -13,24 +13,21 @@ class QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbolLevelsV2Dia
 {
   Q_OBJECT
 public:
-    QgsSymbolLevelsV2Dialog(QgsSymbolV2List symbols, QgsSymbolV2LevelOrder levels, QWidget* parent = NULL);
+    QgsSymbolLevelsV2Dialog(QgsSymbolV2List symbols, bool usingSymbolLevels, QWidget* parent = NULL);
 
-    QgsSymbolV2LevelOrder& levels() { return mLevels; }
+    bool usingLevels() const;
 
 public slots:
     void updateUi();
-    void updateLevels(QTableWidgetItem* item);
 
 protected:
     void populateTable();
     void setDefaultLevels();
-    int levelForSymbolLayer(QgsSymbolV2* sym, int layer);
 
 protected:
     //! maximal number of layers from all symbols
     int mMaxLayers;
     QgsSymbolV2List mSymbols;
-    QgsSymbolV2LevelOrder mLevels;
 };
 
 #endif // QGSSYMBOLLEVELSV2DIALOG_H

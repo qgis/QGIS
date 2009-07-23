@@ -61,8 +61,8 @@ public:
 
   void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1);
 
-  QgsSymbolV2LevelOrder& symbolLevels();
-  void setSymbolLevels(const QgsSymbolV2LevelOrder& levelOrder);
+  bool usingSymbolLevels() const;
+  void setUsingSymbolLevels(bool usingSymbolLevels);
 
 protected:
   QgsFeatureRendererV2(RendererType type);
@@ -296,7 +296,11 @@ public:
 	
   void setLocked(bool locked);
 	bool isLocked() const;
-	
+
+  // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
+  void setRenderingPass(int renderingPass);
+  int renderingPass() const;
+
 protected:
   QgsSymbolLayerV2(QgsSymbolV2::SymbolType type, bool locked = false);
 	
