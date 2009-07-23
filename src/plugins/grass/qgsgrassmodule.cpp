@@ -198,7 +198,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QString xName = qDocElem.attribute( "manual" );
   if ( xName.isEmpty() )
   {
-      xName = qDocElem.attribute( "module" );
+    xName = qDocElem.attribute( "module" );
   }
 
   // Binary modules on windows has .exe extension
@@ -1365,7 +1365,7 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
       mSuccess = true;
       mViewButton->setEnabled( true );
       mOptions->thawOutput();
-      mCanvas->refresh(); 
+      mCanvas->refresh();
     }
     else
     {
@@ -1898,7 +1898,6 @@ QString QgsGrassModuleOption::value()
   }
   else if ( mControlType == CheckBoxes )
   {
-    int cnt = 0;
     QStringList values;
     for ( unsigned int i = 0; i < mCheckBoxes.size(); ++i )
     {
@@ -1907,7 +1906,7 @@ QString QgsGrassModuleOption::value()
         values.append( mValues[i] );
       }
     }
-    value = values.join(",");
+    value = values.join( "," );
   }
   return value;
 }
@@ -3027,10 +3026,10 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   {
     mType = Multiple;
   }
-  
-  if ( qdesc.attribute( "type" ).toLower() == "directory")
+
+  if ( qdesc.attribute( "type" ).toLower() == "directory" )
   {
-    mType = Directory; 
+    mType = Directory;
   }
 
   if ( !qdesc.attribute( "filters" ).isNull() )
