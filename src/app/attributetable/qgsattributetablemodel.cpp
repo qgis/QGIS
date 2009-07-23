@@ -144,7 +144,7 @@ void QgsAttributeTableModel::layerModified( bool onlyGeometry )
 
   loadLayer();
   emit modelChanged();
-  emit headerDataChanged ( Qt::Horizontal, 0, columnCount() - 1);
+  emit headerDataChanged( Qt::Horizontal, 0, columnCount() - 1 );
 }
 
 void QgsAttributeTableModel::loadLayer()
@@ -158,7 +158,7 @@ void QgsAttributeTableModel::loadLayer()
   mIdRowMap.clear();
 
   int pendingFeatureCount = mLayer->pendingFeatureCount();
-  if ( mFeatureCount < pendingFeatureCount)
+  if ( mFeatureCount < pendingFeatureCount )
   {
     QgsDebugMsg( "ins" );
     ins = true;
@@ -176,8 +176,8 @@ void QgsAttributeTableModel::loadLayer()
   mLayer->select( QgsAttributeList(), QgsRectangle(), false );
 
   // preallocate data before inserting
-  mRowIdMap.reserve(pendingFeatureCount + 50);
-  mIdRowMap.reserve(pendingFeatureCount + 50);
+  mRowIdMap.reserve( pendingFeatureCount + 50 );
+  mIdRowMap.reserve( pendingFeatureCount + 50 );
 
   for ( int i = 0; mLayer->nextFeature( f ); ++i )
   {
@@ -294,7 +294,6 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
 {
   QgsAttributeMap row;
-  QgsAttributeTableIdColumnPair pair;
   QgsAttributeList attrs;
   QgsFeature f;
 
@@ -308,11 +307,7 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
   while ( mLayer->nextFeature( f ) )
   {
     row = f.attributeMap();
-
-    pair.id = f.id();
-    pair.columnItem = row[ mAttributes[column] ];
-
-    mSortList.append( pair );
+    mSortList.append( QgsAttributeTableIdColumnPair( f.id(), row[ mAttributes[column] ] ) );
   }
 
   if ( order == Qt::AscendingOrder )
@@ -328,8 +323,8 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
   QList<QgsAttributeTableIdColumnPair>::Iterator it;
   for ( it = mSortList.begin(); it != mSortList.end(); ++it, ++i )
   {
-    mRowIdMap.insert( i, it->id );
-    mIdRowMap.insert( it->id, i );
+    mRowIdMap.insert( i, it->id() );
+    mIdRowMap.insert( it->id(), i );
   }
 
   // restore selection
