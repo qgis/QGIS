@@ -1801,7 +1801,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="256"/>
         <source>Lines</source>
-        <translation>Zeilen</translation>
+        <translation>Linien</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="257"/>
