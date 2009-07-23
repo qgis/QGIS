@@ -239,6 +239,7 @@ void QgsComposer::setupTheme()
   mActionSaveAsTemplate->setIcon( QgisApp::getThemeIcon( "/mActionFileSaveAs.png" ) );
   mActionExportAsImage->setIcon( QgisApp::getThemeIcon( "/mActionExportMapServer.png" ) );
   mActionExportAsSVG->setIcon( QgisApp::getThemeIcon( "/mActionSaveAsSVG.png" ) );
+  mActionExportAsPDF->setIcon( QgisApp::getThemeIcon( "/mActionSaveAsPDF.png" ) );
   mActionPrint->setIcon( QgisApp::getThemeIcon( "/mActionFilePrint.png" ) );
   mActionZoomAll->setIcon( QgisApp::getThemeIcon( "/mActionZoomFullExtent.png" ) );
   mActionZoomIn->setIcon( QgisApp::getThemeIcon( "/mActionZoomIn.png" ) );
@@ -429,19 +430,54 @@ void QgsComposer::on_mActionRefreshView_triggered()
   }
 }
 
+void QgsComposer::on_mActionExportAsPDF_triggered()
+{
+  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsPdfFile", "qgis.pdf" ).toString();
+  QFileInfo file( myLastUsedFile );
+  QFileDialog *myQFileDialog = new QFileDialog( this, tr( "Choose a file name to save the map as" ),
+      file.path(), tr( "PDF Format" ) + " (*.pdf *PDF)" );
+  myQFileDialog->selectFile( file.fileName() );
+  myQFileDialog->setFileMode( QFileDialog::AnyFile );
+  myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
+
+  int result = myQFileDialog->exec();
+  raise();
+  if ( result != QDialog::Accepted ) return;
+
+  QString myOutputFileNameQString = myQFileDialog->selectedFiles().first();
+  if ( myOutputFileNameQString == "" ) return;
+
+  myQSettings.setValue( "/UI/lastSaveAsPdfFile", myOutputFileNameQString );
+
+  QPrinter printer;
+
+  printer.setOutputFormat( QPrinter::PdfFormat );
+  printer.setOutputFileName( myOutputFileNameQString );
+
+  print( printer );
+}
+
 void QgsComposer::on_mActionPrint_triggered()
 {
-  if ( !mComposition )
-  {
+  QPrinter printer;
+
+  QPrintDialog printDialog( &printer );
+  if ( printDialog.exec() != QDialog::Accepted )
     return;
-  }
+
+  print( printer );
+}
+
+void QgsComposer::print( QPrinter &printer )
+{
+  if( !mComposition )
+    return;
 
   if ( containsWMSLayer() )
   {
     showWMSPrintingWarning();
   }
-
-  QPrinter printer;
 
   //try to set most of the print dialog settings based on composer properties
   if ( mComposition->paperHeight() > mComposition->paperWidth() )
@@ -454,58 +490,50 @@ void QgsComposer::on_mActionPrint_triggered()
   }
 
   //set resolution based on composer setting
-
-
   printer.setFullPage( true );
   printer.setColorMode( QPrinter::Color );
 
-  QPrintDialog printDialog( &printer );
-  if ( printDialog.exec() == QDialog::Accepted )
+  //set user-defined resolution
+  printer.setResolution( mComposition->printResolution() );
+
+  QPainter p( &printer );
+
+  QgsComposition::PlotStyle savedPlotStyle = mComposition->plotStyle();
+  mComposition->setPlotStyle( QgsComposition::Print );
+
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  if ( mComposition->printAsRaster() )
   {
-    //set user-defined resolution
-    if ( mComposition )
-    {
-      printer.setResolution( mComposition->printResolution() );
-    }
-    QPainter p( &printer );
-
-    QgsComposition::PlotStyle savedPlotStyle = mComposition->plotStyle();
-    mComposition->setPlotStyle( QgsComposition::Print );
-
-    QApplication::setOverrideCursor( Qt::BusyCursor );
-
-    if ( mComposition->printAsRaster() )
-    {
-      //print out via QImage, code copied from on_mActionExportAsImage_activated
-      int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
-      int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
-      QImage image( QSize( width, height ), QImage::Format_ARGB32 );
-      image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
-      image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
-      image.fill( 0 );
-      QPainter imagePainter( &image );
-      QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-      QRectF targetArea( 0, 0, width, height );
-      mComposition->render( &imagePainter, targetArea, sourceArea );
-      imagePainter.end();
-      p.drawImage( targetArea, image, targetArea );
-    }
-    else
-    {
-#if QT_VERSION < 0x040400
-      QRectF paperRect( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-      QRect pageRect = printer.pageRect();
-      mComposition->render( &p, pageRect, paperRect );
-#else
-      //better in case of custom page size, but only possible with Qt>=4.4.0
-      QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
-      QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
-      mComposition->render( &p, paperRectPixel, paperRectMM );
-#endif
-    }
-    mComposition->setPlotStyle( savedPlotStyle );
-    QApplication::restoreOverrideCursor();
+    //print out via QImage, code copied from on_mActionExportAsImage_activated
+    int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
+    int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
+    QImage image( QSize( width, height ), QImage::Format_ARGB32 );
+    image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
+    image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
+    image.fill( 0 );
+    QPainter imagePainter( &image );
+    QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+    QRectF targetArea( 0, 0, width, height );
+    mComposition->render( &imagePainter, targetArea, sourceArea );
+    imagePainter.end();
+    p.drawImage( targetArea, image, targetArea );
   }
+  else
+  {
+#if QT_VERSION < 0x040400
+    QRectF paperRect( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+    QRect pageRect = printer.pageRect();
+    mComposition->render( &p, pageRect, paperRect );
+#else
+    //better in case of custom page size, but only possible with Qt>=4.4.0
+    QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
+    QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
+    mComposition->render( &p, paperRectPixel, paperRectMM );
+#endif
+  }
+  mComposition->setPlotStyle( savedPlotStyle );
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsComposer::on_mActionExportAsImage_triggered()

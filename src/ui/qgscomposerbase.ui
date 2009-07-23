@@ -232,6 +232,7 @@
    <addaction name="mActionLoadFromTemplate" />
    <addaction name="mActionSaveAsTemplate" />
    <addaction name="mActionExportAsImage" />
+   <addaction name="mActionExportAsPDF" />
    <addaction name="mActionExportAsSVG" />
    <addaction name="mActionPrint" />
    <addaction name="separator" />
@@ -332,6 +333,14 @@
    </property>
    <property name="text" >
     <string>Export as Image...</string>
+   </property>
+  </action>
+  <action name="mActionExportAsPDF" >
+   <property name="icon" >
+    <iconset>../themes/default/mActionSaveAsPDF.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Export as PDF...</string>
    </property>
   </action>
   <action name="mActionExportAsSVG" >
