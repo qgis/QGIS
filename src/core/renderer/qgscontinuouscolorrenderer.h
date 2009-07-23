@@ -35,8 +35,11 @@ class CORE_EXPORT QgsContinuousColorRenderer: public QgsRenderer
     QgsContinuousColorRenderer( const QgsContinuousColorRenderer& other );
     QgsContinuousColorRenderer& operator=( const QgsContinuousColorRenderer& other );
     virtual ~QgsContinuousColorRenderer();
-    /**Renders the feature using the minimum and maximum value of the classification field*/
-    void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected,  double widthScale = 1.0, double rasterScaleFactor = 1.0 );
+
+    /**Renders the feature using the minimum and maximum value of the classification field
+     * added in 1.2 */
+    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected );
+
     /**Returns the number of the classification field*/
     int classificationField() const;
     /**Sets the id of the classification field*/

@@ -22,6 +22,7 @@
 #include "qgssymbologyutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsrendercontext.h"
 
 #include <cfloat>
 #include <QDomElement>
@@ -73,8 +74,10 @@ void QgsContinuousColorRenderer::setMaximumSymbol( QgsSymbol* sy )
   mMaximumSymbol = sy;
 }
 
-void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QImage* img, bool selected, double widthScale, double rasterScaleFactor )
+void QgsContinuousColorRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature & f, QImage* img, bool selected )
 {
+  QPainter *p = renderContext.painter();
+
   if (( mMinimumSymbol && mMaximumSymbol ) )
   {
     //first find out the value for the classification attribute
@@ -129,7 +132,7 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
       // later add support for both pen and brush to dialog
       QPen pen = mMinimumSymbol->pen();
       pen.setColor( QColor( red, green, blue ) );
-      pen.setWidthF( widthScale * pen.widthF() );
+      pen.setWidthF( renderContext.scaleFactor() * pen.widthF() );
 
       QBrush brush = mMinimumSymbol->brush();
 
@@ -145,13 +148,13 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
       brush.setStyle( Qt::SolidPattern );
 
       *img = QgsMarkerCatalogue::instance()->imageMarker( mMinimumSymbol->pointSymbolName(),
-             mMinimumSymbol->pointSize() * widthScale * rasterScaleFactor, pen, brush );
+             mMinimumSymbol->pointSize() * renderContext.scaleFactor() * renderContext.rasterScaleFactor(), pen, brush );
     }
     else if ( mGeometryType == QGis::Line )
     {
       QPen linePen;
       linePen.setColor( QColor( red, green, blue ) );
-      linePen.setWidthF( widthScale*mMinimumSymbol->pen().widthF() );
+      linePen.setWidthF( renderContext.scaleFactor()*mMinimumSymbol->pen().widthF() );
       p->setPen( linePen );
     }
     else //polygon
@@ -161,7 +164,7 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
       {
         QPen pen;
         pen.setColor( QColor( 0, 0, 0 ) );
-        pen.setWidthF( widthScale*mMinimumSymbol->pen().widthF() );
+        pen.setWidthF( renderContext.scaleFactor()*mMinimumSymbol->pen().widthF() );
         p->setPen( pen );
       }
       else

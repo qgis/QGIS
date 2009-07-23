@@ -24,6 +24,7 @@
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsrendercontext.h"
 
 #include <QDomNode>
 #include <QImage>
@@ -53,15 +54,14 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QGis::GeometryType type )
     sy->setFillStyle( Qt::SolidPattern );
     sy->setColor( QColor( 0, 0, 0 ) );
   }
-  mSymbol = sy;
+  mSymbol0 = sy;
+  mSymbols[ QString()] = sy;
   updateSymbolAttributes();
 }
 
 QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer& other )
 {
-  mGeometryType = other.mGeometryType;
-  mSymbol = new QgsSymbol( *other.mSymbol );
-  updateSymbolAttributes();
+  *this = other;
 }
 
 QgsSingleSymbolRenderer& QgsSingleSymbolRenderer::operator=( const QgsSingleSymbolRenderer & other )
@@ -69,8 +69,9 @@ QgsSingleSymbolRenderer& QgsSingleSymbolRenderer::operator=( const QgsSingleSymb
   if ( this != &other )
   {
     mGeometryType = other.mGeometryType;
-    delete mSymbol;
-    mSymbol = new QgsSymbol( *other.mSymbol );
+
+    for ( QMap<QString, QgsSymbol *>::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); it++ )
+      mSymbols[ it.key()] = new QgsSymbol( *it.value() );
   }
   updateSymbolAttributes();
   return *this;
@@ -78,18 +79,25 @@ QgsSingleSymbolRenderer& QgsSingleSymbolRenderer::operator=( const QgsSingleSymb
 
 QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
 {
-  delete mSymbol;
+  for ( QMap<QString, QgsSymbol *>::iterator it = mSymbols.begin(); it != mSymbols.end(); it++ )
+    delete it.value();
 }
 
-void QgsSingleSymbolRenderer::addSymbol( QgsSymbol* sy )
+void QgsSingleSymbolRenderer::addSymbol( QgsSymbol *sy )
 {
-  delete mSymbol;
-  mSymbol = sy;
+  for ( QMap<QString, QgsSymbol *>::iterator it = mSymbols.begin(); it != mSymbols.end(); it++ )
+    delete it.value();
+
+  mSymbol0 = sy;
+  mSymbols[ QString()] = sy;
+
   updateSymbolAttributes();
 }
 
-void QgsSingleSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImage* img, bool selected, double widthScale, double rasterScaleFactor )
+void QgsSingleSymbolRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature & f, QImage* img, bool selected )
 {
+  QPainter *p = renderContext.painter();
+
   // Point
   if ( img && mGeometryType == QGis::Point )
   {
@@ -97,49 +105,84 @@ void QgsSingleSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImag
     // If scale field is non-negative, use it to scale.
     double fieldScale = 1.0;
     double rotation = 0.0;
+    QgsSymbol *sy = mSymbol0;
 
-    if ( mSymbol->scaleClassificationField() >= 0 )
+    if ( mSymbol0->symbolField() >= 0 )
+    {
+      const QgsAttributeMap& attrs = f.attributeMap();
+      QString name = attrs[ mSymbol0->symbolField()].toString();
+      QgsDebugMsgLevel( QString( "Feature has name %1" ).arg( name ), 3 );
+
+      if ( !mSymbols.contains( name ) )
+      {
+        sy = new QgsSymbol( mGeometryType );
+        sy->setNamedPointSymbol( name );
+        mSymbols[ name ] = sy;
+      }
+      else
+      {
+        sy = mSymbols[ name ];
+      }
+
+      sy->setPointSize( mSymbol0->pointSize() );
+      sy->setPointSizeUnits( mSymbol0->pointSizeUnits() );
+    }
+
+    if ( mSymbol0->scaleClassificationField() >= 0 )
     {
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
-      fieldScale = sqrt( fabs( attrs[mSymbol->scaleClassificationField()].toDouble() ) );
+      fieldScale = sqrt( fabs( attrs[ mSymbol0->scaleClassificationField()].toDouble() ) );
       QgsDebugMsgLevel( QString( "Feature has field scale factor %1" ).arg( fieldScale ), 3 );
     }
-    if ( mSymbol->rotationClassificationField() >= 0 )
+    if ( mSymbol0->rotationClassificationField() >= 0 )
     {
       const QgsAttributeMap& attrs = f.attributeMap();
-      rotation = attrs[mSymbol->rotationClassificationField()].toDouble();
+      rotation = attrs[ mSymbol0->rotationClassificationField()].toDouble();
       QgsDebugMsgLevel( QString( "Feature has rotation factor %1" ).arg( rotation ), 3 );
     }
 
-    *img = mSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor, fieldScale, rotation, rasterScaleFactor );
-  }
+    double scale = renderContext.scaleFactor();
 
+    if ( sy->pointSizeUnits() )
+    {
+      /* Calc scale (still not nice) */
+      QgsPoint point;
+      point = renderContext.mapToPixel().transform( 0, 0 );
+      double x1 = point.x();
+      point = renderContext.mapToPixel().transform( 1000, 0 );
+      double x2 = point.x();
+
+      scale *= ( x2 - x1 ) * 0.001;
+    }
+
+    *img = sy->getPointSymbolAsImage( scale, selected, mSelectionColor, fieldScale, rotation, renderContext.rasterScaleFactor() );
+  }
 
   // Line, polygon
   if ( mGeometryType != QGis::Point )
   {
     if ( !selected )
     {
-      QPen pen = mSymbol->pen();
-      pen.setWidthF( widthScale * pen.widthF() );
+      QPen pen = mSymbol0->pen();
+      pen.setWidthF( renderContext.scaleFactor() * pen.widthF() );
       p->setPen( pen );
 
       if ( mGeometryType == QGis::Polygon )
       {
-        QBrush brush = mSymbol->brush();
-        scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
+        QBrush brush = mSymbol0->brush();
+        scaleBrush( brush, renderContext.rasterScaleFactor() ); //scale brush content for printout
         p->setBrush( brush );
       }
     }
     else
     {
-      QPen pen = mSymbol->pen();
-      pen.setWidthF( widthScale * pen.widthF() );
+      QPen pen = mSymbol0->pen();
+      pen.setWidthF( renderContext.scaleFactor() * pen.widthF() );
       if ( mGeometryType == QGis::Polygon )
       {
-        QBrush brush = mSymbol->brush();
-        scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
+        QBrush brush = mSymbol0->brush();
+        scaleBrush( brush, renderContext.rasterScaleFactor() ); //scale brush content for printout
         brush.setColor( mSelectionColor );
         p->setBrush( brush );
       }
@@ -184,9 +227,9 @@ bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & do
   QDomElement singlesymbol = document.createElement( "singlesymbol" );
   layer_node.appendChild( singlesymbol );
 
-  if ( mSymbol )
+  if ( mSymbol0 )
   {
-    returnval = mSymbol->writeXML( singlesymbol, document, &vl );
+    returnval = mSymbol0->writeXML( singlesymbol, document, &vl );
   }
   return returnval;
 }
@@ -203,15 +246,20 @@ void QgsSingleSymbolRenderer::updateSymbolAttributes()
   // Timing is not so important.
 
   mSymbolAttributes.clear();
-  int rotationField = mSymbol->rotationClassificationField();
+  int rotationField = mSymbol0->rotationClassificationField();
   if ( rotationField >= 0 && !( mSymbolAttributes.contains( rotationField ) ) )
   {
     mSymbolAttributes.append( rotationField );
   }
-  int scaleField = mSymbol->scaleClassificationField();
+  int scaleField = mSymbol0->scaleClassificationField();
   if ( scaleField >= 0 && !( mSymbolAttributes.contains( scaleField ) ) )
   {
     mSymbolAttributes.append( scaleField );
+  }
+  int symbolField = mSymbol0->symbolField();
+  if ( symbolField >= 0 && !( mSymbolAttributes.contains( symbolField ) ) )
+  {
+    mSymbolAttributes.append( symbolField );
   }
 }
 
@@ -222,9 +270,7 @@ QString QgsSingleSymbolRenderer::name() const
 
 const QList<QgsSymbol*> QgsSingleSymbolRenderer::symbols() const
 {
-  QList<QgsSymbol*> list;
-  list.append( mSymbol );
-  return list;
+  return mSymbols.values();
 }
 
 QgsRenderer* QgsSingleSymbolRenderer::clone() const

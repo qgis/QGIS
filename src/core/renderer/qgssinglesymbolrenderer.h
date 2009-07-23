@@ -19,7 +19,9 @@
 #ifndef QGSSINGLESYMBOLRENDERER_H
 #define QGSSINGLESYMBOLRENDERER_H
 
+#include <QMap>
 #include "qgsrenderer.h"
+#include "qgsrendercontext.h"
 
 
 /**Render class to display all the features with a single QgsSymbol*/
@@ -30,12 +32,16 @@ class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
     QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer& other );
     QgsSingleSymbolRenderer& operator=( const QgsSingleSymbolRenderer& other );
     virtual ~QgsSingleSymbolRenderer();
+
     /**Replaces the current mSymbol by sy*/
     void addSymbol( QgsSymbol* sy );
     /*Returns a pointer to mSymbol*/
     const QgsSymbol* symbol() const;
-    /**Renders a feature*/
-    void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 );
+
+    /**Renders a feature
+     * added in 1.2 */
+    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected );
+
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
      @param vl the vector layer which will be associated with the renderer
@@ -60,14 +66,15 @@ class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
     QgsRenderer* clone() const;
   protected:
     /**Object containing symbology information*/
-    QgsSymbol* mSymbol;
+    QgsSymbol *mSymbol0;
+    QMap<QString, QgsSymbol*> mSymbols;
     /**Cached copy of all underlying symbols required attribute fields*/
     QgsAttributeList mSymbolAttributes;
 };
 
 inline const QgsSymbol* QgsSingleSymbolRenderer::symbol() const
 {
-  return mSymbol;
+  return mSymbol0;
 }
 
 inline bool QgsSingleSymbolRenderer::needsAttributes() const

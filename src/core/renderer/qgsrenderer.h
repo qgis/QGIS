@@ -27,6 +27,7 @@ class QDomDocument;
 class QColor;
 
 #include "qgis.h"
+#include "qgsrendercontext.h"
 #include <QList>
 
 class QgsSymbol;
@@ -58,8 +59,21 @@ class CORE_EXPORT QgsRenderer
      @param p the painter storing brush and pen
      @param f a pointer to the feature to be rendered
      @param pic pointer to an image (used for point symbols)
-     @param scalefactor pointer to the scale factor for the marker image*/
-    virtual void renderFeature( QPainter* p, QgsFeature& f, QImage* pic, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 ) = 0;
+     @param scalefactor pointer to the scale factor for the marker image
+     @note deprecated */
+    void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 )
+    {
+      QgsRenderContext r;
+      r.setPainter( p );
+      r.setScaleFactor( widthScale );
+      r.setRasterScaleFactor( rasterScaleFactor );
+      renderFeature( r, f, img, selected );
+    }
+
+    /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
+      @note added in 1.2 */
+    virtual void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected ) = 0;
+
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
      @param vl the vector layer which will be associated with the renderer

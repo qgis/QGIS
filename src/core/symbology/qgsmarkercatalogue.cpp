@@ -47,7 +47,13 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::mMarkerCatalogue = 0;
 
 QgsMarkerCatalogue::QgsMarkerCatalogue()
 {
+  refreshList();
+}
+
+void QgsMarkerCatalogue::refreshList()
+{
   // Init list
+  mList.clear();
 
   // Hardcoded markers
   mList.append( "hard:circle" );
@@ -65,7 +71,7 @@ QgsMarkerCatalogue::QgsMarkerCatalogue()
   // SVG
   QString svgPath = QgsApplication::svgPath();
 
-  // TODO recursiv ?
+  // TODO recursive ?
   QDir dir( svgPath );
 
   QStringList dl = dir.entryList( QDir::Dirs );
@@ -84,6 +90,8 @@ QgsMarkerCatalogue::QgsMarkerCatalogue()
       mList.append( "svg:" + svgPath + *it + "/" + *it2 );
     }
   }
+
+  emit markersRefreshed();
 }
 
 QStringList QgsMarkerCatalogue::list()
@@ -120,7 +128,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
 
   QImage myImage;
   int imageSize;
-  if ( fullName.left( 5 ) == "hard:" )
+  if ( fullName.startsWith( "hard:" ) )
   {
     int pw = (( pen.width() == 0 ? 1 : pen.width() ) + 1 ) / 2 * 2; // make even (round up); handle cosmetic pen
     imageSize = (( int ) size + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
@@ -145,7 +153,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
   //
   // Now pass the paintdevice along to have the marker rendered on it
   //
-  if ( fullName.left( 4 ) == "svg:" )
+  if ( fullName.startsWith( "svg:" ) )
   {
     if ( svgMarker( &myPainter, fullName.mid( 4 ), size ) )
       return myImage;
@@ -154,7 +162,25 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
     fullName = "hard:circle";
   }
 
-  if ( fullName.left( 5 ) == "hard:" )
+  if ( fullName.startsWith( "font:" ) )
+  {
+    if ( fontMarker( &myPainter, fullName.mid( 5 ), size ) )
+      return myImage;
+
+    QgsDebugMsg( QString( "%1 not found - replacing with hard:circle" ).arg( fullName ) );
+    fullName = "hard:circle";
+  }
+
+  if ( fullName.endsWith( ".svg", Qt::CaseInsensitive ) )
+  {
+    if ( svgMarker( &myPainter, fullName, size ) )
+      return myImage;
+
+    QgsDebugMsg( QString( "%1 not found - replacing with hard:circle" ).arg( fullName ) );
+    fullName = "hard:circle";
+  }
+
+  if ( fullName.startsWith( "hard:" ) )
   {
     hardMarker( &myPainter, imageSize, fullName.mid( 5 ), size, pen, brush, qtBug );
 #ifdef IMAGEDEBUG
@@ -212,6 +238,40 @@ QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen 
   }
 
   return QPicture(); // empty
+}
+
+bool QgsMarkerCatalogue::fontMarker( QPainter *thepPainter, QString fullName, double scaleFactor )
+{
+  QStringList args = fullName.split( "," );
+  if ( args.size() == 0 )
+    return false;
+
+  QChar c;
+
+  if ( args.size() > 0 )
+  {
+    if ( args[0] == "#" )
+    {
+      c = QChar( '#' );
+    }
+    else if ( args[0].startsWith( "#" ) )
+    {
+      c = QChar( args[0].mid( 1 ).toInt() );
+    }
+    else
+    {
+      c = args[0][0];
+    }
+  }
+
+  QString family = args.size() >= 2 ? args[1] : "Helvetica";
+  int weight = args.size() >= 3 ? args[2].toInt() : -1;
+  int italic = args.size() >= 4 ? args[3].toInt() != 0 : false;
+
+  thepPainter->setFont( QFont( family, scaleFactor, weight, italic ) );
+  thepPainter->drawText( 0, 0, c );
+
+  return true;
 }
 
 bool QgsMarkerCatalogue::svgMarker( QPainter * thepPainter, QString fileName, double scaleFactor )
