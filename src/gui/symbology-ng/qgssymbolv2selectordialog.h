@@ -30,6 +30,7 @@ public slots:
   void setMarkerAngle(double angle);
   void setMarkerSize(double size);
   void setLineWidth(double width);
+  void addSymbolToStyle();
 
 signals:
   void symbolModified();

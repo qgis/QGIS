@@ -7,9 +7,12 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsstylev2.h"
 
+#include "qgsapplication.h"
+
 #include <QColorDialog>
 #include <QPainter>
 #include <QStandardItemModel>
+#include <QInputDialog>
 
 QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent, bool embedded)
   : QDialog(parent)
@@ -45,6 +48,8 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsSty
   connect(spinSize, SIGNAL(valueChanged(double)), this, SLOT(setMarkerSize(double)));
   connect(spinWidth, SIGNAL(valueChanged(double)), this, SLOT(setLineWidth(double)));
 
+  connect(btnAddToStyle, SIGNAL(clicked()), this, SLOT(addSymbolToStyle()));
+  btnAddToStyle->setIcon( QIcon( QgsApplication::defaultThemePath() + "symbologyAdd.png" ) );
 }
 
 void QgsSymbolV2SelectorDialog::populateSymbolView()
@@ -182,4 +187,18 @@ void QgsSymbolV2SelectorDialog::setLineWidth(double width)
   lineSymbol->setWidth(width);
   updateSymbolPreview();
   emit symbolModified();
+}
+
+void QgsSymbolV2SelectorDialog::addSymbolToStyle()
+{
+  bool ok;
+  QString name = QInputDialog::getText(this, "Symbol name",
+          "Please enter name for the symbol:", QLineEdit::Normal, "New symbol", &ok);
+  if (!ok || name.isEmpty())
+    return;
+
+  // add new symbol to style and re-populate the list
+  mStyle->addSymbol(name, mSymbol->clone());
+
+  populateSymbolView();
 }
