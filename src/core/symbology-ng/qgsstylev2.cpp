@@ -352,6 +352,8 @@ QgsVectorColorRampV2* QgsStyleV2::loadColorRamp(QDomElement& element)
   
   if (rampType == "gradient")
     return QgsVectorGradientColorRampV2::create(props);
+  else if (rampType == "random")
+    return QgsVectorRandomColorRampV2::create(props);
   else
   {
     QgsDebugMsg("unknown colorramp type " + rampType);
