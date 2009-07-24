@@ -607,7 +607,6 @@ class QgisApp : public QMainWindow
     //! Stops rendering of the main map
     void stopRendering();
 
-    void toggleRendererV2();
     void showStyleManagerV2();
 
   signals:

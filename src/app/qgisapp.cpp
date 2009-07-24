@@ -1021,43 +1021,13 @@ void QgisApp::createActions()
   mActionAbout->setMenuRole( QAction::AboutRole ); // put in application menu on Mac OS X
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
 
-  // %%%
-  mActionUseRendererV2 = new QAction( "V2", this );
-  mActionUseRendererV2->setStatusTip( tr( "Toggles renderer V2 for current layer" ) );
-  connect( mActionUseRendererV2, SIGNAL( triggered() ), this, SLOT( toggleRendererV2() ) );
-
-  // %%%
-  mActionStyleManagerV2 = new QAction( "MGR", this );
+  mActionStyleManagerV2 = new QAction( tr("Style manager..."), this );
   mActionStyleManagerV2->setStatusTip( tr( "Show style manager V2" ) );
   connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
 }
 
 #include "qgsstylev2.h"
-#include "qgssymbolv2.h"
-#include "qgsrendererv2.h"
-#include "qgsrendererv2propertiesdialog.h"
 #include "qgsstylev2managerdialog.h"
-
-
-
-void QgisApp::toggleRendererV2()
-{
-  QgsMapLayer* layer = activeLayer();
-  if (layer == NULL || layer->type() != QgsMapLayer::VectorLayer)
-  {
-    QMessageBox::information(this, "sorry", "Give me a vector layer!");
-    return;
-  }
-  QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>(layer);
-  
-  QgsRendererV2PropertiesDialog dlg(vlayer, QgsStyleV2::defaultStyle(), this);
-  if (!dlg.exec())
-    return;
-  
-  mMapLegend->refreshLayerSymbology( vlayer->getLayerID(), false );
-
-  refreshMapCanvas();
-}
 
 void QgisApp::showStyleManagerV2()
 {
@@ -1227,6 +1197,7 @@ void QgisApp::createMenus()
     mActionEditSeparator3 = mEditMenu->addSeparator();
     mEditMenu->addAction( mActionOptions );
     mEditMenu->addAction( mActionConfigureShortcuts );
+    mEditMenu->addAction( mActionStyleManagerV2 );
     mEditMenu->addAction( mActionCustomProjection );
   }
 
@@ -1317,6 +1288,7 @@ void QgisApp::createMenus()
 
     mSettingsMenu->addAction( mActionProjectProperties );
     mSettingsMenu->addAction( mActionCustomProjection );
+    mSettingsMenu->addAction( mActionStyleManagerV2 );
     mSettingsMenu->addAction( mActionConfigureShortcuts );
     mSettingsMenu->addAction( mActionOptions );
   }
@@ -1385,8 +1357,6 @@ void QgisApp::createToolBars()
   mFileToolBar->addAction( mActionAddSpatiaLiteLayer );
 #endif
   mFileToolBar->addAction( mActionAddWmsLayer );
-  mFileToolBar->addAction( mActionUseRendererV2 );
-  mFileToolBar->addAction( mActionStyleManagerV2 );
   mToolbarMenu->addAction( mFileToolBar->toggleViewAction() );
   //
   // Layer Toolbar
