@@ -47,6 +47,8 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog(QgsSymbolV2List symbols, bool u
     setDefaultLevels();
 
   populateTable();
+
+  connect(tableLevels, SIGNAL(cellChanged(int,int)), this, SLOT(renderingPassChanged(int,int)));
 }
 
 void QgsSymbolLevelsV2Dialog::populateTable()
@@ -93,4 +95,14 @@ void QgsSymbolLevelsV2Dialog::setDefaultLevels()
 bool QgsSymbolLevelsV2Dialog::usingLevels() const
 {
   return chkEnable->isChecked();
+}
+
+void QgsSymbolLevelsV2Dialog::renderingPassChanged(int row, int column)
+{
+  if (row < 0 || row >= mSymbols.count())
+    return;
+  QgsSymbolV2* sym = mSymbols[row];
+  if (column < 0 || column >= sym->symbolLayerCount())
+    return;
+  sym->symbolLayer(column)->setRenderingPass( tableLevels->item(row, column)->text().toInt() );
 }

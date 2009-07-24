@@ -20,6 +20,8 @@ public:
 public slots:
     void updateUi();
 
+    void renderingPassChanged( int row, int column );
+
 protected:
     void populateTable();
     void setDefaultLevels();

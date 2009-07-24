@@ -109,8 +109,8 @@ QgsRendererV2PropertiesDialog::~QgsRendererV2PropertiesDialog()
 
 void QgsRendererV2PropertiesDialog::apply()
 {
-  mLayer->setRendererV2(mRenderer);
-  mRenderer = NULL;
+  // use clone of our temporary renderer
+  mLayer->setRendererV2( mRenderer->clone() );
 }
 
 void QgsRendererV2PropertiesDialog::onOK()
