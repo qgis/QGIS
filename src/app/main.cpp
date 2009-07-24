@@ -75,7 +75,6 @@ typedef SInt32 SRefCon;
 
 static const char * const ident_ = "$Id$";
 
-#ifndef WIN32
 /** print usage text
  */
 void usage( std::string const & appName )
@@ -102,7 +101,6 @@ void usage( std::string const & appName )
 
 
 } // usage()
-#endif
 
 
 /////////////////////////////////////////////////////////////////
@@ -362,10 +360,33 @@ int main( int argc, char *argv[] )
 #else
   for ( int i = 1; i < argc; i++ )
   {
-#ifdef QGISDEBUG
-    QgsDebugMsg( QString( "%1: %2" ).arg( i ).arg( argv[i] ) );
-#endif
-    myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
+    QString arg = argv[i];
+
+    if ( arg == "--help" || arg == "-h" || arg == "-?" )
+    {
+      usage( argv[0] );
+      return 2;
+    }
+    else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
+    {
+      mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+    }
+    else if ( i + 1 < argc && ( arg == "--lang" || arg == "-l" ) )
+    {
+      myTranslationCode = argv[++i];
+    }
+    else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
+    {
+      myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+    }
+    else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
+    {
+      myInitialExtent = argv[++i];
+    }
+    else
+    {
+      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
+    }
   }
 #endif //WIN32
 
