@@ -34,6 +34,8 @@
 #include <QTranslator>
 #include <QImageReader>
 
+#include "qgspluginregistry.h"
+
 #include <cstdio>
 #include <stdio.h>
 #include <stdlib.h>
@@ -694,7 +696,7 @@ int main( int argc, char *argv[] )
       It looks like you don't run the event loop in non-interactive mode, so the
       event is never occuring.
 
-      To achieve this without runing the event loop: show the window, then call
+      To achieve this without running the event loop: show the window, then call
       qApp->processEvents(), grab the pixmap, save it, hide the window and exit.
       */
     //qgis->show();
@@ -704,6 +706,9 @@ int main( int argc, char *argv[] )
     qgis->saveMapAsImage( mySnapshotFileName, myQPixmap );
     myApp.processEvents();
     qgis->hide();
+
+    QgsPluginRegistry::instance()->unloadAll();
+
     return 1;
   }
 
@@ -717,5 +722,4 @@ int main( int argc, char *argv[] )
   mypSplash->finish( qgis );
   delete mypSplash;
   return myApp.exec();
-
 }
