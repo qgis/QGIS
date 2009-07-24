@@ -296,8 +296,8 @@ int main( int argc, char *argv[] )
         /* These options don't set a flag.
          *  We distinguish them by their indices. */
         {"snapshot", required_argument, 0, 's'},
-        {"width", required_argument, 0, 'w'},
-        {"height", required_argument, 0, 'h'},
+        {"width",    required_argument, 0, 'w'},
+        {"height",   required_argument, 0, 'h'},
         {"lang",     required_argument, 0, 'l'},
         {"project",  required_argument, 0, 'p'},
         {"extent",   required_argument, 0, 'e'},
@@ -398,11 +398,11 @@ int main( int argc, char *argv[] )
     {
       mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
     }
-    else if ( i + 1 < argc && ( arg == "-width" || arg == "-w" ) )
+    else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
     {
       mySnapshotWidth = QString( argv[++i] ).toInt();
     }
-    else if ( i + 1 < argc && ( arg == "-height" || arg == "-h" ) )
+    else if ( i + 1 < argc && ( arg == "--height" || arg == "-h" ) )
     {
       mySnapshotHeight = QString( argv[++i] ).toInt();
     }
