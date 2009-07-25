@@ -93,6 +93,9 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
         else
           radOrientationLine->setChecked(true);
         break;
+      case LayerSettings::Curved:
+        radLineCurved->setChecked(true);
+        break;
       case LayerSettings::Horizontal:
         radPolygonHorizontal->setChecked(true);
         radLineHorizontal->setChecked(true);
@@ -142,7 +145,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
   // setup connection to changes in the placement
   QRadioButton* placementRadios[] = {
     radAroundPoint, radOverPoint, // point
-    radLineParallel, radLineHorizontal, // line
+    radLineParallel, radLineCurved, radLineHorizontal, // line
     radAroundCentroid, radPolygonHorizontal, radPolygonFree, radPolygonPerimeter // polygon
   };
   for (int i = 0; i < sizeof(placementRadios)/sizeof(QRadioButton*); i++)
@@ -196,6 +199,10 @@ LayerSettings LabelingGui::layerSettings()
 
     if (radOrientationMap->isChecked())
       lyr.placementFlags |= LayerSettings::MapOrientation;
+  }
+  else if ( stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked() )
+  {
+    lyr.placement = LayerSettings::Curved;
   }
   else if ( (stackedPlacement->currentWidget() == pageLine && radLineHorizontal->isChecked())
     || (stackedPlacement->currentWidget() == pagePolygon && radPolygonHorizontal->isChecked()) )

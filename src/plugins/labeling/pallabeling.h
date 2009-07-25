@@ -16,6 +16,7 @@ namespace pal
 {
   class Pal;
   class Layer;
+  class StraightLabelPosition;
 }
 
 class QgsMapToPixel;
@@ -36,6 +37,7 @@ public:
     AroundPoint, // Point / Polygon
     OverPoint, // Point / Polygon
     Line, // Line / Polygon
+    Curved, // Line
     Horizontal, // Polygon
     Free // Polygon
   };
@@ -120,6 +122,8 @@ public:
     static void registerFeatureHook(QgsFeature& f, void* layerContext);
 
 
+    void drawLabelCandidateRect( pal::StraightLabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
+    void drawLabel( pal::StraightLabelPosition* label, QPainter* painter, const QgsMapToPixel* xform);
     static void drawLabelBuffer(QPainter* p, QString text, int size, QColor color);
 
 protected:

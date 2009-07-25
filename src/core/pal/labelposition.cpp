@@ -61,7 +61,7 @@ namespace pal
   }
 
   StraightLabelPosition::StraightLabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, Feature *feature )
-    : LabelPosition( id, cost, feature ), alpha( alpha ), w( w ), h( h )
+    : LabelPosition( id, cost, feature ), alpha( alpha ), w( w ), h( h ), nextPart(NULL), partId(-1)
   {
 
     // alpha take his value bw 0 and 2*pi rad
@@ -134,7 +134,10 @@ namespace pal
         return true;
     }
 
-    return false;
+    if (nextPart)
+      return nextPart->isIn(bbox);
+    else
+      return false;
 
   }
 
@@ -191,7 +194,18 @@ namespace pal
       }
 
       if ( d1 == -1 || d2 == -1 ) // disjoint
-        return false;
+      {
+        if ( ls->getNextPart() )
+        {
+          if ( isInConflict(ls->getNextPart()) )
+            return true;
+        }
+
+        if (nextPart)
+          return nextPart->isInConflict( lp );
+        else
+          return false;
+      }
     }
     return true;
   }
@@ -237,10 +251,18 @@ namespace pal
 
   void StraightLabelPosition::getBoundingBox(double amin[2], double amax[2]) const
   {
-    amin[0] = DBL_MAX;
-    amax[0] = -DBL_MAX;
-    amin[1] = DBL_MAX;
-    amax[1] = -DBL_MAX;
+    if (nextPart)
+    {
+      //std::cout << "using next part" <<
+      nextPart->getBoundingBox(amin, amax);
+    }
+    else
+    {
+      amin[0] = DBL_MAX;
+      amax[0] = -DBL_MAX;
+      amin[1] = DBL_MAX;
+      amax[1] = -DBL_MAX;
+    }
     for ( int c = 0;c < 4;c++ )
     {
       if ( x[c] < amin[0] )
@@ -341,8 +363,10 @@ namespace pal
   {
     LabelPosition *lp2 = ( LabelPosition* ) ctx;
 
+    //std::cerr << "checking " << lp2->getFeature()->getUID() << " x " << lp->getFeature()->getUID() << std::endl;
     if ( lp2->isInConflict( lp ) )
     {
+      //std::cerr << "conflict!" << std::endl;
       lp2->nbOverlap++;
     }
 
@@ -433,6 +457,9 @@ namespace pal
         dist_min = dist;
     }
 
+    if (nextPart && dist_min > 0)
+      return min( dist_min, nextPart->getDistanceToPoint(xp, yp) );
+
     return dist_min;
   }
 
@@ -460,6 +487,10 @@ namespace pal
         }
       }
     }
+
+    if (nextPart)
+      return nextPart->isBorderCrossingLine( feat );
+
     return false;
   }
 
@@ -489,6 +520,8 @@ namespace pal
     // and the label center
     if ( isPointInPolygon( npol, xp, yp, px, py ) )
       count += 4; // virtually 4 points
+
+    // TODO: count with nextFeature
 
     return count;
   }

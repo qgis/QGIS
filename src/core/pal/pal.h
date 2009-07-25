@@ -100,6 +100,7 @@ namespace pal
     P_POINT = 0, /**< arranges candidates around a point (centroid for polygon)*/
     P_POINT_OVER, /** arranges candidates over a point (centroid for polygon)*/
     P_LINE, /**< Only for lines and polygons, arranges candidates over the line or the polygon perimeter */
+    P_CURVED, /** Only for lines, labels along the line */
     P_HORIZ, /**< Only for polygon, arranges candidates horizontaly */
     P_FREE /**< Only for polygon, arranges candidates with respect of polygon orientation */
   };

@@ -48,6 +48,32 @@
 
 namespace pal
 {
+  /** optional additional info about label (for curved labels) */
+  class LabelInfo
+  {
+  public:
+    typedef struct
+    {
+        ushort chr;
+        double width;
+    } CharacterInfo;
+
+    LabelInfo(int num, double height)
+    {
+      max_char_angle_delta = 20;
+      label_height = height;
+      char_num = num;
+      char_info = new CharacterInfo[num];
+    }
+    ~LabelInfo() { delete [] char_info; }
+
+    double max_char_angle_delta;
+    double label_height;
+    int char_num;
+    CharacterInfo* char_info;
+  };
+
+  class StraightLabelPosition;
 
   /**
    * \brief Main class to handle feature
@@ -59,6 +85,7 @@ namespace pal
       //int id;   /* feature no id into layer */
       double label_x;
       double label_y;
+      LabelInfo* labelInfo; // optional
 
       int nbSelfObs;
       PointSet **selfObs;
@@ -105,6 +132,14 @@ public:
        */
       int setPositionForLine( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
 
+      StraightLabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
+                                                      int orientation, int index, double distance );
+
+      /**
+       * Generate curved candidates for line features
+       */
+      int setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape );
+
       /**
        * \brief generate candidates for point feature
        * Generate candidates for point features
@@ -114,7 +149,6 @@ public:
        * \return the number of generated cadidates
        */
       int setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
-
 
 
       /**
@@ -243,6 +277,9 @@ public:
 
       int getNumSelfObstacles() const { return nbSelfObs; }
       PointSet* getSelfObstacle(int i) { return selfObs[i]; }
+
+      void setLabelInfo(LabelInfo* info) { labelInfo = info; }
+
 
   };
 

@@ -33,7 +33,7 @@ using namespace pal;
 class MyLabel : public PalGeometry
 {
 public:
-  MyLabel(int id, QString text, GEOSGeometry* g): mG(g), mText(text), mId(id)
+  MyLabel(int id, QString text, GEOSGeometry* g): mG(g), mText(text), mId(id), mInfo(NULL)
   {
     mStrId = QByteArray::number(id);
   }
@@ -41,6 +41,7 @@ public:
   ~MyLabel()
   {
     if (mG) GEOSGeom_destroy(mG);
+    delete mInfo;
   }
 
   // getGeosGeometry + releaseGeosGeometry is called twice: once when adding, second time when labeling
@@ -57,11 +58,30 @@ public:
   const char* strId() { return mStrId.data(); }
   QString text() { return mText; }
 
+  pal::LabelInfo* info(QFontMetrics* fm, const QgsMapToPixel* xform)
+  {
+    if (mInfo) return mInfo;
+
+    // create label info!
+    QgsPoint ptZero = xform->toMapCoordinates( 0,0 );
+    QgsPoint ptSize = xform->toMapCoordinates( 0,-fm->height() );
+
+    mInfo = new pal::LabelInfo( mText.count(), ptSize.y()-ptZero.y() );
+    for (int i = 0; i < mText.count(); i++)
+    {
+      mInfo->char_info[i].chr = mText[i].unicode();
+      ptSize = xform->toMapCoordinates( fm->width( mText[i] ), 0 );
+      mInfo->char_info[i].width = ptSize.x()-ptZero.x();
+    }
+    return mInfo;
+  }
+
 protected:
   GEOSGeometry* mG;
   QString mText;
   QByteArray mStrId;
   int mId;
+  LabelInfo* mInfo;
 };
 
 // -------------
@@ -132,6 +152,9 @@ void LayerSettings::registerFeature(QgsFeature& f)
   // register feature to the layer
   if (!palLayer->registerFeature(lbl->strId(), lbl, labelX, labelY))
     return;
+
+  // TODO: only for placement which needs character info
+  palLayer->setFeatureLabelInfo( lbl->strId(), lbl->info( fontMetrics, xform ) );
 
   // TODO: allow layer-wide feature dist in PAL...?
   if (dist != 0)
@@ -243,6 +266,7 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
     case LayerSettings::AroundPoint: arrangement = P_POINT; break;
     case LayerSettings::OverPoint:   arrangement = P_POINT_OVER; break;
     case LayerSettings::Line:        arrangement = P_LINE; break;
+    case LayerSettings::Curved:      arrangement = P_CURVED; break;
     case LayerSettings::Horizontal:  arrangement = P_HORIZ; break;
     case LayerSettings::Free:        arrangement = P_FREE; break;
   }
@@ -350,19 +374,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
       {
         pal::StraightLabelPosition* lp = (pal::StraightLabelPosition*) problem->getFeatureCandidate(i, j);
 
-        QgsPoint outPt = xform->transform(lp->getX(), lp->getY());
-        QgsPoint outPt2 = xform->transform(lp->getX()+lp->getWidth(), lp->getY()+lp->getHeight());
-
-        painter->save();
-        painter->translate( QPointF(outPt.x(), outPt.y()) );
-        painter->rotate(-lp->getAlpha() * 180 / M_PI );
-        QRectF rect(0,0, outPt2.x()-outPt.x(), outPt2.y()-outPt.y());
-        painter->drawRect(rect);
-        painter->restore();
-
-        // save the rect
-        rect.moveTo(outPt.x(),outPt.y());
-        mCandidates.append( LabelCandidate(rect, lp->getCost() * 1000) );
+        drawLabelCandidateRect(lp, painter, xform);
       }
     }
   }
@@ -379,26 +391,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   {
     StraightLabelPosition* label = (StraightLabelPosition*) *it;
 
-    QgsPoint outPt = xform->transform(label->getX(), label->getY());
-
-    // TODO: optimize access :)
-    const LayerSettings& lyr = layer(label->getLayerName());
-
-    QString text = ((MyLabel*)label->getFeature()->getUserGeometry())->text();
-
-    // shift by one as we have 2px border
-    painter->save();
-    painter->translate( QPointF(outPt.x()+1, outPt.y()-1-lyr.fontBaseline) );
-    painter->rotate(-label->getAlpha() * 180 / M_PI );
-    painter->setFont( lyr.textFont );
-
-    if (lyr.bufferSize != 0)
-      drawLabelBuffer(painter, text, lyr.bufferSize, lyr.bufferColor);
-
-    painter->setPen( lyr.textColor );
-    painter->drawText(0,0, text);
-    painter->restore();
-
+    drawLabel( label, painter, xform );
   }
 
   std::cout << "LABELING draw:   " << t.elapsed() << "ms" << std::endl;
@@ -442,6 +435,58 @@ PalLabeling::Search PalLabeling::searchMethod() const
 {
   return mSearch;
 }
+
+void PalLabeling::drawLabelCandidateRect( pal::StraightLabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform )
+{
+  QgsPoint outPt = xform->transform(lp->getX(), lp->getY());
+  QgsPoint outPt2 = xform->transform(lp->getX()+lp->getWidth(), lp->getY()+lp->getHeight());
+
+  painter->save();
+  painter->translate( QPointF(outPt.x(), outPt.y()) );
+  painter->rotate(-lp->getAlpha() * 180 / M_PI );
+  QRectF rect(0,0, outPt2.x()-outPt.x(), outPt2.y()-outPt.y());
+  painter->drawRect(rect);
+  painter->restore();
+
+  // save the rect
+  rect.moveTo(outPt.x(),outPt.y());
+  mCandidates.append( LabelCandidate(rect, lp->getCost() * 1000) );
+
+  // show all parts of the multipart label
+  if (lp->getNextPart())
+    drawLabelCandidateRect(lp->getNextPart(), painter, xform);
+}
+
+
+void PalLabeling::drawLabel( pal::StraightLabelPosition* label, QPainter* painter, const QgsMapToPixel* xform)
+{
+  QgsPoint outPt = xform->transform(label->getX(), label->getY());
+
+  // TODO: optimize access :)
+  const LayerSettings& lyr = layer(label->getLayerName());
+
+  QString text = ((MyLabel*)label->getFeature()->getUserGeometry())->text();
+
+  // shift by one as we have 2px border
+  painter->save();
+  painter->translate( QPointF(outPt.x()+1, outPt.y()-1-lyr.fontBaseline) );
+  painter->rotate(-label->getAlpha() * 180 / M_PI );
+  painter->setFont( lyr.textFont );
+
+  if (lyr.bufferSize != 0)
+    drawLabelBuffer(painter, text, lyr.bufferSize, lyr.bufferColor);
+
+  painter->setPen( lyr.textColor );
+  if (label->getPartId() == -1)
+    painter->drawText(0,0, text);
+  else
+    painter->drawText(0,0, QString( text[label->getPartId()] ) );
+  painter->restore();
+
+  if (label->getNextPart())
+    drawLabel( label->getNextPart(), painter, xform );
+}
+
 
 void PalLabeling::drawLabelBuffer(QPainter* p, QString text, int size, QColor color)
 {

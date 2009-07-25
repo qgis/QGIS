@@ -550,6 +550,39 @@ double Layer::getFeatureLabelWidth( const char *geom_id )
   return ret;
 }
 
+
+void Layer::setFeatureLabelInfo( const char *geom_id, LabelInfo* labelInfo )
+{
+  if ( !labelInfo )
+  {
+    throw new PalException::ValueNotInRange();
+    return;
+  }
+
+  modMutex->lock();
+  Cell<Feature*>* it = getFeatureIt( geom_id );
+
+  if ( it )
+  {
+    Feature *feat = it->item;
+    int nb = feat->getNumParts();
+
+    for ( int i = 0;i < nb;i++ )
+    {
+      feat = it->item;
+      feat->setLabelInfo(labelInfo);
+      it = it->next;
+    }
+  }
+  else
+  {
+    modMutex->unlock();
+    throw new PalException::UnknownFeature();
+  }
+  modMutex->unlock();
+}
+
+
 void Layer::setLabelUnit( Units label_unit )
 {
   if ( label_unit == PIXEL || label_unit == METER )

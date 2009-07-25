@@ -70,6 +70,7 @@ namespace pal
 
     label_x = -1;
     label_y = -1;
+    labelInfo = NULL;
 
     xmin = feat->minmax[0];
     xmax = feat->minmax[2];
@@ -532,6 +533,242 @@ namespace pal
   }
 
 
+  StraightLabelPosition* Feature::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int orientation, int index, double distance )
+  {
+    // Check that the given distance is on the given index and find the correct index and distance if not
+    while (distance < 0 && index > 1)
+    {
+      index--;
+      distance += path_distances[index];
+    }
+
+    if (index <= 1 && distance < 0) // We've gone off the start, fail out
+    {
+      std::cerr << "err1" << std::endl;
+      return NULL;
+    }
+
+    // Same thing, checking if we go off the end
+    while (index < path_positions->nbPoints && distance > path_distances[index])
+    {
+      distance -= path_distances[index];
+      index += 1;
+    }
+    if (index >= path_positions->nbPoints)
+    {
+      std::cerr << "err2" << std::endl;
+      return NULL;
+    }
+
+    // Keep track of the initial index,distance incase we need to re-call get_placement_offset
+    int initial_index = index;
+    double initial_distance = distance;
+
+    double string_height = labelInfo->label_height;
+    double old_x = path_positions->x[index-1];
+    double old_y = path_positions->y[index-1];
+
+    double new_x = path_positions->x[index];
+    double new_y = path_positions->y[index];
+
+    double dx = new_x - old_x;
+    double dy = new_y - old_y;
+
+    double segment_length = path_distances[index];
+    if (segment_length == 0)
+    {
+      // Not allowed to place across on 0 length segments or discontinuities
+      std::cerr << "err3" << std::endl;
+      return NULL;
+    }
+
+    StraightLabelPosition* slp = NULL;
+    StraightLabelPosition* slp_tmp = NULL;
+    // current_placement = placement_result()
+    double xBase = old_x + dx*distance/segment_length;
+    double yBase = old_y + dy*distance/segment_length;
+    double angle = atan2(-dy, dx);
+
+    bool orientation_forced = (orientation != 0); // Whether the orientation was set by the caller
+    if (!orientation_forced)
+      orientation = (angle > 0.55*M_PI || angle < -0.45*M_PI ? -1 : 1);
+
+    int upside_down_char_count = 0; // Count of characters that are placed upside down.
+
+    for (int i = 0; i < labelInfo->char_num; i++)
+    {
+      double last_character_angle = angle;
+
+      // grab the next character according to the orientation
+      LabelInfo::CharacterInfo& ci = (orientation > 0 ? labelInfo->char_info[i] : labelInfo->char_info[labelInfo->char_num-i-1]);
+
+      // Coordinates this character will start at
+      if (segment_length == 0)
+      {
+        // Not allowed to place across on 0 length segments or discontinuities
+        std::cerr << "err4" << std::endl;
+        return NULL;
+      }
+
+      double start_x = old_x + dx*distance/segment_length;
+      double start_y = old_y + dy*distance/segment_length;
+      // Coordinates this character ends at, calculated below
+      double end_x = 0;
+      double end_y = 0;
+
+      std::cerr << "segment len " << segment_length << "   distance " << distance << std::endl;
+      if (segment_length - distance  >= ci.width)
+      {
+        // if the distance remaining in this segment is enough, we just go further along the segment
+        distance += ci.width;
+        end_x = old_x + dx*distance/segment_length;
+        end_y = old_y + dy*distance/segment_length;
+      }
+      else
+      {
+        // If there isn't enough distance left on this segment
+        // then we need to search until we find the line segment that ends further than ci.width away
+        do
+        {
+          old_x = new_x;
+          old_y = new_y;
+          index++;
+          if (index >= path_positions->nbPoints) // Bail out if we run off the end of the shape
+          {
+            std::cerr << "err5" << std::endl;
+            return NULL;
+          }
+          new_x = path_positions->x[index];
+          new_y = path_positions->y[index];
+          dx = new_x - old_x;
+          dy = new_y - old_y;
+          segment_length = path_distances[index];
+
+          std::cerr << "-> " << sqrt(pow(start_x - new_x,2) + pow(start_y - new_y,2)) << " vs " << ci.width << std::endl;
+
+        } while (sqrt(pow(start_x - new_x,2) + pow(start_y - new_y,2)) < ci.width); // Distance from start_ to new_
+
+        // Calculate the position to place the end of the character on
+        findLineCircleIntersection( start_x, start_y, ci.width, old_x, old_y, new_x, new_y, end_x, end_y);
+
+        // Need to calculate distance on the new segment
+        distance = sqrt(pow(old_x - end_x,2) + pow(old_y - end_y,2));
+      }
+
+      // Calculate angle from the start of the character to the end based on start_/end_ position
+      angle = atan2(start_y-end_y, end_x-start_x);
+      //angle = atan2(end_y-start_y, end_x-start_x);
+
+      // Test last_character_angle vs angle
+      // since our rendering angle has changed then check against our
+      // max allowable angle change.
+      double angle_delta = last_character_angle - angle;
+      // normalise between -180 and 180
+      while (angle_delta > M_PI) angle_delta -= 2*M_PI;
+      while (angle_delta < -M_PI) angle_delta += 2*M_PI;
+      if (labelInfo->max_char_angle_delta > 0 && fabs(angle_delta) > labelInfo->max_char_angle_delta*(M_PI/180))
+      {
+        std::cerr << "err6" << std::endl;
+        return NULL;
+      }
+
+      double render_angle = angle;
+
+      double render_x = start_x;
+      double render_y = start_y;
+
+      // Center the text on the line
+      //render_x -= ((string_height/2.0) - 1.0)*math.cos(render_angle+math.pi/2)
+      //render_y += ((string_height/2.0) - 1.0)*math.sin(render_angle+math.pi/2)
+
+      if (orientation < 0)
+      {
+        // rotate in place
+        render_x += ci.width*cos(render_angle); //- (string_height-2)*sin(render_angle);
+        render_y -= ci.width*sin(render_angle); //+ (string_height-2)*cos(render_angle);
+        render_angle += M_PI;
+      }
+
+      std::cerr << "adding part: " << render_x << "  " << render_y << std::endl;
+      StraightLabelPosition* tmp = new StraightLabelPosition(0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this);
+      tmp->setPartId( orientation > 0 ? i : labelInfo->char_num-i-1 );
+      if (slp == NULL)
+        slp = tmp;
+      else
+        slp_tmp->setNextPart(tmp);
+      slp_tmp = tmp;
+
+      //current_placement.add_node(ci.character,render_x, -render_y, render_angle);
+      //current_placement.add_node(ci.character,render_x - current_placement.starting_x, render_y - current_placement.starting_y, render_angle)
+
+      // Normalise to 0 <= angle < 2PI
+      while (render_angle >= 2*M_PI) render_angle -= 2*M_PI;
+      while (render_angle < 0) render_angle += 2*M_PI;
+
+      if (render_angle > M_PI/2 && render_angle < 1.5*M_PI)
+        upside_down_char_count++;
+    }
+    // END FOR
+
+    // If we placed too many characters upside down
+    if (upside_down_char_count >= labelInfo->char_num/2.0)
+    {
+      // if we auto-detected the orientation then retry with the opposite orientation
+      if (!orientation_forced)
+      {
+        orientation = -orientation;
+        slp = curvedPlacementAtOffset(path_positions, path_distances, orientation, initial_index, initial_distance);
+      }
+      else
+      {
+        // Otherwise we have failed to find a placement
+        std::cerr << "err7" << std::endl;
+        return NULL;
+      }
+    }
+
+    return slp;
+  }
+
+  int Feature::setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape )
+  {
+    // label info must be present
+    if (labelInfo == NULL || labelInfo->char_num == 0)
+      return 0;
+
+    // distance calculation
+    double* path_distances = new double[mapShape->nbPoints];
+    double old_x, old_y, new_x, new_y;
+    for (int i = 0; i < mapShape->nbPoints; i++)
+    {
+      if (i == 0)
+        path_distances[i] = 0;
+      else
+        path_distances[i] = sqrt( pow(old_x - mapShape->x[i], 2) + pow(old_y - mapShape->y[i],2) );
+      old_x = mapShape->x[i];
+      old_y = mapShape->y[i];
+    }
+
+    // TODO: generate more labels
+
+    // generate curved label
+    StraightLabelPosition* slp = curvedPlacementAtOffset(mapShape, path_distances, 0, 1, 0.0);
+
+    if (!slp)
+      return 0;
+
+    // TODO: evaluate cost
+
+    int nbp = 1;
+    ( *lPos ) = new LabelPosition*[nbp];
+    (*lPos)[0] = slp;
+
+    return nbp;
+  }
+
+
+
+
   /*
    *             seg 2
    *     pt3 ____________pt2
@@ -843,7 +1080,10 @@ namespace pal
         releaseCoordinates();
         break;
       case GEOS_LINESTRING:
-        nbp = setPositionForLine( scale, lPos, mapShape, delta );
+        if ( layer->getArrangement() == P_CURVED )
+          nbp = setPositionForLineCurved( lPos, mapShape );
+        else
+          nbp = setPositionForLine( scale, lPos, mapShape, delta );
         break;
 
       case GEOS_POLYGON:

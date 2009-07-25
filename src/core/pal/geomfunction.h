@@ -81,6 +81,9 @@ namespace pal
 
 
 
+  void findLineCircleIntersection(double cx, double cy, double radius,
+                                  double x1, double y1, double x2, double y2,
+                                  double& xRes, double& yRes);
 
 
   int convexHull( int *id, const double* const x, const double* const y, int n );

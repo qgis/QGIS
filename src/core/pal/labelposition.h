@@ -78,6 +78,8 @@ namespace pal
 
       // virtual functions
 
+      virtual ~LabelPosition() {}
+
       /**
        * \brief is the labelposition in the bounding-box ?
        *
@@ -124,7 +126,7 @@ namespace pal
       int getProblemFeatureId() const { return probFeat; }
       /** set problem feature ID and assigned label candidate ID.
        *  called from pal.cpp during extraction */
-      void setProblemIds( int probFid, int lpId ) { probFeat = probFid; id = lpId; }
+      virtual void setProblemIds( int probFid, int lpId ) { probFeat = probFid; id = lpId; }
 
       /** return pointer to layer's name. used for stats */
       char* getLayerName() const;
@@ -212,6 +214,8 @@ namespace pal
                              double alpha, double cost,
                              Feature *feature );
 
+      ~StraightLabelPosition() { delete nextPart; }
+
       // virtual functions
 
       virtual bool isIn( double *bbox );
@@ -252,12 +256,24 @@ namespace pal
 
       void print();
 
+      StraightLabelPosition* getNextPart() const { return nextPart; }
+      void setNextPart(StraightLabelPosition* next) { nextPart = next; }
+
+      // -1 if not multi-part
+      int getPartId() const { return partId; }
+      void setPartId(int id) { partId = id; }
+
+      void setProblemIds( int probFid, int lpId ) {
+        LabelPosition::setProblemIds(probFid, lpId);
+        if (nextPart) nextPart->setProblemIds(probFid, lpId); }
+      
     protected:
       double x[4], y[4];
       double alpha;
       double w;
       double h;
-
+      StraightLabelPosition* nextPart;
+      int partId;
     };
 
 } // end namespac

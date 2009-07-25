@@ -77,7 +77,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedPlacement">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="pagePoint">
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -109,6 +109,13 @@
             </property>
             <property name="checked">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radLineCurved">
+            <property name="text">
+             <string>curved</string>
             </property>
            </widget>
           </item>

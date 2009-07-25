@@ -53,6 +53,7 @@ namespace pal
   class Feature;
   class Pal;
   class SimpleMutex;
+  class LabelInfo;
 
   class Feat;
 
@@ -343,6 +344,10 @@ namespace pal
        */
       double getFeatureDistlabel( const char *geom_id );
 
+      /**
+       * add more detailed information about layer (character widths and more)
+       */
+      void setFeatureLabelInfo( const char *geom_id, LabelInfo* labelInfo );
   };
 
 } // end namespace pal
