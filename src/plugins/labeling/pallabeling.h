@@ -16,7 +16,7 @@ namespace pal
 {
   class Pal;
   class Layer;
-  class StraightLabelPosition;
+  class LabelPosition;
 }
 
 class QgsMapToPixel;
@@ -122,8 +122,8 @@ public:
     static void registerFeatureHook(QgsFeature& f, void* layerContext);
 
 
-    void drawLabelCandidateRect( pal::StraightLabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
-    void drawLabel( pal::StraightLabelPosition* label, QPainter* painter, const QgsMapToPixel* xform);
+    void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
+    void drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform);
     static void drawLabelBuffer(QPainter* p, QString text, int size, QColor color);
 
 protected:

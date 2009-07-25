@@ -73,7 +73,7 @@ namespace pal
     CharacterInfo* char_info;
   };
 
-  class StraightLabelPosition;
+  class LabelPosition;
 
   /**
    * \brief Main class to handle feature
@@ -132,7 +132,7 @@ public:
        */
       int setPositionForLine( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
 
-      StraightLabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
+      LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                                       int orientation, int index, double distance );
 
       /**

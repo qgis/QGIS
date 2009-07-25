@@ -55,13 +55,8 @@
 
 namespace pal
 {
-  LabelPosition::LabelPosition( int id, double cost, Feature *feature )
-   : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 )
-  {
-  }
-
-  StraightLabelPosition::StraightLabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, Feature *feature )
-    : LabelPosition( id, cost, feature ), alpha( alpha ), w( w ), h( h ), nextPart(NULL), partId(-1)
+  LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, Feature *feature )
+    : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 ), alpha( alpha ), w( w ), h( h ), nextPart(NULL), partId(-1)
   {
 
     // alpha take his value bw 0 and 2*pi rad
@@ -123,7 +118,7 @@ namespace pal
     }
   }
 
-  bool StraightLabelPosition::isIn( double *bbox )
+  bool LabelPosition::isIn( double *bbox )
   {
     int i;
 
@@ -141,7 +136,7 @@ namespace pal
 
   }
 
-  void StraightLabelPosition::print()
+  void LabelPosition::print()
   {
     std::cout << feature->getLayer()->getName() << "/" << feature->getUID() << "/" << id;
     std::cout << " cost: " << cost;
@@ -153,15 +148,12 @@ namespace pal
     std::cout << std::endl;
   }
 
-  bool StraightLabelPosition::isInConflict( LabelPosition *lp )
+  bool LabelPosition::isInConflict( LabelPosition *lp )
   {
-    // TODO: more types of labelposition
-    StraightLabelPosition* ls = (StraightLabelPosition*) lp;
-
     int i, i2, j;
     int d1, d2;
 
-    if ( this->probFeat == ls->probFeat ) // bugfix #1
+    if ( this->probFeat == lp->probFeat ) // bugfix #1
       return false; // always overlaping itself !
 
     double cp1, cp2;
@@ -176,14 +168,14 @@ namespace pal
       //std::cout << "new seg..." << std::endl;
       for ( j = 0;j < 4;j++ )
       {
-        cp1 = cross_product( x[i], y[i], x[i2], y[i2], ls->x[j], ls->y[j] );
+        cp1 = cross_product( x[i], y[i], x[i2], y[i2], lp->x[j], lp->y[j] );
         if ( cp1 > 0 )
         {
           d1 = 1;
           //std::cout << "    cp1: " << cp1 << std::endl;
         }
-        cp2 = cross_product( ls->x[i], ls->y[i],
-                             ls->x[i2], ls->y[i2],
+        cp2 = cross_product( lp->x[i], lp->y[i],
+                             lp->x[i2], lp->y[i2],
                              x[j], y[j] );
 
         if ( cp2 > 0 )
@@ -195,9 +187,9 @@ namespace pal
 
       if ( d1 == -1 || d2 == -1 ) // disjoint
       {
-        if ( ls->getNextPart() )
+        if ( lp->getNextPart() )
         {
-          if ( isInConflict(ls->getNextPart()) )
+          if ( isInConflict(lp->getNextPart()) )
             return true;
         }
 
@@ -215,17 +207,17 @@ namespace pal
     return id;
   }
 
-  double StraightLabelPosition::getX( int i ) const
+  double LabelPosition::getX( int i ) const
   {
     return (i >= 0 && i < 4 ? x[i] : -1);
   }
 
-  double StraightLabelPosition::getY( int i ) const
+  double LabelPosition::getY( int i ) const
   {
     return (i >= 0 && i < 4 ? y[i] : -1);
   }
 
-  double StraightLabelPosition::getAlpha() const
+  double LabelPosition::getAlpha() const
   {
     return alpha;
   }
@@ -249,7 +241,7 @@ namespace pal
     return feature;
   }
 
-  void StraightLabelPosition::getBoundingBox(double amin[2], double amax[2]) const
+  void LabelPosition::getBoundingBox(double amin[2], double amax[2]) const
   {
     if (nextPart)
     {
@@ -410,7 +402,7 @@ namespace pal
 
 
 
-  double StraightLabelPosition::getDistanceToPoint( double xp, double yp )
+  double LabelPosition::getDistanceToPoint( double xp, double yp )
   {
     int i;
     int j;
@@ -464,7 +456,7 @@ namespace pal
   }
 
 
-  bool StraightLabelPosition::isBorderCrossingLine( PointSet* feat )
+  bool LabelPosition::isBorderCrossingLine( PointSet* feat )
   {
     double ca, cb;
     for ( int i = 0;i < 4;i++ )
@@ -494,7 +486,7 @@ namespace pal
     return false;
   }
 
-  int StraightLabelPosition::getNumPointsInPolygon( int npol, double *xp, double *yp )
+  int LabelPosition::getNumPointsInPolygon( int npol, double *xp, double *yp )
   {
     int a, k, count = 0;
     double px, py;

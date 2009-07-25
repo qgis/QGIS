@@ -372,7 +372,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
     {
       for (int j = 0; j < problem->getFeatureCandidateCount(i); j++)
       {
-        pal::StraightLabelPosition* lp = (pal::StraightLabelPosition*) problem->getFeatureCandidate(i, j);
+        pal::LabelPosition* lp = problem->getFeatureCandidate(i, j);
 
         drawLabelCandidateRect(lp, painter, xform);
       }
@@ -389,9 +389,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   std::list<LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it)
   {
-    StraightLabelPosition* label = (StraightLabelPosition*) *it;
-
-    drawLabel( label, painter, xform );
+    drawLabel( *it, painter, xform );
   }
 
   std::cout << "LABELING draw:   " << t.elapsed() << "ms" << std::endl;
@@ -436,7 +434,7 @@ PalLabeling::Search PalLabeling::searchMethod() const
   return mSearch;
 }
 
-void PalLabeling::drawLabelCandidateRect( pal::StraightLabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform )
+void PalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform )
 {
   QgsPoint outPt = xform->transform(lp->getX(), lp->getY());
   QgsPoint outPt2 = xform->transform(lp->getX()+lp->getWidth(), lp->getY()+lp->getHeight());
@@ -458,7 +456,7 @@ void PalLabeling::drawLabelCandidateRect( pal::StraightLabelPosition* lp, QPaint
 }
 
 
-void PalLabeling::drawLabel( pal::StraightLabelPosition* label, QPainter* painter, const QgsMapToPixel* xform)
+void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform)
 {
   QgsPoint outPt = xform->transform(label->getX(), label->getY());
 

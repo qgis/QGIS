@@ -159,7 +159,7 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
       continue;
     }
 
-    pal::StraightLabelPosition* lp = (pal::StraightLabelPosition*) *labelIt;
+    pal::LabelPosition* lp = *labelIt;
 
     //QGIS takes the coordinates of the middle points
     double x = (lp->getX( 0 ) + lp->getX( 1 ) + lp->getX( 2 ) + lp->getX( 3 ) ) / 4;

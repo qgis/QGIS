@@ -166,11 +166,11 @@ namespace pal
     double offset = label_x / 4;
 
     // at the center
-    ( *lPos )[0] = new StraightLabelPosition( id, lx, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, alpha, cost,  this );
     // shifted to the sides - with higher cost
     cost = 0.0021;
-    ( *lPos )[1] = new StraightLabelPosition( id, lx+offset, ly, label_x, label_y, alpha, cost,  this );
-    ( *lPos )[2] = new StraightLabelPosition( id, lx-offset, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[1] = new LabelPosition( id, lx+offset, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[2] = new LabelPosition( id, lx-offset, ly, label_x, label_y, alpha, cost,  this );
     return nbp;
   }
 
@@ -317,7 +317,7 @@ namespace pal
       else
         cost =  0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
 
-      ( *lPos )[i] = new StraightLabelPosition( i, lx, ly, xrm, yrm, 0, cost,  this );
+      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, 0, cost,  this );
 
       icost += inc;
 
@@ -489,15 +489,15 @@ namespace pal
           reversed = ( alpha >= M_PI/2 || alpha < -M_PI/2 );
 
         if ( (!reversed && (flags & FLAG_ABOVE_LINE)) || (reversed && (flags & FLAG_BELOW_LINE)) )
-          positions->push_back( new StraightLabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this ) ); // Line
+          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this ) ); // Line
         if ( (!reversed && (flags & FLAG_BELOW_LINE)) || (reversed && (flags & FLAG_ABOVE_LINE)) )
-          positions->push_back( new StraightLabelPosition( i, bx - cos( beta ) * ( distlabel + yrm ) , by - sin( beta ) * ( distlabel + yrm ), xrm, yrm, alpha, cost, this ) ); // Line
+          positions->push_back( new LabelPosition( i, bx - cos( beta ) * ( distlabel + yrm ) , by - sin( beta ) * ( distlabel + yrm ), xrm, yrm, alpha, cost, this ) ); // Line
         if ( flags & FLAG_ON_LINE )
-          positions->push_back( new StraightLabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
+          positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
       }
       else if (layer->arrangement == P_HORIZ)
       {
-        positions->push_back( new StraightLabelPosition(i, bx - xrm/2, by - yrm/2, xrm, yrm, 0, cost, this) ); // Line
+        positions->push_back( new LabelPosition(i, bx - xrm/2, by - yrm/2, xrm, yrm, 0, cost, this) ); // Line
         //positions->push_back( new LabelPosition(i, bx -yrm/2, by - yrm*sin(beta)/2, xrm, yrm, alpha, cost, this, line)); // Line
       }
       else
@@ -533,7 +533,7 @@ namespace pal
   }
 
 
-  StraightLabelPosition* Feature::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int orientation, int index, double distance )
+  LabelPosition* Feature::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int orientation, int index, double distance )
   {
     // Check that the given distance is on the given index and find the correct index and distance if not
     while (distance < 0 && index > 1)
@@ -582,8 +582,8 @@ namespace pal
       return NULL;
     }
 
-    StraightLabelPosition* slp = NULL;
-    StraightLabelPosition* slp_tmp = NULL;
+    LabelPosition* slp = NULL;
+    LabelPosition* slp_tmp = NULL;
     // current_placement = placement_result()
     double xBase = old_x + dx*distance/segment_length;
     double yBase = old_y + dy*distance/segment_length;
@@ -690,7 +690,7 @@ namespace pal
       }
 
       std::cerr << "adding part: " << render_x << "  " << render_y << std::endl;
-      StraightLabelPosition* tmp = new StraightLabelPosition(0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this);
+      LabelPosition* tmp = new LabelPosition(0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this);
       tmp->setPartId( orientation > 0 ? i : labelInfo->char_num-i-1 );
       if (slp == NULL)
         slp = tmp;
@@ -752,7 +752,7 @@ namespace pal
     // TODO: generate more labels
 
     // generate curved label
-    StraightLabelPosition* slp = curvedPlacementAtOffset(mapShape, path_distances, 0, 1, 0.0);
+    LabelPosition* slp = curvedPlacementAtOffset(mapShape, path_distances, 0, 1, 0.0);
 
     if (!slp)
       return 0;
@@ -972,7 +972,7 @@ namespace pal
               if ( isPointInPolygon( mapShape->nbPoints, mapShape->x, mapShape->y, rx,  ry ) )
               {
                 // cost is set to minimal value, evaluated later
-                positions->push_back( new StraightLabelPosition( id++, rx - dlx, ry - dly , xrm, yrm, alpha, 0.0001, this ) ); // Polygon
+                positions->push_back( new LabelPosition( id++, rx - dlx, ry - dly , xrm, yrm, alpha, 0.0001, this ) ); // Polygon
               }
             }
           }

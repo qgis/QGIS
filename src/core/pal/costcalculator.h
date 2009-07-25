@@ -6,7 +6,6 @@
 namespace pal
 {
   class Feats;
-  class StraightLabelPosition;
 
   class CostCalculator
   {
@@ -14,10 +13,10 @@ namespace pal
     /** increase candidate's cost according to its collision with passed feature */
     static void addObstacleCostPenalty(LabelPosition* lp, PointSet* feat);
 
-    static void setPolygonCandidatesCost( int nblp, StraightLabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+    static void setPolygonCandidatesCost( int nblp, LabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
     /** Set cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field */
-    static void setCandidateCostFromPolygon( StraightLabelPosition* lp, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+    static void setCandidateCostFromPolygon( LabelPosition* lp, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
     /** sort candidates by costs, skip the worse ones, evaluate polygon candidates */
     static int finalizeCandidatesCosts( Feats* feat, int max_p, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
@@ -32,7 +31,7 @@ namespace pal
    */
   class PolygonCostCalculator
   {
-      StraightLabelPosition *lp;
+      LabelPosition *lp;
       double px, py;
       double dist[8];
       double rpx[8];
@@ -42,7 +41,7 @@ namespace pal
       void updatePoint( PointSet *pset );
       double updateLinePoly( PointSet *pset );
     public:
-      PolygonCostCalculator( StraightLabelPosition *lp );
+      PolygonCostCalculator( LabelPosition *lp );
 
       void update( PointSet *pset );
 

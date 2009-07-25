@@ -60,7 +60,7 @@ namespace pal
 
   ////////
 
-  void CostCalculator::setPolygonCandidatesCost( int nblp, StraightLabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+  void CostCalculator::setPolygonCandidatesCost( int nblp, LabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
     int i;
 
@@ -118,7 +118,7 @@ namespace pal
   }
 
 
-  void CostCalculator::setCandidateCostFromPolygon( StraightLabelPosition* lp, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+  void CostCalculator::setCandidateCostFromPolygon( LabelPosition* lp, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
 
     double amin[2];
@@ -188,7 +188,7 @@ namespace pal
       {
         int arrangement = feat->feature->getLayer()->getArrangement();
         if ( arrangement == P_FREE || arrangement == P_HORIZ )
-          setPolygonCandidatesCost( stop, (StraightLabelPosition**) feat->lPos, max_p, obstacles, bbx, bby );
+          setPolygonCandidatesCost( stop, (LabelPosition**) feat->lPos, max_p, obstacles, bbx, bby );
       }
 
       return max_p;
@@ -198,7 +198,7 @@ namespace pal
 
   //////////
 
-  PolygonCostCalculator::PolygonCostCalculator( StraightLabelPosition *lp ) : lp( lp )
+  PolygonCostCalculator::PolygonCostCalculator( LabelPosition *lp ) : lp( lp )
   {
     int i;
     double hyp = max( lp->feature->xmax - lp->feature->xmin, lp->feature->ymax - lp->feature->ymin );
