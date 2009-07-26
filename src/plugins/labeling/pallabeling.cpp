@@ -184,6 +184,7 @@ PalLabeling::PalLabeling(QgsMapRenderer* mapRenderer)
   }
 
   mShowingCandidates = FALSE;
+  mShowingAllLabels = FALSE;
 
   initPal();
 }
@@ -380,7 +381,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   }
 
   // find the solution
-  labels = mPal->solveProblem( problem );
+  labels = mPal->solveProblem( problem, mShowingAllLabels );
 
   std::cout << "LABELING work:   " << t.elapsed() << "ms  ... labels# " << labels->size() << std::endl;
   t.restart();

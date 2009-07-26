@@ -956,7 +956,7 @@ namespace pal
     return prob;
   }
 
-  std::list<LabelPosition*>* Pal::solveProblem(Problem* prob)
+  std::list<LabelPosition*>* Pal::solveProblem(Problem* prob, bool displayAll )
   {
     if (prob == NULL)
       return new std::list<LabelPosition*>();
@@ -970,7 +970,7 @@ namespace pal
     else
       prob->popmusic();
 
-    return prob->getSolution( false );
+    return prob->getSolution( displayAll );
   }
 
 

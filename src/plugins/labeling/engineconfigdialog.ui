@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>286</width>
-    <height>250</height>
+    <width>316</width>
+    <height>271</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -171,6 +171,13 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkShowAllLabels">
+     <property name="text">
+      <string>Show all labels (i.e. including colliding labels)</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="chkShowCandidates">

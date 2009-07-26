@@ -116,6 +116,9 @@ public:
     void setShowingCandidates(bool showing) { mShowingCandidates = showing; }
     const QList<LabelCandidate>& candidates() { return mCandidates; }
 
+    bool isShowingAllLabels() const { return mShowingAllLabels; }
+    void setShowingAllLabels(bool showing) { mShowingAllLabels = showing; }
+
     //! hook called when drawing layer before issuing select()
     static int prepareLayerHook(void* context, void* layerContext, int& attrIndex);
     //! hook called when drawing for every feature in a layer
@@ -143,6 +146,8 @@ protected:
     // list of candidates from last labeling
     QList<LabelCandidate> mCandidates;
     bool mShowingCandidates;
+
+    bool mShowingAllLabels; // whether to avoid collisions or not
 };
 
 #endif // PALLABELING_H

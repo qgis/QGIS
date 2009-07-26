@@ -340,7 +340,7 @@ namespace pal
 
       Problem* extractProblem(double scale, double bbox[4]);
 
-      std::list<LabelPosition*>* solveProblem(Problem* prob);
+      std::list<LabelPosition*>* solveProblem(Problem* prob, bool displayAll);
 
       /**
        * \brief Set map resolution

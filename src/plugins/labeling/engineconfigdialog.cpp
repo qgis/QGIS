@@ -20,6 +20,8 @@ EngineConfigDialog::EngineConfigDialog(PalLabeling* lbl, QWidget* parent)
   spinCandPolygon->setValue(candPolygon);
 
   chkShowCandidates->setChecked( mLBL->isShowingCandidates() );
+
+  chkShowAllLabels->setChecked( mLBL->isShowingAllLabels() );
 }
 
 
@@ -33,6 +35,8 @@ void EngineConfigDialog::onOK()
                                  spinCandPolygon->value());
 
   mLBL->setShowingCandidates( chkShowCandidates->isChecked() );
+
+  mLBL->setShowingAllLabels( chkShowAllLabels->isChecked() );
 
   accept();
 }
