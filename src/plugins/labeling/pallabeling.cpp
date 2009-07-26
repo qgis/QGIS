@@ -389,6 +389,11 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   std::list<LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it)
   {
+    const LayerSettings& lyr = layer((*it)->getLayerName());
+
+    if (lyr.bufferSize != 0)
+      drawLabel( *it, painter, xform, true);
+
     drawLabel( *it, painter, xform );
   }
 
@@ -455,8 +460,9 @@ void PalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* pain
     drawLabelCandidateRect(lp->getNextPart(), painter, xform);
 }
 
+#include "qgslogger.h"
 
-void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform)
+void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform, bool drawBuffer)
 {
   QgsPoint outPt = xform->transform(label->getX(), label->getY());
 
@@ -464,34 +470,47 @@ void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const
   const LayerSettings& lyr = layer(label->getLayerName());
 
   QString text = ((MyLabel*)label->getFeature()->getUserGeometry())->text();
+  QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
+
+  QgsDebugMsg("drawLabel " + QString::number(drawBuffer) + " " + txt);
 
   // shift by one as we have 2px border
   painter->save();
   painter->translate( QPointF(outPt.x()+1, outPt.y()-1-lyr.fontBaseline) );
   painter->rotate(-label->getAlpha() * 180 / M_PI );
-  painter->setFont( lyr.textFont );
 
-  if (lyr.bufferSize != 0)
-    drawLabelBuffer(painter, text, lyr.bufferSize, lyr.bufferColor);
-
-  painter->setPen( lyr.textColor );
-  if (label->getPartId() == -1)
-    painter->drawText(0,0, text);
+  if (drawBuffer)
+  {
+    // we're drawing buffer
+    drawLabelBuffer(painter, txt, lyr.textFont, lyr.bufferSize, lyr.bufferColor);
+  }
   else
-    painter->drawText(0,0, QString( text[label->getPartId()] ) );
+  {
+    // we're drawing real label
+    painter->setFont( lyr.textFont );
+    painter->setPen( lyr.textColor );
+    painter->drawText(0,0, txt);
+  }
   painter->restore();
 
   if (label->getNextPart())
-    drawLabel( label->getNextPart(), painter, xform );
+    drawLabel( label->getNextPart(), painter, xform, drawBuffer );
 }
 
 
-void PalLabeling::drawLabelBuffer(QPainter* p, QString text, int size, QColor color)
+void PalLabeling::drawLabelBuffer(QPainter* p, QString text, const QFont& font, int size, QColor color)
 {
-  p->save();
-  p->setPen(color);
+  /*
+  p->setFont( font );
+  p->setPen( color );
   for (int x = -size; x <= size; x++)
     for (int y = -size; y <= size; y++)
       p->drawText(x,y, text);
-  p->restore();
+  */
+
+  QPainterPath path;
+  path.addText(0,0, font, text);
+  p->setPen( QPen(color, size) );
+  p->setBrush( color );
+  p->drawPath(path);
 }

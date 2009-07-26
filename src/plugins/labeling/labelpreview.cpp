@@ -26,12 +26,13 @@ void LabelPreview::paintEvent(QPaintEvent* e)
 {
   QPainter p(this);
 
+  p.setRenderHint(QPainter::Antialiasing);
   p.setFont(font());
-  p.setPen(mTextColor);
   p.translate(10, 20); // uhm...
 
   if (mBufferSize != 0)
-    PalLabeling::drawLabelBuffer(&p, text(), mBufferSize, mBufferColor);
+    PalLabeling::drawLabelBuffer(&p, text(), font(), mBufferSize, mBufferColor);
 
+  p.setPen(mTextColor);
   p.drawText(0,0, text());
 }

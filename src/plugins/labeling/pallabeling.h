@@ -123,8 +123,8 @@ public:
 
 
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
-    void drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform);
-    static void drawLabelBuffer(QPainter* p, QString text, int size, QColor color);
+    void drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform, bool drawBuffer = false);
+    static void drawLabelBuffer(QPainter* p, QString text, const QFont& font, int size, QColor color);
 
 protected:
 
