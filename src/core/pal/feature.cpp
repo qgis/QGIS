@@ -635,7 +635,7 @@ namespace pal
           index++;
           if (index >= path_positions->nbPoints) // Bail out if we run off the end of the shape
           {
-            std::cerr << "err5" << std::endl;
+            //std::cerr << "err5" << std::endl;
             return NULL;
           }
           new_x = path_positions->x[index];
@@ -644,7 +644,7 @@ namespace pal
           dy = new_y - old_y;
           segment_length = path_distances[index];
 
-          std::cerr << "-> " << sqrt(pow(start_x - new_x,2) + pow(start_y - new_y,2)) << " vs " << ci.width << std::endl;
+          //std::cerr << "-> " << sqrt(pow(start_x - new_x,2) + pow(start_y - new_y,2)) << " vs " << ci.width << std::endl;
 
         } while (sqrt(pow(start_x - new_x,2) + pow(start_y - new_y,2)) < ci.width); // Distance from start_ to new_
 
@@ -689,7 +689,7 @@ namespace pal
         render_angle += M_PI;
       }
 
-      std::cerr << "adding part: " << render_x << "  " << render_y << std::endl;
+      //std::cerr << "adding part: " << render_x << "  " << render_y << std::endl;
       LabelPosition* tmp = new LabelPosition(0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this);
       tmp->setPartId( orientation > 0 ? i : labelInfo->char_num-i-1 );
       if (slp == NULL)
@@ -722,7 +722,7 @@ namespace pal
       else
       {
         // Otherwise we have failed to find a placement
-        std::cerr << "err7" << std::endl;
+        //std::cerr << "err7" << std::endl;
         return NULL;
       }
     }
@@ -738,6 +738,7 @@ namespace pal
 
     // distance calculation
     double* path_distances = new double[mapShape->nbPoints];
+    double total_distance = 0;
     double old_x, old_y, new_x, new_y;
     for (int i = 0; i < mapShape->nbPoints; i++)
     {
@@ -747,21 +748,57 @@ namespace pal
         path_distances[i] = sqrt( pow(old_x - mapShape->x[i], 2) + pow(old_y - mapShape->y[i],2) );
       old_x = mapShape->x[i];
       old_y = mapShape->y[i];
+
+      total_distance += path_distances[i];
     }
 
-    // TODO: generate more labels
-
-    // generate curved label
-    LabelPosition* slp = curvedPlacementAtOffset(mapShape, path_distances, 0, 1, 0.0);
-
-    if (!slp)
+    if (total_distance == 0)
       return 0;
 
-    // TODO: evaluate cost
+    int nbp = 0;
+    LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
+    double delta = max( labelInfo->label_height, total_distance/10.0 );
 
-    int nbp = 1;
+    // generate curved labels
+    std::cerr << "------" << std::endl;
+    for (int i = 0; i*delta < total_distance; i++)
+    {
+      LabelPosition* slp = curvedPlacementAtOffset(mapShape, path_distances, 0, 1, i*delta);
+
+      if (slp)
+      {
+        // evaluate cost
+        double angle_diff = 0, angle_last, diff;
+        LabelPosition* tmp = slp;
+        while (tmp)
+        {
+          if (tmp != slp) // not first?
+          {
+            diff = fabs(tmp->getAlpha() - angle_last);
+            if (diff > 2*M_PI) diff -= 2*M_PI;
+            angle_diff += diff;
+          }
+
+          angle_last = tmp->getAlpha();
+          tmp = tmp->getNextPart();
+        }
+        double cost = angle_diff/100.0;
+        if (cost < 0.0001) cost = 0.0001;
+        std::cerr << "cost " << angle_diff << std::endl;
+        slp->setCost(cost);
+
+        positions->push_back(slp);
+        nbp++;
+      }
+    }
+
+
     ( *lPos ) = new LabelPosition*[nbp];
-    (*lPos)[0] = slp;
+    for (int i = 0; i < nbp; i++)
+    {
+      (*lPos)[i] = positions->pop_front();
+    }
+    delete positions;
 
     return nbp;
   }
