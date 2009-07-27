@@ -76,6 +76,7 @@ class QgsPointDialog : public QDialog, private Ui::QgsPointDialogBase
     QString guessWorldFileName( const QString& raster );
 
     void enableModifiedRasterControls( bool state );
+    void enableControls(bool state);
     QIcon getThemeIcon( const QString theName );
 
     QActionGroup* mMapToolGroup;
