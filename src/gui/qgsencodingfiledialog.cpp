@@ -14,6 +14,9 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
+#include "qgsproject.h"
+#include "qgslogger.h"
+#include <QSettings>
 #include <QComboBox>
 #include <QLabel>
 #include <QLayout>
@@ -71,20 +74,34 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget * parent,
   mEncodingComboBox->addItem( "CP1258" );
   mEncodingComboBox->addItem( "Apple Roman" );
   mEncodingComboBox->addItem( "TIS-620" );
+
+  // Use default encoding if none supplied
+  QString enc = encoding;
   if ( encoding.isEmpty() )
   {
-    mEncodingComboBox->setItemText( mEncodingComboBox->currentIndex(), QString( QTextCodec::codecForLocale()->name() ) );
+    QSettings settings;
+    enc = settings.value( "/UI/encoding", QString("System") ).toString();
   }
-  else
+
+  // The specified decoding is added if not existing alread, and then set current.
+  // This should select it.
+  int encindex = mEncodingComboBox->findText( enc );
+  if ( encindex < 0 )
   {
-    mEncodingComboBox->setItemText( mEncodingComboBox->currentIndex(), encoding );
+    mEncodingComboBox->insertItem( 0, enc );
+    encindex = 0;
   }
+  mEncodingComboBox->setCurrentIndex( encindex );
 
   // if this dialog is being invoked from QgisApp::findFiles_(), then we
   // need to force selection of the first filter since that corresponds to
   // the file name we're looking for; even if we're not here from
   // findFiles_(), it won't hurt to force selection of the first file filter
   selectFilter( filters().at( 0 ) );
+
+  // Connect our slot to get a signal when the user is done with the file dialog
+  connect( this, SIGNAL( accepted() ), this, SLOT( saveUsedEncoding() ) );
+  
 
 }
 
@@ -96,4 +113,11 @@ QgsEncodingFileDialog::~QgsEncodingFileDialog()
 QString QgsEncodingFileDialog::encoding() const
 {
   return mEncodingComboBox->currentText();
+}
+
+void QgsEncodingFileDialog::saveUsedEncoding()
+{
+  QSettings settings;
+  settings.setValue( "/UI/encoding", encoding() );
+  QgsDebugMsg(QString( "Set encoding " + encoding() + " as default.") );
 }
