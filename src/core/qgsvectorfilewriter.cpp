@@ -27,6 +27,7 @@
 #include "qgsvectordataprovider.h"
 
 #include <QFile>
+#include <QSettings>
 #include <QFileInfo>
 #include <QTextCodec>
 
@@ -72,8 +73,15 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   mCodec = QTextCodec::codecForName( fileEncoding.toLocal8Bit().data() );
   if ( !mCodec )
   {
+    QSettings settings;
+    QString enc = settings.value( "/UI/encoding", QString("System") ).toString();
     QgsDebugMsg( "error finding QTextCodec for " + fileEncoding );
-    mCodec = QTextCodec::codecForLocale();
+    mCodec = QTextCodec::codecForName( enc.toLocal8Bit().data() );
+    if ( !mCodec )
+    {
+      QgsDebugMsg( "error finding QTextCodec for " + enc );
+      mCodec = QTextCodec::codecForLocale();
+    }
   }
 
   // consider spatial reference system of the layer

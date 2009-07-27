@@ -14,6 +14,7 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include <QSettings>
 #include <QTextCodec>
 
 #include <cfloat> // for DBL_MAX
@@ -27,9 +28,10 @@
 QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     : QgsDataProvider( uri ),
     mCacheMinMaxDirty( TRUE ),
-    mEncoding( QTextCodec::codecForLocale() ),
     mFetchFeaturesWithoutGeom( FALSE )
 {
+  QSettings settings;
+  setEncoding( settings.value( "/UI/encoding", QString("System") ).toString() );
 }
 
 

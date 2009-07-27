@@ -32,6 +32,9 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
     ~QgsEncodingFileDialog();
     /**Returns a string describing the choosen encoding*/
     QString encoding() const;
+  public slots:
+    void saveUsedEncoding();
+
   private:
     /**Box to choose the encoding type*/
     QComboBox* mEncodingComboBox;
