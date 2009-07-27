@@ -307,6 +307,11 @@ void QgsComposerMap::moveContent( double dx, double dy )
 
 void QgsComposerMap::zoomContent( int delta, double x, double y )
 {
+  if(mDrawing)
+  {
+    return;
+  }
+
   QSettings settings;
 
   //read zoom mode
