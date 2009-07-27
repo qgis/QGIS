@@ -46,7 +46,7 @@
 #include <qgsapplication.h>
 #include <qgsmaplayer.h>
 #include <qgsrasterlayer.h>
-#include "plugin.h"
+#include "qgsgeorefplugin.h"
 
 #include <QFile>
 
