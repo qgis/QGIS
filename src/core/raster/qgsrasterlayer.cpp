@@ -1014,11 +1014,20 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
 
   if ( theTryInternalFlag )
   {
-    QString myCompressionType = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
-    if ( "JPEG" == myCompressionType )
+    // libtiff < 4.0 has a bug that prevents safe building of overviews on JPEG compressed files
+    // we detect libtiff < 4.0 by checking that BIGTIFF is not in the creation options of the GTiff driver
+    // see https://trac.osgeo.org/qgis/ticket/1357
+    const char* pszGTiffCreationOptions =
+      GDALGetMetadataItem( GDALGetDriverByName( "GTiff" ), GDAL_DMD_CREATIONOPTIONLIST, "" );
+    if ( strstr( pszGTiffCreationOptions, "BIGTIFF" ) == NULL )
     {
-      return "ERROR_JPEG_COMPRESSION";
+      QString myCompressionType = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
+      if ( "JPEG" == myCompressionType )
+      {
+        return "ERROR_JPEG_COMPRESSION";
+      }
     }
+
     //close the gdal dataset and reopen it in read / write mode
     GDALClose( mGdalDataset );
     mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_Update );
@@ -1501,7 +1510,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
     emit statusChanged( tr( "Retrieving using %1" ).arg( mProviderKey ) );
 
-    mDataProvider->setDpi(rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor());
+    mDataProvider->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
 
     QImage* image =
       mDataProvider->draw(
