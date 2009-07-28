@@ -1163,7 +1163,7 @@
 		729288320F71F2AD006D9489 /* qgsnewhttpconnection.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E63C0F39E57A003DC336 /* qgsnewhttpconnection.h */; };
 		7292883C0F71F430006D9489 /* georeferencer.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7FC0F39E57B003DC336 /* georeferencer.qrc */; };
 		7292883D0F71F430006D9489 /* mapcoordsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7FF0F39E57B003DC336 /* mapcoordsdialog.h */; };
-		7292883E0F71F430006D9489 /* plugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8030F39E57B003DC336 /* plugin.h */; };
+		7292883E0F71F430006D9489 /* qgsgeorefplugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8030F39E57B003DC336 /* qgsgeorefplugin.h */; };
 		7292883F0F71F430006D9489 /* qgsgeorefwarpoptionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E80D0F39E57B003DC336 /* qgsgeorefwarpoptionsdialog.h */; };
 		729288400F71F430006D9489 /* qgspointdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8140F39E57B003DC336 /* qgspointdialog.h */; };
 		729288450F71F54F006D9489 /* qgsgrass_plugin.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB230F39E57B003DC336 /* qgsgrass_plugin.qrc */; };
@@ -1365,7 +1365,7 @@
 		72A56CF40F3CB8BD00BA32A1 /* qgswfsplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC400F39E57B003DC336 /* qgswfsplugin.cpp */; };
 		72A56CF50F3CB8BF00BA32A1 /* qgswfssourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC420F39E57B003DC336 /* qgswfssourceselect.cpp */; };
 		72A56CF60F3CB8CE00BA32A1 /* qgsnewhttpconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E63B0F39E57A003DC336 /* qgsnewhttpconnection.cpp */; };
-		72A56D160F3CBDA700BA32A1 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8020F39E57B003DC336 /* plugin.cpp */; };
+		72A56D160F3CBDA700BA32A1 /* qgsgeorefplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8020F39E57B003DC336 /* qgsgeorefplugin.cpp */; };
 		72A56D170F3CBDAC00BA32A1 /* qgsgeorefdatapoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8070F39E57B003DC336 /* qgsgeorefdatapoint.cpp */; };
 		72A56D190F3CBDB200BA32A1 /* qgsimagewarper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E80F0F39E57B003DC336 /* qgsimagewarper.cpp */; };
 		72A56D1A0F3CBDB600BA32A1 /* qgsleastsquares.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8110F39E57B003DC336 /* qgsleastsquares.cpp */; };
@@ -4465,8 +4465,8 @@
 		7209E7FF0F39E57B003DC336 /* mapcoordsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mapcoordsdialog.h; path = ../../src/plugins/georeferencer/mapcoordsdialog.h; sourceTree = SOURCE_ROOT; };
 		7209E8000F39E57B003DC336 /* mapcoordsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = mapcoordsdialogbase.ui; path = ../../src/plugins/georeferencer/mapcoordsdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209E8010F39E57B003DC336 /* pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pencil.png; path = ../../src/plugins/georeferencer/pencil.png; sourceTree = SOURCE_ROOT; };
-		7209E8020F39E57B003DC336 /* plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = plugin.cpp; path = ../../src/plugins/georeferencer/plugin.cpp; sourceTree = SOURCE_ROOT; };
-		7209E8030F39E57B003DC336 /* plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = plugin.h; path = ../../src/plugins/georeferencer/plugin.h; sourceTree = SOURCE_ROOT; };
+		7209E8020F39E57B003DC336 /* qgsgeorefplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeorefplugin.cpp; path = ../../src/plugins/georeferencer/qgsgeorefplugin.cpp; sourceTree = SOURCE_ROOT; };
+		7209E8030F39E57B003DC336 /* qgsgeorefplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeorefplugin.h; path = ../../src/plugins/georeferencer/qgsgeorefplugin.h; sourceTree = SOURCE_ROOT; };
 		7209E8070F39E57B003DC336 /* qgsgeorefdatapoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeorefdatapoint.cpp; path = ../../src/plugins/georeferencer/qgsgeorefdatapoint.cpp; sourceTree = SOURCE_ROOT; };
 		7209E8080F39E57B003DC336 /* qgsgeorefdatapoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeorefdatapoint.h; path = ../../src/plugins/georeferencer/qgsgeorefdatapoint.h; sourceTree = SOURCE_ROOT; };
 		7209E8090F39E57B003DC336 /* qgsgeorefdescriptiondialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeorefdescriptiondialog.cpp; path = ../../src/plugins/georeferencer/qgsgeorefdescriptiondialog.cpp; sourceTree = SOURCE_ROOT; };
@@ -8422,8 +8422,8 @@
 				7209E7FF0F39E57B003DC336 /* mapcoordsdialog.h */,
 				7209E8000F39E57B003DC336 /* mapcoordsdialogbase.ui */,
 				7209E8010F39E57B003DC336 /* pencil.png */,
-				7209E8020F39E57B003DC336 /* plugin.cpp */,
-				7209E8030F39E57B003DC336 /* plugin.h */,
+				7209E8020F39E57B003DC336 /* qgsgeorefplugin.cpp */,
+				7209E8030F39E57B003DC336 /* qgsgeorefplugin.h */,
 				7209E8070F39E57B003DC336 /* qgsgeorefdatapoint.cpp */,
 				7209E8080F39E57B003DC336 /* qgsgeorefdatapoint.h */,
 				7209E8090F39E57B003DC336 /* qgsgeorefdescriptiondialog.cpp */,
@@ -13529,7 +13529,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				72A56D160F3CBDA700BA32A1 /* plugin.cpp in Sources */,
+				72A56D160F3CBDA700BA32A1 /* qgsgeorefplugin.cpp in Sources */,
 				72A56D170F3CBDAC00BA32A1 /* qgsgeorefdatapoint.cpp in Sources */,
 				72A56D190F3CBDB200BA32A1 /* qgsimagewarper.cpp in Sources */,
 				72A56D1A0F3CBDB600BA32A1 /* qgsleastsquares.cpp in Sources */,
@@ -13538,7 +13538,7 @@
 				72A56D1D0F3CBDC000BA32A1 /* qgsgeorefwarpoptionsdialog.cpp in Sources */,
 				72A56D1E0F3CBDC400BA32A1 /* mapcoordsdialog.cpp in Sources */,
 				7292883D0F71F430006D9489 /* mapcoordsdialog.h in Sources */,
-				7292883E0F71F430006D9489 /* plugin.h in Sources */,
+				7292883E0F71F430006D9489 /* qgsgeorefplugin.h in Sources */,
 				7292883F0F71F430006D9489 /* qgsgeorefwarpoptionsdialog.h in Sources */,
 				729288400F71F430006D9489 /* qgspointdialog.h in Sources */,
 				7292883C0F71F430006D9489 /* georeferencer.qrc in Sources */,
