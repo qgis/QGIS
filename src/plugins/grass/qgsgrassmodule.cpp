@@ -195,10 +195,11 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QDomElement qDocElem = qDoc.documentElement();
 
   // Read GRASS module description
-  QString xName = qDocElem.attribute( "manual" );
-  if ( xName.isEmpty() )
+  QString xName = qDocElem.attribute( "module" );
+  QString xDocName = qDocElem.attribute( "manual" );
+  if ( xDocName.isEmpty() )
   {
-    xName = qDocElem.attribute( "module" );
+    xDocName = xName;
   }
 
   // Binary modules on windows has .exe extension
@@ -251,7 +252,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
 
   // Create manual if available
   QString gisBase = getenv( "GISBASE" );
-  QString manPath = gisBase + "/docs/html/" + xName + ".html";
+  QString manPath = gisBase + "/docs/html/" + xDocName + ".html";
   QFile manFile( manPath );
   if ( manFile.exists() )
   {
