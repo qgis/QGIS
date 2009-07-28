@@ -1572,7 +1572,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     else if ( res == "ERROR_JPEG_COMPRESSION" )
     {
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
-                            tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression." ) );
+                            tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library." ) );
     }
     else if ( res == "ERROR_VIRTUAL" )
     {
