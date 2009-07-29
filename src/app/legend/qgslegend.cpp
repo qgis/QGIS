@@ -250,26 +250,26 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
       QgsLegendItem::DRAG_ACTION action = dest->accept( origin );
       if ( yCoordAboveCenter( dest, e->y() ) ) //over center of item
       {
-
-        if ( action == QgsLegendItem::REORDER || action == QgsLegendItem::INSERT )
+        if ( action == QgsLegendItem::REORDER )
         {
-          QgsDebugMsg( "mouseMoveEvent::REORDER/INSERT top half" );
           if ( origin->nextSibling() != dest )
           {
-            if ( origin->parent() != dest->parent() )
-            {
-              moveItem( origin, dest );
-              moveItem( dest, origin );
-            }
-            else
-            {
-              moveItem( dest, origin );
-            }
+            moveItem( dest, origin );setCurrentItem( origin );
           }
-          setCursor( QCursor( Qt::SizeVerCursor ) );
           setCurrentItem( origin );
+          setCursor( QCursor( Qt::SizeVerCursor ) );
         }
-        else
+        else if ( action == QgsLegendItem::INSERT )
+        {
+          setCursor( QCursor( Qt::PointingHandCursor ) );
+          if ( origin->parent() != dest )
+          {
+            insertItem( origin, dest );
+          }
+          setCurrentItem( origin );
+          setCursor( QCursor( Qt::PointingHandCursor ) );
+        }
+        else //no action
         {
           QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
 
