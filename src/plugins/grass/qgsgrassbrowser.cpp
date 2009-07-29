@@ -31,6 +31,7 @@
 #include <QTextBrowser>
 #include <QToolBar>
 #include <QTreeView>
+#include <QMenu>
 
 
 QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
@@ -96,6 +97,7 @@ QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
   mTree->header()->hide();
   mTree->setModel( mModel );
   mTree->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mTree->setContextMenuPolicy(Qt::CustomContextMenu);
 
   mTextBrowser = new QTextBrowser( 0 );
   mTextBrowser->setReadOnly( TRUE );
@@ -106,6 +108,8 @@ QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
 
   this->setCentralWidget( mSplitter );
 
+  connect( mTree, SIGNAL(customContextMenuRequested(const QPoint&)),
+           this,  SLOT(showContextMenu(const QPoint&)));
   connect( mTree->selectionModel(),
            SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ),
            this, SLOT( selectionChanged( QItemSelection, QItemSelection ) ) );
@@ -189,6 +193,20 @@ void QgsGrassBrowser::doubleClicked( const QModelIndex & index )
   addMap();
 }
 
+void QgsGrassBrowser::showContextMenu(const QPoint &position)
+{
+    QList<QAction *> actions;
+    if (mTree->indexAt(position).isValid()) {
+        actions.append(mActionAddMap);
+        actions.append(mActionDeleteMap);
+        actions.append(mActionCopyMap);
+        actions.append(mActionRenameMap);
+        actions.append(mActionSetRegion);
+    }
+    if (actions.count() > 0)
+        QMenu::exec(actions, mTree->mapToGlobal(position));
+}
+
 QString QgsGrassBrowser::formatMessage( QString msg )
 {
   return msg.replace( "<", "&lt;" ).replace( ">", "&gt;" ).replace( "\n", "<br>" );
@@ -238,7 +256,7 @@ void QgsGrassBrowser::copyMap()
       suggest = map;
     }
     QString newName = ed.getItem( element, tr( "New name" ),
-                                  tr( "New name" ), suggest, source, &ok );
+                                  tr( "New name for layer \"%1\"" ).arg(map), suggest, source, &ok );
 
     if ( !ok ) return;
 
@@ -302,7 +320,7 @@ void QgsGrassBrowser::renameMap()
     QgsGrassElementDialog ed;
     bool ok;
     QString newName = ed.getItem( element, tr( "New name" ),
-                                  tr( "New name" ), "", map, &ok );
+                                  tr( "New name for layer \"%1\"" ).arg(map), "", map, &ok );
 
     if ( !ok ) return;
 
@@ -336,6 +354,9 @@ void QgsGrassBrowser::deleteMap()
 
   QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
 
+  if (!QMessageBox::question(this, tr("Question"), tr("Are you sure you want to delete the %1 selected layer(s)?").arg(indexes.size())))
+      return;
+
   QList<QModelIndex>::const_iterator it = indexes.begin();
   for ( ; it != indexes.end(); ++it )
   {
@@ -352,12 +373,6 @@ void QgsGrassBrowser::deleteMap()
     {
       continue; // should not happen
     }
-
-    QMessageBox::StandardButton ret = QMessageBox::question( 0, tr( "Warning" ),
-                                      tr( "Delete map <b>%1</b>" ).arg( map ),
-                                      QMessageBox::Ok | QMessageBox::Cancel );
-
-    if ( ret == QMessageBox::Cancel ) continue;
 
     QString module = "g.remove";
 #ifdef WIN32
@@ -456,7 +471,7 @@ void QgsGrassBrowser::selectionChanged( const QItemSelection & selected, const Q
   mActionDeleteMap->setEnabled( false );
   mActionSetRegion->setEnabled( false );
 
-  QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
+  QModelIndexList indexes = selected.indexes();
 
   mTextBrowser->clear();
 
@@ -467,6 +482,7 @@ void QgsGrassBrowser::selectionChanged( const QItemSelection & selected, const Q
     mTextBrowser->verticalScrollBar()->setValue( 0 );
 
     int type = mModel->itemType( *it );
+
     if ( type == QgsGrassModel::Raster ||
          type == QgsGrassModel::Vector ||
          type == QgsGrassModel::VectorLayer )
