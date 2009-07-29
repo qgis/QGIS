@@ -180,6 +180,7 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
                layers.join( ", " ) +  " and style list of " + styles.join( ", " ) + " and format of " +
                format +  " and CRS of " + crs );
 
+  mBandCount = 0;
   mRasterShader = new QgsRasterShader();
 
   // Initialise the affine transform matrix
