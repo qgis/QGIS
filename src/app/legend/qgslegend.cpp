@@ -240,6 +240,11 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
     QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>( mItemBeingMoved );
     QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>( item );
 
+    if ( !item )
+    {
+      setCursor( QCursor( Qt::ForbiddenCursor ) );
+    }
+
     if ( item && ( item != mItemBeingMoved ) )
     {
       QgsLegendItem::DRAG_ACTION action = dest->accept( origin );
