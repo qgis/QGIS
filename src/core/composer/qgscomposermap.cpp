@@ -224,6 +224,12 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
   {
+    if ( mDrawing )
+    {
+      return;
+    }
+
+    mDrawing = true;
     QPaintDevice* thePaintDevice = painter->device();
     if ( !thePaintDevice )
     {
@@ -233,6 +239,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     QRectF bRect = boundingRect();
     QSize theSize( bRect.width(), bRect.height() );
     draw( painter, mExtent, theSize, 25.4 ); //scene coordinates seem to be in mm
+    mDrawing = false;
   }
 
   drawFrame( painter );
