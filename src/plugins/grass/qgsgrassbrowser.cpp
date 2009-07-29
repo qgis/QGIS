@@ -216,7 +216,14 @@ void QgsGrassBrowser::copyMap()
 {
   QgsDebugMsg( "entered." );
 
-  QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
+  // Filter VectorLayer type from selection
+  QModelIndexList indexes;
+  foreach(QModelIndex index, mTree->selectionModel()->selectedIndexes()){
+      int type = mModel->itemType(index);
+      if (type != QgsGrassModel::VectorLayer){
+          indexes << index;
+      }
+  }
 
   QList<QModelIndex>::const_iterator it = indexes.begin();
   for ( ; it != indexes.end(); ++it )
@@ -288,7 +295,14 @@ void QgsGrassBrowser::renameMap()
 {
   QgsDebugMsg( "entered." );
 
-  QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
+  // Filter VectorLayer type from selection
+  QModelIndexList indexes;
+  foreach(QModelIndex index, mTree->selectionModel()->selectedIndexes()){
+      int type = mModel->itemType(index);
+      if (type != QgsGrassModel::VectorLayer){
+          indexes << index;
+      }
+  }
 
   QList<QModelIndex>::const_iterator it = indexes.begin();
   for ( ; it != indexes.end(); ++it )
@@ -352,10 +366,21 @@ void QgsGrassBrowser::deleteMap()
 {
   QgsDebugMsg( "entered." );
 
-  QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
+  // Filter VectorLayer type from selection
+  QModelIndexList indexes;
+  foreach(QModelIndex index, mTree->selectionModel()->selectedIndexes()){
+      int type = mModel->itemType(index);
+      if (type != QgsGrassModel::VectorLayer){
+          indexes << index;
+      }
+  }
 
-  if (!QMessageBox::question(this, tr("Question"), tr("Are you sure you want to delete the %1 selected layer(s)?").arg(indexes.size())))
+  if (QMessageBox::question(this, tr("Question"),
+                             tr("Are you sure you want to delete the %1 selected layer(s)?").arg(indexes.size()),
+                             QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  {
       return;
+  }
 
   QList<QModelIndex>::const_iterator it = indexes.begin();
   for ( ; it != indexes.end(); ++it )
