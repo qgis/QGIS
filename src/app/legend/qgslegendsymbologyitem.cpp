@@ -27,6 +27,7 @@ QgsLegendSymbologyItem::QgsLegendSymbologyItem( QTreeWidgetItem * theItem, QStri
     mLegend( 0 )
 {
   mType = LEGEND_SYMBOL_ITEM;
+  setFlags( Qt::ItemIsEnabled );
 }
 
 QgsLegendSymbologyItem::QgsLegendSymbologyItem( int pixmapWidth, int pixmapHeight )
@@ -36,6 +37,7 @@ QgsLegendSymbologyItem::QgsLegendSymbologyItem( int pixmapWidth, int pixmapHeigh
     mLegend( 0 )
 {
   mType = LEGEND_SYMBOL_ITEM;
+  setFlags( Qt::ItemIsEnabled );
 }
 
 QgsLegendSymbologyItem::~QgsLegendSymbologyItem()
