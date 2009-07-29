@@ -201,9 +201,10 @@ IF (PEDANTIC)
   ENDIF (MSVC)
 ENDIF (PEDANTIC)
 
-IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_CONFIGURATION_TYPE MATCHES RelWithDebInfo)
+  MESSAGE ("-- Debug output enabled")
   ADD_DEFINITIONS(-DQGISDEBUG=1)
-ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_CONFIGURATION_TYPE MATCHES RelWithDebInfo)
 
 #############################################################
 # platform specific stuff
@@ -215,11 +216,6 @@ IF (WIN32)
   SET (DEFAULT_INCLUDE_SUBDIR include)
   
   IF (MSVC)
-    # Python parts need to be build with nmake not vcexpress
-    # if you dont add this clause, extra blank msvc projects
-    # will pop up mid way through the build process and block
-    # the build, plus the python bindings wont build correctly
-    SET (CMAKE_MAKE_PROGRAM nmake)
     SET (DEFAULT_BIN_SUBDIR bin)
     # put all the build products into a single directory
     # under build (doesnt affect install target) to make for
@@ -234,11 +230,14 @@ IF (WIN32)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
     
-    IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+    IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_CONFIGURATION_TYPE MATCHES RelWithDebInfo)
+      MESSAGE ("-- Generating browse files")
       ADD_DEFINITIONS( /FR )
-    ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+    ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_CONFIGURATION_TYPE MATCHES RelWithDebInfo)
 
-    INSTALL(DIRECTORY ${CMAKE_BINARY_DIR}/../vcdeps/. DESTINATION .)
+    IF (INSTALL_DEPS)
+      INSTALL(DIRECTORY ${INSTALL_DEPS} DESTINATION .)
+    ENDIF (INSTALL_DEPS)
   ELSE(MSVC)
     SET (DEFAULT_BIN_SUBDIR .)
   ENDIF(MSVC)

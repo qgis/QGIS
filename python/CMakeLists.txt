@@ -50,6 +50,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/configure.py.in
                
 IF (MSVC)
   SET(EXPORT "__declspec(dllimport)")
+  SET(CMAKE_MAKE_PROGRAM $ENV{VCINSTALLDIR}/bin/nmake.exe)
 ELSE (MSVC)
   SET(EXPORT "")
 ENDIF (MSVC)
