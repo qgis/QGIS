@@ -376,7 +376,7 @@ void QgsGrassBrowser::deleteMap()
   }
 
   if (QMessageBox::question(this, tr("Question"),
-                             tr("Are you sure you want to delete the %1 selected layer(s)?").arg(indexes.size()),
+                             tr("Are you sure you want to delete %n selected layer(s)?", "number of layers to delete", indexes.size() ),
                              QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
   {
       return;
