@@ -42,7 +42,6 @@
 
 namespace pal
 {
-//#include <pal/LinkedList.hpp>
 
   template <class Type> class LinkedList;
   template <class Type> class Cell;
@@ -51,11 +50,10 @@ namespace pal
   template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
 
   class Feature;
+  class FeaturePart;
   class Pal;
   class SimpleMutex;
   class LabelInfo;
-
-  class Feat;
 
   /**
    * \brief A layer of spacial entites
@@ -67,18 +65,21 @@ namespace pal
   class Layer
   {
       friend class Pal;
-      friend class Feature;
+      friend class FeaturePart;
 
       friend class Problem;
 
       friend class LabelPosition;
-      friend bool extractFeatCallback( Feature *ft_ptr, void *ctx );
+      friend bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx );
       friend void toSVGPath( int nbPoints, double *x, double *y, int dpi, Layer *layer, int type, char *uid, std::ostream &out, double scale, int xmin, int ymax, bool exportInfo, char *color );
 
     protected:
       char *name; /* unique */
 
+      /** list of feature parts */
+      LinkedList<FeaturePart*> *featureParts;
 
+      /** list of features - for deletion */
       LinkedList<Feature*> *features;
 
       Pal *pal;
@@ -100,8 +101,8 @@ namespace pal
       unsigned long arrangementFlags;
 
       // indexes (spatial and id)
-      RTree<Feature*, double, 2, double, 8, 4> *rtree;
-      HashTable<Cell<Feature*>*> *hashtable;
+      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
+      HashTable<Feature*> *hashtable;
 
       SimpleMutex *modMutex;
 
@@ -128,13 +129,6 @@ namespace pal
       virtual ~Layer();
 
       /**
-       * \brief look up for a feature in layer and return an iterator pointing to the feature
-       * @param geom_id unique identifier of the feature
-       * @return an iterator pointng to the feature or NULL if the feature does not exists
-       */
-      Cell<Feature*> *getFeatureIt( const char * geom_id );
-
-      /**
        * \brief check if the scal is in the scale range min_scale -> max_scale
        * @param scale the scale to check
        */
@@ -151,12 +145,6 @@ namespace pal
        */
       const char * getName();
 
-
-      /**
-       * \brief rename the layer
-       * @param name the new name
-       */
-      void rename( char *name );
 
       /**
        *  \brief get arrangement policy
@@ -286,68 +274,9 @@ namespace pal
        */
       bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1 );
 
-      // TODO implement
-      //void unregisterFeature (const char *geom_id);
+      /** return pointer to feature or NULL if doesn't exist */
+      Feature* getFeature( const char* geom_id );
 
-      // TODO call that when a geometry change (a moveing points, etc)
-      //void updateFeature();
-
-      /**
-       * \brief change the label size for a feature
-       *
-       * @param geom_id unique identifier of the feature
-       * @param label_x new label width
-       * @param label_y new label height
-       *
-       * @throws PalException::UnknownFeature
-       * @throws PalException::ValueNotInRange
-       */
-      void setFeatureLabelSize( const char *geom_id, double label_x, double label_y );
-
-      /**
-       * \brief get the label height for a specific feature
-       *
-       * @param geom_id unique of the feature
-       *
-       * @throws PalException::UnknownFeature
-       */
-      double getFeatureLabelHeight( const char *geom_id );
-
-      /**
-       * \brief get the label width for a specific feature
-       *
-       * @param geom_id unique of the feature
-       *
-       * @throws PalException::UnknownFeature
-       */
-      double getFeatureLabelWidth( const char *geom_id );
-
-
-      /**
-       * \brief set the symbol size (pixel) for a specific feature
-       *
-       * @param geom_id unique od of the feaiture
-       * @param distlabel symbol size (point radius or line width)
-       *
-       * @throws PalException::UnknownFeature
-       * @throws PalException::ValueNotInRange
-       */
-      void setFeatureDistlabel( const char *geom_id, double distlabel );
-
-      /**
-       * \brief get the symbol size (pixel) for a specific feature
-       *
-       * @param geom_id unique of of the feature
-       * @return the symbol size (point radius or line width)
-       *
-       * @throws PalException::UnknownFeature
-       */
-      double getFeatureDistlabel( const char *geom_id );
-
-      /**
-       * add more detailed information about layer (character widths and more)
-       */
-      void setFeatureLabelInfo( const char *geom_id, LabelInfo* labelInfo );
   };
 
 } // end namespace pal

@@ -148,7 +148,7 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   std::list<pal::LabelPosition*>::iterator labelIt = resultLabelList->begin();
   for ( ; labelIt != resultLabelList->end(); ++labelIt )
   {
-    referredGeometry = dynamic_cast<QgsPALGeometry*>(( *labelIt )->getFeature()->getUserGeometry() );
+    referredGeometry = dynamic_cast<QgsPALGeometry*>(( *labelIt )->getFeaturePart()->getUserGeometry() );
     if ( !referredGeometry )
     {
       continue;

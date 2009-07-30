@@ -47,7 +47,6 @@ namespace pal
 {
 
   class Pal;
-  class Feat;
   class Feature;
   class Projection;
   class LabelPosition;
@@ -92,11 +91,11 @@ namespace pal
 
   class PointSet
   {
-      friend class Feature;
+      friend class FeaturePart;
       friend class LabelPosition;
       friend class CostCalculator;
       friend class PolygonCostCalculator;
-      friend void extractXYCoord( Feat *f );
+      friend class Layer;
 
     protected:
       int nbPoints;
@@ -108,8 +107,6 @@ namespace pal
       int cHullSize;
 
       int type;
-
-      //PointSet *parent;
 
       PointSet* holeOf;
       PointSet* parent;
@@ -126,7 +123,7 @@ namespace pal
 public:
       PointSet();
       PointSet( int nbPoints, double *x, double *y );
-      ~PointSet();
+      virtual ~PointSet();
 
       int getPath( int start, int stop, int *path_val );
 
@@ -184,9 +181,6 @@ public:
 
       void getCentroid( double &px, double &py );
 
-
-      /** delete x and y coordinate arrays */
-      void deleteCoords();
 
       int getGeosType() const { return type; }
 

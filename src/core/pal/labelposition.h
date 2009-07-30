@@ -42,7 +42,7 @@
 namespace pal
 {
 
-  class Feature;
+  class FeaturePart;
   class Pal;
   class Label;
 
@@ -59,7 +59,7 @@ namespace pal
 
       int id;
       double cost;
-      Feature *feature;
+      FeaturePart *feature;
 
       // bug # 1 (maxence 10/23/2008)
       int probFeat;
@@ -90,7 +90,7 @@ namespace pal
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     Feature *feature );
+                     FeaturePart *feature );
 
       ~LabelPosition() { delete nextPart; }
 
@@ -133,7 +133,7 @@ namespace pal
       /** \brief return the feature corresponding to this labelposition
        * \return the feature
        */
-      Feature * getFeature();
+      FeaturePart * getFeaturePart();
 
       double getNumOverlaps() const { return nbOverlap; }
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp

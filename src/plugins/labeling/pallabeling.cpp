@@ -154,11 +154,12 @@ void LayerSettings::registerFeature(QgsFeature& f)
     return;
 
   // TODO: only for placement which needs character info
-  palLayer->setFeatureLabelInfo( lbl->strId(), lbl->info( fontMetrics, xform ) );
+  pal::Feature* feat = palLayer->getFeature( lbl->strId() );
+  feat->setLabelInfo( lbl->info( fontMetrics, xform ) );
 
   // TODO: allow layer-wide feature dist in PAL...?
   if (dist != 0)
-    palLayer->setFeatureDistlabel(lbl->strId(), fabs(ptOne.x()-ptZero.x())* dist);
+    feat->setDistLabel(fabs(ptOne.x()-ptZero.x())* dist);
 }
 
 
@@ -470,7 +471,7 @@ void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const
   // TODO: optimize access :)
   const LayerSettings& lyr = layer(label->getLayerName());
 
-  QString text = ((MyLabel*)label->getFeature()->getUserGeometry())->text();
+  QString text = ((MyLabel*)label->getFeaturePart()->getUserGeometry())->text();
   QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
 
   QgsDebugMsg("drawLabel " + QString::number(drawBuffer) + " " + txt);

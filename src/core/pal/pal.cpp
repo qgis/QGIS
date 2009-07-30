@@ -216,7 +216,7 @@ namespace pal
    *
    * Extract a specific shape from indexes
    */
-  bool extractFeatCallback( Feature *ft_ptr, void *ctx )
+  bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
   {
 
     double min[2];
@@ -239,8 +239,6 @@ namespace pal
     {
       ft_ptr->getBoundingBox(min, max);
       context->obstacles->Insert( min, max, ft_ptr );
-
-      ft_ptr->fetchCoordinates();
     }
 
 
@@ -285,10 +283,7 @@ namespace pal
           LinkedList<PointSet*> *shapes = new LinkedList<PointSet*> ( ptrPSetCompare );
           bool outside, inside;
 
-          // Fetch coordinates
-          ft_ptr->fetchCoordinates();
           PointSet *shape = ft_ptr->createProblemSpecificPointSet( bbx, bby, &outside, &inside );
-          ft_ptr->releaseCoordinates();
 
 
           if ( inside )
@@ -387,38 +382,6 @@ namespace pal
 
 
 
-  bool releaseCallback( PointSet *pset, void *ctx )
-  {
-    if ( pset->getHoleOf() == NULL )
-    {
-      (( Feature* ) pset )->releaseCoordinates();
-    }
-    return true;
-  }
-
-
-  void releaseAllInIndex( RTree<PointSet*, double, 2, double> *obstacles )
-  {
-    /*
-    RTree<PointSet*, double, 2, double>::Iterator it;
-    for (obstacles->GetFirst(it) ; it.IsNotNull(); obstacles->GetNext(it)){
-        if (!(*it)->holeOf){
-            std::cout << "Release obs:" << ((Feature*)(*it))->layer->getName() << "/" << ((Feature*)(*it))->uid << std::endl;
-            ((Feature*)(*it))->releaseCoordinates();
-        }
-    }
-    */
-
-
-    double amin[2];
-    double amax[2];
-
-    amin[0] = amin[1] = -DBL_MAX;
-    amax[0] = amax[1] = DBL_MAX;
-
-    obstacles->Search( amin, amax, releaseCallback, NULL );
-  }
-
 
   typedef struct _filterContext
   {
@@ -434,15 +397,6 @@ namespace pal
     double scale = (( FilterContext* ) ctx )->scale;
     Pal* pal = (( FilterContext* )ctx )->pal;
 
-    if ( pset->getHoleOf() == NULL )
-    {
-      (( Feature* ) pset )->fetchCoordinates();
-    }
-    else
-    {
-      (( Feature* ) pset->getHoleOf() )->fetchCoordinates();
-    }
-
     double amin[2], amax[2];
     pset->getBoundingBox(amin, amax);
 
@@ -452,15 +406,6 @@ namespace pal
     pruneContext.obstacle = pset;
     pruneContext.pal = pal;
     cdtsIndex->Search( amin, amax, LabelPosition::pruneCallback, ( void* ) &pruneContext );
-
-    if ( pset->getHoleOf() == NULL )
-    {
-      (( Feature* ) pset )->releaseCoordinates();
-    }
-    else
-    {
-      (( Feature* ) pset->getHoleOf() )->releaseCoordinates();
-    }
 
     return true;
   }
@@ -615,7 +560,6 @@ namespace pal
 #endif
       delete fFeats;
       delete prob;
-      releaseAllInIndex( obstacles );
       delete obstacles;
       return NULL;
     }
@@ -739,7 +683,6 @@ namespace pal
     delete fFeats;
 
     //delete candidates;
-    releaseAllInIndex( obstacles );
     delete obstacles;
 
 

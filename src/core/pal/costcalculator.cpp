@@ -129,7 +129,6 @@ namespace pal
     // center
     //cost = feat->getDistInside((this->x[0] + this->x[2])/2.0, (this->y[0] + this->y[2])/2.0 );
 
-    lp->feature->fetchCoordinates();
     pCost->update( lp->feature );
 
     PointSet *extent = new PointSet( 4, bbx, bby );
@@ -144,7 +143,6 @@ namespace pal
 
     lp->setCost( pCost->getCost() );
 
-    lp->feature->releaseCoordinates();
     delete pCost;
   }
 

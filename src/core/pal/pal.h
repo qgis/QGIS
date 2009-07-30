@@ -128,7 +128,7 @@ namespace pal
   class Pal
   {
       friend class Problem;
-      friend class Feature;
+      friend class FeaturePart;
       friend class Layer;
     private:
       std::list<Layer*> * layers;

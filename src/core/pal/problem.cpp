@@ -3098,12 +3098,10 @@ namespace pal
         solution << feature->type << ";" << feature->nbPoints << ";0;0;0;0;0;";
       }
 
-      feature->fetchCoordinates( pal );
       for ( j = 0;j < feature->nbPoints;j++ )
       {
         solution << feature->x[j] << " " << feature->y[j] << " ";
       }
-      feature->releaseCoordinates();
       solution << std::endl;
     }
 

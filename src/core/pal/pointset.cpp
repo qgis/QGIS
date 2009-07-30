@@ -1747,14 +1747,6 @@ namespace pal
     py = cy / (3*A);
   }
 
-  void PointSet::deleteCoords()
-  {
-    delete[] x;
-    delete[] y;
-    x = NULL;
-    y = NULL;
-  }
-
 } // end namespace
 
 #endif

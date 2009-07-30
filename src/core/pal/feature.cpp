@@ -60,102 +60,197 @@
 
 namespace pal
 {
-
-  Feature::Feature( Feat *feat, Layer *layer, int part, int nPart, PalGeometry *userGeom ) :
-      layer( layer ), nPart( nPart ), part( part ), userGeom( userGeom )
+  Feature::Feature(Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly)
+    : layer(l), userGeom(userG), label_x(lx), label_y(ly), distlabel(0), labelInfo(NULL)
   {
-
-    this->uid = new char[strlen( feat->id ) +1];
-    strcpy( this->uid, feat->id );
-
-    label_x = -1;
-    label_y = -1;
-    labelInfo = NULL;
-
-    xmin = feat->minmax[0];
-    xmax = feat->minmax[2];
-    ymin = feat->minmax[1];
-    ymax = feat->minmax[3];
-
-    nbPoints = feat->nbPoints;
-    x = feat->x;
-    y = feat->y;
-
-
-    int i;
-
-
-    nbSelfObs = feat->nbHoles;
-    selfObs = feat->holes;
-
-    holeOf = NULL;
-    for ( i = 0;i < nbSelfObs;i++ )
-    {
-      selfObs[i]->holeOf = this;
-    }
-
-
-    this->type = feat->type;
-
-#ifdef _DEBUG_
-    std::cout << "Corrdinates for " << layer->name << "/" << uid << " :" << nbPoints << " pts" << std::endl;
-    for ( i = 0;i < nbPoints;i++ )
-    {
-      std::cout << x[i] << ";" << y[i] << std::endl;
-    }
-#endif
-
-    distlabel = 0;
-    currentAccess = 0;
-
-    accessMutex = new SimpleMutex();
+    uid = new char[strlen( geom_id ) +1];
+    strcpy( uid, geom_id );
   }
-
 
   Feature::~Feature()
   {
-    if ( x || y )
-    {
-      std::cout << "Warning: coordinates not released: " << layer->name << "/" << uid << std::endl;
-    }
+    delete[] uid;
+  }
 
-    if ( uid )
-    {
-      delete[] uid;
-    }
+  ////////////
 
-    if ( nbSelfObs )
+  FeaturePart::FeaturePart( Feature *feat, const GEOSGeometry* geom )
+   : f(feat), nbHoles(0), holes(NULL)
+  {
+    extractCoords(geom);
+
+    holeOf = NULL;
+    for ( int i = 0;i < nbHoles;i++ )
     {
-      int i;
-      for ( i = 0;i < nbSelfObs;i++ )
+      holes[i]->holeOf = this;
+    }
+  }
+
+
+  FeaturePart::~FeaturePart()
+  {
+    // X and Y are deleted in PointSet
+
+    if (holes)
+    {
+      for ( int i = 0; i < nbHoles;i++ )
+        delete holes[i];
+      delete [] holes;
+      holes = NULL;
+    }
+  }
+
+
+/*
+ * \brief read coordinates from a GEOS geom
+ */
+void FeaturePart::extractCoords( const GEOSGeometry* geom )
+{
+  int i, j;
+
+  const GEOSCoordSequence *coordSeq;
+
+  type = GEOSGeomTypeId( geom );
+
+  if ( type == GEOS_POLYGON )
+  {
+    if ( GEOSGetNumInteriorRings( geom ) > 0 )
+    {
+      // set nbHoles, holes member variables
+      nbHoles = GEOSGetNumInteriorRings( geom );
+      holes = new PointSet*[nbHoles];
+
+      for ( i = 0;i < nbHoles;i++ )
       {
-        if ( selfObs[i]->x || selfObs[i]->y )
+        holes[i] = new PointSet();
+        holes[i]->holeOf = NULL;
+
+        const GEOSGeometry* interior =  GEOSGetInteriorRingN( geom, i );
+        holes[i]->nbPoints = GEOSGetNumCoordinates( interior );
+        holes[i]->x = new double[holes[i]->nbPoints];
+        holes[i]->y = new double[holes[i]->nbPoints];
+
+        holes[i]->xmin = holes[i]->ymin = DBL_MAX;
+        holes[i]->xmax = holes[i]->ymax = -DBL_MAX;
+
+        coordSeq = GEOSGeom_getCoordSeq( interior );
+
+        for ( j = 0;j < holes[i]->nbPoints;j++ )
         {
-          std::cout << "Warning: hole coordinates not released" << std::endl;
+          GEOSCoordSeq_getX( coordSeq, j, &holes[i]->x[j] );
+          GEOSCoordSeq_getY( coordSeq, j, &holes[i]->y[j] );
+
+          holes[i]->xmax = holes[i]->x[j] > holes[i]->xmax ? holes[i]->x[j] : holes[i]->xmax;
+          holes[i]->xmin = holes[i]->x[j] < holes[i]->xmin ? holes[i]->x[j] : holes[i]->xmin;
+
+          holes[i]->ymax = holes[i]->y[j] > holes[i]->ymax ? holes[i]->y[j] : holes[i]->ymax;
+          holes[i]->ymin = holes[i]->y[j] < holes[i]->ymin ? holes[i]->y[j] : holes[i]->ymin;
         }
-        delete selfObs[i];
+
+        reorderPolygon( holes[i]->nbPoints, holes[i]->x, holes[i]->y );
       }
-      delete[] selfObs;
     }
 
-    delete accessMutex;
+    // use exterior ring for the extraction of coordinates that follows
+    geom = GEOSGetExteriorRing( geom );
   }
-
-  Layer *Feature::getLayer()
+  else
   {
-    return layer;
+    nbHoles = 0;
+    holes = NULL;
   }
 
+  // find out number of points
+  nbPoints = GEOSGetNumCoordinates( geom );
+  coordSeq = GEOSGeom_getCoordSeq( geom );
 
-  const char * Feature::getUID()
+  // initialize bounding box
+  xmin = ymin = DBL_MAX;
+  xmax = ymax = -DBL_MAX;
+
+  // initialize coordinate arrays
+  x = new double[nbPoints];
+  y = new double[nbPoints];
+
+  for ( i = 0;i < nbPoints;i++ )
   {
-    return uid;
+    GEOSCoordSeq_getX( coordSeq, i, &x[i] );
+    GEOSCoordSeq_getY( coordSeq, i, &y[i] );
+
+    xmax = x[i] > xmax ? x[i] : xmax;
+    xmin = x[i] < xmin ? x[i] : xmin;
+
+    ymax = y[i] > ymax ? y[i] : ymax;
+    ymin = y[i] < ymin ? y[i] : ymin;
+  }
+}
+
+void FeaturePart::removeDuplicatePoints()
+{
+  // TODO add simplify() process
+  int new_nbPoints = nbPoints;
+  bool *ok = new bool[new_nbPoints];
+  int i,j;
+
+  for ( i = 0;i < nbPoints;i++ )
+  {
+    ok[i] = true;
+    j = ( i + 1 ) % nbPoints;
+    if ( i == j )
+      break;
+    if ( vabs( x[i] - x[j] ) < 0.0000001 && vabs( y[i] - y[j] ) < 0.0000001 )
+    {
+      new_nbPoints--;
+      ok[i] = false;
+    }
   }
 
-  int Feature::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width )
+  if ( new_nbPoints < nbPoints )
+  {
+    double *new_x = new double[new_nbPoints];
+    double *new_y = new double[new_nbPoints];
+    for ( i = 0, j = 0;i < nbPoints;i++ )
+    {
+      if ( ok[i] )
+      {
+        new_x[j] = x[i];
+        new_y[j] = y[i];
+        j++;
+      }
+    }
+    delete[] x;
+    delete[] y;
+    // interchange the point arrays
+    x = new_x;
+    y = new_y;
+    nbPoints = new_nbPoints;
+  }
+
+  delete[] ok;
+}
+
+
+
+
+  Layer *FeaturePart::getLayer()
+  {
+    return f->layer;
+  }
+
+
+  const char * FeaturePart::getUID()
+  {
+    return f->uid;
+  }
+
+  int FeaturePart::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width )
   {
     int nbp = 3;
     *lPos = new LabelPosition *[nbp];
+
+    // get from feature
+    double label_x = f->label_x;
+    double label_y = f->label_y;
 
     double lx = x - label_x / 2;
     double ly = y - label_y / 2;
@@ -174,30 +269,31 @@ namespace pal
     return nbp;
   }
 
-  int Feature::setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width )
+  int FeaturePart::setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width )
   {
 
 #ifdef _DEBUG_
     std::cout << "SetPosition (point) : " << layer->name << "/" << uid << std::endl;
 #endif
 
-    int dpi = layer->pal->dpi;
+    int dpi = f->layer->pal->dpi;
 
 
     double xrm;
     double yrm;
+    double distlabel = f->distlabel;
 
-    xrm = unit_convert( label_x,
-                        layer->label_unit,
-                        layer->pal->map_unit,
+    xrm = unit_convert( f->label_x,
+                        f->layer->label_unit,
+                        f->layer->pal->map_unit,
                         dpi, scale, delta_width );
 
-    yrm = unit_convert( label_y,
-                        layer->label_unit,
-                        layer->pal->map_unit,
+    yrm = unit_convert( f->label_y,
+                        f->layer->label_unit,
+                        f->layer->pal->map_unit,
                         dpi, scale, delta_width );
 
-    int nbp = layer->pal->point_p;
+    int nbp = f->layer->pal->point_p;
 
     //std::cout << "Nbp : " << nbp << std::endl;
 
@@ -338,23 +434,24 @@ namespace pal
   }
 
 // TODO work with squared distance by remonving call to sqrt or dist_euc2d
-  int Feature::setPositionForLine( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width )
+  int FeaturePart::setPositionForLine( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width )
   {
 #ifdef _DEBUG_
     std::cout << "SetPosition (line) : " << layer->name << "/" << uid << std::endl;
 #endif
     int i;
-    int dpi = layer->pal->dpi;
+    int dpi = f->layer->pal->dpi;
     double xrm, yrm;
+    double distlabel = f->distlabel;
 
-    xrm = unit_convert( label_x,
-                        layer->label_unit,
-                        layer->pal->map_unit,
+    xrm = unit_convert( f->label_x,
+                        f->layer->label_unit,
+                        f->layer->pal->map_unit,
                         dpi, scale, delta_width );
 
-    yrm = unit_convert( label_y,
-                        layer->label_unit,
-                        layer->pal->map_unit,
+    yrm = unit_convert( f->label_y,
+                        f->layer->label_unit,
+                        f->layer->pal->map_unit,
                         dpi, scale, delta_width );
 
 
@@ -373,7 +470,7 @@ namespace pal
     double alpha;
     double cost;
 
-    unsigned long flags = layer->getArrangementFlags();
+    unsigned long flags = f->layer->getArrangementFlags();
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
     bool reversed = false;
@@ -482,7 +579,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
       std::cout << "  Create new label" << std::endl;
 #endif
-      if ( layer->arrangement == P_LINE )
+      if ( f->layer->arrangement == P_LINE )
       {
         std::cout << alpha*180/M_PI << std::endl;
         if ( flags & FLAG_MAP_ORIENTATION )
@@ -495,7 +592,7 @@ namespace pal
         if ( flags & FLAG_ON_LINE )
           positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
       }
-      else if (layer->arrangement == P_HORIZ)
+      else if (f->layer->arrangement == P_HORIZ)
       {
         positions->push_back( new LabelPosition(i, bx - xrm/2, by - yrm/2, xrm, yrm, 0, cost, this) ); // Line
         //positions->push_back( new LabelPosition(i, bx -yrm/2, by - yrm*sin(beta)/2, xrm, yrm, alpha, cost, this, line)); // Line
@@ -533,7 +630,7 @@ namespace pal
   }
 
 
-  LabelPosition* Feature::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int orientation, int index, double distance )
+  LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int orientation, int index, double distance )
   {
     // Check that the given distance is on the given index and find the correct index and distance if not
     while (distance < 0 && index > 1)
@@ -564,7 +661,7 @@ namespace pal
     int initial_index = index;
     double initial_distance = distance;
 
-    double string_height = labelInfo->label_height;
+    double string_height = f->labelInfo->label_height;
     double old_x = path_positions->x[index-1];
     double old_y = path_positions->y[index-1];
 
@@ -595,12 +692,12 @@ namespace pal
 
     int upside_down_char_count = 0; // Count of characters that are placed upside down.
 
-    for (int i = 0; i < labelInfo->char_num; i++)
+    for (int i = 0; i < f->labelInfo->char_num; i++)
     {
       double last_character_angle = angle;
 
       // grab the next character according to the orientation
-      LabelInfo::CharacterInfo& ci = (orientation > 0 ? labelInfo->char_info[i] : labelInfo->char_info[labelInfo->char_num-i-1]);
+      LabelInfo::CharacterInfo& ci = (orientation > 0 ? f->labelInfo->char_info[i] : f->labelInfo->char_info[f->labelInfo->char_num-i-1]);
 
       // Coordinates this character will start at
       if (segment_length == 0)
@@ -666,7 +763,7 @@ namespace pal
       // normalise between -180 and 180
       while (angle_delta > M_PI) angle_delta -= 2*M_PI;
       while (angle_delta < -M_PI) angle_delta += 2*M_PI;
-      if (labelInfo->max_char_angle_delta > 0 && fabs(angle_delta) > labelInfo->max_char_angle_delta*(M_PI/180))
+      if (f->labelInfo->max_char_angle_delta > 0 && fabs(angle_delta) > f->labelInfo->max_char_angle_delta*(M_PI/180))
       {
         std::cerr << "err6" << std::endl;
         return NULL;
@@ -691,7 +788,7 @@ namespace pal
 
       //std::cerr << "adding part: " << render_x << "  " << render_y << std::endl;
       LabelPosition* tmp = new LabelPosition(0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this);
-      tmp->setPartId( orientation > 0 ? i : labelInfo->char_num-i-1 );
+      tmp->setPartId( orientation > 0 ? i : f->labelInfo->char_num-i-1 );
       if (slp == NULL)
         slp = tmp;
       else
@@ -711,7 +808,7 @@ namespace pal
     // END FOR
 
     // If we placed too many characters upside down
-    if (upside_down_char_count >= labelInfo->char_num/2.0)
+    if (upside_down_char_count >= f->labelInfo->char_num/2.0)
     {
       // if we auto-detected the orientation then retry with the opposite orientation
       if (!orientation_forced)
@@ -730,10 +827,10 @@ namespace pal
     return slp;
   }
 
-  int Feature::setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape )
+  int FeaturePart::setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape )
   {
     // label info must be present
-    if (labelInfo == NULL || labelInfo->char_num == 0)
+    if (f->labelInfo == NULL || f->labelInfo->char_num == 0)
       return 0;
 
     // distance calculation
@@ -757,7 +854,7 @@ namespace pal
 
     int nbp = 0;
     LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
-    double delta = max( labelInfo->label_height, total_distance/10.0 );
+    double delta = max( f->labelInfo->label_height, total_distance/10.0 );
 
     // generate curved labels
     std::cerr << "------" << std::endl;
@@ -818,7 +915,7 @@ namespace pal
    *
    */
 
-  int Feature::setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width )
+  int FeaturePart::setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width )
   {
 
 #ifdef _DEBUG_
@@ -831,15 +928,15 @@ namespace pal
     double xrm;
     double yrm;
 
-    xrm = unit_convert( label_x,
-                        layer->label_unit,
-                        layer->pal->map_unit,
-                        layer->pal->dpi, scale, delta_width );
+    xrm = unit_convert( f->label_x,
+                        f->layer->label_unit,
+                        f->layer->pal->map_unit,
+                        f->layer->pal->dpi, scale, delta_width );
 
-    yrm = unit_convert( label_y,
-                        layer->label_unit,
-                        layer->pal->map_unit,
-                        layer->pal->dpi, scale, delta_width );
+    yrm = unit_convert( f->label_y,
+                        f->layer->label_unit,
+                        f->layer->pal->map_unit,
+                        f->layer->pal->dpi, scale, delta_width );
 
     //print();
 
@@ -855,7 +952,7 @@ namespace pal
 
     shapes_toProcess->push_back( mapShape );
 
-    splitPolygons( shapes_toProcess, shapes_final, xrm, yrm, uid );
+    splitPolygons( shapes_toProcess, shapes_final, xrm, yrm, f->uid );
 
 
     delete shapes_toProcess;
@@ -910,7 +1007,7 @@ namespace pal
             std::cout << "   Alpha:     " << alpha << "   " << alpha * 180 / M_PI << std::endl;
             std::cout << "   Dx;Dy:     " << dx << "   " << dy  << std::endl;
             std::cout << "   LabelSizerm: " << xrm << "   " << yrm  << std::endl;
-            std::cout << "   LabelSizeUn: " << label_x << "   " << label_y << std::endl;
+            std::cout << "   LabelSizeUn: " << f->label_x << "   " << f->label_y << std::endl;
             continue;
           }
 
@@ -923,7 +1020,7 @@ namespace pal
 #endif
 
           bool enoughPlace = false;
-          if ( layer->getArrangement() == P_FREE )
+          if ( f->layer->getArrangement() == P_FREE )
           {
             enoughPlace = true;
             px = ( box->x[0] + box->x[2] ) / 2 - xrm;
@@ -952,7 +1049,7 @@ namespace pal
 
           } // arrangement== FREE ?
 
-          if ( layer->getArrangement() == P_HORIZ || enoughPlace )
+          if ( f->layer->getArrangement() == P_HORIZ || enoughPlace )
           {
             alpha = 0.0; // HORIZ
           }
@@ -1054,22 +1151,22 @@ namespace pal
     return nbp;
   }
 
-  void Feature::print()
+  void FeaturePart::print()
   {
     int i, j;
-    std::cout << "Geometry id : " << uid << std::endl;
+    std::cout << "Geometry id : " << f->uid << std::endl;
     std::cout << "Type: " << type << std::endl;
     if ( x && y )
     {
       for ( i = 0;i < nbPoints;i++ )
         std::cout << x[i] << ", " << y[i] << std::endl;
-      std::cout << "Obstacle: " << nbSelfObs << std::endl;
-      for ( i = 0;i < nbSelfObs;i++ )
+      std::cout << "Obstacle: " << nbHoles << std::endl;
+      for ( i = 0;i < nbHoles;i++ )
       {
         std::cout << "  obs " << i << std::endl;
-        for ( j = 0;j < selfObs[i]->nbPoints;j++ )
+        for ( j = 0;j < holes[i]->nbPoints;j++ )
         {
-          std::cout << selfObs[i]->x[j] << ";" << selfObs[i]->y[j] << std::endl;
+          std::cout << holes[i]->x[j] << ";" << holes[i]->y[j] << std::endl;
         }
       }
     }
@@ -1077,7 +1174,7 @@ namespace pal
     std::cout << std::endl;
   }
 
-  int Feature::setPosition( double scale, LabelPosition ***lPos,
+  int FeaturePart::setPosition( double scale, LabelPosition ***lPos,
                             double bbox_min[2], double bbox_max[2],
                             PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates
 #ifdef _EXPORT_MAP_
@@ -1103,34 +1200,26 @@ namespace pal
     switch ( type )
     {
       case GEOS_POINT:
-        fetchCoordinates();
-        if ( layer->getArrangement() == P_POINT_OVER )
+        if ( f->layer->getArrangement() == P_POINT_OVER )
           nbp = setPositionOverPoint( x[0], y[0], scale, lPos, delta );
         else
           nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta );
-#ifdef _EXPORT_MAP_
-        toSVGPath( nbPoints, type, x, y, dpi , scale,
-                   convert2pt( bbox_min[0], scale, dpi ),
-                   convert2pt( bbox_max[1], scale, dpi ),
-                   layer->name, uid, svgmap );
-#endif
-        releaseCoordinates();
         break;
       case GEOS_LINESTRING:
-        if ( layer->getArrangement() == P_CURVED )
+        if ( f->layer->getArrangement() == P_CURVED )
           nbp = setPositionForLineCurved( lPos, mapShape );
         else
           nbp = setPositionForLine( scale, lPos, mapShape, delta );
         break;
 
       case GEOS_POLYGON:
-        switch ( layer->getArrangement() )
+        switch ( f->layer->getArrangement() )
         {
           case P_POINT:
           case P_POINT_OVER:
             double cx, cy;
             mapShape->getCentroid( cx, cy );
-            if ( layer->getArrangement() == P_POINT_OVER )
+            if ( f->layer->getArrangement() == P_POINT_OVER )
               nbp = setPositionOverPoint( cx, cy, scale, lPos, delta );
             else
               nbp = setPositionForPoint( cx, cy, scale, lPos, delta );
@@ -1171,88 +1260,5 @@ namespace pal
   }
 
 
-  void Feature::fetchCoordinates()
-  {
-    accessMutex->lock();
-    layer->pal->tmpTime -= clock();
-    if ( !x && !y )
-    {
-      //std::cout << "fetch feat " << layer->name << "/" << uid << std::endl;
-      the_geom = userGeom->getGeosGeometry();
-      LinkedList<Feat*> *feats = splitGeom( the_geom, this->uid, false );
-      int id = 0;
-      while ( feats->size() > 0 )
-      {
-        Feat *f = feats->pop_front();
-        if ( id == this->part )
-        {
-          x = f->x;
-          y = f->y;
-          int i;
-          for ( i = 0;i < nbSelfObs;i++ )
-          {
-            selfObs[i]->x = f->holes[i]->x;
-            selfObs[i]->y = f->holes[i]->y;
-            f->holes[i]->x = NULL;
-            f->holes[i]->y = NULL;
-            delete f->holes[i];
-            selfObs[i]->holeOf = this;
-          }
-          if ( f->holes )
-            delete[] f->holes;
-          delete f;
-        }
-        else
-        {
-          delete[] f->x;
-          delete[] f->y;
-          int i;
-          for ( i = 0;i < f->nbHoles;i++ )
-            delete f->holes[i];
-          if ( f->holes )
-            delete[] f->holes;
-          delete f;
-        }
-
-        id++;
-      }
-      delete feats;
-    }
-    currentAccess++;
-    layer->pal->tmpTime += clock();
-    accessMutex->unlock();
-  }
-
-
-  void Feature::deleteCoord()
-  {
-    if ( x && y )
-    {
-      int i;
-      delete[] x;
-      delete[] y;
-      x = NULL;
-      y = NULL;
-      for ( i = 0;i < nbSelfObs;i++ )
-      {
-        selfObs[i]->deleteCoords();
-      }
-    }
-  }
-
-
-
-  void Feature::releaseCoordinates()
-  {
-    accessMutex->lock();
-    //std::cout << "release (" << currentAccess << ")" << std::endl;
-    if ( x && y && currentAccess == 1 )
-    {
-      deleteCoord();
-      userGeom->releaseGeosGeometry( the_geom );
-    }
-    currentAccess--;
-    accessMutex->unlock();
-  }
 
 } // end namespace pal

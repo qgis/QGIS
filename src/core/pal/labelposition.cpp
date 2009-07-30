@@ -55,7 +55,7 @@
 
 namespace pal
 {
-  LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, Feature *feature )
+  LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature )
     : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 ), alpha( alpha ), w( w ), h( h ), nextPart(NULL), partId(-1)
   {
 
@@ -236,7 +236,7 @@ namespace pal
     }
   }
 
-  Feature * LabelPosition::getFeature()
+  FeaturePart * LabelPosition::getFeaturePart()
   {
     return feature;
   }
@@ -294,21 +294,7 @@ namespace pal
       return true;
     }
 
-    // if the feature is not a hole we have to fetch corrdinates
-    // otherwise holes coordinates are still in memory (feature->selfObs)
-    if ( feat->getHoleOf() == NULL )
-    {
-      (( Feature* ) feat )->fetchCoordinates();
-    }
-
     pCost->update( feat );
-
-
-    if ( feat->getHoleOf() == NULL )
-    {
-      (( Feature* ) feat )->releaseCoordinates();
-    }
-
 
     return true;
   }
