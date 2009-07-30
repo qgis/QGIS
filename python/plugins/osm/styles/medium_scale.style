@@ -1,0 +1,45 @@
+#LINE
+highway trunk 6 1 150,0,0
+highway primary 6 1 219,112,147
+highway secondary 4.5 1 255,120,0
+highway tertiary 3 1 238,230,133
+highway pedestrian 1 1 255,255,0
+highway residential 1 1 100,100,100
+highway footway 2 3 170,170,170
+highway * 1 1 0,255,0
+railway subway 1 2 131,111,255
+railway rail 2 4 0,0,0
+railway * 1 0 0,0,0
+boundary administrative 2 3 85,26,139
+power line 2 1 139,139,131
+#POLYGON
+leisure park 0 1 0,0,0 88,245,168
+leisure garden 0 1 0,0,0 88,245,168
+landuse forest 0 1 0,0,0 88,245,168
+landuse allotments 0 1 0,0,0 222,184,135
+tourism zoo 0 1 0,0,0 108,255,
+building yes 0.01 1 0,0,0 226,226,226
+natural water 0 1 0,0,0 135,206,255
+waterway riverbank 0 1 0,0,0 135,206,255
+place island 1 1 0,0,0 255,255,255
+highway trunk 6 1 150,0,0 255,255,255
+highway primary 6 1 219,112,147 255,255,255
+highway secondary 4.5 1 255,120,0 255,255,255
+highway tertiary 3 1 238,230,133 255,255,255
+highway pedestrian 1 1 255,255,0 255,255,255
+highway residential 1 1 100,100,100 255,255,255
+highway footway 2 3 170,170,170 255,255,255
+* * 1 1 0,0,255 255,255,255
+#POINT
+source:addr uir_adr gpsicons/house.svg 15
+power tower symbol/Cross4.svg 15
+amenity hospital emergency/amenity=hospital.svg 15
+amenity parking transport/amenity=parking.svg 15
+amenity bus_station transport/highway=bus_stop.svg 15
+amenity restaurant entertainment/amenity=restaurant.svg 15
+amenity theatre entertainment/amenity=theatre.svg 15
+amenity pub entertainment/amenity=pub.svg 15
+amenity fast_food entertainment/amenity=fast_food.svg 15
+amenity cinema entertainment/amenity=cinema.svg 15
+amenity cafe entertainment/amenity=cafe.svg 15
+amenity bar entertainment/amenity=bar.svg 15
