@@ -43,6 +43,7 @@ class DualEdgeTriangulation: public Triangulation
     DualEdgeTriangulation();
     DualEdgeTriangulation( int nop, Triangulation* decorator );
     virtual ~DualEdgeTriangulation();
+    void setDecorator(Triangulation* d){mDecorator = d;}
     /**Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points*/
     void addLine( Line3D* line, bool breakline );
     /**Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure*/
@@ -191,6 +192,10 @@ inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* dec
 {
   mPointVector.reserve( nop );
   mHalfEdge.reserve( nop );
+  if(!mDecorator)
+  {
+    mDecorator = this;
+  }
 }
 
 inline double DualEdgeTriangulation::getXMax() const
