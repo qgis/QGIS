@@ -48,7 +48,8 @@ class CORE_EXPORT QgsVectorFileWriter
       ErrDriverNotFound,
       ErrCreateDataSource,
       ErrCreateLayer,
-      ErrAttributeTypeUnsupported
+      ErrAttributeTypeUnsupported,
+      ErrAttributeCreationFailed
     };
 
     /** Write contents of vector layer to a shapefile */
