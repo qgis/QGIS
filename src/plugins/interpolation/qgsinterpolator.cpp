@@ -359,5 +359,6 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
     default:
       break;
   }
+  mDataIsCached = true;
   return 0;
 }
