@@ -19,12 +19,12 @@
 #include <cmath>
 #include <limits>
 
-QgsIDWInterpolator::QgsIDWInterpolator( const QList<QgsVectorLayer*>& vlayers ): QgsInterpolator( vlayers ), mDistanceCoefficient( 2.0 )
+QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData>& layerData ): QgsInterpolator( layerData ), mDistanceCoefficient( 2.0 )
 {
 
 }
 
-QgsIDWInterpolator::QgsIDWInterpolator(): QgsInterpolator( QList<QgsVectorLayer*>() ), mDistanceCoefficient( 2.0 )
+QgsIDWInterpolator::QgsIDWInterpolator(): QgsInterpolator( QList<LayerData>() ), mDistanceCoefficient( 2.0 )
 {
 
 }

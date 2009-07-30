@@ -33,14 +33,6 @@ QgsTINInterpolatorDialog::~QgsTINInterpolatorDialog()
 
 QgsInterpolator* QgsTINInterpolatorDialog::createInterpolator() const
 {
-  QList<QgsVectorLayer*> inputLayerList;
-
-  QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> >::const_iterator data_it = mInputData.constBegin();
-  for ( ; data_it != mInputData.constEnd(); ++data_it )
-  {
-    inputLayerList.push_back( data_it->first );
-  }
-
-  QgsTINInterpolator* theInterpolator = new QgsTINInterpolator( inputLayerList );
+  QgsTINInterpolator* theInterpolator = new QgsTINInterpolator( mInputData, true );
   return theInterpolator;
 }

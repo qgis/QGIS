@@ -23,7 +23,7 @@
 class QgsIDWInterpolator: public QgsInterpolator
 {
   public:
-    QgsIDWInterpolator( const QList<QgsVectorLayer*>& vlayers );
+    QgsIDWInterpolator( const QList<LayerData>& layerData );
     ~QgsIDWInterpolator();
 
     /**Calculates interpolation value for map coordinates x, y
