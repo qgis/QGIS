@@ -1,0 +1,122 @@
+<ui version="4.0" >
+ <class>DlgImport</class>
+ <widget class="QDialog" name="DlgImport" >
+  <property name="windowModality" >
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>248</width>
+    <height>228</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Import data to OSM</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>In this dialog you can import a layer loaded in QGIS into active OSM data.</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>29</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QLabel" name="label_2" >
+       <property name="text" >
+        <string>Layer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cboLayer" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkOnlySelection" >
+     <property name="text" >
+      <string>Import only current selection</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>cboLayer</tabstop>
+  <tabstop>chkOnlySelection</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>DlgImport</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>238</x>
+     <y>213</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>247</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

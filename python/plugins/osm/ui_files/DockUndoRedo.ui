@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OsmUndoRedoDockWidget</class>
+ <widget class="QDockWidget" name="OsmUndoRedoDockWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>227</width>
+    <height>374</height>
+   </rect>
+  </property>
+  <property name="allowedAreas">
+   <set>Qt::AllDockWidgetAreas</set>
+  </property>
+  <property name="windowTitle">
+   <string>OSM Edit History</string>
+  </property>
+  <widget class="QWidget" name="dockWidgetContents">
+   <layout class="QVBoxLayout">
+    <item>
+     <layout class="QHBoxLayout">
+      <item>
+       <widget class="QToolButton" name="clearButton">
+        <property name="toolTip">
+         <string>Clear all</string>
+        </property>
+        <property name="statusTip">
+         <string>Clear all</string>
+        </property>
+        <property name="whatsThis">
+         <string>Clear all</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QToolButton" name="undoButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Undo</string>
+        </property>
+        <property name="statusTip">
+         <string>Undo</string>
+        </property>
+        <property name="whatsThis">
+         <string>Undo</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="redoButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Redo</string>
+        </property>
+        <property name="statusTip">
+         <string>Redo</string>
+        </property>
+        <property name="whatsThis">
+         <string>Redo</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QListWidget" name="actionList"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,45 @@
+
+########################################################
+# Files
+
+SET(OSM_SRCS
+osmhandler.cpp
+osmprovider.cpp
+osmrenderer.cpp
+osmstyle.cpp
+)
+
+SET(OSM_MOC_HDRS
+osmprovider.h
+osmrenderer.h
+osmstyle.h
+osmhandler.h
+)
+
+
+########################################################
+# Build
+
+QT4_WRAP_CPP(OSM_MOC_SRCS ${OSM_MOC_HDRS})
+
+INCLUDE_DIRECTORIES (
+  ../../core
+  ../../core/renderer
+  ${GEOS_INCLUDE_DIR}
+)
+
+ADD_LIBRARY (osmprovider MODULE ${OSM_SRCS} ${OSM_MOC_SRCS})
+
+TARGET_LINK_LIBRARIES (osmprovider
+  ${QT_QTCORE_LIBRARY} 
+  ${QT_QTXML_LIBRARY} 
+  qgis_core
+)
+
+
+########################################################
+# Install
+
+INSTALL(TARGETS osmprovider
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
