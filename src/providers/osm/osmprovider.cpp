@@ -557,7 +557,6 @@ bool QgsOSMDataProvider::fetchWay(QgsFeature& feature, sqlite3_stmt* stmt, bool 
     int selId;
     const char* selTimestamp;
     const char* selUser;
-    int selWayMemberCount;
     QgsGeometry *theGeometry = NULL;
     bool fetchMoreRows = true;
     int rc=-1;
@@ -1043,7 +1042,6 @@ bool QgsOSMDataProvider::updateWayWKB(int wayId, int isClosed, char **geo, int *
 
             double selLat = sqlite3_column_double(stmtSelectMembers,0);
             double selLon = sqlite3_column_double(stmtSelectMembers,1);
-            int selNodeId = sqlite3_column_int(stmtSelectMembers,2);
 
             if (selLat<minLat) minLat = selLat;
             if (selLon<minLon) minLon = selLon;
@@ -1086,7 +1084,6 @@ bool QgsOSMDataProvider::updateWayWKB(int wayId, int isClosed, char **geo, int *
 
             double selLat = sqlite3_column_double(stmtSelectMembers,0);
             double selLon = sqlite3_column_double(stmtSelectMembers,1);
-            int selNodeId = sqlite3_column_int(stmtSelectMembers,2);
 
             if (selLat<minLat) minLat = selLat;
             if (selLon<minLon) minLon = selLon;
@@ -1222,6 +1219,8 @@ bool QgsOSMDataProvider::removeIncorrectWays()
 
     // commit actions
     sqlite3_exec(mDatabase,"COMMIT;",0,0,0);
+
+    return true;
 }
 
 

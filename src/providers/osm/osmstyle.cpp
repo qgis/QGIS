@@ -137,7 +137,6 @@ void OsmStyle::parse_rule_point(QString line)
     double widthScale = 1.0;
     bool selected = false;
     QColor mSelectionColor(255,255,0);
-    double rasterScaleFactor = 1.0;
 
     QgsSymbol sym(QGis::Point);
     sym.setNamedPointSymbol(QString("svg:%1%2").arg(QgsApplication::svgPath()).arg(name));

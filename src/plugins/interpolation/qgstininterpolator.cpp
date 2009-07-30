@@ -25,6 +25,11 @@
 #include "qgsvectorlayer.h"
 #include <QProgressDialog>
 
+#ifdef WIN32
+#include <float.h>
+#define isnan(f) _isnan(f)
+#endif
+
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, bool showProgressDialog ): QgsInterpolator( inputData ), mTriangulation( 0 ), \
     mTriangleInterpolator( 0 ), mIsInitialized( false ), mShowProgressDialog( showProgressDialog )
 {

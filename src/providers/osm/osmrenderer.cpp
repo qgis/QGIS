@@ -103,9 +103,6 @@ void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f,
     {
         QPen pen = osmstyle.get_pen(tags);
         QColor penColor = pen.color();
-        int red = penColor.red();
-        int green = penColor.green();
-        int blue = penColor.blue();
         p->setPen( osmstyle.get_pen(tags) );
         p->setOpacity(1.0);
     }
