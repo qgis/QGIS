@@ -31,7 +31,7 @@
 #endif
 
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, bool showProgressDialog ): QgsInterpolator( inputData ), mTriangulation( 0 ), \
-    mTriangleInterpolator( 0 ), mIsInitialized( false ), mShowProgressDialog( showProgressDialog )
+    mTriangleInterpolator( 0 ), mIsInitialized( false ), mShowProgressDialog( showProgressDialog ), mExportTriangulationToFile( false )
 {
 }
 
@@ -123,7 +123,10 @@ void QgsTINInterpolator::initialize()
   mIsInitialized = true;
 
   //debug
-  //theDualEdgeTriangulation->saveAsShapefile("/home/marco/tmp/tin.shp");
+  if ( mExportTriangulationToFile )
+  {
+    theDualEdgeTriangulation->saveAsShapefile( mTriangulationFilePath );
+  }
 }
 
 int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputType type )
