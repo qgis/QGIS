@@ -7,7 +7,6 @@
 
 #include <pal/layer.h>
 #include <pal/pal.h>
-#include <pal/label.h>
 
 #include "feature.h"
 #include "geomfunction.h"

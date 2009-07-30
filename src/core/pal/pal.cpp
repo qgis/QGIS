@@ -49,6 +49,7 @@
 #include <pal/pal.h>
 #include <pal/layer.h>
 #include <pal/palexception.h>
+#include <pal/palstat.h>
 
 #include "linkedlist.hpp"
 #include "rtree.hpp"

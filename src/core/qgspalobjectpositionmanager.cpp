@@ -109,7 +109,6 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   double bbox[4]; bbox[0] = viewExtent.xMinimum(); bbox[1] = viewExtent.yMinimum(); bbox[2] = viewExtent.xMaximum(); bbox[3] = viewExtent.yMaximum();
 
 
-  pal::PalStat* stat = 0;
   //set map units
   pal::Units mapUnits;
   switch ( unitType )
@@ -132,8 +131,7 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   mPositionEngine.setMapUnit( mapUnits );
   mPositionEngine.setDpi( renderContext.scaleFactor() * 25.4 );
 
-  std::list<pal::LabelPosition*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, &stat, false );
-  delete stat;
+  std::list<pal::LabelPosition*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, NULL, false );
 
   //and read the positions back to the overlay objects
   if ( !resultLabelList )

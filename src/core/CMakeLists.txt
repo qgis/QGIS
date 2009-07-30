@@ -85,7 +85,6 @@ SET(QGIS_CORE_SRCS
   pal/costcalculator.cpp
   pal/feature.cpp
   pal/geomfunction.cpp
-  pal/label.cpp
   pal/labelposition.cpp
   pal/layer.cpp
   pal/pal.cpp

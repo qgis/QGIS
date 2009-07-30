@@ -34,8 +34,6 @@
 #ifndef _PAL_H
 #define _PAL_H
 
-#include <pal/label.h>
-#include <pal/palstat.h>
 
 #include <list>
 #include <iostream>
@@ -62,6 +60,7 @@ namespace pal
 
   class Layer;
   class LabelPosition;
+  class PalStat;
   class Problem;
   class PointSet;
   class SimpleMutex;
