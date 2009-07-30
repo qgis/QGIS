@@ -77,7 +77,7 @@ class DatabaseManager:
             self.plugin.dockWidget.databaseChanged(None)
             return
 
-        if layer.dataProvider().name()<>"osm":
+        if layer.type() != QgsMapLayer.VectorLayer or layer.dataProvider().name()<>"osm":
             self.currentKey=None
             self.plugin.undoredo.databaseChanged(None)
             self.plugin.dockWidget.databaseChanged(None)
@@ -118,7 +118,7 @@ class DatabaseManager:
         if not layer:
             return            # strange situation
 
-        if layer.dataProvider().name()<>"osm":
+        if layer.type() != QgsMapLayer.VectorLayer or layer.dataProvider().name()<>"osm":
             return            # it's not OSM layer -> just ignore it
 
         # yes, it's osm layer; find out database file it's getting OSM data from
