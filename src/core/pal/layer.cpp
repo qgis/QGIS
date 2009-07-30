@@ -62,7 +62,7 @@ namespace pal
       :  pal( pal ), obstacle( obstacle ), active( active ),
          toLabel( toLabel ), label_unit( label_unit ),
          min_scale( min_scale ), max_scale( max_scale ),
-         arrangement( arrangement ), arrangementFlags( 0 )
+         arrangement( arrangement ), arrangementFlags( 0 ), mode(LabelPerFeature)
   {
 
     this->name = new char[strlen( lyrName ) +1];
@@ -240,6 +240,9 @@ bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
 
   bool first_feat = true;
 
+  double geom_size, biggest_size = -1;
+  FeaturePart* biggest_part = NULL;
+
   // break the (possibly multi-part) geometry into simple geometries
   LinkedList <const GEOSGeometry*> *simpleGeometries = unmulti( the_geom );
   
@@ -276,17 +279,25 @@ bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
       continue;
     }
 
+    if (mode == LabelPerFeature && (type == GEOS_POLYGON || type == GEOS_LINESTRING))
+    {
+      if (type == GEOS_LINESTRING)
+        GEOSLength(geom, &geom_size);
+      else if (type == GEOS_POLYGON)
+        GEOSArea(geom, &geom_size);
+
+      if (geom_size > biggest_size)
+      {
+        biggest_size = geom_size;
+        delete biggest_part; // safe with NULL part
+        biggest_part = fpart;
+      }
+      continue; // don't add the feature part now, do it later
+      // TODO: we should probably add also other parts to act just as obstacles
+    }
+
     // feature part is ready!
-
-    double bmin[2];
-    double bmax[2];
-    fpart->getBoundingBox(bmin, bmax);
-
-    // add to list of layer's feature parts
-    featureParts->push_back( fpart );
-
-    // add to r-tree for fast spatial access
-    rtree->Insert( bmin, bmax, fpart );
+    addFeaturePart(fpart);
 
     first_feat = false;
   }
@@ -296,14 +307,38 @@ bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
 
   modMutex->unlock();
 
+  // if using only biggest parts...
+  if (mode == LabelPerFeature && biggest_part != NULL)
+  {
+    addFeaturePart(biggest_part);
+    first_feat = false;
+  }
+
   // add feature to layer if we have added something
   if (!first_feat)
   {
     features->push_back( f );
     hashtable->insertItem( geom_id, f );
   }
+  else
+  {
+    delete f;
+  }
 
   return !first_feat; // true if we've added something
+}
+
+void Layer::addFeaturePart( FeaturePart* fpart )
+{
+  double bmin[2];
+  double bmax[2];
+  fpart->getBoundingBox(bmin, bmax);
+
+  // add to list of layer's feature parts
+  featureParts->push_back( fpart );
+
+  // add to r-tree for fast spatial access
+  rtree->Insert( bmin, bmax, fpart );
 }
 
 

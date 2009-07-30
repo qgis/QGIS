@@ -73,6 +73,9 @@ namespace pal
       friend bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx );
       friend void toSVGPath( int nbPoints, double *x, double *y, int dpi, Layer *layer, int type, char *uid, std::ostream &out, double scale, int xmin, int ymax, bool exportInfo, char *color );
 
+    public:
+      enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
+
     protected:
       char *name; /* unique */
 
@@ -96,6 +99,8 @@ namespace pal
       double max_scale;
 
       Arrangement arrangement;
+
+      LabelMode mode;
 
       /** optional flags used for some placement methods */
       unsigned long arrangementFlags;
@@ -133,6 +138,9 @@ namespace pal
        * @param scale the scale to check
        */
       bool isScaleValid( double scale );
+
+      /** add newly creted feature part into r tree and to the list */
+      void addFeaturePart( FeaturePart* fpart );
 
     public:
       /**
@@ -259,6 +267,9 @@ namespace pal
        * return the layer's priority
        */
       double getPriority();
+
+      void setLabelMode( LabelMode m ) { mode = m; }
+      LabelMode getLabelMode() const { return mode; }
 
       /**
        * \brief register a feature in the layer

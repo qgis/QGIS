@@ -649,6 +649,13 @@
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="chkLabelPerFeaturePart">
+     <property name="text">
+      <string>label every part of multi-part features</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QCheckBox" name="chkNoObstacle">

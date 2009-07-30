@@ -111,6 +111,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
     chkEnableLabeling->setChecked( lyr.enabled );
     sliderPriority->setValue( lyr.priority );
     chkNoObstacle->setChecked( !lyr.obstacle );
+    chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
 
     bool scaleBased = (lyr.scaleMin != 0 && lyr.scaleMax != 0);
     chkScaleBasedVisibility->setChecked(scaleBased);
@@ -222,6 +223,7 @@ LayerSettings LabelingGui::layerSettings()
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
+  lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   if (chkScaleBasedVisibility->isChecked())
   {
     lyr.scaleMin = spinScaleMin->value();

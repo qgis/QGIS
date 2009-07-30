@@ -109,6 +109,7 @@ LayerSettings::LayerSettings(const LayerSettings& s)
   scaleMax = s.scaleMax;
   bufferSize = s.bufferSize;
   bufferColor = s.bufferColor;
+  labelPerPart = s.labelPerPart;
 
   fontMetrics = NULL;
   ct = NULL;
@@ -286,6 +287,9 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
 
   if ( lyr->placementFlags )
     l->setArrangementFlags( lyr->placementFlags );
+
+  // set label mode (label per feature is the default)
+  l->setLabelMode( lyr->labelPerPart ? Layer::LabelPerFeaturePart : Layer::LabelPerFeature );
 
   // save the pal layer to our layer context (with some additional info)
   lyr->palLayer = l;
