@@ -19,6 +19,7 @@
 #define QGSTININTERPOLATOR_H
 
 #include "qgsinterpolator.h"
+#include <QString>
 
 class Triangulation;
 class TriangleInterpolator;
@@ -38,11 +39,18 @@ class QgsTINInterpolator: public QgsInterpolator
        @return 0 in case of success*/
     int interpolatePoint( double x, double y, double& result );
 
+    void setExportTriangulationToFile( bool e ) {mExportTriangulationToFile = e;}
+    void setTriangulationFilePath( const QString& filepath ) {mTriangulationFilePath = filepath;}
+
   private:
     Triangulation* mTriangulation;
     TriangleInterpolator* mTriangleInterpolator;
     bool mIsInitialized;
     bool mShowProgressDialog;
+    /**If true: export triangulation to shapefile after initialisation*/
+    bool mExportTriangulationToFile;
+    /**File path to export the triangulation*/
+    QString mTriangulationFilePath;
 
     /**Create dual edge triangulation*/
     void initialize();
