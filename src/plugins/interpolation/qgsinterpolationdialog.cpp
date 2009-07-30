@@ -144,7 +144,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     }
     else
     {
-      currentLayerData.mInputType == QgsInterpolator::POINTS;
+      currentLayerData.mInputType = QgsInterpolator::POINTS;
     }
     inputLayerList.push_back( currentLayerData );
   }

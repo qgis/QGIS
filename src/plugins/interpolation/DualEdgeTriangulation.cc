@@ -3081,7 +3081,12 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
     return false;
   }
 
-  bool alreadyVisitedEdges[mHalfEdge.size()];
+  bool *alreadyVisitedEdges = new bool[mHalfEdge.size()];
+  if( !alreadyVisitedEdges )
+  {
+    QgsDebugMsg( "out of memory" );
+    return false;
+  }
 
   for ( int i = 0; i < mHalfEdge.size(); ++i )
   {
@@ -3123,6 +3128,8 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
     }
     alreadyVisitedEdges[i] = true;
   }
+
+  delete [] alreadyVisitedEdges;
 
   return true;
 }

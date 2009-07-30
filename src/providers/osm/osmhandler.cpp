@@ -378,5 +378,6 @@ bool OsmHandler::endDocument()
 {
     // first commit all database actions connected to xml parsing
     sqlite3_exec(mDatabase, "COMMIT;", 0, 0, 0);
+    return true;
 }
 
