@@ -29,7 +29,7 @@ qmake -project -o qgis_ts.pro -nopwd src python i18n
 echo Updating translation files
 lupdate -verbose qgis_ts.pro
 echo Removing temporary python plugin translation files
-perl -i.bak -pe '$_="" if /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
+perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
 rm python/plugins/*/python-i18n.cpp i18n/qgis_*.ts.bak
 echo Removing qmake project file
 rm qgis_ts.pro
