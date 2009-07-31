@@ -50,6 +50,8 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
     /**Returns the vector layer object with the given name
      Returns a pointer to the vector layer or 0 in case of error.*/
     QgsVectorLayer* vectorLayerFromName( const QString& name );
+    /**Enables or disables the Ok button depending on the availability of input layers and the output file*/
+    void enableOrDisableOkButton();
 };
 
 #endif

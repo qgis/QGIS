@@ -3073,16 +3073,34 @@ QList<int>* DualEdgeTriangulation::getPointsAroundEdge( double x, double y )
 
 bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
 {
+  QString shapeFileName = fileName;
+
   QgsFieldMap fields;
   fields.insert( 0, QgsField( "type", QVariant::String, "String" ) );
-  QgsVectorFileWriter writer( fileName, "Utf-8", fields, QGis::WKBLineString, 0 );
+
+  // add the extension if not present
+  if ( shapeFileName.indexOf( ".shp" ) == -1 )
+  {
+    shapeFileName += ".shp";
+  }
+
+  //delete already existing files
+  if ( QFile::exists( shapeFileName ) )
+  {
+    if ( !QgsVectorFileWriter::deleteShapeFile( shapeFileName ) )
+    {
+      return false;
+    }
+  }
+
+  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QGis::WKBLineString, 0 );
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
   {
     return false;
   }
 
   bool *alreadyVisitedEdges = new bool[mHalfEdge.size()];
-  if( !alreadyVisitedEdges )
+  if ( !alreadyVisitedEdges )
   {
     QgsDebugMsg( "out of memory" );
     return false;

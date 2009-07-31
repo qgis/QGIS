@@ -28,6 +28,7 @@
 #include <QComboBox>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSettings>
 
 
 QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* iface ): QDialog( parent ), mIface( iface ), mInterpolatorDialog( 0 )
@@ -54,11 +55,35 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
   //only inverse distance weighting available for now
   mInterpolationMethodComboBox->insertItem( 0, tr( "Triangular interpolation (TIN)" ) );
   mInterpolationMethodComboBox->insertItem( 1, tr( "Inverse Distance Weighting (IDW)" ) );
+
+  enableOrDisableOkButton();
 }
 
 QgsInterpolationDialog::~QgsInterpolationDialog()
 {
 
+}
+
+void QgsInterpolationDialog::enableOrDisableOkButton()
+{
+  bool enabled = true;
+
+  //no input data
+  if ( mLayersTreeWidget->topLevelItemCount() < 1 )
+  {
+    enabled = false;
+  }
+  else
+  {
+    QString fileName = mOutputFileLineEdit->text();
+    QFileInfo theFileInfo( fileName );
+    if ( fileName.isEmpty() || !theFileInfo.dir().exists() )
+    {
+      enabled = false;
+    }
+  }
+
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 
 void QgsInterpolationDialog::on_buttonBox_accepted()
@@ -68,7 +93,12 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     return;
   }
 
-  //todo: test if an input layer is there and warn the user if not
+  //warn the user if there isn't any input layer
+  if ( mLayersTreeWidget->topLevelItemCount() < 1 )
+  {
+    QMessageBox::information( 0, tr( "No input data for interpolation" ), tr( "Please add one or more input layers" ) );
+    return;
+  }
 
   //read file name
   QString fileName = mOutputFileLineEdit->text();
@@ -241,6 +271,8 @@ void QgsInterpolationDialog::on_mAddPushButton_clicked()
   typeComboBox->addItem( tr( "Break lines" ) );
   typeComboBox->setCurrentIndex( 0 );
   mLayersTreeWidget->setItemWidget( newLayerItem, 2, typeComboBox );
+
+  enableOrDisableOkButton();
 }
 
 void QgsInterpolationDialog::on_mRemovePushButton_clicked()
@@ -251,16 +283,28 @@ void QgsInterpolationDialog::on_mRemovePushButton_clicked()
     return;
   }
   delete currentItem;
+  enableOrDisableOkButton();
 }
 
 
 void QgsInterpolationDialog::on_mOutputFileButton_clicked()
 {
-  QString rasterFileName = QFileDialog::getSaveFileName( 0 );
+  //get last output file dir
+  QSettings s;
+  QString lastOutputDir = s.value( "/Interpolation/lastOutputDir", "" ).toString();
+
+  QString rasterFileName = QFileDialog::getSaveFileName( 0, tr( "Save interpolated raster as..." ), lastOutputDir );
   if ( !rasterFileName.isEmpty() )
   {
     mOutputFileLineEdit->setText( rasterFileName );
+    QFileInfo rasterFileInfo( rasterFileName );
+    QDir fileDir = rasterFileInfo.absoluteDir();
+    if ( fileDir.exists() )
+    {
+      s.setValue( "/Interpolation/lastOutputDir", rasterFileInfo.absolutePath() );
+    }
   }
+  enableOrDisableOkButton();
 }
 
 void QgsInterpolationDialog::on_mConfigureInterpolationButton_clicked()
