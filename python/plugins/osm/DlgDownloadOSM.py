@@ -6,7 +6,7 @@ Then HTTP connection to OpenStreetMap server is created and download operation i
 
 Note that OpenStreetMap server you are downloading OSM data from (~api.openstreetmap.org)
 has fixed limitations of how much data you can get. As written on wiki.openstreetmap.org
-neighter latitude nor longitude extent of downloaded region can be larger than 0.25 degree.
+neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees.
 
 Each error response from OSM server is caught by OSM Plugin and display to its user.
 """
@@ -32,7 +32,7 @@ class DlgDownloadOSM(QDialog, Ui_DlgDownloadOSM):
 
     Note that OpenStreetMap server you are downloading OSM data from (~api.openstreetmap.org)
     has fixed limitations of how much data you can get. As written on wiki.openstreetmap.org
-    neighter latitude nor longitude extent of downloaded region can be larger than 0.25 degree.
+    neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees.
 
     Each error response from OSM server is caught by OSM Plugin and display to its user.
     """
@@ -357,7 +357,7 @@ class DlgDownloadOSM(QDialog, Ui_DlgDownloadOSM):
 
         mb=QMessageBox()
         mb.setMinimumWidth(390)
-        mb.information(self, self.tr("Getting data"),self.tr("The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at <http://wiki.openstreetmap.org/wiki/Getting_Data> neighter latitude nor longitude extent of downloaded region can be larger than 0.25 degree. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won't satisfy downloading limitations."))
+        mb.information(self, self.tr("Getting data"),self.tr("The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at <http://wiki.openstreetmap.org/wiki/Getting_Data> neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won't satisfy downloading limitations."))
 
 
     def checkExtent(self):

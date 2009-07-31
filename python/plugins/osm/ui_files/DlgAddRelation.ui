@@ -273,7 +273,7 @@
         </size>
        </property>
        <property name="text" >
-        <string>Storno</string>
+        <string>Cancel</string>
        </property>
        <property name="autoDefault" >
         <bool>false</bool>
