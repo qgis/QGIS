@@ -58,7 +58,7 @@ static const QString pluginVersion = QObject::tr( "Version 0.1" );
  * @param theQgisInterFace Pointer to the QGIS interface object
  */
 QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace ):
-    qGisInterface( theQgisInterFace ), mEdit( NULL ), mTools( NULL )
+    qGisInterface( theQgisInterFace ), mTools( NULL ), mEdit( NULL )
 {
   /** Initialize the plugin and set the required attributes */
   pluginNameQString = tr( "GrassVector" );
