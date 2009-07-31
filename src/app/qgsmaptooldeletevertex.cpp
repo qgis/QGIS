@@ -83,14 +83,14 @@ void QgsMapToolDeleteVertex::canvasReleaseEvent( QMouseEvent * e )
     vlayer->beginEditCommand( tr( "Vertex deleted" ) );
     for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
     {
-      if (!vlayer->deleteVertex( sr_it->snappedAtGeometry, sr_it->snappedVertexNr ))
+      if ( !vlayer->deleteVertex( sr_it->snappedAtGeometry, sr_it->snappedVertexNr ) )
       {
         success = false;
         vlayer->destroyEditCommand();
         break;
       }
     }
-    if (success)
+    if ( success )
     {
       vlayer->endEditCommand();
     }

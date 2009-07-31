@@ -28,7 +28,7 @@ extern "C"
 }
 
 QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const char *name )
-    : QFrame( parent ), mTools(tools), mTabWidget(parent)
+    : QFrame( parent ), mTools( tools ), mTabWidget( parent )
 {
   QVBoxLayout *mainLayout = new QVBoxLayout( this );
   QTermWidget *mTerminal = new QTermWidget( 0, this );
@@ -45,13 +45,13 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
 
   // TODO: find a better way to manage the lockfile.
   mLockFilename = QgsGrass::lockFilePath();
-  QFile::remove(mLockFilename + ".qgis");
-  if (!QFile::rename(mLockFilename, mLockFilename + ".qgis"))
+  QFile::remove( mLockFilename + ".qgis" );
+  if ( !QFile::rename( mLockFilename, mLockFilename + ".qgis" ) )
   {
-      QMessageBox::warning(this, tr("Warning"), tr("Cannot rename the lock file %1").arg(mLockFilename));
+    QMessageBox::warning( this, tr( "Warning" ), tr( "Cannot rename the lock file %1" ).arg( mLockFilename ) );
   }
 
-  mTerminal->setSize(80, 25);
+  mTerminal->setSize( 80, 25 );
   mTerminal->startShellProgram();
   mTerminal->setFocus( Qt::MouseFocusReason );
 }
@@ -66,9 +66,9 @@ void QgsGrassShell::closeShell()
   mTabWidget->removeTab( index );
 
   // TODO: find a better way to manage the lockfile.
-  if(!QFile::rename(mLockFilename + ".qgis", mLockFilename))
+  if ( !QFile::rename( mLockFilename + ".qgis", mLockFilename ) )
   {
-    QMessageBox::warning(this, tr("Warning"), tr("Cannot rename the lock file %1").arg(mLockFilename));
+    QMessageBox::warning( this, tr( "Warning" ), tr( "Cannot rename the lock file %1" ).arg( mLockFilename ) );
   }
 
   this->deleteLater();
@@ -76,20 +76,20 @@ void QgsGrassShell::closeShell()
 
 void QgsGrassShell::initTerminal( QTermWidget *terminal )
 {
-  QStringList env("");
-  QStringList args("");
+  QStringList env( "" );
+  QStringList args( "" );
 
-  QString shellProgram = QString("%1/etc/Init.sh").arg(::getenv("GISBASE"));
+  QString shellProgram = QString( "%1/etc/Init.sh" ).arg( ::getenv( "GISBASE" ) );
 
-  terminal->setShellProgram(shellProgram);
+  terminal->setShellProgram( shellProgram );
   env << "TERM=vt100";
   env << "GISRC_MODE_MEMORY";
 
   args << "-text";
-  args << QString("%1/%2/%3").arg(QgsGrass::getDefaultGisdbase()).arg(QgsGrass::getDefaultLocation()).arg(QgsGrass::getDefaultMapset());
+  args << QString( "%1/%2/%3" ).arg( QgsGrass::getDefaultGisdbase() ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
 
-  terminal->setArgs(args);
-  terminal->setEnvironment(env);
+  terminal->setArgs( args );
+  terminal->setEnvironment( env );
 
   // Look & Feel
   terminal->setScrollBarPosition( QTermWidget::ScrollBarRight );

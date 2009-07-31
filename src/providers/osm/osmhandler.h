@@ -29,7 +29,7 @@ using namespace std;
  */
 class OsmHandler: public QXmlDefaultHandler
 {
-public:
+  public:
 // member variables
 
     QFile mFile;
@@ -59,7 +59,7 @@ public:
 //functions
 
     // object construction
-    OsmHandler(QFile *f, sqlite3 *database);
+    OsmHandler( QFile *f, sqlite3 *database );
     ~OsmHandler();
     // xml processing
 
@@ -69,7 +69,7 @@ public:
     bool endElement( const QString & pURI, const QString & pLocalName, const QString & pName );
     bool endDocument();
 
-private:
+  private:
     sqlite3_stmt *mStmtInsertNode;
     sqlite3_stmt *mStmtInsertWay;
     sqlite3_stmt *mStmtInsertTag;

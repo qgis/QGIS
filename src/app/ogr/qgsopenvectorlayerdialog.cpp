@@ -42,8 +42,8 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
   //set encoding
   // cmbEncodings->setItemText( cmbEncodings->currentIndex(), QString( QTextCodec::codecForLocale()->name() ) );
   QSettings settings;
-  QString enc = settings.value( "/UI/encoding", QString("System") ).toString();
-  
+  QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
+
   // The specified decoding is added if not existing alread, and then set current.
   // This should select it.
   int encindex = cmbEncodings->findText( enc );

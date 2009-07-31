@@ -80,7 +80,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget * parent,
   if ( encoding.isEmpty() )
   {
     QSettings settings;
-    enc = settings.value( "/UI/encoding", QString("System") ).toString();
+    enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
   }
 
   // The specified decoding is added if not existing alread, and then set current.
@@ -101,7 +101,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget * parent,
 
   // Connect our slot to get a signal when the user is done with the file dialog
   connect( this, SIGNAL( accepted() ), this, SLOT( saveUsedEncoding() ) );
-  
+
 
 }
 
@@ -119,5 +119,5 @@ void QgsEncodingFileDialog::saveUsedEncoding()
 {
   QSettings settings;
   settings.setValue( "/UI/encoding", encoding() );
-  QgsDebugMsg(QString( "Set encoding " + encoding() + " as default.") );
+  QgsDebugMsg( QString( "Set encoding " + encoding() + " as default." ) );
 }

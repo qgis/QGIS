@@ -27,13 +27,13 @@ typedef QMap<int, QgsFeature> QgsFeatureMap;
 
 class QgsOSMDataProvider: public QgsVectorDataProvider
 {
-public:
+  public:
 
     /**
      * Constructor of the vector provider.
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsOSMDataProvider(QString uri);
+    QgsOSMDataProvider( QString uri );
 
     /**
      * Destructor.
@@ -55,19 +55,19 @@ public:
      *  @param useIntersect true if an accurate intersection test should be used,
      *                     false if a test based on bounding box is sufficient
      */
-    virtual void select(QgsAttributeList fetchAttributes = QgsAttributeList(),
-                        QgsRectangle rect = QgsRectangle(),
-                        bool fetchGeometry = true,
-                        bool useIntersect = false);
+    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
+                         QgsRectangle rect = QgsRectangle(),
+                         bool fetchGeometry = true,
+                         bool useIntersect = false );
 
     /**
      * Get the next feature resulting from a select operation.
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit
      */
-    virtual bool nextFeature(QgsFeature& feature);
+    virtual bool nextFeature( QgsFeature& feature );
 
-    /** 
+    /**
      * Gets the feature at the given feature ID.
      * @param featureId id of the feature
      * @param feature feature which will receive the data
@@ -75,10 +75,10 @@ public:
      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
      * @return True when feature was found, otherwise false
      */
-    virtual bool featureAtId(int featureId,
-                                QgsFeature& feature,
-                                bool fetchGeometry = true,
-                                QgsAttributeList fetchAttributes = QgsAttributeList());  
+    virtual bool featureAtId( int featureId,
+                              QgsFeature& feature,
+                              bool fetchGeometry = true,
+                              QgsAttributeList fetchAttributes = QgsAttributeList() );
 
     /**
      * Get feature type.
@@ -111,9 +111,9 @@ public:
     /**
      * Changes attribute values of existing features.
      * @param attr_map a map containing changed attributes
-     * @return true in case of success and false in case of failure 
+     * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues(const QgsChangedAttributesMap & attr_map);
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
 
     /**
      * Returns a bitmask containing the supported capabilities
@@ -152,7 +152,7 @@ public:
     virtual QgsCoordinateReferenceSystem crs();
 
 
-private:
+  private:
     enum { PointType, LineType, PolygonType } mFeatureType;
     enum Attribute { TimestampAttr = 0, UserAttr = 1, TagAttr, CustomTagAttr };
     const static int DEFAULT_EXTENT = 100;
@@ -186,11 +186,11 @@ private:
     // private methods
     sqlite3_stmt *mTagsStmt;
     bool mTagsRetrieval;
-    QString tagsForObject(const char* type, int id);
+    QString tagsForObject( const char* type, int id );
 
     sqlite3_stmt *mCustomTagsStmt;
     QStringList mCustomTagsList;
-    QString tagForObject(const char* type, int id, QString tagKey);
+    QString tagForObject( const char* type, int id, QString tagKey );
 
     sqlite3_stmt *mWayStmt;
     sqlite3_stmt *mNodeStmt;
@@ -200,7 +200,7 @@ private:
 
     // manipulation with sqlite database
 
-    bool isDatabaseCompatibleWithInput(QString mFileName);
+    bool isDatabaseCompatibleWithInput( QString mFileName );
     bool isDatabaseCompatibleWithPlugin();
 
     /**
@@ -240,9 +240,9 @@ private:
      * @param osm_filename name of file with OSM data to parse into sqlite3 database
      * @return true in case of success and false in case of failure
      */
-    bool loadOsmFile(QString osm_filename);
+    bool loadOsmFile( QString osm_filename );
 
-    bool updateWayWKB(int wayId, int isClosed, char **geo, int *geolen);
+    bool updateWayWKB( int wayId, int isClosed, char **geo, int *geolen );
     bool updateNodes();
     bool removeIncorrectWays();
 
@@ -278,20 +278,21 @@ private:
      * @param wayId way identifier
      * @return number of way members
      */
-    int wayMemberCount(int wayId);
+    int wayMemberCount( int wayId );
 
-    int relationMemberCount(int relId);
+    int relationMemberCount( int relId );
 
     // fetch node from current statement
-    bool fetchNode(QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs);
+    bool fetchNode( QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs );
 
     // fetch way from current statement
-    bool fetchWay(QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs);
+    bool fetchWay( QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs );
 
     // Change geometry of one feature (used by changeGeometryValues())
-    bool changeGeometryValue(const int & featid, QgsGeometry & geom);
+    bool changeGeometryValue( const int & featid, QgsGeometry & geom );
 
-    struct wkbPoint {
+    struct wkbPoint
+    {
       char byteOrder;
       unsigned wkbType;
       double x;

@@ -74,7 +74,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   if ( !mCodec )
   {
     QSettings settings;
-    QString enc = settings.value( "/UI/encoding", QString("System") ).toString();
+    QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
     QgsDebugMsg( "error finding QTextCodec for " + fileEncoding );
     mCodec = QTextCodec::codecForName( enc.toLocal8Bit().data() );
     if ( !mCodec )
@@ -127,7 +127,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     {
       case QVariant::LongLong:
         ogrType = OFTString;
-        ogrWidth = ogrWidth<=21 ? ogrWidth : 21;
+        ogrWidth = ogrWidth <= 21 ? ogrWidth : 21;
         ogrPrecision = -1;
         break;
 
@@ -137,7 +137,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
 
       case QVariant::Int:
         ogrType = OFTInteger;
-        ogrWidth = ogrWidth<=10 ? ogrWidth : 10;
+        ogrWidth = ogrWidth <= 10 ? ogrWidth : 10;
         ogrPrecision = 0;
         break;
 
@@ -208,12 +208,12 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
   QgsFieldMap::const_iterator fldIt;
   for ( fldIt = mFields.begin(); fldIt != mFields.end(); ++fldIt )
   {
-    if( !feature.attributeMap().contains( fldIt.key() ) )
+    if ( !feature.attributeMap().contains( fldIt.key() ) )
     {
-      QgsDebugMsg( QString("no attribute for field %1").arg( fldIt.key() ) );
+      QgsDebugMsg( QString( "no attribute for field %1" ).arg( fldIt.key() ) );
       continue;
     }
-       
+
     int ogrField = fldIt.key();
     const QVariant& attrValue = feature.attributeMap()[ ogrField ];
 
