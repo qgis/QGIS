@@ -5,5 +5,5 @@
 	<option key="input" region="no"/>
 	<option key="format" />
 	<option key="type" label="Choose appropriate format"/>
-	<file key="output" type="new" label="Output raster file, specify the file extension" />
+	<file key="output" type="new" label="Name for new raster file (specify file extension)" />
 </qgisgrassmodule>
