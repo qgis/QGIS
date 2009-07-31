@@ -263,4 +263,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool deleteFeature( int id );
 
     QString quotedIdentifier( QString field );
+
+    /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
+    bool syncToDisc();
 };
