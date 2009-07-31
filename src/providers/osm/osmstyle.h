@@ -29,10 +29,10 @@ using namespace std;
  */
 class Rule
 {
-public:
+  public:
     // construction, destruction
-    Rule(QString pKey, QString pVal, QPen pPen, QBrush pBrush, QImage pImg)
-        :key(pKey), val(pVal), pen(pPen), brush(pBrush), img(pImg) {};
+    Rule( QString pKey, QString pVal, QPen pPen, QBrush pBrush, QImage pImg )
+        : key( pKey ), val( pVal ), pen( pPen ), brush( pBrush ), img( pImg ) {};
 
     // class members
     QString key;
@@ -48,8 +48,8 @@ public:
  */
 class OsmStyle
 {
-public:
-    OsmStyle(QString filename);
+  public:
+    OsmStyle( QString filename );
     ~OsmStyle();
 
     QList<Rule> rules_line;
@@ -57,17 +57,17 @@ public:
     QList<Rule> rules_point;
 
 
-    void parse_rule_line(QString line);
+    void parse_rule_line( QString line );
 
-    void parse_rule_polygon(QString line);
+    void parse_rule_polygon( QString line );
 
-    void parse_rule_point(QString line);
+    void parse_rule_point( QString line );
 
-    QPen get_pen(QMap<QString,QString> tags);
+    QPen get_pen( QMap<QString, QString> tags );
 
-    QPen get_pen_brush(QMap<QString,QString> tags, QBrush &brush); // todo: return both pen and brush
+    QPen get_pen_brush( QMap<QString, QString> tags, QBrush &brush ); // todo: return both pen and brush
 
-    QImage get_image(QMap<QString,QString> tags);
+    QImage get_image( QMap<QString, QString> tags );
 };
 
 

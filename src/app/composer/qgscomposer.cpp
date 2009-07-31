@@ -471,7 +471,7 @@ void QgsComposer::on_mActionPrint_triggered()
 
 void QgsComposer::print( QPrinter &printer )
 {
-  if( !mComposition )
+  if ( !mComposition )
     return;
 
   if ( containsWMSLayer() )

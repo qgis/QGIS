@@ -29,47 +29,47 @@ using namespace std;
  */
 class OsmRenderer : public QgsRenderer
 {
-public:
+  public:
     // Object construction
-    OsmRenderer(QGis::GeometryType geometryType, QString styleFileName);
+    OsmRenderer( QGis::GeometryType geometryType, QString styleFileName );
 //    ~OsmRenderer();
 
-    QMap<QString,QString> parse_tags(QString tags);
+    QMap<QString, QString> parse_tags( QString tags );
 
     // ??? Determines if a feature will be rendered or not.
-    bool willRenderFeature (QgsFeature *f);
+    bool willRenderFeature( QgsFeature *f );
 
     // A vector layer passes features to a renderer object to change the brush and pen of the qpainter.
     void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected );
 
     // Reads the renderer configuration from an XML file.
-    int readXML(const QDomNode &rnode, QgsVectorLayer &vl);
+    int readXML( const QDomNode &rnode, QgsVectorLayer &vl );
 
     // Writes the contents of the renderer to a configuration file @ return true in case of success.
-    bool writeXML(QDomNode &layer_node, QDomDocument &document, const QgsVectorLayer &vl) const;
+    bool writeXML( QDomNode &layer_node, QDomDocument &document, const QgsVectorLayer &vl ) const;
 
     // Returns true, if attribute values are used by the renderer and false otherwise.
     bool needsAttributes() const;
 
     // Returns a list with indexes of classification attributes.
-    QgsAttributeList classificationAttributes () const;
+    QgsAttributeList classificationAttributes() const;
 
     // Returns the renderers name.
     QString name() const;
 
     // Return symbology items.
-    const QList< QgsSymbol * > symbols () const;
+    const QList< QgsSymbol * > symbols() const;
 
     //Returns a copy of the renderer (a deep copy on the heap).
-    QgsRenderer *clone () const;
+    QgsRenderer *clone() const;
 
     // ??? Returns true if this renderer returns a pixmap in the render method
-    bool containsPixmap () const;
+    bool containsPixmap() const;
 
     // ??? Returns true if this renderer uses its own transparency settings
-    bool usesTransparency () const;
+    bool usesTransparency() const;
 
-protected:
+  protected:
 // member variables
     OsmStyle osmstyle;
     QGis::GeometryType mGeomType;
