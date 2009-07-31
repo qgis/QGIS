@@ -666,9 +666,12 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList & flist )
     }
   }
 
-  // flush features
-  OGR_L_SyncToDisk( ogrLayer );
+  if ( !syncToDisc() )
+  {
+    returnvalue = false;
+  }
   featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
+
   return returnvalue;
 }
 
@@ -774,7 +777,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
   }
 
   OGR_L_SyncToDisk( ogrLayer );
-
   return true;
 }
 
@@ -831,8 +833,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     OGR_F_Destroy( theOGRFeature );
   }
-  OGR_L_SyncToDisk( ogrLayer );
-  return true;
+  return syncToDisc();
 }
 
 bool QgsOgrProvider::createSpatialIndex()
@@ -863,7 +864,11 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
     }
   }
 
-  OGR_L_SyncToDisk( ogrLayer );
+  if ( !syncToDisc() )
+  {
+    returnvalue = false;
+  }
+
   QFileInfo fi( dataSourceUri() );     // to get the base name
   QString sql = QString( "REPACK %1" ).arg( fi.completeBaseName() );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, NULL );
@@ -1598,4 +1603,29 @@ QString QgsOgrProvider::quotedIdentifier( QString field )
   field.replace( '"', "\\\"" );
   field.replace( "'", "\\'" );
   return field.prepend( "\"" ).append( "\"" );
+}
+
+bool QgsOgrProvider::syncToDisc()
+{
+  OGR_L_SyncToDisk( ogrLayer );
+
+  //for shapefiles: is there already a spatial index?
+  QFileInfo fi( dataSourceUri() );
+  QString filePath = fi.filePath();
+
+  //remove the suffix and add .qix
+  int suffixLength = fi.suffix().length();
+  if ( suffixLength > 0 )
+  {
+    QString indexFilePath = filePath;
+    indexFilePath.chop( suffixLength );
+    indexFilePath.append( "qix" );
+    QFile indexFile( indexFilePath );
+    if ( indexFile.exists() ) //there is already a spatial index file
+    {
+      //the already existing spatial index is removed automatically by OGR
+      return createSpatialIndex();
+    }
+  }
+  return true;
 }
