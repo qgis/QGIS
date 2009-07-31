@@ -49,8 +49,8 @@
 		</section>
 		<section label="Export">
 			<section label="Export raster">
-				<grass name="r.out.gdal.gtiff"/>
 				<grass name="r.out.gdal"/>
+				<grass name="r.out.gdal.gtiff"/>
 				<grass name="r.out.ascii"/>
 				<grass name="r.out.xyz"/>
 				<grass name="r.out.arc"/>
