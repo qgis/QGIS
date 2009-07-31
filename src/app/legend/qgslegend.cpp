@@ -75,6 +75,14 @@ QgsLegend::QgsLegend( QWidget * parent, const char *name )
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
 
+  // Initialise the line indicator widget.
+  mInsertionLine = new QWidget(viewport());
+  hideLine();
+  mInsertionLine->setAutoFillBackground(true);
+  QPalette pal = mInsertionLine->palette();
+  pal.setColor(mInsertionLine->backgroundRole(), Qt::blue);
+  mInsertionLine->setPalette(pal);
+
   setSortingEnabled( false );
   setDragEnabled( false );
   setAutoScroll( true );
@@ -91,7 +99,9 @@ QgsLegend::QgsLegend( QWidget * parent, const char *name )
 }
 
 QgsLegend::~QgsLegend()
-{}
+{
+  delete mInsertionLine;
+}
 
 void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
@@ -237,85 +247,97 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
 
     // change the cursor appropriate to if drop is allowed
     QTreeWidgetItem* item = itemAt( p );
+
+    hideLine();
+
     QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>( mItemBeingMoved );
     QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>( item );
 
-    if ( !item )
+    if ( item )
     {
-      setCursor( QCursor( Qt::ForbiddenCursor ) );
+      mDropTarget = item;
+      QgsLegendItem::DRAG_ACTION action = dest->accept( origin );
+      if ( item != mItemBeingMoved )
+      {
+        if ( yCoordAboveCenter( dest, e->y() ) ) //over center of item
+        {
+          int line_y    = visualItemRect(item).top() + 1;
+          int line_left = visualItemRect(item).left();
+
+          if ( action == QgsLegendItem::REORDER ||  action == QgsLegendItem::INSERT )
+          {
+            QgsDebugMsg( "mouseMoveEvent::INSERT or REORDER" );
+            mDropAction = BEFORE;
+            showLine( line_y, line_left);
+            setCursor( QCursor( Qt::SizeVerCursor ) );
+          }
+          else //no action
+          {
+            QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
+            mDropAction = NO_ACTION;
+            setCursor( QCursor( Qt::ForbiddenCursor ) );
+          }
+        }
+        else // below center of item
+        {
+          int line_y    = visualItemRect(item).bottom() - 2;
+          int line_left = visualItemRect(item).left();
+
+          if ( action == QgsLegendItem::REORDER )
+          {
+            QgsDebugMsg( "mouseMoveEvent::REORDER bottom half" );
+            mDropAction = AFTER;
+            showLine( line_y, line_left);
+            setCursor( QCursor( Qt::SizeVerCursor ) );
+          }
+          else if ( action == QgsLegendItem::INSERT )
+          {
+            QgsDebugMsg( "mouseMoveEvent::INSERT" );
+            mDropAction = INTO_GROUP;
+            showLine( line_y, line_left);
+            setCursor( QCursor( Qt::SizeVerCursor ) );
+          }
+          else//no action
+          {
+            mDropAction = NO_ACTION;
+            QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
+            setCursor( QCursor( Qt::ForbiddenCursor ) );
+          }
+        }
+      }
+      else
+      {
+        setCursor( QCursor( Qt::ForbiddenCursor ) );
+      }
+    }
+    else if (!item && e->pos().y() >= 0 && e->pos().y() < viewport()->height() &&  e->pos().x() >= 0 && e->pos().x() < viewport()->width() )
+    {
+      // Outside the listed items, but check if we are in the empty area
+      // of the viewport, so we can drop after the last top level item.
+      QgsDebugMsg( "You are below the table" );
+      mDropTarget = topLevelItem( topLevelItemCount() - 1 );
+      dest = dynamic_cast<QgsLegendItem*>( mDropTarget );
+      QgsLegendItem::DRAG_ACTION action = dest->accept( origin );
+      if ( action == QgsLegendItem::REORDER ||  action == QgsLegendItem::INSERT )
+      {
+        QgsDebugMsg( "mouseMoveEvent::INSERT or REORDER" );
+        mDropAction = AFTER;
+        showLine(visualItemRect( lastVisibleItem() ).bottom() + 1, 0);      
+        setCursor( QCursor( Qt::SizeVerCursor ) );
+      }
+      else //no action
+      {
+        QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
+        mDropAction = NO_ACTION;
+        setCursor( QCursor( Qt::ForbiddenCursor ) );
+      } 
     }
 
-    if ( item && ( item != mItemBeingMoved ) )
+    else
     {
-      QgsLegendItem::DRAG_ACTION action = dest->accept( origin );
-      if ( yCoordAboveCenter( dest, e->y() ) ) //over center of item
-      {
-        if ( action == QgsLegendItem::REORDER )
-        {
-          if ( origin->nextSibling() != dest )
-          {
-            moveItem( dest, origin );setCurrentItem( origin );
-          }
-          setCurrentItem( origin );
-          setCursor( QCursor( Qt::SizeVerCursor ) );
-        }
-        else if ( action == QgsLegendItem::INSERT )
-        {
-          setCursor( QCursor( Qt::PointingHandCursor ) );
-          if ( origin->parent() != dest )
-          {
-            insertItem( origin, dest );
-          }
-          setCurrentItem( origin );
-          setCursor( QCursor( Qt::PointingHandCursor ) );
-        }
-        else //no action
-        {
-          QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
-
-          if ( origin->type() == QgsLegendItem::LEGEND_LAYER_FILE && mItemBeingMovedOrigPos != getItemPos( mItemBeingMoved ) )
-          {
-            resetToInitialPosition( mItemBeingMoved );
-          }
-          setCursor( QCursor( Qt::ForbiddenCursor ) );
-        }
-      }
-      else // below center of item
-      {
-
-        if ( action == QgsLegendItem::REORDER )
-        {
-          QgsDebugMsg( "mouseMoveEvent::REORDER bottom half" );
-          if ( mItemBeingMoved != dest->nextSibling() )
-          {
-            //origin->moveItem(dest);
-            moveItem( origin, dest );
-          }
-          setCursor( QCursor( Qt::SizeVerCursor ) );
-          setCurrentItem( origin );
-        }
-        else if ( action == QgsLegendItem::INSERT )
-        {
-          QgsDebugMsg( "mouseMoveEvent::INSERT" );
-
-          setCursor( QCursor( Qt::PointingHandCursor ) );
-          if ( origin->parent() != dest )
-          {
-            insertItem( origin, dest );
-            setCurrentItem( origin );
-          }
-        }
-        else//no action
-        {
-          QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
-
-          if ( origin->type() == QgsLegendItem::LEGEND_LAYER_FILE && mItemBeingMovedOrigPos != getItemPos( mItemBeingMoved ) )
-          {
-            resetToInitialPosition( mItemBeingMoved );
-          }
-          setCursor( QCursor( Qt::ForbiddenCursor ) );
-        }
-      }
+      QgsDebugMsg( "No item here" );
+      mDropTarget = NULL;
+      setCursor( QCursor( Qt::ForbiddenCursor ) );
     }
   }
 }
@@ -332,13 +354,15 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
     return;
   }
 
-  QTreeWidgetItem *destItem = itemAt( e->pos() );
+  hideLine();
+
+  QTreeWidgetItem *destItem = mDropTarget;
 
   QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>( mItemBeingMoved );
   QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>( destItem );
 
   // no change?
-  if ( !dest || !origin )
+  if ( !dest || !origin || (dest == origin) )
   {
     checkLayerOrderUpdate();
     return;
@@ -404,7 +428,40 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
   }
   else
   {
+    // Do the actual move here.
     QgsDebugMsg( "Other type of drag'n'drop happened!" );
+    if ( mDropAction == AFTER) //over center of item
+    {
+      QgsDebugMsg( "Drop AFTER" );
+      if ( dest->nextSibling() != origin )
+      {
+        moveItem( origin, dest );
+        setCurrentItem( origin );
+      }
+    }
+    else if ( mDropAction == BEFORE )// below center of item
+    {
+      QgsDebugMsg( "Drop BEFORE" );
+      if ( dest->findYoungerSibling() != origin )
+      {
+        moveItem( origin, dest ); // Insert after, as above...
+        moveItem( dest, origin ); // ... and then switch places!
+        setCurrentItem( origin );
+      }
+    }
+    else if ( mDropAction == INTO_GROUP )
+    {
+      QgsDebugMsg( "Drop INTO_GROUP" );
+      if ( origin->parent() != dest )
+      {
+        insertItem( origin, dest );
+        setCurrentItem( origin );
+      }
+    }
+    else//no action
+    {
+      QgsDebugMsg( "Drop NO_ACTION" );
+    }
   }
 
   checkLayerOrderUpdate();
@@ -1375,6 +1432,9 @@ void QgsLegend::insertItem( QTreeWidgetItem* move, QTreeWidgetItem* into )
 
 void QgsLegend::moveItem( QTreeWidgetItem* move, QTreeWidgetItem* after )
 {
+  QgsDebugMsg( QString( "Moving layer : %1 (%2)" ).arg( move->text( 0 ) ).arg( move->type() ) );
+  QgsDebugMsg( QString( "after layer  : %1 (%2)" ).arg( after->text( 0 ) ).arg( after->type() ) );
+
   static_cast<QgsLegendItem*>( move )->storeAppearanceSettings();//store settings in the moved item and its childern
   if ( move->parent() )
   {
@@ -1920,4 +1980,27 @@ bool QgsLegend::checkLayerOrderUpdate()
     return true;
   }
   return false;
+}
+
+void QgsLegend::hideLine()
+{
+  mInsertionLine->setGeometry(0, -100, 1, 1);
+}
+
+void QgsLegend::showLine(int y, int left)
+{
+  mInsertionLine->setGeometry(left, y, viewport()->width(), 2);
+}
+
+QTreeWidgetItem * QgsLegend::lastVisibleItem()
+{
+  QTreeWidgetItem *current;
+  QTreeWidgetItem *next;
+  
+  current = topLevelItem( topLevelItemCount() - 1 );
+  while ( ( next = itemBelow( current ) ) )
+  {
+    current = next;
+  }
+  return current;
 }
