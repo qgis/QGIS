@@ -20464,7 +20464,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="152"/>
         <source>Restrict changes to common properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Änderungen auf gleiche Eigenschaften beschränken</translation>
     </message>
 </context>
 <context>
