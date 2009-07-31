@@ -41,6 +41,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
   public slots:
     void on_mPaperSizeComboBox_currentIndexChanged( const QString& text );
+    void on_mPaperUnitsComboBox_currentIndexChanged( const QString& text );
     void on_mPaperOrientationComboBox_currentIndexChanged( const QString& text );
     void on_mPaperWidthLineEdit_editingFinished();
     void on_mPaperHeightLineEdit_editingFinished();
@@ -73,4 +74,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
     void createPaperEntries();
     void insertPaperEntries();
+
+    double size( QLineEdit *le );
+    void setSize( QLineEdit *le, double v );
 };
