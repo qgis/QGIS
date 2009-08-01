@@ -249,6 +249,8 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
     QTreeWidgetItem* item = itemAt( p );
 
     hideLine();
+    updateLineWidget();
+    scrollToItem (item );
 
     QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>( mItemBeingMoved );
     QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>( item );
@@ -1991,6 +1993,12 @@ void QgsLegend::showLine(int y, int left)
 {
   mInsertionLine->setGeometry(left, y, viewport()->width(), 2);
 }
+
+void QgsLegend::updateLineWidget()
+{
+  mInsertionLine->repaint();
+}
+
 
 QTreeWidgetItem * QgsLegend::lastVisibleItem()
 {

@@ -319,6 +319,9 @@ class QgsLegend : public QTreeWidget
     /** Show the line that indicates insertion position */
     void showLine(int y, int left);
 
+    /** Update the widget with latest changes immediately */
+    void updateLineWidget();
+
     /** Returns the last visible item in the tree widget */
     QTreeWidgetItem *lastVisibleItem();
 
