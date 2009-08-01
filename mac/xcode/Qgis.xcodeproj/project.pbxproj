@@ -3444,7 +3444,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/osm/map_tools";
-			dstSubfolderSpec = 7;
+			dstSubfolderSpec = 0;
 			files = (
 				72DB69661021DC7600ED5F3A /* __init__.py in Copy - osm-map_tools */,
 				72DB69671021DC7600ED5F3A /* CreateLineMapTool.py in Copy - osm-map_tools */,
@@ -3460,7 +3460,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/osm/styles";
-			dstSubfolderSpec = 7;
+			dstSubfolderSpec = 0;
 			files = (
 				72DB69721021DCE000ED5F3A /* big_scale.style in Copy - osm-styles */,
 				72DB69731021DCE000ED5F3A /* medium_scale.style in Copy - osm-styles */,
