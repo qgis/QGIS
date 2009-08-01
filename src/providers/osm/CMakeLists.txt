@@ -9,8 +9,13 @@ osmrenderer.cpp
 osmstyle.cpp
 )
 
+SET(OSM_MOC_HDRS osmprovider.h)
+
+
 ########################################################
 # Build
+
+QT4_WRAP_CPP(OSM_MOC_SRCS ${OSM_MOC_HDRS})
 
 INCLUDE_DIRECTORIES (
   ../../core

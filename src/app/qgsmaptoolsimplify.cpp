@@ -24,7 +24,8 @@
 #include <QMouseEvent>
 #include <QMessageBox>
 
-#include <math.h>
+#include <cmath>
+#include <cfloat>
 
 QgsSimplifyDialog::QgsSimplifyDialog( QWidget* parent )
     : QDialog( parent )
@@ -193,14 +194,14 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
   found = false;
   int requiredCnt = ( isLine ? 2 : 4 ); //4 for polygon is correct because first and last points are the same
   bool bottomFound = false;
-  double highTol, lowTol;// two boundaries to be used when no directly correct solution is found
+  double highTol = DBL_MAX, lowTol = DBL_MIN;// two boundaries to be used when no directly correct solution is found
   // calculate minimum tolerance where minimum (requiredCnt) of vertexes are left in geometry
   while ( !found )
   {
 
     int foundVertexes = QgsSimplifyFeature::simplifyPoints( pts, tol ).size();
     if ( foundVertexes < requiredCnt + 1 )
-    { //requred or lower number of verticies found
+    { //required or lower number of verticies found
       if ( foundVertexes == requiredCnt )
       {
         found = true;
@@ -211,7 +212,7 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
         bottomFound = true;
         highTol = tol;
         tol = ( highTol + lowTol ) / 2;
-        if ( highTol / lowTol < 1.00000001 )
+        if ( doubleNear( highTol, lowTol ) )
         { //solving problem that two points are in same distance from  line, so they will be both excluded at same time
           //so some time more than required count of vertices can stay
           found = true;
@@ -225,7 +226,7 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
       {
         lowTol = tol;
         tol = ( highTol + lowTol ) / 2;
-        if ( highTol / lowTol < 1.00000001 )
+        if ( doubleNear( highTol, lowTol ) )
         { //solving problem that two points are in same distance from  line, so they will be both excluded at same time
           //so some time more than required count of vertices can stay
           found = true;

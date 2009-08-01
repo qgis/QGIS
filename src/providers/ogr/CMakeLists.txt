@@ -1,6 +1,13 @@
 
 SET (OGR_SRCS qgsogrprovider.cpp)
 
+SET(OGR_MOC_HDRS qgsogrprovider.h)
+
+########################################################
+# Build
+
+QT4_WRAP_CPP(OGR_MOC_SRCS ${OGR_MOC_HDRS})
+
 INCLUDE_DIRECTORIES(
   .
   ../../core
@@ -8,7 +15,8 @@ INCLUDE_DIRECTORIES(
   ${GEOS_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(ogrprovider MODULE ${OGR_SRCS})
+
+ADD_LIBRARY(ogrprovider MODULE ${OGR_SRCS} ${OGR_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(ogrprovider
   ${QT_QTCORE_LIBRARY} 

@@ -235,7 +235,7 @@ void QgsMapToolNodeTool::createTopologyRubbedBands( QgsVectorLayer* vlayer, QLis
       trb->setColor( Qt::red );
 
       int tVertex = resultIt.value().snappedVertexNr;
-      int tVertexBackup, tVertexAfter;
+      int tVertexBackup = -1, tVertexAfter = -1;
       int tVertexFirst = tVertex;//vertex number to check for cycling
       QgsFeature topolFeature;
 

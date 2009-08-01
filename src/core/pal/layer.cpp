@@ -555,9 +555,7 @@ Units Layer::getLabelUnit()
   return label_unit;
 }
 
-
-
-/*
+#if 0
 void Layer::setFeatureGeom (const char * geom_id, const char *the_geomHex){
 
 
@@ -630,7 +628,7 @@ void Layer::setFeatureGeom (const char * geom_id, const char *the_geomHex){
       }
    }
 }
-*/
+#endif
 
 
 } // end namespace

@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <qgis.h>
 #include "qgscompositionwidget.h"
 #include "qgscomposition.h"
 #include <QColorDialog>
@@ -115,6 +116,7 @@ void QgsCompositionWidget::createPaperEntries()
   QList<QgsCompositionPaper> formats;
 
   formats
+  // ISO formats
   << QgsCompositionPaper( tr( "A5 (148x210 mm)" ), 148, 210 )
   << QgsCompositionPaper( tr( "A4 (210x297 mm)" ), 210, 297 )
   << QgsCompositionPaper( tr( "A3 (297x420 mm)" ), 297, 420 )
@@ -127,18 +129,19 @@ void QgsCompositionWidget::createPaperEntries()
   << QgsCompositionPaper( tr( "B2 (500 x 707 mm)" ), 500, 707 )
   << QgsCompositionPaper( tr( "B1 (707 x 1000 mm)" ), 707, 1000 )
   << QgsCompositionPaper( tr( "B0 (1000 x 1414 mm)" ), 1000, 1414 )
-  << QgsCompositionPaper( tr( "Legal (8.5x14 inches)" ), 216, 356 )
-  << QgsCompositionPaper( tr( "ANSI A (Letter; 8.5x11 inches)" ),  216, 279 )
-  << QgsCompositionPaper( tr( "ANSI B (Tabloid; 11x17 inches)" ),  279, 432 )
-  << QgsCompositionPaper( tr( "ANSI C (17x22 inches)" ),  432, 559 )
-  << QgsCompositionPaper( tr( "ANSI D (22x34 inches)" ),  559, 864 )
-  << QgsCompositionPaper( tr( "ANSI E (34x44 inches)" ),  864, 1118 )
-  << QgsCompositionPaper( tr( "Arch A (9x12 inches)" ),  229, 305 )
-  << QgsCompositionPaper( tr( "Arch B (12x18 inches)" ), 305, 457 )
-  << QgsCompositionPaper( tr( "Arch C (18x24 inches)" ), 457, 610 )
-  << QgsCompositionPaper( tr( "Arch D (24x36 inches)" ), 610, 914 )
-  << QgsCompositionPaper( tr( "Arch E (36x48 inches)" ), 914, 1219 )
-  << QgsCompositionPaper( tr( "Arch E1 (30x42 inches)" ), 762, 1067 )
+  // North american formats
+  << QgsCompositionPaper( tr( "Legal (8.5x14 inches)" ), 215.9, 355.6 )
+  << QgsCompositionPaper( tr( "ANSI A (Letter; 8.5x11 inches)" ), 215.9, 279.4 )
+  << QgsCompositionPaper( tr( "ANSI B (Tabloid; 11x17 inches)" ), 279.4, 431.8 )
+  << QgsCompositionPaper( tr( "ANSI C (17x22 inches)" ), 431.8, 558.8 )
+  << QgsCompositionPaper( tr( "ANSI D (22x34 inches)" ), 558.8, 863.6 )
+  << QgsCompositionPaper( tr( "ANSI E (34x44 inches)" ), 863.6, 1117.6 )
+  << QgsCompositionPaper( tr( "Arch A (9x12 inches)" ), 228.6, 304.8 )
+  << QgsCompositionPaper( tr( "Arch B (12x18 inches)" ), 304.8, 457.2 )
+  << QgsCompositionPaper( tr( "Arch C (18x24 inches)" ), 457.2, 609.6 )
+  << QgsCompositionPaper( tr( "Arch D (24x36 inches)" ), 609.6, 914.4 )
+  << QgsCompositionPaper( tr( "Arch E (36x48 inches)" ), 914.4, 1219.2 )
+  << QgsCompositionPaper( tr( "Arch E1 (30x42 inches)" ), 762, 1066.8 )
   ;
 
   mPaperSizeComboBox->blockSignals( true );
@@ -257,12 +260,12 @@ void QgsCompositionWidget::setSize( QLineEdit *le, double v )
   if ( mPaperUnitsComboBox->currentIndex() == 0 )
   {
     // mm
-    le->setText( QString::number( v ) );
+    le->setText( QString("%1").arg( v ) );
   }
   else
   {
     // inch (show width in inch)
-    le->setText( QString::number( v / 25.4 ) );
+    le->setText( QString("%1").arg( v / 25.4 ) );
   }
 }
 
@@ -369,11 +372,12 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
     QgsCompositionPaper currentPaper = paper_it.value();
 
     //consider width and height values may be exchanged
-    if (( currentPaper.mWidth == paperWidth && currentPaper.mHeight == paperHeight )
-        || ( currentPaper.mWidth == paperHeight && currentPaper.mHeight == paperWidth ) )
+    if (( doubleNear( currentPaper.mWidth, paperWidth ) && doubleNear( currentPaper.mHeight, paperHeight ) )
+        || ( doubleNear( currentPaper.mWidth, paperHeight ) && doubleNear( currentPaper.mHeight, paperWidth ) ) )
     {
       mPaperSizeComboBox->setCurrentIndex( mPaperSizeComboBox->findText( paper_it.key() ) );
       found = true;
+      break;
     }
   }
 
