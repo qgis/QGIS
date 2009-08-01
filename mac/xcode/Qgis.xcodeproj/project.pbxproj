@@ -4652,7 +4652,6 @@
 		7209EB400F39E57B003DC336 /* qgsgrassselectbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgrassselectbase.ui; path = ../../src/plugins/grass/qgsgrassselectbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EB410F39E57B003DC336 /* qgsgrassshell.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgrassshell.cpp; path = ../../src/plugins/grass/qgsgrassshell.cpp; sourceTree = SOURCE_ROOT; };
 		7209EB420F39E57B003DC336 /* qgsgrassshell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgrassshell.h; path = ../../src/plugins/grass/qgsgrassshell.h; sourceTree = SOURCE_ROOT; };
-		7209EB430F39E57B003DC336 /* qgsgrassshellbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgrassshellbase.ui; path = ../../src/plugins/grass/qgsgrassshellbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EB440F39E57B003DC336 /* qgsgrasstools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgrasstools.cpp; path = ../../src/plugins/grass/qgsgrasstools.cpp; sourceTree = SOURCE_ROOT; };
 		7209EB450F39E57B003DC336 /* qgsgrasstools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgrasstools.h; path = ../../src/plugins/grass/qgsgrasstools.h; sourceTree = SOURCE_ROOT; };
 		7209EB460F39E57B003DC336 /* qgsgrasstoolsbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgrasstoolsbase.ui; path = ../../src/plugins/grass/qgsgrasstoolsbase.ui; sourceTree = SOURCE_ROOT; };
@@ -8708,7 +8707,6 @@
 				7209EB400F39E57B003DC336 /* qgsgrassselectbase.ui */,
 				7209EB410F39E57B003DC336 /* qgsgrassshell.cpp */,
 				7209EB420F39E57B003DC336 /* qgsgrassshell.h */,
-				7209EB430F39E57B003DC336 /* qgsgrassshellbase.ui */,
 				7209EB440F39E57B003DC336 /* qgsgrasstools.cpp */,
 				7209EB450F39E57B003DC336 /* qgsgrasstools.h */,
 				7209EB460F39E57B003DC336 /* qgsgrasstoolsbase.ui */,
