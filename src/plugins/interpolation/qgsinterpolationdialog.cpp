@@ -146,6 +146,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     if ( interpolationAttString == "Z_COORD" )
     {
       currentLayerData.zCoordInterpolation = true;
+      currentLayerData.interpolationAttribute = -1;
     }
     else
     {

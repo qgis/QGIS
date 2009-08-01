@@ -25,6 +25,11 @@
 #include "qgsvectorlayer.h"
 #include <QProgressDialog>
 
+#ifndef Q_OS_MACX
+#include <cmath>
+#else
+#include <math.h>
+#endif
 #ifdef WIN32
 #include <float.h>
 #define isnan(f) _isnan(f)
@@ -243,9 +248,10 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       }
       break;
     }
+    default:
+      //todo: add the same for multiline, polygon, multipolygon
+      break;
   }
-
-  //todo: add the same for multiline, polygon, multipolygon
 
   return 0;
 }
