@@ -23,6 +23,8 @@ class QgsVertexMarker;
 
 class QgsMapToolDeleteRing : public QgsMapToolVertexEdit
 {
+  Q_OBJECT
+
   public:
     QgsMapToolDeleteRing( QgsMapCanvas* canvas );
     virtual ~QgsMapToolDeleteRing();

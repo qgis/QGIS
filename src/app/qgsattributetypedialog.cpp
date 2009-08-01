@@ -25,6 +25,8 @@
 
 #include <QTableWidgetItem>
 
+#include <climits>
+#include <cfloat>
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
     : QDialog(),
@@ -123,80 +125,49 @@ void QgsAttributeTypeDialog::loadFromLayerButtonPushed()
 }
 
 
-void QgsAttributeTypeDialog::setPageForIndex( int index )
+void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editType )
 {
-  if ( mLayer->editType( index ) ==  QgsVectorLayer::LineEdit )
+  switch ( editType )
   {
-    setPage( 0 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::Classification )
-  {
-    setPage( 1 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::EditRange ||
-            mLayer->editType( index ) == QgsVectorLayer::SliderRange )
-  {
-    setPage( 2 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::UniqueValues ||
-            mLayer->editType( index ) == QgsVectorLayer::UniqueValuesEditable )
-  {
-    setPage( 3 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::FileName )
-  {
-    setPage( 4 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::ValueMap )
-  {
-    setPage( 5 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::Enumeration )
-  {
-    setPage( 6 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::Immutable )
-  {
-    setPage( 7 );
+    case QgsVectorLayer::Classification:
+      setPage( 1 );
+      break;
+
+    case QgsVectorLayer::EditRange:
+    case QgsVectorLayer::SliderRange:
+      setPage( 2 );
+      break;
+
+    case QgsVectorLayer::UniqueValues:
+    case QgsVectorLayer::UniqueValuesEditable:
+      setPage( 3 );
+      break;
+
+    case QgsVectorLayer::FileName:
+      setPage( 4 );
+      break;
+
+    case QgsVectorLayer::ValueMap:
+      setPage( 5 );
+      break;
+
+    case QgsVectorLayer::Enumeration:
+      setPage( 6 );
+      break;
+
+    case QgsVectorLayer::Immutable:
+      setPage( 7 );
+      break;
+
+    case QgsVectorLayer::LineEdit:
+      setPage( 0 );
+      break;
   }
 }
 
-void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editType )
+void QgsAttributeTypeDialog::setPageForIndex( int index )
 {
-  if ( editType ==  QgsVectorLayer::LineEdit )
-  {
-    setPage( 0 );
-  }
-  else if ( editType == QgsVectorLayer::Classification )
-  {
-    setPage( 1 );
-  }
-  else if ( editType == QgsVectorLayer::EditRange ||
-            editType == QgsVectorLayer::SliderRange )
-  {
-    setPage( 2 );
-  }
-  else if ( editType == QgsVectorLayer::UniqueValues ||
-            editType == QgsVectorLayer::UniqueValuesEditable )
-  {
-    setPage( 3 );
-  }
-  else if ( editType == QgsVectorLayer::FileName )
-  {
-    setPage( 4 );
-  }
-  else if ( editType == QgsVectorLayer::ValueMap )
-  {
-    setPage( 5 );
-  }
-  else if ( editType == QgsVectorLayer::Enumeration )
-  {
-    setPage( 6 );
-  }
-  else if ( editType == QgsVectorLayer::Immutable )
-  {
-    setPage( 7 );
-  }
+  setPageForEditType( mLayer->editType( index ) );
 }
 
 void QgsAttributeTypeDialog::setValueMap( QMap<QString, QVariant> valueMap )
@@ -234,15 +205,9 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
   if ( mLayer->pendingFields()[index].type() == QVariant::Int )
   {
     sliderRadioButton->setDisabled( false );
-    int min;
-    int max;
-    //filling initial values
-    if ( mLayer->nextFeature( f ) )
-    {
-      min = f.attributeMap()[index].toInt();
-      max = f.attributeMap()[index].toInt();
-    }
-    for ( ; mLayer->nextFeature( f ); )
+    int min = INT_MIN;
+    int max = INT_MAX;
+    while ( mLayer->nextFeature( f ) )
     {
       QVariant val = f.attributeMap()[index];
       if ( val.isValid() && !val.isNull() )
@@ -258,18 +223,12 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
   }
   else if ( mLayer->pendingFields()[index].type() == QVariant::Double )
   {
-    double dMin;
-    double dMax;
-
-    if ( mLayer->nextFeature( f ) )
-    {
-      dMin = f.attributeMap()[index].toDouble();
-      dMax = f.attributeMap()[index].toDouble();
-    }
+    double dMin = -DBL_MAX;
+    double dMax = DBL_MAX;
 
     sliderRadioButton->setDisabled( true );
     editableRadioButton->setChecked( true );
-    for ( ; mLayer->nextFeature( f ); )
+    while ( mLayer->nextFeature( f ) )
     {
       QVariant val = f.attributeMap()[index];
       if ( val.isValid() && !val.isNull() )

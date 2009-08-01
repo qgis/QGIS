@@ -135,6 +135,11 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolmovefeature.h
   qgsmaptoolnodetool.h
   qgsmaptoolselect.h
+  qgsmaptooladdvertex.h
+  qgsmaptooldeletering.h
+  qgsmaptooldeletepart.h
+  qgsmaptooldeletevertex.h
+  qgsmaptoolmovevertex.h
   qgsmaptoolsimplify.h
 
   qgsmeasuretool.h

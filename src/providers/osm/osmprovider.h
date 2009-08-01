@@ -27,6 +27,8 @@ typedef QMap<int, QgsFeature> QgsFeatureMap;
 
 class QgsOSMDataProvider: public QgsVectorDataProvider
 {
+  Q_OBJECT
+
   public:
 
     /**
