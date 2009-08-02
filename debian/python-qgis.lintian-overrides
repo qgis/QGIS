@@ -1,3 +1,2 @@
 python-qgis: package-name-doesnt-match-sonames
 python-qgis: non-dev-pkg-with-shlib-symlink
-python-qgis: no-symbols-control-file usr/lib/libqgispython.so.1.1

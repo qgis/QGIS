@@ -1,3 +1,2 @@
 qgis-plugin-grass: binary-without-manpage
 qgis-plugin-grass: package-name-doesnt-match-sonames
-qgis-plugin-grass: no-symbols-control-file usr/lib/libqgisgrass.so.1.1
