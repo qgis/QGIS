@@ -44,5 +44,6 @@ tar -xvf i18n/qt_ts.tar
 rm i18n/qt_ts.tar
 if [ -f i18n/qgis_ts.tar ]; then
   echo Unpacking i18n/qgis_ts.tar
+  tar -xvf i18n/qgis_ts.tar 
   rm i18n/qgis_ts.tar
 fi
