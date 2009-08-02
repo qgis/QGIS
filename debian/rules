@@ -21,6 +21,8 @@ CMAKE_OPTS = \
 	-D WITH_SPATIALITE=TRUE \
 	-D WITH_INTERNAL_SPATIALITE=TRUE
 
+LDFLAGS += -Wl,--as-needed -Wl,--no-undefined
+
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
 else
