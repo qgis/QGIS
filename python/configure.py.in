@@ -9,10 +9,6 @@ build_path = '@CMAKE_BINARY_DIR@'
 python_path = src_path + '/python'
 gdal_inc_dir = '@GDAL_INCLUDE_DIR@'
 geos_inc_dir = '@GEOS_INCLUDE_DIR@'
-geos_library = '@GEOS_LIB_NAME@'
-geos_library_path = '@GEOS_LIB_PATH@'
-gdal_library = '@GDAL_LIB_NAME@'
-gdal_library_path = '@GDAL_LIB_PATH@'
 
 qt_libs = ["QtCore","QtGui","QtNetwork","QtSvg","QtXml"]
 if sys.platform == 'darwin':
@@ -127,15 +123,7 @@ makefile_gui = sipconfig.ModuleMakefile(
 # common settings for both core and gui libs
 for mk in [ makefile_core, makefile_gui ]:
   mk.extra_libs = ["qgis_core"]
-  if geos_library!="":
-    mk.extra_libs.append(geos_library)
-  if gdal_library!="":
-    mk.extra_libs.append(gdal_library)
   mk.extra_lib_dirs = [build_path+"/src/core"+intdir]
-  if geos_library_path!="":
-    mk.extra_lib_dirs.append(geos_library_path)
-  if gdal_library_path!="":
-    mk.extra_lib_dirs.append(gdal_library_path)
   mk.extra_include_dirs = [src_path+"/src/core", src_path+"/src/core/composer", 
                            src_path+"/src/core/raster",
                            src_path+"/src/core/renderer",

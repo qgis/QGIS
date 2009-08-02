@@ -107,6 +107,9 @@ ENDIF (NOT BISON_EXECUTABLE)
 #############################################################
 # search for dependencies
 
+# we don't use cblas
+SET(DONT_LINK_CBLAS TRUE)
+
 # required
 FIND_PACKAGE(Proj)
 FIND_PACKAGE(Expat)    # GPS importer plugin

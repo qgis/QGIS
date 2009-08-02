@@ -2950,7 +2950,7 @@ bool QgsPostgresProvider::Conn::closeCursor( QString cursorName )
 
   if ( --openCursors == 0 )
   {
-    QgsDebugMsg( "Commiting read-only transaction" );
+    QgsDebugMsg( "Committing read-only transaction" );
     PQexecNR( "COMMIT" );
   }
 
