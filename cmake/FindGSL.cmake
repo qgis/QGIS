@@ -27,24 +27,30 @@ IF(WIN32)
 
   SET(GSL_MINGW_PREFIX "c:/msys/local" )
   SET(GSL_MSVC_PREFIX "$ENV{LIB_DIR}")
-  FIND_LIBRARY(GSL_LIB gsl PATHS 
-    ${GSL_MINGW_PREFIX}/lib 
-    ${GSL_MSVC_PREFIX}/lib
-    )
-  #MSVC version of the lib is just called 'cblas'
-  FIND_LIBRARY(GSLCBLAS_LIB gslcblas cblas PATHS 
-    ${GSL_MINGW_PREFIX}/lib 
-    ${GSL_MSVC_PREFIX}/lib
-    )
 
   FIND_PATH(GSL_INCLUDE_DIR gsl/gsl_blas.h 
     ${GSL_MINGW_PREFIX}/include 
     ${GSL_MSVC_PREFIX}/include
     )
 
-  IF (GSL_LIB AND GSLCBLAS_LIB)
-    SET (GSL_LIBRARIES ${GSL_LIB} ${GSLCBLAS_LIB})
-  ENDIF (GSL_LIB AND GSLCBLAS_LIB)
+  FIND_LIBRARY(GSL_LIB gsl PATHS 
+    ${GSL_MINGW_PREFIX}/lib 
+    ${GSL_MSVC_PREFIX}/lib
+    )
+
+  IF (DONT_LINK_CBLAS)
+    IF (GSL_LIB)
+      SET (GSL_LIBRARIES ${GSL_LIB} )
+    ENDIF (GSL_LIB)
+  ELSE (DONT_LINK_CBLAS)
+    FIND_LIBRARY(GSLCBLAS_LIB gslcblas cblas PATHS 
+      ${GSL_MINGW_PREFIX}/lib 
+      ${GSL_MSVC_PREFIX}/lib
+      )
+    IF (GSL_LIB AND GSLCBLAS_LIB)
+      SET (GSL_LIBRARIES ${GSL_LIB} ${GSLCBLAS_LIB})
+    ENDIF (GSL_LIB AND GSLCBLAS_LIB)
+  ENDIF (DONT_LINK_CBLAS)
   
 ELSE(WIN32)
   IF(UNIX) 
@@ -55,8 +61,14 @@ ELSE(WIN32)
       /usr/bin/
       )
     # MESSAGE("DBG GSL_CONFIG ${GSL_CONFIG}")
-    
+
     IF (GSL_CONFIG) 
+      IF (DONT_LINK_CBLAS)
+        SET(LIBS_ARG "--libs-without-cblas")
+      ELSE (DONT_LINK_CBLAS)
+        SET(LIBS_ARG "--libs")
+      ENDIF (DONT_LINK_CBLAS)
+    
       # set CXXFLAGS to be fed into CXX_FLAGS by the user:
       SET(GSL_CXX_FLAGS "`${GSL_CONFIG} --cflags`")
       
@@ -68,12 +80,12 @@ ELSE(WIN32)
 
       # set link libraries and link flags
       EXEC_PROGRAM(${GSL_CONFIG}
-          ARGS --libs
+          ARGS ${LIBS_ARG}
           OUTPUT_VARIABLE GSL_LIBRARIES)
       
       ## extract link dirs for rpath  
       EXEC_PROGRAM(${GSL_CONFIG}
-        ARGS --libs
+        ARGS ${LIBS_ARG}
         OUTPUT_VARIABLE GSL_CONFIG_LIBS )
 
       ## split off the link dirs (for rpath)
