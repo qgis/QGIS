@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.1.8
+CURRENT_PROJECT_VERSION = 2.1.9
 
 // SDK not required for native universal build, but recommended,
 // and allows building multiple SDK builds side-by-side
@@ -14,11 +14,11 @@ ARCHS = $(NATIVE_ARCH)
 //////////////////////////////////////////////////////////////////////
 
 // major-minor-patch must be integers for Mac OS X
-QGIS_RELEASE_NAME = Unstable Trunk
+QGIS_RELEASE_NAME = Daphnis
 QGIS_VERSION_MAJOR = 1
 QGIS_VERSION_MINOR = 2
 QGIS_VERSION_PATCH = 0
-QGIS_VERSION_FULL = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR).$(QGIS_VERSION_PATCH)-$(QGIS_VERSION_BUILD)
+QGIS_VERSION_FULL = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR).$(QGIS_VERSION_PATCH)-$(QGIS_RELEASE_NAME)
 QGIS_VERSION_INT = 10200
 
 //////////////////////////////////////////////////////////////////////
@@ -247,7 +247,7 @@ EXPAT_LIB_static = $(EXPAT_PREFIX)/lib/libexpat.a
 EXPAT_LIB = $(EXPAT_LIB_$(EXPAT_FORM))
 
 GSL_INC = $(GSL_PREFIX)/include
-GSL_LIB_shared = -L$(GSL_PREFIX)/lib -lgsl -lgslcblas -lm
+GSL_LIB_shared = -L$(GSL_PREFIX)/lib -lgsl -lm
 GSL_LIB_static = $(GSL_PREFIX)/lib/libgsl.a $(GSL_PREFIX)/lib/libgslcblas.a -lm
 GSL_LIB = $(GSL_LIB_$(GSL_FORM))
 
@@ -289,7 +289,7 @@ SPATIALITE_PROJ_yes_fw = $(PROJ_LIB)
 SPATIALITE_PROJ_yes_shared = $(PROJ_LIB)
 SPATIALITE_INC_internal = ../../src/core/spatialite/headers
 SPATIALITE_INC = $(SPATIALITE_INC_$(SQLITE_FORM))
-SPATIALITE_LIBADD_internal = -liconv
+SPATIALITE_LIBADD_internal = -liconv -ldl
 SPATIALITE_LIBADD = $(SPATIALITE_GEOS_$(SPATIALITE_GEOS)_$(SQLITE_FORM)) $(SPATIALITE_PROJ_$(SPATIALITE_PROJ)_$(SQLITE_FORM)) $(SPATIALITE_LIBADD_$(SQLITE_FORM))
 
 PYTHON_PREFIX_fw = /Library/Frameworks/Python.framework
