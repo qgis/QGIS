@@ -285,6 +285,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
                               .arg( mOldClassificationAttribute ).arg( attributeName ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
+    mClassListWidget->clearSelection();
     deleteSelectedClasses();
   }
   mOldClassificationAttribute = attributeName;
