@@ -50,6 +50,9 @@ class QgsSingleSymbolDialog: public QDialog, private Ui::QgsSingleSymbolDialogBa
     QgsVectorLayer* mVectorLayer;
     bool mDisabled;
 
+    // Reimplements dialog keyPress event so we can ignore it
+    void keyPressEvent( QKeyEvent * event );
+
   public slots:
     /* arrange the widgets on this dialog to reflect the current state of QgsSymbol */
     void unset();

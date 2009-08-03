@@ -27,7 +27,7 @@
 #include "qgslogger.h"
 
 #include <QColorDialog>
-
+#include <QKeyEvent>
 
 QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
     : QDialog(), mVectorLayer( layer )
@@ -202,4 +202,13 @@ void QgsContinuousColorDialog::on_cb_polygonOutline_clicked()
     outlinewidthspinbox->setEnabled( true );
   else
     outlinewidthspinbox->setEnabled( false );
+}
+
+void QgsContinuousColorDialog::keyPressEvent( QKeyEvent * e )
+{
+  // Ignore the ESC key to avoid close the dialog without the properties window
+  if ( e->key() == Qt::Key_Escape )
+  {
+    e->ignore();
+  }
 }

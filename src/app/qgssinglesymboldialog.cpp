@@ -31,6 +31,7 @@
 #include <QImage>
 #include <QFileDialog>
 #include <QListWidgetItem>
+#include <QKeyEvent>
 
 #define DO_NOT_USE_STR "<off>"
 
@@ -636,3 +637,11 @@ void QgsSingleSymbolDialog::fillStyleChanged( int theIndex )
 
 }
 
+void QgsSingleSymbolDialog::keyPressEvent( QKeyEvent * e )
+{
+  // Ignore the ESC key to avoid close the dialog without the properties window
+  if ( e->key() == Qt::Key_Escape )
+  {
+    e->ignore();
+  }
+}

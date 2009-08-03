@@ -28,6 +28,8 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 
+#include <QKeyEvent>
+
 QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QDialog(), mVectorLayer( layer ), sydialog( layer )
 {
   setupUi( this );
@@ -596,5 +598,14 @@ void QgsGraduatedSymbolDialog::updateEntryIcon( QgsSymbol * thepSymbol,
     default: //unknown
       //do nothing
       ;
+  }
+}
+
+void QgsGraduatedSymbolDialog::keyPressEvent( QKeyEvent * e )
+{
+  // Ignore the ESC key to avoid close the dialog without the properties window
+  if ( e->key() == Qt::Key_Escape )
+  {
+    e->ignore();
   }
 }
