@@ -318,11 +318,19 @@ bool QgsOgrProvider::featureAtId( int featureId,
     return false;
 
   feature.setFeatureId( OGR_F_GetFID( fet ) );
+  // skip features without geometry
+  if ( OGR_F_GetGeometryRef( fet ) == NULL && !mFetchFeaturesWithoutGeom )
+  {
+    OGR_F_Destroy( fet );
+    return false;
+  }
+
 
   /* fetch geometry */
   if ( fetchGeometry )
   {
     OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
+    // skip features without geometry
 
     // get the wkb representation
     unsigned char *wkb = new unsigned char[OGR_G_WkbSize( geom )];
@@ -337,8 +345,15 @@ bool QgsOgrProvider::featureAtId( int featureId,
     getFeatureAttribute( fet, feature, *it );
   }
 
+  if ( OGR_F_GetGeometryRef( fet ) != NULL )
+  {
+    feature.setValid( true );
+  }
+  else
+  {
+    feature.setValid( false );
+  }
   OGR_F_Destroy( fet );
-  feature.setValid( true );
   return true;
 }
 
@@ -414,8 +429,15 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
 
   if ( fet )
   {
+    if ( OGR_F_GetGeometryRef( fet ) != NULL )
+    {
+      feature.setValid( true );
+    }
+    else
+    {
+      feature.setValid( false );
+    }
     OGR_F_Destroy( fet );
-    feature.setValid( true );
     return true;
   }
   else
