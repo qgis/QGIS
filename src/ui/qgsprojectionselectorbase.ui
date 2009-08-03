@@ -164,30 +164,18 @@
    </item>
    <item row="3" column="0" >
     <widget class="QPushButton" name="pbnPopular1">
-     <property name="text" >
-      <string>CRS ID : 100000</string>
-     </property>
     </widget>
    </item>     
    <item row="4" column="0" >
     <widget class="QPushButton" name="pbnPopular2">
-     <property name="text" >
-      <string>CRS ID : 3344</string>
-     </property>
     </widget>
    </item>     
    <item row="5" column="0" >
     <widget class="QPushButton" name="pbnPopular3">
-     <property name="text" >
-      <string>CRS ID : whatever</string>
-     </property>
     </widget>
    </item>     
    <item row="6" column="0" >
     <widget class="QPushButton" name="pbnPopular4">
-     <property name="text" >
-      <string>CRS ID : whatever</string>
-     </property>
     </widget>
    </item>     
   </layout>
