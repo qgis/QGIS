@@ -74,7 +74,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   connect( lstSymbols, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
            this, SLOT( symbolChanged( QListWidgetItem *, QListWidgetItem * ) ) );
   connect( mPointSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
-  connect( mPointSizeUnitsCheckBox, SIGNAL( toggled() ), this, SLOT( resendSettingsChanged() ) );
+  connect( mPointSizeUnitsCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mRotationClassificationComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
            this, SLOT( resendSettingsChanged() ) );
   connect( mScaleClassificationComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
