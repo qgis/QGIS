@@ -109,7 +109,7 @@ copy preremove.bat %OSGEO4W_ROOT%\etc\preremove\qgis-dev.bat
 copy qgis-dev.bat.tmpl %OSGEO4W_ROOT%\bin\qgis-dev.bat.tmpl
 
 tar -C %OSGEO4W_ROOT% -cjf qgis-dev-%VERSION%-%PACKAGE%.tar.bz2 ^
-	--exclude "apps/qgis-dev/plugins/EDBSQuery.dll" ^
+	--exclude-from exclude ^
 	apps/qgis-dev ^
 	bin/qgis-dev.bat.tmpl ^
 	etc/postinstall/qgis-dev.bat ^
