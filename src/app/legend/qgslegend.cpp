@@ -138,6 +138,10 @@ void QgsLegend::selectAll( bool select )
     return;
   }
 
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  mMapCanvas->setRenderFlag( false );
+
   QTreeWidgetItem* theItem = firstItem();
 
   while ( theItem )
@@ -150,6 +154,8 @@ void QgsLegend::selectAll( bool select )
     }
     theItem = nextItem( theItem );
   }
+  // Turn on rendering (if it was on previously)
+  mMapCanvas->setRenderFlag( renderFlagState );
 }
 
 void QgsLegend::removeLayer( QString layer_key )
