@@ -20,8 +20,8 @@
 #define QGIS_H
 #include <QEvent>
 #include <QString>
-#include <cmath>
 #include <cfloat>
+
 /** \ingroup core
  * The QGis class provides global constants for use throughout the application.
  */
