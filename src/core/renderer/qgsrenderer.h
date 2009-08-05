@@ -72,7 +72,11 @@ class CORE_EXPORT QgsRenderer
 
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
       @note added in 1.2 */
-    virtual void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected ) = 0;
+    //void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected )
+    //{
+    //  void renderFeature( renderContext, f, pic, selected, 255); 
+    //}
+    virtual void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity = 1.0 ) = 0;
 
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read

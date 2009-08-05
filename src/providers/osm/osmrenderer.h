@@ -40,7 +40,7 @@ class OsmRenderer : public QgsRenderer
     bool willRenderFeature( QgsFeature *f );
 
     // A vector layer passes features to a renderer object to change the brush and pen of the qpainter.
-    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected );
+    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity = 1.0 );
 
     // Reads the renderer configuration from an XML file.
     int readXML( const QDomNode &rnode, QgsVectorLayer &vl );

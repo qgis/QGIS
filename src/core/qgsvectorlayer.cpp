@@ -739,7 +739,13 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
         //QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
         // markerScalerFactore reflects the wanted scaling of the marker
-        mRenderer->renderFeature( rendererContext, fet, &marker, sel );
+
+        double opacity = 1.0;
+        if ( !mRenderer->usesTransparency() )
+        {
+          opacity = ( mTransparencyLevel * 1.0) / 255.0;
+        }
+        mRenderer->renderFeature( rendererContext, fet, &marker, sel, opacity );
 
         // markerScalerFactore now reflects the actual scaling of the marker that the render performed.
         //QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));

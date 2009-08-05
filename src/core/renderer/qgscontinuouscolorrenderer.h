@@ -38,7 +38,7 @@ class CORE_EXPORT QgsContinuousColorRenderer: public QgsRenderer
 
     /**Renders the feature using the minimum and maximum value of the classification field
      * added in 1.2 */
-    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected );
+    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected, double opacity = 1.0 );
 
     /**Returns the number of the classification field*/
     int classificationField() const;

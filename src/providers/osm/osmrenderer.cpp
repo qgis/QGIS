@@ -92,7 +92,7 @@ bool OsmRenderer::willRenderFeature( QgsFeature *f )
 }
 
 
-void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected )
+void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity )
 {
 //    QgsDebugMsg("RENDERING FEAT:" + f.id());
   QPainter* p = renderContext.painter();
@@ -104,7 +104,7 @@ void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f,
     QPen pen = osmstyle.get_pen( tags );
     QColor penColor = pen.color();
     p->setPen( osmstyle.get_pen( tags ) );
-    p->setOpacity( 1.0 );
+    p->setOpacity( opacity );
   }
   else if ( mGeomType == QGis::Polygon )
   {
@@ -112,12 +112,12 @@ void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f,
     p->setPen( osmstyle.get_pen_brush( tags, br ) );
     p->setBrush( br );
     p->setBackgroundMode( Qt::TransparentMode );
-    p->setOpacity( 0.5 );
+    p->setOpacity( opacity );
   }
   else if ( mGeomType == QGis::Point )
   {
     *pic = osmstyle.get_image( tags );
-    p->setOpacity( 1.0 );
+    p->setOpacity( opacity  );
   }
 }
 

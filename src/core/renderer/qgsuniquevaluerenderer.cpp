@@ -105,7 +105,7 @@ bool QgsUniqueValueRenderer::willRenderFeature( QgsFeature *f )
   return ( symbolForFeature( f ) != 0 );
 }
 
-void QgsUniqueValueRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected )
+void QgsUniqueValueRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected, double opacity )
 {
   QPainter *p = renderContext.painter();
   QgsSymbol* symbol = symbolForFeature( &f );
@@ -152,7 +152,8 @@ void QgsUniqueValueRenderer::renderFeature( QgsRenderContext &renderContext, Qgs
     }
 
     *img = symbol->getPointSymbolAsImage( renderContext.scaleFactor(), selected, mSelectionColor,
-                                          fieldScale, rotation, renderContext.rasterScaleFactor() );
+                                          fieldScale, rotation, renderContext.rasterScaleFactor(),
+                                          opacity );
     if ( !oldName.isNull() )
     {
       symbol->setNamedPointSymbol( oldName );

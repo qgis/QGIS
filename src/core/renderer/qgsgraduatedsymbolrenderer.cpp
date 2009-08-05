@@ -116,7 +116,7 @@ bool QgsGraduatedSymbolRenderer::willRenderFeature( QgsFeature *f )
   return ( symbolForFeature( f ) != 0 );
 }
 
-void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature & f, QImage* img, bool selected )
+void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature & f, QImage* img, bool selected, double opacity )
 {
   QPainter *p = renderContext.painter();
   QgsSymbol* theSymbol = symbolForFeature( &f );
@@ -165,7 +165,8 @@ void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext,
       oldName = theSymbol->pointSymbolName();
       theSymbol->setNamedPointSymbol( name );
     }
-    *img = theSymbol->getPointSymbolAsImage( renderContext.scaleFactor(), selected, mSelectionColor, fieldScale, rotation, renderContext.rasterScaleFactor() );
+    *img = theSymbol->getPointSymbolAsImage( renderContext.scaleFactor(), selected, mSelectionColor, fieldScale,
+                                             rotation, renderContext.rasterScaleFactor(), opacity );
 
     if ( !oldName.isNull() )
     {
