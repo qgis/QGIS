@@ -12,7 +12,7 @@ class QgsContinuousColorRenderer : QgsRenderer
     virtual ~QgsContinuousColorRenderer();
     /**Renders the feature using the minimum and maximum value of the classification field
       * added in 1.2 */
-    void renderFeature(QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected);
+    void renderFeature(QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected, double opacity = 1.0 );
     /**Returns the number of the classification field*/
     int classificationField() const;
     /**Sets the id of the classification field*/
