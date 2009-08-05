@@ -94,7 +94,7 @@ void QgsSingleSymbolRenderer::addSymbol( QgsSymbol *sy )
   updateSymbolAttributes();
 }
 
-void QgsSingleSymbolRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature & f, QImage* img, bool selected )
+void QgsSingleSymbolRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature & f, QImage* img, bool selected, double opacity )
 {
   QPainter *p = renderContext.painter();
 
@@ -156,7 +156,7 @@ void QgsSingleSymbolRenderer::renderFeature( QgsRenderContext &renderContext, Qg
       scale *= ( x2 - x1 ) * 0.001;
     }
 
-    *img = sy->getPointSymbolAsImage( scale, selected, mSelectionColor, fieldScale, rotation, renderContext.rasterScaleFactor() );
+    *img = sy->getPointSymbolAsImage( scale, selected, mSelectionColor, fieldScale, rotation, renderContext.rasterScaleFactor(), opacity );
   }
 
   // Line, polygon
