@@ -783,6 +783,8 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
 {
   QgsMapLayer* currentLayer = mCanvas->currentLayer();
   QgsVectorLayer* vlayer = 0;
+  int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+  QMultiMap<double, QgsSnappingResult> currentResultList;
   if ( currentLayer )
   {
     vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
@@ -805,11 +807,31 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
       {
         QgsPoint coords = snapResults.first().snappedVertex;
         QgsPoint layerCoords = toLayerCoordinates( vlayer, coords );
-        //QgsPoint coords = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(),  e->pos().y() );
-        //add vertex
+        if ( topologicalEditing )
+        {
+          //snapp from adding position to this vertex when topological editing is enabled
+          currentResultList.clear();
+          vlayer->snapWithContext( layerCoords, ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToSegment );
+        }
+
         vlayer->beginEditCommand( tr( "Inserted vertex" ) );
         mChangingGeometry = true;
+
+        //add vertex
         vlayer->insertVertex( layerCoords.x(), layerCoords.y(), mSelectionFeature->featureId(), snapResults.first().afterVertexNr );
+
+        if ( topologicalEditing )
+        {
+          QMultiMap<double, QgsSnappingResult>::iterator resultIt =  currentResultList.begin();
+
+          for ( ; resultIt != currentResultList.end(); ++resultIt )
+          {
+            //create vertexes on same position when topological editing is enabled
+            if ( mSelectionFeature->featureId() !=  resultIt.value().snappedAtGeometry )
+              vlayer->insertVertex( layerCoords.x(), layerCoords.y(), resultIt.value().snappedAtGeometry, resultIt.value().afterVertexNr );
+          }
+        }
+
         vlayer->endEditCommand();
 
         mSelectionFeature->updateFromFeature();
