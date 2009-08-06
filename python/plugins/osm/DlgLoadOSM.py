@@ -135,8 +135,6 @@ class DlgLoadOSM(QDialog, Ui_DlgLoadOSM):
             # remove layers of current data first 
             QgsMapLayerRegistry.instance().removeMapLayer(self.canvas.currentLayer().getLayerID(),True)
 
-        tags = "&tags=yes"
-
         if self.chkCustomRenderer.isChecked():
             styleFile=self.styleFiles[self.styleCombo.currentIndex()]
             style="&style="+styleFile
@@ -160,7 +158,7 @@ class DlgLoadOSM(QDialog, Ui_DlgLoadOSM):
         self.setProperty("osm_stop_parsing",QVariant(0))
 
         # add polygon layer
-        polygonLayer = QgsVectorLayer(self.fname+"?type=polygon"+observer + tags + tag + style, basename+" polygons", "osm")
+        polygonLayer = QgsVectorLayer(self.fname+"?type=polygon"+observer + tag + style, basename+" polygons", "osm")
 
         if self.loadingCanceled:
             polygonLayer=None
@@ -174,7 +172,7 @@ class DlgLoadOSM(QDialog, Ui_DlgLoadOSM):
         QgsMapLayerRegistry.instance().addMapLayer(polygonLayer)
 
         # add line layer
-        lineLayer = QgsVectorLayer(self.fname+"?type=line"+observer + tags + tag + style, basename+" lines", "osm")
+        lineLayer = QgsVectorLayer(self.fname+"?type=line"+observer + tag + style, basename+" lines", "osm")
 
         if self.loadingCanceled:
             lineLayer=None
@@ -188,7 +186,7 @@ class DlgLoadOSM(QDialog, Ui_DlgLoadOSM):
         QgsMapLayerRegistry.instance().addMapLayer(lineLayer)
 
         # add point layer
-        pointLayer = QgsVectorLayer(self.fname+"?type=point"+observer + tags + tag + style, basename+" points", "osm")
+        pointLayer = QgsVectorLayer(self.fname+"?type=point"+observer + tag + style, basename+" points", "osm")
 
         if self.loadingCanceled:
             pointLayer=None
