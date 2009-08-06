@@ -917,7 +917,7 @@ class DlgUploadOSM(QDialog, Ui_DlgUploadOSM):
         userCommentBytes=userComment.toUtf8()
 
         # create http request's body (create XML with info about uploaded way)
-        requestXml=QString("<osm>\n<changeset>\n<tag k=\"created_by\" v=\"qgis plugin\"/>\n<tag k=\"comment\" v=\""+userCommentBytes.data()+"\"/>\n</changeset>\n</osm>")
+        requestXml=QString("<osm>\n<changeset>\n<tag k=\"created_by\" v=\"QGIS OSM v0.4\"/>\n<tag k=\"comment\" v=\""+userCommentBytes.data()+"\"/>\n</changeset>\n</osm>")
 
         # send prepared request
         requestBytes=requestXml.toAscii()
