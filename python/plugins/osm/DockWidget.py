@@ -1,5 +1,5 @@
 """@package DockWidget
-This module is descendant of "OSM Feature" dockable widget (in Quantum GIS) and makes user able
+This module is descendant of "OSM Feature" dockable widget and makes user able
 to view and edit information on selected OSM feature.
 
 DockWidget module shows details of selected feature - its basic info, tags and relations.
@@ -43,6 +43,10 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
+        self.plugin=plugin
+        self.__mapTool=None
+        self.__dlgAddRel=None
+
         # set icons for tool buttons (identify,move,createPoint,createLine,createPolygon)
         self.identifyButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_identify.png"))
         self.moveButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_move.png"))
@@ -55,6 +59,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.undoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_undo.png"))
         self.redoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_redo.png"))
 
+        # initializing group of edit buttons
         self.toolButtons=QButtonGroup(self)
         self.dummyButton.setVisible(False)
         self.toolButtons.addButton(self.dummyButton)
@@ -65,16 +70,16 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.toolButtons.addButton(self.createPolygonButton)
         self.toolButtons.setExclusive(True)
 
-        self.tagsTableWidget.setColumnCount(2)
-        self.tagsTableWidget.setHorizontalHeaderItem(0,QTableWidgetItem("Key"))
-        self.tagsTableWidget.setHorizontalHeaderItem(1,QTableWidgetItem("Value"))
-        self.newTagLabel = "<new tag here>"
+        # initializing table of feature tags
+        self.tagTable.setColumnCount(2)
+        self.tagTable.setHorizontalHeaderItem(0,QTableWidgetItem("Key"))
+        self.tagTable.setHorizontalHeaderItem(1,QTableWidgetItem("Value"))
+        self.tagTable.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.tagTable.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.newTagLabel="<new tag here>"
+        self.relTagsTree.setSelectionMode(QAbstractItemView.NoSelection)
 
-        self.plugin=plugin
-        self.__mapTool=None
-        self.__dlgAddRel=None
-
-        # get qgis settings of line width and color for rubberband
+        # initializing rubberbands/vertexmarkers; getting qgis settings of line width and color for rubberbands
         settings=QSettings()
         qgsLineWidth=settings.value( "/qgis/digitizing/line_width", QVariant(10) ).toInt()
         qgsLineRed=settings.value( "/qgis/digitizing/line_color_red", QVariant(255) ).toInt()
@@ -94,7 +99,6 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.verMarker.setIconSize(13)
         self.verMarker.setColor(QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]))
         self.verMarker.setPenWidth(qgsLineWidth[0])
-
         self.verMarkers=[]
 
         self.relRubBandPol=QgsRubberBand(plugin.canvas,True)
@@ -111,7 +115,8 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.relVerMarker.setColor(QColor(qgsLineRed[0],50,50))
         self.relVerMarker.setPenWidth(qgsLineWidth[0])
 
-        self.__activeEditButton=self.dummyButton
+        # initializing inner variables
+        self.activeEditButton=self.dummyButton
         self.__tagsLoaded=False
         self.__relTagsLoaded=False
         self.feature=None
@@ -119,8 +124,6 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.featRels=[]
         self.featRelTags=[]
         self.featRelMembers=[]
-
-        self.tagsEditIndex=-1
 
         # clear all widget items
         self.clear()
@@ -130,13 +133,8 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.removeButton.setEnabled(False)
         self.createRelationButton.setCheckable(False)
 
-        self.relTagsTreeWidget.setSelectionMode(QAbstractItemView.NoSelection)
-        self.tagsTableWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.tagsTableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-
         # set current tab to "Properties"
         self.propRelBox.setCurrentIndex(0)
-
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
 
         # init coordinate transform
@@ -214,8 +212,9 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         QObject.connect(self.editRelationButton,  SIGNAL("clicked()"), self.editSelectedRelation)
         QObject.connect(self.removeRelationButton,  SIGNAL("clicked()"), self.removeSelectedRelation)
         QObject.connect(self.deleteTagsButton, SIGNAL("clicked()"), self.removeSelectedTags)
-        QObject.connect(self.tagsTableWidget, SIGNAL("cellChanged(int,int)"), self.__onTagsCellChanged)
-        QObject.connect(self.tagsTableWidget, SIGNAL("itemDoubleClicked(QTableWidgetItem*)"), self.__onTagsItemDoubleClicked)
+        QObject.connect(self.tagTable, SIGNAL("cellChanged(int,int)"), self.__onTagsCellChanged)
+        QObject.connect(self.tagTable, SIGNAL("currentCellChanged(int,int,int,int)"), self.__onCurrentCellChanged)
+        QObject.connect(self.tagTable, SIGNAL("itemDoubleClicked(QTableWidgetItem*)"), self.__onTagsItemDoubleClicked)
         QObject.connect(self.undoButton,  SIGNAL("clicked()"), self.__undo)
         QObject.connect(self.redoButton, SIGNAL("clicked()"), self.__redo)
         QObject.connect(self.urDetailsButton, SIGNAL("clicked()"), self.__urDetailsChecked)
@@ -244,7 +243,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         # if some mapTool is currently set tell it about database changing
         if self.__mapTool:
             self.__mapTool.databaseChanged(dbKey)
-            self.__activeEditButton=self.dummyButton
+            self.activeEditButton=self.dummyButton
 
         # and if new database is None, disable the whole dockwidget
         if not dbKey:
@@ -269,20 +268,19 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.createdLabel.setText("")
 
         # clear table with information about feature's tags
-        self.tagsTableWidget.clear()
-        self.tagsTableWidget.setEnabled(False)
-        self.tagsTableWidget.setRowCount(0)
-        self.tagsTableWidget.setColumnCount(0)
-        self.tagsEditIndex=-1
+        self.tagTable.clear()
+        self.tagTable.setEnabled(False)
+        self.tagTable.setRowCount(0)
+        self.tagTable.setColumnCount(0)
 
         # clear table with info about feature's relations
         self.relListWidget.clear()
-        self.relTagsTreeWidget.clear()
+        self.relTagsTree.clear()
         self.relMembersList.clear()
-        self.relTagsTreeWidget.setColumnCount(0)
+        self.relTagsTree.setColumnCount(0)
 
         self.relListWidget.setEnabled(False)
-        self.relTagsTreeWidget.setEnabled(False)
+        self.relTagsTree.setEnabled(False)
         self.relMembersList.setEnabled(False)
 
         # disable widget buttons
@@ -329,7 +327,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.__mapTool=None
 
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
-        self.__activeEditButton=self.dummyButton
+        self.activeEditButton=self.dummyButton
 
         self.setContentEnabled(False)
         self.plugin.undoredo.setContentEnabled(False)
@@ -362,7 +360,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.__mapTool=None
 
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
-        self.__activeEditButton=self.dummyButton
+        self.activeEditButton=self.dummyButton
 
         self.setContentEnabled(False)
         self.plugin.undoredo.setContentEnabled(False)
@@ -422,17 +420,17 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
             # but we are interested in user actions only
             return
 
-        if row<self.tagsTableWidget.rowCount()-1:
+        if row<self.tagTable.rowCount()-1:
 
             # changing value of tag that already exists
-            key = self.tagsTableWidget.item(row,0).text()
-            value = self.tagsTableWidget.item(row,1).text()
+            key=self.tagTable.item(row,0).text()
+            value=self.tagTable.item(row,1).text()
 
             # store tag's change into database
             self.plugin.undoredo.startAction("Change tag value.")
             self.plugin.dbm.changeTagValue(self.feature.id(),self.featureType,key.toUtf8().data(),value.toUtf8().data())
         else:
-            key = self.tagsTableWidget.item(row,0).text()
+            key = self.tagTable.item(row,0).text()
             if key=="" or key==self.newTagLabel:
                 return
 
@@ -443,9 +441,9 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
                 isAlreadyDef=self.plugin.dbm.isTagDefined(self.feature.id(),self.featureType,key.toUtf8().data())
                 if isAlreadyDef:
                     # such a key already exists for this relation
-                    self.tagsTableWidget.setItem(row,0,QTableWidgetItem(self.newTagLabel))
+                    self.tagTable.setItem(row,0,QTableWidgetItem(self.newTagLabel))
                     QMessageBox.information(self, self.tr("OSM Feature Dock Widget")
-                        ,self.tr("Property with key '%1' already exists for this feature.").arg(key.toUtf8().data()))
+                        ,self.tr("Property '%1' cannot be added twice.").arg(key.toUtf8().data()))
                     return
 
                 # well, insert new tag into database
@@ -454,15 +452,15 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
                 self.__tagsLoaded=False
 
-                self.tagsTableWidget.item(row,0).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-                self.tagsTableWidget.item(row,1).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
+                self.tagTable.item(row,0).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+                self.tagTable.item(row,1).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
 
                 newLastRow = row+1
-                self.tagsTableWidget.setRowCount(row+2)
-                self.tagsTableWidget.setItem(newLastRow,0,QTableWidgetItem(self.newTagLabel))
-                self.tagsTableWidget.setItem(newLastRow,1,QTableWidgetItem(""))
-                self.tagsTableWidget.item(newLastRow,0).setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)
-                self.tagsTableWidget.item(newLastRow,1).setFlags(Qt.ItemIsEnabled)
+                self.tagTable.setRowCount(row+2)
+                self.tagTable.setItem(newLastRow,0,QTableWidgetItem(self.newTagLabel))
+                self.tagTable.setItem(newLastRow,1,QTableWidgetItem(""))
+                self.tagTable.item(newLastRow,0).setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)
+                self.tagTable.item(newLastRow,1).setFlags(Qt.ItemIsEnabled)
 
                 self.__tagsLoaded=True
 
@@ -498,78 +496,557 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         """
 
         if item.column()==0:
+
+            if item.row()<self.tagTable.rowCount()-1:
+                return
+
+            tagValues=self.determineSuitableTagKeys(self.featureType)
+            tagValues.sort()
+            if len(tagValues)>0:
+                valCombo=QComboBox()
+                valCombo.setEditable(True)
+                valCombo.addItems(tagValues)
+                currentComboText=self.tagTable.item(item.row(),0).text()
+                ix=valCombo.findText(currentComboText)
+                valCombo.setCurrentIndex(ix)
+                if ix==-1:
+                    valCombo.setEditText(currentComboText)
+
+                self.tagTable.setCellWidget(item.row(),0,valCombo)
+                QObject.connect(valCombo, SIGNAL("currentIndexChanged(const QString &)"), self.__onTagKeySelectionChanged)
             return
 
-        if self.tagsEditIndex<>None:
-            row=self.tagsEditIndex
-            if row<>-1:
-                value=self.tagsTableWidget.cellWidget(row,1).currentText()
-                self.tagsTableWidget.item(row,1).setText(value)
-                self.tagsTableWidget.removeCellWidget(row,1)
-
-        key=self.tagsTableWidget.item(item.row(),0).text()
+        key=self.tagTable.item(item.row(),0).text()
         tagValues=self.determineSuitableTagValues(self.featureType,key)
+        tagValues.sort()
 
         if len(tagValues)>0:
             valCombo=QComboBox()
             valCombo.setEditable(True)
             valCombo.addItems(tagValues)
-            currentComboText=self.tagsTableWidget.item(item.row(),1).text()
+            currentComboText=self.tagTable.item(item.row(),1).text()
             ix=valCombo.findText(currentComboText)
+            valCombo.setCurrentIndex(ix)
             if ix==-1:
                 valCombo.setEditText(currentComboText)
-            else:
-                valCombo.setCurrentIndex(ix)
 
-            self.tagsTableWidget.setCellWidget(item.row(),1,valCombo)
-            self.tagsEditIndex=item.row()
+            self.tagTable.setCellWidget(item.row(),1,valCombo)
             QObject.connect(valCombo, SIGNAL("currentIndexChanged(const QString &)"), self.__onTagValueSelectionChanged)
 
 
-    def __onTagValueSelectionChanged(self,value):
-        """TODO: Function is called after currentIndexChanged(...) signal is emitted on combobox of table item.
-        This combobox is related to table of relation tags (column Value).
+    def __onCurrentCellChanged(self,curRow,curCol,prevRow,prevCol):
+        """Function is called after currentCellChanged(...) signal is emitted on table of feature tags.
 
-        @param value new current value in combobox
+        @param curRow current row index to tags table
+        @param curCol current column index to tags table
+        @param prevRow previous row index to tags table
+        @param prevCol previous column index to tags table
         """
 
-        row=self.tagsEditIndex
-        self.tagsTableWidget.item(row,1).setText(value)
-        self.tagsTableWidget.removeCellWidget(row,1)
-        self.tagsEditIndex=-1
+        cellWidget=self.tagTable.cellWidget(prevRow,prevCol)
+        if cellWidget==None:
+            return
+
+        self.tagTable.removeCellWidget(prevRow,prevCol)
+
+
+    def __onTagKeySelectionChanged(self,key):
+        """Function is called after currentIndexChanged(...) signal is emitted on combobox in 1st column of tags table.
+
+        @param key key selected in combobox
+        """
+
+        row=self.tagTable.currentRow()
+        col=self.tagTable.currentColumn()
+
+        self.tagTable.item(row,col).setText(key)
+        self.tagTable.removeCellWidget(row,col)
+
+
+    def __onTagValueSelectionChanged(self,value):
+        """Function is called after currentIndexChanged(...) signal is emitted on combobox in 2nd column of tags table.
+
+        @param value value selected in combobox
+        """
+
+        row=self.tagTable.currentRow()
+        col=self.tagTable.currentColumn()
+
+        self.tagTable.item(row,col).setText(value)
+        self.tagTable.removeCellWidget(row,col)
 
 
     def determineSuitableTagValues(self,featType,tagKey):
-        """TODO: Function is used to find typical tag values for given relation type and given key.
-        With help of this function plugin gives advice to user on relation creation.
+        """Function is used to find out typical tag values to given feature type and key.
+        With help of this function plugin gives advice to user on feature tags editing.
+        Information on typical/recommended tag values was taken from wiki.openstreetmap.org.
 
-        @param relType name of relation type
+        @param featType name of feature type; one of 'Point','Line','Polygon'
         @param tagKey key of tag
-        @return list of typical tag values to given relation type
+        @return list of typical values to given feature type and key
+        """
+
+        vals=[]
+        # POINT TAGS
+        if featType=='Point':
+
+            if tagKey=="highway":
+                vals=["services","mini_roundabout","stop","traffic_signals","crossing","incline","incline_steep","ford","bus_stop","turning_circle"
+                     ,"emergency_access_point","speed_camera","motorway_junction","passing_place"]
+
+            elif tagKey=="traffic_calming":
+                vals=["yes","bump","chicane","cushion","hump","rumble_strip","table","choker"]
+
+            elif tagKey=="barrier":
+                vals=["bollard","cycle_barrier","cattle_grid","toll_booth","entrance","gate","stile","sally_port"]
+
+            elif tagKey=="waterway":
+                vals=["dock","lock_gate","turning_point","boatyard","weir"]
+
+            elif tagKey=="lock":
+                vals=["yes"]
+
+            elif tagKey=="railway":
+                vals=["station","halt","tram_stop","crossing","level_crossing","subway_entrance","turntable","buffer_stop"]
+
+            elif tagKey=="aeroway":
+                vals=["aerodrome","terminal","helipad","gate","windsock"]
+
+            elif tagKey=="aerialway":
+                vals=["station"]
+
+            elif tagKey=="power":
+                vals=["tower","station","sub_station","generator"]
+
+            elif tagKey=="man_made":
+                vals=["beacon","crane","gasometer","lighthouse","reservoir_covered","surveillance","survey_point","tower","wastewater_plant","watermill"
+                     ,"water_tower","water_works","windmill","works"]
+
+            elif tagKey=="leisure":
+                vals=["sports_centre ","sports_centre ","stadium","track","pitch","water_park","marina","slipway","fishing","nature_reserve"
+                     ,"park","playground","garden","common","ice_rink","miniature_golf"]
+
+            elif tagKey=="amenity":
+                vals=["restaurant","pub","food_court","fast_food","drinking_water","bbq","biergarten","cafe","kindergarten","school","college"
+                     ,"library","university","ferry_terminal","bicycle_parking","bicycle_rental","bus_station","car_rental","car_sharing","fuel"
+                     ,"grit_bin","parking","signpost","taxi","atm","bank","bureau_de_change","pharmacy","hospital","baby_hatch","dentist","doctors","veterinary"
+                     ,"arts_centre","cinema","fountain","nightclub","studio","theatre","bench","brothel","courthouse","crematorium","embassy","emergency_phone"
+                     ,"fire_station","grave_yard","hunting_stand","place_of_worship","police","post_box","post_office","prison","public_building","recycling"
+                     ,"shelter","telephone","toilets","townhall","vending_machine","waste_basket","waste_disposal"]
+
+            elif tagKey=="shop":
+                vals=["alcohol","bakery","beverages","bicycle","books","butcher","car","car_repair","chemist","clothes","computer","confectionery","convenience"
+                     ,"department_store","dry_cleaning","doityourself","electronics","florist","furniture","garden_centre","greengrocer","hairdresser"
+                     ,"hardware","hifi","kiosk","laundry","mall","motorcycle","newsagent","optician","organic","outdoor","sports","stationery","supermarket"
+                     ,"shoes","toys","travel_agency","video"]
+
+            elif tagKey=="tourism":
+                vals=["alpine_hut","attraction","artwork","camp_site","caravan_site","chalet","guest_house","hostel","hotel","information","motel","museum"
+                     ,"picnic_site","theme_park","viewpoint","zoo","yes"]
+
+            elif tagKey=="historic":
+                vals=["castle","monument","memorial","archaeological_site","ruins","battlefield","wreck","yes"]
+
+            elif tagKey=="landuse":
+                vals=["quarry","landfill","basin","reservoir","forest","allotments","vineyard","residential","retail","commercial","industrial","brownfield"
+                     ,"greenfield","construction","military","meadow","village_green","wood","recreation_ground"]
+
+            elif tagKey=="military":
+                vals=["airfield","bunker","barracks","danger_area","range","naval_base"]
+
+            elif tagKey=="natural":
+                vals=["bay","beach","cave_entrance","cliff","coastline","fell","glacier","heath","land","marsh","mud","peak","scree","scrub","spring","tree"
+                     ,"volcano","water","wetland","wood"]
+
+            elif tagKey=="sport":
+                vals=["9pin","10pin","archery","athletics","australian_football","baseball","basketball","beachvolleyball","boules","bowls","canoe","chess"
+                      "climbing","cricket","cricket_nets","croquet","cycling","diving","dog_racing","equestrian","football","golf","gymnastics","hockey"
+                      "horse_racing","korfball","motor","multi","orienteering","paddle_tennis","pelota","racquet","rowing","rugby","shooting","skating"
+                      "skateboard","skiing","soccer","swimming","table_tennis","team_handball","tennis","volleyball"]
+
+            elif tagKey=="internet_access":
+                vals=["public","service","terminal","wired","wlan"]
+
+            elif tagKey=="motorroad":
+                vals=["yes","no"]
+
+            elif tagKey=="bridge":
+                vals=["yes","aqueduct","viaduct","swing"]
+
+            elif tagKey=="crossing":
+                vals=["no","traffic_signals","uncontrolled"]
+
+            elif tagKey=="mountain_pass":
+                vals=["yes"]
+
+            elif tagKey=="disused":
+                vals=["yes"]
+
+            elif tagKey=="wheelchair":
+                vals=["yes","no","limited"]
+
+            elif tagKey=="wood":
+                vals=["coniferous","deciduous","mixed"]
+
+            elif tagKey=="place":
+                vals=["continent","country","state","region","country","city","town","village","hamlet","suburb","locality","island"]
+
+            elif tagKey=="source":
+                vals=["extrapolation","knowledge","historical","image","survey","voice"]
+
+
+        # LINE TAGS
+        elif featType=='Line':
+
+            if tagKey=="highway":
+                vals=["motorway","motorway_link","trunk","trunk_link","primary","primary_link","secondary","secondary_link","tertiary","unclassified"
+                     ,"road","residential","living_street","service","track","pedestrian","bus_guideway","path","cycleway","footway","bridleway"
+                     ,"byway","steps","ford","construction"]
+
+            elif tagKey=="traffic_calming":
+                vals=["yes","bump","chicane","cushion","hump","rumble_strip","table","choker"]
+
+            elif tagKey=="service":
+                vals=["parking_aisle","driveway","alley","yard","siding","spur"]
+
+            elif tagKey=="smoothness":
+                vals=["excellent","good","intermediate","bad","very_bad","horrible","very_horrible","impassable"]
+
+            elif tagKey=="passing_places":
+                vals=["yes"]
+
+            elif tagKey=="barrier":
+                vals=["hedge","fence","wall","ditch","retaining_wall","city_wall","bollard"]
+
+            elif tagKey=="cycleway":
+                vals=["lane","track","opposite_lane","opposite_track","opposite"]
+
+            elif tagKey=="tracktype":
+                vals=["grade1","grade2","grade3","grade4","grade5"]
+
+            elif tagKey=="waterway":
+                vals=["stream","river","canal","drain","weir","dam"]
+
+            elif tagKey=="lock":
+                vals=["yes"]
+
+            elif tagKey=="mooring":
+                vals=["yes","private","no"]
+
+            elif tagKey=="railway":
+                vals=["rail","tram","light_rail","abandoned","disused","subway","preserved","narrow_gauge","construction","monorail","funicular","platform"]
+
+            elif tagKey=="usage":
+                vals=["main","branch","industrial","military","tourism"]
+
+            elif tagKey=="electrified":
+                vals=["contact_line","rail","yes","no"]
+
+            elif tagKey=="bridge":
+                vals=["yes"]
+
+            elif tagKey=="tunnel":
+                vals=["yes","no"]
+
+            elif tagKey=="aeroway":
+                vals=["runway","taxiway"]
+
+            elif tagKey=="aerialway":
+                vals=["cable_car","gondola","chair_lift","drag_lift"]
+
+            elif tagKey=="power":
+                vals=["line"]
+
+            elif tagKey=="cables":
+                vals=["3","4","6","8","9","12","15","18"]
+
+            elif tagKey=="wires":
+                vals=["single","double","triple","quad"]
+
+            elif tagKey=="voltage":
+                vals=["110000","220000","380000","400000"]
+
+            elif tagKey=="man_made":
+                vals=["pier","pipeline"]
+
+            elif tagKey=="leisure":
+                vals=["track"]
+
+            elif tagKey=="amenity":
+                vals=["marketplace"]
+
+            elif tagKey=="tourism":
+                vals=["artwork"]
+
+            elif tagKey=="natural":
+                vals=["cliff","coastline"]
+
+            elif tagKey=="route":
+                vals=["bus","detour","ferry","flight","subsea","hiking","bicycle","mtb","road","ski","tour","tram","pub_crawl"]
+
+            elif tagKey=="abutters":
+                vals=["residential","retail","commercial","industrial","mixed"]
+
+            elif tagKey=="fenced":
+                vals=["yes","no"]
+
+            elif tagKey=="lit":
+                vals=["yes","no"]
+
+            elif tagKey=="motorroad":
+                vals=["yes","no"]
+
+            elif tagKey=="bridge":
+                vals=["yes","aqueduct","viaduct","swing"]
+
+            elif tagKey=="tunnel":
+                vals=["yes"]
+
+            elif tagKey=="cutting":
+                vals=["yes"]
+
+            elif tagKey=="embankment":
+                vals=["yes"]
+
+            elif tagKey=="layer":
+                vals=["-5","-4","-3","-2","-1","0","1","2","3","4","5"]
+
+            elif tagKey=="surface":
+                vals=["paved","unpaved","asphalt","concrete","paving_stones","cobblestone","metal","wood","grass_paver","gravel","pebblestone"
+                     ,"grass","ground","earth","dirt","mud","sand","ice_road"]
+
+            elif tagKey=="disused":
+                vals=["yes"]
+
+            elif tagKey=="wheelchair":
+                vals=["yes","no","limited"]
+
+            elif tagKey=="narrow":
+                vals=["yes"]
+
+            elif tagKey=="sac_scale":
+                vals=["hiking","mountain_hiking","demanding_mountain_hiking","alpine_hiking","demanding_alpine_hiking","difficult_alpine_hiking"]
+
+            elif tagKey=="trail_visibility":
+                vals=["excellent","good","intermediate","bad","horrible","no"]
+
+            elif tagKey=="mtb:scale":
+                vals=["0","1","2","3","4","5"]
+
+            elif tagKey=="mtb:scale:uphill":
+                vals=["0","1","2","3","4","5"]
+
+            elif tagKey=="mtb:scale:imba":
+                vals=["0","1","2","3","4"]
+
+            elif tagKey=="access":
+                vals=["yes","designated","official","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="vehicle":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="bicycle":
+                vals=["yes","designated","official","private","permissive","dismount","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="foot":
+                vals=["yes","designated","official","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="goods":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="hgv":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="hazmat":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="agricultural":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="horse":
+                vals=["yes","designated","official","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="motorcycle":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="motorcar":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="motor_vehicle":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="psv":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="motorboat":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="boat":
+                vals=["yes","designated","private","permissive","destination","delivery","agricultural","forestry","unknown","no"]
+
+            elif tagKey=="oneway":
+                vals=["yes","no","-1"]
+
+            elif tagKey=="noexit":
+                vals=["yes"]
+
+            elif tagKey=="toll":
+                vals=["yes"]
+
+            elif tagKey=="addr:interpolation":
+                vals=["all","even","odd","alphabetic"]
+
+            elif tagKey=="source":
+                vals=["extrapolation","knowledge","historical","image","survey","voice"]
+
+
+        # POLYGON TAGS
+        elif featType=='Polygon':
+
+            if tagKey=="highway":
+                vals=["pedestrian","services"]
+
+            elif tagKey=="junction":
+                vals=["roundabout"]
+
+            elif tagKey=="barrier":
+                vals=["hedge","fence","wall","ditch","retaining_wall","city_wall"]
+
+            elif tagKey=="waterway":
+                vals=["riverbank","dock","dam"]
+
+            elif tagKey=="railway":
+                vals=["station","turntable","platform"]
+
+            elif tagKey=="aeroway":
+                vals=["aerodrome","terminal","helipad","apron"]
+
+            elif tagKey=="aerialway":
+                vals=["station"]
+
+            elif tagKey=="power":
+                vals=["station","sub_station","generator"]
+
+            elif tagKey=="man_made":
+                vals=["crane","gasometer","pier","reservoir_covered","surveillance","wastewater_plant","watermill","water_tower","water_works","windmill","works"]
+
+            elif tagKey=="building":
+                vals=["yes"]
+
+            elif tagKey=="leisure":
+                vals=["sports_centre ","sports_centre ","stadium","track","pitch","water_park","marina","fishing","nature_reserve"
+                     ,"park","playground","garden","common","ice_rink","miniature_golf"]
+
+            elif tagKey=="amenity":
+                vals=["restaurant","pub","food_court","fast_food","biergarten","cafe","kindergarten","school","college"
+                     ,"library","university","ferry_terminal","bicycle_parking","bicycle_rental","bus_station","car_rental","car_sharing","fuel"
+                     ,"parking","taxi","bank","pharmacy","hospital","baby_hatch","dentist","doctors","veterinary"
+                     ,"arts_centre","cinema","fountain","nightclub","studio","theatre","brothel","courthouse","crematorium","embassy"
+                     ,"fire_station","grave_yard","hunting_stand","marketplace","place_of_worship","police","post_office","prison","public_building","recycling"
+                     ,"shelter","townhall"]
+
+            elif tagKey=="shop":
+                vals=["alcohol","bakery","beverages","bicycle","books","butcher","car","car_repair","chemist","clothes","computer","confectionery","convenience"
+                     ,"department_store","dry_cleaning","doityourself","electronics","florist","furniture","garden_centre","greengrocer","hairdresser"
+                     ,"hardware","hifi","kiosk","laundry","mall","motorcycle","newsagent","optician","organic","outdoor","sports","stationery","supermarket"
+                     ,"shoes","toys","travel_agency","video"]
+
+            elif tagKey=="tourism":
+                vals=["alpine_hut","attraction","artwork","camp_site","caravan_site","chalet","museum","picnic_site","theme_park","zoo","yes"]
+
+            elif tagKey=="historic":
+                vals=["castle","monument","memorial","archaeological_site","ruins","battlefield","wreck","yes"]
+
+            elif tagKey=="landuse":
+                vals=["farm","farmyard","quarry","landfill","basin","reservoir","forest","allotments","vineyard","residential","retail","commercial","industrial"
+                     ,"brownfield","greenfield","construction","railway","military","cemetery","meadow","village_green","wood","recreation_ground","salt_pond"]
+
+            elif tagKey=="military":
+                vals=["airfield","bunker","barracks","danger_area","range","naval_base"]
+
+            elif tagKey=="natural":
+                vals=["bay","beach","cave_entrance","cliff","coastline","fell","glacier","heath","land","marsh","mud","scree","scrub"
+                     ,"water","wetland","wood"]
+
+            elif tagKey=="boundary":
+                vals=["administrative","civil","political","national_park"]
+
+            elif tagKey=="sport":
+                vals=["9pin","10pin","archery","athletics","australian_football","baseball","basketball","beachvolleyball","boules","bowls","canoe","chess"
+                      "climbing","cricket","cricket_nets","croquet","cycling","diving","dog_racing","equestrian","football","golf","gymnastics","hockey"
+                      "horse_racing","korfball","motor","multi","paddle_tennis","pelota","racquet","rowing","rugby","shooting","skating"
+                      "skateboard","skiing","soccer","swimming","table_tennis","team_handball","tennis","volleyball"]
+
+            elif tagKey=="area":
+                vals=["yes"]
+
+            elif tagKey=="disused":
+                vals=["yes"]
+
+            elif tagKey=="wheelchair":
+                vals=["yes","no","limited"]
+
+            elif tagKey=="wood":
+                vals=["coniferous","deciduous","mixed"]
+
+            elif tagKey=="place":
+                vals=["continent","state","region","country","city","town","village","hamlet","suburb","locality","island"]
+
+            elif tagKey=="source":
+                vals=["extrapolation","knowledge","historical","image","survey","voice"]
+
+
+        return vals
+
+
+    def determineSuitableTagKeys(self,featType):
+        """Function is used to find out typical tag keys to given feature type.
+        With help of this function plugin gives advice to user on feature tags editing.
+        Information on typical/recommended tag keys was taken from wiki.openstreetmap.org.
+
+        @param featType name of feature type; one of 'Point','Line','Polygon'
+        @return list of typical keys to given feature type
         """
 
         vals = []
-        if featType in ('Point','Line','Polygon','Relation'):
+        if featType=='Point':
 
-            if tagKey=="highway":
-                vals = ["trunk","motorway","primary","secondary","tertiary","residential"]
+            vals=["highway","traffic_calming","barrier","waterway","lock","railway","aeroway","aerialway","power","man_made","leisure"
+                 ,"amenity","shop","tourism","historic","landuse","military","natural","route","sport","internet_access","motorroad","bridge","crossing"
+                 ,"mountain_pass","ele","incline","operator","opening_hours","disused","wheelchair","TMC:LocationCode","wood","traffic_sign","disused"
+                 ,"name","alt_name"
+                 ,"alt_name","int_name","nat_name","reg_name","loc_name","old_name","name:lg","ref","int_ref","nat_ref","reg_ref","loc_ref","old_ref"
+                 ,"source_ref","icao","iata","place","place_numbers","postal_code","is_in","population","addr:housenumber","addr:housename","addr:street"
+                 ,"addr:postcode","addr:city","addr:country","note","description","image","source","source_ref","source_name","source:ref"
+                 ,"attribution","url","website","wikipedia","created_by","history"]
 
-            elif tagKey=="boundary":
-                vals = ["administrative","national_park","political","civil"]
-            elif tagKey=="land_area":
-                vals = ["administrative"]
-            elif tagKey=="admin_level":
-                vals = ["1","2","3","4","5","6","7","8","9","10","11"]
-            elif tagKey=="restriction":
-                vals = ["no_right_turn","no_left_turn","no_u_turn","no_straight_on","only_right_turn","only_left_turn","only_straight_on"]
-            elif tagKey=="except":
-                vals = ["psv","bicycle","hgv","motorcar"]
-            elif tagKey=="route":
-                vals = ["road","bicycle","foot","hiking","bus","pilgrimage","detour","railway","tram","mtb","roller_skate","running","horse"]
-            elif tagKey=="network":
-                vals = ["ncn","rcn","lcn","uk_ldp","lwn","rwn","nwn","e-road"]
-            elif tagKey=="state":
-                vals = ["proposed","alternate","temporary","connection"]
+        elif featType=='Line':
+
+            vals=["highway","construction","junction","traffic_calming","service","smoothness","passing_places","barrier","cycleway"
+                 ,"tracktype","waterway","lock","mooring","railway","usage","electrified","frequency","voltage","bridge","tunnel","service"
+                 ,"aeroway","aerialway","power","cables","wires","voltage","man_made","leisure","amenity","natural","route","abutters","fenced"
+                 ,"lit","motorroad","bridge","tunnel","cutting","embankment","lanes","layer","surface","width","est_width","depth","est_depth"
+                 ,"incline","start_date","end_date","operator","opening_hours","disused","wheelchair","narrow","sac_scale","trail_visibility"
+                 ,"mtb:scale","mtb:scale:uphill","mtb:scale:imba","mtb:description","TMC:LocationCode","access","vehicle","bicycle","foot","goods"
+                 ,"hgv","hazmat","agricultural","horse","motorcycle","motorcar","motor_vehicle","psv","motorboat","boat","oneway","noexit"
+                 ,"date_on","date_off","hour_on","hour_off","maxweight","maxheight","maxwidth","maxlength","maxspeed","minspeed","maxstay"
+                 ,"disused","toll","charge","name"
+                 ,"alt_name","int_name","nat_name","reg_name","loc_name","old_name","name:lg","ref","int_ref","nat_ref","reg_ref","loc_ref","old_ref"
+                 ,"ncn_ref","rcn_ref","lcn_ref"
+                 ,"source_ref","icao","iata","place_numbers","postal_code","is_in","addr:interpolation","note","description","image","source"
+                 ,"source_ref","source_name","source:ref","attribution","url","website","wikipedia","created_by","history"]
+
+
+        elif featType=='Polygon':
+
+            vals=["highway","junction","barrier","waterway","railway","landuse","aeroway","aerialway","power","man_made","building","leisure"
+                 ,"amenity","shop","tourism","historic","landuse","military","natural","route","boundary","sport","area","ele","depth","est_depth"
+                 ,"operator","opening_hours","disused","wheelchair","wood","admin_level","disused","name"
+                 ,"alt_name","int_name","nat_name","reg_name","loc_name","old_name","name:lg","ref","int_ref","nat_ref","reg_ref","loc_ref","old_ref"
+                 ,"source_ref","icao","iata","place","place_name","place_numbers","postal_code","is_in","population"
+                 ,"addr:housenumber","addr:housename","addr:street","addr:postcode","addr:city","addr:country"
+                 ,"note","description","image","source","source_ref","source_name","source:ref","attribution","url","website","wikipedia"
+                 ,"created_by","history"]
 
         return vals
 
@@ -579,8 +1056,10 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         The appropriate map tool (IdentifyMapTool) is set to map canvas.
         """
 
-        if self.__activeEditButton==self.identifyButton:
+        if self.activeEditButton==self.identifyButton:
             return
+
+        self.plugin.canvas.unsetMapTool(self.plugin.canvas.mapTool())
 
         # clear dockwidget
         self.clear()
@@ -588,10 +1067,9 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.plugin.iface.mainWindow().statusBar().showMessage("")
 
         self.__mapTool=IdentifyMapTool(self.plugin.canvas, self, self.plugin.dbm)
-        self.plugin.canvas.unsetMapTool(self.plugin.canvas.mapTool())
         self.plugin.canvas.setMapTool(self.__mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
-        self.__activeEditButton=self.identifyButton
+        self.activeEditButton=self.identifyButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
 
 
@@ -600,7 +1078,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         The appropriate map tool (MoveMapTool) is set to map canvas.
         """
 
-        if self.__activeEditButton==self.moveButton:
+        if self.activeEditButton==self.moveButton:
             return
 
         # clear dockwidget
@@ -610,7 +1088,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.__mapTool=MoveMapTool(self.plugin)
         self.plugin.canvas.setMapTool(self.__mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.CrossCursor))
-        self.__activeEditButton=self.moveButton
+        self.activeEditButton=self.moveButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
 
 
@@ -619,7 +1097,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         The appropriate map tool (CreatePointMapTool) is set to map canvas.
         """
 
-        if self.__activeEditButton==self.createPointButton:
+        if self.activeEditButton==self.createPointButton:
             return
 
         self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
@@ -627,7 +1105,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.__mapTool=CreatePointMapTool(self.plugin)
         self.plugin.canvas.setMapTool(self.__mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
-        self.__activeEditButton=self.createPointButton
+        self.activeEditButton=self.createPointButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
 
 
@@ -636,7 +1114,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         The appropriate map tool (CreateLineMapTool) is set to map canvas.
         """
 
-        if self.__activeEditButton==self.createLineButton:
+        if self.activeEditButton==self.createLineButton:
             return
 
         self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
@@ -644,7 +1122,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.__mapTool=CreateLineMapTool(self.plugin)
         self.plugin.canvas.setMapTool(self.__mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
-        self.__activeEditButton=self.createLineButton
+        self.activeEditButton=self.createLineButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
 
 
@@ -653,7 +1131,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         The appropriate map tool (CreatePolygonMapTool) is set to map canvas.
         """
 
-        if self.__activeEditButton==self.createPolygonButton:
+        if self.activeEditButton==self.createPolygonButton:
             return
 
         self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
@@ -661,7 +1139,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.__mapTool=CreatePolygonMapTool(self.plugin)
         self.plugin.canvas.setMapTool(self.__mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
-        self.__activeEditButton=self.createPolygonButton
+        self.activeEditButton=self.createPolygonButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
 
 
@@ -713,8 +1191,8 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.plugin.canvas.setMapTool(self.__mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
-        self.__activeEditButton=self.identifyButton
-        self.__activeEditButton.setChecked(True)
+        self.activeEditButton=self.identifyButton
+        self.activeEditButton.setChecked(True)
 
 
     def removeSelectedTags(self):
@@ -723,10 +1201,10 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         """
 
         # remove selected tags (rows)
-        selectedItems=self.tagsTableWidget.selectedItems()
+        selectedItems=self.tagTable.selectedItems()
         selectedRowsIndexes=[]
-        lastRowIndex=self.tagsTableWidget.rowCount()-1
-        self.tagsTableWidget.setCurrentCell(lastRowIndex,0)
+        lastRowIndex=self.tagTable.rowCount()-1
+        self.tagTable.setCurrentCell(lastRowIndex,0)
 
         for i in selectedItems:
             if i.column()==0 and not i.row()==lastRowIndex:
@@ -739,7 +1217,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         for ix in selectedRowsIndexes:
 
-            key=self.tagsTableWidget.item(ix,0).text()
+            key=self.tagTable.item(ix,0).text()
             # updating feature status (from Normal to Updated)
             if self.featureType=='Point':
                 self.plugin.dbm.changePointStatus(self.feature.id(),'N','U')
@@ -756,7 +1234,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
             # perform tag removing 
             self.plugin.dbm.removeTag(self.feature.id(),self.featureType,key.toUtf8().data())
 
-            self.tagsTableWidget.removeRow(ix)
+            self.tagTable.removeRow(ix)
 
         # make this action permanent
         self.plugin.dbm.commit()
@@ -871,16 +1349,16 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         @param relId identifier of relation
         """
 
-        self.relTagsTreeWidget.clear()
+        self.relTagsTree.clear()
         self.__relTagsLoaded=False
         # ask database manager for all relation tags
         self.featRelTags=self.plugin.dbm.getFeatureTags(relId,"Relation")
 
-        self.relTagsTreeWidget.setColumnCount(2)
-        self.relTagsTreeWidget.setHeaderLabels(["Key","Value"])
+        self.relTagsTree.setColumnCount(2)
+        self.relTagsTree.setHeaderLabels(["Key","Value"])
 
         for i in range(0,len(self.featRelTags)):
-            self.relTagsTreeWidget.addTopLevelItem(QTreeWidgetItem([self.featRelTags[i][0],self.featRelTags[i][1]]))
+            self.relTagsTree.addTopLevelItem(QTreeWidgetItem([self.featRelTags[i][0],self.featRelTags[i][1]]))
 
         self.__relTagsLoaded=True
 
@@ -930,32 +1408,32 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         """
 
         # clear table with information about feature's tags
-        self.tagsTableWidget.clear()
+        self.tagTable.clear()
 
         # fill tableWidget with tags of selected feature
         tableData=self.plugin.dbm.getFeatureTags(featId,featType)
         rowCount=len(tableData)
         self.__tagsLoaded=False
 
-        self.tagsTableWidget.setRowCount(rowCount+1)
-        self.tagsTableWidget.setColumnCount(2)
-        self.tagsTableWidget.setHorizontalHeaderItem(0,QTableWidgetItem("Key"))
-        self.tagsTableWidget.setHorizontalHeaderItem(1,QTableWidgetItem("Value"))
+        self.tagTable.setRowCount(rowCount+1)
+        self.tagTable.setColumnCount(2)
+        self.tagTable.setHorizontalHeaderItem(0,QTableWidgetItem("Key"))
+        self.tagTable.setHorizontalHeaderItem(1,QTableWidgetItem("Value"))
 
         for i in range(0,rowCount):
-            self.tagsTableWidget.setItem(i,0,QTableWidgetItem(tableData[i][0]))
-            self.tagsTableWidget.setItem(i,1,QTableWidgetItem(tableData[i][1]))
-            self.tagsTableWidget.item(i,0).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-            self.tagsTableWidget.item(i,1).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
+            self.tagTable.setItem(i,0,QTableWidgetItem(tableData[i][0]))
+            self.tagTable.setItem(i,1,QTableWidgetItem(tableData[i][1]))
+            self.tagTable.item(i,0).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+            self.tagTable.item(i,1).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
 
-        self.tagsTableWidget.setItem(rowCount,0,QTableWidgetItem(self.newTagLabel))
-        self.tagsTableWidget.setItem(rowCount,1,QTableWidgetItem(""))
-        self.tagsTableWidget.item(rowCount,0).setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)
-        self.tagsTableWidget.item(rowCount,1).setFlags(Qt.ItemIsEnabled)
+        self.tagTable.setItem(rowCount,0,QTableWidgetItem(self.newTagLabel))
+        self.tagTable.setItem(rowCount,1,QTableWidgetItem(""))
+        self.tagTable.item(rowCount,0).setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)
+        self.tagTable.item(rowCount,1).setFlags(Qt.ItemIsEnabled)
         self.__tagsLoaded=True
 
         # enable tags table for editing
-        self.tagsTableWidget.setEnabled(True)
+        self.tagTable.setEnabled(True)
         self.deleteTagsButton.setEnabled(True)
 
 
@@ -970,7 +1448,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         @param featType type of feature to load - one of 'Point','Line','Polygon'
         """
 
-        self.relTagsTreeWidget.setColumnCount(0)
+        self.relTagsTree.setColumnCount(0)
         self.relMembersList.setEnabled(False)
 
         # disable widget buttons
@@ -979,7 +1457,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         # clear all tables connected to relations
         self.relListWidget.clear()
-        self.relTagsTreeWidget.clear()
+        self.relTagsTree.clear()
         self.relMembersList.clear()
 
         # load relations for selected feature
@@ -996,7 +1474,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         # enable relation tables and button for relation addition
         self.addRelationButton.setEnabled(True)
         self.relListWidget.setEnabled(True)
-        self.relTagsTreeWidget.setEnabled(True)
+        self.relTagsTree.setEnabled(True)
 
 
     def reloadFeatureRelations(self):
@@ -1006,7 +1484,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         If no relation exists for specified feature, listWidget is filled with the only row with text: "<no relation>".
         """
 
-        self.relTagsTreeWidget.setColumnCount(0)
+        self.relTagsTree.setColumnCount(0)
         self.relMembersList.setEnabled(False)
 
         # disable widget buttons
@@ -1015,7 +1493,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         # clear all tables connected to relations
         self.relListWidget.clear()
-        self.relTagsTreeWidget.clear()
+        self.relTagsTree.clear()
         self.relMembersList.clear()
 
         # load relations for selected feature
@@ -1032,7 +1510,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         # enable relation tables and button for relation addition
         self.addRelationButton.setEnabled(True)
         self.relListWidget.setEnabled(True)
-        self.relTagsTreeWidget.setEnabled(True)
+        self.relTagsTree.setEnabled(True)
 
 
     def putMarkersOnMembers(self,feat,featType):
