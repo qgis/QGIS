@@ -50,7 +50,12 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
   if ( mComposerLabel )
   {
     bool ok;
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__) 
+    // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug) 
+    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), this, QString(), QFontDialog::DontUseNativeDialog ); 
+#else
     QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), this );
+#endif
     if ( ok )
     {
       mComposerLabel->setFont( newFont );
