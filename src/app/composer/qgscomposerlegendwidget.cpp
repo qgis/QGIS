@@ -132,7 +132,12 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__) 
+    // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug) 
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->titleFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+#else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->titleFont() );
+#endif
     if ( ok )
     {
       mLegend->setTitleFont( newFont );
@@ -147,7 +152,12 @@ void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__) 
+    // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug) 
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->layerFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+#else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->layerFont() );
+#endif
     if ( ok )
     {
       mLegend->setLayerFont( newFont );
@@ -162,7 +172,12 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__) 
+    // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug) 
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->itemFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+#else
     QFont newFont = QFontDialog::getFont( &ok, mLegend->itemFont() );
+#endif
     if ( ok )
     {
       mLegend->setItemFont( newFont );
