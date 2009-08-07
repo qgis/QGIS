@@ -743,7 +743,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         double opacity = 1.0;
         if ( !mRenderer->usesTransparency() )
         {
-          opacity = ( mTransparencyLevel * 1.0) / 255.0;
+          opacity = ( mTransparencyLevel * 1.0 ) / 255.0;
         }
         mRenderer->renderFeature( rendererContext, fet, &marker, sel, opacity );
 
@@ -3094,8 +3094,8 @@ bool QgsVectorLayer::rollBack()
   emit editingStopped();
 
   setModified( FALSE );
-
   triggerRepaint();
+
 
   return true;
 }
