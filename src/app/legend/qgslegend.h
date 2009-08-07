@@ -222,6 +222,13 @@ class QgsLegend : public QTreeWidget
     /**Removes the current LegendLayer and all its LegendLayerFiles*/
     void legendLayerRemove();
 
+    /**Removes a layer. If the layer is editable, a dialog is shown where user can select 'save', 'discard' and optionally 'cancel'. Cancel
+      is useful if a single layer is removed whereas on closing of the whole project or application, the cancel option may not be possible
+      @param ml the maplayer to remove
+      @param askCancelOnEditable gibe cancel option in the dialog for editable (and changed) layers
+      @param return false if canceled or in case of error, true else*/
+    bool removeLayer( QgsMapLayer* ml, bool askCancelOnEditable );
+
     /**Toggle show in overview for current layer*/
     void legendLayerShowInOverview();
 
@@ -317,7 +324,7 @@ class QgsLegend : public QTreeWidget
     void hideLine();
 
     /** Show the line that indicates insertion position */
-    void showLine(int y, int left);
+    void showLine( int y, int left );
 
     /** Update the widget with latest changes immediately */
     void updateLineWidget();
