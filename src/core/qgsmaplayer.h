@@ -19,11 +19,10 @@
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
-#include <vector>
-#include <map>
 
 #include <QObject>
 #include <QUndoStack>
+#include <QVariant>
 
 #include "qgsrectangle.h"
 
@@ -154,6 +153,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
        @returns true if successful
     */
     bool writeXML( QDomNode & layer_node, QDomDocument & document );
+
+    /** Set a custom property for layer. Properties are stored in a map and saved in project file.
+     *  @note Added in v1.3 */
+    void setCustomProperty( const QString& key, const QVariant& value );
+    /** Read a custom property from layer. Properties are stored in a map and saved in project file.
+     *  @note Added in v1.3 */
+    QVariant customProperty( const QString& value, const QVariant& defaultValue = QVariant() ) const;
+    /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
+     *  @note Added in v1.3 */
+    void removeCustomProperty( const QString& key );
 
     /** Copies the symbology settings from another layer. Returns true in case of success */
     virtual bool copySymbologySettings( const QgsMapLayer& other ) = 0;
@@ -315,6 +324,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
 
+
+    /** Read custom properties from project file. Added in v1.3 */
+    void readCustomProperties( QDomNode & layerNode );
+
+    /** Write custom properties to project file. Added in v1.3 */
+    void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc );
+
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
 
@@ -362,6 +378,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     QUndoStack mUndoStack;
 
+    QMap<QString, QVariant> mCustomProperties;
 };
 
 #endif
