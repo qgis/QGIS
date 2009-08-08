@@ -111,8 +111,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mActiveCommand( NULL ),
     mRendererV2( NULL ),
     mUsingRendererV2( false ),
-    mLabelingPrepareLayerHook( NULL ),
-    mLabelingRegisterFeatureHook( NULL )
+    mLabelingEngine( NULL )
 {
   mActions = new QgsAttributeAction;
 
@@ -687,7 +686,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     mRendererV2->renderFeature(fet, rendererContext);
 
     if ( labeling )
-      mLabelingRegisterFeatureHook(fet, mLabelingLayerContext);
+      mLabelingEngine->registerFeature(this, fet);
   }
 
   mRendererV2->stopRender(rendererContext);
@@ -712,7 +711,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     features[sym].append( fet );
 
     if ( labeling )
-      mLabelingRegisterFeatureHook(fet, mLabelingLayerContext);
+      mLabelingEngine->registerFeature(this, fet);
   }
 
   // find out the order
@@ -773,10 +772,10 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       QgsDebugMsg("attrs: " + QString::number(attributes[0]));
 
     bool labeling = FALSE;
-    if ( mLabelingPrepareLayerHook && mLabelingRegisterFeatureHook )
+    if ( mLabelingEngine )
     {
       int attrIndex;
-      if (mLabelingPrepareLayerHook(mLabelingContext, mLabelingLayerContext, attrIndex))
+      if (mLabelingEngine->prepareLayer(this, attrIndex))
       {
         if (!attributes.contains(attrIndex))
           attributes << attrIndex;
@@ -831,10 +830,10 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QgsAttributeList attributes = mRenderer->classificationAttributes();
 
     bool labeling = FALSE;
-    if (mLabelingPrepareLayerHook)
+    if (mLabelingEngine)
     {
       int attrIndex;
-      if (mLabelingPrepareLayerHook(mLabelingContext, mLabelingLayerContext, attrIndex))
+      if (mLabelingEngine->prepareLayer(this, attrIndex))
       {
         if (!attributes.contains(attrIndex))
           attributes << attrIndex;
@@ -911,9 +910,9 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
           rendererContext.rasterScaleFactor(),
           rendererContext.drawEditingInformation() );
 
-        if (labeling && mLabelingRegisterFeatureHook)
+        if (labeling && mLabelingEngine)
         {
-          mLabelingRegisterFeatureHook(fet, mLabelingLayerContext);
+          mLabelingEngine->registerFeature(this, fet);
         }
 
         ++featureCount;
@@ -2229,15 +2228,9 @@ bool QgsVectorLayer::hasLabelsEnabled( void ) const
   return mLabelOn;
 }
 
-void QgsVectorLayer::setLabelingHooks(LabelingPrepareLayerHook prepareLayerHook,
-                                      LabelingRegisterFeatureHook registerFeatureHook,
-                                      void* context,
-                                      void* layerContext)
+void QgsVectorLayer::setLabelingEngine(QgsLabelingEngineInterface* engine)
 {
-  mLabelingPrepareLayerHook = prepareLayerHook;
-  mLabelingRegisterFeatureHook = registerFeatureHook;
-  mLabelingContext = context;
-  mLabelingLayerContext = layerContext;
+  mLabelingEngine = engine;
 }
 
 

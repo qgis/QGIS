@@ -53,8 +53,16 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
-typedef int (*LabelingPrepareLayerHook)(void*, void*, int&);
-typedef void (*LabelingRegisterFeatureHook)(QgsFeature&, void*);
+class QgsLabelingEngineInterface
+{
+public:
+  virtual ~QgsLabelingEngineInterface() {}
+  virtual int prepareLayer(QgsVectorLayer* layer, int& attrIndex) = 0;
+  virtual void registerFeature(QgsVectorLayer* layer, QgsFeature& feat) = 0;
+  //void calculateLabeling() = 0;
+  //void drawLabeling(QgsRenderContext& context) = 0;
+};
+
 
 
 /** \ingroup core
@@ -348,10 +356,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Label is on */
     bool hasLabelsEnabled( void ) const;
 
-    void setLabelingHooks(LabelingPrepareLayerHook prepareLayerHook,
-                          LabelingRegisterFeatureHook registerFeatureHook,
-                          void* mLabelingContext,
-                          void* mLabelingLayerContext);
+    void setLabelingEngine(QgsLabelingEngineInterface* engine);
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
@@ -733,10 +738,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Label */
     QgsLabel *mLabel;
 
-    LabelingPrepareLayerHook mLabelingPrepareLayerHook;
-    LabelingRegisterFeatureHook mLabelingRegisterFeatureHook;
-    void* mLabelingContext;
-    void* mLabelingLayerContext;
+    QgsLabelingEngineInterface* mLabelingEngine;
 
 
     /** Display labels */

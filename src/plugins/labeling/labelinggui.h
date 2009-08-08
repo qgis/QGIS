@@ -21,9 +21,7 @@
 #include <QDialog>
 #include <ui_labelingguibase.h>
 
-//class PalLabeling;
 class QgsVectorLayer;
-//struct PalLabeling::LayerSettings;
 
 #include "pallabeling.h"
 
@@ -32,7 +30,7 @@ class LabelingGui : public QDialog, private Ui::LabelingGuiBase
   Q_OBJECT
 
   public:
-    LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent );
+    LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* parent );
     ~LabelingGui();
 
     LayerSettings layerSettings();
@@ -52,11 +50,9 @@ class LabelingGui : public QDialog, private Ui::LabelingGuiBase
     void populateFieldNames();
     void updateFont(QFont font);
 
-    QgsVectorLayer* layer();
-
   private:
     PalLabeling* mLBL;
-    QString mLayerId;
+    QgsVectorLayer* mLayer;
 };
 
 #endif

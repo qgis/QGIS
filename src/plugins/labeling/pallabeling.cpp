@@ -89,13 +89,24 @@ protected:
 LayerSettings::LayerSettings()
   : palLayer(NULL), fontMetrics(NULL), ct(NULL)
 {
+  placement = AroundPoint;
+  placementFlags = 0;
+  //textFont = QFont();
+  textColor = Qt::black;
+  enabled = false;
+  priority = 5;
+  obstacle = true;
+  dist = 0;
+  scaleMin = 0;
+  scaleMax = 0;
+  bufferSize = 1;
   bufferColor = Qt::white;
+  labelPerPart = false;
 }
 
 LayerSettings::LayerSettings(const LayerSettings& s)
 {
   // copy only permanent stuff
-  layerId = s.layerId;
   fieldName = s.fieldName;
   placement = s.placement;
   placementFlags = s.placementFlags;
@@ -122,6 +133,72 @@ LayerSettings::~LayerSettings()
 
   delete fontMetrics;
   delete ct;
+}
+
+static QColor _readColor(QgsVectorLayer* layer, QString property)
+{
+  int r = layer->customProperty(property+"R").toInt();
+  int g = layer->customProperty(property+"G").toInt();
+  int b = layer->customProperty(property+"B").toInt();
+  return QColor(r,g,b);
+}
+
+static void _writeColor(QgsVectorLayer* layer, QString property, QColor color)
+{
+  layer->setCustomProperty(property+"R", color.red());
+  layer->setCustomProperty(property+"G", color.green());
+  layer->setCustomProperty(property+"B", color.blue());
+}
+
+void LayerSettings::readFromLayer(QgsVectorLayer* layer)
+{
+  if (layer->customProperty("labeling").toString() != QString("pal"))
+    return; // there's no information available
+
+  fieldName = layer->customProperty("labeling/fieldName").toString();
+  placement = (Placement) layer->customProperty("labeling/placement").toInt();
+  placementFlags = layer->customProperty("labeling/placementFlags").toUInt();
+  QString fontFamily = layer->customProperty("labeling/fontFamily").toString();
+  int fontSize = layer->customProperty("labeling/fontSize").toInt();
+  int fontWeight = layer->customProperty("labeling/fontWeight").toInt();
+  bool fontItalic = layer->customProperty("labeling/fontItalic").toBool();
+  textFont = QFont(fontFamily, fontSize, fontWeight, fontItalic);
+  textColor = _readColor(layer, "labeling/textColor");
+  enabled = layer->customProperty("labeling/enabled").toBool();
+  priority = layer->customProperty("labeling/priority").toInt();
+  obstacle = layer->customProperty("labeling/obstacle").toBool();
+  dist = layer->customProperty("labeling/dist").toDouble();
+  scaleMin = layer->customProperty("labeling/scaleMin").toInt();
+  scaleMax = layer->customProperty("labeling/scaleMax").toInt();
+  bufferSize = layer->customProperty("labeling/bufferSize").toInt();
+  bufferColor = _readColor(layer, "labeling/bufferColor");
+  labelPerPart = layer->customProperty("labeling/labelPerPart").toInt();
+}
+
+void LayerSettings::writeToLayer(QgsVectorLayer* layer)
+{
+  // this is a mark that labeling information is present
+  layer->setCustomProperty("labeling", "pal");
+
+  layer->setCustomProperty("labeling/fieldName", fieldName);
+  layer->setCustomProperty("labeling/placement", placement);
+  layer->setCustomProperty("labeling/placementFlags", (unsigned int)placementFlags);
+
+  layer->setCustomProperty("labeling/fontFamily", textFont.family());
+  layer->setCustomProperty("labeling/fontSize", textFont.pointSize());
+  layer->setCustomProperty("labeling/fontWeight", textFont.weight());
+  layer->setCustomProperty("labeling/fontItalic", textFont.italic());
+
+  _writeColor(layer, "labeling/textColor", textColor);
+  layer->setCustomProperty("labeling/enabled", enabled);
+  layer->setCustomProperty("labeling/priority", priority);
+  layer->setCustomProperty("labeling/obstacle", obstacle);
+  layer->setCustomProperty("labeling/dist", dist);
+  layer->setCustomProperty("labeling/scaleMin", scaleMin);
+  layer->setCustomProperty("labeling/scaleMax", scaleMax);
+  layer->setCustomProperty("labeling/bufferSize", bufferSize);
+  _writeColor(layer, "labeling/bufferColor", bufferColor);
+  layer->setCustomProperty("labeling/labelPerPart", labelPerPart);
 }
 
 void LayerSettings::calculateLabelSize(QString text, double& labelX, double& labelY)
@@ -195,76 +272,32 @@ PalLabeling::PalLabeling(QgsMapRenderer* mapRenderer)
 PalLabeling::~PalLabeling()
 {
   delete mPal;
-
-  // make sure to remove hooks from all layers
-  while (mLayers.count())
-  {
-    removeLayer(mLayers[0].layerId);
-  }
 }
 
 
-void PalLabeling::addLayer(LayerSettings layerSettings)
+int PalLabeling::prepareLayer(QgsVectorLayer* layer, int& attrIndex)
 {
-  mLayers.append(layerSettings);
+  // start with a temporary settings class, find out labeling info
+  LayerSettings lyrTmp;
+  lyrTmp.readFromLayer(layer);
 
-  QgsVectorLayer* vlayer = (QgsVectorLayer*) QgsMapLayerRegistry::instance()->mapLayer(layerSettings.layerId);
-
-  LayerSettings& lyr = mLayers[ mLayers.count()-1 ]; // make sure we have the right pointer
-  vlayer->setLabelingHooks(PalLabeling::prepareLayerHook, PalLabeling::registerFeatureHook, this, &lyr);
-}
-
-void PalLabeling::removeLayer(QString layerId)
-{
-  for (int i = 0; i < mLayers.count(); i++)
-  {
-    if (mLayers.at(i).layerId == layerId)
-    {
-      QgsVectorLayer* vlayer = (QgsVectorLayer*) QgsMapLayerRegistry::instance()->mapLayer(mLayers.at(i).layerId);
-      if (vlayer) { vlayer->setLabelingHooks(NULL, NULL, NULL, NULL); }
-
-      mLayers.removeAt(i);
-      return;
-    }
-  }
-}
-
-const LayerSettings& PalLabeling::layer(QString layerId)
-{
-  for (int i = 0; i < mLayers.count(); i++)
-  {
-    if (mLayers.at(i).layerId == layerId)
-    {
-      return mLayers.at(i);
-    }
-  }
-  return mInvalidLayer;
-}
-
-
-
-int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIndex)
-{
-  PalLabeling* thisClass = (PalLabeling*) context;
-  LayerSettings* lyr = (LayerSettings*) layerContext;
-
-  if (!lyr->enabled)
-    return 0;
-
-  QgsVectorLayer* vlayer = (QgsVectorLayer*) QgsMapLayerRegistry::instance()->mapLayer(lyr->layerId);
-  if (vlayer == NULL)
+  if (!lyrTmp.enabled)
     return 0;
 
   // find out which field will be needed
-  int fldIndex = vlayer->dataProvider()->fieldNameIndex(lyr->fieldName);
+  int fldIndex = layer->dataProvider()->fieldNameIndex(lyrTmp.fieldName);
   if (fldIndex == -1)
     return 0;
   attrIndex = fldIndex;
 
+  // add layer settings to the pallabeling hashtable: <QgsVectorLayer*, LayerSettings>
+  mActiveLayers.insert(layer, lyrTmp);
+  // start using the reference to the layer in hashtable instead of local instance
+  LayerSettings& lyr = mActiveLayers[layer];
 
   // how to place the labels
   Arrangement arrangement;
-  switch (lyr->placement)
+  switch (lyr.placement)
   {
     case LayerSettings::AroundPoint: arrangement = P_POINT; break;
     case LayerSettings::OverPoint:   arrangement = P_POINT_OVER; break;
@@ -275,42 +308,44 @@ int PalLabeling::prepareLayerHook(void* context, void* layerContext, int& attrIn
   }
 
   // create the pal layer
-  double priority = 1 - lyr->priority/10.0; // convert 0..10 --> 1..0
+  double priority = 1 - lyr.priority/10.0; // convert 0..10 --> 1..0
   double min_scale = -1, max_scale = -1;
-  if (lyr->scaleMin != 0 && lyr->scaleMax != 0)
+  if (lyr.scaleMin != 0 && lyr.scaleMax != 0)
   {
-    min_scale = lyr->scaleMin;
-    max_scale = lyr->scaleMax;
+    min_scale = lyr.scaleMin;
+    max_scale = lyr.scaleMax;
   }
 
-  Layer* l = thisClass->mPal->addLayer(lyr->layerId.toLocal8Bit().data(), min_scale, max_scale, arrangement, METER, priority, lyr->obstacle, true, true);
+  Layer* l = mPal->addLayer(layer->getLayerID().toLocal8Bit().data(),
+                            min_scale, max_scale, arrangement,
+                            METER, priority, lyr.obstacle, true, true);
 
-  if ( lyr->placementFlags )
-    l->setArrangementFlags( lyr->placementFlags );
+  if ( lyr.placementFlags )
+    l->setArrangementFlags( lyr.placementFlags );
 
   // set label mode (label per feature is the default)
-  l->setLabelMode( lyr->labelPerPart ? Layer::LabelPerFeaturePart : Layer::LabelPerFeature );
+  l->setLabelMode( lyr.labelPerPart ? Layer::LabelPerFeaturePart : Layer::LabelPerFeature );
 
   // save the pal layer to our layer context (with some additional info)
-  lyr->palLayer = l;
-  lyr->fieldIndex = fldIndex;
-  lyr->fontMetrics = new QFontMetrics(lyr->textFont);
-  lyr->fontBaseline = lyr->fontMetrics->boundingRect("X").bottom(); // dummy text to find out how many pixels of the text are below the baseline
-  lyr->xform = thisClass->mMapRenderer->coordinateTransform();
-  if (thisClass->mMapRenderer->hasCrsTransformEnabled())
-    lyr->ct = new QgsCoordinateTransform( vlayer->srs(), thisClass->mMapRenderer->destinationSrs() );
+  lyr.palLayer = l;
+  lyr.fieldIndex = fldIndex;
+  lyr.fontMetrics = new QFontMetrics(lyr.textFont);
+  lyr.fontBaseline = lyr.fontMetrics->boundingRect("X").bottom(); // dummy text to find out how many pixels of the text are below the baseline
+  lyr.xform = mMapRenderer->coordinateTransform();
+  if (mMapRenderer->hasCrsTransformEnabled())
+    lyr.ct = new QgsCoordinateTransform( layer->srs(), mMapRenderer->destinationSrs() );
   else
-    lyr->ct = NULL;
-  lyr->ptZero = lyr->xform->toMapCoordinates( 0,0 );
-  lyr->ptOne = lyr->xform->toMapCoordinates( 1,0 );
+    lyr.ct = NULL;
+  lyr.ptZero = lyr.xform->toMapCoordinates( 0,0 );
+  lyr.ptOne = lyr.xform->toMapCoordinates( 1,0 );
 
   return 1; // init successful
 }
 
-void PalLabeling::registerFeatureHook(QgsFeature& f, void* layerContext)
+
+void PalLabeling::registerFeature(QgsVectorLayer* layer, QgsFeature& f)
 {
-  LayerSettings* lyr = (LayerSettings*) layerContext;
-  lyr->registerFeature(f);
+  mActiveLayers[layer].registerFeature(f);
 }
 
 
@@ -339,6 +374,17 @@ void PalLabeling::initPal()
   mPal->setPolyP(mCandPolygon);
 }
 
+LayerSettings& PalLabeling::layer(const char* layerName)
+{
+  QHash<QgsVectorLayer*, LayerSettings>::iterator lit;
+  for (lit = mActiveLayers.begin(); lit != mActiveLayers.end(); ++lit)
+  {
+    LayerSettings& lyr = lit.value();
+    if (lyr.palLayer->getName() == layerName)
+      return lyr;
+  }
+  return mInvalidLayerSettings;
+}
 
 
 void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
@@ -361,6 +407,7 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   catch ( std::exception& e )
   {
     std::cerr << "PAL EXCEPTION :-( " << e.what() << std::endl;
+    mActiveLayers.clear(); // clean up
     return;
   }
 
@@ -409,13 +456,16 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   delete labels;
 
   // delete all allocated geometries for features
-  for (int i = 0; i < mLayers.count(); i++)
+  QHash<QgsVectorLayer*, LayerSettings>::iterator lit;
+  for (lit = mActiveLayers.begin(); lit != mActiveLayers.end(); ++lit)
   {
-    LayerSettings& lyr = mLayers[i];
+    LayerSettings& lyr = lit.value();
     for (QList<MyLabel*>::iterator git = lyr.geometries.begin(); git != lyr.geometries.end(); ++git)
       delete *git;
     lyr.geometries.clear();
   }
+  // labeling is done: clear the active layers hashtable
+  mActiveLayers.clear();
 
   // re-create PAL
   initPal();

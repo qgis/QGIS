@@ -32,8 +32,8 @@
 
 
 
-LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
-    : QDialog( parent ), mLBL( lbl ), mLayerId( layerId )
+LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* parent )
+    : QDialog( parent ), mLBL( lbl ), mLayer( layer )
 {
   setupUi( this );
 
@@ -45,7 +45,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
   connect(btnEngineSettings, SIGNAL(clicked()), this, SLOT(showEngineConfigDialog()) );
 
   // set placement methods page based on geometry type
-  switch (layer()->geometryType())
+  switch (layer->geometryType())
   {
     case QGis::Point:
       stackedPlacement->setCurrentWidget(pagePoint);
@@ -62,76 +62,68 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QString layerId, QWidget* parent )
 
   populateFieldNames();
 
-  const LayerSettings& lyr = lbl->layer(layerId);
-  if (!lyr.layerId.isEmpty())
+  // load labeling settings from layer
+  LayerSettings lyr;
+  lyr.readFromLayer(layer);
+
+  // placement
+  switch (lyr.placement)
   {
-    // load the labeling settings
+    case LayerSettings::AroundPoint:
+      radAroundPoint->setChecked(true);
+      radAroundCentroid->setChecked(true);
+      spinDistPoint->setValue(lyr.dist);
+      //spinAngle->setValue(lyr.angle);
+      break;
+    case LayerSettings::OverPoint:
+      radOverPoint->setChecked(true);
+      radOverCentroid->setChecked(true);
+      break;
+    case LayerSettings::Line:
+      radLineParallel->setChecked(true);
+      radPolygonPerimeter->setChecked(true);
 
-    // placement
-    switch (lyr.placement)
-    {
-      case LayerSettings::AroundPoint:
-        radAroundPoint->setChecked(true);
-        radAroundCentroid->setChecked(true);
-        spinDistPoint->setValue(lyr.dist);
-        //spinAngle->setValue(lyr.angle);
-        break;
-      case LayerSettings::OverPoint:
-        radOverPoint->setChecked(true);
-        radOverCentroid->setChecked(true);
-        break;
-      case LayerSettings::Line:
-        radLineParallel->setChecked(true);
-        radPolygonPerimeter->setChecked(true);
-
-        spinDistLine->setValue(lyr.dist);
-        chkLineAbove->setChecked( lyr.placementFlags & LayerSettings::AboveLine );
-        chkLineBelow->setChecked( lyr.placementFlags & LayerSettings::BelowLine );
-        chkLineOn->setChecked( lyr.placementFlags & LayerSettings::OnLine );
-        if ( lyr.placementFlags & LayerSettings::MapOrientation )
-          radOrientationMap->setChecked(true);
-        else
-          radOrientationLine->setChecked(true);
-        break;
-      case LayerSettings::Curved:
-        radLineCurved->setChecked(true);
-        break;
-      case LayerSettings::Horizontal:
-        radPolygonHorizontal->setChecked(true);
-        radLineHorizontal->setChecked(true);
-        break;
-      case LayerSettings::Free:
-        radPolygonFree->setChecked(true);
-        break;
-      default:
-        Q_ASSERT(0 && "NOOO!");
-    }
-
-    cboFieldName->setCurrentIndex( cboFieldName->findText(lyr.fieldName) );
-    chkEnableLabeling->setChecked( lyr.enabled );
-    sliderPriority->setValue( lyr.priority );
-    chkNoObstacle->setChecked( !lyr.obstacle );
-    chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
-
-    bool scaleBased = (lyr.scaleMin != 0 && lyr.scaleMax != 0);
-    chkScaleBasedVisibility->setChecked(scaleBased);
-    if (scaleBased)
-    {
-      spinScaleMin->setValue(lyr.scaleMin);
-      spinScaleMax->setValue(lyr.scaleMax);
-    }
-
-    bool buffer = (lyr.bufferSize != 0);
-    chkBuffer->setChecked(buffer);
-    if (buffer)
-      spinBufferSize->setValue(lyr.bufferSize);
+      spinDistLine->setValue(lyr.dist);
+      chkLineAbove->setChecked( lyr.placementFlags & LayerSettings::AboveLine );
+      chkLineBelow->setChecked( lyr.placementFlags & LayerSettings::BelowLine );
+      chkLineOn->setChecked( lyr.placementFlags & LayerSettings::OnLine );
+      if ( lyr.placementFlags & LayerSettings::MapOrientation )
+        radOrientationMap->setChecked(true);
+      else
+        radOrientationLine->setChecked(true);
+      break;
+    case LayerSettings::Curved:
+      radLineCurved->setChecked(true);
+      break;
+    case LayerSettings::Horizontal:
+      radPolygonHorizontal->setChecked(true);
+      radLineHorizontal->setChecked(true);
+      break;
+    case LayerSettings::Free:
+      radPolygonFree->setChecked(true);
+      break;
+    default:
+      Q_ASSERT(0 && "NOOO!");
   }
-  else
+
+  cboFieldName->setCurrentIndex( cboFieldName->findText(lyr.fieldName) );
+  chkEnableLabeling->setChecked( lyr.enabled );
+  sliderPriority->setValue( lyr.priority );
+  chkNoObstacle->setChecked( !lyr.obstacle );
+  chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
+
+  bool scaleBased = (lyr.scaleMin != 0 && lyr.scaleMax != 0);
+  chkScaleBasedVisibility->setChecked(scaleBased);
+  if (scaleBased)
   {
-    // set enabled by default
-    chkEnableLabeling->setChecked( true );
-
+    spinScaleMin->setValue(lyr.scaleMin);
+    spinScaleMax->setValue(lyr.scaleMax);
   }
+
+  bool buffer = (lyr.bufferSize != 0);
+  chkBuffer->setChecked(buffer);
+  if (buffer)
+    spinBufferSize->setValue(lyr.bufferSize);
 
   btnTextColor->setColor( lyr.textColor );
   btnBufferColor->setColor( lyr.bufferColor );
@@ -157,18 +149,9 @@ LabelingGui::~LabelingGui()
 {
 }
 
-QgsVectorLayer* LabelingGui::layer()
-{
-  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer(mLayerId);
-  if (layer == NULL || layer->type() != QgsMapLayer::VectorLayer)
-    return NULL;
-  return static_cast<QgsVectorLayer*>(layer);
-}
-
 LayerSettings LabelingGui::layerSettings()
 {
   LayerSettings lyr;
-  lyr.layerId = mLayerId;
   lyr.fieldName = cboFieldName->currentText();
 
   lyr.dist = 0;
@@ -249,7 +232,7 @@ LayerSettings LabelingGui::layerSettings()
 
 void LabelingGui::populateFieldNames()
 {
-  QgsFieldMap fields = layer()->dataProvider()->fields();
+  QgsFieldMap fields = mLayer->dataProvider()->fields();
   for (QgsFieldMap::iterator it = fields.begin(); it != fields.end(); it++)
   {
     cboFieldName->addItem(it->name());

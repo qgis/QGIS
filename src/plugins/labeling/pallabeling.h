@@ -23,6 +23,8 @@ class QgsMapToPixel;
 class QgsFeature;
 #include "qgspoint.h"
 
+#include "qgsvectorlayer.h" // definition of QgsLabelingEngineInterface
+
 class MyLabel;
 
 class LayerSettings
@@ -50,10 +52,9 @@ public:
     MapOrientation = 8
   };
 
-  QString layerId;
   QString fieldName;
   Placement placement;
-  unsigned long placementFlags;
+  unsigned int placementFlags;
   QFont textFont;
   QColor textColor;
   bool enabled;
@@ -70,6 +71,9 @@ public:
 
   // implementation of register feature hook
   void registerFeature(QgsFeature& f);
+
+  void readFromLayer(QgsVectorLayer* layer);
+  void writeToLayer(QgsVectorLayer* layer);
 
   // temporary stuff: set when layer gets prepared
   pal::Layer* palLayer;
@@ -91,19 +95,15 @@ public:
   double cost;
 };
 
-class PalLabeling
+class PalLabeling : public QgsLabelingEngineInterface
 {
 public:
     PalLabeling(QgsMapRenderer* renderer);
     ~PalLabeling();
 
+    LayerSettings& layer(const char* layerName);
+
     void doLabeling(QPainter* painter, QgsRectangle extent);
-
-    void addLayer(LayerSettings layerSettings);
-
-    void removeLayer(QString layerId);
-
-    const LayerSettings& layer(QString layerId);
 
     void numCandidatePositions(int& candPoint, int& candLine, int& candPolygon);
     void setNumCandidatePositions(int candPoint, int candLine, int candPolygon);
@@ -120,10 +120,12 @@ public:
     bool isShowingAllLabels() const { return mShowingAllLabels; }
     void setShowingAllLabels(bool showing) { mShowingAllLabels = showing; }
 
+    // implemented methods from labeling engine interface
+
     //! hook called when drawing layer before issuing select()
-    static int prepareLayerHook(void* context, void* layerContext, int& attrIndex);
+    virtual int prepareLayer(QgsVectorLayer* layer, int& attrIndex);
     //! hook called when drawing for every feature in a layer
-    static void registerFeatureHook(QgsFeature& f, void* layerContext);
+    virtual void registerFeature(QgsVectorLayer* layer, QgsFeature& feat);
 
 
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
@@ -135,9 +137,10 @@ protected:
     void initPal();
 
 protected:
-    QList<LayerSettings> mLayers;
-    LayerSettings mInvalidLayer;
-
+    // temporary hashtable of layer settings, being filled during labeling, cleared once labeling's done
+    QHash<QgsVectorLayer*, LayerSettings> mActiveLayers;
+    LayerSettings mInvalidLayerSettings;
+    
     QgsMapRenderer* mMapRenderer;
     int mCandPoint, mCandLine, mCandPolygon;
     Search mSearch;

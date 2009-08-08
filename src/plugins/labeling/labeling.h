@@ -24,6 +24,8 @@
 //QGIS includes
 #include "../qgisplugin.h"
 
+#include "qgsmaplayer.h" // for MOC
+
 //forward declarations
 class QAction;
 class QPainter;
@@ -61,6 +63,8 @@ class Labeling: public QObject, public QgisPlugin
 
     //! start labeling map tool
     void setTool();
+
+    void layerWasAdded( QgsMapLayer* theMapLayer );
 
   private:
 
