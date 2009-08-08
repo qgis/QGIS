@@ -77,6 +77,10 @@ namespace pal
   FeaturePart::FeaturePart( Feature *feat, const GEOSGeometry* geom )
    : f(feat), nbHoles(0), holes(NULL)
   {
+    // we'll remove const, but we won't modify that geometry
+    the_geom = const_cast<GEOSGeometry*>(geom);
+    ownsGeom = false; // geometry is owned by Feature class
+
     extractCoords(geom);
 
     holeOf = NULL;
@@ -97,6 +101,12 @@ namespace pal
         delete holes[i];
       delete [] holes;
       holes = NULL;
+    }
+
+    if (ownsGeom)
+    {
+      GEOSGeom_destroy(the_geom);
+      the_geom = NULL;
     }
   }
 
@@ -581,7 +591,7 @@ void FeaturePart::removeDuplicatePoints()
 #endif
       if ( f->layer->arrangement == P_LINE )
       {
-        std::cout << alpha*180/M_PI << std::endl;
+        //std::cout << alpha*180/M_PI << std::endl;
         if ( flags & FLAG_MAP_ORIENTATION )
           reversed = ( alpha >= M_PI/2 || alpha < -M_PI/2 );
 
@@ -1260,5 +1270,36 @@ void FeaturePart::removeDuplicatePoints()
   }
 
 
+  bool FeaturePart::isConnected(FeaturePart* p2)
+  {
+    return (GEOSTouches(the_geom, p2->the_geom) == 1);
+  }
+
+  bool FeaturePart::mergeWithFeaturePart(FeaturePart* other)
+  {
+    GEOSGeometry* g1 = GEOSGeom_clone(the_geom);
+    GEOSGeometry* g2 = GEOSGeom_clone(other->the_geom);
+    GEOSGeometry* geoms[2] = { g1, g2 };
+    GEOSGeometry* g = GEOSGeom_createCollection(GEOS_MULTILINESTRING, geoms, 2);
+    GEOSGeometry* gTmp = GEOSLineMerge(g);
+    GEOSGeom_destroy(g);
+
+    if (GEOSGeomTypeId(gTmp) != GEOS_LINESTRING)
+    {
+      // sometimes it's not possible to merge lines (e.g. they don't touch at endpoints)
+      GEOSGeom_destroy(gTmp);
+      return false;
+    }
+
+    if (ownsGeom) // delete old geometry if we own it
+      GEOSGeom_destroy(the_geom);
+    // set up new geometry
+    the_geom = gTmp;
+    ownsGeom = true;
+
+    deleteCoords();
+    extractCoords(the_geom);
+    return true;
+  }
 
 } // end namespace pal

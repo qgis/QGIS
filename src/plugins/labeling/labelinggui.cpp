@@ -60,6 +60,8 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* pare
       Q_ASSERT(0 && "NOOOO!");
   }
 
+  chkMergeLines->setEnabled(layer->geometryType() == QGis::Line);
+
   populateFieldNames();
 
   // load labeling settings from layer
@@ -111,6 +113,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* pare
   sliderPriority->setValue( lyr.priority );
   chkNoObstacle->setChecked( !lyr.obstacle );
   chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
+  chkMergeLines->setChecked( lyr.mergeLines );
 
   bool scaleBased = (lyr.scaleMin != 0 && lyr.scaleMax != 0);
   chkScaleBasedVisibility->setChecked(scaleBased);
@@ -207,6 +210,7 @@ LayerSettings LabelingGui::layerSettings()
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
+  lyr.mergeLines = chkMergeLines->isChecked();
   if (chkScaleBasedVisibility->isChecked())
   {
     lyr.scaleMin = spinScaleMin->value();

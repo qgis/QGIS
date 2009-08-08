@@ -500,6 +500,10 @@ namespace pal
           // check if this selected layers has been selected by user
           if ( strcmp( layersName[i], layer->name ) == 0 )
           {
+            // check for connected features with the same label text and join them
+            if (layer->getMergeConnectedLines())
+              layer->joinConnectedFeatures();
+
             context->layer = layer;
             context->priority = layersFactor[i];
             // lookup for feature (and generates candidates list)

@@ -117,6 +117,7 @@ namespace pal
       PointSet **holes;
 
       GEOSGeometry *the_geom;
+      bool ownsGeom;
 
       /** \brief read coordinates from a GEOS geom */
       void extractCoords( const GEOSGeometry* geom );
@@ -259,6 +260,12 @@ public:
       int getNumSelfObstacles() const { return nbHoles; }
       PointSet* getSelfObstacle(int i) { return holes[i]; }
 
+      /** check whether this part is connected with some other part */
+      bool isConnected(FeaturePart* p2);
+
+      /** merge other (connected) part with this one and save the result in this part (other is unchanged).
+       * Return true on success, false if the feature wasn't modified */
+      bool mergeWithFeaturePart(FeaturePart* other);
   };
 
 } // end namespace pal

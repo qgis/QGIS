@@ -101,6 +101,7 @@ namespace pal
       Arrangement arrangement;
 
       LabelMode mode;
+      bool mergeLines;
 
       /** optional flags used for some placement methods */
       unsigned long arrangementFlags;
@@ -108,6 +109,9 @@ namespace pal
       // indexes (spatial and id)
       RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
       HashTable<Feature*> *hashtable;
+
+      HashTable< LinkedList<FeaturePart*>* > * connectedHashtable;
+      LinkedList< char* >* connectedTexts;
 
       SimpleMutex *modMutex;
 
@@ -140,7 +144,7 @@ namespace pal
       bool isScaleValid( double scale );
 
       /** add newly creted feature part into r tree and to the list */
-      void addFeaturePart( FeaturePart* fpart );
+      void addFeaturePart( FeaturePart* fpart, const char* labelText = NULL );
 
     public:
       /**
@@ -271,6 +275,9 @@ namespace pal
       void setLabelMode( LabelMode m ) { mode = m; }
       LabelMode getLabelMode() const { return mode; }
 
+      void setMergeConnectedLines(bool m) { mergeLines = m; }
+      bool getMergeConnectedLines() const { return mergeLines; }
+
       /**
        * \brief register a feature in the layer
        *
@@ -283,10 +290,13 @@ namespace pal
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1 );
+      bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1, const char* labelText = NULL );
 
       /** return pointer to feature or NULL if doesn't exist */
       Feature* getFeature( const char* geom_id );
+
+      /** join connected features with the same label text */
+      void joinConnectedFeatures();
 
   };
 

@@ -102,6 +102,7 @@ LayerSettings::LayerSettings()
   bufferSize = 1;
   bufferColor = Qt::white;
   labelPerPart = false;
+  mergeLines = false;
 }
 
 LayerSettings::LayerSettings(const LayerSettings& s)
@@ -121,6 +122,7 @@ LayerSettings::LayerSettings(const LayerSettings& s)
   bufferSize = s.bufferSize;
   bufferColor = s.bufferColor;
   labelPerPart = s.labelPerPart;
+  mergeLines = s.mergeLines;
 
   fontMetrics = NULL;
   ct = NULL;
@@ -172,7 +174,8 @@ void LayerSettings::readFromLayer(QgsVectorLayer* layer)
   scaleMax = layer->customProperty("labeling/scaleMax").toInt();
   bufferSize = layer->customProperty("labeling/bufferSize").toInt();
   bufferColor = _readColor(layer, "labeling/bufferColor");
-  labelPerPart = layer->customProperty("labeling/labelPerPart").toInt();
+  labelPerPart = layer->customProperty("labeling/labelPerPart").toBool();
+  mergeLines = layer->customProperty("labeling/mergeLines").toBool();
 }
 
 void LayerSettings::writeToLayer(QgsVectorLayer* layer)
@@ -199,6 +202,7 @@ void LayerSettings::writeToLayer(QgsVectorLayer* layer)
   layer->setCustomProperty("labeling/bufferSize", bufferSize);
   _writeColor(layer, "labeling/bufferColor", bufferColor);
   layer->setCustomProperty("labeling/labelPerPart", labelPerPart);
+  layer->setCustomProperty("labeling/mergeLines", mergeLines);
 }
 
 void LayerSettings::calculateLabelSize(QString text, double& labelX, double& labelY)
@@ -228,7 +232,7 @@ void LayerSettings::registerFeature(QgsFeature& f)
   geometries.append(lbl);
 
   // register feature to the layer
-  if (!palLayer->registerFeature(lbl->strId(), lbl, labelX, labelY))
+  if (!palLayer->registerFeature(lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData()))
     return;
 
   // TODO: only for placement which needs character info
@@ -325,6 +329,9 @@ int PalLabeling::prepareLayer(QgsVectorLayer* layer, int& attrIndex)
 
   // set label mode (label per feature is the default)
   l->setLabelMode( lyr.labelPerPart ? Layer::LabelPerFeaturePart : Layer::LabelPerFeature );
+
+  // set whether adjacent lines should be merged
+  l->setMergeConnectedLines( lyr.mergeLines );
 
   // save the pal layer to our layer context (with some additional info)
   lyr.palLayer = l;

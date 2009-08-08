@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>454</width>
-    <height>526</height>
+    <width>480</width>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -656,6 +656,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="chkMergeLines">
+     <property name="text">
+      <string>merge connected lines to avoid duplicate labels</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QCheckBox" name="chkNoObstacle">
@@ -663,7 +670,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>not an obstacle</string>
+        <string>features don't act as obstacles for labels</string>
        </property>
       </widget>
      </item>

@@ -65,6 +65,7 @@ public:
   int bufferSize;
   QColor bufferColor;
   bool labelPerPart; // whether to label every feature's part or only the biggest one
+  bool mergeLines;
 
   // called from register feature hook
   void calculateLabelSize(QString text, double& labelX, double& labelY);

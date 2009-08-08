@@ -136,15 +136,22 @@ namespace pal
 
   PointSet::~PointSet()
   {
-    if ( x )
-      delete[] x;
-    if ( y )
-      delete[] y;
+    deleteCoords();
 
     if ( status )
       delete[] status;
     if ( cHull )
       delete[] cHull;
+  }
+
+  void PointSet::deleteCoords()
+  {
+    if ( x )
+      delete[] x;
+    if ( y )
+      delete[] y;
+    x = NULL;
+    y = NULL;
   }
 
 

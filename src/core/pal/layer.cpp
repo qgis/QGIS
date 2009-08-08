@@ -62,7 +62,7 @@ namespace pal
       :  pal( pal ), obstacle( obstacle ), active( active ),
          toLabel( toLabel ), label_unit( label_unit ),
          min_scale( min_scale ), max_scale( max_scale ),
-         arrangement( arrangement ), arrangementFlags( 0 ), mode(LabelPerFeature)
+         arrangement( arrangement ), arrangementFlags( 0 ), mode(LabelPerFeature), mergeLines(false)
   {
 
     this->name = new char[strlen( lyrName ) +1];
@@ -72,6 +72,9 @@ namespace pal
 
     rtree = new RTree<FeaturePart*, double, 2, double>();
     hashtable = new HashTable<Feature*> ( 5281 );
+
+    connectedHashtable = new HashTable< LinkedList<FeaturePart*>* > ( 5391 );
+    connectedTexts = new LinkedList< char* >( strCompare );
 
     if ( defaultPriority < 0.0001 )
       this->defaultPriority = 0.0001;
@@ -95,7 +98,12 @@ namespace pal
         delete featureParts->pop_front();
       }
       delete featureParts;
+
     }
+
+    // this hashtable and list should be empty if they still exist
+    delete connectedHashtable;
+    double connectedTexts;
 
     // features in the hashtable
     if ( features )
@@ -219,7 +227,7 @@ namespace pal
 
 
 
-bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y )
+bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y, const char* labelText )
 {
   if ( !geom_id || label_x < 0 || label_y < 0 )
     return false;
@@ -297,7 +305,7 @@ bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
     }
 
     // feature part is ready!
-    addFeaturePart(fpart);
+    addFeaturePart(fpart, labelText);
 
     first_feat = false;
   }
@@ -310,7 +318,7 @@ bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
   // if using only biggest parts...
   if (mode == LabelPerFeature && biggest_part != NULL)
   {
-    addFeaturePart(biggest_part);
+    addFeaturePart(biggest_part, labelText);
     first_feat = false;
   }
 
@@ -328,7 +336,7 @@ bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double 
   return !first_feat; // true if we've added something
 }
 
-void Layer::addFeaturePart( FeaturePart* fpart )
+void Layer::addFeaturePart( FeaturePart* fpart, const char* labelText )
 {
   double bmin[2];
   double bmax[2];
@@ -339,6 +347,28 @@ void Layer::addFeaturePart( FeaturePart* fpart )
 
   // add to r-tree for fast spatial access
   rtree->Insert( bmin, bmax, fpart );
+
+  // add to hashtable with equally named feature parts
+  if (mergeLines && labelText)
+  {
+    LinkedList< FeaturePart*>** lstPtr = connectedHashtable->find(labelText);
+    LinkedList< FeaturePart*>* lst;
+    if (lstPtr == NULL)
+    {
+      // entry doesn't exist yet
+      lst = new LinkedList<FeaturePart*>( ptrFeaturePartCompare );
+      connectedHashtable->insertItem(labelText, lst);
+
+      char* txt = new char[strlen(labelText) +1];
+      strcpy(txt, labelText);
+      connectedTexts->push_back(txt);
+    }
+    else
+    {
+      lst = *lstPtr;
+    }
+    lst->push_back(fpart); // add to the list
+  }
 }
 
 
@@ -351,6 +381,78 @@ void Layer::setLabelUnit( Units label_unit )
 Units Layer::getLabelUnit()
 {
   return label_unit;
+}
+
+
+static FeaturePart* _findConnectedPart(FeaturePart* partCheck, LinkedList<FeaturePart*>* otherParts)
+{
+  // iterate in the rest of the parts with the same label
+  Cell<FeaturePart*>* p = otherParts->getFirst();
+  while (p)
+  {
+    if (partCheck->isConnected(p->item))
+    {
+      // stop checking for other connected parts
+      return p->item;
+    }
+    p = p->next;
+  }
+
+  return NULL; // no connected part found...
+}
+
+void Layer::joinConnectedFeatures()
+{  
+  // go through all label texts
+  char* labelText;
+  while ( labelText = connectedTexts->pop_front() )
+  {
+    //std::cerr << "JOIN: " << labelText << std::endl;
+    LinkedList<FeaturePart*>** partsPtr = connectedHashtable->find(labelText);
+    if (!partsPtr)
+      continue; // shouldn't happen
+    LinkedList<FeaturePart*>* parts = *partsPtr;
+
+    // go one-by-one part, try to merge
+    while (parts->size())
+    {
+      // part we'll be checking against other in this round
+      FeaturePart* partCheck = parts->pop_front();
+
+      FeaturePart* otherPart = _findConnectedPart(partCheck, parts);
+      if (otherPart)
+      {
+        //std::cerr << "- connected " << partCheck << " with " << otherPart << std::endl;
+
+        // remove partCheck from r-tree
+        double bmin[2], bmax[2];
+        partCheck->getBoundingBox(bmin, bmax);
+        rtree->Remove(bmin,bmax, partCheck);
+
+        otherPart->getBoundingBox(bmin, bmax);
+
+        // merge points from partCheck to p->item
+        if (otherPart->mergeWithFeaturePart(partCheck))
+        {
+          // reinsert p->item to r-tree (probably not needed)
+          rtree->Remove(bmin,bmax, otherPart);
+          otherPart->getBoundingBox(bmin, bmax);
+          rtree->Insert(bmin, bmax, otherPart);
+        }
+      }
+    }
+
+    // we're done processing feature parts with this particular label text
+    delete parts;
+    *partsPtr = NULL;
+    delete labelText;
+  }
+
+  // we're done processing connected fetures
+  delete connectedHashtable;
+  connectedHashtable = NULL;
+  delete connectedTexts;
+  connectedTexts = NULL;
 }
 
 

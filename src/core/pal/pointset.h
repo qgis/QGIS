@@ -115,6 +115,8 @@ namespace pal
 
       PointSet( PointSet &ps );
 
+      void deleteCoords();
+
       double xmin;
       double xmax;
       double ymin;
