@@ -445,6 +445,8 @@ void PalLabeling::doLabeling(QPainter* painter, QgsRectangle extent)
   std::cout << "LABELING work:   " << t.elapsed() << "ms  ... labels# " << labels->size() << std::endl;
   t.restart();
 
+  painter->setRenderHint(QPainter::Antialiasing);
+
   // draw the labels
   std::list<LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it)
@@ -550,9 +552,15 @@ void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const
   else
   {
     // we're drawing real label
-    painter->setFont( lyr.textFont );
+    /*painter->setFont( lyr.textFont );
     painter->setPen( lyr.textColor );
-    painter->drawText(0,0, txt);
+    painter->drawText((0,0, txt);*/
+
+    QPainterPath path;
+    path.addText(0,0, lyr.textFont, text);
+    painter->setPen( Qt::NoPen );
+    painter->setBrush( lyr.textColor );
+    painter->drawPath(path);
   }
   painter->restore();
 
