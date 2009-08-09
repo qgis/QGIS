@@ -74,6 +74,9 @@ namespace pal
       LabelPosition* nextPart;
       int partId;
 
+      bool isInConflictSinglePart( LabelPosition* lp );
+      bool isInConflictMultiPart( LabelPosition* lp );
+
     public:
       /**
        * \brief create a new LabelPosition

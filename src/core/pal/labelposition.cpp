@@ -149,29 +149,35 @@ namespace pal
 
   bool LabelPosition::isInConflict( LabelPosition *lp )
   {
-    int i, i2, j;
-    int d1, d2;
-
     if ( this->probFeat == lp->probFeat ) // bugfix #1
       return false; // always overlaping itself !
 
+    if (nextPart == NULL && lp->nextPart == NULL)
+      return isInConflictSinglePart(lp);
+    else
+      return isInConflictMultiPart(lp);
+  }
+
+  bool LabelPosition::isInConflictSinglePart( LabelPosition* lp )
+  {
+    // TODO: add bounding box test to possibly avoid cross product calculation
+
+    int i, i2, j;
+    int d1, d2;
     double cp1, cp2;
 
-
-    //std::cout << "Check intersect" << std::endl;
     for ( i = 0;i < 4;i++ )
     {
       i2 = ( i + 1 ) % 4;
       d1 = -1;
       d2 = -1;
-      //std::cout << "new seg..." << std::endl;
+
       for ( j = 0;j < 4;j++ )
       {
         cp1 = cross_product( x[i], y[i], x[i2], y[i2], lp->x[j], lp->y[j] );
         if ( cp1 > 0 )
         {
           d1 = 1;
-          //std::cout << "    cp1: " << cp1 << std::endl;
         }
         cp2 = cross_product( lp->x[i], lp->y[i],
                              lp->x[i2], lp->y[i2],
@@ -180,25 +186,33 @@ namespace pal
         if ( cp2 > 0 )
         {
           d2 = 1;
-          //std::cout << "     cp2 " << cp2 << std::endl;
         }
       }
 
       if ( d1 == -1 || d2 == -1 ) // disjoint
-      {
-        if ( lp->getNextPart() )
-        {
-          if ( isInConflict(lp->getNextPart()) )
-            return true;
-        }
-
-        if (nextPart)
-          return nextPart->isInConflict( lp );
-        else
-          return false;
-      }
+        return false;
     }
     return true;
+  }
+
+  bool LabelPosition::isInConflictMultiPart( LabelPosition* lp )
+  {
+    // check all parts against all parts of other one
+    LabelPosition* tmp1 = this;
+    while (tmp1)
+    {
+      // check tmp1 against parts of other label
+      LabelPosition* tmp2 = lp;
+      while (tmp2)
+      {
+        if (tmp1->isInConflictSinglePart(tmp2))
+          return true;
+        tmp2 = tmp2->nextPart;
+      }
+
+      tmp1 = tmp1->nextPart;
+    }
+    return false; // no conflict found
   }
 
   int LabelPosition::getId() const
