@@ -557,7 +557,7 @@ void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const
     painter->drawText((0,0, txt);*/
 
     QPainterPath path;
-    path.addText(0,0, lyr.textFont, text);
+    path.addText(0,0, lyr.textFont, txt);
     painter->setPen( Qt::NoPen );
     painter->setBrush( lyr.textColor );
     painter->drawPath(path);
