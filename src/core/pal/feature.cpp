@@ -1279,6 +1279,44 @@ void FeaturePart::removeDuplicatePoints()
     return rnbp;
   }
 
+  void FeaturePart::addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4])
+  {
+    int geomType = GEOSGeomTypeId(the_geom);
+
+    double sizeCost = 0;
+    if (geomType == GEOS_LINESTRING)
+    {
+      double length;
+      if (GEOSLength(the_geom, &length) != 1)
+        return; // failed to calculate length
+      double bbox_length = max(bbx[2]-bbx[0], bby[2]-bby[0]);
+      if (length >= bbox_length/4)
+        return; // the line is longer than quarter of height or width - don't penalize it
+
+      sizeCost = 1 - (length / (bbox_length/4)); // < 0,1 >
+    }
+    else if (geomType == GEOS_POLYGON)
+    {
+      double area;
+      if (GEOSArea(the_geom, &area) != 1)
+        return;
+      double bbox_area = (bbx[2]-bbx[0])*(bby[2]-bby[0]);
+      if (area >= bbox_area/16)
+        return; // covers more than 1/16 of our view - don't penalize it
+
+      sizeCost = 1 - (area / (bbox_area/16)); // < 0, 1 >
+    }
+    else
+      return; // no size penalty for points
+
+    std::cout << "size cost " << sizeCost << std::endl;
+
+    // apply the penalty
+    for (int i = 0; i < nbp; i++)
+    {
+      lPos[i]->setCost( lPos[i]->getCost() + sizeCost / 100 );
+    }
+  }
 
   bool FeaturePart::isConnected(FeaturePart* p2)
   {

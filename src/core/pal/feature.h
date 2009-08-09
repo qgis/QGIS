@@ -266,6 +266,9 @@ public:
       /** merge other (connected) part with this one and save the result in this part (other is unchanged).
        * Return true on success, false if the feature wasn't modified */
       bool mergeWithFeaturePart(FeaturePart* other);
+
+      void addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4]);
+
   };
 
 } // end namespace pal

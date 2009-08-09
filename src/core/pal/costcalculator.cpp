@@ -188,6 +188,9 @@ namespace pal
           setPolygonCandidatesCost( stop, (LabelPosition**) feat->lPos, max_p, obstacles, bbx, bby );
       }
 
+      // add size penalty (small lines/polygons get higher cost)
+      feat->feature->addSizePenalty(max_p, feat->lPos, bbx, bby);
+
       return max_p;
    }
 
