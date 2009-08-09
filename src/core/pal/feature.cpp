@@ -571,8 +571,11 @@ void FeaturePart::removeDuplicatePoints()
       if ( cost > 0.98 )
         cost = 0.0001;
       else
-        cost = ( 1 - cost ) / 100;
+        cost = ( 1 - cost ) / 100; // < 0.0001, 0.01 > (but 0.005 is already pretty much)
 
+      // penalize positions which are further from the line's midpoint
+      double costCenter = vabs( ll/2 - (l+xrm/2) ) / ll; // <0, 0.5>
+      cost += costCenter / 1000;  // < 0, 0.0005 >
 
       if (( vabs( ey - by ) < EPSILON ) && ( vabs( ex - bx ) < EPSILON ) )
       {
@@ -723,7 +726,7 @@ void FeaturePart::removeDuplicatePoints()
       double end_x = 0;
       double end_y = 0;
 
-      std::cerr << "segment len " << segment_length << "   distance " << distance << std::endl;
+      //std::cerr << "segment len " << segment_length << "   distance " << distance << std::endl;
       if (segment_length - distance  >= ci.width)
       {
         // if the distance remaining in this segment is enough, we just go further along the segment
@@ -883,15 +886,22 @@ void FeaturePart::removeDuplicatePoints()
           {
             diff = fabs(tmp->getAlpha() - angle_last);
             if (diff > 2*M_PI) diff -= 2*M_PI;
+            diff = min(diff, 2*M_PI - diff); // difference 350 deg is actually just 10 deg...
             angle_diff += diff;
           }
 
           angle_last = tmp->getAlpha();
           tmp = tmp->getNextPart();
         }
-        double cost = angle_diff/100.0;
+        double angle_diff_avg = angle_diff / (f->labelInfo->char_num-1); // <0, pi> but pi/8 is much already
+        double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
         if (cost < 0.0001) cost = 0.0001;
-        std::cerr << "cost " << angle_diff << std::endl;
+
+        // penalize positions which are further from the line's midpoint
+        double labelCenter = (i*delta) + f->label_x/2;
+        double costCenter = vabs( total_distance/2 - labelCenter ) / total_distance; // <0, 0.5>
+        cost += costCenter / 1000;  // < 0, 0.0005 >
+        //std::cerr << "cost " << angle_diff << " vs " << costCenter << std::endl;
         slp->setCost(cost);
 
         positions->push_back(slp);
