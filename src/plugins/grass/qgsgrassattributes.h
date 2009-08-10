@@ -19,6 +19,7 @@
 /* First attribute in the table is always field, second attribute is category */
 
 #include "ui_qgsgrassattributesbase.h"
+#include "qgsgrassedit.h"
 
 class QgsGrassProvider;
 class QgsGrassEdit;
@@ -104,6 +105,9 @@ class QgsGrassAttributes: public QDialog, private Ui::QgsGrassAttributesBase
 
     //! Remove all tabs
     void clear();
+
+    //! Enable/disable buttons depending on the category mode
+    void setCategoryMode(QgsGrassEdit::CatMode mode, const QString &cat);
 
   private:
     //! Pointer to vector provider

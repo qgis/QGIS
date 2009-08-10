@@ -916,4 +916,6 @@ void QgsGrassEditAttributes::mouseClick( QgsPoint & point, Qt::MouseButton butto
     e->mAttributes->show();
     e->mAttributes->raise();
   }
+
+    e->mAttributes->setCategoryMode(static_cast<QgsGrassEdit::CatMode>(e->mCatModeBox->currentIndex()), e->mCatEntry->text());
 }
