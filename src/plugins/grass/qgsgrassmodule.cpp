@@ -2633,6 +2633,13 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   }
   adjustTitle();
 
+  // Check if this parameter is required
+  if (gnode.toElement().attribute("required") == "yes") {
+      mRequired = true;
+  } else {
+      mRequired = false;
+  }
+
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
   QString element = promptElem.attribute( "element" );
@@ -2699,6 +2706,14 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   mLayerComboBox->clear();
   mUri.resize( 0 );
   mOgrLayers.resize( 0 );
+
+  // If not required, add an empty item to combobox and a padding item into
+  // layer containers.
+  if (!mRequired){
+      mUri.push_back(QString());
+      mOgrLayers.push_back(QString());
+      mLayerComboBox->addItem(tr("Select a layer"), QVariant());
+  }
 
   QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
 
