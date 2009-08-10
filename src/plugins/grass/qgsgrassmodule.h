@@ -695,6 +695,9 @@ class QgsGrassModuleGdalInput: public QgsGrassModuleGroupBoxItem
 
     //! Ogr where clauses
     std::vector<QString> mOgrWheres;
+
+    //! Required field
+    bool mRequired;
 };
 
 /*********************** QgsGrassModuleField **********************/
