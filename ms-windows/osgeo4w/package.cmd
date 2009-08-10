@@ -17,6 +17,8 @@ set BISON=%PROGRAMFILES%\GnuWin32\bin\bison.exe
 
 set VERSION=%1
 set PACKAGE=%2
+if %VERSION%=="" goto error
+if %PACKAGE%=="" goto error
 
 PROMPT qgis%VERSION%$g 
 
@@ -76,7 +78,8 @@ cmake -G "Visual Studio 9 2008" ^
 	-D BISON_EXECUTABLE=%BISON% ^
 	-D GDAL_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\gdal-16\include -D GDAL_LIBRARY=%OSGEO4W_ROOT%\apps\gdal-16\lib\gdal_i.lib ^
 	-D PYTHON_EXECUTABLE=%OSGEO4W_ROOT%\bin\python.exe ^
-	-D PYTHON_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Python25\include -D PYTHON_LIBRARY=%OSGEO4W_ROOT%\apps\Python25\libs\python25.lib ^
+	-D PYTHON_INCLUDE_PATH=%OSGEO4W_ROOT%\apps\Python25\include ^
+	-D PYTHON_LIBRARY=%OSGEO4W_ROOT%\apps\Python25\libs\python25.lib ^
 	-D SIP_BINARY_PATH=%OSGEO4W_ROOT%\apps\Python25\sip.exe ^
 	-D GRASS_PREFIX=%OSGEO4W_ROOT%\apps\grass\grass-%GRASS_VERSION% ^
 	-D QT_BINARY_DIR=%OSGEO4W_ROOT%\bin -D QT_LIBRARY_DIR=%OSGEO4W_ROOT%\lib ^
@@ -85,6 +88,9 @@ cmake -G "Visual Studio 9 2008" ^
 	-D QT_PNG_LIBRARY=%OSGEO4W_ROOT%\lib\libpng13.lib ^
 	-D CMAKE_INSTALL_PREFIX=%OSGEO4W_ROOT%\apps\qgis-dev ^
 	../../..>>%LOG% 2>&1
+if errorlevel 1 goto error
+
+egrep -vq "^(Python not being built|Could not find GRASS)" %LOG%
 if errorlevel 1 goto error
 
 :skipcmake
