@@ -1992,7 +1992,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
     mModuleStandardOptions( options ),
     mGeometryTypeOption( 0 ), mVectorLayerOption( 0 ),
-    mRegionButton( 0 ), mUpdate( false )
+    mRegionButton( 0 ), mUpdate( false ), mRequired( false )
 {
   QgsDebugMsg( "called." );
   mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
@@ -2002,6 +2002,13 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     mTitle = tr( "Input" );
   }
   adjustTitle();
+
+  // Check if this parameter is required
+   if (gnode.toElement().attribute("required") == "yes") {
+      mRequired = true;
+  } else {
+      mRequired = false;
+  }
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
@@ -2211,6 +2218,15 @@ void QgsGrassModuleInput::updateQgisLayers()
   mVectorLayerNames.resize( 0 );
   mMapLayers.resize( 0 );
   mVectorFields.resize( 0 );
+
+  // If not required, add an empty item to combobox and a padding item into
+  // layer containers.
+  if (!mRequired){
+      mMaps.push_back(QString(""));
+      mVectorLayerNames.push_back(QString(""));
+      mMapLayers.push_back(NULL);
+      mLayerComboBox->addItem(tr("Select a layer"), QVariant());
+  }
 
   QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
 
