@@ -1023,9 +1023,8 @@ class geoprocessingThread( QThread ):
           try:
             if geom.intersects( tmpGeom ):
               found = True
-              diff_geom = QgsGeometry( geom.difference( tmpGeom ) )#
+              diff_geom = QgsGeometry( geom.difference( tmpGeom ) )
               int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
-              print "found"
               if int_geom.wkbType() == 7:
                 int_com = geom.combine( tmpGeom )
                 int_sym = geom.symDifference( tmpGeom )
@@ -1061,7 +1060,7 @@ class geoprocessingThread( QThread ):
       if len(intersects) <= 0:
         try:
           outFeat.setGeometry( diff_geom )
-          outFeat.setAttributeMap( atMapA )
+          outFeat.setAttributeMap( atMap )
           writer.addFeature( outFeat )
         except:
           FEATURE_EXCEPT = False
