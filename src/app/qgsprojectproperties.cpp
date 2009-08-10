@@ -58,6 +58,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   //see if the user wants on the fly projection enabled
   bool myProjectionEnabled = myRender->hasCrsTransformEnabled();
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
+  btnGrpMapUnits->setEnabled( !myProjectionEnabled );
 
   long myCRSID = myRender->destinationSrs().srsid();
   QgsDebugMsg( "Read project CRSID: " + QString::number( myCRSID ) );
@@ -430,3 +431,9 @@ void QgsProjectProperties::on_mSnappingOptionsPushButton_clicked()
     d.layerSettings( mSnappingLayerSettings );
   }
 }
+
+void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged(int state)
+{
+  btnGrpMapUnits->setEnabled( state == Qt::Unchecked );
+}
+

@@ -18,6 +18,7 @@
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
 
+#include "qgslogger.h"
 #include "qgscontexthelp.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
@@ -89,6 +90,9 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
     QList<QgsPoint> tmpPoints = mTool->points();
     tmpPoints.append( point );
     double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( tmpPoints );
+    QGis::UnitType myDisplayUnits;
+    // Ignore units
+    convertMeasurement( area, myDisplayUnits, true );
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && mTool->points().size() > 0 )
@@ -96,9 +100,12 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
     QgsPoint p1( mTool->points().last() ), p2( point );
 
     double d = mTool->canvas()->mapRenderer()->distanceArea()->measureLine( p1, p2 );
+    editTotal->setText( formatDistance( mTotal + d ) );
+    QGis::UnitType myDisplayUnits;
+    // Ignore units
+    convertMeasurement( d, myDisplayUnits, false );
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
     item->setText( 0, QLocale::system().toString( d, 'f', 2 ) );
-    editTotal->setText( formatDistance( mTotal + d ) );
   }
 }
 
@@ -108,6 +115,9 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
   if ( mMeasureArea && numPoints > 2 )
   {
     double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( mTool->points() );
+    QGis::UnitType myDisplayUnits;
+    // Ignore units
+    convertMeasurement( area, myDisplayUnits, true );
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && numPoints > 1 )
@@ -120,6 +130,10 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
 
     mTotal += d;
     editTotal->setText( formatDistance( mTotal ) );
+
+    QGis::UnitType myDisplayUnits;
+    // Ignore units
+    convertMeasurement( d, myDisplayUnits, false );
 
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
     item->setText( 0, QLocale::system().toString( d, 'f', 2 ) );
@@ -173,24 +187,26 @@ void QgsMeasureDialog::on_btnHelp_clicked()
 
 QString QgsMeasureDialog::formatDistance( double distance )
 {
-  QString txt;
-  QString unitLabel;
-
-  QGis::UnitType myMapUnits = mTool->canvas()->mapUnits();
-  return QgsDistanceArea::textUnit( distance, 2, myMapUnits, false );
+  QGis::UnitType myDisplayUnits;
+  convertMeasurement( distance, myDisplayUnits, false );
+  return QgsDistanceArea::textUnit( distance, 2, myDisplayUnits, false );
 }
 
 QString QgsMeasureDialog::formatArea( double area )
 {
-  QGis::UnitType myMapUnits = mTool->canvas()->mapUnits();
-  return QgsDistanceArea::textUnit( area, 2, myMapUnits, true );
+  QGis::UnitType myDisplayUnits;
+  convertMeasurement( area, myDisplayUnits, true );
+  return QgsDistanceArea::textUnit( area, 2, myDisplayUnits, true );
 }
 
 void QgsMeasureDialog::updateUi()
 {
+  double dummy = 1.0;
+  QGis::UnitType myDisplayUnits;
+  // The dummy distance is ignored 
+  convertMeasurement( dummy, myDisplayUnits, false );
 
-  QGis::UnitType myMapUnits = mTool->canvas()->mapUnits();
-  switch ( myMapUnits )
+  switch ( myDisplayUnits )
   {
     case QGis::Meters:
       mTable->setHeaderLabels( QStringList( tr( "Segments (in meters)" ) ) );
@@ -218,3 +234,43 @@ void QgsMeasureDialog::updateUi()
 
 }
 
+void QgsMeasureDialog::convertMeasurement(double &measure, QGis::UnitType &u, bool isArea)
+{
+  // Helper for converting between meters and feet
+  // The parameter &u is out only...
+  
+  QGis::UnitType myUnits = mTool->canvas()->mapUnits();
+  if ( myUnits == QGis::Degrees &&
+       mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() != "NONE" &&
+       mTool->canvas()->mapRenderer()->distanceArea()->hasCrsTransformEnabled() )
+  {
+    // Measuring on an ellipsoid returns meters
+    myUnits = QGis::Meters;
+  }
+
+  // Get the units for display
+  QSettings settings;
+  QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters").toString();
+
+  // Only convert between meters and feet
+  if ( myUnits == QGis::Meters && myDisplayUnitsTxt == "feet" )
+  {
+    measure /= 0.3048;
+    if ( isArea )
+    {
+      measure /= 0.3048;
+    }
+    myUnits = QGis::Feet;
+  }
+  if ( myUnits == QGis::Feet && myDisplayUnitsTxt == "meters" )
+  {
+    measure *= 0.3048 * 0.3048;
+    if ( isArea )
+    {
+      measure *= 0.3048;
+    }
+    myUnits = QGis::Meters;
+  }
+  
+  u = myUnits;
+}
