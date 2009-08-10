@@ -20,6 +20,7 @@
 #include "ui_qgsmeasurebase.h"
 
 #include "qgspoint.h"
+#include "qgsdistancearea.h"
 
 class QCloseEvent;
 class QgsMeasureTool;
@@ -71,6 +72,9 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! shows/hides table, shows correct units
     void updateUi();
+
+    //! Converts the measurement, depending on settings in options and current transformation
+    void convertMeasurement(double &measure, QGis::UnitType &u, bool isArea);
 
     double mTotal;
 

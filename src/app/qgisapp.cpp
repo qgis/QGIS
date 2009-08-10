@@ -5435,7 +5435,9 @@ void QgisApp::projectProperties()
   QApplication::restoreOverrideCursor();
 
   //pass any refresg signals off to canvases
-  //connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
+  // Line below was commented out by wonder three years ago (r4949).
+  // It is needed to refresh scale bar after changing display units.
+  connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
 
   QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
   bool wasProjected = myRender->hasCrsTransformEnabled();
