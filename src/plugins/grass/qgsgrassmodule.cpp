@@ -2439,15 +2439,19 @@ std::vector<QgsField> QgsGrassModuleInput::currentFields()
 {
   QgsDebugMsg( "called." );
 
+  int limit = 0;
+  if (!mRequired)
+    limit = 1;
+
   std::vector<QgsField> fields;
 
   int c = mLayerComboBox->currentIndex();
-  if ( c < 0 )
+  if ( c < limit )
     return fields;
 
   unsigned current = c;
 
-  if ( current >= 0 && current <  mVectorFields.size() )
+  if ( current >= limit && current <  mVectorFields.size() )
   {
     fields = mVectorFields[current];
   }
@@ -2459,13 +2463,17 @@ QgsMapLayer * QgsGrassModuleInput::currentLayer()
 {
   QgsDebugMsg( "called." );
 
+  int limit = 0;
+  if (!mRequired)
+    limit = 1;
+
   int c = mLayerComboBox->currentIndex();
-  if ( c < 0 )
+  if ( c < limit )
     return 0;
 
   unsigned int current = c;
 
-  if ( current >= 0 && current <  mMapLayers.size() )
+  if ( current >= limit && current <  mMapLayers.size() )
   {
     return mMapLayers[current];
   }
@@ -2477,13 +2485,17 @@ QString QgsGrassModuleInput::currentMap()
 {
   QgsDebugMsg( "called." );
 
+  int limit = 0;
+  if (!mRequired)
+    limit = 1;
+  
   int c = mLayerComboBox->currentIndex();
-  if ( c < 0 )
+  if ( c < limit )
     return QString();
 
   unsigned int current = c;
 
-  if ( current >= 0 && current <  mMaps.size() )
+  if ( current >= limit && current <  mMaps.size() )
   {
     return mMaps[current];
   }
