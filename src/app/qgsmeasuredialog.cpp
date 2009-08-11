@@ -90,9 +90,6 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
     QList<QgsPoint> tmpPoints = mTool->points();
     tmpPoints.append( point );
     double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( tmpPoints );
-    QGis::UnitType myDisplayUnits;
-    // Ignore units
-    convertMeasurement( area, myDisplayUnits, true );
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && mTool->points().size() > 0 )
@@ -115,9 +112,6 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
   if ( mMeasureArea && numPoints > 2 )
   {
     double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( mTool->points() );
-    QGis::UnitType myDisplayUnits;
-    // Ignore units
-    convertMeasurement( area, myDisplayUnits, true );
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && numPoints > 1 )
@@ -246,6 +240,7 @@ void QgsMeasureDialog::convertMeasurement(double &measure, QGis::UnitType &u, bo
   {
     // Measuring on an ellipsoid returns meters
     myUnits = QGis::Meters;
+    QgsDebugMsg( "We're measuring on an ellipsoid, returning meters" );
   }
 
   // Get the units for display
@@ -255,20 +250,24 @@ void QgsMeasureDialog::convertMeasurement(double &measure, QGis::UnitType &u, bo
   // Only convert between meters and feet
   if ( myUnits == QGis::Meters && myDisplayUnitsTxt == "feet" )
   {
+    QgsDebugMsg( QString( "Converting %1 meters" ).arg( QString::number( measure ) ) );
     measure /= 0.3048;
     if ( isArea )
     {
       measure /= 0.3048;
     }
+    QgsDebugMsg( QString( "to %1 feet" ).arg( QString::number( measure ) ) );
     myUnits = QGis::Feet;
   }
   if ( myUnits == QGis::Feet && myDisplayUnitsTxt == "meters" )
   {
-    measure *= 0.3048 * 0.3048;
+    QgsDebugMsg( QString( "Converting %1 feet" ).arg( QString::number( measure ) ) );
+    measure *= 0.3048;
     if ( isArea )
     {
       measure *= 0.3048;
     }
+    QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
     myUnits = QGis::Meters;
   }
   
