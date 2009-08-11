@@ -479,7 +479,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="textLabel1_8">
             <property name="text">
-             <string>Display units (if applicable)</string>
+             <string>Preferred measurements units</string>
             </property>
            </widget>
           </item>
