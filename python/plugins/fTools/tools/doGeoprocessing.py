@@ -1036,6 +1036,14 @@ class geoprocessingThread( QThread ):
               except:
                 FEATURE_EXCEPT = False
                 continue
+            else:
+              try:
+                outFeat.setGeometry( geom )
+                outFeat.setAttributeMap( atMapA )
+                writer.addFeature( outFeat )
+              except:
+                FEATURE_EXCEPT = False
+                continue
           except:
             GEOS_EXCEPT = False
             found = False
