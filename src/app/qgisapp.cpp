@@ -4656,7 +4656,6 @@ void QgisApp::isInOverview()
 
 void QgisApp::removeLayer()
 {
-  QgsLegendLayerFile* currentLayerFile = mMapLegend->currentLayerFile();
   mMapLegend->legendLayerRemove();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
@@ -5437,7 +5436,7 @@ void QgisApp::projectProperties()
   //pass any refresg signals off to canvases
   // Line below was commented out by wonder three years ago (r4949).
   // It is needed to refresh scale bar after changing display units.
-  connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
+  connect( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
 
   QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
   bool wasProjected = myRender->hasCrsTransformEnabled();
