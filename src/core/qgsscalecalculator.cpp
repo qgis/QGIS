@@ -41,11 +41,13 @@ double QgsScaleCalculator::dpi()
 
 void QgsScaleCalculator::setMapUnits( QGis::UnitType mapUnits )
 {
+  QgsDebugMsg( QString( "Map units set to %1" ).arg( QString::number( mapUnits ) ) );
   mMapUnits = mapUnits;
 }
 
 QGis::UnitType QgsScaleCalculator::mapUnits() const
 {
+  QgsDebugMsg( QString( "Map units returned as %1" ).arg( QString::number( mMapUnits ) ) );
   return mMapUnits;
 }
 

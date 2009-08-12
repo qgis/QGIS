@@ -63,7 +63,7 @@ void QgsMeasureTool::activate()
   mRightMouseClicked = false;
 
   // ensure that we have correct settings
-  updateProjection();
+  updateSettings();
 
   // If we suspect that they have data that is projected, yet the
   // map CRS is set to a geographic one, warn them.
@@ -93,17 +93,11 @@ void QgsMeasureTool::deactivate()
 
 void QgsMeasureTool::restart()
 {
-  updateProjection();
   mPoints.clear();
-
   mRubberBand->reset( mMeasureArea );
 
-  // re-read color settings
-  QSettings settings;
-  int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
-  int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
-  int myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
-  mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );
+  // re-read settings
+  updateSettings();
 
   mRightMouseClicked = false;
   mWrongProjectProjection = false;
@@ -114,18 +108,9 @@ void QgsMeasureTool::restart()
 
 
 
-void QgsMeasureTool::updateProjection()
+void QgsMeasureTool::updateSettings()
 {
-  // set ellipsoid
   QSettings settings;
-  // QString ellipsoid = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
-  // mCalc->setEllipsoid(ellipsoid);
-
-  // set source CRS and projections enabled flag
-  // QgsMapRenderer* mapRender = mCanvas->mapRenderer();
-  // mCalc->setProjectionsEnabled(mapRender->hasCrsTransformEnabled());
-  // int srsid = mapRender->destinationSrs().srsid();
-  // mCalc->setSourceCrs(srsid);
 
   int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
   int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
@@ -183,12 +168,6 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
 void QgsMeasureTool::addPoint( QgsPoint &point )
 {
   QgsDebugMsg( "point=" + point.toString() );
-
-  if ( mWrongProjectProjection )
-  {
-    updateProjection();
-    mWrongProjectProjection = false;
-  }
 
   // don't add points with the same coordinates
   if ( mPoints.size() > 0 && point == mPoints[0] )

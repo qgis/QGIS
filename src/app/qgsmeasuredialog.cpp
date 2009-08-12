@@ -234,13 +234,13 @@ void QgsMeasureDialog::convertMeasurement(double &measure, QGis::UnitType &u, bo
   // The parameter &u is out only...
   
   QGis::UnitType myUnits = mTool->canvas()->mapUnits();
-  if ( myUnits == QGis::Degrees &&
+  if ( (myUnits == QGis::Degrees || myUnits == QGis::Feet ) &&
        mTool->canvas()->mapRenderer()->distanceArea()->ellipsoid() != "NONE" &&
        mTool->canvas()->mapRenderer()->distanceArea()->hasCrsTransformEnabled() )
   {
-    // Measuring on an ellipsoid returns meters
+    // Measuring on an ellipsoid returns meters, and so does using projections???
     myUnits = QGis::Meters;
-    QgsDebugMsg( "We're measuring on an ellipsoid, returning meters" );
+    QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
   }
 
   // Get the units for display
