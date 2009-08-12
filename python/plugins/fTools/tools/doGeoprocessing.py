@@ -1213,55 +1213,90 @@ class geoprocessingThread( QThread ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
           geom = QgsGeometry( inFeatA.geometry() )
-          diff_geom = QgsGeometry( geom )
+          int_geom = QgsGeometry( geom )
           atMap = inFeatA.attributeMap()
           intersects = index.intersects( geom.boundingBox() )
+          found = False
+          first = True
           for id in intersects:
             if id in selectionB:
               vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
               tmpGeom = QgsGeometry( inFeatB.geometry() )
+              if tmpGeom.intersects( geom ):
+                found = True
+                if first:
+                  outFeat.setGeometry( QgsGeometry( tmpGeom ) )
+                  first = False
+                else:
+                  try:
+                    cur_geom = QgsGeometry( outFeat.geometry() )
+                    new_geom = QgsGeometry( cur_geom.combine( tmpGeom ) )
+                    outFeat.setGeometry( QgsGeometry( new_geom ) )
+                  except:
+                    GEOS_EXCEPT = False
+                    break
+          if found:
+            try:
+              cur_geom = QgsGeometry( outFeat.geometry() )
+              new_geom = QgsGeometry( geom.intersection( cur_geom ) )
+              if new_geom.wkbType() == 7:
+                int_com = QgsGeometry( geom.combine( cur_geom ) )
+                int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
+                new_geom = QgsGeometry( int_com.difference( int_sym ) )
               try:
-                if geom.intersects( tmpGeom ):
-                  diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+                outFeat.setGeometry( new_geom )
+                outFeat.setAttributeMap( atMap )
+                writer.addFeature( outFeat )
               except:
-                add = False
-                GEOS_EXCEPT = False
-                break
-          try:
-            outGeom = QgsGeometry( geom.difference( diff_geom ) )
-            outFeat.setGeometry( outGeom )
-            outFeat.setAttributeMap( atMap )
-            writer.addFeature( outFeat )
-          except:
-            GEOS_EXCEPT = False
-            break
+                FEAT_EXCEPT = False
+                continue
+            except:
+              GEOS_EXCEPT = False
+              continue
       # we have no selection in overlay layer
       else:
         for inFeatA in selectionA:
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
           geom = QgsGeometry( inFeatA.geometry() )
-          diff_geom = QgsGeometry( geom )
           atMap = inFeatA.attributeMap()
           intersects = index.intersects( geom.boundingBox() )
+          found = False
+          first = True
           for id in intersects:
             vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
             tmpGeom = QgsGeometry( inFeatB.geometry() )
+            if tmpGeom.intersects( geom ):
+              found = True
+              if first:
+                outFeat.setGeometry( QgsGeometry( tmpGeom ) )
+                first = False
+              else:
+                try:
+                  cur_geom = QgsGeometry( outFeat.geometry() )
+                  new_geom = QgsGeometry( cur_geom.combine( tmpGeom ) )
+                  outFeat.setGeometry( QgsGeometry( new_geom ) )
+                except:
+                  GEOS_EXCEPT = False
+                  break
+          if found:
             try:
-              if geom.intersects( tmpGeom ):
-                diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+              cur_geom = QgsGeometry( outFeat.geometry() )
+              new_geom = QgsGeometry( geom.intersection( cur_geom ) )
+              if new_geom.wkbType() == 7:
+                int_com = QgsGeometry( geom.combine( cur_geom ) )
+                int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
+                new_geom = QgsGeometry( int_com.difference( int_sym ) )
+              try:
+                outFeat.setGeometry( new_geom )
+                outFeat.setAttributeMap( atMap )
+                writer.addFeature( outFeat )
+              except:
+                FEAT_EXCEPT = False
+                continue
             except:
-              add = False
               GEOS_EXCEPT = False
-              break
-          try:
-            outGeom = QgsGeometry( geom.difference( diff_geom ) )
-            outFeat.setGeometry( outGeom )
-            outFeat.setAttributeMap( atMap )
-            writer.addFeature( outFeat )
-          except:
-            GEOS_EXCEPT = False
-            break
+              continue
     # there is no selection in input layer
     else:
       nFeat = vproviderA.featureCount()
@@ -1274,55 +1309,90 @@ class geoprocessingThread( QThread ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
           geom = QgsGeometry( inFeatA.geometry() )
-          diff_geom = QgsGeometry( geom )
           atMap = inFeatA.attributeMap()
           intersects = index.intersects( geom.boundingBox() )
+          found = False
+          first = True
           for id in intersects:
             if id in selectionB:
               vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
               tmpGeom = QgsGeometry( inFeatB.geometry() )
+              if tmpGeom.intersects( geom ):
+                found = True
+                if first:
+                  outFeat.setGeometry( QgsGeometry( tmpGeom ) )
+                  first = False
+                else:
+                  try:
+                    cur_geom = QgsGeometry( outFeat.geometry() )
+                    new_geom = QgsGeometry( cur_geom.combine( tmpGeom ) )
+                    outFeat.setGeometry( QgsGeometry( new_geom ) )
+                  except:
+                    GEOS_EXCEPT = False
+                    break
+          if found:
+            try:
+              cur_geom = QgsGeometry( outFeat.geometry() )
+              new_geom = QgsGeometry( geom.intersection( cur_geom ) )
+              if new_geom.wkbType() == 7:
+                int_com = QgsGeometry( geom.combine( cur_geom ) )
+                int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
+                new_geom = QgsGeometry( int_com.difference( int_sym ) )
               try:
-                if geom.intersects( tmpGeom ):
-                  diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+                outFeat.setGeometry( new_geom )
+                outFeat.setAttributeMap( atMap )
+                writer.addFeature( outFeat )
               except:
-                add = False
-                GEOS_EXCEPT = False
-                break
-          try:
-            outGeom = QgsGeometry( geom.difference( diff_geom ) )
-            outFeat.setGeometry( outGeom )
-            outFeat.setAttributeMap( atMap )
-            writer.addFeature( outFeat )
-          except:
-            GEOS_EXCEPT = False
-            break
+                FEAT_EXCEPT = False
+                continue
+            except:
+              GEOS_EXCEPT = False
+              continue          
       # we have no selection in overlay layer
       else:
         while vproviderA.nextFeature( inFeatA ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
           geom = QgsGeometry( inFeatA.geometry() )
-          diff_geom = QgsGeometry( geom )
           atMap = inFeatA.attributeMap()
           intersects = index.intersects( geom.boundingBox() )
-          for id in intersects:
-            vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
-            tmpGeom = QgsGeometry( inFeatB.geometry() )
-            try:
-              if geom.intersects( tmpGeom ):
-                diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
-            except:
-              add = False
-              GEOS_EXCEPT = False
-              break
-          try:
-            outGeom = QgsGeometry( geom.difference( diff_geom ) )
-            outFeat.setGeometry( outGeom )
-            outFeat.setAttributeMap( atMap )
-            writer.addFeature( outFeat )
-          except:
-            GEOS_EXCEPT = False
-            break
+          first = True
+          found = False
+          if len( intersects ) > 0:
+            for id in intersects:
+              vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
+              tmpGeom = QgsGeometry( inFeatB.geometry() )
+              if tmpGeom.intersects( geom ):
+                found = True
+                if first:
+                  outFeat.setGeometry( QgsGeometry( tmpGeom ) )
+                  first = False
+                else:
+                  try:
+                    cur_geom = QgsGeometry( outFeat.geometry() )
+                    new_geom = QgsGeometry( cur_geom.combine( tmpGeom ) )
+                    outFeat.setGeometry( QgsGeometry( new_geom ) )
+                  except:
+                    GEOS_EXCEPT = False
+                    break
+            if found:
+              try:
+                cur_geom = QgsGeometry( outFeat.geometry() )
+                new_geom = QgsGeometry( geom.intersection( cur_geom ) )
+                if new_geom.wkbType() == 7:
+                  int_com = QgsGeometry( geom.combine( cur_geom ) )
+                  int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
+                  new_geom = QgsGeometry( int_com.difference( int_sym ) )
+                try:
+                  outFeat.setGeometry( new_geom )
+                  outFeat.setAttributeMap( atMap )
+                  writer.addFeature( outFeat )
+                except:
+                  FEAT_EXCEPT = False
+                  continue
+              except:
+                GEOS_EXCEPT = False
+                continue              
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match
 
