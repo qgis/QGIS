@@ -206,9 +206,6 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
 
   mCompositionNameComboBox->insertItem( 0, tr( "Map 1" ) );
 
-  //mComposition  = new QgsComposition( this, 1 );
-  //mComposition->setActive ( true );
-
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   mSizeGrip = new QSizeGrip( this );
   mSizeGrip->resize( mSizeGrip->sizeHint() );
@@ -229,6 +226,13 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
 
 QgsComposer::~QgsComposer()
 {
+  //delete all the items
+  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
+  for ( ; it != mItemWidgetMap.end(); ++it )
+  {
+    delete it.key();
+    delete it.value();
+  }
 }
 
 void QgsComposer::setupTheme()
@@ -1252,6 +1256,7 @@ void QgsComposer::deleteItem( QgsComposerItem* item )
     return;
   }
 
+  delete( it.key() );
   delete( it.value() );
   mItemWidgetMap.remove( it.key() );
 }

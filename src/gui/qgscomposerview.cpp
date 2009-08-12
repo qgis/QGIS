@@ -311,7 +311,6 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
       composition()->removeItem( *itemIt );
-      delete( *itemIt );
       emit itemRemoved( *itemIt );
     }
   }
