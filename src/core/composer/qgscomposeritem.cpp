@@ -210,7 +210,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   {
     QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk, widthOk;
-    int penRed, penGreen, penBlue, penAlpha, penWidth;
+    int penRed, penGreen, penBlue, penAlpha;
+    double penWidth;
+
     penWidth = itemElem.attribute( "outlineWidth" ).toDouble( &widthOk );
     penRed = frameColorElem.attribute( "red" ).toDouble( &redOk );
     penGreen = frameColorElem.attribute( "green" ).toDouble( &greenOk );
@@ -219,7 +221,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     if ( redOk && greenOk && blueOk && alphaOk && widthOk )
     {
       QPen framePen( QColor( penRed, penGreen, penBlue, penAlpha ) );
-      framePen.setWidth( penWidth );
+      framePen.setWidthF( penWidth );
       setPen( framePen );
     }
   }
