@@ -36,6 +36,11 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     QString text() {return mText;}
     void setText( const QString& text );
+
+    /**Returns the text as it appears on screen (with replaced data field)
+      @note this function was added in version 1.2*/
+    QString displayText() const;
+
     QFont font() const;
     void setFont( const QFont& f );
     double margin() {return mMargin;}
@@ -61,6 +66,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     // Border between text and fram (in mm)
     double mMargin;
+
+    /**Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
+    void replaceDateText(QString& text) const;
 };
 
 #endif
