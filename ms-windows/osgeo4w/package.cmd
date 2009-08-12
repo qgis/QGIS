@@ -10,7 +10,8 @@ call "%PROGRAMFILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 set OSGEO4W_ROOT=%PROGRAMFILES%\OSGeo4W
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 
-set LIB_DIR=%OSGEO4W_ROOT%
+set O4W_ROOT=%OSGEO4W_ROOT:\=/%
+set LIB_DIR=%O4W_ROOT%
 
 set FLEX=%PROGRAMFILES%\GnuWin32\bin\flex.exe
 set BISON=%PROGRAMFILES%\GnuWin32\bin\bison.exe
@@ -76,35 +77,38 @@ cmake -G "Visual Studio 9 2008" ^
 	-D CMAKE_BUILDCONFIGURATION_TYPES=%BUILDCONF% ^
 	-D FLEX_EXECUTABLE=%FLEX% ^
 	-D BISON_EXECUTABLE=%BISON% ^
-	-D GDAL_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\gdal-16\include -D GDAL_LIBRARY=%OSGEO4W_ROOT%\apps\gdal-16\lib\gdal_i.lib ^
-	-D PYTHON_EXECUTABLE=%OSGEO4W_ROOT%\bin\python.exe ^
-	-D PYTHON_INCLUDE_PATH=%OSGEO4W_ROOT%\apps\Python25\include ^
-	-D PYTHON_LIBRARY=%OSGEO4W_ROOT%\apps\Python25\libs\python25.lib ^
-	-D SIP_BINARY_PATH=%OSGEO4W_ROOT%\apps\Python25\sip.exe ^
-	-D GRASS_PREFIX=%OSGEO4W_ROOT%\apps\grass\grass-%GRASS_VERSION% ^
-	-D QT_BINARY_DIR=%OSGEO4W_ROOT%\bin -D QT_LIBRARY_DIR=%OSGEO4W_ROOT%\lib ^
-	-D QT_HEADERS_DIR=%OSGEO4W_ROOT%\include\qt4 ^
-	-D QT_ZLIB_LIBRARY=%OSGEO4W_ROOT%\lib\zlib.lib ^
-	-D QT_PNG_LIBRARY=%OSGEO4W_ROOT%\lib\libpng13.lib ^
-	-D CMAKE_INSTALL_PREFIX=%OSGEO4W_ROOT%\apps\qgis-dev ^
+	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal-16/include ^
+	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-16/lib/gdal_i.lib ^
+	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
+	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python25/include ^
+	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python25/libs/python25.lib ^
+	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python25/sip.exe ^
+	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION% ^
+	-D QT_BINARY_DIR=%O4W_ROOT%/bin ^
+	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
+	-D QT_HEADERS_DIR=%O4W_ROOT%/include/qt4 ^
+	-D QT_ZLIB_LIBRARY=%O4W_ROOT%/lib/zlib.lib ^
+	-D QT_PNG_LIBRARY=%O4W_ROOT%/lib/libpng13.lib ^
+	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/qgis-dev ^
 	../../..>>%LOG% 2>&1
 if errorlevel 1 goto error
 
-egrep -vq "^(Python not being built|Could not find GRASS)" %LOG%
-if errorlevel 1 goto error
+REM bail out if python or grass was not found
+grep -Eq "^(Python not being built|Could not find GRASS)" %LOG%
+if not errorlevel 1 goto error
 
 :skipcmake
 
 echo ZERO_CHECK: %DATE% %TIME%>>%LOG% 2>&1
-devenv qgis%VERSION%.sln /Project ZERO_CHECK /Build %BUILDCONF%>>%LOG% 2>&1
+devenv qgis%VERSION%.sln /Project ZERO_CHECK /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 goto error 
 
 echo ALL_BUILD: %DATE% %TIME%>>%LOG% 2>&1
-devenv qgis%VERSION%.sln /Project ALL_BUILD /Build %BUILDCONF%>>%LOG% 2>&1
+devenv qgis%VERSION%.sln /Project ALL_BUILD /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 goto error 
 
 echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1
-devenv qgis%VERSION%.sln /Project INSTALL /Build %BUILDCONF%>>%LOG% 2>&1
+devenv qgis%VERSION%.sln /Project INSTALL /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 goto error
 
 echo PACKAGE: %DATE% %TIME%>>%LOG% 2>&1
