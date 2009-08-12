@@ -27,6 +27,7 @@
 //qt includes
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QLocale>
 
 //stdc++ includes
 #include <cassert>
