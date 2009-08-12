@@ -3026,6 +3026,9 @@ void QgisApp::fileExit()
 
   if ( saveDirty() )
   {
+    delete mComposer;
+    mComposer = 0;
+
     mMapCanvas->freeze( true );
     removeAllLayers();
     qApp->exit( 0 );
@@ -3048,6 +3051,9 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
     return;
   }
 
+  delete mComposer;
+  mComposer = new QgsComposer( this );
+
   if ( thePromptToSaveFlag )
   {
     if ( !saveDirty() )
@@ -3064,9 +3070,6 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   mMapCanvas->freeze( true );
   removeAllLayers();
   mMapCanvas->clear();
-
-  delete mComposer;
-  mComposer = new QgsComposer( this );
 
   QgsProject* prj = QgsProject::instance();
   prj->title( QString::null );
@@ -3283,12 +3286,12 @@ void QgisApp::fileOpen()
 
     delete openFileDialog;
 
+    delete mComposer;
+    mComposer = new QgsComposer( this );
+
     // clear out any stuff from previous project
     mMapCanvas->freeze( true );
     removeAllLayers();
-
-    delete mComposer;
-    mComposer = new QgsComposer( this );
 
     QgsProject::instance()->setFileName( fullPath );
 
@@ -3341,12 +3344,12 @@ bool QgisApp::addProject( QString projectFile )
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  // clear the map canvas
-  removeAllLayers();
-
   //clear the composer
   delete mComposer;
   mComposer = new QgsComposer( this );
+
+  // clear the map canvas
+  removeAllLayers();
 
   try
   {
@@ -3668,43 +3671,6 @@ bool QgisApp::openLayer( const QString & fileName )
 
   return ok;
 }
-
-
-#if 0
-void QgisApp::filePrint()
-{
-//
-//  Warn the user first that priting is experimental still
-//
-  QString myHeading = "QGIS Printing Support is Experimental";
-  QString myMessage = "Please note that printing only works on A4 landscape at the moment.\n";
-  myMessage += "For other page sizes your mileage may vary.\n";
-  QMessageBox::information( this, tr( myHeading ), tr( myMessage ) );
-
-  QPrinter myQPrinter;
-  if ( myQPrinter.setup( this ) )
-  {
-    QgsDebugMsg( ".............................." );
-    QgsDebugMsg( "...........Printing..........." );
-    QgsDebugMsg( ".............................." );
-// Ithought we could just do this:
-//mMapCanvas->render(&myQPrinter);
-//but it doesnt work so now we try this....
-    QPaintDeviceMetrics myMetrics( &myQPrinter ); // need width/height of printer surface
-    QgsDebugMsg( QString( "Print device width: %1" ).arg( myMetrics.width() ) );
-    QgsDebugMsg( QString( "Print device height: %1" ).arg( myMetrics.height() ) );
-    QPainter myQPainter;
-    myQPainter.begin( &myQPrinter );
-    QPixmap myQPixmap( myMetrics.width(), myMetrics.height() );
-    myQPixmap.fill();
-    mMapCanvas->freeze( false );
-    mMapCanvas->setDirty( true );
-    mMapCanvas->render( &myQPixmap );
-    myQPainter.drawPixmap( 0, 0, myQPixmap );
-    myQPainter.end();
-  }
-}
-#endif
 
 void QgisApp::filePrint()
 {
