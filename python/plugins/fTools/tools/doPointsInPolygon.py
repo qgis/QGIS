@@ -1,4 +1,4 @@
-#-----------------------------------------------------------
+﻿#-----------------------------------------------------------
 # 
 # Points in Polygon
 #
@@ -44,7 +44,7 @@ class Dialog(QDialog, Ui_Dialog):
 		# Set up the user interface from Designer.
 		self.setupUi(self)
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
-		self.setWindowTitle("Points in polygon")
+		self.setWindowTitle(self.tr("Points in polygon"))
 		# populate layer list
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
@@ -78,7 +78,7 @@ class Dialog(QDialog, Ui_Dialog):
 				outName = outName.left(outName.length() - 4)
 			self.compute(inPoly, inPts, inField, outPath, self.progressBar)
 			self.outShape.clear()
-			addToTOC = QMessageBox.question(self, "Count Points in Polygons", "Created output Shapefile:\n" + outPath 
+			addToTOC = QMessageBox.question(self, "Count Points in Polygons", self.tr("Created output Shapefile:\n") + outPath 
 			+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
 				self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
@@ -154,7 +154,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Counts Points In Polygons", "Vector layer is not valid")
+					QMessageBox.information(self, "Counts Points In Polygons", self.tr("Vector layer is not valid"))
 
 	def getFieldList(self, vlayer):
 		fProvider = vlayer.dataProvider()
