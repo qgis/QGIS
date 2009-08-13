@@ -185,7 +185,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Integer" ), "integer", QVariant::Int, 1, 10 )
   << QgsVectorDataProvider::NativeType( tr( "Real" ), "double", QVariant::Double, 1, 20, 0, 5 )
-  << QgsVectorDataProvider::NativeType( tr( "String" ), "string", QVariant::String, 1, 20, 0, 5 )
+  << QgsVectorDataProvider::NativeType( tr( "String" ), "string", QVariant::String, 1, 255, 0, 0 )
   ;
 }
 
