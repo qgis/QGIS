@@ -790,7 +790,7 @@
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="13"/>
         <source>fTools About</source>
-        <translation>A propos de fTools</translation>
+        <translation>À propos de fTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="36"/>
@@ -1421,17 +1421,17 @@ p, li { white-space: pre-wrap; }
     <name>DlgAddRelation</name>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Information OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="13"/>
         <source>Create OSM relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer une relation OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="30"/>
         <source>Relation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de relation :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="78"/>
@@ -1440,22 +1440,22 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="178"/>
         <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="188"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="106"/>
         <source>Properties</source>
-        <translation type="unfinished">Propriétés</translation>
+        <translation>Propriétés</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="158"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Membres</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="260"/>
         <source>Create</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer</translation>
     </message>
     <message>
         <source>Storno</source>
@@ -1464,7 +1464,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>
@@ -1472,55 +1472,55 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="19"/>
         <source>Download OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>Télécharger des données OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="40"/>
         <source>Extent</source>
-        <translation type="unfinished">Etendre</translation>
+        <translation>Emprise</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="48"/>
         <source>Latitude:</source>
-        <translation type="unfinished">Latitude:</translation>
+        <translation>Latitude:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="55"/>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="96"/>
         <source>   From</source>
-        <translation type="unfinished"></translation>
+        <translation>   Depuis</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="72"/>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="113"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>Vers</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="89"/>
         <source>Longitude:</source>
-        <translation type="unfinished">Longitude:</translation>
+        <translation>Longitude:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="166"/>
         <source>&lt;nothing&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;rien&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="182"/>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="210"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="196"/>
         <source>Download to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Télécharger vers :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="219"/>
         <source>Open data automatically after download</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir les données automatiquement après le téléchargement</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="247"/>
@@ -1530,65 +1530,65 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="283"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser le moteur de rendu personnalisé</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="358"/>
         <source>Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Télécharger</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="365"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Téléchargement OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de sauvegarder le fichier %1 : %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished"></translation>
+        <translation>En attente du serveur OpenStreetMap...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec du processus de téléchargement. La réponse du serveur OSM est : %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de téléchargement OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec du téléchargement : %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtention des données</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le serveur OpenStreetMap d&apos;où vous téléchargez vos données (~ api.openstreetmap.org) a un quota fixe sz téléchargement. Comme expliqué à &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, l&apos;étendue de la latitude ou de la longitude de la région voulue ne doivent être supérieurs à 0.25 degrés. QGIS vous permet de spécifier n&apos;importe quelle étendue mais le serveur OpenStreetMap rejetera toutes les requêtes qui ne satisferont pas aux limites de téléchargements.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;ensemble des étendue est trop large !</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;étendue de la latitude est trop large !</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;étendue de la longitude est trop large !</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ok ! L&apos;aire est probablement acceptable pour le server.</translation>
     </message>
 </context>
 <context>
@@ -1596,22 +1596,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="16"/>
         <source>Import data to OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer des données vers OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="25"/>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dans ce dialogue, vous pouvez importer une couche depuis QGIS vers OSM.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="50"/>
         <source>Layer</source>
-        <translation type="unfinished">Couche</translation>
+        <translation>Couche</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="69"/>
         <source>Import only current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer seulement la sélection actuelle</translation>
     </message>
 </context>
 <context>
@@ -1619,27 +1619,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="16"/>
         <source>Load OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="33"/>
         <source>OpenStreetMap file to load:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez un fichier OSM à ouvrir :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="46"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="55"/>
         <source>Add columns for tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter des colonnes d&apos;étiquettes :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="78"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser le moteur de rendu personnalisé</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="128"/>
@@ -1651,76 +1651,76 @@ p, li { white-space: pre-wrap; }
     <name>DlgSaveOSM</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer OSM vers un fichier</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de sauvegarder le fichier %1 : %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Installation...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarde des nœuds...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarde des lignes...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarde des polygones...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarde des relations...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="16"/>
         <source>Save OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="33"/>
         <source>Where to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Emplacement de sauvegarde :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="52"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="61"/>
         <source>Features to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Entités à enregistrer :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="81"/>
         <source>Points</source>
-        <translation type="unfinished">Points</translation>
+        <translation>Points</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="91"/>
         <source>Lines</source>
-        <translation type="unfinished">Lignes</translation>
+        <translation>Lignes</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="101"/>
         <source>Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygones</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="115"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="125"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquettes</translation>
     </message>
 </context>
 <context>
@@ -1728,102 +1728,102 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="22"/>
         <source>Upload OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>Envoyer des données OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="37"/>
         <source>Ready for upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Prêt pour l&apos;envoi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="80"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="85"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="90"/>
         <source>3</source>
-        <translation type="unfinished"></translation>
+        <translation>3</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="95"/>
         <source>4</source>
-        <translation type="unfinished"></translation>
+        <translation>4</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="100"/>
         <source>5</source>
-        <translation type="unfinished"></translation>
+        <translation>5</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="108"/>
         <source>Comment on your changes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Descriptif de votre changement :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="134"/>
         <source>OSM account</source>
-        <translation type="unfinished"></translation>
+        <translation>Compte OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="142"/>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisateur :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="162"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mot de Passe :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="179"/>
         <source>Show password</source>
-        <translation type="unfinished"></translation>
+        <translation>Montrer le mot de passe</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="186"/>
         <source>Save password</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder le mot de passe</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Envoi OSM</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">Chargement des données...</translation>
+        <translation>Envoi des données...</translation>
     </message>
 </context>
 <context>
     <name>DockWidget</name>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le dialogue &apos;Créer une relation OSM&quot; a été fermé automatiquement car la base de données OSM actuelle a été modifiée.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM Entité Dock Widget</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez d&apos;abord une entité OSM.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez d&apos;abord une relation pour éditer.</translation>
     </message>
     <message>
         <source>Property with key &apos;%1&apos; already exists for this feature.</source>
-        <translation type="unfinished"></translation>
+        <translation>La propriété avec l&apos;identifiant &apos;%1&apos; existe déjà pour cette entité.</translation>
     </message>
 </context>
 <context>
@@ -2133,22 +2133,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="63"/>
         <source>What are all the files in my generated plugin directory for?</source>
-        <translation>Quelle est le but de tous les fichiers générés dans le répertoire de mon plugin ?</translation>
+        <translation>Quelle est le but de tous les fichiers générés dans le répertoire de mon extension ?</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="64"/>
         <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
-        <translation>Ceci est un fichier généré par CMake qui crée votre plugin. Vous devriez ajouter les fichiers sources et les dépendances spécifiques à l&apos;application dans ce fichier.</translation>
+        <translation>Ceci est un fichier généré par CMake qui crée votre extension. Vous devriez ajouter les fichiers sources et les dépendances spécifiques à l&apos;application dans ce fichier.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="65"/>
         <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
-        <translation>Cette classe fourni la &quot;liaison&quot; entre la logique de votre propre application et celle de QGIS. Vous verreze qu&apos;un certain nombre de méthodes ont déjà été implémentées pour vous - avec quelques exemples montrant comment ajouter des couches vectorielles ou matricielles à la zone de visualisation de l&apos;application principale. Cette classe est une instanciation concrète de l&apos;interface de QgsPlugin qui définit le comportement d&apos;un plugin. En particulier, un plugin possède des membres et des méthodes statiques qui servent à l&apos;identification de chaque plugin par QgsPluginManager et le chargeur de plugins, l&apos;ajout d&apos;une entrée dans le menu, etc. Rien ne vous empêche de créer plusieurs outils ou entrée de menu pour un simple plugin. Par défaut, une seule entrée dans le menu et un seul outils sont créés et sont préconfigurés pour appeler la méthode run() lorsqu&apos;ils sont sélectionnées. Cette implémentation par défaut fournie par le constructeur de plugins est bien documentée. Merci de vous réferrer au code source pour plus de détails.</translation>
+        <translation>Cette classe fournit la &quot;liaison&quot; entre la logique de votre propre application et celle de QGIS. Vous verrez qu&apos;un certain nombre de méthodes ont déjà été implémentées pour vous - avec quelques exemples montrant comment ajouter des couches vectorielles ou matricielles à la zone de visualisation de l&apos;application principale. Cette classe est une instanciation concrète de l&apos;interface de QgsPlugin qui définit le comportement d&apos;un extension. En particulier, un extension possède des membres et des méthodes statiques qui servent à l&apos;identification de chaque extension par QgsPluginManager et le chargeur de extensions, l&apos;ajout d&apos;une entrée dans le menu, etc. Rien ne vous empêche de créer plusieurs outils ou entrer de menu pour un simple extension. Par défaut, une seule entrée dans le menu et un seul outil sont créés et sont préconfigurés pour appeler la méthode run() lorsqu&apos;ils sont sélectionnés. Cette implémentation par défaut fournie par le constructeur de extensions est bien documentée. Merci de vous référer au code source pour plus de détails.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="66"/>
         <source>This is a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).</source>
-        <translation>Ceci est un fichier &apos;ui&apos; utilisé par Qt Designer. Il défini l&apos;aspect par défaut du plugin sans implémenter la logique applicative. Vous pouvez  en modifier le canevas à votre convenance ou l&apos;effacer si votre plugin n&apos;utilise pas de masque de saisie (p. ex. dans le cas d&apos;un outils cartographique).</translation>
+        <translation>Ceci est un fichier &apos;ui&apos; utilisé par Qt Designer. Il défini l&apos;aspect par défaut du extension sans implémenter la logique applicative. Vous pouvez  en modifier le canevas à votre convenance ou l&apos;effacer si votre plugin n&apos;utilise pas de masque de saisie (p. ex. dans le cas d&apos;un outils cartographique).</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="67"/>
@@ -2158,12 +2158,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="68"/>
         <source>This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&apos;:/Homann/&apos;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.</source>
-        <translation>Ceci est le fichier de ressource Qt4 pour votre plugin. Le Makefile généré pour votre plugin est déjà configuré pour utiliser ce fichier de ressource; en pratique vous devez uniquement ajouter p. ex. les icones supplémentaires au moyen de ce format de fichier XML simple. Notez l&apos;espace de nommage utilisé pour toutes vos ressources, p. ex. (&apos;:/Homann/&apos;). Il est important d&apos;utiliser ce préfixe pout toutes vos ressources. Nous vous suggérons également d&apos;inclure toutes les images et données utilisées lors de l&apos;exécution dans ce fichier.</translation>
+        <translation>Ceci est le fichier de ressource Qt4 pour votre extension. Le Makefile généré pour votre extension est déjà configuré pour utiliser ce fichier de ressource; en pratique vous devez uniquement ajouter p. ex. les icones supplémentaires au moyen de ce format de fichier XML simple. Notez l&apos;espace de nommage utilisé pour toutes vos ressources, p. ex. (&apos;:/Homann/&apos;). Il est important d&apos;utiliser ce préfixe pout toutes vos ressources. Nous vous suggérons également d&apos;inclure toutes les images et données utilisées lors de l&apos;exécution dans ce fichier.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="69"/>
         <source>This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.</source>
-        <translation>Ceci est l&apos;image qui sera utilisée par votre plugin comme icone dans le menu et la barre d&apos;outils. Remplacez simplement cette icone par la vôtre pour le différencier des autres plugins.</translation>
+        <translation>Ceci est l&apos;image qui sera utilisée par votre plugin comme icone dans le menu et la barre d&apos;outils. Remplacez simplement cette icône par la vôtre pour le différencier des autres extensions.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="70"/>
@@ -2178,7 +2178,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="72"/>
         <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
-        <translation>Pour toutes questions et commentaires concernant le &quot;plugin builder template&quot; et la création de fonctionnalités dans QGIS en utilisant des plugins, merci de nous contacter par :</translation>
+        <translation>Pour toutes questions et commentaires concernant le &quot;plugin builder template&quot; et la création de fonctionnalités dans QGIS en utilisant des extensions, merci de nous contacter par :</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="73"/>
@@ -2188,7 +2188,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="74"/>
         <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
-        <translation>QGIS est distribué sous les termes de la license publique GNU (GPL). Si vous deéveloppez un plugin intéressant, il serait souhaitable de le mettre à disposition de la communauté.  </translation>
+        <translation>QGIS est distribué sous les termes de la license publique GNU (GPL). Si vous développez une extension intéressante, il serait souhaitable de le mettre à disposition de la communauté.  </translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="75"/>
@@ -2440,7 +2440,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="38"/>
         <source>OSM Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>entité OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="68"/>
@@ -2456,148 +2456,148 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="406"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="486"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="93"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="96"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="99"/>
         <source>Identify object</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifier l&apos;entité</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="127"/>
         <source>Move object</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer l&apos;entité</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="155"/>
         <source>Create point</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer un point</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="177"/>
         <source>Create line</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer une ligne</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="205"/>
         <source>Create polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer un polygone</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="233"/>
         <source>Create relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer une relation</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="252"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="255"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="258"/>
         <source>Undo</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="274"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="277"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="280"/>
         <source>Redo</source>
-        <translation type="unfinished">Refaire</translation>
+        <translation>Refaire</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="296"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="299"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="302"/>
         <source>Show/Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher/Masquer l&apos;historique d&apos;édition OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="332"/>
         <source>Feature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Entité :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="358"/>
         <source>TYPE, ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>TYPE, ID :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="365"/>
         <source>CREATED:</source>
-        <translation type="unfinished"></translation>
+        <translation>CRÉE :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="372"/>
         <source>USER:</source>
-        <translation type="unfinished"></translation>
+        <translation>UTILISATEUR :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="379"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="386"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="393"/>
         <source>unknown</source>
-        <translation type="unfinished">inconnue</translation>
+        <translation>inconnu</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="440"/>
         <source>Properties</source>
-        <translation type="unfinished">Propriétés</translation>
+        <translation>Propriétés</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="543"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="546"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="549"/>
         <source>Add new relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une nouvelle relation</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="552"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="574"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="577"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="580"/>
         <source>Edit selected relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer la relation sélectionnée</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="583"/>
         <source>E</source>
-        <translation type="unfinished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="605"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="608"/>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="611"/>
         <source>Remove selected relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la relation sélectionnée</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="614"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="641"/>
         <source>Relation tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquette de la relation :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="688"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="696"/>
         <source>Relation members:</source>
-        <translation type="unfinished"></translation>
+        <translation>Membres de la relation :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="496"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2605,35 +2605,35 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="17"/>
         <source>OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer l&apos;historique OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="26"/>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="29"/>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="32"/>
         <source>Clear all</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer tout</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="35"/>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="67"/>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="86"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="58"/>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="61"/>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="64"/>
         <source>Undo</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="77"/>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="80"/>
         <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="83"/>
         <source>Redo</source>
-        <translation type="unfinished">Refaire</translation>
+        <translation>Refaire</translation>
     </message>
 </context>
 <context>
@@ -2902,7 +2902,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/providers/grass/qgsgrass.cpp" line="128"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="160"/>
         <source>GRASS plugin</source>
-        <translation>Plugin GRASS</translation>
+        <translation>Extension GRASS</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="129"/>
@@ -3044,7 +3044,7 @@ Voulez-vous renseigner le chemin (GISBASE) vers votre installation de GRASS ?</t
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="31"/>
         <source>WFS plugin</source>
-        <translation>Plugin WFS</translation>
+        <translation>Extension WFS</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="32"/>
@@ -3709,7 +3709,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="40"/>
         <source>Quick Print is a plugin to quickly print a map with minimal effort.</source>
-        <translation>Le plugin Impression rapide permet d&apos;imprimer une carte avec un minimum d&apos;effort.</translation>
+        <translation>L&apos;extension Impression rapide permet d&apos;imprimer une carte avec un minimum d&apos;effort.</translation>
     </message>
     <message>
         <source>Could not remove polygon intersection</source>
@@ -3832,7 +3832,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/plugins/interpolation/qgsgridfilewriter.cpp" line="65"/>
         <source>Interpolating...</source>
-        <translation>Interpolation..</translation>
+        <translation>Interpolation...</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsgridfilewriter.cpp" line="65"/>
@@ -3843,12 +3843,12 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="25"/>
         <source>Interpolation plugin</source>
-        <translation>Plugin d&apos;interpolation</translation>
+        <translation>Extension d&apos;interpolation</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="26"/>
         <source>A plugin for interpolation based on vertices of a vector layer</source>
-        <translation>Un plugin d&apos;interpolation basé sur les vertices d&apos;une couche vectorielle</translation>
+        <translation>Une extension d&apos;interpolation basée sur les vertices d&apos;une couche vectorielle</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="35"/>
@@ -3887,14 +3887,14 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="290"/>
         <source>Error Loading Plugin</source>
-        <translation>Erreur de chargement de Plugin</translation>
+        <translation>Erreur de chargement d&apos;extension</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="291"/>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation>Il y a eu une eurreur lors du chargement du plugin. Les informations suivantes pourront aider les développeurs de QGIS à résoudre ce problème
-%1</translation>
+        <translation>Il y a eu une eurreur lors du chargement de l&apos;extensionn. Les informations suivantes pourront aider les développeurs de QGIS à résoudre ce problème:
+%1.</translation>
     </message>
     <message>
         <source>Error when reading metadata of plugin </source>
@@ -3908,7 +3908,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="422"/>
         <source>Error when reading metadata of plugin %1</source>
-        <translation>Erreur lors de la lecture des métadonnées du plugin %1</translation>
+        <translation>Erreur lors de la lecture des métadonnées de l&apos;extension %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="87"/>
@@ -3976,7 +3976,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="543"/>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation>Impossible de charger le plugin %1</translation>
+        <translation>Impossible de charger l&apos;extension %1</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="547"/>
@@ -3991,7 +3991,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="564"/>
         <source>Error while unloading plugin %1</source>
-        <translation>Erreur lors du déchargement du plugin %1</translation>
+        <translation>Erreur lors du déchargement de l&apos;extension %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="315"/>
@@ -4046,7 +4046,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolator.cpp" line="88"/>
         <source>Building triangulation...</source>
-        <translation type="unfinished"></translation>
+        <translation>Construction de la triangulation...</translation>
     </message>
 </context>
 <context>
@@ -4328,7 +4328,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1284"/>
         <source>&amp;Plugins</source>
-        <translation>&amp;Plugins</translation>
+        <translation>E&amp;xtension</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1517"/>
@@ -4469,7 +4469,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="409"/>
         <source>Restoring loaded plugins</source>
-        <translation>Reconstitution des plugins chargés </translation>
+        <translation>Reconstitution des extensions chargées </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="414"/>
@@ -4489,7 +4489,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="554"/>
         <source>&amp;New Project</source>
-        <translation>&amp;Nouveau Projet</translation>
+        <translation>&amp;Nouveau projet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="556"/>
@@ -4702,7 +4702,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1018"/>
         <source>About</source>
-        <translation>A propos</translation>
+        <translation>À propos</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1020"/>
@@ -4744,7 +4744,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="774"/>
         <source>Zoom Full</source>
-        <translation>Zoomez sur l&apos;étendue</translation>
+        <translation>Zoom sur l&apos;étendue</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="776"/>
@@ -4777,7 +4777,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="791"/>
         <source>Zoom to Last Extent</source>
-        <translation>Zoomez à la précédente étendue</translation>
+        <translation>Zoom sur l&apos;étendue précédente</translation>
     </message>
     <message>
         <source>Zoom To Layer</source>
@@ -4787,12 +4787,12 @@ Le support Python va être désactivé.</translation>
         <location filename="../src/app/qgisapp.cpp" line="779"/>
         <location filename="../src/app/qgisapp.cpp" line="781"/>
         <source>Zoom to Layer</source>
-        <translation>Zoomez sur la couche</translation>
+        <translation>Zoom sur la couche</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="758"/>
         <source>Identify Features</source>
-        <translation>Identifiez les données</translation>
+        <translation>Identifier les entités</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="760"/>
@@ -4803,7 +4803,7 @@ Le support Python va être désactivé.</translation>
         <location filename="../src/app/qgisapp.cpp" line="752"/>
         <location filename="../src/app/qgisapp.cpp" line="754"/>
         <source>Select Features</source>
-        <translation>Sélectionne les données</translation>
+        <translation>Sélection d&apos;entités</translation>
     </message>
     <message>
         <source>Open Table</source>
@@ -4812,22 +4812,22 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="764"/>
         <source>Measure Line </source>
-        <translation> Mesure la longueur</translation>
+        <translation>Mesurer la longueur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="766"/>
         <source>Measure a Line</source>
-        <translation>Mesure une ligne</translation>
+        <translation>Mesurer une ligne</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="769"/>
         <source>Measure Area</source>
-        <translation>Mesure d&apos;aire</translation>
+        <translation>Mesurer une aire</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="771"/>
         <source>Measure an Area</source>
-        <translation>Mesure une aire</translation>
+        <translation>Mesurer une aire</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="816"/>
@@ -4871,7 +4871,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="939"/>
         <source>Open the plugin manager</source>
-        <translation>Ouvre le gestionnaire de plugin</translation>
+        <translation>Ouvrir le gestionnaire d&apos;extensions</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="639"/>
@@ -4917,19 +4917,19 @@ Le support Python va être désactivé.</translation>
         <location filename="../src/app/qgisapp.cpp" line="675"/>
         <location filename="../src/app/qgisapp.cpp" line="677"/>
         <source>Add Vertex</source>
-        <translation>Ajoutez un sommet</translation>
+        <translation>Ajouter un sommet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="687"/>
         <location filename="../src/app/qgisapp.cpp" line="689"/>
         <source>Delete Vertex</source>
-        <translation>Effacez un sommet</translation>
+        <translation>Effacer un sommet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="681"/>
         <location filename="../src/app/qgisapp.cpp" line="683"/>
         <source>Move Vertex</source>
-        <translation>Déplacez le sommet</translation>
+        <translation>Déplacer le sommet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1118"/>
@@ -4969,7 +4969,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1348"/>
         <source>Manage Layers</source>
-        <translation>Contrôlez Les Couches </translation>
+        <translation>Contrôle des couches</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1429"/>
@@ -4994,7 +4994,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1423"/>
         <source>Plugins</source>
-        <translation>Plugins</translation>
+        <translation>Extensions</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1545"/>
@@ -5393,7 +5393,7 @@ Compilé avec Qt </translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="398"/>
         <source>Checking provider plugins</source>
-        <translation>Vérification des plugins fournisseurs</translation>
+        <translation>Vérification des extension fournisseuses</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="402"/>
@@ -5506,13 +5506,13 @@ Compilé avec Qt </translation>
         <location filename="../src/app/qgisapp.cpp" line="657"/>
         <location filename="../src/app/qgisapp.cpp" line="659"/>
         <source>Move Feature</source>
-        <translation>Déplacer Objet</translation>
+        <translation>Déplacer entités</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="663"/>
         <location filename="../src/app/qgisapp.cpp" line="665"/>
         <source>Split Features</source>
-        <translation>Couper Objets</translation>
+        <translation>Couper entités</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="805"/>
@@ -6574,7 +6574,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="225"/>
         <source>Donors</source>
-        <translation type="unfinished"></translation>
+        <translation>Donateurs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="276"/>
@@ -6661,7 +6661,7 @@ You can change this option later by selection Options from the Settings menu (He
     <message>
         <location filename="../src/app/qgsabout.cpp" line="117"/>
         <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Programme de soutient de QGIS : contribuez au développement de QGIS !&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="122"/>
@@ -6672,7 +6672,7 @@ You can change this option later by selection Options from the Settings menu (He
     <message>
         <location filename="../src/app/qgsabout.cpp" line="166"/>
         <source>&lt;p&gt;The following individuals and institutions have contributed money to fund QGIS development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Les personnes et institutions suivantes ont contributées finançièrement au développement de QGIS et autres coûts du projet&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="273"/>
@@ -7049,12 +7049,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributeeditor.cpp" line="47"/>
         <source>Select a file</source>
-        <translation type="unfinished">Sélectionnez un fichier</translation>
+        <translation>Sélectionner un fichier</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeeditor.cpp" line="254"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -7062,34 +7062,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="14"/>
         <source>Load values from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger les valeurs depuis la couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="45"/>
         <source>Layer</source>
-        <translation type="unfinished">Couche</translation>
+        <translation>Couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="52"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="68"/>
         <source>Description</source>
-        <translation type="unfinished">Description</translation>
+        <translation>Description</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="63"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="83"/>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="76"/>
         <source>Select data from attributes in selected layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection des données depuis les attributs de la couche sélectionnée.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="93"/>
         <source>View All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout voir</translation>
     </message>
 </context>
 <context>
@@ -7584,154 +7584,154 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsattributetypedialog.cpp" line="256"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="283"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le minimum actuel de cette valeur est %1 et le maximun actuel est %2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="288"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;attribut n&apos;a pas de type entier ou réel, cette plage n&apos;est donc pas utilisable.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="396"/>
         <source>Enumeration is not available for this attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;énumération n&apos;est pas disponible pour cet attribut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="487"/>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <source>Attribute Edit Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogue d&apos;édition d&apos;attribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="21"/>
         <source>Line edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Édition de ligne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="26"/>
         <source>Classification</source>
-        <translation type="unfinished"></translation>
+        <translation>Classification</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="31"/>
         <source>Range</source>
-        <translation type="unfinished">Plage</translation>
+        <translation>Plage</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="36"/>
         <source>Unique values</source>
-        <translation type="unfinished">Valeurs Uniques</translation>
+        <translation>Valeurs Uniques</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="41"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de fichier</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="46"/>
         <source>Value map</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette de valeur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="51"/>
         <source>Enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation>Énumération</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="56"/>
         <source>Immutable</source>
-        <translation type="unfinished"></translation>
+        <translation>Immuable</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="71"/>
         <source>Simple edit box. This is the default editation widget.</source>
-        <translation type="unfinished"></translation>
+        <translation>Boite d&apos;édition simple.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="95"/>
         <source>Displays combo box containing values of attribute used for classification.</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher la boîte contenant les valeurs de l&apos;attribut utilisé pour la classification.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="124"/>
         <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Permet de définir les valeurs numériques depuis une plage spécifiée.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="136"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="143"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="150"/>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Étape</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="228"/>
         <source>Slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre coulissante</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="238"/>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="273"/>
         <source>Editable</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditable</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="245"/>
         <source>Local minimum/maximum = 0/0</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum/maximum locaux = 0/0</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="263"/>
         <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;utilisateur peut sélectionner l&apos;unfe des valeurs déjà utilisés dans l&apos;attribut. Si il est éditable, une ligne est affichée avec le support de l&apos;autocomplétition, autrement une boîte de saisie est utilisée.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="299"/>
         <source>Simplifies file selection by adding a file chooser dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simplifier la sélection de fichier par l&apos;ajout d&apos;un explorateur de fichier.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="326"/>
         <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Boîte de saisie avec des items prédéfinis. La valeur est stockée dans l&apos;attribut, la description est affiché dans la boîte.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="336"/>
         <source>Load Data from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger des données depuis la couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="357"/>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="362"/>
         <source>Description</source>
-        <translation type="unfinished">Description</translation>
+        <translation>Description</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="370"/>
         <source>Remove Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la sélection</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="394"/>
         <source>Combo box with values that can be used within the column&apos;s type. Must be supported by the provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Boîte de saisie avec des valeurs qui peuvent être utilisée au sein du type de la colonne.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="428"/>
         <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut immuable en lecture seule - l&apos;utilisateur ne peut pas modifier son contenu.</translation>
     </message>
 </context>
 <context>
@@ -8099,7 +8099,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="439"/>
         <source>PDF Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format PDF</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="609"/>
@@ -8336,12 +8336,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="343"/>
         <source>Export as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter au format PDF...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="351"/>
         <source>Export as SVG...</source>
-        <translation>Exporter au format SVG</translation>
+        <translation>Exporter au format SVG...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="359"/>
@@ -9926,7 +9926,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="13"/>
         <source>Copyright Label Plugin</source>
-        <translation>Plugin d&apos;étiquette de Copyright</translation>
+        <translation>Extension d&apos;étiquette de Copyright</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="185"/>
@@ -10625,7 +10625,7 @@ La base de donnée dit: %3</translation>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="209"/>
         <source>Build query</source>
-        <translation type="unfinished"></translation>
+        <translation>Construire une requête</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="216"/>
@@ -10783,7 +10783,7 @@ La base de donnée dit: %3</translation>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="61"/>
         <source>Select a delimited text file containing a header row and one or more rows of x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</source>
-        <translation>Sélectionnez un fichier de texte délimité avec une ligne d&apos;en-tête et une ou plusieurs lignes contenant les coordonnées x et y que vous voulez utiliser comme couche ponctuelle et laissez ce plugin faire le travail à votre place !</translation>
+        <translation>Sélectionnez un fichier de texte délimité avec une ligne d&apos;en-tête et une ou plusieurs lignes contenant les coordonnées x et y que vous voulez utiliser comme couche ponctuelle et laissez cette extension faire le travail à votre place !</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="64"/>
@@ -12550,7 +12550,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="269"/>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="342"/>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau nom pour la couche &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="284"/>
@@ -12563,15 +12563,15 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="385"/>
         <source>Question</source>
-        <translation type="unfinished"></translation>
+        <translation>Question</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="386"/>
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Êtes-vous sûr de vouloir effacer la couche sélectionnée ?</numerusform>
+            <numerusform>Êtes-vous sûr de vouloir effacer les %n couches sélectionnées ?</numerusform>
         </translation>
     </message>
     <message>
@@ -15202,13 +15202,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="51"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="71"/>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="51"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="71"/>
         <source>Cannot rename the lock file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de renommer le fichier verrouillé %1</translation>
     </message>
 </context>
 <context>
@@ -15840,22 +15840,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="99"/>
         <source>No input data for interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de données en entrée pour l&apos;interpolation</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="99"/>
         <source>Please add one or more input layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez ajouter une ou plusieurs couches d&apos;entrée</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="108"/>
         <source>Output file name invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de fichier en sortie invalide</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="108"/>
         <source>Please enter a valid output file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez saisir un nom de fichier valide</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="162"/>
@@ -15872,12 +15872,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="269"/>
         <source>Points</source>
-        <translation type="unfinished">Points</translation>
+        <translation>Points</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="296"/>
         <source>Save interpolated raster as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le raster interpolé en tant que...</translation>
     </message>
 </context>
 <context>
@@ -15896,7 +15896,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="19"/>
         <source>Interpolation plugin</source>
-        <translation>Plugin d&apos;interpolation</translation>
+        <translation>Extension d&apos;interpolation</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="31"/>
@@ -15919,37 +15919,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="37"/>
         <source>Vector layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Couches vecteur:</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="54"/>
         <source>Interpolation attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut d&apos;interpolation:</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="81"/>
         <source>Add</source>
-        <translation type="unfinished">Ajouter</translation>
+        <translation>Ajouter</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="88"/>
         <source>Remove</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="96"/>
         <source>Vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche vecteur</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="101"/>
         <source>Attribute</source>
-        <translation type="unfinished">Attribut</translation>
+        <translation>Attribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="106"/>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="129"/>
@@ -16084,7 +16084,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="184"/>
         <source>Font size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de police</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="332"/>
@@ -16634,7 +16634,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="345"/>
         <source>Creation of an attribute failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de la création d&apos;un attribut</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="371"/>
@@ -17234,23 +17234,23 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="355"/>
         <source>firstX</source>
         <comment>attributes get sorted; translation for lastX should be lexically larger than this one</comment>
-        <translation type="unfinished"></translation>
+        <translation>X en premier</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="357"/>
         <source>firstY</source>
-        <translation type="unfinished"></translation>
+        <translation>Y en premier</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="359"/>
         <source>lastX</source>
         <comment>attributes get sorted; translation for firstX should be lexically smaller than this one</comment>
-        <translation type="unfinished"></translation>
+        <translation>X en dernier</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="361"/>
         <source>lastY</source>
-        <translation type="unfinished"></translation>
+        <translation>Y en dernier</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="368"/>
@@ -17387,7 +17387,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="299"/>
         <source>This feature cannot be simplified. Check if feature has enough vertices to be simplified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette entité ne peut pas être simplifié. Vérifiez si l&apos;entité a assez de sommets pouvant être simplifiés.</translation>
     </message>
 </context>
 <context>
@@ -18463,7 +18463,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="13"/>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="235"/>
         <source>North Arrow Plugin</source>
-        <translation>Plugin Rose des Vents</translation>
+        <translation>Extension Rose des Vents</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="35"/>
@@ -18597,7 +18597,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/osm/osmprovider.cpp" line="324"/>
         <source>Open Street Map format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format Open Street Map</translation>
     </message>
 </context>
 <context>
@@ -19484,7 +19484,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="230"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter des couches PostGIS avec un double-clic et sélectionner en mode étendu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="263"/>
@@ -20630,7 +20630,7 @@ Vous devez relancer Quantum GIS pour l&apos;effacer complétement.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="70"/>
         <source>Plugins</source>
-        <translation>Plugins</translation>
+        <translation>Extensions</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="73"/>
@@ -21001,12 +21001,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="14"/>
         <source>QGIS Python Plugin Installer</source>
-        <translation>Installateur de plugin python pour QGIS</translation>
+        <translation>Installateur d&apos;extension python pour QGIS</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="41"/>
         <source>Installing plugin:</source>
-        <translation>Installer le plugin :</translation>
+        <translation>Installer l&apos;extension :</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
@@ -21026,7 +21026,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="20"/>
         <source>Error loading plugin</source>
-        <translation>Erreur de chargement de Plugin</translation>
+        <translation>Erreur de chargement d&apos;extension</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="35"/>
@@ -21093,7 +21093,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="236"/>
         <source>No Plugins</source>
-        <translation>Pas de Plugins</translation>
+        <translation>Pas d&apos;extensions</translation>
     </message>
     <message>
         <source>No QGIS plugins found in </source>
@@ -21215,12 +21215,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="16"/>
         <source>QGIS Plugin Manager</source>
-        <translation>QGIS Gestionnaire des plugins</translation>
+        <translation>QGIS Gestionnaire des extensions</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="25"/>
         <source>To enable / disable a plugin, click its checkbox or description</source>
-        <translation>Pour activer / désactiver un plugin, cliquez dans la boîte à cocher ou sur la description</translation>
+        <translation>Pour activer / désactiver une extension, cliquez dans la boîte à cocher ou sur la description</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="45"/>
@@ -21230,7 +21230,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="58"/>
         <source>Plugin Directory:</source>
-        <translation>Répertoire des Plugins :</translation>
+        <translation>Répertoire des extensions :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="71"/>
@@ -21498,7 +21498,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="421"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="853"/>
         <source>Thin plate spline (TPS)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="512"/>
@@ -23336,7 +23336,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1575"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
-        <translation type="unfinished"></translation>
+        <translation>La construction de pyramides internes pour l&apos;aperçu n&apos;est pas supportée par les couches raster compressées en JPEG et votre bibliothèque libtiff actuelle.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2328"/>
@@ -24410,7 +24410,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="13"/>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="300"/>
         <source>Scale Bar Plugin</source>
-        <translation>Plugin échelle graphique</translation>
+        <translation>Extension échelle graphique</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -24951,7 +24951,7 @@ M&apos;erreur était :
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="62"/>
         <source>Refresh markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rafraîchir les marqueurs</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="169"/>
@@ -25096,22 +25096,22 @@ M&apos;erreur était :
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="82"/>
         <source>Outline style</source>
-        <translation>Style de bordure externe:</translation>
+        <translation>Style de bordure externe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="114"/>
         <source>Outline color</source>
-        <translation>Couleur de bordure externe:</translation>
+        <translation>Couleur de bordure externe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="149"/>
         <source>Outline width</source>
-        <translation>Largeur de bordure externe:</translation>
+        <translation>Largeur de bordure externe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="175"/>
         <source>Fill color</source>
-        <translation>Couleur de remplissage:</translation>
+        <translation>Couleur de remplissage</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="210"/>
@@ -25121,12 +25121,12 @@ M&apos;erreur était :
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="343"/>
         <source>Symbol field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ de symbole</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="367"/>
         <source>Size in map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille dans l&apos;unité de la carte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="48"/>
@@ -26071,7 +26071,7 @@ voulez-vous écraser la remation [%2] ?</translation>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="76"/>
         <source>Save triangulation to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder la triangulation dans un fichier</translation>
     </message>
 </context>
 <context>
@@ -26088,17 +26088,21 @@ voulez-vous écraser la remation [%2] ?</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:12pt;&quot;&gt;This interpolator provides different methods for interpolation in a triangular irregular network (TIN).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:12pt;&quot;&gt;Cet interpolateur fournit différentes méthodes pour interpoler un réseau triangulaire irrégulier (TIN).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="44"/>
         <source>Export triangulation to shapefile after interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter la triangulation dans un shapefile après le calcul</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="54"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -26192,7 +26196,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="152"/>
         <source>Restrict changes to common properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Restreindre les changements aux propriétés communes</translation>
     </message>
 </context>
 <context>
@@ -26812,12 +26816,12 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="212"/>
         <source>Enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation>Énumération</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="215"/>
         <source>Immutable</source>
-        <translation type="unfinished"></translation>
+        <translation>Immuable</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="819"/>
@@ -27747,7 +27751,7 @@ URL Éprouvé : %1</translation>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="13"/>
         <source>QGIS Quick Print Plugin</source>
-        <translation>QGIS plugin d&apos;impression rapide</translation>
+        <translation>QGIS extension d&apos;impression rapide</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="158"/>
@@ -27930,14 +27934,15 @@ URL Éprouvé : %1</translation>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="963"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1034"/>
         <source>Node tool</source>
-        <translation type="unfinished">Outil de noeud</translation>
+        <translation>Outil de nœud</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="964"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1035"/>
         <source>Result geometry is invalid. Reverting last changes.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>La géométrie résultante est invalide. Annulation des derniers changements.
+</translation>
     </message>
 </context>
 <context>
@@ -28082,12 +28087,12 @@ URL Éprouvé : %1</translation>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>Modèle pour plugin QGIS</translation>
+        <translation>Modèle pour extension QGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="47"/>
         <source>Plugin Template</source>
-        <translation>Template de plugin</translation>
+        <translation>Modèle pour extension</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -28274,7 +28279,7 @@ Dévelopé par Paolo L. Scala, Barbara Rita Barricelli, Marco PadulaCNR, Milan U
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="220"/>
         <source>New Database connection requested...</source>
-        <translation>Nouvelle connexion requise à une base de données</translation>
+        <translation>Nouvelle connexion requise à une base de données...</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="225"/>
@@ -28294,27 +28299,27 @@ Dévelopé par Paolo L. Scala, Barbara Rita Barricelli, Marco PadulaCNR, Milan U
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="282"/>
         <source>Connection to [%1.%2] established</source>
-        <translation type="unfinished"></translation>
+        <translation>Connexion à [%1.%2] établie</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="295"/>
         <source>Connection to [%1.%2] failed: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Connexion à [%1.%2] échouée : %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="414"/>
         <source>Error: Unabled to open file [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur : Impossible d&apos;ouvrir le fichier [%1]</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="470"/>
         <source>Error: Query failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur : Echec de la requête : %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="524"/>
         <source>Error: Could not create temporary file, process halted</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur : Impossible de créer un fichier temporaire, le processus s&apos;est arrêté</translation>
     </message>
     <message>
         <source>Connection to</source>
@@ -28399,12 +28404,12 @@ Dévelopé par Paolo L. Scala, Barbara Rita Barricelli, Marco PadulaCNR, Milan U
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="47"/>
         <source>Predefined Queries</source>
-        <translation type="unfinished"></translation>
+        <translation>Requêtes prédéfinies</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="108"/>
         <source>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez la requête prédéfinie que vous désirez dans la liste déroulante.Pour lancer la requête, vous devez cliquer sur la panneau de requête SQL. La requête sera saisie automatiquement dans la fenêtre.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="165"/>
@@ -28617,13 +28622,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="309"/>
         <source>Event Browser - Displaying records 01 of %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigateur d&apos;évenement - Affichage des enregistrements 01 sur %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="992"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1014"/>
         <source>Event Browser - Displaying records %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigateur d&apos;évenement - Affichage des enregistrements %1 sur %2</translation>
     </message>
     <message>
         <source>Event Browser - Displaying records 01 of</source>
@@ -28743,7 +28748,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="267"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si cochée, le chemin vers l&apos;image sera défini selon l&apos;attribut du champs sélectionné depuis la liste &quot;Attribut contenant le chemin vers le fichier&quot; vers le chemin basique définit ci-dessous.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="270"/>
@@ -28753,7 +28758,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="311"/>
         <source>If checked, the relative path values will be saved for the next session.</source>
-        <translation type="unfinished">Si cochée, les valeurs de chemin relatifs seront enregistrés pour la prochaine session.</translation>
+        <translation>Si cochée, les valeurs de chemin relatifs seront enregistrés pour la prochaine session.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="332"/>
@@ -28774,7 +28779,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="361"/>
         <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
-        <translation type="unfinished">Si cochée, une fléche pointant la direction définie par les attributs dans le champs sélectionnés sera affichée au-dessus du points de cette image.</translation>
+        <translation>Si cochée, une fléche pointant la direction définie par les attributs dans le champs sélectionnés sera affichée au-dessus du points de cette image.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="364"/>
@@ -28829,7 +28834,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="601"/>
         <source>If checked, the compass offset values will be saved for the next session.</source>
-        <translation type="unfinished">Si cochée, les valeurs de décalage du compas seront enregistrées pour la prochaine session.</translation>
+        <translation>Si cochée, les valeurs de décalage du compas seront enregistrées pour la prochaine session.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="625"/>
@@ -28850,12 +28855,12 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="750"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Saisissez le chemin de base par défaut qui est le chemin vers le répertoire de la couche vecteur contenant les informations sur l&apos;image.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="852"/>
         <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si la case est cochée, les mêmes règles de chemin de base définies pour les images seront utilisées pour tout les documents (textes, vidéos, etc.). Si ce n&apos;est pas coché, la règle s&apos;appliquera uniquement aux images et les autres documents ignorerons ce paramètre.</translation>
     </message>
     <message>
         <source>Base path</source>
@@ -28869,7 +28874,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="726"/>
         <source>If checked, the Base Path will be saved for the next session.</source>
-        <translation type="unfinished">Si cochée, le chemin de base seront enregistrés pour la prochaine session.</translation>
+        <translation>Si cochée, le chemin de base sera enregistré pour la prochaine session.</translation>
     </message>
     <message utf8="true">
         <source>Enters the default “Base Path” which is the  path to the directory of the vector layer containing the image information.</source>
@@ -28878,13 +28883,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="773"/>
         <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
-        <translation type="unfinished"></translation>
+        <translation>Si cochée, le chemin de base sera ajouté seulement au nom du fichier plutôt qu&apos;au chemin relatif (définit ci-dessus) pour créer le chemin complet vers le dossier du fichier.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="776"/>
         <source>Replace entire path/url stored in image path attribute with user defined
 Base Path (i.e. keep only filename from attribute)</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplace la totalité du chemin/url contenu dans les attributs de l&apos;image par le chemin de base définit par l&apos;utilisateur (c-à-d ne gardera que le nom de fichier)</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="805"/>
@@ -28905,12 +28910,12 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="855"/>
         <source>Apply Path to Image rules when loading docs in external applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Appliquer la règle du chemin vers l&apos;image lors du chargement de documents dans des applications externes</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="963"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquer sur Sauvegarder enregistrera les paramètres sans fermer la fenêtre do&apos;ptions. Cliquer sur Restaurer remettre tout les champs à leurs paramètres par défaut.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="974"/>
@@ -28925,7 +28930,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1020"/>
         <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
-        <translation type="unfinished"></translation>
+        <translation>Une table contenant des types de fichier pouvant être ouvert avec eVis. Chaque type de fichier a besoin d&apos;une extension et du chemin vers une application pouvant le prendre en charge. Cela permet d&apos;ouvrir une large famme de documents tels que des videos ou des textes en plus des images.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1024"/>
@@ -28972,7 +28977,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="53"/>
         <source>Zoom in to see more detail.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoomez en avant pour voir plus en détail.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="54"/>
