@@ -3297,15 +3297,11 @@ void QgisApp::fileOpen()
 
     try
     {
-      if ( QgsProject::instance()->read() )
+      if ( ! QgsProject::instance()->read() )
       {
-        setTitleBarText_( *this );
-        emit projectRead();     // let plug-ins know that we've read in a new
-        // project so that they can check any project
-        // specific plug-in state
-
-        // add this to the list of recently used project files
-        saveRecentProjectPath( fullPath, settings );
+	mMapCanvas->freeze( false );
+	mMapCanvas->refresh();
+	return;
       }
     }
     catch ( QgsProjectBadLayerException & e )
@@ -3318,6 +3314,9 @@ void QgisApp::fileOpen()
       // attempt to find the new locations for missing layers
       // XXX vector file hard-coded -- but what if it's raster?
       findLayers_( mVectorFileFilter, e.layers() );
+
+      // Tell the legend to update the ordering
+      mMapLegend->readProject( e.document() );
     }
     catch ( std::exception & e )
     {
@@ -3325,7 +3324,18 @@ void QgisApp::fileOpen()
                              tr( "QGIS Project Read Error" ),
                              QString::fromLocal8Bit( e.what() ) );
       QgsDebugMsg( "BAD QgsMapLayer::LayerType FOUND" );
+      mMapCanvas->freeze( false );
+      mMapCanvas->refresh();
+      return;
     }
+
+    setTitleBarText_( *this );
+    emit projectRead();     // let plug-ins know that we've read in a new
+    // project so that they can check any project
+    // specific plug-in state
+    
+    // add this to the list of recently used project files
+    saveRecentProjectPath( fullPath, settings );
 
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
@@ -3353,33 +3363,14 @@ bool QgisApp::addProject( QString projectFile )
 
   try
   {
-    if ( QgsProject::instance()->read( projectFile ) )
-    {
-      setTitleBarText_( *this );
-      int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
-      int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
-      int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
-      QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-      mMapCanvas->setCanvasColor( myColor ); //this is fill colour before rendering starts
-      QgsDebugMsg( "Canvas background color restored..." );
-
-      mMapCanvas->updateScale();
-      QgsDebugMsg( "Scale restored..." );
-
-      emit projectRead(); // let plug-ins know that we've read in a new
-      // project so that they can check any project
-      // specific plug-in state
-
-      // add this to the list of recently used project files
-      QSettings settings;
-      saveRecentProjectPath( projectFile, settings );
-    }
-    else
+    if ( ! QgsProject::instance()->read( projectFile ) )
     {
       mMapCanvas->freeze( false );
       mMapCanvas->refresh();
       return false;
     }
+    // Continue after last catch statement
+    
   }
   catch ( QgsProjectBadLayerException & e )
   {
@@ -3394,8 +3385,16 @@ bool QgisApp::addProject( QString projectFile )
 
       // attempt to find the new locations for missing layers
       // XXX vector file hard-coded -- but what if it's raster?
+      QApplication::restoreOverrideCursor();
+
       findLayers_( mVectorFileFilter, e.layers() );
+
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+
+      // Tell the legend to update the ordering
+      mMapLegend->readProject( e.document() );
     }
+    // Continue after last catch statement
 
   }
   catch ( std::exception & e )
@@ -3406,10 +3405,33 @@ bool QgisApp::addProject( QString projectFile )
                            tr( "Unable to open project" ),
                            QString::fromLocal8Bit( e.what() ) );
 
+    QApplication::restoreOverrideCursor();
+
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
     return false;
   }
+
+  // Continue, now with layers found (hopefully)
+
+  setTitleBarText_( *this );
+  int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
+  int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
+  int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
+  QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  mMapCanvas->setCanvasColor( myColor ); //this is fill colour before rendering starts
+  QgsDebugMsg( "Canvas background color restored..." );
+  
+  mMapCanvas->updateScale();
+  QgsDebugMsg( "Scale restored..." );
+  
+  emit projectRead(); // let plug-ins know that we've read in a new
+  // project so that they can check any project
+  // specific plug-in state
+  
+  // add this to the list of recently used project files
+  QSettings settings;
+  saveRecentProjectPath( projectFile, settings );
 
   QApplication::restoreOverrideCursor();
 
