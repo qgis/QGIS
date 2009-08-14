@@ -881,7 +881,7 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
 
   // OSRIsSame is not relaibel when it comes to comparing +towgs84 parameters
   // Use string compare on WKT instead.
-  if ( ( OSRExportToWkt( mCRS, &thisStr ) == OGRERR_NONE ) )
+  if (( OSRExportToWkt( mCRS, &thisStr ) == OGRERR_NONE ) )
   {
     if ( OSRExportToWkt( theSrs.mCRS, &otherStr ) == OGRERR_NONE )
     {
@@ -890,13 +890,13 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
       if ( !strcmp( thisStr, otherStr ) )
       {
         QgsDebugMsg( QString( "MATCHED!" ) + otherStr );
-        OGRFree( *thisStr );
-        OGRFree( *otherStr );
+        CPLFree( thisStr );
+        CPLFree( otherStr );
         return true;
       }
-      OGRFree( *otherStr );
+      CPLFree( otherStr );
     }
-    OGRFree( *thisStr );
+    CPLFree( thisStr );
   }
   return false;
 }
