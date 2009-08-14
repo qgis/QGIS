@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name></name>
-    <message>
-        <source>&amp;Geoprocessing</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>CoordinateCapture</name>
     <message>
         <source>Coordinate Capture</source>
@@ -610,6 +603,68 @@ p, li { white-space: pre-wrap; }
         <source>Use only selected features</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>creating new selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>adding to current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>removing from current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select by location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>that intersect features in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify current selection by:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify select layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output matrix:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points in polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output Shapefile:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector layer is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum line lengths</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DlgAddRelation</name>
@@ -956,7 +1011,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Property with key &apos;%1&apos; already exists for this feature.</source>
+        <source>Property &apos;%1&apos; cannot be added twice.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2237,6 +2292,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <source>Building triangulation...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Generated CRS</source>
+        <comment>A CRS automatically generated from layer info get this prefix for description</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -3217,110 +3277,6 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Whats new in Version 1.1.0?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Updates to translations.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improvements to Debian packaging to better support Debian standard requirements.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Support usb: as a GPS device under Linux.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added svg point symbols from Matt Amos (with his permission).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mapserver Export improvements for continuous color support.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added tools menu - the fTools plugin is now part of the core QGIS plugins and will always be installed by default.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>When using File - Save as image, the saved image is now georeferenced.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Projection selector now includes quick selection of recently used CRS&apos;s.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Continuous color renderer supports point symbols now too.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Updates and cleanups to the GRASS toolbox.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The middle mouse button can now be used for panning. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new, faster attribute table implementation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Numerous cleanups to the user interface.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>%1 is not a valid or recognized data source</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3685,6 +3641,121 @@ Errors: %2
         <source>Features pasted</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Whats new in Version 1.2.0?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release includes over 140 bug fixes and enhancements over the QGIS 1.1.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Editing:
+
+Editing functionality in QGIS has had a major update in this release. This
+includes the addition of new vector editing tools:
+- delete part of multipart feature
+- delete hole from polygon
+- simplify feature
+- Added a new node tool (in advanced digitizing toolbar).
+- New functionality for merging features
+- Added undo/redo functionality for vector layer editing.
+- Added option to show only markers of selected features in editing mode.
+- Change layer&apos;s icon in legend to reflext that the layer is editable.
+
+In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar
+and there is a new dock widget displaying undo stack of active layer.
+
+About the node tool: It resembles a tool for editing paths by nodes that is
+present in every vector editor. How does it work (in QGIS)? Click on a
+feature, its nodes will be marked by small rectangles. Clicking and dragging a
+node moves it. Double clicking a segment will add a new node. Pressing delete
+key will remove active node. It&apos;s possible to select more active nodes at
+once: by clicking and dragging a rectangle. It&apos;s possible to select a segment&apos;s
+adjacent nodes by clicking on the segment. It&apos;s possible to add/remove active
+nodes by using Ctrl when clicking a node or dragging a rectangle
+
+We recommend that you turn off vertex markers in QGIS options when working with
+this tool: the redraws are much faster and the map is not cluttered with
+markers. 
+
+Keyboard shortcuts:
+
+New feature: configure shortcuts for actions within main window of qgis!
+See menu Setting-&gt;Configure shortcuts
+
+Map Composer:
+
+It is now possible to lock/unlock composer item positions by right mouse click.
+The width and height of the composer map will now remain fixed if user sets the
+composer map extent to the map canvas extent. possibility to display
+current date in composer label by typing (d &apos;June&apos; yyyy) or similar.
+It is now possible to keep the current layers in a composer map even if further
+layers are added to the main map. Export to PDF in composer is now possible.
+
+Attribute tables:
+
+It is now possible to search the attribute table within selected records only.
+General speedups have been made on the attribute table. Setting of field width
+and precision when adding attributes is now possible. Handling of attribute
+types in WFS provider has bee improved.
+
+Attribute aliases for vector layers are now available. The aliases are shown
+instead of the original field names in the info tool and attribute table to
+make things easier for end users. There is now a GUI for setting edit widgets
+for layer attributes.  A new dialog allows loading a value map from a layer
+(could be non-spatial table too!).  The edit widgets settings will also now
+be respected in the attribute table.
+
+Plugins:
+
+- The order of layers in the WMS dialog can now be changed.
+- The eVis plugin, version 1.1.0, has been added to the QGIS project and
+  included as a standard plugin. More information about eVis can be found here:
+  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
+- The interpolation plugin now has the ability to use line layers as constrains
+  for triangulation in interpolation plugin. You can also now save the
+  triangulation to shape file.
+- An new OpenStreetMap provider and plugin have been added to QGIS.
+
+Projects Management:
+
+QGIS now includes support for  project relative position of file data sources
+and svgs. The saving of relative paths of file data sources is optional.
+
+PostGIS &amp; the PostgreSQL Provider:
+
+You can now select the SSL mode when adding a new DB connection. Turning off
+SSL encryption can greatly improve performance of PostGIS data loading where
+connection security is not required. Support has been added for more native
+types and for setting of column comments.
+
+Symbology enhancements:
+
+- allow refresh of symbols via popup menu on the renderer&apos;s symbol selection
+- add support for data defined symbol(name)s
+- add support for font symbol markers (only data defined - no gui yet)
+- add symbol size in map units (ie. symbols that keep the size in mapunits
+  independant of the mapscale)
+
+Command line arguments:
+
+Added command line argument support on windows.
+Enhancement of command line arguments:
+- allow given snapshot sizes
+- allow suppression of splash screen
+- capture map decorations from plugins on snapshots
+
+Grass:
+
+There is a new GRASS shell. Also there have been many cleanups and consistency
+updates.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -3872,10 +3943,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Action</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3969,6 +4036,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5248,11 +5319,59 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Letter (8.5x11 inches)</source>
+        <source>Legal (8.5x14 inches)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Legal (8.5x14 inches)</source>
+        <source>mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>inch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI A (Letter; 8.5x11 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI B (Tabloid; 11x17 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI C (17x22 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI D (22x34 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI E (34x44 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch A (9x12 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch B (12x18 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch C (18x24 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch D (24x36 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch E (36x48 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch E1 (30x42 inches)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7862,6 +7981,10 @@ at line %2 column %3</source>
         <source>%1:&amp;nbsp;no input</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select a layer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassModuleInput</name>
@@ -7895,6 +8018,10 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>%1:&amp;nbsp;no input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8847,6 +8974,14 @@ p, li { white-space: pre-wrap; }
         <source>Identify Results - %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Copy attribute value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy feature attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsIdentifyResultsBase</name>
@@ -9312,6 +9447,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to save the changes to layer %1?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10627,18 +10770,18 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;This is the list of all layers available in the datasource of the active layer. You can select the layers to load. The layers will be loaded when you press &quot;OK&quot;.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;The layer name is format dependant. Consult the OGR documentation or the documentation of your data format to determine the nature of the included information.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;The layer name is format dependent. Consult the OGR documentation or the documentation of your data format to determine the nature of the included information.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Be advised: &lt;/span&gt;selecting an already opened layer will not generate an error message and the layer will end up loaded twice!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11325,6 +11468,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add PostGIS layers with double click and select in extended mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preferred measurements units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feet</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12928,10 +13083,6 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Map units</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Meters</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13003,6 +13154,10 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <source>save absolute paths</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Layer units (only used when CRS transformation is disabled)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectionSelector</name>
@@ -13061,18 +13216,6 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Find</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CRS ID : 100000</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CRS ID : 3344</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CRS ID : whatever</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15719,6 +15862,38 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Immutable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique values editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slider range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
