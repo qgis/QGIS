@@ -30,6 +30,7 @@
 #include <QSettings>
 #include <QFileInfo>
 #include <QTextCodec>
+#include <QTextStream>
 
 #include <cassert>
 #include <cstdlib> // size_t
@@ -89,6 +90,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   if ( srs )
   {
     QString srsWkt = srs->toWkt();
+    QgsDebugMsg( "WKT to save as is " + srsWkt );
     ogrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
   }
 
@@ -379,6 +381,27 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   {
     delete ct;
   }
+
+  // Ohh, a great Hack-fest starts!
+  // Overwrite the .prj file created by QGsVectorFileWrite().
+  // This might break progrmas that relies on ESRI style .prf-files.
+  // The 'CT-params' (e.g. +towgs84) does not get stripped in this way
+  QRegExp regExp( ".shp$" );
+  QString prjName = shapefileName;
+  prjName.replace( regExp, QString( "" ));
+  prjName.append( QString( ".prj" ) );
+  QFile prjFile( prjName );
+
+  if( !prjFile.open( QIODevice::WriteOnly ) )
+  {
+    QgsDebugMsg( "Couldn't open file " + prjName );
+    return NoError; // For now
+  }
+
+  QTextStream prjStream( & prjFile );
+  prjStream << destCRS->toWkt() << endl;
+  prjFile.close();
+
   return NoError;
 }
 
