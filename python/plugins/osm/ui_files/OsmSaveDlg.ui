@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>DlgSaveOSM</class>
- <widget class="QDialog" name="DlgSaveOSM" >
+ <class>OsmSaveDlg</class>
+ <widget class="QDialog" name="OsmSaveDlg" >
   <property name="windowModality" >
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -209,7 +209,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgSaveOSM</receiver>
+   <receiver>OsmSaveDlg</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>DlgUploadOSM</class>
- <widget class="QDialog" name="DlgUploadOSM" >
+ <class>OsmUploadDlg</class>
+ <widget class="QDialog" name="OsmUploadDlg" >
   <property name="windowModality" >
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -212,7 +212,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgUploadOSM</receiver>
+   <receiver>OsmUploadDlg</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

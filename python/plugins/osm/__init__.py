@@ -39,7 +39,7 @@ def version():
     @return version of this plugin
     """
 
-    return "Version 0.4"
+    return "Version 0.5"
 
 
 def qgisMinimumVersion():
@@ -59,7 +59,7 @@ def classFactory(iface):
     """
 
     # load TestPlugin class from file testplug.py
-    from osm_plugin import OSMPlugin
+    from OsmPlugin import OsmPlugin
     # return object of our plugin with reference to QGIS interface as the only argument
-    return OSMPlugin(iface) 
+    return OsmPlugin(iface) 
 

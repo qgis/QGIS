@@ -1,4 +1,4 @@
-"""@package DlgDownloadOSM
+"""@package OsmDownloadDlg
 Module provides simple way how to download OSM data.
 First user is asked to choose download region, output file etc.
 
@@ -12,7 +12,7 @@ Each error response from OSM server is caught by OSM Plugin and display to its u
 """
 
 
-from DlgDownloadOSM_ui import Ui_DlgDownloadOSM
+from OsmDownloadDlg_ui import Ui_OsmDownloadDlg
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtNetwork import *
@@ -21,7 +21,7 @@ from time import *
 from qgis.core import *
 
 
-class DlgDownloadOSM(QDialog, Ui_DlgDownloadOSM):
+class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
     """This is the main class of this module.
     It's direct descendant of "OSM Download" dialog.
 
@@ -57,7 +57,11 @@ class DlgDownloadOSM(QDialog, Ui_DlgDownloadOSM):
         self.downloadButton.setEnabled(False)
 
         # determining default area for download
-        currentExtent=plugin.canvas.extent()
+        if QgsMapLayerRegistry.instance().count()>0:
+            currentExtent=plugin.canvas.extent()
+        else:
+            # if no layer is loaded default download extent is "part of the Prague city center" :-D
+            currentExtent=QgsRectangle(14.4271398308,50.0768156358,14.4324358906,50.0812613868)
 
         # check whether the extent needs to be projected back to WGS84
         mapRenderer = plugin.canvas.mapRenderer()
@@ -66,7 +70,6 @@ class DlgDownloadOSM(QDialog, Ui_DlgDownloadOSM):
           crsWgs84=QgsCoordinateReferenceSystem(4326)
           xform=QgsCoordinateTransform(crsMap, crsWgs84)
           currentExtent=xform.transformBoundingBox(currentExtent)
-
 
         self.latFromLineEdit.setText(QString("%1").arg(currentExtent.yMinimum(),0,'f',10))
         self.latToLineEdit.setText(QString("%1").arg(currentExtent.yMaximum(),0,'f',10))

@@ -1,4 +1,4 @@
-"""@package CreatePointMapTool
+"""@package OsmCreatePointMT
 This module holds all structures and methods required to perform
 "create point" operation on current OSM data.
 
@@ -7,7 +7,7 @@ Snapping to existing segments of lines/polygons is supported when creating new p
 Process generates vertexMarkers so that user can watch results
 of the operation on the map in a nice way.
 
-There is also an interaction with plugin's "OSM Feature" dialog.
+There is also an interaction with plugin's "OSM Feature" dockwidget.
 New points are loaded to it dynamically.
 """
 
@@ -22,7 +22,7 @@ from math import *
 
 
 
-class CreatePointMapTool(QgsMapTool):
+class OsmCreatePointMT(QgsMapTool):
     """This class holds all structures and methods required to perform
     "create point" operation on current OSM data.
 
@@ -31,7 +31,7 @@ class CreatePointMapTool(QgsMapTool):
     Process generates vertexMarkers so that user can watch results
     of the operation on the map in a nice way.
 
-    There is also an interaction with plugin's "OSM Feature" dialog.
+    There is also an interaction with plugin's "OSM Feature" dock widget.
     New points are loaded to it dynamically.
     """
 

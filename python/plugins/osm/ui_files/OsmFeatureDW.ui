@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>OsmDockWidget</class>
- <widget class="QDockWidget" name="OsmDockWidget" >
+ <class>OsmFeatureDW</class>
+ <widget class="QDockWidget" name="OsmFeatureDW" >
   <property name="windowModality" >
    <enum>Qt::NonModal</enum>
   </property>
@@ -37,14 +37,6 @@
    <string>OSM Feature</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>21</y>
-     <width>265</width>
-     <height>715</height>
-    </rect>
-   </property>
    <layout class="QVBoxLayout" >
     <item>
      <layout class="QHBoxLayout" >
@@ -356,7 +348,10 @@
        </property>
        <item>
         <layout class="QGridLayout" >
-         <property name="spacing" >
+         <property name="horizontalSpacing" >
+          <number>0</number>
+         </property>
+         <property name="verticalSpacing" >
           <number>0</number>
          </property>
          <item row="0" column="0" >
@@ -461,14 +456,6 @@
        <number>1</number>
       </property>
       <widget class="QWidget" name="Properties" >
-       <property name="geometry" >
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>243</width>
-         <height>534</height>
-        </rect>
-       </property>
        <attribute name="title" >
         <string>Properties</string>
        </attribute>
@@ -505,7 +492,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -534,14 +521,6 @@
        </layout>
       </widget>
       <widget class="QWidget" name="Relations" >
-       <property name="geometry" >
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>243</width>
-         <height>534</height>
-        </rect>
-       </property>
        <attribute name="title" >
         <string>Relations</string>
        </attribute>
@@ -628,7 +607,7 @@
               <property name="sizeType" >
                <enum>QSizePolicy::Minimum</enum>
               </property>
-              <property name="sizeHint" stdset="0" >
+              <property name="sizeHint" >
                <size>
                 <width>26</width>
                 <height>0</height>

@@ -3,6 +3,7 @@
 
 SET (OSM_PLUGIN_DIR ${QGIS_DATA_DIR}/python/plugins/osm)
 
+
 FILE (GLOB PYTHON_FILES *.py)
 FILE (GLOB MAPTOOLS_PYTHON_FILES map_tools/*.py)
 FILE (GLOB STYLE_FILES styles/*.style)

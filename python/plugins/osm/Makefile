@@ -1,31 +1,31 @@
 
-GEN_FILES = DlgLoadOSM_ui.py DlgSaveOSM_ui.py DlgDownloadOSM_ui.py DlgUploadOSM_ui.py DockWidget_ui.py DlgAddRelation_ui.py DockUndoRedo_ui.py DlgImport_ui.py resources.py
+GEN_FILES = OsmLoadDlg_ui.py OsmSaveDlg_ui.py OsmDownloadDlg_ui.py OsmUploadDlg_ui.py OsmFeatureDW_ui.py OsmAddRelationDlg_ui.py OsmUndoRedoDW_ui.py OsmImportDlg_ui.py resources.py
 
 all: $(GEN_FILES)
 
-DlgLoadOSM_ui.py: ui_files/DlgLoadOSM.ui
-	pyuic4 -o DlgLoadOSM_ui.py ui_files/DlgLoadOSM.ui
+OsmLoadDlg_ui.py: ui_files/OsmLoadDlg.ui
+	pyuic4 -o OsmLoadDlg_ui.py ui_files/OsmLoadDlg.ui
 
-DlgSaveOSM_ui.py: ui_files/DlgSaveOSM.ui
-	pyuic4 -o DlgSaveOSM_ui.py ui_files/DlgSaveOSM.ui
+OsmSaveDlg_ui.py: ui_files/OsmSaveDlg.ui
+	pyuic4 -o OsmSaveDlg_ui.py ui_files/OsmSaveDlg.ui
 
-DlgDownloadOSM_ui.py: ui_files/DlgDownloadOSM.ui
-	pyuic4 -o DlgDownloadOSM_ui.py ui_files/DlgDownloadOSM.ui
+OsmDownloadDlg_ui.py: ui_files/OsmDownloadDlg.ui
+	pyuic4 -o OsmDownloadDlg_ui.py ui_files/OsmDownloadDlg.ui
 
-DlgUploadOSM_ui.py: ui_files/DlgUploadOSM.ui
-	pyuic4 -o DlgUploadOSM_ui.py ui_files/DlgUploadOSM.ui
+OsmUploadDlg_ui.py: ui_files/OsmUploadDlg.ui
+	pyuic4 -o OsmUploadDlg_ui.py ui_files/OsmUploadDlg.ui
 
-DockWidget_ui.py: ui_files/DockWidget.ui
-	pyuic4 -o DockWidget_ui.py ui_files/DockWidget.ui
+OsmFeatureDW_ui.py: ui_files/OsmFeatureDW.ui
+	pyuic4 -o OsmFeatureDW_ui.py ui_files/OsmFeatureDW.ui
 
-DlgAddRelation_ui.py: ui_files/DlgAddRelation.ui
-	pyuic4 -o DlgAddRelation_ui.py ui_files/DlgAddRelation.ui
+OsmAddRelationDlg_ui.py: ui_files/OsmAddRelationDlg.ui
+	pyuic4 -o OsmAddRelationDlg_ui.py ui_files/OsmAddRelationDlg.ui
 
-DockUndoRedo_ui.py: ui_files/DockUndoRedo.ui
-	pyuic4 -o DockUndoRedo_ui.py ui_files/DockUndoRedo.ui
+OsmUndoRedoDW_ui.py: ui_files/OsmUndoRedoDW.ui
+	pyuic4 -o OsmUndoRedoDW_ui.py ui_files/OsmUndoRedoDW.ui
 
-DlgImport_ui.py: ui_files/DlgImport.ui
-	pyuic4 -o DlgImport_ui.py ui_files/DlgImport.ui
+OsmImportDlg_ui.py: ui_files/OsmImportDlg.ui
+	pyuic4 -o OsmImportDlg_ui.py ui_files/OsmImportDlg.ui
 
 resources.py: resources.qrc
 	pyrcc4 -o resources.py resources.qrc
