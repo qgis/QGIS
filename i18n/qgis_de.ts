@@ -475,61 +475,63 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstelle neue Auswahl</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Ergänze aktuelle Auswahl</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Entferne aus aktueller Auswahl</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Nach Position selektieren</translation>
+        <translation>Nach Position selektieren</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte wählen in:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>die Objekte schneiden in:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuelle Auswahl ändern durch:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte Eingabelayer angeben</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte Auswahllayer angeben</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Distanzmatrix</translation>
+        <translation>Distanzmatrix</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Erstellte Ausgabematrix:
+</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Punkte in Polygonen</translation>
+        <translation>Punkte in Polygon</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabeshapedatei erzeugt:
+</translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektorlayer ist ungültig</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
@@ -883,7 +885,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Linienlängen summieren</translation>
+        <translation>Linienlängen summieren</translation>
     </message>
 </context>
 <context>
@@ -1292,7 +1294,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenschaft &apos;%1&apos; kann nicht doppelt hinzugefügt werden.</translation>
     </message>
     <message>
         <source>Property with key &apos;%1&apos; already exists for this feature.</source>
@@ -2966,7 +2968,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1171"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugtes KBS</translation>
     </message>
 </context>
 <context>
@@ -4403,17 +4405,17 @@ Bitte kontaktieren Sie die Entwickler.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2011"/>
         <source>Whats new in Version 1.2.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>Was gibt es Neues in Version 1.2.0?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2014"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte beachten Sie, daß dies eine Ausgabe unserer top-aktuellen Serie ist.  Als solches enthält sie neue Funktionen und erweitert die Programmierschnittstellen gegenüber QGIS 1.0.x und QGIS 1.1.0.  Wenn Stabilitität und langfristiger Support Ihnen wichtiger als &apos;coole&apos; neue und ungetestete Funktionen sind, empfehlen wir Ihnen die stabile 1.0 Version zu benutzen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2022"/>
         <source>This release includes over 140 bug fixes and enhancements over the QGIS 1.1.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
+        <translation>In dieser Ausgabe wurden gegenüber der QGIS 1.1.0 Version über 140 Fehler bereinigt und Funktionen hinzugefügt. Zudem haben wir folgende neue Funktionen ergänzt:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2026"/>
@@ -4517,7 +4519,80 @@ Grass:
 
 There is a new GRASS shell. Also there have been many cleanups and consistency
 updates.</source>
-        <translation type="unfinished"></translation>
+        <translation>Digitialisierung:
+
+Die Bearbeitungsfunktionen bei der Digitalisierung haben in dieser Ausgabe ein wesentliches Update erfahren. Dies umfaßt folgende neue Vektorbearbeitungswerkzeuge:
+- Teile eines mehrteiliger Objekte löschen
+- Aussparungen aus Polygonen löschen
+- Objekte vereinfachen
+- Ein neues Knotenwerkzeug wurde ergänzt (im der fortgeschrittenen Bearbeitungswerkzeugleiste).
+- Objekte können verschmolzen werden
+- Rückgängig/Wiederholen Funktionalität bei der Vektorbearbeitung.
+- Optional werden im Bearbeitungsmodus nur gewählte Objekte mit Markern versehen.
+- Icon in der Legende zeigt den Bearbeitungsstatus an.
+
+Außerdem gibt es nun Rückgängig/Wiederholen Einträge im Bearbeiten-Menü und in der Werkzeugleiste &quot;Erweiterte Digitalisierung&quot; und es gibt einen andockbaren Anzeigestapel mit den Aktionen, die rückgängig gemacht werden können.
+
+Das neue Knotenwerkzeug: dient zur stützpunktweisen Bearbeitung von Linien und steht in jedem Vektorlayer zur Verfügung. Wie funktioniert es in QGIS? Ein Objekt anklicken, seine Stützpunkte werden mit kleinen Rechtecken markiert. Per Klicken und Ziehen kann der Stützpunkt bewegt werden. Ein Doppelklick auf ein Segment fügt einen neuen Stützpunkt ein. Ein Druck auf die &quot;Entfernen&quot;-Taste löscht den aktiven Stützpunkt. Durch Klicken und Aufziehen eines Rechtecks ist es ist möglich mehrere aktive Stützpunkte gleichzeitig zu wählen. Durch einen einfachen Klick auf ein Segment kann der angrenzende Punkt des Segments gewählt werden. Außerdem können bei gedrückter &quot;Strg&quot;-Taste zusätzliche Stützpunkte durch Klick darauf oder durch Aufziehen eines Rechtecks gewählt bzw. abgewählt werden.
+
+Wir empfehlen die Stützpunktmarkierungen in den QGIS-Einstellungen abzuschalten, wenn Sie mit diesem Werkzeug arbeiten: Dies beschleunigt das Neuzeichnen erheblich und die Karte ist nicht mit Markern überhäuft.
+
+Tastenkürzel:
+
+Die Tastenkürzel im QGIS-Hauptfenster sind neuerdings einstellbar!
+Siehe Menü Einstellungen/Tastenkürzel festlegen
+
+Druckzusammenstellung:
+
+In der Druckzussammenstellung können nun die Elementposition mit einem Rechtsklick arretiert werden.
+Die Breite und Höhe der zusammengestellten Karte wird nun festgehalten, wenn der Benutzer einen Kartenausschnitt in der Druckzusammenstellung auf den aktuellen Kartenausschnitt in der Hauptanzeige setzt.  Möglichkeit das aktuelle Datum in der Druckzusammenstellung durch den Text (d &apos;June&apos; yyyy) oder ähnliches anzuzeigen.
+Es ist nun möglich die aktuellen Layer in der Druckzusammenstellung auch dann zu erhalten, wenn der Hauptkarte neue Layer hinzugefügt werden.  Export als PDF ist nun auch in der Druckzusammenstellung möglich.
+
+Attributetabellen:
+
+Es ist nun möglich nur in den bereits gewählten Datensätzen zu suchen.
+Die Attributtabellen wurden generelle beschleunigt. Beim Hinzufügen von Attributen ist nun das Setzen von Feldbreite und -genauigkeit möglich. Die Behandlung von Attributarten im WFS-Datenlieferanten wurde verbessert.
+
+Es gibt nun Attributealiase für Vektorlayer. Sie werden zur Vereinfachung für den Endbenutzer statt dem richtigen Feldnamen in Abfrageergebnis und Attributetabelle angezeigt. Es gibt nun eine GUI für die Einstellung der Layerattribut-Bearbeitungselemente.  Ein neuer Dialog für das Laden von Wertabbildungen aus Layern (können auch nicht-räumliche Tabellen sein) wurde ergänzt.  Die Bearbeitungselement werden nun auch in der Attributtabelle angezeigt.
+
+Plugins:
+
+- Die Layerreihenfolge im WMS-Dialog kann nun geändert werden.
+- Das eVis-Plugin, Version 1.1.0 wurde dem QGIS-Projekt hinzugefügt und
+  als Standardplugin integriert. Nähere Information über eVis sind zu finden unter:
+  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
+- Das Interpolationsplugin hat nun die Möglichkeit Linienlayer als Begrenzung der Triangulation zu benutzen. Die Triangulation kann nun auch als Shapedatei gespeichert werden.
+- Ein neuer OpenStreetMap-Datenlieferant und ein -Plugin wurden QGIS hinzugefügt.
+
+Projektverwaltung:
+
+QGIS enthält nun die Möglichkeit die Pfad von Dateiquellen und SVGs projektrelativ zu speichern.
+Die Speicherung von relativen Pfaden ist optional.
+
+PostGIS und PostgreSQL Datenlieferant:
+
+Sie können nun den SSL-Modus beim Hinzufügen von Datenbankverbindungen vorgeben.
+Die SSL-Verschlüsselung abzuschalten, wo sie nicht erforderlich ist, kann die Ladegeschwindigkeit von PostGIS-Daten deutlich verbessern.  Unterstützung von mehr nativen Datentypen und zum Setzen von Spaltenkommentaren wurde ergänzt.
+
+
+Darstellungsverbesserungen:
+
+- Die Symbole können nun in der Symbolauswahl über ein Kontextmenü im Darstellungsreiter des Layers aktualisiert werden
+- Die Symbolnamen können nun auch aus der Datenbank bestimmt werden
+- Unterstützung für Schriftartsymbole (nur für datenbank definierte Symbole - noch keine GUI)
+- Symbolgröße kann nun auch in Karteneinheiten festgelegt werden (d.h.die Symbole behalten Ihre Größe in Karteneinheiten unabhängig von der Skalierung)
+
+Kommandozeilenargumente:
+
+Kommandozeilenargumente werden nun auch unter Windows unterstützt.
+Erweiterung der Kommandozeilenargumente:
+- Schnappschußgröße kann vorgegeben weden
+- Logoanzeige beim Programmstart kann unterdrückt werden
+- Die Dekorationen von Plugins sind nun in Schnappschüssen enthalten
+
+GRASS:
+
+Es gibt eine neue GRASS-Shell. Außerdem wurden viele Bereinigungen vorgenommen und die Konsistenz verbessert.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3580"/>
@@ -10779,7 +10854,7 @@ in Zeile %2, Spalte %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2715"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Einen Layer wählen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2841"/>
@@ -10825,7 +10900,7 @@ in Zeile %2, Spalte %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2225"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Einen Layer wählen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2511"/>
@@ -12136,12 +12211,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="109"/>
         <source>Copy attribute value</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributwert kopieren</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="113"/>
         <source>Copy feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektattribute kopieren</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="229"/>
@@ -12750,13 +12825,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/legend/qgslegend.cpp" line="755"/>
         <location filename="../src/app/legend/qgslegend.cpp" line="766"/>
         <source>Stop editing</source>
-        <translation type="unfinished">Bearbeitung beenden</translation>
+        <translation>Bearbeitung beenden</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="756"/>
         <location filename="../src/app/legend/qgslegend.cpp" line="767"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished">Wollen Sie die Änderung am Layer %1 speichern?</translation>
+        <translation>Wollen Sie die Änderung am Layer %1 speichern?</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1996"/>
@@ -15169,17 +15244,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="482"/>
         <source>Preferred measurements units</source>
-        <translation type="unfinished"></translation>
+        <translation>Bevorzugte Maßeinheiten</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="489"/>
         <source>Meters</source>
-        <translation type="unfinished">Meter</translation>
+        <translation>Meter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="496"/>
         <source>Feet</source>
-        <translation type="unfinished">Fuss</translation>
+        <translation>Fuss</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="515"/>
@@ -17367,7 +17442,7 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="142"/>
         <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>Layereinheiten (nur ohne KBS-Transformation)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="151"/>
@@ -21186,7 +21261,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="557"/>
         <source>File name</source>
-        <translation type="unfinished">Dateiname</translation>
+        <translation>Dateiname</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="558"/>
