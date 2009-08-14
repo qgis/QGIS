@@ -2019,7 +2019,7 @@ void QgisApp::about()
       +
       "</p><p>"
       +
-      tr("This release includes over 140 bug fixes and enchancements "
+      tr("This release includes over 140 bug fixes and enhancements "
       "over the QGIS 1.1.0 release. In addition we have added "
       "the following new features:")
       + "<pre>"
