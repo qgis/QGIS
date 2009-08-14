@@ -212,7 +212,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       currentWkbPtr += ( 1 + sizeof( int ) );
       int* npoints = ( int* )currentWkbPtr;
       currentWkbPtr += sizeof( int );
-      for ( int index = 0;index < *npoints;++index )
+      for ( int index = 0; index < *npoints; ++index )
       {
         x = *(( double * )( currentWkbPtr ) );
         currentWkbPtr += sizeof( double );

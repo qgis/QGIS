@@ -273,7 +273,7 @@ void QgsOgrProvider::loadFields()
       OGR_L_ResetReading( ogrLayer );
     }
 
-    for ( int i = 0;i < OGR_FD_GetFieldCount( fdef );++i )
+    for ( int i = 0; i < OGR_FD_GetFieldCount( fdef ); ++i )
     {
       OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, i );
       OGRFieldType ogrType = OGR_Fld_GetType( fldDef );

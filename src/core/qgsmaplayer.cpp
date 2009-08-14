@@ -288,7 +288,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     QFileInfo pfi( QgsProject::instance()->fileName() );
     QgsDebugMsg( "project path: " + pfi.canonicalPath() );
     QgsDebugMsg( "src path: " + srcInfo.canonicalFilePath() );
-    if ( srcInfo.canonicalFilePath().startsWith( pfi.canonicalPath() + "/" ) ) // QFileInfo always uses '/' for directory separator. 
+    if ( srcInfo.canonicalFilePath().startsWith( pfi.canonicalPath() + "/" ) ) // QFileInfo always uses '/' for directory separator.
     {
       src = src.mid( pfi.canonicalPath().size() + 1 );
       QgsDebugMsg( "use relative path: " + src );

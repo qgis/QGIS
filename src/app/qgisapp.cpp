@@ -2007,123 +2007,123 @@ void QgisApp::about()
 
     abt->setVersion( versionString );
     QString whatsNew = "<html><body>" ;
-    whatsNew += "<h2>"+ tr( "Version" ) + " " + QString(QGis::QGIS_VERSION) +  "</h2>";
+    whatsNew += "<h2>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h2>";
     whatsNew += "<h3>" + tr( "Whats new in Version 1.2.0?" ) + "</h3>"
-      +
-      "<p>"
-      + tr("Please note that this is a release in our 'cutting edge' release series. As "
-      "such it contains new features and extends the programmatic interface over "
-      "QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you "
-      "then cool new and untested features, we recommend that you use a copy "
-      "of QGIS from our stable 1.0.x release series.")
-      +
-      "</p><p>"
-      +
-      tr("This release includes over 140 bug fixes and enhancements "
-      "over the QGIS 1.1.0 release. In addition we have added "
-      "the following new features:")
-      + "<pre>"
-      + tr("Editing:\n"
-"\n"
-"Editing functionality in QGIS has had a major update in this release. This\n"
-"includes the addition of new vector editing tools:\n"
-"- delete part of multipart feature\n"
-"- delete hole from polygon\n"
-"- simplify feature\n"
-"- Added a new node tool (in advanced digitizing toolbar).\n"
-"- New functionality for merging features\n"
-"- Added undo/redo functionality for vector layer editing.\n"
-"- Added option to show only markers of selected features in editing mode.\n"
-"- Change layer's icon in legend to reflext that the layer is editable.\n"
-"\n"
-"In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar\n"
-"and there is a new dock widget displaying undo stack of active layer.\n"
-"\n"
-"About the node tool: It resembles a tool for editing paths by nodes that is\n"
-"present in every vector editor. How does it work (in QGIS)? Click on a\n"
-"feature, its nodes will be marked by small rectangles. Clicking and dragging a\n"
-"node moves it. Double clicking a segment will add a new node. Pressing delete\n"
-"key will remove active node. It's possible to select more active nodes at\n"
-"once: by clicking and dragging a rectangle. It's possible to select a segment's\n"
-"adjacent nodes by clicking on the segment. It's possible to add/remove active\n"
-"nodes by using Ctrl when clicking a node or dragging a rectangle\n"
-"\n"
-"We recommend that you turn off vertex markers in QGIS options when working with\n"
-"this tool: the redraws are much faster and the map is not cluttered with\n"
-"markers. \n"
-"\n"
-"Keyboard shortcuts:\n"
-"\n"
-"New feature: configure shortcuts for actions within main window of qgis!\n"
-"See menu Setting->Configure shortcuts\n"
-"\n"
-"Map Composer:\n"
-"\n"
-"It is now possible to lock/unlock composer item positions by right mouse click.\n"
-"The width and height of the composer map will now remain fixed if user sets the\n"
-"composer map extent to the map canvas extent. possibility to display\n"
-"current date in composer label by typing (d 'June' yyyy) or similar.\n"
-"It is now possible to keep the current layers in a composer map even if further\n"
-"layers are added to the main map. Export to PDF in composer is now possible.\n"
-"\n"
-"Attribute tables:\n"
-"\n"
-"It is now possible to search the attribute table within selected records only.\n"
-"General speedups have been made on the attribute table. Setting of field width\n"
-"and precision when adding attributes is now possible. Handling of attribute\n"
-"types in WFS provider has bee improved.\n"
-"\n"
-"Attribute aliases for vector layers are now available. The aliases are shown\n"
-"instead of the original field names in the info tool and attribute table to\n"
-"make things easier for end users. There is now a GUI for setting edit widgets\n"
-"for layer attributes.  A new dialog allows loading a value map from a layer\n"
-"(could be non-spatial table too!).  The edit widgets settings will also now\n"
-"be respected in the attribute table.\n"
-"\n"
-"Plugins:\n"
-"\n"
-"- The order of layers in the WMS dialog can now be changed.\n"
-"- The eVis plugin, version 1.1.0, has been added to the QGIS project and\n"
-"  included as a standard plugin. More information about eVis can be found here:\n"
-"  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .\n"
-"- The interpolation plugin now has the ability to use line layers as constrains\n"
-"  for triangulation in interpolation plugin. You can also now save the\n"
-"  triangulation to shape file.\n"
-"- An new OpenStreetMap provider and plugin have been added to QGIS.\n"
-"\n"
-"Projects Management:\n"
-"\n"
-"QGIS now includes support for  project relative position of file data sources\n"
-"and svgs. The saving of relative paths of file data sources is optional.\n"
-"\n"
-"PostGIS & the PostgreSQL Provider:\n"
-"\n"
-"You can now select the SSL mode when adding a new DB connection. Turning off\n"
-"SSL encryption can greatly improve performance of PostGIS data loading where\n"
-"connection security is not required. Support has been added for more native\n"
-"types and for setting of column comments.\n"
-"\n"
-"Symbology enhancements:\n"
-"\n"
-"- allow refresh of symbols via popup menu on the renderer's symbol selection\n"
-"- add support for data defined symbol(name)s\n"
-"- add support for font symbol markers (only data defined - no gui yet)\n"
-"- add symbol size in map units (ie. symbols that keep the size in mapunits\n"
-"  independant of the mapscale)\n"
-"\n"
-"Command line arguments:\n"
-"\n"
-"Added command line argument support on windows.\n"
-"Enhancement of command line arguments:\n"
-"- allow given snapshot sizes\n"
-"- allow suppression of splash screen\n"
-"- capture map decorations from plugins on snapshots\n"
-"\n"
-"Grass:\n"
-"\n"
-"There is a new GRASS shell. Also there have been many cleanups and consistency\n"
-"updates.") 
-    + "</pre></body></html>";
+                +
+                "<p>"
+                + tr( "Please note that this is a release in our 'cutting edge' release series. As "
+                      "such it contains new features and extends the programmatic interface over "
+                      "QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you "
+                      "then cool new and untested features, we recommend that you use a copy "
+                      "of QGIS from our stable 1.0.x release series." )
+                +
+                "</p><p>"
+                +
+                tr( "This release includes over 140 bug fixes and enhancements "
+                    "over the QGIS 1.1.0 release. In addition we have added "
+                    "the following new features:" )
+                + "<pre>"
+                + tr( "Editing:\n"
+                      "\n"
+                      "Editing functionality in QGIS has had a major update in this release. This\n"
+                      "includes the addition of new vector editing tools:\n"
+                      "- delete part of multipart feature\n"
+                      "- delete hole from polygon\n"
+                      "- simplify feature\n"
+                      "- Added a new node tool (in advanced digitizing toolbar).\n"
+                      "- New functionality for merging features\n"
+                      "- Added undo/redo functionality for vector layer editing.\n"
+                      "- Added option to show only markers of selected features in editing mode.\n"
+                      "- Change layer's icon in legend to reflext that the layer is editable.\n"
+                      "\n"
+                      "In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar\n"
+                      "and there is a new dock widget displaying undo stack of active layer.\n"
+                      "\n"
+                      "About the node tool: It resembles a tool for editing paths by nodes that is\n"
+                      "present in every vector editor. How does it work (in QGIS)? Click on a\n"
+                      "feature, its nodes will be marked by small rectangles. Clicking and dragging a\n"
+                      "node moves it. Double clicking a segment will add a new node. Pressing delete\n"
+                      "key will remove active node. It's possible to select more active nodes at\n"
+                      "once: by clicking and dragging a rectangle. It's possible to select a segment's\n"
+                      "adjacent nodes by clicking on the segment. It's possible to add/remove active\n"
+                      "nodes by using Ctrl when clicking a node or dragging a rectangle\n"
+                      "\n"
+                      "We recommend that you turn off vertex markers in QGIS options when working with\n"
+                      "this tool: the redraws are much faster and the map is not cluttered with\n"
+                      "markers. \n"
+                      "\n"
+                      "Keyboard shortcuts:\n"
+                      "\n"
+                      "New feature: configure shortcuts for actions within main window of qgis!\n"
+                      "See menu Setting->Configure shortcuts\n"
+                      "\n"
+                      "Map Composer:\n"
+                      "\n"
+                      "It is now possible to lock/unlock composer item positions by right mouse click.\n"
+                      "The width and height of the composer map will now remain fixed if user sets the\n"
+                      "composer map extent to the map canvas extent. possibility to display\n"
+                      "current date in composer label by typing (d 'June' yyyy) or similar.\n"
+                      "It is now possible to keep the current layers in a composer map even if further\n"
+                      "layers are added to the main map. Export to PDF in composer is now possible.\n"
+                      "\n"
+                      "Attribute tables:\n"
+                      "\n"
+                      "It is now possible to search the attribute table within selected records only.\n"
+                      "General speedups have been made on the attribute table. Setting of field width\n"
+                      "and precision when adding attributes is now possible. Handling of attribute\n"
+                      "types in WFS provider has bee improved.\n"
+                      "\n"
+                      "Attribute aliases for vector layers are now available. The aliases are shown\n"
+                      "instead of the original field names in the info tool and attribute table to\n"
+                      "make things easier for end users. There is now a GUI for setting edit widgets\n"
+                      "for layer attributes.  A new dialog allows loading a value map from a layer\n"
+                      "(could be non-spatial table too!).  The edit widgets settings will also now\n"
+                      "be respected in the attribute table.\n"
+                      "\n"
+                      "Plugins:\n"
+                      "\n"
+                      "- The order of layers in the WMS dialog can now be changed.\n"
+                      "- The eVis plugin, version 1.1.0, has been added to the QGIS project and\n"
+                      "  included as a standard plugin. More information about eVis can be found here:\n"
+                      "  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .\n"
+                      "- The interpolation plugin now has the ability to use line layers as constrains\n"
+                      "  for triangulation in interpolation plugin. You can also now save the\n"
+                      "  triangulation to shape file.\n"
+                      "- An new OpenStreetMap provider and plugin have been added to QGIS.\n"
+                      "\n"
+                      "Projects Management:\n"
+                      "\n"
+                      "QGIS now includes support for  project relative position of file data sources\n"
+                      "and svgs. The saving of relative paths of file data sources is optional.\n"
+                      "\n"
+                      "PostGIS & the PostgreSQL Provider:\n"
+                      "\n"
+                      "You can now select the SSL mode when adding a new DB connection. Turning off\n"
+                      "SSL encryption can greatly improve performance of PostGIS data loading where\n"
+                      "connection security is not required. Support has been added for more native\n"
+                      "types and for setting of column comments.\n"
+                      "\n"
+                      "Symbology enhancements:\n"
+                      "\n"
+                      "- allow refresh of symbols via popup menu on the renderer's symbol selection\n"
+                      "- add support for data defined symbol(name)s\n"
+                      "- add support for font symbol markers (only data defined - no gui yet)\n"
+                      "- add symbol size in map units (ie. symbols that keep the size in mapunits\n"
+                      "  independant of the mapscale)\n"
+                      "\n"
+                      "Command line arguments:\n"
+                      "\n"
+                      "Added command line argument support on windows.\n"
+                      "Enhancement of command line arguments:\n"
+                      "- allow given snapshot sizes\n"
+                      "- allow suppression of splash screen\n"
+                      "- capture map decorations from plugins on snapshots\n"
+                      "\n"
+                      "Grass:\n"
+                      "\n"
+                      "There is a new GRASS shell. Also there have been many cleanups and consistency\n"
+                      "updates." )
+                + "</pre></body></html>";
 
     abt->setWhatsNew( whatsNew );
 
@@ -3334,9 +3334,9 @@ void QgisApp::fileOpen()
     {
       if ( ! QgsProject::instance()->read() )
       {
-	mMapCanvas->freeze( false );
-	mMapCanvas->refresh();
-	return;
+        mMapCanvas->freeze( false );
+        mMapCanvas->refresh();
+        return;
       }
     }
     catch ( QgsProjectBadLayerException & e )
@@ -3368,7 +3368,7 @@ void QgisApp::fileOpen()
     emit projectRead();     // let plug-ins know that we've read in a new
     // project so that they can check any project
     // specific plug-in state
-    
+
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath, settings );
 
@@ -3405,7 +3405,7 @@ bool QgisApp::addProject( QString projectFile )
       return false;
     }
     // Continue after last catch statement
-    
+
   }
   catch ( QgsProjectBadLayerException & e )
   {
@@ -3456,14 +3456,14 @@ bool QgisApp::addProject( QString projectFile )
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   mMapCanvas->setCanvasColor( myColor ); //this is fill colour before rendering starts
   QgsDebugMsg( "Canvas background color restored..." );
-  
+
   mMapCanvas->updateScale();
   QgsDebugMsg( "Scale restored..." );
-  
+
   emit projectRead(); // let plug-ins know that we've read in a new
   // project so that they can check any project
   // specific plug-in state
-  
+
   // add this to the list of recently used project files
   QSettings settings;
   saveRecentProjectPath( projectFile, settings );

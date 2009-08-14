@@ -68,7 +68,7 @@ QgsUniqueValueRenderer& QgsUniqueValueRenderer::operator=( const QgsUniqueValueR
 
 QgsUniqueValueRenderer::~QgsUniqueValueRenderer()
 {
-  for ( QMap<QString, QgsSymbol*>::iterator it = mSymbols.begin();it != mSymbols.end();++it )
+  for ( QMap<QString, QgsSymbol*>::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it )
   {
     delete it.value();
   }
@@ -250,7 +250,7 @@ int QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 
 void QgsUniqueValueRenderer::clearValues()
 {
-  for ( QMap<QString, QgsSymbol*>::iterator it = mSymbols.begin();it != mSymbols.end();++it )
+  for ( QMap<QString, QgsSymbol*>::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it )
   {
     delete it.value();
   }
@@ -322,7 +322,7 @@ bool QgsUniqueValueRenderer::writeXML( QDomNode & layer_node, QDomDocument & doc
   QDomText classificationfieldtxt = document.createTextNode( classificationFieldName );
   classificationfield.appendChild( classificationfieldtxt );
   uniquevalue.appendChild( classificationfield );
-  for ( QMap<QString, QgsSymbol*>::const_iterator it = mSymbols.begin();it != mSymbols.end();++it )
+  for ( QMap<QString, QgsSymbol*>::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it )
   {
     if ( !( it.value()->writeXML( uniquevalue, document, &vl ) ) )
     {

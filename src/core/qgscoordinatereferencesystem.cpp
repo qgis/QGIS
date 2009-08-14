@@ -350,7 +350,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   *   have been set if this method has been delegated to from createFromWkt.
   * Normally we wouldnt expect this to work, but its worth trying first
   * as its quicker than methods below..
-  */  
+  */
   long mySrsId = 0;
   QgsCoordinateReferenceSystem::RecordMap myRecord;
 
@@ -448,21 +448,21 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       // The srsid is not set, we should do that now.
       if ( mIsValidFlag )
       {
-	myRecord = getRecord( "select * from tbl_srs where parameters='" + theProj4String.trimmed() + "'" );
-	if ( !myRecord.empty() )
-	{
-	  mySrsId = myRecord["srs_id"].toLong();
-	  QgsDebugMsg( "proj4string match search for srsid returned srsid: " + QString::number( mySrsId ) );
-	  if ( mySrsId > 0 )
-	  {
-	    createFromSrsId( mySrsId );
-	  }
-	  else
-	  {
-	    QgsDebugMsg( "Couldn't find newly added proj string?" );
-	    mIsValidFlag = false;
-	  }
-	}
+        myRecord = getRecord( "select * from tbl_srs where parameters='" + theProj4String.trimmed() + "'" );
+        if ( !myRecord.empty() )
+        {
+          mySrsId = myRecord["srs_id"].toLong();
+          QgsDebugMsg( "proj4string match search for srsid returned srsid: " + QString::number( mySrsId ) );
+          if ( mySrsId > 0 )
+          {
+            createFromSrsId( mySrsId );
+          }
+          else
+          {
+            QgsDebugMsg( "Couldn't find newly added proj string?" );
+            mIsValidFlag = false;
+          }
+        }
       }
     }
   }
@@ -508,7 +508,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     QgsDebugMsg( "trying system srs.db" );
     int myColumnCount = sqlite3_column_count( myPreparedStatement );
     //loop through each column in the record adding its field name and vvalue to the map
-    for ( int myColNo = 0;myColNo < myColumnCount;myColNo++ )
+    for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
     {
       myFieldName = QString::fromUtf8(( char * )sqlite3_column_name( myPreparedStatement, myColNo ) );
       myFieldValue = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, myColNo ) );
@@ -543,7 +543,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     {
       int myColumnCount = sqlite3_column_count( myPreparedStatement );
       //loop through each column in the record adding its field name and vvalue to the map
-      for ( int myColNo = 0;myColNo < myColumnCount;myColNo++ )
+      for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
       {
         myFieldName = QString::fromUtf8(( char * )sqlite3_column_name( myPreparedStatement, myColNo ) );
         myFieldValue = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, myColNo ) );
@@ -1157,7 +1157,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCRS() 
+bool QgsCoordinateReferenceSystem::saveAsUserCRS()
 {
 
   if ( ! mIsValidFlag )
@@ -1168,8 +1168,8 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
 
   QString mySql;
   QString myName = QString( " * %1 (%2)" )
-    .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ))
-    .arg( toProj4() );
+                   .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                   .arg( toProj4() );
 
   //if this is the first record we need to ensure that its srs_id is 10000. For
   //any rec after that sqlite3 will take care of the autonumering
@@ -1178,17 +1178,17 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   if ( getRecordCount() == 0 )
   {
     mySql = QString( "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) " )
-      + " values (" + QString::number( USER_CRS_START_ID ) + ",'"
-      + sqlSafeString( myName ) + "','" + projectionAcronym()
-      + "','" + ellipsoidAcronym()  + "','" + sqlSafeString( toProj4() )
-      + "',0)"; // <-- is_geo shamelessly hard coded for now
+            + " values (" + QString::number( USER_CRS_START_ID ) + ",'"
+            + sqlSafeString( myName ) + "','" + projectionAcronym()
+            + "','" + ellipsoidAcronym()  + "','" + sqlSafeString( toProj4() )
+            + "',0)"; // <-- is_geo shamelessly hard coded for now
   }
   else
   {
     mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ('"
-      + sqlSafeString( myName ) + "','" + projectionAcronym()
-      + "','" + ellipsoidAcronym()  + "','" + sqlSafeString( toProj4() )
-      + "',0)"; // <-- is_geo shamelessly hard coded for now
+            + sqlSafeString( myName ) + "','" + projectionAcronym()
+            + "','" + ellipsoidAcronym()  + "','" + sqlSafeString( toProj4() )
+            + "',0)"; // <-- is_geo shamelessly hard coded for now
   }
   sqlite3      *myDatabase;
   const char   *myTail;

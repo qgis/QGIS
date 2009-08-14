@@ -93,7 +93,7 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      */
     void on_mSnappingOptionsPushButton_clicked();
 
-    void on_cbxProjectionEnabled_stateChanged(int state);
+    void on_cbxProjectionEnabled_stateChanged( int state );
 
 
   signals:

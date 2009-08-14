@@ -74,7 +74,7 @@ class CORE_EXPORT QgsRenderer
       @note added in 1.2 */
     void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected )
     {
-      renderFeature( renderContext, f, pic, selected, 1.0); 
+      renderFeature( renderContext, f, pic, selected, 1.0 );
     }
 
     virtual void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity ) = 0;
