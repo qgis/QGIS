@@ -425,11 +425,16 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     {
       // Last ditch attempt to piece together what we know of the projection to find a match...
       QgsDebugMsg( "globbing search for srsid from this proj string" );
+      setProj4String( theProj4String );
       mySrsId = findMatchingProj();
       QgsDebugMsg( "globbing search for srsid returned srsid: " + QString::number( mySrsId ) );
       if ( mySrsId > 0 )
       {
         createFromSrsId( mySrsId );
+      }
+      else
+      {
+        mIsValidFlag = false;
       }
     }
   }
@@ -771,7 +776,8 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   QgsDebugMsg( "entered." );
   if ( mEllipsoidAcronym.isNull() ||  mProjectionAcronym.isNull() || !mIsValidFlag )
   {
-    QgsDebugMsg( "QgsCoordinateReferenceSystem::findMatchingProj will only work if prj acr ellipsoid acr and proj4string are set!..." );
+    QgsDebugMsg( "QgsCoordinateReferenceSystem::findMatchingProj will only work if prj acr ellipsoid acr and proj4string are set"
+                 " and the current projection is valid!" );
     return 0;
   }
 
