@@ -18,13 +18,15 @@
 #include <QFile>
 
 
-
+/**
+ * Quantum GIS provider for OpenStreetMap data.
+ */
 class QgsOSMDataProvider: public QgsVectorDataProvider
 {
 
   private:
 
-    //! provider can manage features with one of three geometry types; variable determines feature type of this provider
+    //! provider manages features with one of three geometry types; variable determines feature type of this provider
     enum { PointType, LineType, PolygonType } mFeatureType;
 
     //! supported feature attributes
@@ -70,6 +72,12 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
 
     //! pointer to main sqlite3 database statement object; this statement serves to select OSM data
     sqlite3_stmt *mDatabaseStmt;
+
+    //! pointer to main sqlite3 database statement object; this statement serves to select OSM data
+    sqlite3_stmt *mSelectFeatsStmt;
+
+    //! pointer to main sqlite3 db stmt object; this stmt serves to select OSM data from some boundary
+    sqlite3_stmt *mSelectFeatsInStmt;
 
     //! sqlite3 database statement ready to select all feature tags
     sqlite3_stmt *mTagsStmt;
@@ -305,18 +313,6 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
      * The main purpose is removing ways that contain nodes that are not included in loaded data.
      */
     bool removeIncorrectWays();
-
-
-    /**
-     * This function is part of postparsing. OpenStreetMaps nodes have to be divided in two categories here for better manipulation.
-     * First category is "significant OSM nodes" - these nodes are loaded to Point vector layer and hold some significant information (in tags),
-     * except the fact that they may be parts of ways geometries. The second category are "not significant OSM nodes". These are considered
-     * to be a part of some way geometry only but nothing more. These nodes are not loaded to Point layer, they don't have any significant tags
-     * like "name","ref",etc; OSM plugin even doesn't care of these nodes when some way geometry is changing. Plugin will just remove
-     * all not significant nodes of that way and will create new ones instead of them.
-     * @return true in case of success and false in case of failure
-     */
-    bool splitNodes();
 
     /**
      * This function performs postprocessing after OSM file parsing.
