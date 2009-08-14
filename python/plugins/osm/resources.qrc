@@ -36,6 +36,18 @@
         <file>images/osm_createRelation.png</file>
     </qresource>
     <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_addRelation.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_removeRelation.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_editRelation.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_urDetails.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
         <file>images/osm_remove.png</file>
     </qresource>
     <qresource prefix="/plugins/osm_plugin" >
