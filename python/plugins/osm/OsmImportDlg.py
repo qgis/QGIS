@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""@package DlgImport
+"""@package OsmImportDlg
 This module is used to import OSM data from standard QGIS vector layer.
 """
 
 
-from DlgImport_ui import Ui_DlgImport
+from OsmImportDlg_ui import Ui_OsmImportDlg
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -40,7 +40,7 @@ class dummyFeat:
         return self.fid
 
 
-class DlgImport(QDialog, Ui_DlgImport):
+class OsmImportDlg(QDialog, Ui_OsmImportDlg):
     """This class provides structures and methods neccessary for import OSM data.
     Class is direct descendant of OSM Import dialog.
 

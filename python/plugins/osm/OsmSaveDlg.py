@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""@package DlgSaveOSM
+"""@package OsmSaveDlg
 This module is used to save OSM data into XML file.
 
 Of course, user is asked where to save the current data first.
 """
 
 
-from DlgSaveOSM_ui import Ui_DlgSaveOSM
+from OsmSaveDlg_ui import Ui_OsmSaveDlg
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -20,7 +20,7 @@ import sqlite3
 
 
 
-class DlgSaveOSM(QDialog, Ui_DlgSaveOSM):
+class OsmSaveDlg(QDialog, Ui_OsmSaveDlg):
     """This class provides all structures and methods neccessary for current OSM data saving.
 
     Saving is done to XML file.

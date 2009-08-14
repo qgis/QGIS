@@ -1,4 +1,4 @@
-"""@package osm_plugin
+"""@package OsmPlugin
 This is the main module of the OSM Plugin.
 
 It shows/hides all tool buttons, widgets and dialogs.
@@ -21,21 +21,21 @@ from PyQt4.QtGui import *
 from PyQt4.QtNetwork import *
 from qgis.core import *
 
-from DlgLoadOSM import DlgLoadOSM
-from DlgSaveOSM import DlgSaveOSM
-from DlgDownloadOSM import DlgDownloadOSM
-from DlgUploadOSM import DlgUploadOSM
-from DlgImport import DlgImport
-from DockWidget import *
-from DockUndoRedo import *
+from OsmLoadDlg import OsmLoadDlg
+from OsmSaveDlg import OsmSaveDlg
+from OsmDownloadDlg import OsmDownloadDlg
+from OsmUploadDlg import OsmUploadDlg
+from OsmImportDlg import OsmImportDlg
+from OsmFeatureDW import *
+from OsmUndoRedoDW import *
 
 # initialize Qt resources from file resouces.py
 import resources
 
 
 
-class OSMPlugin:
-    """OSMPlugin is the main class OSM Plugin module.
+class OsmPlugin:
+    """OsmPlugin is the main class OSM Plugin module.
 
     It shows/hides all tool buttons, widgets and dialogs and after closing dialogs
     it does all actions related with their return codes.
@@ -115,20 +115,20 @@ class OSMPlugin:
         self.iface.addPluginToMenu("&OpenStreetMap", self.actionSave)
 
         # create manager of sqlite database(-s)
-        self.dbm=DatabaseManager(self)
+        self.dbm=OsmDatabaseManager(self)
 
         self.undoredo=None
         self.dockWidget=None
 
         # create widget for undo/redo actions
-        self.undoredo=DockUndoRedo(self)
+        self.undoredo=OsmUndoRedoDW(self)
         self.iface.addDockWidget(Qt.LeftDockWidgetArea,self.undoredo)
         self.undoredo.hide()
         QObject.connect(self.undoredo,SIGNAL("visibilityChanged(bool)"),self.__urVisibilityChanged)
         self.undoredo.setContentEnabled(False)
 
         # create widget for osm feature info
-        self.dockWidget=DockWidget(self)
+        self.dockWidget=OsmFeatureDW(self)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
         QObject.connect(self.dockWidget,SIGNAL("visibilityChanged(bool)"),self.__ofVisibilityChanged)
         self.dockWidget.setContentEnabled(False)
@@ -137,6 +137,10 @@ class OSMPlugin:
     def unload(self):
         """Function unloads the OSM Plugin.
         """
+
+        self.canvas.unsetMapTool(self.dockWidget.mapTool)
+        del self.dockWidget.mapTool
+        self.dockWidget.mapTool=None
 
         # remove the plugin menu items
         self.iface.removePluginMenu("&OpenStreetMap",self.actionLoad)
@@ -154,6 +158,9 @@ class OSMPlugin:
 
         self.undoredo.clear()
         self.undoredo.close()
+
+        self.iface.removeDockWidget(self.dockWidget)
+        self.iface.removeDockWidget(self.undoredo)
 
         del self.dockWidget
         del self.undoredo
@@ -175,7 +182,7 @@ class OSMPlugin:
             return
 
         # show modal dialog with OSM file selection
-        self.dlgLoad=DlgLoadOSM(self)
+        self.dlgLoad=OsmLoadDlg(self)
 
         # continue only if OK button was clicked
         if self.dlgLoad.exec_()==0:
@@ -206,7 +213,7 @@ Please change this situation first, because OSM Plugin doesn't know what to save
             return
 
         # show modal dialog with OSM file selection
-        self.dlgSave=DlgSaveOSM(self)
+        self.dlgSave=OsmSaveDlg(self)
 
         # continue only if OK button was clicked
         if self.dlgSave.exec_()==0:
@@ -220,7 +227,7 @@ Please change this situation first, because OSM Plugin doesn't know what to save
         according to dialog's return code.
         """
 
-        self.dlgDownload=DlgDownloadOSM(self)
+        self.dlgDownload=OsmDownloadDlg(self)
         self.dlgDownload.exec_()
         if not self.dlgDownload.httpSuccess:
             return
@@ -229,7 +236,7 @@ Please change this situation first, because OSM Plugin doesn't know what to save
             return
 
         # create loading dialog, submit it
-        self.dlgLoad=DlgLoadOSM(self)
+        self.dlgLoad=OsmLoadDlg(self)
         self.dlgLoad.setModal(True)
         self.dlgLoad.show()
         self.dlgLoad.close()
@@ -270,7 +277,7 @@ Please change this situation first, because OSM Plugin doesn't know what to save
 Please change this situation first, because OSM Plugin doesn't know what to upload.")
             return
 
-        self.dlgUpload=DlgUploadOSM(self)
+        self.dlgUpload=OsmUploadDlg(self)
         self.dlgUpload.exec_()
 
 
@@ -287,7 +294,7 @@ Please change this situation first, because OSM Plugin doesn't know what to uplo
 Please change this situation first, because OSM Plugin doesn't know what layer will be destination of the import.")
             return
 
-        dlg=DlgImport(self)
+        dlg=OsmImportDlg(self)
         if dlg.cboLayer.count()==0:
             QMessageBox.information(self.iface.mainWindow(), "OSM Import", "There are currently no available vector layers.")
             return

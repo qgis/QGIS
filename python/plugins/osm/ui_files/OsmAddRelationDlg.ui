@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>DlgAddRelation</class>
- <widget class="QDialog" name="DlgAddRelation" >
+ <class>OsmAddRelationDlg</class>
+ <widget class="QDialog" name="OsmAddRelationDlg" >
   <property name="geometry" >
    <rect>
     <x>0</x>
