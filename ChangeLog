@@ -1,5 +1,168 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
+Version 1.2.0 'Daphnis'
+** Please note that this is a release in our 'cutting edge' release series. As 
+** such it contains new features and extends the programmatic interface over 
+** QGIS 1.0.x. If stability and long term support is more important to you 
+** then cool new and untested features, we recommend that you use a copy 
+** of QGIS from our stable 1.0.x release series.
+** This release includes over 140 bug fixes and enchancements 
+** over the QGIS 1.1.0 release. In addition we have added 
+** the following new features:
+**
+** Editing:
+** 
+** Editing functionality in QGIS has had a major update in this release. This
+** includes the addition of new vector editing tools:
+** 
+** - delete part of multipart feature
+** - delete hole from polygon
+** - simplify feature
+** - Added a new "node" tool (in advanced digitizing toolbar).
+** - New functionality for merging features
+** - Added undo/redo functionality for vector layer editing.
+** - Added option to show only markers of selected features in editing mode.
+** - Change layer's icon in legend to reflext that the layer is editable.
+** 
+** In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar
+** and there is a new dock widget displaying undo stack of active layer.
+** 
+** About the node tool: It resembles a tool for editing paths by nodes that is
+** present in every vector editor. How does it work (in QGIS)? Click on a
+** feature, its nodes will be marked by small rectangles. Clicking and dragging a
+** node moves it. Double clicking a segment will add a new node. Pressing delete
+** key will remove active node. It's possible to select more active nodes at
+** once: by clicking and dragging a rectangle. It's possible to select a segment's
+** adjacent nodes by clicking on the segment. It's possible to add/remove active
+** nodes by using Ctrl when clicking a node or dragging a rectangle
+** 
+** We recommend that you turn off vertex markers in QGIS options when working with
+** this tool: the redraws are much faster and the map is not cluttered with
+** markers. 
+** 
+** Keyboard shortcuts:
+** 
+** New feature: configure shortcuts for actions within main window of qgis!
+** See menu Setting->Configure shortcuts
+** 
+** Map Composer:
+** 
+** It is now possible to lock/unlock composer item positions by right mouse click.
+** The width and height of the composer map will now remain fixed if user sets the
+** composer map extent to the map canvas extent. possibility to display
+** current date in composer label by typing (d 'June' yyyy) or similar.
+** It is now possible to keep the current layers in a composer map even if further
+** layers are added to the main map. Export to PDF in composer is now possible.
+** 
+** Attribute tables:
+** 
+** It is now possible to search the attribute table within selected records only.
+** General speedups have been made on the attribute table. Setting of field width
+** and precision when adding attributes is now possible. Handling of attribute
+** types in WFS provider has bee improved.
+** 
+** Attribute aliases for vector layers are now available. The aliases are shown
+** instead of the original field names in the info tool and attribute table to
+** make things easier for end users. There is now a GUI for setting edit widgets
+** for layer attributes.  A new dialog allows loading a value map from a layer
+** (could be non-spatial table too!).  The edit widgets settings will also now
+** be respected in the attribute table.
+** 
+** Plugins:
+** 
+** - The order of layers in the WMS dialog can now be changed.
+** - The eVis plugin, version 1.1.0, has been added to the QGIS project and
+**   included as a standard plugin. More information about eVis can be found here:
+**   http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
+** - The interpolation plugin now has the ability to use line layers as constrains
+**   for triangulation in interpolation plugin. You can also now save the
+**   triangulation to shape file.
+** - An new OpenStreetMap provider and plugin have been added to QGIS.
+** 
+** Projects Management:
+** 
+** QGIS now includes support for  project relative position of file data sources
+** and svgs. The saving of relative paths of file data sources is optional.
+** 
+** PostGIS & the PostgreSQL Provider:
+** 
+** You can now select the SSL mode when adding a new DB connection. Turning off
+** SSL encryption can greatly improve performance of PostGIS data loading where
+** connection security is not required. Support has been added for more native
+** types and for setting of column comments.
+** 
+** Symbology enhancements:
+** 
+** - allow refresh of symbols via popup menu on the renderer's symbol selection
+** - add support for data defined symbols
+** - add support for font symbol markers (only data defined - no gui yet)
+** - add symbol size in map units (ie. symbols that keep the size in mapunits
+**   independant of the mapscale)
+** 
+** Command line arguments:
+** 
+** Added command line argument support on windows.
+** Enhancement of command line arguments:
+** - allow given snapshot sizes
+** - allow suppression of splash screen
+** - capture map decorations from plugins on snapshots
+** 
+** Grass:
+** 
+** There is a new GRASS shell. Also there have been many cleanups and consistency
+** updates.
+** 
+Version 1.1.0 'Pan'
+** Please note that this is a release in our 'unstable' release series. As 
+** such it contains new features and extends the programmatic interface over 
+** QGIS 1.0.x. If stability and long term support is more important to you 
+** then cool new and untested features, we recommend that you use a copy 
+** of QGIS from our stable 1.0.x release series.
+** This release includes many bug fixes and enchancements 
+** over the QGIS 1.0.0 release. In addition we have added 
+** the following new features:
+** Updates to translations.
+** Improvements and polishing of the Python plugin installer. Switch to the
+** new official QGIS repository.
+** Improvements to themes so that plugins and other parts of the GUI are
+** better supported when switching themes. Addition of the new GIS icon
+** theme.
+** Improvements to Debian packaging to better support Debian standard
+** requirements.
+** Support usb: as a GPS device under Linux.
+** WMS plugin now supports sorting and shows nested layers as a tree. WMS
+** provider also support 24bit png images now. The WMS plugin also now
+** provides a search interface for finding WMS servers.
+** Added svg point symbols symbols from Matt Amos (with his permission).
+** Improvements to proxy support and support of proxy in WFS provider. The
+** WFS provider now also shows progress information as it is fetching data.
+** Improvements the PostGIS client support. Massive speedups in PostGIS layer 
+** rendering can now be achieved by disabling SSL in the connection editor.
+** Mapserver Export improvements for continuous color support.
+** Added tools menu - the fTools plugins are now part of the core QGIS
+** plugins and will always be installed by default. 
+** Improvements to the print composer including object alignment options. It
+** is also now possible to print maps as postcript raster or vector. For
+** python programmers, the composer classes now have python bindings.
+** When using File - Save as image, the saved image is now georeferenced.
+** Projection selector now includes quick selection of recently used CRS's.
+** Continuous color renderer supports point symbols now too.
+** Improved CMake support for building against dependencies from OSGEO4W
+** (Windows only). Addition of an XCode project of developers building under
+** OSX.
+** Updates and cleanups to the GRASS toolbox.
+** Changes in open vector dialog to support all drivers available in ogr
+** including database and protocol drivers. This brings with it support for
+** SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR
+** supported data stores. Note that in some cases accessing these may
+** require third party libraries to be on your system.
+** The middle mouse button can now be used for panning. 
+** A new, faster attribute table implementation.
+** Numerous cleanups to the user interface.
+** A new provider was added for spatiallite - a geodatabase-in-a-file
+** implementation based on the SQLITE database.
+** Vector overlay support that can draw pie and bar charts over vector
+** layers based on attribute data.
 Version 1.0.0 'Kore'
 ** This release includes over 265 bug fixes and enhancements over the 
 ** QGIS 0.11.0 release. In addition we have made the following changes:
