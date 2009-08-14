@@ -58,6 +58,10 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.deleteTagsButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_remove.png"))
         self.undoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_undo.png"))
         self.redoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_redo.png"))
+        self.addRelationButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_addRelation.png"))
+        self.removeRelationButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_removeRelation.png"))
+        self.editRelationButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_editRelation.png"))
+        self.urDetailsButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_urDetails.png"))
 
         # initializing group of edit buttons
         self.toolButtons=QButtonGroup(self)
@@ -1715,7 +1719,9 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         if self.urDetailsButton.isChecked():
             self.plugin.undoredo.show()
+            self.urDetailsButton.setToolTip("Hide OSM Edit History")
         else:
             self.plugin.undoredo.hide()
+            self.urDetailsButton.setToolTip("Show OSM Edit History")
 
 
