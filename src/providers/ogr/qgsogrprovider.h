@@ -30,7 +30,7 @@ class QgsField;
   */
 class QgsOgrProvider : public QgsVectorDataProvider
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
 

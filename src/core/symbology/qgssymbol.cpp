@@ -359,11 +359,11 @@ QImage QgsSymbol::getCachedPointSymbolAsImage( double widthScale, bool selected,
   {
     if ( selected )
     {
-      cache2( widthScale, selectionColor, opacity);
+      cache2( widthScale, selectionColor, opacity );
     }
     else
     {
-      
+
       cache2( widthScale, mSelectionColor, opacity );
     }
   }
@@ -379,7 +379,7 @@ QImage QgsSymbol::getCachedPointSymbolAsImage( double widthScale, bool selected,
 }
 
 QImage QgsSymbol::getPointSymbolAsImage( double widthScale, bool selected, QColor selectionColor, double scale,
-double rotation, double rasterScaleFactor, double opacity )
+    double rotation, double rasterScaleFactor, double opacity )
 {
 
   if ( 1.0 == ( scale * rasterScaleFactor ) && 0 == rotation )
@@ -453,7 +453,7 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor, double opacity
   pen.setWidthF( widthScale * pen.widthF() );
 
   mPointSymbolImage2 = QgsMarkerCatalogue::instance()->imageMarker( mPointSymbolName, mSize * widthScale,
-                       pen, mBrush, opacity);
+                       pen, mBrush, opacity );
 
   QBrush brush = mBrush;
   brush.setColor( selectionColor );

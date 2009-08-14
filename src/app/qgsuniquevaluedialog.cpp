@@ -132,7 +132,7 @@ void QgsUniqueValueDialog::apply()
   QgsUniqueValueRenderer *renderer = new QgsUniqueValueRenderer( mVectorLayer->geometryType() );
 
   //go through mValues and add the entries to the renderer
-  for ( QMap<QString, QgsSymbol*>::iterator it = mValues.begin();it != mValues.end();++it )
+  for ( QMap<QString, QgsSymbol*>::iterator it = mValues.begin(); it != mValues.end(); ++it )
   {
     QgsSymbol* symbol = it.value();
     QgsSymbol* newsymbol = new QgsSymbol( mVectorLayer->geometryType(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );

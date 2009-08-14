@@ -532,7 +532,7 @@ bool QgsOSMDataProvider::fetchNode( QgsFeature& feature, sqlite3_stmt* stmt, boo
       case UserAttr:
         feature.addAttribute( UserAttr, QString::fromUtf8( selUser ) ); break;
       case TagAttr:
-        feature.addAttribute(TagAttr, tagsForObject("node",selId));
+        feature.addAttribute( TagAttr, tagsForObject( "node", selId ) );
         break;
 
       default: // suppose it's a custom tag
@@ -645,7 +645,7 @@ bool QgsOSMDataProvider::fetchWay( QgsFeature& feature, sqlite3_stmt* stmt, bool
         feature.addAttribute( UserAttr, QString::fromUtf8( selUser ) );
         break;
       case TagAttr:
-        feature.addAttribute(TagAttr, tagsForObject("way",selId));
+        feature.addAttribute( TagAttr, tagsForObject( "way", selId ) );
         break;
       default: // suppose it's a custom tag
         if ( *iter >= CustomTagAttr && *iter < CustomTagAttr + mCustomTagsList.count() )

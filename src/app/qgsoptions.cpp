@@ -115,14 +115,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbEllipsoid->setItemText( cmbEllipsoid->currentIndex(), getEllipsoidName( myEllipsoidId ) );
 
   // Set the units for measuring
-  QString myUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters").toString();
+  QString myUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
   if ( myUnitsTxt == "feet" )
   {
     radFeet->setChecked( true );
-  } else {
+  }
+  else
+  {
     radMeters->setChecked( true );
   }
-  
+
 
   // add the themes to the combo box on the option dialog
   QDir myThemeDir( QgsApplication::pkgDataPath() + "/themes/" );

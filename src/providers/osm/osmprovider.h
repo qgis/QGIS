@@ -28,13 +28,13 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
     enum { PointType, LineType, PolygonType } mFeatureType;
 
     //! supported feature attributes
-    enum Attribute { TimestampAttr=0, UserAttr=1, TagAttr, CustomTagAttr };
+    enum Attribute { TimestampAttr = 0, UserAttr = 1, TagAttr, CustomTagAttr };
 
     //! supported feature attributes
     static const char* attr[];
 
     //! constant that helps to set default map extent
-    const static int DEFAULT_EXTENT=100;
+    const static int DEFAULT_EXTENT = 100;
 
     //! absolute name of input OSM file
     QString mFileName;
@@ -233,7 +233,7 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
      * @param mFileName name of input OSM file
      * @return answer to that question
      */
-    bool isDatabaseCompatibleWithInput(QString mFileName);
+    bool isDatabaseCompatibleWithInput( QString mFileName );
 
     /**
      * Finds out if database and provider versions are compatible.
@@ -369,7 +369,7 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
      * @param id feature identifier
      * @return string of tags concatenation
      */
-    QString tagsForObject(const char* type, int id);
+    QString tagsForObject( const char* type, int id );
 
     /**
      * Function returns one tag value of specified feature and specified key.
@@ -378,6 +378,6 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
      * @param tagKey tag key
      * @return tag value
      */
-    QString tagForObject(const char* type, int id, QString tagKey);
+    QString tagForObject( const char* type, int id, QString tagKey );
 };
 

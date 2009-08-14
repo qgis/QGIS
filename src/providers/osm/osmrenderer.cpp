@@ -117,7 +117,7 @@ void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f,
   else if ( mGeomType == QGis::Point )
   {
     *pic = osmstyle.get_image( tags );
-    p->setOpacity( opacity  );
+    p->setOpacity( opacity );
   }
 }
 

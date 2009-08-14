@@ -387,7 +387,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();
 
-    //! Save the proj4-string as a custom CRS 
+    //! Save the proj4-string as a custom CRS
     bool saveAsUserCRS();
 
     //! Helper for getting number of user CRS already in db

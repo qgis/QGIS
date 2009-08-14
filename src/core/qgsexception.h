@@ -85,9 +85,9 @@ class QgsProjectBadLayerException : public QgsException
   public:
 
     QgsProjectBadLayerException( std::list<QDomNode> const & layers, QDomDocument const & doc = QDomDocument() )
-      : QgsException( std::string( msg_ ) ),
-      mBrokenLayers( layers ),
-      mProjectDom ( doc )
+        : QgsException( std::string( msg_ ) ),
+        mBrokenLayers( layers ),
+        mProjectDom( doc )
     {}
 
     ~QgsProjectBadLayerException() throw()

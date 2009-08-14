@@ -263,22 +263,22 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
         if ( myActualSize > 5280.0 ) //5280 feet to the mile
         {
           myScaleBarUnitLabel = tr( " miles" );
-	  // Adjust scale bar width to get even numbers
+          // Adjust scale bar width to get even numbers
           myActualSize = myActualSize / 5000;
-	  myScaleBarWidth = ( myScaleBarWidth * 5280 ) / 5000;
+          myScaleBarWidth = ( myScaleBarWidth * 5280 ) / 5000;
         }
         else if ( myActualSize == 5280.0 ) //5280 feet to the mile
         {
           myScaleBarUnitLabel = tr( " mile" );
-	  // Adjust scale bar width to get even numbers
+          // Adjust scale bar width to get even numbers
           myActualSize = myActualSize / 5000;
-	  myScaleBarWidth = ( myScaleBarWidth * 5280 ) / 5000;
+          myScaleBarWidth = ( myScaleBarWidth * 5280 ) / 5000;
         }
         else if ( myActualSize < 1 )
         {
           myScaleBarUnitLabel = tr( " inches" );
           myActualSize = myActualSize * 10;
-	  myScaleBarWidth = ( myScaleBarWidth * 10 ) / 12;
+          myScaleBarWidth = ( myScaleBarWidth * 10 ) / 12;
         }
         else if ( myActualSize == 1.0 )
         {

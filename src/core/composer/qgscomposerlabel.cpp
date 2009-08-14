@@ -66,11 +66,11 @@ void QgsComposerLabel::setText( const QString& text )
 QString QgsComposerLabel::displayText() const
 {
   QString displayText = mText;
-  replaceDateText(displayText);
+  replaceDateText( displayText );
   return displayText;
 }
 
-void QgsComposerLabel::replaceDateText(QString& text) const
+void QgsComposerLabel::replaceDateText( QString& text ) const
 {
   int currentDatePos = text.indexOf( "$CURRENT_DATE" );
   if ( currentDatePos != -1 )

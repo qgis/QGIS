@@ -352,11 +352,14 @@ void QgsGrassAttributes::columnSizeChanged( int section, int oldSize, int newSiz
   settings.setValue( path, newSize );
 }
 
-void QgsGrassAttributes::setCategoryMode(QgsGrassEdit::CatMode mode, const QString &cat)
+void QgsGrassAttributes::setCategoryMode( QgsGrassEdit::CatMode mode, const QString &cat )
 {
-    if (mode == QgsGrassEdit::CAT_MODE_NOCAT || (mode == QgsGrassEdit::CAT_MODE_MANUAL && cat.isEmpty())){
-        newButton->setEnabled(false);
-    } else {
-        newButton->setEnabled(true);
-    }
+  if ( mode == QgsGrassEdit::CAT_MODE_NOCAT || ( mode == QgsGrassEdit::CAT_MODE_MANUAL && cat.isEmpty() ) )
+  {
+    newButton->setEnabled( false );
+  }
+  else
+  {
+    newButton->setEnabled( true );
+  }
 }

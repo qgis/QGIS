@@ -148,8 +148,8 @@ void QgsContinuousColorRenderer::renderFeature( QgsRenderContext &renderContext,
       brush.setStyle( Qt::SolidPattern );
 
       *img = QgsMarkerCatalogue::instance()->imageMarker( mMinimumSymbol->pointSymbolName(),
-                                                          mMinimumSymbol->pointSize() * renderContext.scaleFactor() * renderContext.rasterScaleFactor(),
-                                                          pen, brush, opacity );
+             mMinimumSymbol->pointSize() * renderContext.scaleFactor() * renderContext.rasterScaleFactor(),
+             pen, brush, opacity );
 
     }
     else if ( mGeometryType == QGis::Line )
