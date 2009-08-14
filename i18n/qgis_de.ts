@@ -4519,23 +4519,42 @@ Grass:
 
 There is a new GRASS shell. Also there have been many cleanups and consistency
 updates.</source>
-        <translation>Digitialisierung:
+        <translation type="unfinished">Digitialisierung:
 
-Die Bearbeitungsfunktionen bei der Digitalisierung haben in dieser Ausgabe ein wesentliches Update erfahren. Dies umfaßt folgende neue Vektorbearbeitungswerkzeuge:
+Die Bearbeitungsfunktionen bei der Digitalisierung haben in dieser Ausgabe ein
+wesentliches Update erfahren. Dies umfaßt folgende neue Vektorbearbeitungs-
+werkzeuge:
 - Teile eines mehrteiliger Objekte löschen
 - Aussparungen aus Polygonen löschen
 - Objekte vereinfachen
-- Ein neues Knotenwerkzeug wurde ergänzt (im der fortgeschrittenen Bearbeitungswerkzeugleiste).
+- Ein neues Knotenwerkzeug wurde ergänzt (im der fortgeschrittenen Be-
+  arbeitungswerkzeugleiste).
 - Objekte können verschmolzen werden
 - Rückgängig/Wiederholen Funktionalität bei der Vektorbearbeitung.
-- Optional werden im Bearbeitungsmodus nur gewählte Objekte mit Markern versehen.
+- Optional werden im Bearbeitungsmodus nur gewählte Objekte mit Markern
+  versehen.
 - Icon in der Legende zeigt den Bearbeitungsstatus an.
 
-Außerdem gibt es nun Rückgängig/Wiederholen Einträge im Bearbeiten-Menü und in der Werkzeugleiste &quot;Erweiterte Digitalisierung&quot; und es gibt einen andockbaren Anzeigestapel mit den Aktionen, die rückgängig gemacht werden können.
+Außerdem gibt es nun Rückgängig/Wiederholen Einträge im Bearbeiten-Menü und in
+der Werkzeugleiste &quot;Erweiterte Digitalisierung&quot; und es gibt einen
+andockbaren Anzeigestapel mit den Aktionen, die rückgängig gemacht werden
+können.
 
-Das neue Knotenwerkzeug: dient zur stützpunktweisen Bearbeitung von Linien und steht in jedem Vektorlayer zur Verfügung. Wie funktioniert es in QGIS? Ein Objekt anklicken, seine Stützpunkte werden mit kleinen Rechtecken markiert. Per Klicken und Ziehen kann der Stützpunkt bewegt werden. Ein Doppelklick auf ein Segment fügt einen neuen Stützpunkt ein. Ein Druck auf die &quot;Entfernen&quot;-Taste löscht den aktiven Stützpunkt. Durch Klicken und Aufziehen eines Rechtecks ist es ist möglich mehrere aktive Stützpunkte gleichzeitig zu wählen. Durch einen einfachen Klick auf ein Segment kann der angrenzende Punkt des Segments gewählt werden. Außerdem können bei gedrückter &quot;Strg&quot;-Taste zusätzliche Stützpunkte durch Klick darauf oder durch Aufziehen eines Rechtecks gewählt bzw. abgewählt werden.
+Das neue Knotenwerkzeug: dient zur stützpunktweisen Bearbeitung von Linien und
+steht in jedem Vektorlayer zur Verfügung. Wie funktioniert es in QGIS? Ein
+Objekt anklicken, seine Stützpunkte werden mit kleinen Rechtecken markiert. Per
+Klicken und Ziehen kann der Stützpunkt bewegt werden. Ein Doppelklick auf ein
+Segment fügt einen neuen Stützpunkt ein. Ein Druck auf die
+&quot;Entfernen&quot;-Taste löscht den aktiven Stützpunkt. Durch Klicken und
+Aufziehen eines Rechtecks ist es ist möglich mehrere aktive Stützpunkte
+gleichzeitig zu wählen. Durch einen einfachen Klick auf ein Segment kann der
+angrenzende Punkt des Segments gewählt werden.  Außerdem können bei gedrückter
+&quot;Strg&quot;-Taste zusätzliche Stützpunkte durch Klick darauf oder durch
+Aufziehen eines Rechtecks gewählt bzw. abgewählt werden.
 
-Wir empfehlen die Stützpunktmarkierungen in den QGIS-Einstellungen abzuschalten, wenn Sie mit diesem Werkzeug arbeiten: Dies beschleunigt das Neuzeichnen erheblich und die Karte ist nicht mit Markern überhäuft.
+Wir empfehlen die Stützpunktmarkierungen in den QGIS-Einstellungen
+abzuschalten, wenn Sie mit diesem Werkzeug arbeiten: Dies beschleunigt das
+Neuzeichnen erheblich und die Karte ist nicht mit Markern überhäuft.
 
 Tastenkürzel:
 
@@ -4544,43 +4563,68 @@ Siehe Menü Einstellungen/Tastenkürzel festlegen
 
 Druckzusammenstellung:
 
-In der Druckzussammenstellung können nun die Elementposition mit einem Rechtsklick arretiert werden.
-Die Breite und Höhe der zusammengestellten Karte wird nun festgehalten, wenn der Benutzer einen Kartenausschnitt in der Druckzusammenstellung auf den aktuellen Kartenausschnitt in der Hauptanzeige setzt.  Möglichkeit das aktuelle Datum in der Druckzusammenstellung durch den Text (d &apos;June&apos; yyyy) oder ähnliches anzuzeigen.
-Es ist nun möglich die aktuellen Layer in der Druckzusammenstellung auch dann zu erhalten, wenn der Hauptkarte neue Layer hinzugefügt werden.  Export als PDF ist nun auch in der Druckzusammenstellung möglich.
+In der Druckzussammenstellung können nun die Elementposition mit einem
+Rechtsklick arretiert werden.  Die Breite und Höhe der zusammengestellten Karte
+wird nun festgehalten, wenn der Benutzer einen Kartenausschnitt in der
+Druckzusammenstellung auf den aktuellen Kartenausschnitt in der Hauptanzeige
+setzt.  Möglichkeit das aktuelle Datum in der Druckzusammenstellung durch den
+Text (d &apos;June&apos; yyyy) oder ähnliches anzuzeigen.
+Es ist nun möglich die aktuellen Layer in der Druckzusammenstellung auch dann
+zu erhalten, wenn der Hauptkarte neue Layer hinzugefügt werden.  Export als PDF
+ist nun auch in der Druckzusammenstellung möglich.
 
 Attributetabellen:
 
-Es ist nun möglich nur in den bereits gewählten Datensätzen zu suchen.
-Die Attributtabellen wurden generelle beschleunigt. Beim Hinzufügen von Attributen ist nun das Setzen von Feldbreite und -genauigkeit möglich. Die Behandlung von Attributarten im WFS-Datenlieferanten wurde verbessert.
+Es ist nun möglich nur in den bereits gewählten Datensätzen zu suchen.  Die
+Attributtabellen wurden generelle beschleunigt. Beim Hinzufügen von Attributen
+ist nun das Setzen von Feldbreite und -genauigkeit möglich. Die Behandlung von
+Attributarten im WFS-Datenlieferanten wurde verbessert.
 
-Es gibt nun Attributealiase für Vektorlayer. Sie werden zur Vereinfachung für den Endbenutzer statt dem richtigen Feldnamen in Abfrageergebnis und Attributetabelle angezeigt. Es gibt nun eine GUI für die Einstellung der Layerattribut-Bearbeitungselemente.  Ein neuer Dialog für das Laden von Wertabbildungen aus Layern (können auch nicht-räumliche Tabellen sein) wurde ergänzt.  Die Bearbeitungselement werden nun auch in der Attributtabelle angezeigt.
+Es gibt nun Attributealiase für Vektorlayer. Sie werden zur Vereinfachung für
+den Endbenutzer statt dem richtigen Feldnamen in Abfrageergebnis und
+Attributetabelle angezeigt. Es gibt nun eine GUI für die Einstellung der
+Layerattribut-Bearbeitungselemente.  Ein neuer Dialog für das Laden von
+Wertabbildungen aus Layern (können auch nicht-räumliche Tabellen sein) wurde
+ergänzt.  Die Bearbeitungselement werden nun auch in der Attributtabelle
+angezeigt.
 
 Plugins:
 
 - Die Layerreihenfolge im WMS-Dialog kann nun geändert werden.
 - Das eVis-Plugin, Version 1.1.0 wurde dem QGIS-Projekt hinzugefügt und
-  als Standardplugin integriert. Nähere Information über eVis sind zu finden unter:
+  als Standardplugin integriert. Nähere Information über eVis sind zu finden
+  unter:
   http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
-- Das Interpolationsplugin hat nun die Möglichkeit Linienlayer als Begrenzung der Triangulation zu benutzen. Die Triangulation kann nun auch als Shapedatei gespeichert werden.
-- Ein neuer OpenStreetMap-Datenlieferant und ein -Plugin wurden QGIS hinzugefügt.
+- Das Interpolationsplugin hat nun die Möglichkeit Linienlayer als Begrenzung
+  der Triangulation zu benutzen. Die Triangulation kann nun auch als Shapedatei
+  gespeichert werden.
+- Ein neuer OpenStreetMap-Datenlieferant und ein -Plugin wurden QGIS
+  hinzugefügt.
 
 Projektverwaltung:
 
-QGIS enthält nun die Möglichkeit die Pfad von Dateiquellen und SVGs projektrelativ zu speichern.
-Die Speicherung von relativen Pfaden ist optional.
+QGIS enthält nun die Möglichkeit die Pfad von Dateiquellen und SVGs
+projektrelativ zu speichern.  Die Speicherung von relativen Pfaden ist
+optional.
 
 PostGIS und PostgreSQL Datenlieferant:
 
-Sie können nun den SSL-Modus beim Hinzufügen von Datenbankverbindungen vorgeben.
-Die SSL-Verschlüsselung abzuschalten, wo sie nicht erforderlich ist, kann die Ladegeschwindigkeit von PostGIS-Daten deutlich verbessern.  Unterstützung von mehr nativen Datentypen und zum Setzen von Spaltenkommentaren wurde ergänzt.
+Sie können nun den SSL-Modus beim Hinzufügen von Datenbankverbindungen
+vorgeben.  Die SSL-Verschlüsselung abzuschalten, wo sie nicht erforderlich ist,
+kann die Ladegeschwindigkeit von PostGIS-Daten deutlich verbessern.
+Unterstützung von mehr nativen Datentypen und zum Setzen von Spaltenkommentaren
+wurde ergänzt.
 
 
 Darstellungsverbesserungen:
 
-- Die Symbole können nun in der Symbolauswahl über ein Kontextmenü im Darstellungsreiter des Layers aktualisiert werden
+- Die Symbole können nun in der Symbolauswahl über ein Kontextmenü im
+  Darstellungsreiter des Layers aktualisiert werden
 - Die Symbolnamen können nun auch aus der Datenbank bestimmt werden
-- Unterstützung für Schriftartsymbole (nur für datenbank definierte Symbole - noch keine GUI)
-- Symbolgröße kann nun auch in Karteneinheiten festgelegt werden (d.h.die Symbole behalten Ihre Größe in Karteneinheiten unabhängig von der Skalierung)
+- Unterstützung für Schriftartsymbole (nur für datenbank definierte Symbole
+  - noch keine GUI)
+- Symbolgröße kann nun auch in Karteneinheiten festgelegt werden (d.h.die
+  Symbole behalten Ihre Größe in Karteneinheiten unabhängig von der Skalierung)
 
 Kommandozeilenargumente:
 
@@ -4592,7 +4636,8 @@ Erweiterung der Kommandozeilenargumente:
 
 GRASS:
 
-Es gibt eine neue GRASS-Shell. Außerdem wurden viele Bereinigungen vorgenommen und die Konsistenz verbessert.</translation>
+Es gibt eine neue GRASS-Shell. Außerdem wurden viele Bereinigungen vorgenommen
+und die Konsistenz verbessert.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3580"/>
