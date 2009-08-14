@@ -876,20 +876,29 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   {
     return false;
   }
-  else if ( OSRIsGeographic( mCRS ) && OSRIsGeographic( theSrs.mCRS ) )
+  char *thisStr;
+  char *otherStr;
+
+  // OSRIsSame is not relaibel when it comes to comparing +towgs84 parameters
+  // Use string compare on WKT instead.
+  if ( ( OSRExportToWkt( mCRS, &thisStr ) == OGRERR_NONE ) )
   {
-    // qWarning("QgsCoordinateReferenceSystem::operator== srs1 and srs2 are geographic ");
-    return OSRIsSameGeogCS( mCRS, theSrs.mCRS );
+    if ( OSRExportToWkt( theSrs.mCRS, &otherStr ) == OGRERR_NONE )
+    {
+      QgsDebugMsg( QString( "Comparing " ) + thisStr );
+      QgsDebugMsg( QString( "     with " ) + otherStr );
+      if ( !strcmp( thisStr, otherStr ) )
+      {
+        QgsDebugMsg( QString( "MATCHED!" ) + otherStr );
+        OGRFree( *thisStr );
+        OGRFree( *otherStr );
+        return true;
+      }
+      OGRFree( *otherStr );
+    }
+    OGRFree( *thisStr );
   }
-  else if ( OSRIsProjected( mCRS ) && OSRIsProjected( theSrs.mCRS ) )
-  {
-    // qWarning("QgsCoordinateReferenceSystem::operator== srs1 and srs2 are projected ");
-    return OSRIsSame( mCRS, theSrs.mCRS );
-  }
-  else
-  {
-    return false;
-  }
+  return false;
 }
 
 bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &theSrs )
@@ -1135,6 +1144,7 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* Valid : " + ( mIsValidFlag ? QString( "true" ) : QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( mSrsId ) );
   QgsDebugMsg( "* Proj4 : " + toProj4() );
+  QgsDebugMsg( "* WKT   : " + toWkt() );
   QgsDebugMsg( "* Desc. : " + mDescription );
   if ( mapUnits() == QGis::Meters )
   {
