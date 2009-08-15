@@ -23,10 +23,10 @@
 
 void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
 {
-  (( QgsAttributeTableModel * )sourceModel() )->sort( column, order );
+  tableModel()->sort( column, order );
 }
 
-QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsVectorLayer* theLayer )
+QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsVectorLayer *theLayer )
 {
   mLayer = theLayer;
   mHideUnselected = false;
@@ -36,21 +36,7 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsVectorLayer* theL
 bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
   if ( mHideUnselected )
-    // unreadable? yes, i agree :-)
-    return mLayer->selectedFeaturesIds().contains((( QgsAttributeTableModel * )sourceModel() )->rowToId( sourceRow ) );
+    return mLayer->selectedFeaturesIds().contains( tableModel()->rowToId( sourceRow ) );
 
   return true;
 }
-
-/*
-QModelIndex QgsAttributeTableFilterModel::mapFromSource ( const QModelIndex& sourceIndex ) const
-{
-  return sourceIndex;
-}
-
-QModelIndex QgsAttributeTableFilterModel::mapToSource ( const QModelIndex& filterIndex ) const
-{
-  return filterIndex;
-}
-*/
-

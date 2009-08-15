@@ -30,12 +30,12 @@ class QgsAttributeEditor : public QObject
 
   public:
     QgsAttributeEditor( QObject *parent ) : QObject( parent ) {}
+    static QWidget *createAttributeEditor( QWidget *parent, QgsVectorLayer *vl, int idx, const QVariant &value );
+    static bool retrieveValue( QWidget *widget, QgsVectorLayer *vl, int idx, QVariant &value );
+    static bool setValue( QWidget *widget, QgsVectorLayer *vl, int idx, const QVariant &value );
 
   public slots:
     void selectFileName( void );
-
-    static QWidget *createAttributeEditor( QWidget *parent, QgsVectorLayer *vl, int idx, const QVariant &value );
-    static bool retrieveValue( QWidget *widget, QgsVectorLayer *vl, int idx, QVariant &value );
 };
 
 

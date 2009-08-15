@@ -74,10 +74,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
       for ( QList<QVariant>::iterator it = values.begin(); it != values.end(); it++ )
         cb->addItem( it->toString() );
 
-      int idx = cb->findText( value.toString() );
-      if ( idx >= 0 )
-        cb->setCurrentIndex( idx );
-
       myWidget = cb;
     }
     break;
@@ -93,11 +89,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
       {
         cb->addItem( *s_it );
       }
-      int idx = cb->findText( value.toString() );
-      if ( idx >= 0 )
-      {
-        cb->setCurrentIndex( idx );
-      }
+
       myWidget = cb;
     }
     break;
@@ -112,10 +104,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
       {
         cb->addItem( it.key(), it.value() );
       }
-
-      int idx = cb->findData( value );
-      if ( idx >= 0 )
-        cb->setCurrentIndex( idx );
 
       myWidget = cb;
     }
@@ -151,10 +139,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
         cb->addItem( it.value(), it.key() );
       }
 
-      int idx = cb->findData( value );
-      if ( idx >= 0 )
-        cb->setCurrentIndex( idx );
-
       myWidget = cb;
     }
     break;
@@ -174,7 +158,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
 
           sb->setRange( min, max );
           sb->setSingleStep( step );
-          sb->setValue( value.toInt() );
 
           myWidget = sb;
         }
@@ -184,7 +167,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
 
           sl->setRange( min, max );
           sl->setSingleStep( step );
-          sl->setValue( value.toInt() );
 
           myWidget = sl;
         }
@@ -199,7 +181,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
 
         dsb->setRange( min, max );
         dsb->setSingleStep( step );
-        dsb->setValue( value.toDouble() );
 
         myWidget = dsb;
         break;
@@ -213,7 +194,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
     case QgsVectorLayer::Immutable:
     default:
     {
-      QLineEdit *le = new QLineEdit( value.toString(), parent );
+      QLineEdit *le = new QLineEdit( parent );
 
       if ( editType == QgsVectorLayer::Immutable )
       {
@@ -249,7 +230,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
 
     case QgsVectorLayer::FileName:
     {
-      QLineEdit *le = new QLineEdit( value.toString() );
+      QLineEdit *le = new QLineEdit();
 
       QPushButton *pb = new QPushButton( tr( "..." ) );
       connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectFileName() ) );
@@ -263,6 +244,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
     }
     break;
   }
+
+  setValue( myWidget, vl, idx, value );
 
   return myWidget;
 }
@@ -279,6 +262,10 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   {
     text = le->text();
     modified = le->isModified();
+    if ( text == "NULL" )
+    {
+      text = QString::null;
+    }
   }
 
   QComboBox *cb = dynamic_cast<QComboBox *>( widget );
@@ -332,7 +319,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
       }
       else if ( modified )
       {
-        value = QVariant( QString::null );
+        value = QVariant( theField.type() );
       }
     }
     break;
@@ -347,7 +334,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
       }
       else if ( modified )
       {
-        value = QVariant( QString::null );
+        value = QVariant( theField.type() );
       }
     }
     break;
@@ -358,4 +345,94 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   }
 
   return modified;
+}
+
+bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
+{
+  QgsVectorLayer::EditType editType = vl->editType( idx );
+  const QgsField &field = vl->pendingFields()[idx];
+  QVariant::Type myFieldType = field.type();
+
+  switch ( editType )
+  {
+    case QgsVectorLayer::UniqueValues:
+    case QgsVectorLayer::Enumeration:
+    case QgsVectorLayer::ValueMap:
+    {
+      QComboBox *cb = dynamic_cast<QComboBox *>( editor );
+      if ( cb == NULL )
+        return false;
+      int idx = cb->findText( value.toString() );
+      if ( idx < 0 )
+        return false;
+
+      cb->setCurrentIndex( idx );
+    }
+    break;
+
+    case QgsVectorLayer::SliderRange:
+    case QgsVectorLayer::EditRange:
+    {
+      if ( myFieldType == QVariant::Int )
+      {
+        if ( editType == QgsVectorLayer::EditRange )
+        {
+          QSpinBox *sb = dynamic_cast<QSpinBox*>( editor );
+          if ( sb == NULL )
+            return false;
+          sb->setValue( value.toInt() );
+        }
+        else
+        {
+          QSlider *sl = dynamic_cast<QSlider *>( editor );
+          if ( sl == NULL )
+            return false;
+          sl->setValue( value.toInt() );
+        }
+        break;
+      }
+      else if ( myFieldType == QVariant::Double )
+      {
+        QDoubleSpinBox *dsb = dynamic_cast<QDoubleSpinBox*>( editor );
+        if ( dsb == NULL )
+          return false;
+        dsb->setValue( value.toDouble() );
+      }
+    }
+
+    // fall-through
+
+    case QgsVectorLayer::LineEdit:
+    case QgsVectorLayer::UniqueValuesEditable:
+    case QgsVectorLayer::Immutable:
+    default:
+    {
+      QLineEdit *le = dynamic_cast<QLineEdit*>( editor );
+      if ( le == NULL )
+        return false;
+
+      QString text;
+      if ( value.isNull() )
+        if ( myFieldType == QVariant::Int || myFieldType == QVariant::Double )
+          text = "";
+        else
+          text = "NULL";
+      else
+        text = value.toString();
+
+      le->setText( text );
+    }
+    break;
+
+    case QgsVectorLayer::FileName:
+    {
+      QLineEdit *le = editor->findChild<QLineEdit *>();
+      if ( le == NULL )
+        return false;
+      le->setText( value.toString() );
+    }
+    break;
+  }
+
+  return true;
 }
