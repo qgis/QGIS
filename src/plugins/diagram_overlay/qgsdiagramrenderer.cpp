@@ -285,7 +285,7 @@ int QgsDiagramRenderer::calculateDiagramSize( const QgsFeature& f, int& size ) c
   return 0;
 }
 
-int QgsDiagramRenderer::interpolateSize( double value, double lowerValue, double upperValue, \
+int QgsDiagramRenderer::interpolateSize( double value, double lowerValue, double upperValue,
     int lowerSize, int upperSize ) const
 {
   switch ( mItemInterpretation )
@@ -305,13 +305,9 @@ int QgsDiagramRenderer::interpolateSize( double value, double lowerValue, double
         return upperSize;
       }
 
-      QgsDiagramFactory::SizeType t;
-      if ( mFactory )
-      {
-        t = mFactory->sizeType();
-      }
+      QgsDiagramFactory::SizeType t = mFactory ? mFactory->sizeType() : QgsDiagramFactory::HEIGHT;
 
-      if ( !mFactory || t == QgsDiagramFactory::HEIGHT )
+      if ( t == QgsDiagramFactory::HEIGHT )
       {
         //do one dimensional linear interpolation
         return ( int )((( value - lowerValue ) * upperSize + ( upperValue - value ) * lowerSize ) / ( upperValue - lowerValue ) );
@@ -327,5 +323,4 @@ int QgsDiagramRenderer::interpolateSize( double value, double lowerValue, double
     default:
       return 1;
   }
-  return 0; //something went wrong if we arrive here
 }
