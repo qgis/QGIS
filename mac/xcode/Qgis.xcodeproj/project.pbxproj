@@ -1058,7 +1058,6 @@
 		7264FE9C1024D117004D4CDD /* qgsmaptooldeletevertex.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6260F39E57A003DC336 /* qgsmaptooldeletevertex.h */; };
 		7264FE9D1024D117004D4CDD /* qgsmaptoolmovevertex.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E62E0F39E57A003DC336 /* qgsmaptoolmovevertex.h */; };
 		7264FE9F1024D183004D4CDD /* qgsogrprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC650F39E57B003DC336 /* qgsogrprovider.h */; };
-		7264FEA01024D1B3004D4CDD /* osmprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D41021D06C00ED5F3A /* osmprovider.h */; };
 		72683FFB0FD6B21A00D90FFC /* mActionFromSelectedFeature.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FF90FD6B1EA00D90FFC /* mActionFromSelectedFeature.png */; };
 		72683FFC0FD6B21A00D90FFC /* mActionMergeFeatures.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FF80FD6B1EA00D90FFC /* mActionMergeFeatures.png */; };
 		72683FFD0FD6B21A00D90FFC /* mActionRemoveSelectedFeature.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FFA0FD6B1EA00D90FFC /* mActionRemoveSelectedFeature.png */; };
@@ -13196,7 +13195,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# copy modules with script for conditional stuff\n\nMODDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nmkdir -p \"$MODDIR\"\nCONFDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/config\"\nmkdir -p \"$CONFDIR\"\nSCRIPTSDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/scripts\"\nmkdir \"$SCRIPTSDIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\nMODS=`ls *.png *.qgm *.svg`\nfor m in $MODS\ndo\n\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\tcp -fp $m \"$MODDIR\"\n\tfi\ndone\n\ncd ..\n#if [ ! \"$GRASS_VERSION\" = \"10.3\" ] ; then\n\techo \"cp -fp scripts/*.py \\\"$SCRIPTSDIR\\\"\"\n\tcp -fp scripts/*.py \"$SCRIPTSDIR\"\n#fi\n\nif [ -d ../modules-$GRASS_VERSION ] ; then\n\tcd ../modules-$GRASS_VERSION\n\tMODS=`ls *.png *.qgm *.svg`\n\tfor m in $MODS\n\tdo\n\t\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\t\tcp -fp $m \"$MODDIR\"\n\t\tfi\n\tdone\n\tif [ ! -f \"$CONFDIR/default.qgc\" ] || [ default.qgc -nt \"$CONFDIR/default.qgc\" ] ; then\n\t\techo \"cp -f default.qgc \\\"$CONFDIR\\\"\"\n\t\tcp -fp default.qgc \"$CONFDIR\"\n\tfi\n\nfi\n";
+			shellScript = "# copy modules with script for conditional stuff\n\nMODDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nmkdir -p \"$MODDIR\"\nCONFDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/config\"\nmkdir -p \"$CONFDIR\"\nSCRIPTSDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/scripts\"\nmkdir \"$SCRIPTSDIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\nMODS=`ls *.png *.qgm *.svg`\nfor m in $MODS\ndo\n\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\tcp -fp $m \"$MODDIR\"\n\tfi\ndone\ncd ..\n\necho \"cp -fp scripts/*.py \\\"$SCRIPTSDIR\\\"\"\ncp -fp scripts/*.py \"$SCRIPTSDIR\"\n\nif [ -d modules-$GRASS_VERSION ] ; then\n\tcd modules-$GRASS_VERSION\n\tMODS=`ls *.png *.qgm *.svg`\n\tfor m in $MODS\n\tdo\n\t\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\t\tcp -fp $m \"$MODDIR\"\n\t\tfi\n\tdone\n\tif [ ! -f \"$CONFDIR/default.qgc\" ] || [ default.qgc -nt \"$CONFDIR/default.qgc\" ] ; then\n\t\techo \"cp -f default.qgc \\\"$CONFDIR\\\"\"\n\t\tcp -fp default.qgc \"$CONFDIR\"\n\tfi\n\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		729BBF0E0F407818001BCB63 /* Script - ui */ = {
@@ -14107,7 +14106,6 @@
 				72DB68EF1021D0BD00ED5F3A /* osmprovider.cpp in Sources */,
 				72DB68F11021D0BD00ED5F3A /* osmrenderer.cpp in Sources */,
 				72DB68F31021D0BD00ED5F3A /* osmstyle.cpp in Sources */,
-				7264FEA01024D1B3004D4CDD /* osmprovider.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16976,7 +16974,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20090618;
+				QGIS_VERSION_BUILD = 20090815;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -16987,7 +16985,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20090618;
+				QGIS_VERSION_BUILD = 20090815;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
