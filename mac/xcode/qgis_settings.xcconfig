@@ -35,6 +35,9 @@ QTMOC = $(QTBIN)/moc
 QTUIC = $(QTBIN)/uic
 QTRCC = $(QTBIN)/rcc
 QTLREL = $(QTBIN)/lrelease
+PYUIC4 = $(PYTHON_USRBIN)/pyuic4
+PYRCC4 = $(PYTHON_USRBIN)/pyrcc4
+
 BISON = /usr/bin/bison
 GPSBABEL = /usr/local/bin/gpsbabel
 
@@ -295,6 +298,12 @@ SPATIALITE_LIBADD = $(SPATIALITE_GEOS_$(SPATIALITE_GEOS)_$(SQLITE_FORM)) $(SPATI
 PYTHON_PREFIX_fw = /Library/Frameworks/Python.framework
 PYTHON_PREFIX_system = /System/Library/Frameworks/Python.framework
 PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/$(PYTHON_VERSION)
+PYTHON_BIN_fw = $(PYTHON_PREFIX_fw)/Versions/$(PYTHON_VERSION)/bin
+PYTHON_BIN_system = /usr/bin
+PYTHON_BIN = $(PYTHON_BIN_$(PYTHON_FORM))
+PYTHON_USRBIN_fw = $(PYTHON_BIN_fw)
+PYTHON_USRBIN_system = /usr/local/bin
+PYTHON_USRBIN = $(PYTHON_USRBIN_$(PYTHON_FORM))
 PYTHON_INC = $(PYTHON_PREFIX)/Headers
 PYTHON_LIB = -framework Python // must always be framework, full path will work
 PYTHON_HAVE_fw_tig = HAVE_PYTHON=1
