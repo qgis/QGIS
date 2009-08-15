@@ -637,19 +637,19 @@ void QgisApp::createActions()
   mActionPasteFeatures->setEnabled( false );
 
   mActionCapturePoint = new QAction( getThemeIcon( "mActionCapturePoint.png" ), tr( "Capture Point" ), this );
-  shortcuts->registerAction( mActionCapturePoint, tr( ".", "Capture Points" ) );
+  shortcuts->registerAction( mActionCapturePoint, tr( "Ctrl+.", "Capture Points" ) );
   mActionCapturePoint->setStatusTip( tr( "Capture Points" ) );
   connect( mActionCapturePoint, SIGNAL( triggered() ), this, SLOT( capturePoint() ) );
   mActionCapturePoint->setEnabled( false );
 
   mActionCaptureLine = new QAction( getThemeIcon( "mActionCaptureLine.png" ), tr( "Capture Line" ), this );
-  shortcuts->registerAction( mActionCaptureLine, tr( "/", "Capture Lines" ) );
+  shortcuts->registerAction( mActionCaptureLine, tr( "Ctrl+/", "Capture Lines" ) );
   mActionCaptureLine->setStatusTip( tr( "Capture Lines" ) );
   connect( mActionCaptureLine, SIGNAL( triggered() ), this, SLOT( captureLine() ) );
   mActionCaptureLine->setEnabled( false );
 
   mActionCapturePolygon = new QAction( getThemeIcon( "mActionCapturePolygon.png" ), tr( "Capture Polygon" ), this );
-  shortcuts->registerAction( mActionCapturePolygon, tr( "Ctrl+/", "Capture Polygons" ) );
+  shortcuts->registerAction( mActionCapturePolygon, tr( "Ctrl+Shift+/", "Capture Polygons" ) );
   mActionCapturePolygon->setStatusTip( tr( "Capture Polygons" ) );
   connect( mActionCapturePolygon, SIGNAL( triggered() ), this, SLOT( capturePolygon() ) );
   mActionCapturePolygon->setEnabled( false );
@@ -756,23 +756,23 @@ void QgisApp::createActions()
   mActionSelect->setEnabled( false );
 
   mActionIdentify = new QAction( getThemeIcon( "mActionIdentify.png" ), tr( "Identify Features" ), this );
-  shortcuts->registerAction( mActionIdentify, tr( "I", "Click on features to identify them" ) );
+  shortcuts->registerAction( mActionIdentify, tr( "Ctrl+Shift+I", "Click on features to identify them" ) );
   mActionIdentify->setStatusTip( tr( "Click on features to identify them" ) );
   connect( mActionIdentify, SIGNAL( triggered() ), this, SLOT( identify() ) );
   mActionIdentify->setEnabled( false );
 
   mActionMeasure = new QAction( getThemeIcon( "mActionMeasure.png" ), tr( "Measure Line " ), this );
-  shortcuts->registerAction( mActionMeasure, tr( "M", "Measure a Line" ) );
+  shortcuts->registerAction( mActionMeasure, tr( "Ctrl+Shift+M", "Measure a Line" ) );
   mActionMeasure->setStatusTip( tr( "Measure a Line" ) );
   connect( mActionMeasure, SIGNAL( triggered() ), this, SLOT( measure() ) );
 
   mActionMeasureArea = new QAction( getThemeIcon( "mActionMeasureArea.png" ), tr( "Measure Area" ), this );
-  shortcuts->registerAction( mActionMeasureArea, tr( "J", "Measure an Area" ) );
+  shortcuts->registerAction( mActionMeasureArea, tr( "Ctrl+Shift+J", "Measure an Area" ) );
   mActionMeasureArea->setStatusTip( tr( "Measure an Area" ) );
   connect( mActionMeasureArea, SIGNAL( triggered() ), this, SLOT( measureArea() ) );
 
   mActionZoomFullExtent = new QAction( getThemeIcon( "mActionZoomFullExtent.png" ), tr( "Zoom Full" ), this );
-  shortcuts->registerAction( mActionZoomFullExtent, tr( "F", "Zoom to Full Extents" ) );
+  shortcuts->registerAction( mActionZoomFullExtent, tr( "Ctrl+Shift+F", "Zoom to Full Extents" ) );
   mActionZoomFullExtent->setStatusTip( tr( "Zoom to Full Extents" ) );
   connect( mActionZoomFullExtent, SIGNAL( triggered() ), this, SLOT( zoomFull() ) );
 
@@ -814,7 +814,7 @@ void QgisApp::createActions()
   connect( mActionNewBookmark, SIGNAL( triggered() ), this, SLOT( newBookmark() ) );
 
   mActionShowBookmarks = new QAction( getThemeIcon( "mActionShowBookmarks.png" ), tr( "Show Bookmarks" ), this );
-  shortcuts->registerAction( mActionShowBookmarks, tr( "B", "Show Bookmarks" ) );
+  shortcuts->registerAction( mActionShowBookmarks, tr( "Ctrl+Shift+B", "Show Bookmarks" ) );
   mActionShowBookmarks->setStatusTip( tr( "Show Bookmarks" ) );
   connect( mActionShowBookmarks, SIGNAL( triggered() ), this, SLOT( showBookmarks() ) );
 
@@ -826,22 +826,22 @@ void QgisApp::createActions()
   // Layer Menu Items
 
   mActionNewVectorLayer = new QAction( getThemeIcon( "mActionNewVectorLayer.png" ), tr( "New Vector Layer..." ), this );
-  shortcuts->registerAction( mActionNewVectorLayer, tr( "N", "Create a New Vector Layer" ) );
+  shortcuts->registerAction( mActionNewVectorLayer, tr( "Ctrl+Shift+N", "Create a New Vector Layer" ) );
   mActionNewVectorLayer->setStatusTip( tr( "Create a New Vector Layer" ) );
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
 
   mActionAddOgrLayer = new QAction( getThemeIcon( "mActionAddOgrLayer.png" ), tr( "Add Vector Layer..." ), this );
-  shortcuts->registerAction( mActionAddOgrLayer, tr( "V", "Add a Vector Layer" ) );
+  shortcuts->registerAction( mActionAddOgrLayer, tr( "Ctrl+Shift+V", "Add a Vector Layer" ) );
   mActionAddOgrLayer->setStatusTip( tr( "Add a Vector Layer" ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
 
   mActionAddRasterLayer = new QAction( getThemeIcon( "mActionAddRasterLayer.png" ), tr( "Add Raster Layer..." ), this );
-  shortcuts->registerAction( mActionAddRasterLayer, tr( "R", "Add a Raster Layer" ) );
+  shortcuts->registerAction( mActionAddRasterLayer, tr( "Ctrl+Shift+R", "Add a Raster Layer" ) );
   mActionAddRasterLayer->setStatusTip( tr( "Add a Raster Layer" ) );
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
 
   mActionAddPgLayer = new QAction( getThemeIcon( "mActionAddLayer.png" ), tr( "Add PostGIS Layer..." ), this );
-  shortcuts->registerAction( mActionAddPgLayer, tr( "D", "Add a PostGIS Layer" ) );
+  shortcuts->registerAction( mActionAddPgLayer, tr( "Ctrl+Shift+D", "Add a PostGIS Layer" ) );
   mActionAddPgLayer->setStatusTip( tr( "Add a PostGIS Layer" ) );
 //#ifdef HAVE_POSTGRESQL
   // QgsDebugMsg("HAVE_POSTGRESQL is defined");
@@ -853,7 +853,7 @@ void QgisApp::createActions()
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
 
   mActionAddSpatiaLiteLayer = new QAction( getThemeIcon( "mActionAddSpatiaLiteLayer.png" ), tr( "Add SpatiaLite Layer..." ), this );
-  shortcuts->registerAction( mActionAddSpatiaLiteLayer, tr( "L", "Add a SpatiaLite Layer" ) );
+  shortcuts->registerAction( mActionAddSpatiaLiteLayer, tr( "Ctrl+Shift+L", "Add a SpatiaLite Layer" ) );
   mActionAddSpatiaLiteLayer->setStatusTip( tr( "Add a SpatiaLite Layer" ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
 //#ifdef HAVE_SPATIALITE
@@ -865,7 +865,7 @@ void QgisApp::createActions()
 //#endif
 
   mActionAddWmsLayer = new QAction( getThemeIcon( "mActionAddWmsLayer.png" ), tr( "Add WMS Layer..." ), this );
-  shortcuts->registerAction( mActionAddWmsLayer, tr( "W", "Add a Web Mapping Server Layer" ) );
+  shortcuts->registerAction( mActionAddWmsLayer, tr( "Ctrl+Shift+W", "Add a Web Mapping Server Layer" ) );
   mActionAddWmsLayer->setStatusTip( tr( "Add a Web Mapping Server Layer" ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
 
@@ -907,28 +907,28 @@ void QgisApp::createActions()
   mActionLayerProperties->setEnabled( false );
 
   mActionAddToOverview = new QAction( getThemeIcon( "mActionInOverview.png" ), tr( "Add to Overview" ), this );
-  shortcuts->registerAction( mActionAddToOverview, tr( "O", "Add current layer to overview map" ) );
+  shortcuts->registerAction( mActionAddToOverview, tr( "Ctrl+Shift+O", "Add current layer to overview map" ) );
   mActionAddToOverview->setStatusTip( tr( "Add current layer to overview map" ) );
   connect( mActionAddToOverview, SIGNAL( triggered() ), this, SLOT( isInOverview() ) );
   mActionAddToOverview->setEnabled( false );
 
   mActionAddAllToOverview = new QAction( getThemeIcon( "mActionAddAllToOverview.png" ), tr( "Add All to Overview" ), this );
-  shortcuts->registerAction( mActionAddAllToOverview, tr( "+", "Show all layers in the overview map" ) );
+  shortcuts->registerAction( mActionAddAllToOverview ); //, tr( "+", "Show all layers in the overview map" ) );
   mActionAddAllToOverview->setStatusTip( tr( "Show all layers in the overview map" ) );
   connect( mActionAddAllToOverview, SIGNAL( triggered() ), this, SLOT( addAllToOverview() ) );
 
   mActionRemoveAllFromOverview = new QAction( getThemeIcon( "mActionRemoveAllFromOverview.png" ), tr( "Remove All From Overview" ), this );
-  shortcuts->registerAction( mActionRemoveAllFromOverview, tr( "-", "Remove all layers from overview map" ) );
+  shortcuts->registerAction( mActionRemoveAllFromOverview ); //, tr( "-", "Remove all layers from overview map" ) );
   mActionRemoveAllFromOverview->setStatusTip( tr( "Remove all layers from overview map" ) );
   connect( mActionRemoveAllFromOverview, SIGNAL( triggered() ), this, SLOT( removeAllFromOverview() ) );
 
   mActionShowAllLayers = new QAction( getThemeIcon( "mActionShowAllLayers.png" ), tr( "Show All Layers" ), this );
-  shortcuts->registerAction( mActionShowAllLayers, tr( "S", "Show all layers" ) );
+  shortcuts->registerAction( mActionShowAllLayers, tr( "Ctrl+Shift+U", "Show all layers" ) );
   mActionShowAllLayers->setStatusTip( tr( "Show all layers" ) );
   connect( mActionShowAllLayers, SIGNAL( triggered() ), this, SLOT( showAllLayers() ) );
 
   mActionHideAllLayers = new QAction( getThemeIcon( "mActionHideAllLayers.png" ), tr( "Hide All Layers" ), this );
-  shortcuts->registerAction( mActionHideAllLayers, tr( "H", "Hide all layers" ) );
+  shortcuts->registerAction( mActionHideAllLayers, tr( "Ctrl+Shift+H", "Hide all layers" ) );
   mActionHideAllLayers->setStatusTip( tr( "Hide all layers" ) );
   connect( mActionHideAllLayers, SIGNAL( triggered() ), this, SLOT( hideAllLayers() ) );
 
@@ -947,7 +947,7 @@ void QgisApp::createActions()
   connect( mActionToggleFullScreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
 
   mActionProjectProperties = new QAction( getThemeIcon( "mActionProjectProperties.png" ), tr( "Project Properties..." ), this );
-  shortcuts->registerAction( mActionProjectProperties, tr( "P", "Set project properties" ) );
+  shortcuts->registerAction( mActionProjectProperties, tr( "Ctrl+Shift+P", "Set project properties" ) );
   mActionProjectProperties->setStatusTip( tr( "Set project properties" ) );
   connect( mActionProjectProperties, SIGNAL( triggered() ), this, SLOT( projectProperties() ) );
 
