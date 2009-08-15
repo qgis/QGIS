@@ -16,7 +16,7 @@ MACRO(PYQT4_WRAP_UI outfiles)
 			)
 		SET(${outfiles} ${${outfiles}} ${out})
 	ENDFOREACH(it)
-ENDMACRO(PYQT_WRAP_UI)
+ENDMACRO(PYQT4_WRAP_UI)
 
 FILE (GLOB UI_FILES ui_files/*.ui)
 PYQT4_WRAP_UI(PYUI_FILES ${UI_FILES})
