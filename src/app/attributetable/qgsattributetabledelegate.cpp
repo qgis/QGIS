@@ -39,6 +39,20 @@ QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *mode
   return NULL;
 }
 
+int QgsAttributeTableDelegate::fieldIdx( const QModelIndex &index ) const
+{
+  const QgsAttributeTableModel *tm = dynamic_cast<const QgsAttributeTableModel*>( index.model() );
+  if ( tm )
+    return tm->fieldIdx( index.column() );
+
+  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel*>( index.model() );
+  if ( fm )
+    return fm->tableModel()->fieldIdx( index.column() );
+
+  return -1;
+}
+
+
 QWidget *QgsAttributeTableDelegate::createEditor(
   QWidget *parent,
   const QStyleOptionViewItem &option,
@@ -48,7 +62,7 @@ QWidget *QgsAttributeTableDelegate::createEditor(
   if ( vl == NULL )
     return NULL;
 
-  QWidget *widget = QgsAttributeEditor::createAttributeEditor( parent, vl, index.column(), index.model()->data( index ) );
+  QWidget *widget = QgsAttributeEditor::createAttributeEditor( parent, vl, fieldIdx( index ), index.model()->data( index, Qt::EditRole ) );
   widget->adjustSize();
 
   QgsAttributeTableView *tv = dynamic_cast<QgsAttributeTableView *>( parent->parentWidget() );
@@ -65,10 +79,19 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
     return;
 
   QVariant value;
-  if ( !QgsAttributeEditor::retrieveValue( editor, vl, index.column(), value ) )
+  if ( !QgsAttributeEditor::retrieveValue( editor, vl, fieldIdx( index ), value ) )
     return;
 
   model->setData( index, value );
+}
+
+void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QgsVectorLayer *vl = layer( index.model() );
+  if ( vl == NULL )
+    return;
+
+  QgsAttributeEditor::setValue( editor, vl, fieldIdx( index ), index.model()->data( index, Qt::EditRole ) );
 }
 
 void QgsAttributeTableDelegate::paint( QPainter * painter,

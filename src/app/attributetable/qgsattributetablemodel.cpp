@@ -259,6 +259,11 @@ int QgsAttributeTableModel::rowToId( const int id ) const
   return mRowIdMap[id];
 }
 
+int QgsAttributeTableModel::fieldIdx( int col ) const
+{
+  return mAttributes[ col ];
+}
+
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
   return mFeatureCount;
@@ -364,15 +369,19 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( !mLastRow )
     return QVariant( "ERROR" );
 
-  QVariant& val = ( *mLastRow )[ mAttributes[index.column()] ];
+  QVariant &val = ( *mLastRow )[ mAttributes[index.column()] ];
 
   if ( val.isNull() )
   {
     // if the value is NULL, show that in table, but don't show "NULL" text in editor
     if ( role == Qt::EditRole )
-      return QVariant();
+    {
+      return QVariant( fldType );
+    }
     else
+    {
       return QVariant( "NULL" );
+    }
   }
 
   // force also numeric data for EditRole to be strings
