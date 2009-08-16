@@ -552,7 +552,7 @@
 		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
 		72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 72267A500F9A1D3100010C18 /* mActionZoomNext.png */; };
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
-		724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */; };
+		724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */; };
 		724C9FED1019EE3700A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
 		7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */; };
@@ -2972,7 +2972,6 @@
 				7256F3CF0F41C3E20022BE1F /* mActionRemove.png in Copy - theme-classic */,
 				7256F3D00F41C3E20022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-classic */,
 				7256F3D10F41C3E20022BE1F /* mActionRemoveLayer.png in Copy - theme-classic */,
-				724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-classic */,
 				7256F3D20F41C3E20022BE1F /* mActionSaveAsSVG.png in Copy - theme-classic */,
 				7256F3D30F41C3E20022BE1F /* mActionSaveMapAsImage.png in Copy - theme-classic */,
 				7256F3D40F41C3E20022BE1F /* mActionScaleBar.png in Copy - theme-classic */,
@@ -3099,6 +3098,7 @@
 				7256F4660F41C4DD0022BE1F /* mActionRemove.png in Copy - theme-default */,
 				7256F4670F41C4DD0022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-default */,
 				7256F4680F41C4DD0022BE1F /* mActionRemoveLayer.png in Copy - theme-default */,
+				724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */,
 				7256F4690F41C4DD0022BE1F /* mActionSaveAsSVG.png in Copy - theme-default */,
 				7256F46A0F41C4DD0022BE1F /* mActionSaveMapAsImage.png in Copy - theme-default */,
 				7256F46B0F41C4DD0022BE1F /* mActionScaleBar.png in Copy - theme-default */,
@@ -5853,7 +5853,7 @@
 		723FD05E0FBCB85D00EFA55D /* qgspalgeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspalgeometry.h; path = ../../src/core/qgspalgeometry.h; sourceTree = SOURCE_ROOT; };
 		723FD0660FBCB94600EFA55D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/scripts/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "db.connect-login.pg.py"; path = "../../src/plugins/grass/scripts/db.connect-login.pg.py"; sourceTree = SOURCE_ROOT; };
-		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/classic/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
+		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/default/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/gis/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
 		7256F2DD0F4147890022BE1F /* SPONSORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SPONSORS; path = ../../SPONSORS; sourceTree = SOURCE_ROOT; };
@@ -10021,7 +10021,6 @@
 				7209EEBE0F39E5D9003DC336 /* mActionRemove.png */,
 				7209EEBF0F39E5D9003DC336 /* mActionRemoveAllFromOverview.png */,
 				7209EEC00F39E5D9003DC336 /* mActionRemoveLayer.png */,
-				724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */,
 				7209EEC10F39E5D9003DC336 /* mActionSaveAsSVG.png */,
 				7209EEC20F39E5D9003DC336 /* mActionSaveMapAsImage.png */,
 				7209EEC30F39E5D9003DC336 /* mActionScaleBar.png */,
@@ -10064,6 +10063,7 @@
 		7209EEE30F39E5D9003DC336 /* default */ = {
 			isa = PBXGroup;
 			children = (
+				724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */,
 				72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */,
 				7209EEE50F39E5D9003DC336 /* clear_input.svg */,
 				7209EEE60F39E5D9003DC336 /* clearInput.png */,
