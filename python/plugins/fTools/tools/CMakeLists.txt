@@ -1,60 +1,9 @@
-#TODO: Need to configure cmake to run pyrcc4 and pyuic4 as required when the resource
-#      file or the ui change
-SET(TOOLS_FILES
-doVisual.py
-frmRegPoints.py
-doDefineProj.py
-frmGeometry.py
-frmRegPoints.ui
-doGeometry.py
-frmGeometry.ui
-frmReProject.py
-doGeoprocessing.py
-frmGeoprocessing.py
-frmReProject.ui
-doIntersectLines.py
-frmGeoprocessing.ui
-frmSpatialJoin.py
-doJoinAttributes.py
-frmIntersectLines.py
-frmSpatialJoin.ui
-doMeanCoords.py
-frmIntersectLines.ui
-frmSubsetSelect.py
-doPointDistance.py
-frmJoinAttributes.py
-frmSubsetSelect.ui
-doPointsInPolygon.py
-frmJoinAttributes.ui
-frmSumLines.py
-doRandom.py
-frmMeanCoords.py
-frmSumLines.ui
-doRandPoints.py
-frmMeanCoords.ui
-frmVectorGrid.py
-doRegPoints.py
-frmPointDistance.py
-frmVectorGrid.ui
-doReProject.py
-frmPointDistance.ui
-frmVectorSplit.py
-doSelectByLocation.py
-frmPointsInPolygon.py
-frmVectorSplit.ui
-doSpatialJoin.py
-frmPointsInPolygon.ui
-frmVisual.py
-doSubsetSelect.py
-frmRandom.py
-doSumLines.py
-frmRandom.ui
-frmVisual.ui
-doVectorGrid.py
-frmRandPoints.py
-ftools_utils.py
-voronoi.py
-doVectorSplit.py
-frmRandPoints.ui
-)
-INSTALL(FILES ${TOOLS_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/fTools/tools)
+FILE(GLOB PY_FILES *.py)
+FILE(GLOB UI_FILES *.ui)
+
+PYQT4_WRAP_UI(PYUI_FILES ${UI_FILES})
+
+ADD_CUSTOM_TARGET(ftools_tools ALL DEPENDS ${PYUI_FILES})
+
+INSTALL(FILES ${PY_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/fTools/tools)
+INSTALL(FILES ${PYUI_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/fTools/tools)

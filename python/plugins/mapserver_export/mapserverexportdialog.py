@@ -18,7 +18,7 @@
  ***************************************************************************/
 """
 from PyQt4 import QtCore, QtGui 
-from ui_mapserverexport import Ui_QgsMapserverExportBase
+from ui_qgsmapserverexportbase import Ui_QgsMapserverExportBase
 # create the dialog for mapserver export
 class MapServerExportDialog(QtGui.QDialog): 
   def __init__(self): 

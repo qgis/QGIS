@@ -32,9 +32,8 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import resources
 from qgis.core import *
-import resources
+import resources_rc
 import os.path, sys
 # Set up current path, so that we know where to look for mudules
 currentPath = os.path.dirname( __file__ )

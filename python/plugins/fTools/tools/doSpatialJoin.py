@@ -36,7 +36,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import ftools_utils
 from qgis.core import *
-from frmSpatialJoin import Ui_Dialog
+from ui_frmSpatialJoin import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 

@@ -1,16 +1,13 @@
-#TODO: Need to configure cmake to run pyrcc4 and pyuic4 as required when the resource
-#      file or the ui change
-SET(INSTALLER_FILES
-__init__.py
-frmAbout.py
-ftools_help.xsl
-resources.qrc
-frmAbout.ui
-fTools.py
-doAbout.py
-ftools_help.xml
-resources.py
-)
+FILE(GLOB INSTALLER_FILES *.py)
+SET(INSTALLER_FILES ${INSTALLER_FILES} ftools_help.xsl ftools_help.xml)
+
+FILE(GLOB UI_FILES *.ui)
+PYQT4_WRAP_UI(PYUI_FILES ${UI_FILES})
+PYQT4_ADD_RESOURCES(PYRC_FILES resources.qrc)
+ADD_CUSTOM_TARGET(ftools ALL DEPENDS ${PYUI_FILES} ${PYRC_FILES})
+
+SET(INSTALLER_FILES ${INSTALLER_FILES} ${PYUI_FILES} ${PYRC_FILES})
+
 INSTALL(FILES ${INSTALLER_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/fTools)
 
 SUBDIRS(tools icons)

@@ -33,7 +33,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import ftools_utils
 from qgis.core import *
-from frmVectorGrid import Ui_Dialog
+from ui_frmVectorGrid import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 	def __init__(self, iface):

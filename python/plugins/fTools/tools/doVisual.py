@@ -1,7 +1,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from frmVisual import Ui_Dialog
+from ui_frmVisual import Ui_Dialog
 import ftools_utils
 import math
 

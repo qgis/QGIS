@@ -33,7 +33,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import random
 from qgis.core import *
-from frmSubsetSelect import Ui_Dialog
+from ui_frmSubsetSelect import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 

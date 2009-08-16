@@ -3,7 +3,7 @@ from PyQt4.QtGui import *
 import ftools_utils
 from qgis.core import *
 from math import *
-from frmMeanCoords import Ui_Dialog
+from ui_frmMeanCoords import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 	def __init__(self, iface, function):

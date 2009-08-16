@@ -7,7 +7,7 @@ In brief this module (and its main class) just provides easy way to create or ch
 """
 
 
-from OsmAddRelationDlg_ui import Ui_OsmAddRelationDlg
+from ui_OsmAddRelationDlg import Ui_OsmAddRelationDlg
 from map_tools.OsmIdentifyMT import OsmIdentifyMT
 
 from PyQt4.QtCore import *
