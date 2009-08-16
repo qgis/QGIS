@@ -12,7 +12,7 @@ OSM data loading can be canceled, in such case system returns to the same state 
 """
 
 
-from OsmLoadDlg_ui import Ui_OsmLoadDlg
+from ui_OsmLoadDlg import Ui_OsmLoadDlg
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *

@@ -34,7 +34,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import ftools_utils
 from qgis.core import *
-from frmPointsInPolygon import Ui_Dialog
+from ui_frmPointsInPolygon import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 

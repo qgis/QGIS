@@ -36,7 +36,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from qgis.core import *
-from frmPointDistance import Ui_Dialog
+from ui_frmPointDistance import Ui_Dialog
 import csv
 from math import *
 class Dialog(QDialog, Ui_Dialog):

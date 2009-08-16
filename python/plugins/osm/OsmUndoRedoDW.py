@@ -11,7 +11,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from OsmUndoRedoDW_ui import Ui_OsmUndoRedoDW
+from ui_OsmUndoRedoDW import Ui_OsmUndoRedoDW
 from OsmDatabaseManager import OsmDatabaseManager
 
 import sqlite3

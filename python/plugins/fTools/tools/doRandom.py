@@ -3,7 +3,7 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-from frmRandom import Ui_Dialog
+from ui_frmRandom import Ui_Dialog
 import random
 class Dialog(QDialog, Ui_Dialog):
     def __init__(self, iface):

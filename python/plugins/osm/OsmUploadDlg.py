@@ -15,7 +15,7 @@ Upload phases and their exact order:
 """
 
 
-from OsmUploadDlg_ui import Ui_OsmUploadDlg
+from ui_OsmUploadDlg import Ui_OsmUploadDlg
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
