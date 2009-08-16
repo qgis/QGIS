@@ -529,6 +529,7 @@ void QgsMapToolIdentify::removeLayer( QString layerID )
           delete mRubberBand;
           mRubberBand = 0;
         }
+        mLayer = 0;
       }
     }
   }
