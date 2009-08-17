@@ -269,7 +269,7 @@ namespace pal
     }
 
     // generate candidates for the feature part
-    LabelPosition** lPos;
+    LabelPosition** lPos = NULL;
     int nblp = ft_ptr->setPosition( context->scale, &lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates
 #ifdef _EXPORT_MAP_
                                                , *context->svgmap
