@@ -25,7 +25,7 @@ fi
 echo Updating python plugin translations
 for i in python/plugins/*/.; do
 	cd $i
-	pylupdate4 $(find . -name "*.py") -ts python-i18n.ts
+	pylupdate4 $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
 	perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 	rm python-i18n.ts
 	cd ../../..
