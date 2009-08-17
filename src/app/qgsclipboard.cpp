@@ -28,6 +28,7 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgslogger.h"
 
@@ -138,4 +139,29 @@ void QgsClipboard::insert( QgsFeature& feature )
 bool QgsClipboard::empty()
 {
   return mFeatureClipboard.empty();
+}
+
+QgsFeatureList QgsClipboard::transformedCopyOf(QgsCoordinateReferenceSystem destCRS)
+{
+
+  QgsFeatureList featureList = copyOf();
+  QgsCoordinateTransform ct( crs(), destCRS );
+
+  QgsDebugMsg( "transforming clipboard." );
+  for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
+  {
+    iter->geometry()->transform(ct);
+  }
+  
+  return featureList;
+}
+
+void QgsClipboard::setCRS( QgsCoordinateReferenceSystem crs )
+{
+  mCRS = crs;
+}
+
+QgsCoordinateReferenceSystem QgsClipboard::crs()
+{
+  return mCRS;
 }
