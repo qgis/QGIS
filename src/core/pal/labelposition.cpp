@@ -89,8 +89,9 @@ namespace pal
     x[3] = x1 + dx2;
     y[3] = y1 + dy2;
 
-    // upside down ?
-    if ( this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
+    // upside down ? (curved labels are always correct)
+    if ( feature->getLayer()->getArrangement() != P_CURVED &&
+         this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
     {
       tx = x[0];
       ty = y[0];
