@@ -115,6 +115,9 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
   }
   if ( mValid )
   {
+    // Always set crs
+    setCoordinateSystem();
+
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
     //
@@ -124,7 +127,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
       loadDefaultStyle( defaultLoadedFlag );
       if ( !defaultLoadedFlag )
       {
-        setCoordinateSystem();
         // add single symbol renderer as default
         QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
         setRenderer( renderer );
@@ -132,7 +134,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     }
     else  // Otherwise use some very basic defaults
     {
-      setCoordinateSystem();
       // add single symbol renderer as default
       QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
       setRenderer( renderer );
