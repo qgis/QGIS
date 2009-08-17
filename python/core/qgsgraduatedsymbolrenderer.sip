@@ -65,7 +65,7 @@ class QgsGraduatedSymbolRenderer : QgsRenderer
     
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, QgsVectorLayer& vl ) const;
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const;
     
     /** Returns true*/
     bool needsAttributes() const;
