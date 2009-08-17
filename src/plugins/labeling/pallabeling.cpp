@@ -541,8 +541,9 @@ void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const
 
   // shift by one as we have 2px border
   painter->save();
-  painter->translate( QPointF(outPt.x()+1, outPt.y()-1-lyr.fontBaseline) );
+  painter->translate( QPointF(outPt.x(), outPt.y()) );
   painter->rotate(-label->getAlpha() * 180 / M_PI );
+  painter->translate( QPointF(1, -1-lyr.fontBaseline) );
 
   if (drawBuffer)
   {
