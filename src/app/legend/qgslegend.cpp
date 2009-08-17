@@ -616,11 +616,12 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   doItemsLayout();
 
   // setup connections that will update the layer icons
-  if( dynamic_cast<QgsVectorLayer *>( layer ) ) 
+  if ( dynamic_cast<QgsVectorLayer *>( layer ) )
   {
+    QgsDebugMsg( "Connecting signals for updating icons, layer " + layer->name() );
     connect( layer, SIGNAL( editingStarted() ), llayer, SLOT( updateIcon() ) );
     connect( layer, SIGNAL( editingStopped() ), llayer, SLOT( updateIcon() ) );
-  } 
+  }
 }
 
 QgsLegendLayerFile* QgsLegend::currentLayerFile()
@@ -1216,6 +1217,14 @@ bool QgsLegend::readXML( QDomNode& legendnode )
 
           theLegendLayerFile->updateLegendItem();
           refreshLayerSymbology( theMapLayer->getLayerID() );
+
+          // setup connections that will update the layer icons
+          if ( dynamic_cast<QgsVectorLayer *>( theMapLayer ) )
+          {
+            QgsDebugMsg( "Connecting signals for updating icons, layer " + theMapLayer->name() );
+            connect( theMapLayer, SIGNAL( editingStarted() ), lastLayer, SLOT( updateIcon() ) );
+            connect( theMapLayer, SIGNAL( editingStopped() ), lastLayer, SLOT( updateIcon() ) );
+          }
         }
       }
       else if ( childelem.tagName() == "filegroup" )
