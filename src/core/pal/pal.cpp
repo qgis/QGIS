@@ -219,9 +219,7 @@ namespace pal
    */
   bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
   {
-
-    double min[2];
-    double max[2];
+    double amin[2], amax[2];
 
     FeatCallBackCtx *context = ( FeatCallBackCtx* ) ctx;
 
@@ -238,146 +236,63 @@ namespace pal
     // all feature which are obstacle will be inserted into obstacles
     if ( context->layer->obstacle )
     {
-      ft_ptr->getBoundingBox(min, max);
-      context->obstacles->Insert( min, max, ft_ptr );
+      ft_ptr->getBoundingBox(amin, amax);
+      context->obstacles->Insert( amin, amax, ft_ptr );
     }
 
+    // first do some checks whether to extract candidates or not
 
     // feature has to be labeled ?
-    if ( context->layer->toLabel && context->layer->isScaleValid( context->scale ) )
+    if ( !context->layer->toLabel )
+      return true;
+
+    // are we in a valid scale range for the layer?
+    if ( !context->layer->isScaleValid( context->scale ) )
+      return true;
+
+    // is the feature well defined ? // TODO Check epsilon
+    if ( ft_ptr->getLabelWidth() < 0.0000001 || ft_ptr->getLabelHeight() < 0.0000001 )
+      return true;
+
+    // OK, everything's fine, let's process the feature part
+
+    // Holes of the feature are obstacles
+    for ( int i = 0;i < ft_ptr->getNumSelfObstacles();i++ )
     {
-      // is the feature well defined ? // TODO Check epsilon
-      if ( ft_ptr->getLabelWidth() > 0.0000001 && ft_ptr->getLabelHeight() > 0.0000001 )
+      ft_ptr->getSelfObstacle(i)->getBoundingBox(amin, amax);
+      context->obstacles->Insert( amin, amax, ft_ptr->getSelfObstacle(i) );
+
+      if ( !ft_ptr->getSelfObstacle(i)->getHoleOf() )
       {
+        std::cout << "ERROR: SHOULD HAVE A PARENT!!!!!" << std::endl;
+      }
+    }
 
-        int i;
-        // Hole of the feature are obstacles
-        for ( i = 0;i < ft_ptr->getNumSelfObstacles();i++ )
-        {
-          ft_ptr->getSelfObstacle(i)->getBoundingBox(min, max);
-          context->obstacles->Insert( min, max, ft_ptr->getSelfObstacle(i) );
-
-          if ( !ft_ptr->getSelfObstacle(i)->getHoleOf() )
-          {
-            std::cout << "ERROR: SHOULD HAVE A PARENT!!!!!" << std::endl;
-          }
-        }
-
-
-        LinkedList<Feats*> *feats = new LinkedList<Feats*> ( ptrFeatsCompare );
-
-          QTime t;
-          t.start();
-
-        if (( ft_ptr->getGeosType() == GEOS_LINESTRING )
-            || ft_ptr->getGeosType() == GEOS_POLYGON )
-        {
-
-          double bbx[4], bby[4];
-
-          bbx[0] = context->bbox_min[0];   bbx[1] = context->bbox_max[0];
-          bbx[2] = context->bbox_max[0];   bbx[3] = context->bbox_min[0];
-
-          bby[0] = context->bbox_min[1];   bby[1] = context->bbox_min[1];
-          bby[2] = context->bbox_max[1];   bby[3] = context->bbox_max[1];
-
-          LinkedList<PointSet*> *shapes = new LinkedList<PointSet*> ( ptrPSetCompare );
-          bool outside, inside;
-
-          PointSet *shape = ft_ptr->createProblemSpecificPointSet( bbx, bby, &outside, &inside );
-
-
-          if ( inside )
-          {
-            // no extra treatment required
-            shapes->push_back( shape );
-          }
-          else
-          {
-            // feature isn't completly in the math
-            if ( ft_ptr->getGeosType() == GEOS_LINESTRING )
-              PointSet::reduceLine( shape, shapes, bbx, bby );
-            else
-            {
-              PointSet::reducePolygon( shape, shapes, bbx, bby );
-            }
-          }
-
-          while ( shapes->size() > 0 )
-          {
-            shape = shapes->pop_front();
-            Feats *ft = new Feats();
-            ft->feature = ft_ptr;
-            ft->shape = shape;
-            feats->push_back( ft );
-
-#ifdef _EXPORT_MAP_
-            if ( !svged )
-            {
-              toSVGPath( shape->nbPoints, shape->type, shape->x, shape->y,
-                         dpi , context->scale,
-                         convert2pt( context->bbox_min[0], context->scale, dpi ),
-                         convert2pt( context->bbox_max[1], context->scale, dpi ),
-                         context->layer->name, ft_ptr->uid, *context->svgmap );
-            }
-#endif
-          }
-          delete shapes;
-        }
-        else
-        {
-          // Feat is a point
-          Feats *ft = new Feats();
-          ft->feature = ft_ptr;
-          ft->shape = NULL;
-          feats->push_back( ft );
-        }
-
-        // for earch feature part extracted : generate candidates
-        while ( feats->size() > 0 )
-        {
-          Feats *ft = feats->pop_front();
-
-#ifdef _DEBUG_
-          std::cout << "Compute candidates for feat " <<  ft->feature->layer->name << "/" << ft->feature->uid << std::endl;
-#endif
-          ft->nblp = ft->feature->setPosition( context->scale, & ( ft->lPos ), context->bbox_min, context->bbox_max, ft->shape, context->candidates
+    // generate candidates for the feature part
+    LabelPosition** lPos;
+    int nblp = ft_ptr->setPosition( context->scale, &lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates
 #ifdef _EXPORT_MAP_
                                                , *context->svgmap
 #endif
                                              );
 
-          delete ft->shape;
-          ft->shape = NULL;
-
-          if ( ft->nblp > 0 )
-          {
-            // valid features are added to fFeats
-            ft->priority = context->priority;
-            context->fFeats->push_back( ft );
-#ifdef _DEBUG_
-            std::cout << ft->nblp << " labelPositions for feature : " << ft->feature->layer->name << "/" << ft->feature->uid << std::endl;
-#endif
-          }
-          else
-          {
-            // Others are deleted
-#ifdef _VERBOSE_
-            std::cout << "Unable to generate labelPosition for feature : " << ft->feature->layer->name << "/" << ft->feature->uid << std::endl;
-#endif
-            delete[] ft->lPos;
-            delete ft;
-          }
-        }
-        delete feats;
-      }
-      else   // check labelsize
-      {
-#ifdef _VERBOSE_
-        std::cerr << "Feature " <<  ft_ptr->layer->name << "/" << ft_ptr->uid << " is skipped (label size = 0)" << std::endl;
-#endif
-      }
+    if ( nblp > 0 )
+    {
+      // valid features are added to fFeats
+      Feats *ft = new Feats();
+      ft->feature = ft_ptr;
+      ft->shape = NULL;
+      ft->nblp = nblp;
+      ft->lPos = lPos;
+      ft->priority = context->priority;
+      context->fFeats->push_back( ft );
     }
+    else
+    {
+      // Others are deleted
+      delete[] lPos;
+    }
+
     return true;
   }
 

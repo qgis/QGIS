@@ -102,7 +102,6 @@ namespace pal
       double *x;
       double *y;   // points order is counterclockwise
 
-      int *status;   // -1 means inside the bbox, +1 means outside and 0 is either in either out
       int *cHull;
       int cHullSize;
 
@@ -127,31 +126,11 @@ public:
       PointSet( int nbPoints, double *x, double *y );
       virtual ~PointSet();
 
-      int getPath( int start, int stop, int *path_val );
-
-      PointSet *extractPath( int path, int nbPtPath, int nbBboxPt, double bbx[4], double bby[4], Crossing *start, Crossing *stop, int startPt );
-
       PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
-      PointSet *createProblemSpecificPointSet( double bbx[4], double bby[4], bool *outside, bool *inside );
+      PointSet* createProblemSpecificPointSet( double bbmin[2], double bbmax[2], bool *inside );
 
       CHullBox * compute_chull_bbox();
-
-      /*
-       *  \brief Take each line in shape_toProcess and only keep inside bbox line parts
-       */
-      static void reduceLine( PointSet *line,
-                              LinkedList<PointSet*> *shapes_final,
-                              double bbx[4], double bby[4] );
-
-
-      /**
-       * \brief takes shapes from shapes_toProcess, compute intersection with bbox
-       * and puts new shapes into shapes_final
-       */
-      static void reducePolygon( PointSet* shape_toProcess,
-                                 LinkedList<PointSet*> *shapes_final,
-                                 double bbx[4], double bby[4] );
 
 
       /*
