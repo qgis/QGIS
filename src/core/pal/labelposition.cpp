@@ -118,6 +118,27 @@ namespace pal
     }
   }
 
+  LabelPosition::LabelPosition( const LabelPosition& other )
+  {
+    id = other.id;
+    cost = other.cost;
+    feature = other.feature;
+    probFeat = other.probFeat;
+    nbOverlap = other.nbOverlap;
+
+    memcpy(x, other.x, sizeof(double)*4);
+    memcpy(y, other.y, sizeof(double)*4);
+    alpha = other.alpha;
+    w = other.w;
+    h = other.h;
+
+    if (other.nextPart)
+      nextPart = new LabelPosition(*other.nextPart);
+    else
+      nextPart = NULL;
+    partId = other.partId;
+  }
+
   bool LabelPosition::isIn( double *bbox )
   {
     int i;
@@ -215,6 +236,19 @@ namespace pal
     }
     return false; // no conflict found
   }
+
+  void LabelPosition::offsetPosition( double xOffset, double yOffset )
+  {
+    for (int i=0; i < 4; i++)
+    {
+      x[i] += xOffset;
+      y[i] += yOffset;
+    }
+
+    if (nextPart)
+      nextPart->offsetPosition(xOffset, yOffset);
+  }
+
 
   int LabelPosition::getId() const
   {

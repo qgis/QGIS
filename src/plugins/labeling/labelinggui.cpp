@@ -84,15 +84,6 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* pare
     case LayerSettings::Line:
       radLineParallel->setChecked(true);
       radPolygonPerimeter->setChecked(true);
-
-      spinDistLine->setValue(lyr.dist);
-      chkLineAbove->setChecked( lyr.placementFlags & LayerSettings::AboveLine );
-      chkLineBelow->setChecked( lyr.placementFlags & LayerSettings::BelowLine );
-      chkLineOn->setChecked( lyr.placementFlags & LayerSettings::OnLine );
-      if ( lyr.placementFlags & LayerSettings::MapOrientation )
-        radOrientationMap->setChecked(true);
-      else
-        radOrientationLine->setChecked(true);
       break;
     case LayerSettings::Curved:
       radLineCurved->setChecked(true);
@@ -106,6 +97,18 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* pare
       break;
     default:
       Q_ASSERT(0 && "NOOO!");
+  }
+
+  if (lyr.placement == LayerSettings::Line || lyr.placement == LayerSettings::Curved)
+  {
+    spinDistLine->setValue(lyr.dist);
+    chkLineAbove->setChecked( lyr.placementFlags & LayerSettings::AboveLine );
+    chkLineBelow->setChecked( lyr.placementFlags & LayerSettings::BelowLine );
+    chkLineOn->setChecked( lyr.placementFlags & LayerSettings::OnLine );
+    if ( lyr.placementFlags & LayerSettings::MapOrientation )
+      radOrientationMap->setChecked(true);
+    else
+      radOrientationLine->setChecked(true);
   }
 
   cboFieldName->setCurrentIndex( cboFieldName->findText(lyr.fieldName) );
@@ -173,9 +176,11 @@ LayerSettings LabelingGui::layerSettings()
     lyr.placement = LayerSettings::OverPoint;
   }
   else if ( (stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked())
-    || (stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked()) )
+    || (stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked())
+    || (stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked()) )
   {
-    lyr.placement = LayerSettings::Line;
+    bool curved = (stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked());
+    lyr.placement = (curved ? LayerSettings::Curved : LayerSettings::Line);
     lyr.dist = spinDistLine->value();
     if (chkLineAbove->isChecked())
       lyr.placementFlags |= LayerSettings::AboveLine;
@@ -186,10 +191,6 @@ LayerSettings LabelingGui::layerSettings()
 
     if (radOrientationMap->isChecked())
       lyr.placementFlags |= LayerSettings::MapOrientation;
-  }
-  else if ( stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked() )
-  {
-    lyr.placement = LayerSettings::Curved;
   }
   else if ( (stackedPlacement->currentWidget() == pageLine && radLineHorizontal->isChecked())
     || (stackedPlacement->currentWidget() == pagePolygon && radPolygonHorizontal->isChecked()) )
@@ -314,7 +315,8 @@ void LabelingGui::updateOptions()
     stackedOptions->setCurrentWidget(pageOptionsPoint);
   }
   else if ( (stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked())
-    || (stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked()) )
+    || (stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked())
+    || (stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked()) )
   {
     stackedOptions->setCurrentWidget(pageOptionsLine);
   }

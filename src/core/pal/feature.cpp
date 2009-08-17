@@ -840,6 +840,13 @@ void FeaturePart::removeDuplicatePoints()
     return slp;
   }
 
+  static LabelPosition* _createCurvedCandidate(LabelPosition* lp, double angle, double dist)
+  {
+    LabelPosition* newLp = new LabelPosition(*lp);
+    newLp->offsetPosition( dist*cos(angle+M_PI/2), dist*sin(angle+M_PI/2) );
+    return newLp;
+  }
+
   int FeaturePart::setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape )
   {
     // label info must be present
@@ -865,9 +872,12 @@ void FeaturePart::removeDuplicatePoints()
     if (total_distance == 0)
       return 0;
 
-    int nbp = 0;
     LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
     double delta = max( f->labelInfo->label_height, total_distance/10.0 );
+
+    unsigned long flags = f->layer->getArrangementFlags();
+    if ( flags == 0 )
+      flags = FLAG_ON_LINE; // default flag
 
     // generate curved labels
     std::cerr << "------" << std::endl;
@@ -880,6 +890,7 @@ void FeaturePart::removeDuplicatePoints()
         // evaluate cost
         double angle_diff = 0, angle_last, diff;
         LabelPosition* tmp = slp;
+        double sin_avg=0, cos_avg=0;
         while (tmp)
         {
           if (tmp != slp) // not first?
@@ -890,9 +901,12 @@ void FeaturePart::removeDuplicatePoints()
             angle_diff += diff;
           }
 
+          sin_avg += sin(tmp->getAlpha());
+          cos_avg += cos(tmp->getAlpha());
           angle_last = tmp->getAlpha();
           tmp = tmp->getNextPart();
         }
+
         double angle_diff_avg = angle_diff / (f->labelInfo->char_num-1); // <0, pi> but pi/8 is much already
         double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
         if (cost < 0.0001) cost = 0.0001;
@@ -904,12 +918,24 @@ void FeaturePart::removeDuplicatePoints()
         //std::cerr << "cost " << angle_diff << " vs " << costCenter << std::endl;
         slp->setCost(cost);
 
-        positions->push_back(slp);
-        nbp++;
+
+        // average angle is calculated with respect to periodicity of angles
+        double angle_avg = atan2( sin_avg / f->labelInfo->char_num, cos_avg / f->labelInfo->char_num);
+        // displacement
+        if (flags & FLAG_ABOVE_LINE)
+          positions->push_back( _createCurvedCandidate(slp, angle_avg, f->distlabel) );
+        if (flags & FLAG_ON_LINE)
+          positions->push_back( _createCurvedCandidate(slp, angle_avg, -f->labelInfo->label_height/2) );
+        if (flags & FLAG_BELOW_LINE)
+          positions->push_back( _createCurvedCandidate(slp, angle_avg, -f->labelInfo->label_height - f->distlabel) );
+
+        // delete original candidate
+        delete slp;
       }
     }
 
 
+    int nbp = positions->size();
     ( *lPos ) = new LabelPosition*[nbp];
     for (int i = 0; i < nbp; i++)
     {

@@ -95,6 +95,9 @@ namespace pal
                      double alpha, double cost,
                      FeaturePart *feature );
 
+      /** copy constructor */
+      LabelPosition( const LabelPosition& other );
+
       ~LabelPosition() { delete nextPart; }
 
 
@@ -125,6 +128,8 @@ namespace pal
       /** returns number of intersections with polygon (testing border and center) */
       int getNumPointsInPolygon( int npol, double *xp, double *yp );
 
+      /** shift the label by specified offset */
+      void offsetPosition( double xOffset, double yOffset );
 
 
       /** \brief return id
