@@ -15,6 +15,7 @@ set LIB_DIR=%O4W_ROOT%
 
 set FLEX=%PROGRAMFILES%\GnuWin32\bin\flex.exe
 set BISON=%PROGRAMFILES%\GnuWin32\bin\bison.exe
+set PYUIC4=%O4W_ROOT%/bin/pyuic4.bat
 
 set VERSION=%1
 set PACKAGE=%2
@@ -77,6 +78,7 @@ cmake -G "Visual Studio 9 2008" ^
 	-D CMAKE_BUILDCONFIGURATION_TYPES=%BUILDCONF% ^
 	-D FLEX_EXECUTABLE=%FLEX% ^
 	-D BISON_EXECUTABLE=%BISON% ^
+	-D PYUIC4_PROGRAM=%PYUIC4% ^
 	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal-16/include ^
 	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-16/lib/gdal_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
