@@ -32,7 +32,7 @@ extern "C"
 }
 
 // if defined shows all information about transform to stdout
-#undef COORDINATE_TRANSFORM_VERBOSE
+// #define COORDINATE_TRANSFORM_VERBOSE
 
 
 
@@ -106,7 +106,6 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& t
 }
 void QgsCoordinateTransform::setDestCRS( const QgsCoordinateReferenceSystem& theCRS )
 {
-  QgsDebugMsg( "entered." );
   mDestCRS = theCRS;
   initialise();
 }
@@ -115,7 +114,6 @@ void QgsCoordinateTransform::setDestCRS( const QgsCoordinateReferenceSystem& the
 void QgsCoordinateTransform::setDestCRSID( long theCRSID )
 {
   //!todo Add some logic here to determine if the srsid is a system or user one
-  QgsDebugMsg( "entered." );
   mDestCRS.createFromSrsId( theCRSID );
   initialise();
 }
@@ -151,6 +149,11 @@ void QgsCoordinateTransform::initialise()
   // init the projections (destination and source)
   mDestinationProjection = pj_init_plus( mDestCRS.toProj4().toUtf8() );
   mSourceProjection = pj_init_plus( mSourceCRS.toProj4().toUtf8() );
+
+#ifdef COORDINATE_TRANSFORM_VERBOSE
+  QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
+  QgsDebugMsg( "To proj   : " + mDestCRS.toProj4() );
+#endif
 
   mInitialisedFlag = true;
   if ( mDestinationProjection == NULL )
@@ -197,6 +200,7 @@ void QgsCoordinateTransform::initialise()
   {
     // Transform must take place
     mShortCircuit = false;
+    QgsDebugMsg( "Source/Dest CRS UNequal, shortcircuit is NOt set." );
   }
 
 }
@@ -227,9 +231,6 @@ QgsPoint QgsCoordinateTransform::transform( const QgsPoint thePoint, TransformDi
     throw cse;
   }
 
-#ifdef QGISDEBUG
-// QgsDebugMsg(QString("Point projection...X : %1-->%2, Y: %3 -->%4").arg(thePoint.x()).arg(x).arg(thePoint.y()).arg(y));
-#endif
   return QgsPoint( x, y );
 }
 
@@ -273,7 +274,7 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle theRect, Tran
     throw cse;
   }
 
-#ifdef QGISDEBUG
+#ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "Rect projection..." );
   QgsLogger::debug( "Xmin : ", theRect.xMinimum(), 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "-->", x1, 1, __FILE__, __FUNCTION__, __LINE__ );
@@ -428,11 +429,12 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
     return;
   }
 
-#ifdef QGISDEBUG
-  //double xorg = x;
-  //double yorg = y;
-// QgsDebugMsg(QString("[[[[[[Number of points to transform: %1]]]]]]").arg(numPoints));
+#ifdef COORDINATE_TRANSFORM_VERBOSE
+  double xorg = *x;
+  double yorg = *y;
+  QgsDebugMsg( QString( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ) );
 #endif
+
   // use proj4 to do the transform
   QString dir;
   // if the source/destination projection is lat/long, convert the points to radians
@@ -451,24 +453,11 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   int projResult;
   if ( direction == ReverseTransform )
   {
-#if 0
-    QgsDebugMsg( "!!!! ReverseTransform PROJ4 TRANSFORM !!!!" );
-    QgsDebugMsg( QString( "     numPoint: %1" ).arg( numPoints ) );
-    QgsDebugMsg( QString( "     x       : %1" ).arg( x ) );
-    QgsDebugMsg( QString( "     y       : %1" ).arg( y ) );
-#endif
     projResult = pj_transform( mDestinationProjection, mSourceProjection, numPoints, 0, x, y, z );
     dir = "inverse";
   }
   else
   {
-#if 0
-    QgsDebugMsg( "!!!! ForwardTransform PROJ4 TRANSFORM !!!!" );
-    QgsDebugMsg( QString( "     numPoint: %1" ).arg( numPoints ) );
-    QgsDebugMsg( QString( "     x       : %1" ).arg( x ) );
-    QgsDebugMsg( QString( "     y       : %1" ).arg( y ) );
-    QgsDebugMsg( QString( "     z       : %1" ).arg( z ) );
-#endif
     assert( mSourceProjection != 0 );
     assert( mDestinationProjection != 0 );
     projResult = pj_transform( mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z );
@@ -503,6 +492,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
     QgsLogger::warning( "Throwing exception " + QString( __FILE__ ) + QString::number( __LINE__ ) );
     throw  QgsCsException( msg );
   }
+
   // if the result is lat/long, convert the results from radians back
   // to degrees
   if (( pj_is_latlong( mDestinationProjection ) && ( direction == ForwardTransform ) )
@@ -515,8 +505,10 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
       z[i] *= RAD_TO_DEG;
     }
   }
-#ifdef QGISDEBUG
-// QgsDebugMsg(QString("[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]").arg(xorg).arg(yorg).arg(x).arg(y));
+#ifdef COORDINATE_TRANSFORM_VERBOSE
+  QgsDebugMsg( QString( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
+               .arg( xorg, 0, 'g', 15 ).arg( yorg, 0, 'g', 15 )
+               .arg( *x, 0, 'g', 15 ).arg( *y, 0, 'g', 15 ) );
 #endif
 }
 
