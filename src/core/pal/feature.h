@@ -54,7 +54,7 @@ namespace pal
   public:
     typedef struct
     {
-        ushort chr;
+        unsigned short chr;
         double width;
     } CharacterInfo;
 
