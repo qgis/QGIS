@@ -3,7 +3,7 @@ typedef QList<QgsSymbolV2*> QgsSymbolV2List;
 
 ///////////////
 
-
+/*
 class QgsSymbolV2LevelItem
 {
 %TypeHeaderCode
@@ -21,6 +21,7 @@ typedef QList< QgsSymbolV2LevelItem > QgsSymbolV2Level;
 
 // this is a list of levels
 typedef QList< QgsSymbolV2Level > QgsSymbolV2LevelOrder;
+*/
 
 ///////////////
 
