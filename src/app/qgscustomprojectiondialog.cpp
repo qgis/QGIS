@@ -927,9 +927,9 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   {
     QString tmp;
 
-    tmp = tmp = QLocale::system().toString( northing, 'f', 4 );
+    tmp = QLocale::system().toString( northing, 'f', 4 );
     projectedX->setText( tmp );
-    tmp = tmp = QLocale::system().toString( easthing, 'f', 4 );
+    tmp = QLocale::system().toString( easthing, 'f', 4 );
     projectedY->setText( tmp );
   }
 
