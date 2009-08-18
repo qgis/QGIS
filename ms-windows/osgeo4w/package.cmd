@@ -1,6 +1,13 @@
 @echo off
 set GRASS_VERSION=6.4.0svn
 
+set BUILDDIR=%CD%\build
+REM set BUILDDIR=%TEMP%\qgis_unstable
+set LOG=%BUILDDIR%\build.log
+
+if not exist "%BUILDDIR%" mkdir %BUILDDIR%
+if not exist "%BUILDDIR%" goto error
+
 set VERSION=%1
 set PACKAGE=%2
 if "%VERSION%"=="" goto error
@@ -17,9 +24,6 @@ if not exist "%OSGEO4W_ROOT%\bin\o4w_env.bat" goto error
 
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 
-set BUILDDIR=%CD%\build
-REM set BUILDDIR=%TEMP%\qgis_unstable
-
 set O4W_ROOT=%OSGEO4W_ROOT:\=/%
 set LIB_DIR=%O4W_ROOT%
 
@@ -33,8 +37,6 @@ PROMPT qgis%VERSION%$g
 set BUILDCONF=RelWithDebInfo
 REM set BUILDCONF=Release
 
-if not exist "%BUILDDIR%" mkdir %BUILDDIR%
-if not exist "%BUILDDIR%" goto error
 
 cd ..\..
 set SRCDIR=%CD%
@@ -67,8 +69,6 @@ if exist build.tmp del build.tmp
 goto error
 
 :build
-set LOG=%BUILDDIR%\build.log
-
 echo Logging to %LOG%
 echo BEGIN: %DATE% %TIME%>>%LOG% 2>&1
 if errorlevel 1 goto error
@@ -81,11 +81,11 @@ echo CMAKE: %DATE% %TIME%>>%LOG% 2>&1
 if errorlevel 1 goto error
 
 cmake -G "Visual Studio 9 2008" ^
-        -D PEDANTIC=TRUE ^
-        -D WITH_SPATIALITE=TRUE ^
-        -D WITH_INTERNAL_SPATIALITE=TRUE ^
-	-D CMAKE_CONFIGURATION_TYPE=%BUILDCONF% ^
-	-D CMAKE_BUILDCONFIGURATION_TYPES=%BUILDCONF% ^
+	-D PEDANTIC=TRUE ^
+	-D WITH_SPATIALITE=TRUE ^
+	-D WITH_INTERNAL_SPATIALITE=TRUE ^
+	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
+	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
 	-D GDAL_INCLUDE_DIR=%O4W_ROOT%/apps/gdal-16/include ^
 	-D GDAL_LIBRARY=%O4W_ROOT%/apps/gdal-16/lib/gdal_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
