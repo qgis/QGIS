@@ -35,9 +35,19 @@ QgsProjectVersion::QgsProjectVersion( QString string )
 
   QStringList fileVersionParts = pre.section( "-", 0 ).split( "." );
 
+  mMinor = 0;
+  mSub   = 0;
+  mName  = "";
   mMajor = fileVersionParts.at( 0 ).toInt();
-  mMinor = fileVersionParts.at( 1 ).toInt();
-  mSub   = fileVersionParts.at( 2 ).toInt();
+
+  if ( fileVersionParts.size() > 1 )
+  {
+    mMinor = fileVersionParts.at( 1 ).toInt();
+  }
+  if ( fileVersionParts.size() > 2 )
+  {
+    mSub   = fileVersionParts.at( 2 ).toInt();
+  }
   mName  = string.section( '-', 1 );
 
   QgsDebugMsg( QString( "Version is set to " ) + text() );
