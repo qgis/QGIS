@@ -26,7 +26,6 @@ SET (BINDINGS_LIBS ${BINDINGS_CORE_LIB} ${BINDINGS_GUI_LIB})
 SET (BINDINGS_CORE_MAKEFILE ${CMAKE_CURRENT_BINARY_DIR}/core/Makefile)
 SET (BINDINGS_GUI_MAKEFILE  ${CMAKE_CURRENT_BINARY_DIR}/gui/Makefile)
 
-
 # 'python' target will force to build bindings libs for core and gui
 ADD_CUSTOM_TARGET (python ALL DEPENDS ${BINDINGS_CORE_LIB} ${BINDINGS_GUI_LIB})
 
@@ -35,13 +34,6 @@ ADD_DEPENDENCIES (python qgis_core qgis_gui)
 
 FILE(GLOB CORE_SIP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/core/*.sip")
 FILE(GLOB GUI_SIP_FILES  "${CMAKE_CURRENT_SOURCE_DIR}/gui/*.sip")
-
-# Extract GDAL library path and name for configure.py.in
-STRING(REGEX REPLACE "^(.*)/.*$" "\\1" GDAL_LIB_PATH ${GDAL_LIBRARY})
-STRING(REGEX REPLACE "^.*/(lib)?(.*)\\.[^.]+$" "\\2" GDAL_LIB_NAME ${GDAL_LIBRARY})
-# Extract GEOS library path and name for configure.py.in
-STRING(REGEX REPLACE "^(.*)/.*$" "\\1" GEOS_LIB_PATH ${GEOS_LIBRARY})
-STRING(REGEX REPLACE "^.*/(lib)?(.*)\\.[^.]+$" "\\2" GEOS_LIB_NAME ${GEOS_LIBRARY})
 
 # Step 1: during configuration
 # create file configure.py from configure.py.in
