@@ -1,8 +1,12 @@
 qgis (1.2.0) UNRELEASED; urgency=low
 
   * new development version after 1.1 branch
+  * add new build dependency to pyqt4-dev-tools
+  * update SONAMEs to 1.2.0
+  * add python dependency to qgis-plugin-grass-common
+  * include osm provider and evis plugin
 
- -- Juergen E. Fischer <jef@norbit.de>  Sun, 03 May 2009 22:52:09 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 18 Aug 2009 08:20:18 +0200
 
 qgis (1.1.0-5) UNRELEASED; urgency=low
 
