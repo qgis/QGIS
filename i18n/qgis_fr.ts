@@ -1417,65 +1417,66 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer une nouvelle sélection</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter à la sélection</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer de la sélection</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Sélection par localisation</translation>
+        <translation>Sélection par localisation</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection d&apos;entités dans :</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>qui intersecte les entités dans :</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la sélection avec :</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier une couche en entrée</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier la couche de sélection</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Matrice des distances</translation>
+        <translation>Matrice des distances</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice crée :
+</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Points dans un polygones</translation>
+        <translation>Points dans un polygone</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier shapefile créé :</translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche vecteur non valide</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Total des longueurs de ligne</translation>
+        <translation>Total des longueurs de ligne</translation>
     </message>
 </context>
 <context>
@@ -1586,7 +1587,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="247"/>
         <source>Replace current data (current layer will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacer les données actuelles (la couche actuelle sera effacée)</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="283"/>
@@ -1705,7 +1706,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="128"/>
         <source>Replace current data (current layers will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacer les données actuelles (les couches actuelles seront effacées)</translation>
     </message>
 </context>
 <context>
@@ -1884,7 +1885,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation type="unfinished"></translation>
+        <translation>La propriété &apos;%1&apos; ne peut être ajoutée deux fois.</translation>
     </message>
     <message>
         <source>Property with key &apos;%1&apos; already exists for this feature.</source>
@@ -2724,7 +2725,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="91"/>
         <source>No Data Providers</source>
-        <translation>Aucun fournisseur de données</translation>
+        <translation>Aucun service fournisseur de données</translation>
     </message>
     <message>
         <source>No Data Provider Plugins</source>
@@ -3980,7 +3981,7 @@ Le support Python va être désactivé.</translation>
         <source>No QGIS data provider plugins found in:
 %1
 </source>
-        <translation>Aucun fournisseur de données QGIS trouvé dans : %1</translation>
+        <translation>Aucun service fournisseur de données QGIS trouvé dans : %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="287"/>
@@ -4117,7 +4118,7 @@ Le support Python va être désactivé.</translation>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1171"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
-        <translation type="unfinished"></translation>
+        <translation>SCR généré</translation>
     </message>
 </context>
 <context>
@@ -5486,7 +5487,7 @@ Compilé avec Qt </translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4122"/>
         <source>Provider does not support deletion</source>
-        <translation>Le fournisseur ne supporte pas l&apos;effacement</translation>
+        <translation>Le service fournisseur ne supporte pas l&apos;effacement</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4123"/>
@@ -6242,17 +6243,17 @@ Erreurs : %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2011"/>
         <source>Whats new in Version 1.2.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>Quoi de neuf dans la version 1.2.0 ?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2014"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette version fait partie de notre série de version &apos;instable&apos;. C&apos;est à dire qu&apos;elle contient de nouvelles fonctionnalités et étend l&apos;interface de programmation par rapport à QGIS 1.0.x et QGIS 1.1.0. Si la stabilité et le support à long terme vous sont plus important que nos nouvelles (et non-éprouvées) fonctions, nous vous recommandons alors d&apos;utiliser une version stable de la série des 1.0.x.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2022"/>
         <source>This release includes over 140 bug fixes and enhancements over the QGIS 1.1.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette version inclue plus de 140 résolutions de problèmes et autres améliorations par rapport à QGIS 1.1.0. Nous avons également ajouté les fonctionnalités suivantes :</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2026"/>
@@ -6356,7 +6357,70 @@ Grass:
 
 There is a new GRASS shell. Also there have been many cleanups and consistency
 updates.</source>
-        <translation type="unfinished"></translation>
+        <translation>Édition :
+
+Les fonctionnalités d&apos;édition de QGIS ont été améliorées dans cette version, elles incluent de nouveaux outils d&apos;édition vectorielle :
+- supprimer une partie d&apos;une entité multipartite
+- supprimer un trou d&apos;un polygone
+- simplifier une entité
+- ajout d&apos;un nouvel outil de noeud (and la barre de numérisation avancée)
+- nouvelle fonctionnalité pour la fusion d&apos;entités
+- ajout d&apos;une option &apos;annuler/refaire&apos; pour l&apos;édition des couches vectorielles
+- ajout d&apos;une option pour afficher uniquement les marqueurs des entités sélectionnées en mode édition
+- changement de l&apos;icône de couche pour refléter la capacité d&apos;édition
+
+De plus, il y a des actions d&apos;annulation/répétition dans le menu d&apos;édition, dans la barre de numérisation avancée et un nouveau bouton affichant une pile d&apos;annulations possibles pour la couche active.
+
+À propos de l&apos;outil de noeuds : il rassemble un outil pour éditer les chemins par noeuds qui sont présents dans tous les éditeurs vecteurs. Comment ça marche ? Cliquez sur une entité, ses noeuds seront marqués par de petits rectangles. Clqiuez sur un noeud pour le déplacer. Double-cliquer un segment rajoutera un nouveau noeud. La touche Supprimer effacera le noeud actif. Il est possible de sélectionner plus de noeuds actifs à la fois en cliquant et déplaçant un rectangle. On peut sélectionner les noeuds adjacents d&apos;un segment en cliquant sur le segment. Il est possible d&apos;ajouter et de supprimer des noeuds actifs en utilisant la touche Ctrl lorsque vous cliquez sur noeud ou étirez un rectangle.
+
+Nous vous recommandons de désactiver les marqueurs de sommets dans les options de QGIS lorsque vous travaillez avec cet outil pour des raisons de performances graphiques.
+
+Raccourcis clavier :
+
+On peut maintenant configurer les raccourcis des actions directement depuis la fenêtre principale de QGIS, en allant dans Préférences-&gt;Configurer les raccourcis.
+
+Composition de cartes:
+
+Il est possible de verrouiller la position des éléments avec un clic droit. La hauteur et la largeur de la carte seront fixées si l&apos;utilisateur spécifie une emprise pour le canevas de la carte. La date peut être affichée dans les étiquettes en saisissant (d &apos;Juin&apos; yyyy) ou similaires. Les couches actuelles peuvent être conservées dans le compositeur de carte même si d&apos;autres couches sont ajoutées. L&apos;export PDF est disponible.
+
+Tables attributaires :
+
+Une recherche peut être faite uniquement sur les enregistrements sélectionnés. Les performances générales ont été améliorées. Définir la longueur et la précision d&apos;un champ lors de l&apos;ajout d&apos;attributs est faisable. La prise en compte des attributs d&apos;un service WFS est perfectionnée.
+
+Les alias d&apos;attributs des couches vecteurs sont disponibles, ils sont affichés à la place des noms de champs originaux dans l&apos;outil d&apos;identification et la table attributaire. Il y a une nouvelle interface pour paramétrer les fenêtres d&apos;édition des attributs de couche. Un nouveau dialogue permet de charger une palette de valeur depuis une couche (depuis une table non spatialisée également !). 
+
+Extensions :
+
+- l&apos;ordre des couches dans la liste du dialogue WMS peut être modifié
+- l&apos;extension eVis, version 1.1.0, a été intégrée au projet QGIS et inclus de manière standard. Plus d&apos;information à http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php
+- l&apos;extension d&apos;interpolation peut utiliser les couches de lignes comme contraintes pour la triangulation. Vous pouvez aussi enregistrer la triangulation dans un fichier shapefile
+- un service et une extension OpenStreetMap ont été ajoutés
+
+Gestion de projet :
+
+QGIS inclut le support optionnel des chemins relatifs pour les sources de fichiers.
+
+Service PostGIS &amp; PostgreSQL :
+
+Vous pouvez sélectionner le mode de connexion SLL quand vous ajoutez une nouvelle base de données. Désactiver le SSL améliore les performances de chargement de données QGIS quand des conditions de sécurité ne sont pas requises. Le support de types natifs et de paramètres a été étendu.
+
+Amélioration de la symbologie :
+
+- actualisation des symboles
+- ajout du support pour les noms symboles définis par les données
+- ajout du support pour les marqueurs de symbole de police (définit par les données - il n&apos;y a pas encore d&apos;interface)
+- la taille des symboles peut s&apos;exprimer en unité de la carte (ie. les symboles ont une taille indépendante de l&apos;échelle de la carte)
+
+Options de la ligne de commande :
+
+- support des options de ligne de commande sous Windows
+- permet de fixer une taille de capture d&apos;écran
+- suppression possible de l&apos;écran d&apos;accueil
+- permet de capturer les décorations de fenêtre des extensions
+
+Grass :
+
+Il y a un nouveau terminal GRASS ainsi que beaucoup de nettoyage et d&apos;amélioration de la consistance.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2476"/>
@@ -6776,7 +6840,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="190"/>
         <source>Providers</source>
-        <translation>Fournisseurs</translation>
+        <translation>Services fournisseurs</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;/p&gt;&lt;p align=&apos;center&apos; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -6841,7 +6905,7 @@ You can change this option later by selection Options from the Settings menu (He
     <message>
         <location filename="../src/app/qgsabout.cpp" line="273"/>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation>Extensions de fournisseurs de données disponibles pour QGIS</translation>
+        <translation>Extensions de services fournisseurs de données disponibles pour QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="276"/>
@@ -7124,7 +7188,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="66"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="82"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrez l&apos;action ici. Cela peut être n&apos;importe quel programme, script ou commande disponible sur votre système. Quand l&apos;action est invoquée, tout caractère débutant par un % et qui a le nom d&apos;un champ sera remplacé par la valeur de ce champ. Les caractères spéciaux %% seront remplacés par la valeur du champ sélectionné. Les doubles guillemets marquent les groupes de textes en tant que simples arguments pour le programme. Les doubles guillemets seront ignorés si précédés par une barre oblique inversée.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="69"/>
@@ -9615,57 +9679,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="134"/>
         <source>ANSI A (Letter; 8.5x11 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="135"/>
         <source>ANSI B (Tabloid; 11x17 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="136"/>
         <source>ANSI C (17x22 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="137"/>
         <source>ANSI D (22x34 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="138"/>
         <source>ANSI E (34x44 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="139"/>
         <source>Arch A (9x12 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="140"/>
         <source>Arch B (12x18 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="141"/>
         <source>Arch C (18x24 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="142"/>
         <source>Arch D (24x36 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="143"/>
         <source>Arch E (36x48 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="144"/>
         <source>Arch E1 (30x42 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="148"/>
@@ -9683,12 +9747,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="30"/>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="31"/>
         <source>inch</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="121"/>
@@ -14207,7 +14271,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2715"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner une couche</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2841"/>
@@ -14269,7 +14333,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2225"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner une couche</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2511"/>
@@ -15118,7 +15182,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="521"/>
         <source>New vector created but cannot be opened by data provider.</source>
-        <translation>Nouvelle couche vectorielle crée, mais ouverture par le fournisseur de donnée impossible.</translation>
+        <translation>Nouvelle couche vectorielle crée, mais ouverture impossible par le service fournisseur de données.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="535"/>
@@ -16008,12 +16072,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="109"/>
         <source>Copy attribute value</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier les valeurs d&apos;attributs</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="113"/>
         <source>Copy feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier les attributs des entités</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="123"/>
@@ -16106,7 +16170,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="167"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="271"/>
         <source>Structure lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Lignes de structure</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="270"/>
@@ -16690,13 +16754,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/legend/qgslegend.cpp" line="755"/>
         <location filename="../src/app/legend/qgslegend.cpp" line="766"/>
         <source>Stop editing</source>
-        <translation type="unfinished">Arrêter l&apos;édition</translation>
+        <translation>Arrêter l&apos;édition</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="756"/>
         <location filename="../src/app/legend/qgslegend.cpp" line="767"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished">Voulez-vous sauvegarder les modifications pour la couche %1 ?</translation>
+        <translation>Voulez-vous sauvegarder les modifications pour la couche %1 ?</translation>
     </message>
     <message>
         <source>&amp;Allow editing</source>
@@ -17189,7 +17253,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="74"/>
         <source>The data provider for this layer does not support the addition of features.</source>
-        <translation>Le fournisseur de données pour cette couche ne supporte pas l&apos;ajout d&apos;entités.</translation>
+        <translation>Le service fournisseur de données pour cette couche ne supporte pas l&apos;ajout d&apos;entités.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="80"/>
@@ -18828,7 +18892,14 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;The layer name is format dependent. Consult the OGR documentation or the documentation of your data format to determine the nature of the included information.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Be advised: &lt;/span&gt;selecting an already opened layer will not generate an error message and the layer will end up loaded twice!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Ceci est la liste de toutes les couches disponibles dans la source de données de la couche active. Vous pouvez sélectionner les couches à charger, elles le seront lorsque vous cliquerez sur &quot;OK&quot;.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Le nom de la couche dépend du format. consultez la documentation OGR pour connaître les éventuelles limitations de ce format.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Soyez averti que : &lt;/span&gt;sélectionner une couche déjà ouverte ne provoquera pas un message d&apos;erreur et que la couche sera chargé 2 fois !&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -19791,17 +19862,17 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="482"/>
         <source>Preferred measurements units</source>
-        <translation type="unfinished"></translation>
+        <translation>Unités de mesure préférées</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="489"/>
         <source>Meters</source>
-        <translation type="unfinished">Mètres</translation>
+        <translation>Mètres</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="496"/>
         <source>Feet</source>
-        <translation type="unfinished">Pied</translation>
+        <translation>Pied</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="515"/>
@@ -22448,7 +22519,7 @@ Veuillez installer PostGIS avec le support GEOS (http://geos.refractions.net)</t
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="142"/>
         <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>Unités de la couche (uniquement employé lorsque la transformation du SCR est désactivée)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="187"/>
@@ -24946,13 +25017,13 @@ p, li { white-space: pre-wrap; }
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation> Ne comprend pas la réponse. Le fournisseur %1 dit : %2</translation>
+        <translation> Ne comprend pas la réponse. Le service fournisseur %1 dit : %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="718"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
-        <translation> Ne comprend pas la réponse. Le fournisseur %1 dit : %2</translation>
+        <translation> Ne comprend pas la réponse. Le service fournisseur %1 dit : %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="434"/>
@@ -27094,42 +27165,42 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="550"/>
         <source>Line edit</source>
-        <translation type="unfinished">Édition de ligne</translation>
+        <translation>Édition de ligne</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="551"/>
         <source>Unique values</source>
-        <translation type="unfinished">Valeurs Uniques</translation>
+        <translation>Valeurs Uniques</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="552"/>
         <source>Unique values editable</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeurs uniques éditables</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="553"/>
         <source>Classification</source>
-        <translation type="unfinished">Classification</translation>
+        <translation>Classification</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="554"/>
         <source>Value map</source>
-        <translation type="unfinished">Palette de valeur</translation>
+        <translation>Palette de valeur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="555"/>
         <source>Edit range</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer l&apos;intervalle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="556"/>
         <source>Slider range</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre de défilement</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="557"/>
         <source>File name</source>
-        <translation type="unfinished">Nom de fichier</translation>
+        <translation>Nom de fichier</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="558"/>
@@ -27754,7 +27825,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1670"/>
         <source>The WMS vendor also reported: </source>
-        <translation> Le fournisseur de WMS a également rapporté: </translation>
+        <translation>Le service fournisseur de WMS a également rapporté: </translation>
     </message>
     <message>
         <source>This is probably due to a bug in the QGIS program.  Please report this error.</source>
@@ -29342,7 +29413,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation>Points dans un polygones</translation>
+        <translation>Points dans un polygone</translation>
     </message>
     <message>
         <source>Basic statistics</source>
