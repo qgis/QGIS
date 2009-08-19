@@ -556,7 +556,7 @@ void QgsOptions::getEllipsoidList()
 
   cmbEllipsoid->addItem( ELLIPS_FLAT_DESC );
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
+  myResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase );
   if ( myResult )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
@@ -589,7 +589,7 @@ QString QgsOptions::getEllipsoidAcronym( QString theEllipsoidName )
   int           myResult;
   QString       myName( ELLIPS_FLAT );
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
+  myResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase );
   if ( myResult )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
@@ -621,7 +621,7 @@ QString QgsOptions::getEllipsoidName( QString theEllipsoidAcronym )
   int           myResult;
   QString       myName( ELLIPS_FLAT_DESC );
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
+  myResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase );
   if ( myResult )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
