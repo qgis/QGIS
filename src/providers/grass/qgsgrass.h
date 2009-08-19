@@ -24,15 +24,21 @@ extern "C"
 }
 
 #include <QString>
-#include <setjmp.h>
 
 /*!
    Methods for C library initialization and error handling.
 */
 class QgsGrass
 {
-
   public:
+    class Exception
+    {
+        QString mMsg;
+      public:
+        Exception( const char *msg ) : mMsg( msg ) {}
+        QString what() const { return mMsg; }
+    };
+
     //! Get info about the mode
     /*! QgsGrass may be running in active or passive mode.
      *  Active mode means that GISRC is set up and GISRC file is available,
@@ -64,10 +70,9 @@ class QgsGrass
     */
     static GRASS_EXPORT void setMapset( QString gisdbase, QString location, QString mapset );
 
-    //! Error codes returned by GetError()
+    //! Error codes returned by error()
     enum GERROR { OK, /*!< OK. No error. */
-                  WARNING, /*!< Warning, non fatal error. Should be printed by application. */
-                  FATAL /*!< Fatal error. Function faild. */
+                  WARNING /*!< Warning, non fatal error. Should be printed by application. */
               };
 
     //! Map type
@@ -77,10 +82,10 @@ class QgsGrass
     static GRASS_EXPORT void resetError( void );  // reset error status
 
     //! Check if any error occured in lately called functions. Returns value from ERROR.
-    static GRASS_EXPORT int getError( void );
+    static GRASS_EXPORT int error( void );
 
     //! Get last error message
-    static GRASS_EXPORT QString getErrorMessage( void );
+    static GRASS_EXPORT QString errorMessage( void );
 
     /** \brief Open existing GRASS mapset
      * \return NULL string or error message
@@ -160,10 +165,6 @@ class QgsGrass
     static GRASS_EXPORT int versionRelease();
     static GRASS_EXPORT QString versionString();
 
-    static GRASS_EXPORT jmp_buf& fatalErrorEnv();
-    static GRASS_EXPORT void clearErrorEnv();
-
-
   private:
     static int initialized; // Set to 1 after initialization
     static bool active; // is active mode
@@ -172,7 +173,7 @@ class QgsGrass
     static QString defaultMapset;
 
     /* last error in GRASS libraries */
-    static GERROR error;         // static, because used in constructor
+    static GERROR lastError;         // static, because used in constructor
     static QString error_message;
 
     // G_set_error_routine has two versions of the function's first argument it expects:
@@ -188,10 +189,6 @@ class QgsGrass
     static QString mGisrc;
     // Temporary directory where GISRC and sockets are stored
     static QString mTmp;
-
-    // Context saved before a call to routine that can produce a fatal error
-    static jmp_buf mFatalErrorEnv;
-    static bool mFatalErrorEnvActive;
 };
 
 #endif // QGSGRASS_H
