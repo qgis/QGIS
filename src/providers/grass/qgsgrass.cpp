@@ -54,7 +54,8 @@ void GRASS_EXPORT QgsGrass::init( void )
   // Set error function
   G_set_error_routine( &error_routine );
 
-  if ( initialized ) return;
+  if ( initialized )
+    return;
 
   QSettings settings;
 
@@ -355,7 +356,7 @@ int QgsGrass::initialized = 0;
 
 bool QgsGrass::active = 0;
 
-QgsGrass::GERROR QgsGrass::error = QgsGrass::OK;
+QgsGrass::GERROR QgsGrass::lastError = QgsGrass::OK;
 
 QString QgsGrass::error_message;
 
@@ -366,9 +367,6 @@ QString QgsGrass::defaultMapset;
 QString QgsGrass::mMapsetLock;
 QString QgsGrass::mGisrc;
 QString QgsGrass::mTmp;
-
-jmp_buf QgsGrass::mFatalErrorEnv;
-bool QgsGrass::mFatalErrorEnvActive = false;
 
 int QgsGrass::error_routine( char *msg, int fatal )
 {
@@ -383,50 +381,28 @@ int QgsGrass::error_routine( const char *msg, int fatal )
 
   if ( fatal )
   {
-    error = FATAL;
     // we have to do a long jump here, otherwise GRASS >= 6.3 will kill our process
-    if ( mFatalErrorEnvActive )
-      longjmp( mFatalErrorEnv, 1 );
-    else
-    {
-      QMessageBox::warning( 0, QObject::tr( "Uncatched fatal GRASS error" ), msg );
-      abort();
-    }
+    throw QgsGrass::Exception( msg );
   }
   else
-    error = WARNING;
+    lastError = WARNING;
 
   return 1;
 }
 
 void GRASS_EXPORT QgsGrass::resetError( void )
 {
-  error = OK;
+  lastError = OK;
 }
 
-int GRASS_EXPORT QgsGrass::getError( void )
+int GRASS_EXPORT QgsGrass::error( void )
 {
-  return error;
+  return lastError;
 }
 
-QString GRASS_EXPORT QgsGrass::getErrorMessage( void )
+QString GRASS_EXPORT QgsGrass::errorMessage( void )
 {
   return error_message;
-}
-
-jmp_buf GRASS_EXPORT &QgsGrass::fatalErrorEnv()
-{
-  if ( mFatalErrorEnvActive )
-    QgsDebugMsg( "fatal error environment already active." );
-  mFatalErrorEnvActive = true;
-  return mFatalErrorEnv;
-}
-
-void GRASS_EXPORT QgsGrass::clearErrorEnv()
-{
-  if ( !mFatalErrorEnvActive )
-    QgsDebugMsg( "fatal error environment already deactive." );
-  mFatalErrorEnvActive = false;
 }
 
 QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, QString mapset )

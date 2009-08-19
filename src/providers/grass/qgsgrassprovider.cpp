@@ -300,7 +300,8 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
   if ( isEdited() || isFrozen() || !mValid )
     return false;
 
-  if ( mCidxFieldIndex < 0 ) return false; // No features, no features in this layer
+  if ( mCidxFieldIndex < 0 || mNextCidx < mCidxFieldNumCats )
+    return false; // No features, no features in this layer
 
   // Get next line/area id
   int found = 0;
@@ -309,12 +310,17 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
     Vect_cidx_get_cat_by_index( mMap, mCidxFieldIndex, mNextCidx++, &cat, &type, &id );
     // Warning: selection array is only of type line/area of current layer -> check type first
 
-    if ( !( type & mGrassType ) ) continue;
-    if ( !mSelection[id] ) continue;
+    if ( !( type & mGrassType ) )
+      continue;
+
+    if ( !mSelection[id] )
+      continue;
+
     found = 1;
     break;
   }
-  if ( !found ) return false; // No more features
+  if ( !found )
+    return false; // No more features
 #if QGISDEBUG > 3
   QgsDebugMsg( QString( "cat = %1 type = %2 id = %3" ).arg( cat ).arg( type ).arg( id ) );
 #endif
@@ -655,16 +661,15 @@ int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString map
 
   // Open map
   QgsGrass::init();
-  QgsGrass::resetError();
-  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+
+  try
   {
     layer.mapId = openMap( gisdbase, location, mapset, mapName );
   }
-  QgsGrass::clearErrorEnv();
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  catch ( QgsGrass::Exception &e )
   {
-    QgsDebugMsg( QString( "Cannot open vector map: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot open vector map: %1" ).arg( e.what() ) );
     return -1;
   }
 
@@ -1020,53 +1025,55 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
 
   // Do we have topology and cidx (level2)
   int level = 2;
-  QgsGrass::resetError();
-  Vect_set_open_level( 2 );
-  Vect_open_old_head( map.map, mapName.toAscii().data(), mapset.toAscii().data() );
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  try
   {
-    QgsDebugMsg( QString( "Cannot open GRASS vector head on level2: %1" ).arg( QgsGrass::getErrorMessage() ) );
-    level = 1;
-  }
-  else
-  {
+    Vect_set_open_level( 2 );
+    Vect_open_old_head( map.map, mapName.toAscii().data(), mapset.toAscii().data() );
     Vect_close( map.map );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( QString( "Cannot open GRASS vector head on level2: %1" ).arg( e.what() ) );
+    level = 1;
   }
 
   if ( level == 1 )
   {
     QMessageBox::StandardButton ret = QMessageBox::question( 0, "Warning",
-                                      "GRASS vector map " + mapName +
-                                      + " does not have topology. Build topology?",
+                                      tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mapName ),
                                       QMessageBox::Ok | QMessageBox::Cancel );
 
     if ( ret == QMessageBox::Cancel ) return -1;
   }
 
   // Open vector
-  QgsGrass::resetError(); // to "catch" error after Vect_open_old()
-  Vect_set_open_level( level );
-  Vect_open_old( map.map, mapName.toAscii().data(), mapset.toAscii().data() );
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  try
   {
-    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    Vect_set_open_level( level );
+    Vect_open_old( map.map, mapName.toAscii().data(), mapset.toAscii().data() );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
     return -1;
   }
 
   if ( level == 1 )
   {
-    QgsGrass::resetError();
+    try
+    {
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
     ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
-    Vect_build( map.map );
+      Vect_build( map.map );
 #else
-    Vect_build( map.map, stderr );
+      Vect_build( map.map, stderr );
 #endif
-
-    if ( QgsGrass::getError() == QgsGrass::FATAL )
+    }
+    catch ( QgsGrass::Exception &e )
     {
-      QgsDebugMsg( QString( "Cannot build topology: %1" ).arg( QgsGrass::getErrorMessage() ) );
+      Q_UNUSED( e );
+      QgsDebugMsg( QString( "Cannot build topology: %1" ).arg( e.what() ) );
       return -1;
     }
   }
@@ -1107,17 +1114,15 @@ void QgsGrassProvider::updateMap( int mapId )
   map->lastAttributesModified = di.lastModified();
 
   // Reopen vector
-  QgsGrass::resetError(); // to "catch" error after Vect_open_old()
-  Vect_set_open_level( 2 );
-  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+  try
   {
+    Vect_set_open_level( 2 );
     Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
   }
-  QgsGrass::clearErrorEnv();
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  catch ( QgsGrass::Exception &e )
   {
-    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
 
     // if reopen fails, mLayers should be also updated
     for ( unsigned int i = 0; i <  mLayers.size(); i++ )
@@ -1268,7 +1273,7 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
     GATT *att = ( GATT * ) bsearch( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
                                     sizeof( GATT ), cmpAtt );
 
-    for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end();++iter )
+    for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end(); ++iter )
     {
       if ( att != NULL )
       {
@@ -1306,16 +1311,15 @@ QgsCoordinateReferenceSystem QgsGrassProvider::crs()
   const char *oldlocale = setlocale( LC_NUMERIC, NULL );
   setlocale( LC_NUMERIC, "C" );
 
-  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+  try
   {
     G_get_default_window( &cellhd );
   }
-  QgsGrass::clearErrorEnv();
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  catch ( QgsGrass::Exception &e )
   {
+    Q_UNUSED( e );
     setlocale( LC_NUMERIC, oldlocale );
-    QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( e.what() ) );
     return QgsCoordinateReferenceSystem();
   }
 
@@ -1473,40 +1477,37 @@ bool QgsGrassProvider::startEdit( void )
   Vect_close( map->map );
 
   // TODO: Catch error
+  int level = -1;
+  try
+  {
+    level = Vect_open_update( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
+    if ( level < 2 )
+      QgsDebugMsg( "Cannot open GRASS vector for update on level 2." );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot open GRASS vector for update: %1" ).arg( e.what() ) );
+  }
 
-  QgsGrass::resetError();
-  int level = Vect_open_update( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
   if ( level < 2 )
   {
-    if ( QgsGrass::getError() == QgsGrass::FATAL )
-    {
-      QgsDebugMsg( QString( "Cannot open GRASS vector for update: %1" ).arg( QgsGrass::getErrorMessage() ) );
-    }
-    else
-    {
-      QgsDebugMsg( "Cannot open GRASS vector for update on level 2." );
-    }
-
     // reopen vector for reading
-    QgsGrass::resetError();
-    Vect_set_open_level( 2 );
-    level = Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
+    try
+    {
+      Vect_set_open_level( 2 );
+      level = Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
+      if ( level < 2 )
+        QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::errorMessage() ) );
+    }
+    catch ( QgsGrass::Exception &e )
+    {
+      Q_UNUSED( e );
+      QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
+    }
 
-    if ( level < 2 )
-    {
-      if ( QgsGrass::getError() == QgsGrass::FATAL )
-      {
-        QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
-      }
-      else
-      {
-        QgsDebugMsg( "Cannot reopen GRASS vector on level 2." );
-      }
-    }
-    else
-    {
+    if ( level >= 2 )
       map->valid = true;
-    }
 
     return false;
   }
@@ -1588,14 +1589,15 @@ bool QgsGrassProvider::reopenMap()
   map->lastAttributesModified = di.lastModified();
 
   // Reopen vector
-  QgsGrass::resetError(); // to "catch" error after Vect_open_old()
-  Vect_set_open_level( 2 );
-
-  Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  try
   {
-    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    Vect_set_open_level( 2 );
+    Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
     return false;
   }
 
