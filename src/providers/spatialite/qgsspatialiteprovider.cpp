@@ -269,7 +269,7 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
         // iterate attributes
         bool fetched = false;
         int nAttr = 1;
-        for ( QgsAttributeList::const_iterator it = mAttributesToFetch.constBegin(); it != mAttributesToFetch.constEnd(); it++ )
+        for ( QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); it++ )
         {
           if ( nAttr == ic )
           {
@@ -952,7 +952,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       {
         // binding a TEXT value
         QString txt = it->toString();
-        int len = txt.length();
+        int len = txt.toUtf8().length() + 1;
         char *vl = new char [len];
         strcpy( vl, txt.toUtf8().constData() );
         sqlite3_bind_text( stmt, ++ia, vl, len, SQLITE_TRANSIENT );
@@ -967,8 +967,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
     // performing actual row insert
     ret = sqlite3_step( stmt );
+
     if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
-      ;
+    {
+      numberFeatures++;
+    }
     else
     {
       // some unexpected error occurred
@@ -1054,7 +1057,9 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds & id )
     // performing actual row deletion
     ret = sqlite3_step( stmt );
     if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
-      ;
+    {
+      numberFeatures--;
+    }
     else
     {
       // some unexpected error occurred
