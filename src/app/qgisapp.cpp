@@ -1611,10 +1611,14 @@ void QgisApp::setTheme( QString theThemeName )
   mActionMoveVertex->setIcon( getThemeIcon( "/mActionMoveVertex.png" ) );
   mActionDeleteVertex->setIcon( getThemeIcon( "/mActionDeleteVertex.png" ) );
   mActionSimplifyFeature->setIcon( getThemeIcon( "/mActionSimplify.png" ) );
+  mActionUndo->setIcon( getThemeIcon( "/mActionUndo.png" ) );
+  mActionRedo->setIcon( getThemeIcon( "/mActionRedo.png" ) );
   mActionAddRing->setIcon( getThemeIcon( "/mActionAddRing.png" ) );
   mActionAddIsland->setIcon( getThemeIcon( "/mActionAddIsland.png" ) );
   mActionDeleteRing->setIcon( getThemeIcon( "/mActionDeleteRing.png" ) );
   mActionDeletePart->setIcon( getThemeIcon( "/mActionDeletePart.png" ) );
+  mActionMergeFeatures->setIcon( getThemeIcon( "/mActionMergeFeatures.png" ) );
+  mActionNodeTool->setIcon( getThemeIcon( "/mActionNodeTool.png" ) );
   mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
   mActionZoomFullExtent->setIcon( getThemeIcon( "/mActionZoomFullExtent.png" ) );
