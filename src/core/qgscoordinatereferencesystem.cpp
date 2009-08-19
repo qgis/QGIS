@@ -935,48 +935,59 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
   {
     QDomNode myNode = srsNode.namedItem( "proj4" );
     QDomElement myElement = myNode.toElement();
-    setProj4String( myElement.text() );
 
-    myNode = srsNode.namedItem( "srsid" );
-    myElement = myNode.toElement();
-    setInternalId( myElement.text().toLong() );
-
-    myNode = srsNode.namedItem( "srid" );
-    myElement = myNode.toElement();
-    setSrid( myElement.text().toLong() );
-
-    myNode = srsNode.namedItem( "epsg" );
-    myElement = myNode.toElement();
-    setEpsg( myElement.text().toLong() );
-
-    myNode = srsNode.namedItem( "description" );
-    myElement = myNode.toElement();
-    setDescription( myElement.text() );
-
-    myNode = srsNode.namedItem( "projectionacronym" );
-    myElement = myNode.toElement();
-    setProjectionAcronym( myElement.text() );
-
-    myNode = srsNode.namedItem( "ellipsoidacronym" );
-    myElement = myNode.toElement();
-    setEllipsoidAcronym( myElement.text() );
-
-    myNode = srsNode.namedItem( "geographicflag" );
-    myElement = myNode.toElement();
-    if ( myElement.text().compare( "true" ) )
+    if ( createFromProj4( myElement.text() ) )
     {
-      setGeographicFlag( true );
+      // createFromProj4() sets everything, inlcuding map units
+      QgsDebugMsg( "Setting from proj4 string" );
     }
     else
     {
-      setGeographicFlag( false );
+      QgsDebugMsg( "Setting from elements one by one" );
+
+      setProj4String( myElement.text() );
+
+      myNode = srsNode.namedItem( "srsid" );
+      myElement = myNode.toElement();
+      setInternalId( myElement.text().toLong() );
+
+      myNode = srsNode.namedItem( "srid" );
+      myElement = myNode.toElement();
+      setSrid( myElement.text().toLong() );
+
+      myNode = srsNode.namedItem( "epsg" );
+      myElement = myNode.toElement();
+      setEpsg( myElement.text().toLong() );
+
+      myNode = srsNode.namedItem( "description" );
+      myElement = myNode.toElement();
+      setDescription( myElement.text() );
+
+      myNode = srsNode.namedItem( "projectionacronym" );
+      myElement = myNode.toElement();
+      setProjectionAcronym( myElement.text() );
+
+      myNode = srsNode.namedItem( "ellipsoidacronym" );
+      myElement = myNode.toElement();
+      setEllipsoidAcronym( myElement.text() );
+
+      myNode = srsNode.namedItem( "geographicflag" );
+      myElement = myNode.toElement();
+      if ( myElement.text().compare( "true" ) )
+      {
+        setGeographicFlag( true );
+      }
+      else
+      {
+        setGeographicFlag( false );
+      }
+
+      //make sure the map units have been set
+      setMapUnits();
+
+      //@TODO this srs needs to be validated!!!
+      mIsValidFlag = true;//shamelessly hard coded for now
     }
-
-    //make sure the map units have been set
-    setMapUnits();
-
-    //@TODO this srs needs to be validated!!!
-    mIsValidFlag = true;//shamelessly hard coded for now
   }
   else
   {
