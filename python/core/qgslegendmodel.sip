@@ -32,23 +32,4 @@ class QgsLegendModel: QStandardItemModel
 
   signals:
     void layersChanged();
-
-  private:
-    /**Adds classification items of vector layers
-     @return 0 in case of success*/
-    int addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* vlayer );
-
-    /**Adds item of raster layer
-     @return 0 in case of success*/
-    int addRasterLayerItem( QStandardItem* layerItem, QgsMapLayer* rlayer );
-
-    /**Insert a symbol into QgsLegendModel symbol storage*/
-    void insertSymbol( QgsSymbol* s );
-    /**Removes and deletes a symbol*/
-    void removeSymbol( QgsSymbol* s );
-    /**Removes and deletes all stored symbols*/
-    void removeAllSymbols();
-
-    /**Creates a model item for a vector symbol. The calling function takes ownership*/
-    QStandardItem* itemFromSymbol( QgsSymbol* s );
 };
