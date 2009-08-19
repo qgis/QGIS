@@ -92,7 +92,7 @@ void QgsBookmarks::initialise()
     sqlite3_stmt *ppStmt;
     QString sql = "select * from tbl_bookmarks";
 
-    rc = sqlite3_prepare( db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail );
+    rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
     // XXX Need to free memory from the error msg if one is set
     if ( rc == SQLITE_OK )
     {
@@ -213,7 +213,7 @@ void QgsBookmarks::zoomToBookmark()
     const char *pzTail;
     // build the sql statement
     QString sql = "select xmin, ymin, xmax, ymax from tbl_bookmarks where bookmark_id = " + item->text( 3 );
-    rc = sqlite3_prepare( db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail );
+    rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
     if ( rc == SQLITE_OK )
     {
       if ( sqlite3_step( ppStmt ) == SQLITE_ROW )

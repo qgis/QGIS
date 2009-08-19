@@ -104,7 +104,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select radius, parameter2 from tbl_ellipsoid where acronym='" + ellipsoid + "'";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {

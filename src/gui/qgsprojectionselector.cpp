@@ -454,7 +454,7 @@ QString QgsProjectionSelector::selectedProj4String()
 
       QgsDebugMsg( "Selection sql: " + sql );
 
-      rc = sqlite3_prepare( db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail );
+      rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
       // XXX Need to free memory from the error msg if one is set
       QString myProjString;
       if ( rc == SQLITE_OK )
@@ -541,7 +541,7 @@ long QgsProjectionSelector::getSelectedLongAttribute( QString attributeName )
       sql += lvi->text( QGIS_CRS_ID_COLUMN );
 
       QgsDebugMsg( QString( "Finding selected attribute using : %1" ).arg( sql ) );
-      rc = sqlite3_prepare( db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail );
+      rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
       // XXX Need to free memory from the error msg if one is set
       QString myAttributeValue;
       if ( rc == SQLITE_OK )
@@ -657,7 +657,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
   mySql += "where ";
   mySql += sqlFilter;
 
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
@@ -736,7 +736,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   // get total count of records in the projection table
   QString sql = "select count(*) from tbl_srs";
 
-  rc = sqlite3_prepare( db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail );
+  rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
   assert( rc == SQLITE_OK );
   sqlite3_step( ppStmt );
 
@@ -750,7 +750,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   sql += sqlFilter;
   sql += " order by name, description";
 
-  rc = sqlite3_prepare( db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail );
+  rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
   // XXX Need to free memory from the error msg if one is set
   if ( rc == SQLITE_OK )
   {
@@ -924,7 +924,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     return;
   }
 
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
@@ -956,7 +956,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     return;
   }
 
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
@@ -1004,7 +1004,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
     }
     else
     {
-      myResult = sqlite3_prepare( myDatabase, theSql.toUtf8(), theSql.length(), &myPreparedStatement, &myTail );
+      myResult = sqlite3_prepare( myDatabase, theSql.toUtf8(), theSql.toUtf8().length(), &myPreparedStatement, &myTail );
       // XXX Need to free memory from the error msg if one is set
       if ( myResult == SQLITE_OK )
       {
@@ -1032,7 +1032,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
     return 0;
   }
 
-  myResult = sqlite3_prepare( myDatabase, theSql.toUtf8(), theSql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, theSql.toUtf8(), theSql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {

@@ -493,7 +493,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, 
   }
 
   QString mySql = "select qml from tbl_styles where style=?";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   if ( myResult == SQLITE_OK )
   {
     QByteArray param = theURI.toUtf8();
@@ -655,7 +655,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
     QByteArray param1 = qml.toUtf8();
 
     QString mySql = "create table if not exists tbl_styles(style varchar primary key,qml varchar)";
-    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail );
+    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
     if ( myResult == SQLITE_OK )
     {
       if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
@@ -670,7 +670,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
     sqlite3_finalize( myPreparedStatement );
 
     mySql = "insert into tbl_styles(style,qml) values (?,?)";
-    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail );
+    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
     if ( myResult == SQLITE_OK )
     {
       if ( sqlite3_bind_text( myPreparedStatement, 1, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
@@ -687,7 +687,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
     if ( !theResultFlag )
     {
       QString mySql = "update tbl_styles set qml=? where style=?";
-      myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail );
+      myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
       if ( myResult == SQLITE_OK )
       {
         if ( sqlite3_bind_text( myPreparedStatement, 2, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
