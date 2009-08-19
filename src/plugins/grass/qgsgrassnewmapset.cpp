@@ -1268,20 +1268,17 @@ void QgsGrassNewMapset::createMapset()
 
     int ret = 0;
 
-    try
+    QgsGrass::resetError();
+    if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
     {
       ret = G_make_location( location.toAscii().data(), &mCellHead, mProjInfo, mProjUnits, stdout );
     }
-    catch ( QgsGrass::Exception &e )
-    {
-      ret = -1;
-      Q_UNUSED( e );
-    }
+    QgsGrass::clearErrorEnv();
 
-    if ( ret != 0 )
+    if ( QgsGrass::getError() == QgsGrass::FATAL || ret != 0 )
     {
       QMessageBox::warning( this, tr( "Create location" ),
-                            tr( "Cannot create new location: %1" ).arg( QgsGrass::errorMessage() ) );
+                            tr( "Cannot create new location: %1" ).arg( QgsGrass::getErrorMessage() ) );
       return;
     }
 
