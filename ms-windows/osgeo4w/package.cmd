@@ -1,5 +1,6 @@
 @echo off
 set GRASS_VERSION=6.4.0svn
+set SVNVERSION=c:/cygwin/bin/svnversion
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -99,6 +100,8 @@ cmake -G "Visual Studio 9 2008" ^
 	-D QT_ZLIB_LIBRARY=%O4W_ROOT%/lib/zlib.lib ^
 	-D QT_PNG_LIBRARY=%O4W_ROOT%/lib/libpng13.lib ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/qgis-dev ^
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /Od /D NDEBUG" ^
+	-D SVNVERSION="%SVNVERSION%" ^
 	%SRCDIR%>>%LOG% 2>&1
 if errorlevel 1 goto error
 
