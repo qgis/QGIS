@@ -1417,6 +1417,24 @@
 		72A892CC0FAF7B8500108152 /* qgsconfigureshortcutsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CA0FAF7B6100108152 /* qgsconfigureshortcutsdialog.cpp */; };
 		72A892CD0FAF7B8500108152 /* qgsshortcutsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */; };
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
+		72C42430103DE72D005CD18E /* mActionAddImage.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242F103DE718005CD18E /* mActionAddImage.png */; };
+		72C42431103DE72D005CD18E /* mActionAddLegend.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4241F103DE718005CD18E /* mActionAddLegend.png */; };
+		72C42432103DE72D005CD18E /* mActionAddMap.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4241E103DE718005CD18E /* mActionAddMap.png */; };
+		72C42433103DE72D005CD18E /* mActionDeletePart.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42423103DE718005CD18E /* mActionDeletePart.png */; };
+		72C42434103DE72D005CD18E /* mActionDeleteRing.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42422103DE718005CD18E /* mActionDeleteRing.png */; };
+		72C42435103DE72D005CD18E /* mActionGroupItems.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42420103DE718005CD18E /* mActionGroupItems.png */; };
+		72C42436103DE72D005CD18E /* mActionLabel.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242C103DE718005CD18E /* mActionLabel.png */; };
+		72C42437103DE72D005CD18E /* mActionMergeFeatures.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242E103DE718005CD18E /* mActionMergeFeatures.png */; };
+		72C42438103DE72D005CD18E /* mActionMoveItemContent.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42428103DE718005CD18E /* mActionMoveItemContent.png */; };
+		72C42439103DE72D005CD18E /* mActionNodeTool.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42421103DE718005CD18E /* mActionNodeTool.png */; };
+		72C4243A103DE72D005CD18E /* mActionRedo.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242D103DE718005CD18E /* mActionRedo.png */; };
+		72C4243B103DE72D005CD18E /* mActionSaveAsSVG.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42427103DE718005CD18E /* mActionSaveAsSVG.png */; };
+		72C4243C103DE72D005CD18E /* mActionSaveMapAsImage.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42426103DE718005CD18E /* mActionSaveMapAsImage.png */; };
+		72C4243D103DE72D005CD18E /* mActionScaleBar.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42429103DE718005CD18E /* mActionScaleBar.png */; };
+		72C4243E103DE72D005CD18E /* mActionSelectPan.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242A103DE718005CD18E /* mActionSelectPan.png */; };
+		72C4243F103DE72D005CD18E /* mActionSimplify.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242B103DE718005CD18E /* mActionSimplify.png */; };
+		72C42440103DE72D005CD18E /* mActionUndo.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42425103DE718005CD18E /* mActionUndo.png */; };
+		72C42441103DE72D005CD18E /* mActionUngroupItems.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42424103DE718005CD18E /* mActionUngroupItems.png */; };
 		72D0A53A1018971A00EE6279 /* qgsattributetypedialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A539101896AA00EE6279 /* qgsattributetypedialog.cpp */; };
 		72D0A53B1018971A00EE6279 /* qgsattributetypedialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */; };
 		72D0A53C1018971A00EE6279 /* qgsattributetypeloaddialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */; };
@@ -3162,6 +3180,24 @@
 				7256F4F20F41C5510022BE1F /* mActionZoomOut.png in Copy - theme-gis */,
 				7256F4F30F41C5510022BE1F /* mActionZoomToLayer.png in Copy - theme-gis */,
 				7256F4F40F41C5510022BE1F /* mActionZoomToSelected.png in Copy - theme-gis */,
+				72C42430103DE72D005CD18E /* mActionAddImage.png in Copy - theme-gis */,
+				72C42431103DE72D005CD18E /* mActionAddLegend.png in Copy - theme-gis */,
+				72C42432103DE72D005CD18E /* mActionAddMap.png in Copy - theme-gis */,
+				72C42433103DE72D005CD18E /* mActionDeletePart.png in Copy - theme-gis */,
+				72C42434103DE72D005CD18E /* mActionDeleteRing.png in Copy - theme-gis */,
+				72C42435103DE72D005CD18E /* mActionGroupItems.png in Copy - theme-gis */,
+				72C42436103DE72D005CD18E /* mActionLabel.png in Copy - theme-gis */,
+				72C42437103DE72D005CD18E /* mActionMergeFeatures.png in Copy - theme-gis */,
+				72C42438103DE72D005CD18E /* mActionMoveItemContent.png in Copy - theme-gis */,
+				72C42439103DE72D005CD18E /* mActionNodeTool.png in Copy - theme-gis */,
+				72C4243A103DE72D005CD18E /* mActionRedo.png in Copy - theme-gis */,
+				72C4243B103DE72D005CD18E /* mActionSaveAsSVG.png in Copy - theme-gis */,
+				72C4243C103DE72D005CD18E /* mActionSaveMapAsImage.png in Copy - theme-gis */,
+				72C4243D103DE72D005CD18E /* mActionScaleBar.png in Copy - theme-gis */,
+				72C4243E103DE72D005CD18E /* mActionSelectPan.png in Copy - theme-gis */,
+				72C4243F103DE72D005CD18E /* mActionSimplify.png in Copy - theme-gis */,
+				72C42440103DE72D005CD18E /* mActionUndo.png in Copy - theme-gis */,
+				72C42441103DE72D005CD18E /* mActionUngroupItems.png in Copy - theme-gis */,
 			);
 			name = "Copy - theme-gis";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5635,8 +5671,6 @@
 		7209F00C0F39E5DA003DC336 /* Python.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Python.cmake; path = ../../cmake/Python.cmake; sourceTree = SOURCE_ROOT; };
 		7209F00E0F39E5DA003DC336 /* cmake_uninstall.cmake.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cmake_uninstall.cmake.in; path = ../../cmake_templates/cmake_uninstall.cmake.in; sourceTree = SOURCE_ROOT; };
 		7209F00F0F39E5DA003DC336 /* qgsconfig.h.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsconfig.h.in; path = ../../cmake_templates/qgsconfig.h.in; sourceTree = SOURCE_ROOT; };
-		7209F0100F39E5DA003DC336 /* qgssvnversion.h.in_cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgssvnversion.h.in_cmake; path = ../../cmake_templates/qgssvnversion.h.in_cmake; sourceTree = SOURCE_ROOT; };
-		7209F0110F39E5DA003DC336 /* svnscript.cmake.in_cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = svnscript.cmake.in_cmake; path = ../../cmake_templates/svnscript.cmake.in_cmake; sourceTree = SOURCE_ROOT; };
 		7209F0140F39E5DA003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../doc/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		7209F0150F39E5DA003DC336 /* CODING.t2t */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CODING.t2t; path = ../../doc/CODING.t2t; sourceTree = SOURCE_ROOT; };
 		7209F0160F39E5DA003DC336 /* favicon.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; name = favicon.ico; path = ../../doc/favicon.ico; sourceTree = SOURCE_ROOT; };
@@ -6768,6 +6802,26 @@
 		72B4DDC80F9F4C0D009351FE /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ChangeLog; path = ../../ChangeLog; sourceTree = SOURCE_ROOT; };
 		72B602A80FA0CB4100E00BC9 /* ts2cpp.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = ts2cpp.pl; path = ../../scripts/ts2cpp.pl; sourceTree = SOURCE_ROOT; };
 		72B957270F45C24200E3FF98 /* ReadMe.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = SOURCE_ROOT; };
+		72C4241C103DE65D005CD18E /* qgis_srs.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = qgis_srs.sh; path = ../../scripts/qgis_srs.sh; sourceTree = SOURCE_ROOT; };
+		72C4241D103DE67F005CD18E /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../resources/README; sourceTree = SOURCE_ROOT; };
+		72C4241E103DE718005CD18E /* mActionAddMap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddMap.png; path = ../../images/themes/gis/mActionAddMap.png; sourceTree = SOURCE_ROOT; };
+		72C4241F103DE718005CD18E /* mActionAddLegend.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddLegend.png; path = ../../images/themes/gis/mActionAddLegend.png; sourceTree = SOURCE_ROOT; };
+		72C42420103DE718005CD18E /* mActionGroupItems.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionGroupItems.png; path = ../../images/themes/gis/mActionGroupItems.png; sourceTree = SOURCE_ROOT; };
+		72C42421103DE718005CD18E /* mActionNodeTool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNodeTool.png; path = ../../images/themes/gis/mActionNodeTool.png; sourceTree = SOURCE_ROOT; };
+		72C42422103DE718005CD18E /* mActionDeleteRing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeleteRing.png; path = ../../images/themes/gis/mActionDeleteRing.png; sourceTree = SOURCE_ROOT; };
+		72C42423103DE718005CD18E /* mActionDeletePart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeletePart.png; path = ../../images/themes/gis/mActionDeletePart.png; sourceTree = SOURCE_ROOT; };
+		72C42424103DE718005CD18E /* mActionUngroupItems.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionUngroupItems.png; path = ../../images/themes/gis/mActionUngroupItems.png; sourceTree = SOURCE_ROOT; };
+		72C42425103DE718005CD18E /* mActionUndo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionUndo.png; path = ../../images/themes/gis/mActionUndo.png; sourceTree = SOURCE_ROOT; };
+		72C42426103DE718005CD18E /* mActionSaveMapAsImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveMapAsImage.png; path = ../../images/themes/gis/mActionSaveMapAsImage.png; sourceTree = SOURCE_ROOT; };
+		72C42427103DE718005CD18E /* mActionSaveAsSVG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsSVG.png; path = ../../images/themes/gis/mActionSaveAsSVG.png; sourceTree = SOURCE_ROOT; };
+		72C42428103DE718005CD18E /* mActionMoveItemContent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionMoveItemContent.png; path = ../../images/themes/gis/mActionMoveItemContent.png; sourceTree = SOURCE_ROOT; };
+		72C42429103DE718005CD18E /* mActionScaleBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionScaleBar.png; path = ../../images/themes/gis/mActionScaleBar.png; sourceTree = SOURCE_ROOT; };
+		72C4242A103DE718005CD18E /* mActionSelectPan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSelectPan.png; path = ../../images/themes/gis/mActionSelectPan.png; sourceTree = SOURCE_ROOT; };
+		72C4242B103DE718005CD18E /* mActionSimplify.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSimplify.png; path = ../../images/themes/gis/mActionSimplify.png; sourceTree = SOURCE_ROOT; };
+		72C4242C103DE718005CD18E /* mActionLabel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionLabel.png; path = ../../images/themes/gis/mActionLabel.png; sourceTree = SOURCE_ROOT; };
+		72C4242D103DE718005CD18E /* mActionRedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRedo.png; path = ../../images/themes/gis/mActionRedo.png; sourceTree = SOURCE_ROOT; };
+		72C4242E103DE718005CD18E /* mActionMergeFeatures.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionMergeFeatures.png; path = ../../images/themes/gis/mActionMergeFeatures.png; sourceTree = SOURCE_ROOT; };
+		72C4242F103DE718005CD18E /* mActionAddImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddImage.png; path = ../../images/themes/gis/mActionAddImage.png; sourceTree = SOURCE_ROOT; };
 		72D0A536101896AA00EE6279 /* qgsattributetypeloaddialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetypeloaddialog.h; path = ../../src/app/qgsattributetypeloaddialog.h; sourceTree = SOURCE_ROOT; };
 		72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetypeloaddialog.cpp; path = ../../src/app/qgsattributetypeloaddialog.cpp; sourceTree = SOURCE_ROOT; };
 		72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetypedialog.h; path = ../../src/app/qgsattributetypedialog.h; sourceTree = SOURCE_ROOT; };
@@ -9303,6 +9357,7 @@
 				7209ED320F39E5D9003DC336 /* fixdiff.pl */,
 				7209ED330F39E5D9003DC336 /* postprocess_srs.sql */,
 				7209ED340F39E5D9003DC336 /* prepare-commit.sh */,
+				72C4241C103DE65D005CD18E /* qgis_srs.sh */,
 				7209ED350F39E5D9003DC336 /* qgsloggermig.pl */,
 				7209ED360F39E5D9003DC336 /* remove_non_svn_files.sh */,
 				7209ED370F39E5D9003DC336 /* remove_svn_conflict_files.sh */,
@@ -9323,6 +9378,7 @@
 				7209ED3E0F39E5D9003DC336 /* context_help */,
 				7209ED820F39E5D9003DC336 /* qgis.db */,
 				7209ED830F39E5D9003DC336 /* qgis_help.db */,
+				72C4241D103DE67F005CD18E /* README */,
 				7209ED840F39E5D9003DC336 /* srs.db */,
 			);
 			name = resources;
@@ -10150,6 +10206,24 @@
 				7209EF940F39E5D9003DC336 /* mActionZoomOut.png */,
 				7209EF950F39E5D9003DC336 /* mActionZoomToLayer.png */,
 				7209EF960F39E5D9003DC336 /* mActionZoomToSelected.png */,
+				72C4241E103DE718005CD18E /* mActionAddMap.png */,
+				72C4241F103DE718005CD18E /* mActionAddLegend.png */,
+				72C42420103DE718005CD18E /* mActionGroupItems.png */,
+				72C42421103DE718005CD18E /* mActionNodeTool.png */,
+				72C42422103DE718005CD18E /* mActionDeleteRing.png */,
+				72C42423103DE718005CD18E /* mActionDeletePart.png */,
+				72C42424103DE718005CD18E /* mActionUngroupItems.png */,
+				72C42425103DE718005CD18E /* mActionUndo.png */,
+				72C42426103DE718005CD18E /* mActionSaveMapAsImage.png */,
+				72C42427103DE718005CD18E /* mActionSaveAsSVG.png */,
+				72C42428103DE718005CD18E /* mActionMoveItemContent.png */,
+				72C42429103DE718005CD18E /* mActionScaleBar.png */,
+				72C4242A103DE718005CD18E /* mActionSelectPan.png */,
+				72C4242B103DE718005CD18E /* mActionSimplify.png */,
+				72C4242C103DE718005CD18E /* mActionLabel.png */,
+				72C4242D103DE718005CD18E /* mActionRedo.png */,
+				72C4242E103DE718005CD18E /* mActionMergeFeatures.png */,
+				72C4242F103DE718005CD18E /* mActionAddImage.png */,
 				727459F40F770252007F4218 /* plugins */,
 			);
 			name = gis;
@@ -10303,8 +10377,6 @@
 			children = (
 				7209F00E0F39E5DA003DC336 /* cmake_uninstall.cmake.in */,
 				7209F00F0F39E5DA003DC336 /* qgsconfig.h.in */,
-				7209F0100F39E5DA003DC336 /* qgssvnversion.h.in_cmake */,
-				7209F0110F39E5DA003DC336 /* svnscript.cmake.in_cmake */,
 			);
 			name = cmake_templates;
 			path = ../../cmake_templates;
