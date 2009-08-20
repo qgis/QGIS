@@ -1095,350 +1095,83 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DlgAddRelation</name>
     <message>
-        <source>OSM Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create OSM relation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Relation type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished">属性</translation>
-    </message>
-    <message>
-        <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">属性</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation type="unfinished">创建</translation>
-    </message>
-    <message>
-        <source>Storno</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">创建</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
 </context>
 <context>
     <name>DlgDownloadOSM</name>
     <message>
-        <source>Download OSM data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Extent</source>
-        <translation type="unfinished">范围</translation>
+        <translation type="obsolete">范围</translation>
     </message>
     <message>
         <source>Latitude:</source>
-        <translation type="unfinished">纬度:</translation>
-    </message>
-    <message>
-        <source>   From</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">纬度:</translation>
     </message>
     <message>
         <source>Longitude:</source>
-        <translation type="unfinished">经度:</translation>
-    </message>
-    <message>
-        <source>&lt;nothing&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">经度:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <source>Download to:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open data automatically after download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Replace current data (current layer will be removed)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
-    </message>
-    <message>
-        <source>OSM Download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Download Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Getting data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">取消</translation>
     </message>
 </context>
 <context>
     <name>DlgImport</name>
     <message>
-        <source>Import data to OSM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Layer</source>
-        <translation type="unfinished">图层</translation>
-    </message>
-    <message>
-        <source>Import only current selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">图层</translation>
     </message>
 </context>
 <context>
     <name>DlgLoadOSM</name>
     <message>
-        <source>Load OSM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OpenStreetMap file to load:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <source>Add columns for tags:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Replace current data (current layers will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
     <name>DlgSaveOSM</name>
     <message>
-        <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Initializing...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save OSM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Where to save:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <source>Features to save:</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="unfinished">点</translation>
-    </message>
-    <message>
-        <source>Lines</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Polygons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Relations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">点</translation>
     </message>
 </context>
 <context>
     <name>DlgUploadOSM</name>
     <message>
-        <source>Upload OSM data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ready for upload</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation type="obsolete">1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation type="unfinished">2</translation>
-    </message>
-    <message>
-        <source>3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Comment on your changes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM account</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Username:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Upload</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">2</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">上传数据...</translation>
-    </message>
-</context>
-<context>
-    <name>DockWidget</name>
-    <message>
-        <source>OSM Plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose OSM feature first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose relation for editing first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">上传数据...</translation>
     </message>
 </context>
 <context>
@@ -2000,7 +1733,172 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
+    <name>OsmAddRelationDlg</name>
+    <message>
+        <source>Create OSM relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished">属性</translation>
+    </message>
+    <message>
+        <source>Members</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation type="unfinished">创建</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <source>OSM Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OsmDockWidget</name>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="obsolete">属性</translation>
+    </message>
+    <message>
+        <source>E</source>
+        <translation type="obsolete">东</translation>
+    </message>
+    <message>
+        <source>R</source>
+        <translation type="obsolete">R</translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="obsolete">1</translation>
+    </message>
+</context>
+<context>
+    <name>OsmDownloadDlg</name>
+    <message>
+        <source>OSM Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waiting for OpenStreetMap server ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Download Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download failed: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Getting data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both extents are too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latitude extent is too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude extent is too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK! Area is probably acceptable to server.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download OSM data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extent</source>
+        <translation type="unfinished">范围</translation>
+    </message>
+    <message>
+        <source>Latitude:</source>
+        <translation type="unfinished">纬度:</translation>
+    </message>
+    <message>
+        <source>   From</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude:</source>
+        <translation type="unfinished">经度:</translation>
+    </message>
+    <message>
+        <source>&lt;nothing&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Download to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open data automatically after download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace current data (current layer will be removed)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+</context>
+<context>
+    <name>OsmFeatureDW</name>
     <message>
         <source>OSM Feature</source>
         <translation type="unfinished"></translation>
@@ -2066,32 +1964,32 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Remove feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Properties</source>
         <translation type="unfinished">属性</translation>
     </message>
     <message>
-        <source>Add new relation</source>
+        <source>Remove selected tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>A</source>
+        <source>Relations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit selected relation</source>
+        <source>Add relation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>E</source>
-        <translation type="unfinished">东</translation>
-    </message>
-    <message>
-        <source>Remove selected relation</source>
+        <source>Edit relation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>R</source>
-        <translation type="unfinished">R</translation>
+        <source>Remove relation</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Relation tags:</source>
@@ -2106,12 +2004,145 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Relations</source>
+        <source>OSM Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Feature Dock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose OSM feature first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose relation for editing first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Property &apos;%1&apos; cannot be added twice.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>OsmUndoRedoDockWidget</name>
+    <name>OsmImportDlg</name>
+    <message>
+        <source>Import data to OSM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">图层</translation>
+    </message>
+    <message>
+        <source>Import only current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmLoadDlg</name>
+    <message>
+        <source>Load OSM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenStreetMap file to load:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Add columns for tags:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace current data (current layers will be removed)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmSaveDlg</name>
+    <message>
+        <source>Save OSM to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving nodes...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving lines...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving polygons...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving relations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save OSM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Where to save:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Features to save:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation type="unfinished">点</translation>
+    </message>
+    <message>
+        <source>Lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmUndoRedoDW</name>
     <message>
         <source>OSM Edit History</source>
         <translation type="unfinished"></translation>
@@ -2131,6 +2162,76 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <source>Redo</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmUndoRedoDockWidget</name>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+</context>
+<context>
+    <name>OsmUploadDlg</name>
+    <message>
+        <source>Upload OSM data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ready for upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <source>2</source>
+        <translation type="unfinished">2</translation>
+    </message>
+    <message>
+        <source>3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comment on your changes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Username:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uploading data...</source>
+        <translation type="unfinished">上传数据...</translation>
     </message>
 </context>
 <context>
@@ -4572,22 +4673,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>V</source>
         <comment>Add a Vector Layer</comment>
-        <translation type="unfinished">V</translation>
+        <translation type="obsolete">V</translation>
     </message>
     <message>
         <source>R</source>
         <comment>Add a Raster Layer</comment>
-        <translation type="unfinished">R</translation>
+        <translation type="obsolete">R</translation>
     </message>
     <message>
         <source>D</source>
         <comment>Add a PostGIS Layer</comment>
-        <translation type="unfinished">D</translation>
-    </message>
-    <message>
-        <source>N</source>
-        <comment>Create a New Vector Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">D</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
@@ -4597,27 +4693,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>+</source>
         <comment>Show all layers in the overview map</comment>
-        <translation type="unfinished">+</translation>
+        <translation type="obsolete">+</translation>
     </message>
     <message>
         <source>-</source>
         <comment>Remove all layers from overview map</comment>
-        <translation type="unfinished">-</translation>
-    </message>
-    <message>
-        <source>S</source>
-        <comment>Show all layers</comment>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">-</translation>
     </message>
     <message>
         <source>H</source>
         <comment>Hide all layers</comment>
-        <translation type="unfinished">H</translation>
-    </message>
-    <message>
-        <source>P</source>
-        <comment>Set project properties</comment>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">H</translation>
     </message>
     <message>
         <source>F1</source>
@@ -4647,22 +4733,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>F</source>
         <comment>Zoom to Full Extents</comment>
-        <translation type="unfinished">F</translation>
+        <translation type="obsolete">F</translation>
     </message>
     <message>
         <source>I</source>
         <comment>Click on features to identify them</comment>
-        <translation type="unfinished">I</translation>
+        <translation type="obsolete">I</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
         <comment>Measure a Line</comment>
         <translation type="obsolete">Ctrl+M</translation>
-    </message>
-    <message>
-        <source>B</source>
-        <comment>Show Bookmarks</comment>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ctrl+B</source>
@@ -4675,24 +4756,19 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">西</translation>
     </message>
     <message>
-        <source>O</source>
-        <comment>Add current layer to overview map</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>.</source>
         <comment>Capture Points</comment>
-        <translation type="unfinished">.</translation>
+        <translation type="obsolete">.</translation>
     </message>
     <message>
         <source>/</source>
         <comment>Capture Lines</comment>
-        <translation type="unfinished">/</translation>
+        <translation type="obsolete">/</translation>
     </message>
     <message>
         <source>Ctrl+/</source>
         <comment>Capture Polygons</comment>
-        <translation type="unfinished">Ctrl+/</translation>
+        <translation type="obsolete">Ctrl+/</translation>
     </message>
     <message>
         <source>Ctrl+?</source>
@@ -4965,12 +5041,7 @@ Please contact the developers.
     <message>
         <source>M</source>
         <comment>Measure a Line</comment>
-        <translation type="unfinished">M</translation>
-    </message>
-    <message>
-        <source>J</source>
-        <comment>Measure an Area</comment>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">M</translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
@@ -5004,7 +5075,7 @@ Please contact the developers.
     <message>
         <source>W</source>
         <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="unfinished">西</translation>
+        <translation type="obsolete">西</translation>
     </message>
     <message>
         <source>Add a Web Mapping Server Layer</source>
@@ -5246,11 +5317,6 @@ Errors: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>L</source>
-        <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Add a SpatiaLite Layer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5481,6 +5547,96 @@ Grass:
 
 There is a new GRASS shell. Also there have been many cleanups and consistency
 updates.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+.</source>
+        <comment>Capture Points</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+/</source>
+        <comment>Capture Lines</comment>
+        <translation type="unfinished">Ctrl+/</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+/</source>
+        <comment>Capture Polygons</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+I</source>
+        <comment>Click on features to identify them</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+M</source>
+        <comment>Measure a Line</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+J</source>
+        <comment>Measure an Area</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+F</source>
+        <comment>Zoom to Full Extents</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <comment>Show Bookmarks</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+N</source>
+        <comment>Create a New Vector Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+V</source>
+        <comment>Add a Vector Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+R</source>
+        <comment>Add a Raster Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+D</source>
+        <comment>Add a PostGIS Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+L</source>
+        <comment>Add a SpatiaLite Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+W</source>
+        <comment>Add a Web Mapping Server Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+O</source>
+        <comment>Add current layer to overview map</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+U</source>
+        <comment>Show all layers</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+H</source>
+        <comment>Hide all layers</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <comment>Set project properties</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9064,7 +9220,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -14410,7 +14566,7 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24140,7 +24296,7 @@ p, li { white-space: pre-wrap; }
         <source>Database Host</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
         <translation type="unfinished"></translation>
     </message>
@@ -24333,7 +24489,7 @@ p, li { white-space: pre-wrap; }
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24424,7 +24580,7 @@ p, li { white-space: pre-wrap; }
         <source>Resets the compass offset values to the default settings.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>The base path or url from which images and documents can be “relative”</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24461,7 +24617,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>Apply Path to Image rules when loading docs in external applications</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translation type="unfinished"></translation>
     </message>
@@ -24501,11 +24657,11 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
         <translation type="unfinished"></translation>
     </message>
