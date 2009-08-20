@@ -3,7 +3,7 @@
 
 <qgisgrassmodule label="Recode categorical raster using reclassification rules" module="r.recode">
 	<option key="input"/>
-	<file key="rules" type="old" filters="Txt (*.txt), Csv (*.csv)" />
+	<file key="rules" type="old" />
 	<option key="output" />
 	<flag key="d" />
 </qgisgrassmodule>
