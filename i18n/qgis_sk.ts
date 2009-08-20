@@ -1138,410 +1138,75 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>DlgAddRelation</name>
     <message>
-        <source>OSM Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="13"/>
-        <source>Create OSM relation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="30"/>
-        <source>Relation type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="78"/>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="126"/>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="133"/>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="178"/>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="188"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="106"/>
         <source>Properties</source>
-        <translation type="unfinished">Vlastnosti</translation>
+        <translation type="obsolete">Vlastnosti</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="158"/>
-        <source>Members</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="260"/>
         <source>Create</source>
-        <translation type="unfinished">Vytvoriť</translation>
+        <translation type="obsolete">Vytvoriť</translation>
     </message>
     <message>
-        <source>Storno</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušiť</translation>
+        <translation type="obsolete">Zrušiť</translation>
     </message>
 </context>
 <context>
     <name>DlgDownloadOSM</name>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="19"/>
-        <source>Download OSM data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="40"/>
         <source>Extent</source>
-        <translation type="unfinished">Rozsah</translation>
+        <translation type="obsolete">Rozsah</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="48"/>
-        <source>Latitude:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="55"/>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="96"/>
-        <source>   From</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="72"/>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="113"/>
-        <source>To</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="89"/>
-        <source>Longitude:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="166"/>
-        <source>&lt;nothing&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="182"/>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="210"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="196"/>
-        <source>Download to:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="219"/>
-        <source>Open data automatically after download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="247"/>
-        <source>Replace current data (current layer will be removed)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="283"/>
-        <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="358"/>
-        <source>Download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="365"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušiť</translation>
-    </message>
-    <message>
-        <source>OSM Download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Download Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Getting data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Zrušiť</translation>
     </message>
 </context>
 <context>
     <name>DlgImport</name>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="16"/>
-        <source>Import data to OSM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="25"/>
-        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="50"/>
         <source>Layer</source>
-        <translation type="unfinished">Vrstva</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="69"/>
-        <source>Import only current selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Vrstva</translation>
     </message>
 </context>
 <context>
     <name>DlgLoadOSM</name>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="16"/>
-        <source>Load OSM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="33"/>
-        <source>OpenStreetMap file to load:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="46"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="55"/>
-        <source>Add columns for tags:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="78"/>
-        <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="128"/>
-        <source>Replace current data (current layers will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
     <name>DlgSaveOSM</name>
     <message>
-        <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Initializing...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="16"/>
-        <source>Save OSM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="33"/>
-        <source>Where to save:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="52"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="61"/>
-        <source>Features to save:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="81"/>
-        <source>Points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="91"/>
         <source>Lines</source>
-        <translation type="unfinished">Línie</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="101"/>
-        <source>Polygons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="115"/>
-        <source>Relations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="125"/>
-        <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Línie</translation>
     </message>
 </context>
 <context>
     <name>DlgUploadOSM</name>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="22"/>
-        <source>Upload OSM data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="37"/>
-        <source>Ready for upload</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="80"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation type="obsolete">1</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="85"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="90"/>
-        <source>3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="95"/>
-        <source>4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="100"/>
-        <source>5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="108"/>
-        <source>Comment on your changes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="134"/>
-        <source>OSM account</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="142"/>
-        <source>Username:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="162"/>
-        <source>Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="179"/>
-        <source>Show password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="186"/>
-        <source>Save password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Upload</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">2</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">Nahrávajú sa údaje...</translation>
-    </message>
-</context>
-<context>
-    <name>DockWidget</name>
-    <message>
-        <source>OSM Plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose OSM feature first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose relation for editing first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Nahrávajú sa údaje...</translation>
     </message>
 </context>
 <context>
@@ -2052,204 +1717,642 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>OsmDockWidget</name>
+    <name>OsmAddRelationDlg</name>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="37"/>
-        <source>OSM Feature</source>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="13"/>
+        <source>Create OSM relation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="67"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="101"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="129"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="157"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="179"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="207"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="235"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="260"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="282"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="304"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="408"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="488"/>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="30"/>
+        <source>Relation type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="126"/>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="133"/>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="178"/>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="188"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="92"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="95"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="98"/>
-        <source>Identify object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="126"/>
-        <source>Move object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="154"/>
-        <source>Create point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="176"/>
-        <source>Create line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="204"/>
-        <source>Create polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="232"/>
-        <source>Create relation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="251"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="254"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="257"/>
-        <source>Undo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="273"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="276"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="279"/>
-        <source>Redo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="295"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="298"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="301"/>
-        <source>Show/Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="331"/>
-        <source>Feature:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="360"/>
-        <source>TYPE, ID:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="367"/>
-        <source>CREATED:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="374"/>
-        <source>USER:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="381"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="388"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="395"/>
-        <source>unknown</source>
-        <translation type="unfinished"> neznáma</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="442"/>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="106"/>
         <source>Properties</source>
         <translation type="unfinished">Vlastnosti</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="545"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="548"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="551"/>
-        <source>Add new relation</source>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="158"/>
+        <source>Members</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="554"/>
-        <source>A</source>
-        <translation type="unfinished"></translation>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="260"/>
+        <source>Create</source>
+        <translation type="unfinished">Vytvoriť</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="576"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="579"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="582"/>
-        <source>Edit selected relation</source>
-        <translation type="unfinished"></translation>
+        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="276"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Zrušiť</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="585"/>
+        <source>OSM Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmDockWidget</name>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation type="obsolete"> neznáma</translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="obsolete">Vlastnosti</translation>
+    </message>
+    <message>
         <source>E</source>
-        <translation type="unfinished">V</translation>
+        <translation type="obsolete">V</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="607"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="610"/>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="613"/>
-        <source>Remove selected relation</source>
+        <source>R</source>
+        <translation type="obsolete">R</translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="obsolete">1</translation>
+    </message>
+</context>
+<context>
+    <name>OsmDownloadDlg</name>
+    <message>
+        <source>OSM Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="616"/>
-        <source>R</source>
-        <translation type="unfinished">R</translation>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="643"/>
+        <source>Waiting for OpenStreetMap server ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Download Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download failed: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Getting data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both extents are too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latitude extent is too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude extent is too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK! Area is probably acceptable to server.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
+        <source>Download OSM data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="40"/>
+        <source>Extent</source>
+        <translation type="unfinished">Rozsah</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="48"/>
+        <source>Latitude:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="55"/>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="96"/>
+        <source>   From</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="72"/>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="113"/>
+        <source>To</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="89"/>
+        <source>Longitude:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="166"/>
+        <source>&lt;nothing&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="182"/>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="210"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="196"/>
+        <source>Download to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="219"/>
+        <source>Open data automatically after download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="247"/>
+        <source>Replace current data (current layer will be removed)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
+        <source>Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="365"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Zrušiť</translation>
+    </message>
+</context>
+<context>
+    <name>OsmFeatureDW</name>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
+        <source>OSM Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="67"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="101"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="129"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="157"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="179"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="207"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="235"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="260"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="282"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="304"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="417"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="515"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="566"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="582"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="598"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="92"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="95"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="98"/>
+        <source>Identify object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="126"/>
+        <source>Move object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="154"/>
+        <source>Create point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="176"/>
+        <source>Create line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="204"/>
+        <source>Create polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="232"/>
+        <source>Create relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="251"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="254"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="257"/>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="273"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="276"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="279"/>
+        <source>Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="295"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="298"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="301"/>
+        <source>Show/Hide OSM Edit History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="331"/>
+        <source>Feature:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="360"/>
+        <source>TYPE, ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="367"/>
+        <source>CREATED:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="374"/>
+        <source>USER:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="381"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="388"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="395"/>
+        <source>unknown</source>
+        <translation type="unfinished"> neznáma</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="408"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="411"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="414"/>
+        <source>Remove feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="460"/>
+        <source>Properties</source>
+        <translation type="unfinished">Vlastnosti</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="506"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="509"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="512"/>
+        <source>Remove selected tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="525"/>
+        <source>Relations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="557"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="560"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="563"/>
+        <source>Add relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="573"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="576"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="579"/>
+        <source>Edit relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="589"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="592"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="595"/>
+        <source>Remove relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="625"/>
         <source>Relation tags:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="690"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="672"/>
         <source>1</source>
         <translation type="unfinished">1</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="698"/>
+        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="680"/>
         <source>Relation members:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="498"/>
+        <source>OSM Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Feature Dock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose OSM feature first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose relation for editing first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Property &apos;%1&apos; cannot be added twice.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmImportDlg</name>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="16"/>
+        <source>Import data to OSM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="25"/>
+        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="50"/>
+        <source>Layer</source>
+        <translation type="unfinished">Vrstva</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="69"/>
+        <source>Import only current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmLoadDlg</name>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="16"/>
+        <source>Load OSM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="33"/>
+        <source>OpenStreetMap file to load:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="46"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="55"/>
+        <source>Add columns for tags:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
+        <source>Replace current data (current layers will be removed)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmSaveDlg</name>
+    <message>
+        <source>Save OSM to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving nodes...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving lines...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving polygons...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving relations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
+        <source>Save OSM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="33"/>
+        <source>Where to save:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="52"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="61"/>
+        <source>Features to save:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="81"/>
+        <source>Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="91"/>
+        <source>Lines</source>
+        <translation type="unfinished">Línie</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="101"/>
+        <source>Polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="115"/>
         <source>Relations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="125"/>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmUndoRedoDW</name>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="16"/>
+        <source>OSM Edit History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="25"/>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="28"/>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="31"/>
+        <source>Clear all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="34"/>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="66"/>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="85"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="57"/>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="60"/>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="63"/>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="76"/>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="79"/>
+        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="82"/>
+        <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>OsmUndoRedoDockWidget</name>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="17"/>
-        <source>OSM Edit History</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="26"/>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="29"/>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="32"/>
-        <source>Clear all</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="35"/>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="67"/>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="86"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
+</context>
+<context>
+    <name>OsmUploadDlg</name>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="58"/>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="61"/>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="64"/>
-        <source>Undo</source>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
+        <source>Upload OSM data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="77"/>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="80"/>
-        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="83"/>
-        <source>Redo</source>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="37"/>
+        <source>Ready for upload</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="80"/>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="85"/>
+        <source>2</source>
+        <translation type="unfinished">2</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="90"/>
+        <source>3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="95"/>
+        <source>4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="100"/>
+        <source>5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="108"/>
+        <source>Comment on your changes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="134"/>
+        <source>OSM account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="142"/>
+        <source>Username:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="162"/>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="179"/>
+        <source>Show password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="186"/>
+        <source>Save password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uploading data...</source>
+        <translation type="unfinished">Nahrávajú sa údaje...</translation>
     </message>
 </context>
 <context>
@@ -3477,7 +3580,7 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Chyba pri čítaní meta údajov zásuvného modulu </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2962"/>
+        <location filename="../src/app/qgisapp.cpp" line="2966"/>
         <source>Where is &apos;%1&apos; (original location: %2)?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3625,7 +3728,7 @@ Metadata in GRASS Browser</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1171"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1198"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation type="unfinished"></translation>
@@ -3638,7 +3741,7 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Quantum GIS -</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2010"/>
+        <location filename="../src/app/qgisapp.cpp" line="2014"/>
         <source>Version</source>
         <translation>verzia </translation>
     </message>
@@ -3647,13 +3750,13 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">nie je platný alebo rozpoznaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2477"/>
-        <location filename="../src/app/qgisapp.cpp" line="5881"/>
+        <location filename="../src/app/qgisapp.cpp" line="2481"/>
+        <location filename="../src/app/qgisapp.cpp" line="5894"/>
         <source>Invalid Data Source</source>
         <translation>Chybný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4107"/>
+        <location filename="../src/app/qgisapp.cpp" line="4111"/>
         <source>No Layer Selected</source>
         <translation>Nie je vybratá žiadna vrstva</translation>
     </message>
@@ -3710,57 +3813,57 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">QGIS nemohol nahrať zásuvný modul z: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4841"/>
+        <location filename="../src/app/qgisapp.cpp" line="4854"/>
         <source>There is a new version of QGIS available</source>
         <translation type="unfinished">K dispozícii je nová verzia QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4847"/>
+        <location filename="../src/app/qgisapp.cpp" line="4860"/>
         <source>You are running a development version of QGIS</source>
         <translation type="unfinished">Používate vývojovú verziu QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4851"/>
+        <location filename="../src/app/qgisapp.cpp" line="4864"/>
         <source>You are running the current version of QGIS</source>
         <translation>Používate aktuálnu verziu QGISu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4856"/>
+        <location filename="../src/app/qgisapp.cpp" line="4869"/>
         <source>Would you like more information?</source>
         <translation>Prajete si viac informácií?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4859"/>
         <location filename="../src/app/qgisapp.cpp" line="4872"/>
-        <location filename="../src/app/qgisapp.cpp" line="4877"/>
-        <location filename="../src/app/qgisapp.cpp" line="4905"/>
+        <location filename="../src/app/qgisapp.cpp" line="4885"/>
+        <location filename="../src/app/qgisapp.cpp" line="4890"/>
+        <location filename="../src/app/qgisapp.cpp" line="4918"/>
         <source>QGIS Version Information</source>
         <translation>Informácie o verzii QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4877"/>
+        <location filename="../src/app/qgisapp.cpp" line="4890"/>
         <source>Unable to get current version information from server</source>
         <translation type="unfinished">Zo servera nie je možné získať informáciu o aktuálnej verzii</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4891"/>
+        <location filename="../src/app/qgisapp.cpp" line="4904"/>
         <source>Connection refused - server may be down</source>
         <translation type="unfinished">Spojenie odmietnuté - server je zrejme vypnutý</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4894"/>
+        <location filename="../src/app/qgisapp.cpp" line="4907"/>
         <source>QGIS server was not found</source>
         <translation type="unfinished">Nebol nájdený server QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2632"/>
-        <location filename="../src/app/qgisapp.cpp" line="2715"/>
+        <location filename="../src/app/qgisapp.cpp" line="2636"/>
+        <location filename="../src/app/qgisapp.cpp" line="2719"/>
         <source>Invalid Layer</source>
         <translation>Chybná vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2632"/>
-        <location filename="../src/app/qgisapp.cpp" line="2715"/>
+        <location filename="../src/app/qgisapp.cpp" line="2636"/>
+        <location filename="../src/app/qgisapp.cpp" line="2719"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation type="unfinished">%1 je chybná vrstva a nemôže byť nahratá.</translation>
     </message>
@@ -3785,27 +3888,27 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Rozsah: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4144"/>
+        <location filename="../src/app/qgisapp.cpp" line="4148"/>
         <source>Problem deleting features</source>
         <translation type="unfinished">Problém pri mazaní objektov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4145"/>
+        <location filename="../src/app/qgisapp.cpp" line="4149"/>
         <source>A problem occured during deletion of features</source>
         <translation type="unfinished">Pri mazaní objektov sa vyskytol problém</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4115"/>
+        <location filename="../src/app/qgisapp.cpp" line="4119"/>
         <source>No Vector Layer Selected</source>
         <translation>Nie je vybratá žiadna vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4116"/>
+        <location filename="../src/app/qgisapp.cpp" line="4120"/>
         <source>Deleting features only works on vector layers</source>
         <translation type="unfinished">Mazanie objektov funguje iba pri vektorových vrstvách</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4108"/>
+        <location filename="../src/app/qgisapp.cpp" line="4112"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation type="unfinished">Na vymazanie objektu je treba vybrať vektorovú vrstvu v okne Legenda</translation>
     </message>
@@ -3815,13 +3918,13 @@ Metadata in GRASS Browser</comment>
         <translation>Vykresľovanie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3505"/>
+        <location filename="../src/app/qgisapp.cpp" line="3509"/>
         <source>Choose a QGIS project file</source>
         <translation type="unfinished">Vyberte súbor QGIS projektu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3551"/>
-        <location filename="../src/app/qgisapp.cpp" line="3631"/>
+        <location filename="../src/app/qgisapp.cpp" line="3555"/>
+        <location filename="../src/app/qgisapp.cpp" line="3635"/>
         <source>Unable to save project</source>
         <translation type="unfinished">Nie je možné uložiť projekt</translation>
     </message>
@@ -3830,12 +3933,12 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Nie je možné uložiť projekt do </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1828"/>
+        <location filename="../src/app/qgisapp.cpp" line="1832"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Okno Legenda, ktoré zobrazuje všetky vrstvy nachádzajúce sa na mapovom plátne. Kliknutím na zaškrtávacie políčko sa zapne alebo vypne vrstva. Dvojklikom na vrstvu v okne Legenda možno prispôsobiť jej vzhľad a nastaviť ostatné vlastnosti.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1763"/>
+        <location filename="../src/app/qgisapp.cpp" line="1767"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Okno Mapový prehľad. Táto oblasť môže byť použitá na zobrazenie polohy mapy, kde vidno práve vyobrazený výrez z mapy. Aktuálne zobrazený rozsah je znázornený červeným obdĺžnikom. Do mapového prehľadu je možné pridať ktorúkoľvek vrstvu.</translation>
     </message>
@@ -3859,14 +3962,14 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Otvoriť vektorovú vrstvu podporovanú knižnicou OGR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3345"/>
-        <location filename="../src/app/qgisapp.cpp" line="3359"/>
-        <location filename="../src/app/qgisapp.cpp" line="3415"/>
+        <location filename="../src/app/qgisapp.cpp" line="3349"/>
+        <location filename="../src/app/qgisapp.cpp" line="3363"/>
+        <location filename="../src/app/qgisapp.cpp" line="3419"/>
         <source>QGIS Project Read Error</source>
         <translation type="unfinished">Chyba pri čítaní QGIS projektu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5788"/>
+        <location filename="../src/app/qgisapp.cpp" line="5801"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation type="unfinished">Otvoriť rastrový zdroj údajov podporovaný knižnicou GDAL</translation>
     </message>
@@ -3888,12 +3991,12 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Pokúsiť sa nájsť chýbajúce vrstvy?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3198"/>
+        <location filename="../src/app/qgisapp.cpp" line="3202"/>
         <source>Save As</source>
         <translation>Uložiť ako</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3298"/>
+        <location filename="../src/app/qgisapp.cpp" line="3302"/>
         <source>Choose a QGIS project file to open</source>
         <translation type="unfinished">Vyberte súbor QGIS projektu, ktorý chcete otvoriť</translation>
     </message>
@@ -3906,7 +4009,7 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Nové vlastnosti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3440"/>
+        <location filename="../src/app/qgisapp.cpp" line="3444"/>
         <source>Unable to open project</source>
         <translation>Nie je možné otvoriť projekt</translation>
     </message>
@@ -3915,7 +4018,7 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Nie je možné uložiť projekt </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3696"/>
+        <location filename="../src/app/qgisapp.cpp" line="3700"/>
         <source>QGIS: Unable to load project</source>
         <translation type="unfinished">QGIS: Nie je možné načítať projekt</translation>
     </message>
@@ -3924,26 +4027,26 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Nemožno načítať projekt </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5039"/>
-        <location filename="../src/app/qgisapp.cpp" line="5084"/>
-        <location filename="../src/app/qgisapp.cpp" line="5961"/>
+        <location filename="../src/app/qgisapp.cpp" line="5052"/>
+        <location filename="../src/app/qgisapp.cpp" line="5097"/>
+        <location filename="../src/app/qgisapp.cpp" line="5974"/>
         <source>Layer is not valid</source>
         <translation type="unfinished">Neplatná vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5040"/>
-        <location filename="../src/app/qgisapp.cpp" line="5085"/>
-        <location filename="../src/app/qgisapp.cpp" line="5962"/>
+        <location filename="../src/app/qgisapp.cpp" line="5053"/>
+        <location filename="../src/app/qgisapp.cpp" line="5098"/>
+        <location filename="../src/app/qgisapp.cpp" line="5975"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation type="unfinished">Táto vrstva nie je platnou vrstvou a nemôže byť pridaná do mapy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5129"/>
+        <location filename="../src/app/qgisapp.cpp" line="5142"/>
         <source>Save?</source>
         <translation>Uložiť?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5130"/>
+        <location filename="../src/app/qgisapp.cpp" line="5143"/>
         <source>Do you want to save the current project?</source>
         <translation type="unfinished">Uložiť aktuálny projekt?</translation>
     </message>
@@ -3970,30 +4073,30 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete"> nie je podporovaný zdroj údajov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6048"/>
+        <location filename="../src/app/qgisapp.cpp" line="6061"/>
         <source>Unsupported Data Source</source>
         <translation>Nepodporovaný zdroj údajov</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="813"/>
-        <location filename="../src/app/qgisapp.cpp" line="6144"/>
+        <location filename="../src/app/qgisapp.cpp" line="6157"/>
         <source>New Bookmark</source>
         <translation>Nová záložka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6145"/>
+        <location filename="../src/app/qgisapp.cpp" line="6158"/>
         <source>Enter a name for the new bookmark:</source>
         <translation type="unfinished">Vložte meno novej záložky:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4572"/>
         <location filename="../src/app/qgisapp.cpp" line="4585"/>
-        <location filename="../src/app/qgisapp.cpp" line="6162"/>
+        <location filename="../src/app/qgisapp.cpp" line="4598"/>
+        <location filename="../src/app/qgisapp.cpp" line="6175"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6162"/>
+        <location filename="../src/app/qgisapp.cpp" line="6175"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation type="unfinished">Nie je možné vytvoriť záložku. Databáza používateľa chýba, alebo je poškodená</translation>
     </message>
@@ -4564,28 +4667,24 @@ Metadata in GRASS Browser</comment>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="834"/>
         <source>V</source>
         <comment>Add a Vector Layer</comment>
-        <translation>V</translation>
+        <translation type="obsolete">V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="839"/>
         <source>R</source>
         <comment>Add a Raster Layer</comment>
-        <translation>R</translation>
+        <translation type="obsolete">R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="844"/>
         <source>D</source>
         <comment>Add a PostGIS Layer</comment>
-        <translation>D</translation>
+        <translation type="obsolete">D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>N</source>
         <comment>Create a New Vector Layer</comment>
-        <translation>N</translation>
+        <translation type="obsolete">N</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="898"/>
@@ -4594,34 +4693,29 @@ Metadata in GRASS Browser</comment>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="916"/>
         <source>+</source>
         <comment>Show all layers in the overview map</comment>
-        <translation>+</translation>
+        <translation type="obsolete">+</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="921"/>
         <source>-</source>
         <comment>Remove all layers from overview map</comment>
-        <translation>-</translation>
+        <translation type="obsolete">-</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="926"/>
         <source>S</source>
         <comment>Show all layers</comment>
-        <translation>S</translation>
+        <translation type="obsolete">S</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="931"/>
         <source>H</source>
         <comment>Hide all layers</comment>
-        <translation>H</translation>
+        <translation type="obsolete">H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="950"/>
         <source>P</source>
         <comment>Set project properties</comment>
-        <translation>P</translation>
+        <translation type="obsolete">P</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="999"/>
@@ -4654,10 +4748,9 @@ Metadata in GRASS Browser</comment>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="775"/>
         <source>F</source>
         <comment>Zoom to Full Extents</comment>
-        <translation>F</translation>
+        <translation type="obsolete">F</translation>
     </message>
     <message>
         <source>Ctrl+F</source>
@@ -4665,10 +4758,9 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="759"/>
         <source>I</source>
         <comment>Click on features to identify them</comment>
-        <translation>I</translation>
+        <translation type="obsolete">I</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
@@ -4681,10 +4773,9 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="817"/>
         <source>B</source>
         <comment>Show Bookmarks</comment>
-        <translation>B</translation>
+        <translation type="obsolete">B</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="812"/>
@@ -4698,28 +4789,24 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">W</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="910"/>
         <source>O</source>
         <comment>Add current layer to overview map</comment>
-        <translation>O</translation>
+        <translation type="obsolete">O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="640"/>
         <source>.</source>
         <comment>Capture Points</comment>
-        <translation>.</translation>
+        <translation type="obsolete">.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="646"/>
         <source>/</source>
         <comment>Capture Lines</comment>
-        <translation>/</translation>
+        <translation type="obsolete">/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="652"/>
         <source>Ctrl+/</source>
         <comment>Capture Polygons</comment>
-        <translation>Ctrl+/</translation>
+        <translation type="obsolete">Ctrl+/</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="997"/>
@@ -4766,12 +4853,12 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Skryť väčšinu panelov s nástrojmi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4897"/>
+        <location filename="../src/app/qgisapp.cpp" line="4910"/>
         <source>Network error while communicating with server</source>
         <translation type="unfinished">Chyba siete pri komunikácii so serverom</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4900"/>
+        <location filename="../src/app/qgisapp.cpp" line="4913"/>
         <source>Unknown network socket error</source>
         <translation>Neznáma chyba sieťového spojenia</translation>
     </message>
@@ -4795,7 +4882,7 @@ Metadata in GRASS Browser</comment>
         <translation>Aktuálna mierka mapy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5336"/>
+        <location filename="../src/app/qgisapp.cpp" line="5349"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Mapové súradnice polohy kurzora myši</translation>
     </message>
@@ -4862,28 +4949,28 @@ Metadata in GRASS Browser</comment>
         <translation type="obsolete">Chyba pri čítaní meta údajov zásuvného modulu </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4122"/>
+        <location filename="../src/app/qgisapp.cpp" line="4126"/>
         <source>Provider does not support deletion</source>
         <translation type="unfinished">Správca údajov nepodporuje mazanie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4123"/>
+        <location filename="../src/app/qgisapp.cpp" line="4127"/>
         <source>Data provider does not support deleting features</source>
         <translation type="unfinished">Správca údajov nepodporuje mazanie objektov</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4129"/>
-        <location filename="../src/app/qgisapp.cpp" line="4236"/>
+        <location filename="../src/app/qgisapp.cpp" line="4133"/>
+        <location filename="../src/app/qgisapp.cpp" line="4240"/>
         <source>Layer not editable</source>
         <translation type="unfinished">Vrstva nie je upravovateľná</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4130"/>
+        <location filename="../src/app/qgisapp.cpp" line="4134"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation type="unfinished">Aktuálna vrstva nie je upravovateľná. Na paneli Digitalizácia kliknite na ikonu &apos;Začať úpravy&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4646"/>
+        <location filename="../src/app/qgisapp.cpp" line="4659"/>
         <source>Invalid scale</source>
         <translation>Neplatná mierka</translation>
     </message>
@@ -4910,7 +4997,7 @@ Metadata in GRASS Browser</comment>
         <translation type="unfinished">Ukáže informáciu o objekte pri prechádzaní myšou ponad objekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6176"/>
+        <location filename="../src/app/qgisapp.cpp" line="6189"/>
         <source>Project file is older</source>
         <translation>Súbor projektu je starší</translation>
     </message>
@@ -4950,7 +5037,7 @@ Menu path to setting options</comment>
         <translation type="obsolete">&lt;tt&gt;Nastavenia:Vlastnosti:Všeobecné&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6194"/>
+        <location filename="../src/app/qgisapp.cpp" line="6207"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation type="unfinished">Upozorniť pri otváraní súboru projektu uloženého staršou verziou QGISu</translation>
     </message>
@@ -5008,7 +5095,7 @@ Menu path to setting options</comment>
         <translation type="obsolete">Mapové plátno - je to miesto kde sa zobrazujú rastrové a vektorové vrstvy pridané do mapy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1772"/>
+        <location filename="../src/app/qgisapp.cpp" line="1776"/>
         <source>Overview</source>
         <translation type="unfinished">Prehľad</translation>
     </message>
@@ -5017,22 +5104,22 @@ Menu path to setting options</comment>
         <translation type="obsolete">Legenda</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1981"/>
+        <location filename="../src/app/qgisapp.cpp" line="1985"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translation type="unfinished">Používate verziu %1 programu QGIS postavenú na kóde rev. %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1986"/>
+        <location filename="../src/app/qgisapp.cpp" line="1990"/>
         <source> This copy of QGIS has been built with PostgreSQL support.</source>
         <translation type="unfinished"> Táto kópia QGISu bola postavená s podporou PostgreSQL.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1989"/>
+        <location filename="../src/app/qgisapp.cpp" line="1993"/>
         <source> This copy of QGIS has been built without PostgreSQL support.</source>
         <translation type="unfinished"> Táto kópia QGISu bola postavená bez podpory PostgreSQL.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1998"/>
+        <location filename="../src/app/qgisapp.cpp" line="2002"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation type="unfinished">
@@ -5086,7 +5173,7 @@ Táto binrána verzia bola skompilovaná s knižnicou Qt %1 a momentálne beží
         <translation type="unfinished">Stav CRS - kliknutím sa otvorí dialógové okno s nastaveniami referenčého súradnicového systému</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1703"/>
+        <location filename="../src/app/qgisapp.cpp" line="1707"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation type="unfinished">Mapové plátno - je to miesto kde sa zobrazujú rastrové a vektorové vrstvy pridané do mapy</translation>
     </message>
@@ -5133,12 +5220,12 @@ Táto binrána verzia bola skompilovaná s knižnicou Qt %1 a momentálne beží
 %1.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5421"/>
+        <location filename="../src/app/qgisapp.cpp" line="5434"/>
         <source>Maptips require an active layer</source>
         <translation type="unfinished">Mapové tipy vyžadujú nejakú aktívnu vrstvu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6193"/>
+        <location filename="../src/app/qgisapp.cpp" line="6206"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation type="unfinished">&lt;tt&gt;Nastavenia:Vlastnosti:Všeobecné&lt;/tt&gt;</translation>
@@ -5270,16 +5357,14 @@ Prosím kontaktujte vývojárov.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="765"/>
         <source>M</source>
         <comment>Measure a Line</comment>
-        <translation type="unfinished">M</translation>
+        <translation type="obsolete">M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="770"/>
         <source>J</source>
         <comment>Measure an Area</comment>
-        <translation type="unfinished">J</translation>
+        <translation type="obsolete">J</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="784"/>
@@ -5319,10 +5404,9 @@ Prosím kontaktujte vývojárov.
         <translation type="unfinished">Pridať vrstvu PostGIS...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="868"/>
         <source>W</source>
         <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="unfinished">W</translation>
+        <translation type="obsolete">W</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="869"/>
@@ -5371,9 +5455,27 @@ Prosím kontaktujte vývojárov.
         <translation type="unfinished">Pridať do Prehľadu</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="910"/>
+        <source>Ctrl+Shift+O</source>
+        <comment>Add current layer to overview map</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/app/qgisapp.cpp" line="915"/>
         <source>Add All to Overview</source>
         <translation type="unfinished">Všetko pridať do Prehľadu</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="926"/>
+        <source>Ctrl+Shift+U</source>
+        <comment>Show all layers</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="931"/>
+        <source>Ctrl+Shift+H</source>
+        <comment>Hide all layers</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="937"/>
@@ -5384,6 +5486,12 @@ Prosím kontaktujte vývojárov.
         <location filename="../src/app/qgisapp.cpp" line="944"/>
         <source>Toggle Full Screen Mode</source>
         <translation type="unfinished">Prepnúť do celoobrazovkového režimu</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="950"/>
+        <source>Ctrl+Shift+P</source>
+        <comment>Set project properties</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="974"/>
@@ -5447,22 +5555,22 @@ Prosím kontaktujte vývojárov.
         <translation type="unfinished">Prepínanie medzi zobrazovaním rozsahu a polohy myši</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2011"/>
+        <location filename="../src/app/qgisapp.cpp" line="2015"/>
         <source>Whats new in Version 1.2.0?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2014"/>
+        <location filename="../src/app/qgisapp.cpp" line="2018"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2022"/>
+        <location filename="../src/app/qgisapp.cpp" line="2026"/>
         <source>This release includes over 140 bug fixes and enhancements over the QGIS 1.1.0 release. In addition we have added the following new features:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2026"/>
+        <location filename="../src/app/qgisapp.cpp" line="2030"/>
         <source>Editing:
 
 Editing functionality in QGIS has had a major update in this release. This
@@ -5566,99 +5674,99 @@ updates.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3580"/>
+        <location filename="../src/app/qgisapp.cpp" line="3584"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation type="unfinished">Vyberte meno súboru do ktorého sa uloží súbor projektu QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3784"/>
+        <location filename="../src/app/qgisapp.cpp" line="3788"/>
         <source>Choose a file name to save the map image as</source>
         <translation type="unfinished">Vyberte meno súboru, do ktorého sa má uložiť obrázok mapy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4141"/>
+        <location filename="../src/app/qgisapp.cpp" line="4145"/>
         <source>Features deleted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4187"/>
+        <location filename="../src/app/qgisapp.cpp" line="4191"/>
         <source>Merging features...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4187"/>
+        <location filename="../src/app/qgisapp.cpp" line="4191"/>
         <source>Abort</source>
         <translation type="unfinished">Prerušiť</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4225"/>
+        <location filename="../src/app/qgisapp.cpp" line="4229"/>
         <source>No active layer</source>
         <translation type="unfinished">Žiadna vrstva nie je aktívna</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4225"/>
+        <location filename="../src/app/qgisapp.cpp" line="4229"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4231"/>
+        <location filename="../src/app/qgisapp.cpp" line="4235"/>
         <source>Active layer is not vector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4231"/>
+        <location filename="../src/app/qgisapp.cpp" line="4235"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4236"/>
+        <location filename="../src/app/qgisapp.cpp" line="4240"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4244"/>
-        <location filename="../src/app/qgisapp.cpp" line="4278"/>
+        <location filename="../src/app/qgisapp.cpp" line="4248"/>
+        <location filename="../src/app/qgisapp.cpp" line="4282"/>
         <source>The merge tool requires at least two selected features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4261"/>
-        <location filename="../src/app/qgisapp.cpp" line="4297"/>
+        <location filename="../src/app/qgisapp.cpp" line="4265"/>
+        <location filename="../src/app/qgisapp.cpp" line="4301"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4303"/>
+        <location filename="../src/app/qgisapp.cpp" line="4307"/>
         <source>Merged features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4440"/>
+        <location filename="../src/app/qgisapp.cpp" line="4445"/>
         <source>Features cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4491"/>
+        <location filename="../src/app/qgisapp.cpp" line="4497"/>
         <source>Features pasted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4555"/>
+        <location filename="../src/app/qgisapp.cpp" line="4568"/>
         <source>Start editing failed</source>
         <translation type="unfinished">Pokus o úpravy zlyhal</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4555"/>
+        <location filename="../src/app/qgisapp.cpp" line="4568"/>
         <source>Provider cannot be opened for editing</source>
         <translation type="unfinished">Správca sa nedá otvoriť pre zápis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4563"/>
+        <location filename="../src/app/qgisapp.cpp" line="4576"/>
         <source>Stop editing</source>
         <translation type="unfinished">Ukončiť úpravy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4564"/>
+        <location filename="../src/app/qgisapp.cpp" line="4577"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation type="unfinished">Prajete si uložiť zmeny vo vrstve %1?</translation>
     </message>
@@ -5673,17 +5781,17 @@ Chyby:  %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4585"/>
+        <location filename="../src/app/qgisapp.cpp" line="4598"/>
         <source>Problems during roll back</source>
         <translation type="unfinished">Problémy v priebehu návratu do východzieho stavu (roll back)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4783"/>
+        <location filename="../src/app/qgisapp.cpp" line="4796"/>
         <source>Python Console</source>
         <translation type="unfinished">Konzola Pythonu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5329"/>
+        <location filename="../src/app/qgisapp.cpp" line="5342"/>
         <source>Map coordinates for the current view extents</source>
         <translation type="unfinished">Mapové súradnice pre rozsah aktuálneho pohľadu</translation>
     </message>
@@ -5702,53 +5810,137 @@ Chyby:  %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2476"/>
+        <location filename="../src/app/qgisapp.cpp" line="640"/>
+        <source>Ctrl+.</source>
+        <comment>Capture Points</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="646"/>
+        <source>Ctrl+/</source>
+        <comment>Capture Lines</comment>
+        <translation type="unfinished">Ctrl+/</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="652"/>
+        <source>Ctrl+Shift+/</source>
+        <comment>Capture Polygons</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="759"/>
+        <source>Ctrl+Shift+I</source>
+        <comment>Click on features to identify them</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="765"/>
+        <source>Ctrl+Shift+M</source>
+        <comment>Measure a Line</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="770"/>
+        <source>Ctrl+Shift+J</source>
+        <comment>Measure an Area</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="775"/>
+        <source>Ctrl+Shift+F</source>
+        <comment>Zoom to Full Extents</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="817"/>
+        <source>Ctrl+Shift+B</source>
+        <comment>Show Bookmarks</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="829"/>
+        <source>Ctrl+Shift+N</source>
+        <comment>Create a New Vector Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="834"/>
+        <source>Ctrl+Shift+V</source>
+        <comment>Add a Vector Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="839"/>
+        <source>Ctrl+Shift+R</source>
+        <comment>Add a Raster Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="844"/>
+        <source>Ctrl+Shift+D</source>
+        <comment>Add a PostGIS Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="856"/>
+        <source>Ctrl+Shift+L</source>
+        <comment>Add a SpatiaLite Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="868"/>
+        <source>Ctrl+Shift+W</source>
+        <comment>Add a Web Mapping Server Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2480"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3299"/>
-        <location filename="../src/app/qgisapp.cpp" line="3506"/>
-        <location filename="../src/app/qgisapp.cpp" line="3581"/>
+        <location filename="../src/app/qgisapp.cpp" line="3303"/>
+        <location filename="../src/app/qgisapp.cpp" line="3510"/>
+        <location filename="../src/app/qgisapp.cpp" line="3585"/>
         <source>QGis files (*.qgs)</source>
         <translation type="unfinished">QGIS súbory (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3416"/>
+        <location filename="../src/app/qgisapp.cpp" line="3420"/>
         <source>%1
 Try to find missing layers?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3539"/>
-        <location filename="../src/app/qgisapp.cpp" line="3624"/>
+        <location filename="../src/app/qgisapp.cpp" line="3543"/>
+        <location filename="../src/app/qgisapp.cpp" line="3628"/>
         <source>Saved project to: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3552"/>
-        <location filename="../src/app/qgisapp.cpp" line="3632"/>
+        <location filename="../src/app/qgisapp.cpp" line="3556"/>
+        <location filename="../src/app/qgisapp.cpp" line="3636"/>
         <source>Unable to save project to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3559"/>
-        <location filename="../src/app/qgisapp.cpp" line="3638"/>
+        <location filename="../src/app/qgisapp.cpp" line="3563"/>
+        <location filename="../src/app/qgisapp.cpp" line="3642"/>
         <source>Unable to save project %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3697"/>
+        <location filename="../src/app/qgisapp.cpp" line="3701"/>
         <source>Unable to load project %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3826"/>
+        <location filename="../src/app/qgisapp.cpp" line="3830"/>
         <source>Saved map image to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4573"/>
+        <location filename="../src/app/qgisapp.cpp" line="4586"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -5756,48 +5948,48 @@ Errors: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4865"/>
+        <location filename="../src/app/qgisapp.cpp" line="4878"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4905"/>
+        <location filename="../src/app/qgisapp.cpp" line="4918"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5349"/>
+        <location filename="../src/app/qgisapp.cpp" line="5362"/>
         <source>Extents: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5880"/>
+        <location filename="../src/app/qgisapp.cpp" line="5893"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6043"/>
+        <location filename="../src/app/qgisapp.cpp" line="6056"/>
         <source>%1 is not a supported raster data source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6177"/>
+        <location filename="../src/app/qgisapp.cpp" line="6190"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1829"/>
+        <location filename="../src/app/qgisapp.cpp" line="1833"/>
         <source>Layers</source>
         <translation type="unfinished">Vrstvy</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4136"/>
+        <location filename="../src/app/qgisapp.cpp" line="4140"/>
         <source>Delete features</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="4136"/>
+        <location filename="../src/app/qgisapp.cpp" line="4140"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation type="unfinished">
@@ -5814,24 +6006,18 @@ Errors: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="856"/>
-        <source>L</source>
-        <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="857"/>
         <source>Add a SpatiaLite Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1993"/>
+        <location filename="../src/app/qgisapp.cpp" line="1997"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1996"/>
+        <location filename="../src/app/qgisapp.cpp" line="2000"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
         <translation type="unfinished"></translation>
@@ -6321,7 +6507,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Vybrať súbor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributeeditor.cpp" line="254"/>
+        <location filename="../src/app/qgsattributeeditor.cpp" line="235"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
@@ -6845,7 +7031,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeTableModel</name>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="403"/>
+        <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="412"/>
         <source>Attribute changed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9016,17 +9202,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsCoordinateTransform</name>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="484"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="473"/>
         <source>Failed</source>
         <translation>Zlyhala</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="484"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="473"/>
         <source>transform of</source>
         <translation>transformácia</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="497"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="486"/>
         <source>with error: </source>
         <translation>s nasledujúcou chybou:</translation>
     </message>
@@ -9043,7 +9229,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Cieľový priestorový referenčný systém (SRS) nie je platný. </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="417"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
         <translation type="unfinished">Neplatný zdrojový priestorový referenčný systém (CRS). </translation>
     </message>
@@ -9052,13 +9238,13 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Súradnice nemožno previesť. CRS je: </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="425"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
         <translation type="unfinished">Cieľový priestorový referenčný systém (SRS) nie je platný. </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="419"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="427"/>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9180,7 +9366,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Kurzíva &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(poznámka: &amp;amp;copy; sa používa pre znak copyrightu)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="158"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -9192,38 +9378,38 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsCustomProjectionDialog</name>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="171"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="100"/>
         <source>Delete Projection Definition?</source>
         <translation>Vymazať definíciu zobrazenia?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="172"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="101"/>
         <source>Deleting a projection definition is not reversable. Do you want to delete it?</source>
         <translation>Vymazanie definície zobrazenia je nevratné. Naozaj si želáte vymazať ju?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="670"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="697"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="799"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="853"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="599"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="626"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="728"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="782"/>
         <source>Abort</source>
         <translation>Prerušiť</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="675"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="855"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="604"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="784"/>
         <source>New</source>
         <translation>Nová</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="720"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="727"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="743"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="760"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="776"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="882"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="897"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="909"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="649"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="656"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="672"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="689"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="705"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="859"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="874"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="886"/>
         <source>QGIS Custom Projection</source>
         <translation>QGIS Vlastné zobrazenia</translation>
     </message>
@@ -9248,47 +9434,47 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Táto definícia elipsoidu pre proj4 nie je správna. Pred stlačením tlačidla Uložiť je potrebné pridať klauzulu &quot;ellips=&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="721"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="728"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="744"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="777"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="883"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="650"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="657"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="673"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="706"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="860"/>
         <source>This proj4 projection definition is not valid.</source>
         <translation>Táto definícia mapového zobrazenia pre proj4 nie je správna.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="898"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="875"/>
         <source>Northing and Easthing must be in decimal form.</source>
         <translation>Northing (posun na sever) a Easting (posun na východ) musia byť vo forme desatinného čísla.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="910"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="887"/>
         <source>Internal Error (source projection invalid?)</source>
         <translation>Vnútorná chyba (chybný zdroj mapového zobrazenia?)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="722"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="651"/>
         <source> Please give the projection a name before pressing save.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="729"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="658"/>
         <source> Please add the parameters before pressing save.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="745"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="674"/>
         <source> Please add a proj= clause before pressing save.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="761"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="690"/>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
         <comment>COMMENTED OUT</comment>
         <translation type="unfinished">Táto definícia elipsoidu pre proj4 nie je správna. Pred stlačením tlačidla Uložiť je potrebné pridať klauzulu &quot;ellips=&quot;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="778"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="707"/>
         <source> Please correct before pressing save.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11201,7 +11387,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGrassAttributes</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="265"/>
+        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="266"/>
         <source>Warning</source>
         <translation>Upozornenie</translation>
     </message>
@@ -11221,12 +11407,12 @@ p, li { white-space: pre-wrap; }
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="266"/>
+        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="267"/>
         <source>ERROR</source>
         <translation>CHYBA</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="270"/>
+        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="271"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -15144,7 +15330,7 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation type="unfinished">Maximálna mierka pri ktorej bude táto vrstva zobrazená.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="233"/>
         <source>°</source>
         <translation type="unfinished"></translation>
@@ -15184,64 +15370,64 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsLegend</name>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="119"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="118"/>
         <source>group</source>
         <translation>skupina</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="521"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="520"/>
         <source>&amp;Remove</source>
         <translation>&amp;Odobrať</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="514"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="513"/>
         <source>&amp;Make to toplevel item</source>
         <translation>&amp;Premiestniť položku do najvyššej úrovne</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="526"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="525"/>
         <source>Re&amp;name</source>
         <translation>Preme&amp;novať</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="531"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="530"/>
         <source>&amp;Add group</source>
         <translation>Prid&amp;ať skupinu</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="532"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="531"/>
         <source>&amp;Expand all</source>
         <translation>&amp;Rozbaliť</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="533"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="532"/>
         <source>&amp;Collapse all</source>
         <translation>&amp;Zabaliť</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="535"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="534"/>
         <source>Show file groups</source>
         <translation>Ukázať skupiny súborov</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="755"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="766"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="758"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="769"/>
         <source>Stop editing</source>
         <translation type="unfinished">Ukončiť úpravy</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="756"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="767"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="759"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="770"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation type="unfinished">Prajete si uložiť zmeny vo vrstve %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="1996"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="2007"/>
         <source>No Layer Selected</source>
         <translation type="unfinished">Nie je vybratá žiadna vrstva</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="1997"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="2008"/>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
         <translation type="unfinished">Pred otvorením tabuľky atribútov je nutné vybrať vrstvu v okne Legenda</translation>
     </message>
@@ -17261,7 +17447,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOSMDataProvider</name>
     <message>
-        <location filename="../src/providers/osm/osmprovider.cpp" line="320"/>
+        <location filename="../src/providers/osm/osmprovider.cpp" line="386"/>
         <source>Open Street Map format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23139,8 +23325,8 @@ The error was:
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="563"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="780"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="902"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1040"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1273"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1043"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1278"/>
         <source>SQLite error: %1
 
 SQL: %2</source>
@@ -23150,7 +23336,7 @@ SQL: %2</source>
 <context>
     <name>QgsSpatiaLiteProvider::SqliteHandles</name>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1382"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1387"/>
         <source>Failure while connecting to: %1
 
 %2</source>
@@ -24052,12 +24238,12 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         <translation type="obsolete">Avšak zmeny geometrií boli zapísané v poriadku.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2779"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2780"/>
         <source>ERROR: no provider</source>
         <translation type="unfinished">CHYBA: žiadny správca</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2785"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2786"/>
         <source>ERROR: layer not editable</source>
         <translation type="unfinished">CHYBA: vrstva nie je upravovateľná</translation>
     </message>
@@ -24078,12 +24264,12 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         <translation type="obsolete">CHYBA: %1 atribútv nebolo vymazaných.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2868"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2869"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation type="unfinished">ÚSPECH: atribút %1 bol pridaný.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2875"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2876"/>
         <source>ERROR: attribute %1 not added</source>
         <translation type="unfinished">CHYBA: atribút %1 nebol pridaný</translation>
     </message>
@@ -24120,17 +24306,17 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         <translation type="obsolete">CHYBA: %1 objektov nebolo vymazaných.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2418"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2419"/>
         <source>No renderer object</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2422"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2423"/>
         <source>Classification field not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2799"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2800"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation type="unfinished">
@@ -24142,7 +24328,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2805"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2806"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation type="unfinished">
@@ -24154,7 +24340,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2821"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2822"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation type="unfinished">
@@ -24166,7 +24352,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2827"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2828"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation type="unfinished">
@@ -24178,7 +24364,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2934"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2935"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation type="unfinished">
@@ -24190,7 +24376,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2939"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2940"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation type="unfinished">
@@ -24202,7 +24388,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2971"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2972"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation type="unfinished">
@@ -24214,7 +24400,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2976"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2977"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation type="unfinished">
@@ -24226,7 +24412,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2989"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2990"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation type="unfinished">
@@ -24238,7 +24424,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2994"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2995"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation type="unfinished">
@@ -24250,7 +24436,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3006"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3007"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation type="unfinished">
@@ -24262,7 +24448,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3016"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3017"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation type="unfinished">
@@ -24274,7 +24460,7 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2412"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2413"/>
         <source>Unknown renderer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25983,7 +26169,7 @@ p, li { white-space: pre-wrap; }
         <source>Database Host</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
         <translation type="unfinished"></translation>
@@ -26224,7 +26410,7 @@ p, li { white-space: pre-wrap; }
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="134"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
         <translation type="unfinished"></translation>
@@ -26267,7 +26453,7 @@ p, li { white-space: pre-wrap; }
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="267"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
         <translation type="unfinished"></translation>
@@ -26363,7 +26549,7 @@ p, li { white-space: pre-wrap; }
         <source>Resets the compass offset values to the default settings.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="671"/>
         <source>The base path or url from which images and documents can be “relative”</source>
         <translation type="unfinished"></translation>
@@ -26374,7 +26560,7 @@ p, li { white-space: pre-wrap; }
         <source>Base Path</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="750"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
         <translation type="unfinished"></translation>
@@ -26422,7 +26608,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>Apply Path to Image rules when loading docs in external applications</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="963"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translation type="unfinished"></translation>
