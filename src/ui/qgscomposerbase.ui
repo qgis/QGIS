@@ -285,7 +285,7 @@
   </action>
   <action name="mActionAddNewMap" >
    <property name="icon" >
-    <iconset>../themes/default/mActionAddRasterLayer.png</iconset>
+    <iconset>../themes/default/mActionAddMap.png</iconset>
    </property>
    <property name="text" >
     <string>Add Map</string>
@@ -329,7 +329,7 @@
   </action>
   <action name="mActionExportAsImage" >
    <property name="icon" >
-    <iconset>../themes/default/mActionExportMapServer.png</iconset>
+    <iconset>../themes/default/mActionSaveMapAsImage.png</iconset>
    </property>
    <property name="text" >
     <string>Export as Image...</string>
@@ -375,7 +375,7 @@
   </action>
   <action name="mActionAddImage" >
    <property name="icon" >
-    <iconset>../themes/default/mActionSaveMapAsImage.png</iconset>
+    <iconset>../themes/default/mActionAddImage.png</iconset>
    </property>
    <property name="text" >
     <string>Add Image</string>
