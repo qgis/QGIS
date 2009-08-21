@@ -90,9 +90,9 @@ class CORE_EXPORT QgsDistanceArea
   protected:
 
     //! measures line distance, line points are extracted from WKB
-    unsigned char* measureLine( unsigned char* feature, double* area );
+    unsigned char* measureLine( unsigned char* feature, double* area, bool hasZptr = false );
     //! measures polygon area, vertices are extracted from WKB
-    unsigned char* measurePolygon( unsigned char* feature, double* area );
+    unsigned char* measurePolygon( unsigned char* feature, double* area, bool hasZptr = false );
 
     /**
       calculates distance from two points on ellipsoid
