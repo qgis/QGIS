@@ -492,7 +492,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
         <source>Extract Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Csomópontok kivonat</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="27"/>
@@ -532,7 +532,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="48"/>
         <source>Intersect layer</source>
-        <translation>Metsz réteg</translation>
+        <translation>Metsző réteg</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="71"/>
@@ -542,7 +542,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="111"/>
         <source>Buffer distance field</source>
-        <translation>Övezet távolság mez</translation>
+        <translation>Övezet távolság mező</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="118"/>
@@ -559,7 +559,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="93"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="304"/>
         <source>Output shapefile</source>
-        <translation>Eredmény shapefile</translation>
+        <translation>Eredmény shapefájl</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="16"/>
@@ -596,7 +596,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="194"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
-        <translation>Eredmény shapefile</translation>
+        <translation>Eredmény shapefájl</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="16"/>
@@ -728,7 +728,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="250"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="130"/>
         <source>Use only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Csak a szelektált elemekre</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
@@ -754,7 +754,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="62"/>
         <source>PNTCNT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="16"/>
@@ -797,7 +797,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="149"/>
         <source>Use this density of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontsűrűség</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="179"/>
@@ -807,7 +807,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="16"/>
         <source>Random Selection Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Véletlen szelekció eszköz</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="25"/>
@@ -820,7 +820,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="35"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="57"/>
         <source>Randomly Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Véletlenszerű szelekció</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="44"/>
@@ -858,7 +858,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="55"/>
         <source>Use predefined spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Előre definiált vetületi rendszer</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="74"/>
@@ -868,23 +868,23 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Import vetületi rendszer a létező réteghez</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
         <source>Import spatial reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation>Import vetületi rendszer:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="16"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="16"/>
         <source>Generate Regular Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabályos pontok generálása</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="38"/>
         <source>Input Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Input koordináták</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="47"/>
@@ -918,7 +918,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="109"/>
         <source>Use this point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont távolság</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="158"/>
@@ -928,7 +928,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="178"/>
         <source>Initial inset from corner (LH side)</source>
-        <translation type="unfinished"></translation>
+	<translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
@@ -943,7 +943,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="59"/>
         <source>Take attributes of first located feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútumok az első megtalált elemből</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="69"/>
@@ -993,7 +993,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="27"/>
         <source>Output summed length field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Output összegzett hossz mező neve</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="34"/>
@@ -1082,170 +1082,493 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished"></translation>
+        <translation>új szelekció létrehozás</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>hozzáadás az aktuális szelekcióhoz</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>törlés az aktuális szelekcióból</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelekció elhelyezkedés alapján</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemek szelektálása ebben:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>melyek metszenek elemeket ebben:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuális szelekció módosítás ezzel:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Add meg az input réteget</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Add meg a szelekció réteget</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Távolság mátrix</translation>
+        <translation>Távolság mátrix</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Eredmény mátrix:</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Pontok a felületben</translation>
+        <translation>Pontok a felületben</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Eredmény Shape fájl:</translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor réteg hibás</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Össz vonalhossz</translation>
+        <translation>Össz vonalhossz</translation>
     </message>
 </context>
 <context>
     <name>DlgAddRelation</name>
     <message>
+        <source>OSM Information</source>
+        <translation>OSM információ</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="13"/>
+        <source>Create OSM relation</source>
+        <translation>OSM kapcsolat létrehozás</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="30"/>
+        <source>Relation type:</source>
+        <translation>Kapcsolat típus:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="78"/>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="126"/>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="133"/>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="178"/>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="188"/>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
     </message>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="106"/>
         <source>Properties</source>
-        <translation type="obsolete">Tulajdonságok</translation>
+        <translation>Tulajdonságok</translation>
     </message>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="158"/>
+        <source>Members</source>
+        <translation>Tagok</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="260"/>
         <source>Create</source>
-        <translation type="obsolete">Létrehoz</translation>
+        <translation>Létrehoz</translation>
     </message>
     <message>
+        <source>Storno</source>
+        <translation>Visszavonás</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgAddRelation.ui" line="276"/>
         <source>Cancel</source>
-        <translation type="obsolete">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
 </context>
 <context>
     <name>DlgDownloadOSM</name>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="19"/>
+        <source>Download OSM data</source>
+        <translation>OSM adat letöltés</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="40"/>
         <source>Extent</source>
-        <translation type="obsolete">Terjedelem</translation>
+        <translation>Terjedelem</translation>
     </message>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="48"/>
         <source>Latitude:</source>
-        <translation type="obsolete">Szélesség:</translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="55"/>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="96"/>
+        <source>   From</source>
+        <translation>Forrás</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="72"/>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="113"/>
+        <source>To</source>
+        <translation>Ide</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="89"/>
         <source>Longitude:</source>
-        <translation type="obsolete">Hosszúság:</translation>
+        <translation>Hosszúság:</translation>
     </message>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="166"/>
+        <source>&lt;nothing&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="182"/>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="210"/>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
     </message>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="196"/>
+        <source>Download to:</source>
+        <translation>Letöltés ide:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="219"/>
+        <source>Open data automatically after download</source>
+        <translation>Adatok automatikus megnyitása a letöltés után</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="247"/>
+        <source>Replace current data (current layer will be removed)</source>
+        <translation>Aktuális adatok cseréje (az aktuális réteget törlöm)</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="283"/>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="358"/>
+        <source>Download</source>
+        <translation>Letöltés</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgDownloadOSM.ui" line="365"/>
         <source>Cancel</source>
-        <translation type="obsolete">Mégsem</translation>
+        <translation>Mégsem</translation>
+    </message>
+    <message>
+        <source>OSM Download</source>
+        <translation>OSM letöltés</translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation>Nem tudom menteni a fájlt %1: %2.</translation>
+    </message>
+    <message>
+        <source>Waiting for OpenStreetMap server ...</source>
+        <translation>Várok az OpenStreetMap szerverre ...</translation>
+    </message>
+    <message>
+        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
+        <translation>Letöltési folyamat megszakadt. Open Street Map szerver válasza: %1 - %2</translation>
+    </message>
+    <message>
+        <source>OSM Download Error</source>
+        <translation>OSM letöltés hiba</translation>
+    </message>
+    <message>
+        <source>Download failed: %1.</source>
+        <translation>Letöltési hiba: %1.</translation>
+    </message>
+    <message>
+        <source>Getting data</source>
+        <translation>Adatletöltés</translation>
+    </message>
+    <message>
+        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
+        <translation>Az OpenStreetMap server ahonnan az OSM adatokat letöltöd (~ api.openstreetmap.org) korlátozza a letölthet adatok mennyiségét. Ahogy a &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; oldalon szerepel, a letöltött terjedelem nem lehet nagyobb mint 0.25 fok. A Quantum GIS megengedi, hogy tetszőleges terjedelmet adj meg, de az OpenStreetMap szerver visszautasítja azokat a kéréseket, melyek nem felelnek meg a letöltési korlátozásnak.</translation>
+    </message>
+    <message>
+        <source>Both extents are too large!</source>
+        <translation>Mindkét terjedelem túl nagy</translation>
+    </message>
+    <message>
+        <source>Latitude extent is too large!</source>
+        <translation>Szélesség terjedelem túl nagy!</translation>
+    </message>
+    <message>
+        <source>Longitude extent is too large!</source>
+        <translation>Hosszúság terjedelem túl nagy!</translation>
+    </message>
+    <message>
+        <source>OK! Area is probably acceptable to server.</source>
+        <translation>OK! A terület valószínűleg elfogadható a szervernek.</translation>
     </message>
 </context>
 <context>
     <name>DlgImport</name>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="16"/>
+        <source>Import data to OSM</source>
+        <translation>Adat importálás OSM-be</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="25"/>
+        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
+        <translation>Ebben a párbeszédablakban a QGIS.be betöltött réteget importálhatsz az aktív OSM adatokba.</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="50"/>
         <source>Layer</source>
-        <translation type="obsolete">Réteg</translation>
+        <translation>Réteg</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgImport.ui" line="69"/>
+        <source>Import only current selection</source>
+        <translation>Aktuális szelekció importálás</translation>
     </message>
 </context>
 <context>
     <name>DlgLoadOSM</name>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="16"/>
+        <source>Load OSM</source>
+        <translation>OSM betöltés</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="33"/>
+        <source>OpenStreetMap file to load:</source>
+        <translation>Betöltendő OpenStreetMap fájl:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="46"/>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="55"/>
+        <source>Add columns for tags:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="78"/>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgLoadOSM.ui" line="128"/>
+        <source>Replace current data (current layers will be removed)</source>
+        <translation>Aktuális adatok cseréje (aktuális réteget törlöm)</translation>
     </message>
 </context>
 <context>
     <name>DlgSaveOSM</name>
     <message>
+        <source>Save OSM to file</source>
+        <translation>OSM mentés fájlba</translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation>Nem tudom menteni a fájlt %1: %2.</translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
+        <translation>Inicializálás ...</translation>
+    </message>
+    <message>
+        <source>Saving nodes...</source>
+        <translation>Csomópontok mentése...</translation>
+    </message>
+    <message>
+        <source>Saving lines...</source>
+        <translation>Vonalak mentése...</translation>
+    </message>
+    <message>
+        <source>Saving polygons...</source>
+        <translation>Felületek mentése...</translation>
+    </message>
+    <message>
+        <source>Saving relations...</source>
+        <translation>Kapcsolatok mentése...</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="16"/>
+        <source>Save OSM</source>
+        <translation>OSM mentés</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="33"/>
+        <source>Where to save:</source>
+        <translation>Mentés ide:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="52"/>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
     </message>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="61"/>
+        <source>Features to save:</source>
+        <translation>Mentendő elemek:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="81"/>
         <source>Points</source>
-        <translation type="obsolete">Pontok</translation>
+        <translation>Pontok</translation>
     </message>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="91"/>
         <source>Lines</source>
-        <translation type="obsolete">Vonalak</translation>
+        <translation>Vonalak</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="101"/>
+        <source>Polygons</source>
+        <translation>Felületek</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="115"/>
+        <source>Relations</source>
+        <translation>Kapcsolatok</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgSaveOSM.ui" line="125"/>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DlgUploadOSM</name>
     <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="22"/>
+        <source>Upload OSM data</source>
+        <translation>OSM adatok feltöltése</translation>
     </message>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="37"/>
+        <source>Ready for upload</source>
+        <translation>Kész a feltöltéshez</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="80"/>
+        <source>1</source>
+        <translation>1</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="85"/>
         <source>2</source>
-        <translation type="obsolete">2</translation>
+        <translation>2</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="90"/>
+        <source>3</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="95"/>
+        <source>4</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="100"/>
+        <source>5</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="108"/>
+        <source>Comment on your changes:</source>
+        <translation>Megjegyzések a módosításaidhoz:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="134"/>
+        <source>OSM account</source>
+        <translation>OSM fiók</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="142"/>
+        <source>Username:</source>
+        <translation>Felhasználó név:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="162"/>
+        <source>Password:</source>
+        <translation>Jelszó:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="179"/>
+        <source>Show password</source>
+        <translation>Jelszó megjelenítése</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DlgUploadOSM.ui" line="186"/>
+        <source>Save password</source>
+        <translation>Jelszó mentése</translation>
+    </message>
+    <message>
+        <source>OSM Upload</source>
+        <translation>OSM feltöltés</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">Adatfeltöltés...</translation>
+        <translation>Adatfeltöltés...</translation>
+    </message>
+</context>
+<context>
+    <name>DockWidget</name>
+    <message>
+        <source>OSM Plugin</source>
+        <translation>OSM modul</translation>
+    </message>
+    <message>
+        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Feature Dock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose OSM feature first.</source>
+        <translation>Válassz OSM elemet először.</translation>
+    </message>
+    <message>
+        <source>Choose relation for editing first.</source>
+        <translation>Először válassz kapcsolatot a szerkesztéshez.</translation>
+    </message>
+    <message>
+        <source>Property &apos;%1&apos; cannot be added twice.</source>
+        <translation>&apos;%1&apos; tulajdonságot nem adhatod kétszer hozzá.</translation>
     </message>
 </context>
 <context>
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished"></translation>
+        <translation>Mindent összevon</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Add meg az input vektor réteget</translation>
+        <translation>Add meg az input vektor réteget</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Add meg az eredmény shapefájlt</translation>
+        <translation>Add meg az eredmény shapefájlt</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished">Addj meg egy megfelelő tolerancia értéket</translation>
+        <translation>Adj meg egy megfelelő tolerancia értéket</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1253,71 +1576,71 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished">Eredmény shapefájl</translation>
+        <translation>Eredmény shapefájl</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished"></translation>
+        <translation>Többrészűből egyrészűekbe</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Csomópontok kivonat</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Felületek vonallá</translation>
+        <translation>Felületek vonallá</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished">Input felület vektor réteg</translation>
+        <translation>Input felület vektor réteg</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Export/geometria oszlop hozzáadás</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Input vektor réteg</translation>
+        <translation>Input vektor réteg</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Geometria egyszerüsítése</translation>
+        <translation>Geometria egyszerűsítése</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Felület centrálisok</translation>
+        <translation>Felület centrálisok</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished">Eredmény pont shapefájl</translation>
+        <translation>Eredmény pont shapefájl</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Delaunay háromszögek</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Felület a réteg terjedelemből</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Input réteg</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Eredmény felület shape fájl</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom törölni a létező shapefájlt.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="unfinished">Hiba a megadott tolerancia feldolgozása során!</translation>
+        <translation>Hiba a megadott tolerancia feldolgozása során!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="unfinished">Válassz nagyobb toleranciát...</translation>
+        <translation>Válassz nagyobb toleranciát...</translation>
     </message>
     <message>
         <source>Error writing output shapefile</source>
@@ -1329,31 +1652,31 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished">Input pont vektor réteg</translation>
+        <translation>Input pont vektor réteg</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Adj meg egy érvényes UID mezőt</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyrészűekből többrészűbe</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom törölni a félbehagyott shapefájlt.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Eredmény Shape fájl:</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hozzá akarod adni az új réteget a tartalomjegyzékhez?</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba az eredmény shapefájl írása közben</translation>
     </message>
 </context>
 <context>
@@ -1375,27 +1698,27 @@ p, li { white-space: pre-wrap; }(new line)
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished">Mindent összevon</translation>
+        <translation>Mindent összevon</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Add meg az input réteget</translation>
+        <translation>Add meg az input réteget</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished">Add meg a különbség/metszet/unió réteget</translation>
+        <translation>Add meg a különbség/metszet/unió réteget</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished">Addj meg helyes övezet értéket</translation>
+        <translation>Adj meg helyes övezet értéket</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished">Add meg az összevonás mezt</translation>
+        <translation>Add meg az összevonás mezőt</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Add meg az eredmény shapefájlt</translation>
+        <translation>Add meg az eredmény shapefájlt</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1403,15 +1726,15 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Övezet(ek)</translation>
+        <translation>Övezet(ek)</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Konvex körvonal</translation>
+        <translation>Konvex körvonal</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Összevon</translation>
+        <translation>Összevon</translation>
     </message>
     <message>
         <source>Erase layer</source>
@@ -1419,73 +1742,77 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Különbség</translation>
+        <translation>Különbség</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished">Metsző réteg</translation>
+        <translation>Metsző réteg</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Metszés</translation>
+        <translation>Metszés</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished">Különbség réteg</translation>
+        <translation>Különbség réteg</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs szelektált elem, kapcsold ki a &apos;szelektáltak használatát&apos; vagy szelektálj</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimális konvex körvonal</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Konvex körvonal az input mezők alapján</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Szimmetrikus különbség</translation>
+        <translation>Szimmetrikus különbség</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished">Vágó réteg</translation>
+        <translation>Vágó réteg</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Vág</translation>
+        <translation>Vág</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished">Unió réteg</translation>
+        <translation>Unió réteg</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Unió</translation>
+        <translation>Unió</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom törölni a létező shapefájlt.</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Figyelmeztetések</translation>
     </message>
     <message>
         <source>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Néhány eredmény geometria hiányzik vagy hibás.
+
+Ennek ellenére hozzá akarod adni a réteget?</translation>
     </message>
     <message>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Hozzá akarod adni az új réteget a tartalomjegyzékhez?</translation>
     </message>
     <message>
         <source>
@@ -1495,16 +1822,16 @@ Input CRS error: Different input coordinate reference systems detected, results 
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elem geometria hiba. Egy vagy több output elemet kihagytam a hibás geometria miatt.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOS feldolgozási hiba: egy vagy több elem hibás geometriát tartalmaz.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Eredmény Shape fájl:</translation>
     </message>
 </context>
 <context>
@@ -1547,7 +1874,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="64"/>
         <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
-        <translation type="unfinished">Ez a generált CMake fájl, mely összeállítja a modult. Az alaklamazás specifikus függőségeket és forrás fájlokat add hozzá ehhez a fájlhoz.</translation>
+        <translation type="unfinished">Ez a generált CMake fájl, mely összeállítja a modult. Az alkalmazás specifikus függőségeket és forrás fájlokat add hozzá ehhez a fájlhoz.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="65"/>
@@ -1577,7 +1904,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="70"/>
         <source>This file contains the documentation you are reading now!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a fájl tartalmazza a dokumentációt amit most olvasol!</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="71"/>
@@ -1807,642 +2134,204 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>OsmAddRelationDlg</name>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="13"/>
-        <source>Create OSM relation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="30"/>
-        <source>Relation type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="126"/>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="133"/>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="178"/>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="188"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="106"/>
-        <source>Properties</source>
-        <translation type="unfinished">Tulajdonságok</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="158"/>
-        <source>Members</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="260"/>
-        <source>Create</source>
-        <translation type="unfinished">Létrehoz</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="276"/>
-        <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
-    </message>
-    <message>
-        <source>OSM Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>OsmDockWidget</name>
     <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>unknown</source>
-        <translation type="obsolete">ismeretlen</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">Tulajdonságok</translation>
-    </message>
-    <message>
-        <source>E</source>
-        <translation type="obsolete">K</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <translation type="obsolete">R</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-</context>
-<context>
-    <name>OsmDownloadDlg</name>
-    <message>
-        <source>OSM Download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Download Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Getting data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
-        <source>Download OSM data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="40"/>
-        <source>Extent</source>
-        <translation type="unfinished">Terjedelem</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="48"/>
-        <source>Latitude:</source>
-        <translation type="unfinished">Szélesség:</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="55"/>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="96"/>
-        <source>   From</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="72"/>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="113"/>
-        <source>To</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="89"/>
-        <source>Longitude:</source>
-        <translation type="unfinished">Hosszúság:</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="166"/>
-        <source>&lt;nothing&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="182"/>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="210"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="196"/>
-        <source>Download to:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="219"/>
-        <source>Open data automatically after download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="247"/>
-        <source>Replace current data (current layer will be removed)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
-        <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
-        <source>Download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="365"/>
-        <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
-    </message>
-</context>
-<context>
-    <name>OsmFeatureDW</name>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="37"/>
         <source>OSM Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM elem</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="67"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="101"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="129"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="157"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="179"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="207"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="235"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="260"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="282"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="304"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="417"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="515"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="566"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="582"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="598"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="67"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="101"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="129"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="157"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="179"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="207"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="235"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="260"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="282"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="304"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="408"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="488"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="92"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="95"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="98"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="92"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="95"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="98"/>
         <source>Identify object</source>
-        <translation type="unfinished"></translation>
+        <translation>Elem azonosítás</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="126"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="126"/>
         <source>Move object</source>
-        <translation type="unfinished"></translation>
+        <translation>Elem mozgatás</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="154"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="154"/>
         <source>Create point</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont létrehozás</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="176"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="176"/>
         <source>Create line</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal létrehozás</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="204"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="204"/>
         <source>Create polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Felület létrehozás</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="232"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="232"/>
         <source>Create relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapcsolat létrehozás</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="251"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="254"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="257"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="251"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="254"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="257"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Visszavon</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="273"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="276"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="279"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="273"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="276"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="279"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Ismét</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="295"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="298"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="301"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="295"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="298"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="301"/>
         <source>Show/Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM szerkesztés történet megjelenítés/elrejtés</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="331"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="331"/>
         <source>Feature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elem:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="360"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="360"/>
         <source>TYPE, ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="367"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="367"/>
         <source>CREATED:</source>
-        <translation type="unfinished"></translation>
+        <translation>LÉTREHOZTAM:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="374"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="374"/>
         <source>USER:</source>
-        <translation type="unfinished"></translation>
+        <translation>FELHASZNÁLÓ:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="381"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="388"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="395"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="381"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="388"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="395"/>
         <source>unknown</source>
-        <translation type="unfinished">ismeretlen</translation>
+        <translation>ismeretlen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="408"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="411"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="414"/>
-        <source>Remove feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="460"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="442"/>
         <source>Properties</source>
-        <translation type="unfinished">Tulajdonságok</translation>
+        <translation>Tulajdonságok</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="506"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="509"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="512"/>
-        <source>Remove selected tags</source>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="545"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="548"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="551"/>
+        <source>Add new relation</source>
+        <translation>Új kapcsolat hozzáadás</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="554"/>
+        <source>A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="525"/>
-        <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="576"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="579"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="582"/>
+        <source>Edit selected relation</source>
+        <translation>Szelektált kapcsolat szerkesztése</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="557"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="560"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="563"/>
-        <source>Add relation</source>
-        <translation type="unfinished"></translation>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="585"/>
+        <source>E</source>
+        <translation type="unfinished">K</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="573"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="576"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="579"/>
-        <source>Edit relation</source>
-        <translation type="unfinished"></translation>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="607"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="610"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="613"/>
+        <source>Remove selected relation</source>
+        <translation>Szelektált kapcsolat törlése</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="589"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="592"/>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="595"/>
-        <source>Remove relation</source>
-        <translation type="unfinished"></translation>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="616"/>
+        <source>R</source>
+        <translation type="unfinished">R</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="625"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="643"/>
         <source>Relation tags:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="672"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="690"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="680"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="698"/>
         <source>Relation members:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapcsolat tagok:</translation>
     </message>
     <message>
-        <source>OSM Plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose OSM feature first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose relation for editing first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>OsmImportDlg</name>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="16"/>
-        <source>Import data to OSM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="25"/>
-        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="50"/>
-        <source>Layer</source>
-        <translation type="unfinished">Réteg</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="69"/>
-        <source>Import only current selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>OsmLoadDlg</name>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="16"/>
-        <source>Load OSM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="33"/>
-        <source>OpenStreetMap file to load:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="46"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="55"/>
-        <source>Add columns for tags:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
-        <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
-        <source>Replace current data (current layers will be removed)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>OsmSaveDlg</name>
-    <message>
-        <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Initializing...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
-        <source>Save OSM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="33"/>
-        <source>Where to save:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="52"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="61"/>
-        <source>Features to save:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="81"/>
-        <source>Points</source>
-        <translation type="unfinished">Pontok</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="91"/>
-        <source>Lines</source>
-        <translation type="unfinished">Vonalak</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="101"/>
-        <source>Polygons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="115"/>
+        <location filename="../python/plugins/osm/ui_files/DockWidget.ui" line="498"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="125"/>
-        <source>Tags</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>OsmUndoRedoDW</name>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="16"/>
-        <source>OSM Edit History</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="25"/>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="28"/>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="31"/>
-        <source>Clear all</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="34"/>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="66"/>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="85"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="57"/>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="60"/>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="63"/>
-        <source>Undo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="76"/>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="79"/>
-        <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="82"/>
-        <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapcsolatok</translation>
     </message>
 </context>
 <context>
     <name>OsmUndoRedoDockWidget</name>
     <message>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="17"/>
+        <source>OSM Edit History</source>
+        <translation>OSM szerkesztés történet</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="26"/>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="29"/>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="32"/>
+        <source>Clear all</source>
+        <translation>Mindent töröl</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="35"/>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="67"/>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="86"/>
         <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-</context>
-<context>
-    <name>OsmUploadDlg</name>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
-        <source>Upload OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="37"/>
-        <source>Ready for upload</source>
-        <translation type="unfinished"></translation>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="58"/>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="61"/>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="64"/>
+        <source>Undo</source>
+        <translation>Visszavon</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="80"/>
-        <source>1</source>
-        <translation type="unfinished">1</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="85"/>
-        <source>2</source>
-        <translation type="unfinished">2</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="90"/>
-        <source>3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="95"/>
-        <source>4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="100"/>
-        <source>5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="108"/>
-        <source>Comment on your changes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="134"/>
-        <source>OSM account</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="142"/>
-        <source>Username:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="162"/>
-        <source>Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="179"/>
-        <source>Show password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="186"/>
-        <source>Save password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Upload</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Uploading data...</source>
-        <translation type="unfinished">Adatfeltöltés...</translation>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="77"/>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="80"/>
+        <location filename="../python/plugins/osm/ui_files/DockUndoRedo.ui" line="83"/>
+        <source>Redo</source>
+        <translation>Ismét</translation>
     </message>
 </context>
 <context>
@@ -2799,7 +2688,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/core/qgslabelattributes.cpp" line="61"/>
         <source>Label</source>
-        <translation>Cimke</translation>
+        <translation type="unfinished">Címke</translation>
     </message>
     <message>
         <source>Currently only filebased datasets are supported</source>
@@ -2878,7 +2767,7 @@ sorban</translation>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="51"/>
         <source>CopyrightLabel</source>
-        <translation>Szerzői jog cimke</translation>
+        <translation type="unfinished">Szerzői jog címke</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="52"/>
@@ -3274,7 +3163,7 @@ sorban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="392"/>
         <source>UTM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="395"/>
@@ -3289,42 +3178,42 @@ sorban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="401"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Más</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="403"/>
         <source>Projection Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Vetület típus</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="405"/>
         <source>Zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Zóna</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="416"/>
         <source>3D Cols</source>
-        <translation type="unfinished"></translation>
+        <translation>3D-s oszlopok</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="417"/>
         <source>3D Rows</source>
-        <translation type="unfinished"></translation>
+        <translation>3D-s sorok</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="418"/>
         <source>Depths</source>
-        <translation type="unfinished"></translation>
+        <translation>Mélységek</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="419"/>
         <source>E-W 3D resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>K-NY 3D-s felbontás</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="420"/>
         <source>N-S 3D resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>É-D 3D-s felbontás</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="873"/>
@@ -3490,12 +3379,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
         <source>This tool only supports vector data</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az eszköz csak vektor adatokkal használható</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="81"/>
         <source>No active layers found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs aktív réteg</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="970"/>
@@ -3600,7 +3489,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="53"/>
         <source>Capture mouse coordinates in different CRS</source>
-        <translation>Egérkoordináták levétele különböz vetületekben</translation>
+        <translation>Egérkoordináták levétele különböző vetületekben</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="39"/>
@@ -3653,9 +3542,9 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">Hiba a modul meta adatok betöltése során </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2966"/>
+        <location filename="../src/app/qgisapp.cpp" line="2962"/>
         <source>Where is &apos;%1&apos; (original location: %2)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hol van &apos;%1&apos; (eredeti hely: %2)?</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="422"/>
@@ -3693,7 +3582,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/gpx/gpsdata.cpp" line="398"/>
         <source>Parse error at line %1 : %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldolgozási hiba a %1 : %2 sorban</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="447"/>
@@ -3773,17 +3662,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="943"/>
         <source>Deleted vertices</source>
-        <translation type="unfinished"></translation>
+        <translation>Törölt töréspontok</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1006"/>
         <source>Moved vertices</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozgatott töréspontok</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="84"/>
         <source>eVis</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="85"/>
@@ -3793,15 +3682,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="86"/>
         <source>Version 1.1.0</source>
-        <translation type="unfinished"></translation>
+        <translation>1.1.0 verzió</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolator.cpp" line="93"/>
         <source>Building triangulation...</source>
-        <translation type="unfinished"></translation>
+        <translation>Háromszögek készítése...</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1198"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1171"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation type="unfinished"></translation>
@@ -3970,9 +3859,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">Vektor réteg hozzáadás...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="834"/>
         <source>V</source>
         <comment>Add a Vector Layer</comment>
-        <translation type="obsolete">V</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="835"/>
@@ -3984,9 +3874,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">Raszter réteg hozzáadás...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="839"/>
         <source>R</source>
         <comment>Add a Raster Layer</comment>
-        <translation type="obsolete">R</translation>
+        <translation>R</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="840"/>
@@ -3998,9 +3889,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">PostGIS réteg hozzáadás...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="844"/>
         <source>D</source>
         <comment>Add a PostGIS Layer</comment>
-        <translation type="obsolete">D</translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="845"/>
@@ -4013,9 +3905,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Új vektor réteg...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>N</source>
         <comment>Create a New Vector Layer</comment>
-        <translation type="obsolete">N</translation>
+        <translation>N</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="830"/>
@@ -4043,9 +3936,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">Mindent hozzáad az áttekintőhöz</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="916"/>
         <source>+</source>
         <comment>Show all layers in the overview map</comment>
-        <translation type="obsolete">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="917"/>
@@ -4058,9 +3952,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Mindent kivesz az áttekintőből</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="921"/>
         <source>-</source>
         <comment>Remove all layers from overview map</comment>
-        <translation type="obsolete">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="922"/>
@@ -4073,9 +3968,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Minden réteget mutat</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="926"/>
         <source>S</source>
         <comment>Show all layers</comment>
-        <translation type="obsolete">S</translation>
+        <translation>S</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="927"/>
@@ -4088,9 +3984,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Minden réteget elrejt</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="931"/>
         <source>H</source>
         <comment>Hide all layers</comment>
-        <translation type="obsolete">H</translation>
+        <translation>H</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="932"/>
@@ -4103,9 +4000,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Projekt tulajdonságok...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="950"/>
         <source>P</source>
         <comment>Set project properties</comment>
-        <translation type="obsolete">P</translation>
+        <translation>P</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="951"/>
@@ -4191,7 +4089,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="821"/>
         <source>Refresh</source>
-        <translation>Firssítés</translation>
+        <translation type="unfinished">Frissítés</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="822"/>
@@ -4234,9 +4132,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Teljes nagyítás</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="775"/>
         <source>F</source>
         <comment>Zoom to Full Extents</comment>
-        <translation type="obsolete">F</translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="776"/>
@@ -4292,9 +4191,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Elem azonosítás</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="759"/>
         <source>I</source>
         <comment>Click on features to identify them</comment>
-        <translation type="obsolete">I</translation>
+        <translation>I</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="760"/>
@@ -4348,9 +4248,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Könyvjelzők megjelenítése</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="817"/>
         <source>B</source>
         <comment>Show Bookmarks</comment>
-        <translation type="obsolete">B</translation>
+        <translation>B</translation>
     </message>
     <message>
         <source>Show most toolbars</source>
@@ -4383,7 +4284,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="813"/>
-        <location filename="../src/app/qgisapp.cpp" line="6157"/>
+        <location filename="../src/app/qgisapp.cpp" line="6144"/>
         <source>New Bookmark</source>
         <translation>Új könyvjelző</translation>
     </message>
@@ -4406,9 +4307,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">Áttekintőbe</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="910"/>
         <source>O</source>
         <comment>Add current layer to overview map</comment>
-        <translation type="obsolete">O</translation>
+        <translation>O</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="911"/>
@@ -4432,7 +4334,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="880"/>
         <source>Toggles the editing state of the current layer</source>
-        <translation type="unfinished">A réteg szerkeszthetőség be/kikapcsolása</translation>
+        <translation>A réteg szerkeszthetőség be/kikapcsolása</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="639"/>
@@ -4440,9 +4342,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Pont digitalizálás</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="640"/>
         <source>.</source>
         <comment>Capture Points</comment>
-        <translation type="obsolete">.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="641"/>
@@ -4455,9 +4358,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Vonal digitalizálás</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="646"/>
         <source>/</source>
         <comment>Capture Lines</comment>
-        <translation type="obsolete">/</translation>
+        <translation>/</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="647"/>
@@ -4470,9 +4374,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Felület digitalizálás</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="652"/>
         <source>Ctrl+/</source>
         <comment>Capture Polygons</comment>
-        <translation type="obsolete">Ctrl+/</translation>
+        <translation>Ctrl+/</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="653"/>
@@ -4680,7 +4585,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Az aktuális egér pozíció koordinátáinak megjelenítése. A megjelenítés folyamatosan változik, ahogy az egér mozog.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5349"/>
+        <location filename="../src/app/qgisapp.cpp" line="5336"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Térképi koordináták az egér pozícióban</translation>
     </message>
@@ -4713,17 +4618,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1707"/>
+        <location filename="../src/app/qgisapp.cpp" line="1703"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation>Térkép. Ez az a hely ahol a raszter és vektor rétegek megjelennek amikor a térképhez adod</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1767"/>
+        <location filename="../src/app/qgisapp.cpp" line="1763"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Térkép áttekintő. Az áttekintőn megjelenik a térkép ablak helyzete, ezt egy piros téglalap jelzi. Bármelyik a térképen megjelenő réteg hozzáadható az áttekintőhöz.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1832"/>
+        <location filename="../src/app/qgisapp.cpp" line="1828"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>A jelmagyarazázatban megjelenik az összes a térképen szereplő réteg. Kattints a négyzetbe a rétek be vagy kikapcsolásához. Kattints duplán a rétegre a megjelenítés és más tulajdonságok beállításához.</translation>
     </message>
@@ -4758,7 +4663,7 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">http://www.gnu.org/licenses</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2014"/>
+        <location filename="../src/app/qgisapp.cpp" line="2010"/>
         <source>Version</source>
         <translation>Verzió</translation>
     </message>
@@ -4768,11 +4673,11 @@ Qt-vel fordítva </translation>
     </message>
     <message>
         <source>This release candidate includes over 40 bug fixes and enchancements over the QGIS 0.9.1 release. In addition we have added the following new features:</source>
-        <translation type="obsolete">Ez a kibocsátás elõtti verzió több mint 40 hibajavítást és bõvítéseket tartalmaz a QGIS 0.9.1 verzióhoz képest. Emellett a következõ új funkciókat készítettük el:</translation>
+        <translation type="obsolete">Ez a kibocsátás előtti verzió több mint 40 hibajavítást és bővítéseket tartalmaz a QGIS 0.9.1 verzióhoz képest. Emellett a következő új funkciókat készítettük el:</translation>
     </message>
     <message>
         <source>Imrovements to digitising capabilities.</source>
-        <translation type="obsolete">A digitalizálási lehetõségek tökéletesítése.</translation>
+        <translation type="obsolete">A digitalizálási lehetőségek tökéletesítése.</translation>
     </message>
     <message>
         <source>Supporting default and defined styles (.qml) files for file based vector layers. With styles you can save the symbolisation and other settings associated with a vector layer and they will be loaded whenever you load that layer.</source>
@@ -4799,37 +4704,37 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">érvénytelen vagy ismeretlen adatforrás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2481"/>
-        <location filename="../src/app/qgisapp.cpp" line="5894"/>
+        <location filename="../src/app/qgisapp.cpp" line="2477"/>
+        <location filename="../src/app/qgisapp.cpp" line="5881"/>
         <source>Invalid Data Source</source>
         <translation>Hibás adatforrás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2636"/>
-        <location filename="../src/app/qgisapp.cpp" line="2719"/>
+        <location filename="../src/app/qgisapp.cpp" line="2632"/>
+        <location filename="../src/app/qgisapp.cpp" line="2715"/>
         <source>Invalid Layer</source>
         <translation>Hibás réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2636"/>
-        <location filename="../src/app/qgisapp.cpp" line="2719"/>
+        <location filename="../src/app/qgisapp.cpp" line="2632"/>
+        <location filename="../src/app/qgisapp.cpp" line="2715"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 hibás réteg és nem tudom betölteni.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3202"/>
+        <location filename="../src/app/qgisapp.cpp" line="3198"/>
         <source>Save As</source>
         <translation>Mentés másként</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3302"/>
+        <location filename="../src/app/qgisapp.cpp" line="3298"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Válaszd ki a megnyitandó QGIS projektet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3349"/>
-        <location filename="../src/app/qgisapp.cpp" line="3363"/>
-        <location filename="../src/app/qgisapp.cpp" line="3419"/>
+        <location filename="../src/app/qgisapp.cpp" line="3345"/>
+        <location filename="../src/app/qgisapp.cpp" line="3359"/>
+        <location filename="../src/app/qgisapp.cpp" line="3415"/>
         <source>QGIS Project Read Error</source>
         <translation>QGIS projekt olvasási hiba</translation>
     </message>
@@ -4838,12 +4743,12 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">Megpróbálod megkeresni a hiányzó réteget?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3444"/>
+        <location filename="../src/app/qgisapp.cpp" line="3440"/>
         <source>Unable to open project</source>
         <translation>Nem tudom megnyitni a projektet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3509"/>
+        <location filename="../src/app/qgisapp.cpp" line="3505"/>
         <source>Choose a QGIS project file</source>
         <translation>Válassz egy QGIS projekt fájlt</translation>
     </message>
@@ -4852,8 +4757,8 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">Projekt mentés:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3555"/>
-        <location filename="../src/app/qgisapp.cpp" line="3635"/>
+        <location filename="../src/app/qgisapp.cpp" line="3551"/>
+        <location filename="../src/app/qgisapp.cpp" line="3631"/>
         <source>Unable to save project</source>
         <translation>Nem tudom menteni a projektet</translation>
     </message>
@@ -4870,7 +4775,7 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">Válassz egy fájlnevet a QGIS projekt fájlhoz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3700"/>
+        <location filename="../src/app/qgisapp.cpp" line="3696"/>
         <source>QGIS: Unable to load project</source>
         <translation>QGIS: nem tudom betölteni a projektet</translation>
     </message>
@@ -4887,58 +4792,58 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">Kép mentés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4111"/>
+        <location filename="../src/app/qgisapp.cpp" line="4107"/>
         <source>No Layer Selected</source>
         <translation>Nincs szelektált réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4112"/>
+        <location filename="../src/app/qgisapp.cpp" line="4108"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Egy rétegek kell szelektálnod a jelmagyarázatban az elemek törléséhez</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4119"/>
+        <location filename="../src/app/qgisapp.cpp" line="4115"/>
         <source>No Vector Layer Selected</source>
         <translation>Nincs szelektált vektor réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4120"/>
+        <location filename="../src/app/qgisapp.cpp" line="4116"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Az elemek törlése csak vektor rétegben lehetséges</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4126"/>
+        <location filename="../src/app/qgisapp.cpp" line="4122"/>
         <source>Provider does not support deletion</source>
         <translation>A törlés nem támogatott</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4127"/>
+        <location filename="../src/app/qgisapp.cpp" line="4123"/>
         <source>Data provider does not support deleting features</source>
         <translation>Az adat tulajdonos nem engedélyezi az elemek törlését</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4133"/>
-        <location filename="../src/app/qgisapp.cpp" line="4240"/>
+        <location filename="../src/app/qgisapp.cpp" line="4129"/>
+        <location filename="../src/app/qgisapp.cpp" line="4236"/>
         <source>Layer not editable</source>
         <translation>A réteg nem szerkeszthető</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4134"/>
+        <location filename="../src/app/qgisapp.cpp" line="4130"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Az ektuális réteg nem szerkeszthető. Válaszd a szerkesztés kezdését a digitalizáló eszközsorban.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4148"/>
+        <location filename="../src/app/qgisapp.cpp" line="4144"/>
         <source>Problem deleting features</source>
         <translation>Probléma az elem törlése közben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4149"/>
+        <location filename="../src/app/qgisapp.cpp" line="4145"/>
         <source>A problem occured during deletion of features</source>
         <translation>Probléma fordult elő az elemek törlése közben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4659"/>
+        <location filename="../src/app/qgisapp.cpp" line="4646"/>
         <source>Invalid scale</source>
         <translation>Hibás méretarány</translation>
     </message>
@@ -5003,30 +4908,30 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">A QGIUS nem tudta betölteni a modult innen: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4854"/>
+        <location filename="../src/app/qgisapp.cpp" line="4841"/>
         <source>There is a new version of QGIS available</source>
         <translation>A QGIS egy új változata áll rendelkezésre</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4860"/>
+        <location filename="../src/app/qgisapp.cpp" line="4847"/>
         <source>You are running a development version of QGIS</source>
         <translation>A QGIS egy fejlesztés közbeni változatát futtatod</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4864"/>
+        <location filename="../src/app/qgisapp.cpp" line="4851"/>
         <source>You are running the current version of QGIS</source>
         <translation>A QGIS aktuális változatát futtatod</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4869"/>
+        <location filename="../src/app/qgisapp.cpp" line="4856"/>
         <source>Would you like more information?</source>
         <translation>Több információra van szükséged?</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="4859"/>
         <location filename="../src/app/qgisapp.cpp" line="4872"/>
-        <location filename="../src/app/qgisapp.cpp" line="4885"/>
-        <location filename="../src/app/qgisapp.cpp" line="4890"/>
-        <location filename="../src/app/qgisapp.cpp" line="4918"/>
+        <location filename="../src/app/qgisapp.cpp" line="4877"/>
+        <location filename="../src/app/qgisapp.cpp" line="4905"/>
         <source>QGIS Version Information</source>
         <translation>QGIS verzió információ</translation>
     </message>
@@ -5035,27 +4940,27 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">QGIS - Az utolsó változat óta változások történtek az SVN-ben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4890"/>
+        <location filename="../src/app/qgisapp.cpp" line="4877"/>
         <source>Unable to get current version information from server</source>
         <translation>Nem tudom beszerezni a az aktuális változat információt a szerverről</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4904"/>
+        <location filename="../src/app/qgisapp.cpp" line="4891"/>
         <source>Connection refused - server may be down</source>
         <translation>Sikertelen kapcsolódás - a szervert lehet hogy leállították</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4907"/>
+        <location filename="../src/app/qgisapp.cpp" line="4894"/>
         <source>QGIS server was not found</source>
         <translation>QGIS szervert nem találtam</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4910"/>
+        <location filename="../src/app/qgisapp.cpp" line="4897"/>
         <source>Network error while communicating with server</source>
         <translation>Hálózati hiba a szerver kommunikáció közben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4913"/>
+        <location filename="../src/app/qgisapp.cpp" line="4900"/>
         <source>Unknown network socket error</source>
         <translation>Ismeretlen hálózati socket hiba</translation>
     </message>
@@ -5064,26 +4969,26 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">Nem sikerült a QGIS verzió szerverrel kommunikálni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5052"/>
-        <location filename="../src/app/qgisapp.cpp" line="5097"/>
-        <location filename="../src/app/qgisapp.cpp" line="5974"/>
+        <location filename="../src/app/qgisapp.cpp" line="5039"/>
+        <location filename="../src/app/qgisapp.cpp" line="5084"/>
+        <location filename="../src/app/qgisapp.cpp" line="5961"/>
         <source>Layer is not valid</source>
         <translation>A réteg hibás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5053"/>
-        <location filename="../src/app/qgisapp.cpp" line="5098"/>
-        <location filename="../src/app/qgisapp.cpp" line="5975"/>
+        <location filename="../src/app/qgisapp.cpp" line="5040"/>
+        <location filename="../src/app/qgisapp.cpp" line="5085"/>
+        <location filename="../src/app/qgisapp.cpp" line="5962"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>A réteg hibás és nem tudom a térképhez hozzáadni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5142"/>
+        <location filename="../src/app/qgisapp.cpp" line="5129"/>
         <source>Save?</source>
         <translation>Mentés?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5143"/>
+        <location filename="../src/app/qgisapp.cpp" line="5130"/>
         <source>Do you want to save the current project?</source>
         <translation>Menteni akarod az aktuális projektet?</translation>
     </message>
@@ -5096,7 +5001,7 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">Vágólap tartalom beállítás: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5801"/>
+        <location filename="../src/app/qgisapp.cpp" line="5788"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Raszter adatforrás megnyitása GDAL-lal</translation>
     </message>
@@ -5109,29 +5014,29 @@ Qt-vel fordítva </translation>
         <translation type="obsolete"> ismeretlen raszter adatforrás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6061"/>
+        <location filename="../src/app/qgisapp.cpp" line="6048"/>
         <source>Unsupported Data Source</source>
         <translation>Nem támogatott adatforrás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6158"/>
+        <location filename="../src/app/qgisapp.cpp" line="6145"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Add meg az új könyvjelző nevét:</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="4572"/>
         <location filename="../src/app/qgisapp.cpp" line="4585"/>
-        <location filename="../src/app/qgisapp.cpp" line="4598"/>
-        <location filename="../src/app/qgisapp.cpp" line="6175"/>
+        <location filename="../src/app/qgisapp.cpp" line="6162"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6175"/>
+        <location filename="../src/app/qgisapp.cpp" line="6162"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Nem sikerült a könyvjelző létrehozása. Hiányzik az adatbázisod vagy összezavarodott</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6189"/>
+        <location filename="../src/app/qgisapp.cpp" line="6176"/>
         <source>Project file is older</source>
         <translation>A projekt fájl régebbi</translation>
     </message>
@@ -5164,13 +5069,13 @@ Qt-vel fordítva </translation>
         <translation type="obsolete">&lt;p&gt;A projekt fájl verziója: %1&lt;br&gt;Aktuális QGIS verzió: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6206"/>
+        <location filename="../src/app/qgisapp.cpp" line="6193"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Beállítások:Opciók:Általános&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6207"/>
+        <location filename="../src/app/qgisapp.cpp" line="6194"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Figyelmeztess amikor a QGIS egy korábbi verziójával mentett projektet nyitok meg</translation>
     </message>
@@ -5204,7 +5109,7 @@ Qt-vel fordítva </translation>
 Kilépek...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1776"/>
+        <location filename="../src/app/qgisapp.cpp" line="1772"/>
         <source>Overview</source>
         <translation>Áttekintő</translation>
     </message>
@@ -5213,22 +5118,22 @@ Kilépek...</translation>
         <translation type="obsolete">Jelmagyarázat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1985"/>
+        <location filename="../src/app/qgisapp.cpp" line="1981"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translation>A QGIS %1 verziót használod, mely a %2 kód változat alapján készült.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1990"/>
+        <location filename="../src/app/qgisapp.cpp" line="1986"/>
         <source> This copy of QGIS has been built with PostgreSQL support.</source>
         <translation>A QGIS ezen változata a PostgraSQL támogatássa készült.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1993"/>
+        <location filename="../src/app/qgisapp.cpp" line="1989"/>
         <source> This copy of QGIS has been built without PostgreSQL support.</source>
         <translation>A QGIS ezen változata a PostgraSQL támogatás nélkül készült.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2002"/>
+        <location filename="../src/app/qgisapp.cpp" line="1998"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation>
@@ -5236,7 +5141,7 @@ A programot a Qt %1 változatával fordították és most a Qt %2 verzióval fut
     </message>
     <message>
         <source>This release candidate includes over 120 bug fixes and enchancements over the QGIS 0.9.1 release. In addition we have added the following new features:</source>
-        <translation type="obsolete">Ez a kibocsátás elõtti verzió több mint 120 hibajavítást és bõvítéseket tartalmaz a QGIS 0.9.1 verzióhoz képest. Emellett a következõ új funkciókat készítettük el:</translation>
+        <translation type="obsolete">Ez a kibocsátás előtti verzió több mint 120 hibajavítást és bővítéseket tartalmaz a QGIS 0.9.1 verzióhoz képest. Emellett a következő új funkciókat készítettük el:</translation>
     </message>
     <message>
         <source>Updated icons for improved visual consistancy.</source>
@@ -5299,7 +5204,7 @@ Vedd fel a kapcsolatot a fejlesztőkkel.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="611"/>
         <source>Undo the last operation</source>
-        <translation>Utolsó müvelet visszavonása</translation>
+        <translation>Utolsó művelet visszavonása</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="593"/>
@@ -5352,7 +5257,7 @@ Vedd fel a kapcsolatot a fejlesztőkkel.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="615"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Ismét</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="616"/>
@@ -5362,19 +5267,31 @@ Vedd fel a kapcsolatot a fejlesztőkkel.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="617"/>
         <source>Redo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Utolsó visszavont művelet ismétlése</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="723"/>
         <location filename="../src/app/qgisapp.cpp" line="725"/>
         <source>Merge selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelektált elemek összevonása</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="729"/>
         <location filename="../src/app/qgisapp.cpp" line="731"/>
         <source>Node Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Csomópont eszköz</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="765"/>
+        <source>M</source>
+        <comment>Measure a Line</comment>
+        <translation>Vonal mérés</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="770"/>
+        <source>J</source>
+        <comment>Measure an Area</comment>
+        <translation>Területmérés</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="784"/>
@@ -5412,6 +5329,12 @@ Vedd fel a kapcsolatot a fejlesztőkkel.</translation>
         <location filename="../src/app/qgisapp.cpp" line="843"/>
         <source>Add PostGIS Layer...</source>
         <translation>PostGIS réteg hozzáadás...</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="868"/>
+        <source>W</source>
+        <comment>Add a Web Mapping Server Layer</comment>
+        <translation>Web térkép szerver réteg hozzáadás</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="869"/>
@@ -5482,7 +5405,7 @@ Vedd fel a kapcsolatot a fejlesztőkkel.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="962"/>
         <source>Manage custom coordinate reference systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyedi vetület kezelés</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="974"/>
@@ -5498,7 +5421,7 @@ Vedd fel a kapcsolatot a fejlesztőkkel.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="976"/>
         <source>Minimizes the active window to the dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktív ablak minimalizálása</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="979"/>
@@ -5553,65 +5476,65 @@ Vedd fel a kapcsolatot a fejlesztőkkel.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1540"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS státus - Kattints ide a vetület párbeszédablak megnyitásához</translation>
     </message>
     <message>
         <source>This release candidate includes over 60 bug fixes and enchancements over the QGIS 0.10.0 release. In addition we have added the following new features:</source>
-        <translation type="obsolete">Ez a kibocsátás elõtti verzió több mint 60 hibajavítást és bõvítéseket tartalmaz a QGIS 0.10.0 verzióhoz képest. Emellett a következõ új funkciókat készítettük el:</translation>
+        <translation type="obsolete">Ez a kibocsátás előtti verzió több mint 60 hibajavítást és bővítéseket tartalmaz a QGIS 0.10.0 verzióhoz képest. Emellett a következő új funkciókat készítettük el:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3584"/>
+        <location filename="../src/app/qgisapp.cpp" line="3580"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Válassz egy fájlnevet a QGIS projekt másként mentéséhez</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3788"/>
+        <location filename="../src/app/qgisapp.cpp" line="3784"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Válassz egy fájlnevet a térkép másként mentéséhez</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4568"/>
+        <location filename="../src/app/qgisapp.cpp" line="4555"/>
         <source>Start editing failed</source>
         <translation>Sikertelen szerkesztés kezdés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4568"/>
+        <location filename="../src/app/qgisapp.cpp" line="4555"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Nem nyitható meg szerkesztésre</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4576"/>
+        <location filename="../src/app/qgisapp.cpp" line="4563"/>
         <source>Stop editing</source>
         <translation>Szerkesztés vége</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4577"/>
+        <location filename="../src/app/qgisapp.cpp" line="4564"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Akarod menteni a változásokat a(z) %1 rétegen?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4598"/>
+        <location filename="../src/app/qgisapp.cpp" line="4585"/>
         <source>Problems during roll back</source>
         <translation>Probléma a visszavonás közben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4796"/>
+        <location filename="../src/app/qgisapp.cpp" line="4783"/>
         <source>Python Console</source>
         <translation>Python konzol</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5342"/>
+        <location filename="../src/app/qgisapp.cpp" line="5329"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Térkép koordináták az aktuális nézet kiterjedéséről</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5434"/>
+        <location filename="../src/app/qgisapp.cpp" line="5421"/>
         <source>Maptips require an active layer</source>
         <translation>A térkép tippekhez egy aktív réteg kell</translation>
     </message>
     <message>
         <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
-        <translation type="obsolete">Ez a kibocsátás elõtti verzió több mint 265 hibajavítást és bõvítéseket tartalmaz a QGIS 0.11.0 verzióhoz képest. Emellett a következõ új funkciókat készítettük el:</translation>
+        <translation type="obsolete">Ez a kibocsátás előtti verzió több mint 265 hibajavítást és bővítéseket tartalmaz a QGIS 0.11.0 verzióhoz képest. Emellett a következő új funkciókat készítettük el:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="228"/>
@@ -5624,130 +5547,22 @@ Vedd fel a kapcsolatot a fejlesztőkkel.</translation>
         <translation>Quantum GIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="640"/>
-        <source>Ctrl+.</source>
-        <comment>Capture Points</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="646"/>
-        <source>Ctrl+/</source>
-        <comment>Capture Lines</comment>
-        <translation type="unfinished">Ctrl+/</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="652"/>
-        <source>Ctrl+Shift+/</source>
-        <comment>Capture Polygons</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="759"/>
-        <source>Ctrl+Shift+I</source>
-        <comment>Click on features to identify them</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="765"/>
-        <source>Ctrl+Shift+M</source>
-        <comment>Measure a Line</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="770"/>
-        <source>Ctrl+Shift+J</source>
-        <comment>Measure an Area</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="775"/>
-        <source>Ctrl+Shift+F</source>
-        <comment>Zoom to Full Extents</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="817"/>
-        <source>Ctrl+Shift+B</source>
-        <comment>Show Bookmarks</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="829"/>
-        <source>Ctrl+Shift+N</source>
-        <comment>Create a New Vector Layer</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="834"/>
-        <source>Ctrl+Shift+V</source>
-        <comment>Add a Vector Layer</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="839"/>
-        <source>Ctrl+Shift+R</source>
-        <comment>Add a Raster Layer</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="844"/>
-        <source>Ctrl+Shift+D</source>
-        <comment>Add a PostGIS Layer</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="856"/>
-        <source>Ctrl+Shift+L</source>
-        <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="868"/>
-        <source>Ctrl+Shift+W</source>
-        <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="910"/>
-        <source>Ctrl+Shift+O</source>
-        <comment>Add current layer to overview map</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="926"/>
-        <source>Ctrl+Shift+U</source>
-        <comment>Show all layers</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="931"/>
-        <source>Ctrl+Shift+H</source>
-        <comment>Hide all layers</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="950"/>
-        <source>Ctrl+Shift+P</source>
-        <comment>Set project properties</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2015"/>
+        <location filename="../src/app/qgisapp.cpp" line="2011"/>
         <source>Whats new in Version 1.2.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>Mik az újdonságok az 1.2.0 verzióban?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2018"/>
+        <location filename="../src/app/qgisapp.cpp" line="2014"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kérjük vedd figyelenbe, hogy ez a &apos;cutting edge&apos; változatok sorozatába tartozik.  Mint olyan új elemeket és kibvített programói interfészt tartalmaz a QGIS 1.0.x és QGIS 1.1.0 verziókhoz képest. Ha stabilitás és a hosszútávú támogatás fontosabb mint az klassz új és nem teljesen tesztelt funkciók, akkor tanácsoljuk, hogy a QGIS 1.0.x stabil sorozatot használd.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2022"/>
+        <source>This release includes over 140 bug fixes and enhancements over the QGIS 1.1.0 release. In addition we have added the following new features:</source>
+        <translation>Ez a verzió több mint 140 hibajavítást és bővítést tartalmaz a QGIS 1.1.0 verzióhoz képest. Emellett a következő új funkciókkal bővítettük:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2026"/>
-        <source>This release includes over 140 bug fixes and enhancements over the QGIS 1.1.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2030"/>
         <source>Editing:
 
 Editing functionality in QGIS has had a major update in this release. This
@@ -5848,124 +5663,223 @@ Grass:
 
 There is a new GRASS shell. Also there have been many cleanups and consistency
 updates.</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>TBD</translatorcomment>
+        <translation type="unfinished">Szerkesztés:
+
+A QGIS szerkesztési funkciói sokat fejlődtek ebben a verzióban.
+Ez a következő új vektor szerkesztő eszközöket jelenti:
+- többrészből álló elem egy részének törlése
+- lyuk törlése a felületből
+- elem egyszerűsítés
+- Új csomópont eszköz (haladó digitalizálás eszközsorban).
+- Új funkcionalítás, elemek összevonása
+- Visszavonás/ismét funkciók a vektor rétegek szerkesztéséhez.
+- Szerkesztés módban csak a szelektált  elemek markereinek megjelenítése.
+- A réteg ikom módosítása a jelmagyarázatban, hogy jelezze a réteg szerkeszthetőségét.
+
+Emellett a Szerkesztés menüben megtalálható a visszavon/újra művelet, a Haladó digitalizáló eszközsorban és egy új kontroll a visszavonható mveletek listájával az aktív rétegen. 
+
+About the node tool: It resembles a tool for editing paths by nodes that is
+present in every vector editor. How does it work (in QGIS)? Click on a
+feature, its nodes will be marked by small rectangles. Clicking and dragging a
+node moves it. Double clicking a segment will add a new node. Pressing delete
+key will remove active node. It&apos;s possible to select more active nodes at
+once: by clicking and dragging a rectangle. It&apos;s possible to select a segment&apos;s
+adjacent nodes by clicking on the segment. It&apos;s possible to add/remove active
+nodes by using Ctrl when clicking a node or dragging a rectangle
+
+We recommend that you turn off vertex markers in QGIS options when working with
+this tool: the redraws are much faster and the map is not cluttered with
+markers. 
+
+Keyboard shortcuts:
+
+New feature: configure shortcuts for actions within main window of qgis!
+See menu Setting-&gt;Configure shortcuts
+
+Map Composer:
+
+It is now possible to lock/unlock composer item positions by right mouse click.
+The width and height of the composer map will now remain fixed if user sets the
+composer map extent to the map canvas extent. possibility to display
+current date in composer label by typing (d &apos;June&apos; yyyy) or similar.
+It is now possible to keep the current layers in a composer map even if further
+layers are added to the main map. Export to PDF in composer is now possible.
+
+Attribute tables:
+
+It is now possible to search the attribute table within selected records only.
+General speedups have been made on the attribute table. Setting of field width
+and precision when adding attributes is now possible. Handling of attribute
+types in WFS provider has bee improved.
+
+Attribute aliases for vector layers are now available. The aliases are shown
+instead of the original field names in the info tool and attribute table to
+make things easier for end users. There is now a GUI for setting edit widgets
+for layer attributes.  A new dialog allows loading a value map from a layer
+(could be non-spatial table too!).  The edit widgets settings will also now
+be respected in the attribute table.
+
+Plugins:
+
+- The order of layers in the WMS dialog can now be changed.
+- The eVis plugin, version 1.1.0, has been added to the QGIS project and
+  included as a standard plugin. More information about eVis can be found here:
+  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
+- The interpolation plugin now has the ability to use line layers as constrains
+  for triangulation in interpolation plugin. You can also now save the
+  triangulation to shape file.
+- An new OpenStreetMap provider and plugin have been added to QGIS.
+
+Projects Management:
+
+QGIS now includes support for  project relative position of file data sources
+and svgs. The saving of relative paths of file data sources is optional.
+
+PostGIS &amp; the PostgreSQL Provider:
+
+You can now select the SSL mode when adding a new DB connection. Turning off
+SSL encryption can greatly improve performance of PostGIS data loading where
+connection security is not required. Support has been added for more native
+types and for setting of column comments.
+
+Symbology enhancements:
+
+- allow refresh of symbols via popup menu on the renderer&apos;s symbol selection
+- add support for data defined symbol(name)s
+- add support for font symbol markers (only data defined - no gui yet)
+- add symbol size in map units (ie. symbols that keep the size in mapunits
+  independant of the mapscale)
+
+Parancssori argumentumok:
+
+Parancssori argumentumok kezelése Windows-on.
+Parancssori paraméterek bövítése:
+- allow given snapshot sizes
+- allow suppression of splash screen
+- capture map decorations from plugins on snapshots
+
+Grass:
+
+Egy új GRASS burok készült. Emellett számos javítást és frissítést tartalmaz.
+updates.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2480"/>
+        <location filename="../src/app/qgisapp.cpp" line="2476"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 érvénytelen vagy ismeretlen adatforrás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3303"/>
-        <location filename="../src/app/qgisapp.cpp" line="3510"/>
-        <location filename="../src/app/qgisapp.cpp" line="3585"/>
+        <location filename="../src/app/qgisapp.cpp" line="3299"/>
+        <location filename="../src/app/qgisapp.cpp" line="3506"/>
+        <location filename="../src/app/qgisapp.cpp" line="3581"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGIS fájlok (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3420"/>
+        <location filename="../src/app/qgisapp.cpp" line="3416"/>
         <source>%1
 Try to find missing layers?</source>
         <translation>%1
 Megpróbálod megkeresni a hiányzó rétegeket?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3543"/>
-        <location filename="../src/app/qgisapp.cpp" line="3628"/>
+        <location filename="../src/app/qgisapp.cpp" line="3539"/>
+        <location filename="../src/app/qgisapp.cpp" line="3624"/>
         <source>Saved project to: %1</source>
         <translation>Projekt mentés: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3556"/>
-        <location filename="../src/app/qgisapp.cpp" line="3636"/>
+        <location filename="../src/app/qgisapp.cpp" line="3552"/>
+        <location filename="../src/app/qgisapp.cpp" line="3632"/>
         <source>Unable to save project to %1</source>
         <translation>Nem tudom menteni a projektet ide %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3563"/>
-        <location filename="../src/app/qgisapp.cpp" line="3642"/>
+        <location filename="../src/app/qgisapp.cpp" line="3559"/>
+        <location filename="../src/app/qgisapp.cpp" line="3638"/>
         <source>Unable to save project %1</source>
         <translation>Nem tudom menteni a projektet %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3701"/>
+        <location filename="../src/app/qgisapp.cpp" line="3697"/>
         <source>Unable to load project %1</source>
         <translation>Nem tudom betölteni a projektet %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3830"/>
+        <location filename="../src/app/qgisapp.cpp" line="3826"/>
         <source>Saved map image to %1</source>
         <translation>Kép mentés %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4145"/>
+        <location filename="../src/app/qgisapp.cpp" line="4141"/>
         <source>Features deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemek töröltem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4191"/>
+        <location filename="../src/app/qgisapp.cpp" line="4187"/>
         <source>Merging features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemek összevonása...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4191"/>
+        <location filename="../src/app/qgisapp.cpp" line="4187"/>
         <source>Abort</source>
-        <translation type="unfinished">Megszakít</translation>
+        <translation>Megszakít</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4229"/>
+        <location filename="../src/app/qgisapp.cpp" line="4225"/>
         <source>No active layer</source>
-        <translation type="unfinished">Nincs aktív réteg</translation>
+        <translation>Nincs aktív réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4229"/>
+        <location filename="../src/app/qgisapp.cpp" line="4225"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs aktív réteg. Válassz egy réteget a réteglistában</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4235"/>
+        <location filename="../src/app/qgisapp.cpp" line="4231"/>
         <source>Active layer is not vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Az aktív réteg nem vektor réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4235"/>
+        <location filename="../src/app/qgisapp.cpp" line="4231"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Az elemk összevonása csak vektor rétegeken használható. Válassz egy vektor réteget a réteglistából</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4240"/>
+        <location filename="../src/app/qgisapp.cpp" line="4236"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Az elemek összevonása csak a szerkeszthető rétegeken lehet. Az összevonás eszköz használatához tedd szerkeszthetvé a réteget</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4248"/>
-        <location filename="../src/app/qgisapp.cpp" line="4282"/>
+        <location filename="../src/app/qgisapp.cpp" line="4244"/>
+        <location filename="../src/app/qgisapp.cpp" line="4278"/>
         <source>The merge tool requires at least two selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Az összvonás eszközhöz legalább két szelektált elem szükséges</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4265"/>
-        <location filename="../src/app/qgisapp.cpp" line="4301"/>
+        <location filename="../src/app/qgisapp.cpp" line="4261"/>
+        <location filename="../src/app/qgisapp.cpp" line="4297"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
-        <translation type="unfinished"></translation>
+        <translation>Az unió művelet olyan geometria típust állítana elő, mely nem kompatibilis az aktuális réteggel, ezért megszakítottam a műveletet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4307"/>
+        <location filename="../src/app/qgisapp.cpp" line="4303"/>
         <source>Merged features</source>
-        <translation type="unfinished"></translation>
+        <translation>Összevont elemek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4445"/>
+        <location filename="../src/app/qgisapp.cpp" line="4440"/>
         <source>Features cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4497"/>
+        <location filename="../src/app/qgisapp.cpp" line="4491"/>
         <source>Features pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemeket beillesztettem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4586"/>
+        <location filename="../src/app/qgisapp.cpp" line="4573"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -5975,49 +5889,49 @@ Errors: %2
 Hiba: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4878"/>
+        <location filename="../src/app/qgisapp.cpp" line="4865"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation>QGIS - Változások az SVN-ben az utolsó kibocsátás óta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4918"/>
+        <location filename="../src/app/qgisapp.cpp" line="4905"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Nem sikerült a QGIS verzió szerverrel kommunikálni
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5362"/>
+        <location filename="../src/app/qgisapp.cpp" line="5349"/>
         <source>Extents: %1</source>
         <translation>Terjedelem: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5893"/>
+        <location filename="../src/app/qgisapp.cpp" line="5880"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1 hibás vagy ismeretlen raszter adatforrás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6056"/>
+        <location filename="../src/app/qgisapp.cpp" line="6043"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 ismeretlen raszter adatforrás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6190"/>
+        <location filename="../src/app/qgisapp.cpp" line="6177"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
-        <translation>&lt;p&gt;Ezt a projekt fájlt a QGIS egy korábbi változatával mentették.Ezt a projekt fájlt a QGIS egy korábbi változatával mentették. A projekt fájl mentése során a QGIS aktualizálja az újabb verzióhoz, valószinüleg nem tudod használni a QGIS korábbi verzióival.&lt;p&gt;Bár a QGIS fejlesztők igyekeznek megtartani a kompatibilitást a korábbi verziókkal, néhány információ elveszhet a régi projekt fájlból. A QGIS minőségének javítása érdekében nagyra értékeljük, ha egy hibajelentést küldesz ide %3. Győződj meg róla, hogy a régi projekt fájlt, a használt QGIS verziószámot mellékelted a hiba feltárás érdekében.&lt;p&gt;A régebbi projekt fájlok megnyitása során kapott figyelmeztetés eltávolításához kapcsold ki a &apos;%5&apos;-t a %4 menüben. &lt;p&gt;A projekt fájl verziója: %1&lt;br&gt;Aktuális QGIS verzió: %2</translation>
+        <translation>&lt;p&gt;Ezt a projekt fájlt a QGIS egy korábbi változatával mentették.Ezt a projekt fájlt a QGIS egy korábbi változatával mentették. A projekt fájl mentése során a QGIS aktualizálja az újabb verzióhoz, valószínűleg nem tudod használni a QGIS korábbi verzióival.&lt;p&gt;Bár a QGIS fejlesztők igyekeznek megtartani a kompatibilitást a korábbi verziókkal, néhány információ elveszhet a régi projekt fájlból. A QGIS minőségének javítása érdekében nagyra értékeljük, ha egy hibajelentést küldesz ide %3. Győződj meg róla, hogy a régi projekt fájlt, a használt QGIS verziószámot mellékelted a hiba feltárás érdekében.&lt;p&gt;A régebbi projekt fájlok megnyitása során kapott figyelmeztetés eltávolításához kapcsold ki a &apos;%5&apos;-t a %4 menüben. &lt;p&gt;A projekt fájl verziója: %1&lt;br&gt;Aktuális QGIS verzió: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1833"/>
+        <location filename="../src/app/qgisapp.cpp" line="1829"/>
         <source>Layers</source>
         <translation>Rétegek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4140"/>
+        <location filename="../src/app/qgisapp.cpp" line="4136"/>
         <source>Delete features</source>
         <translation>Elemek törlése</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="4140"/>
+        <location filename="../src/app/qgisapp.cpp" line="4136"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -6030,18 +5944,24 @@ Hiba: %2</translation>
         <translation>SpatialLite réteg hozzáadás...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="856"/>
+        <source>L</source>
+        <comment>Add a SpatiaLite Layer</comment>
+        <translation>SpatialLite réteg hozzáadás</translation>
+    </message>
+    <message>
         <location filename="../src/app/qgisapp.cpp" line="857"/>
         <source>Add a SpatiaLite Layer</source>
         <translation>SpatialLite réteg hozzáadása</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1997"/>
+        <location filename="../src/app/qgisapp.cpp" line="1993"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
         <translation>A QGIS ezen változata SpatialLite támogatással készült.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2000"/>
+        <location filename="../src/app/qgisapp.cpp" line="1996"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>A QGIS ezen változata SpatialLite támogatás nélkül készült.</translation>
@@ -6054,7 +5974,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="796"/>
         <source>Zoom to Forward Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagyítás a következö terjedelemre</translation>
     </message>
     <message>
         <source>Whats new in Version 1.1.0?</source>
@@ -6068,34 +5988,34 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/app/qgisapp.cpp" line="705"/>
         <location filename="../src/app/qgisapp.cpp" line="707"/>
         <source>Simplify Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Elem egyszerűsítés</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="711"/>
         <location filename="../src/app/qgisapp.cpp" line="713"/>
         <source>Delete Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyűrű törlés</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="717"/>
         <location filename="../src/app/qgisapp.cpp" line="719"/>
         <source>Delete Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Rész törlés</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="966"/>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyors billentyűk konfigurálása...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="968"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyors billentyűk konfigurálása</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1376"/>
         <source>Advanced Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>Haladó digitalizálás</translation>
     </message>
 </context>
 <context>
@@ -6207,7 +6127,7 @@ You can change this option later by selection Options from the Settings menu (He
     <message>
         <location filename="../src/ui/qgsabout.ui" line="225"/>
         <source>Donors</source>
-        <translation type="unfinished"></translation>
+        <translation>Támogatók</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="276"/>
@@ -6221,12 +6141,12 @@ You can change this option later by selection Options from the Settings menu (He
     <message>
         <location filename="../src/app/qgsabout.cpp" line="117"/>
         <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;QGIS szponzor program: hozzájárulás a QGIS fejlesztéshez&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="166"/>
         <source>&lt;p&gt;The following individuals and institutions have contributed money to fund QGIS development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;A következő személyek és intézmények pénzzel támogatták a QGIS fejlesztését és más projekt költségeket&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="273"/>
@@ -6295,17 +6215,17 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="36"/>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
         <source>Width</source>
-        <translation type="unfinished">Szélesség</translation>
+        <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="85"/>
         <source>Precision</source>
-        <translation type="unfinished">Pontosság</translation>
+        <translation>Pontosság</translation>
     </message>
     <message>
         <source>OK</source>
@@ -6363,7 +6283,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="188"/>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
-        <translation>Egy attribútum esemény létrehozásához meg kell adnod a nevet és a végrehajtandó müveletet.</translation>
+        <translation>Egy attribútum esemény létrehozásához meg kell adnod a nevet és a végrehajtandó műveletet.</translation>
     </message>
 </context>
 <context>
@@ -6602,12 +6522,12 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/qgsattributeeditor.cpp" line="47"/>
         <source>Select a file</source>
-        <translation type="unfinished">Válassz egy fájlt</translation>
+        <translation>Válassz egy fájlt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributeeditor.cpp" line="235"/>
+        <location filename="../src/app/qgsattributeeditor.cpp" line="254"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -6615,34 +6535,34 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="14"/>
         <source>Load values from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adatok betöltése a rétegből</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="45"/>
         <source>Layer</source>
-        <translation type="unfinished">Réteg</translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="52"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="68"/>
         <source>Description</source>
-        <translation type="unfinished">Leírás</translation>
+        <translation>Leírás</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="63"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="83"/>
         <source>Value</source>
-        <translation type="unfinished">Érték</translation>
+        <translation>Érték</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="76"/>
         <source>Select data from attributes in selected layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adatok kiválasztása a szelektált réteg attribútumai közül.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="93"/>
         <source>View All</source>
-        <translation type="unfinished"></translation>
+        <translation>Mindent mutat</translation>
     </message>
 </context>
 <context>
@@ -6931,7 +6851,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="225"/>
         <source>Search selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresés a szelektált rekordokban</translation>
     </message>
 </context>
 <context>
@@ -7065,15 +6985,15 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/attributetable/qgsattributetablememorymodel.cpp" line="125"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútum módosult</translation>
     </message>
 </context>
 <context>
     <name>QgsAttributeTableModel</name>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="412"/>
+        <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="403"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútum módosult</translation>
     </message>
 </context>
 <context>
@@ -7082,63 +7002,63 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../src/app/qgsattributetypedialog.cpp" line="221"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="242"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az minimális érték %1, a maximális érték %2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="247"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az attribútum nem egész vagy valós típusú, ezért a tartomány nem használható.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="355"/>
         <source>Enumeration is not available for this attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Felsorolás nem használható erre az attribútumra</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="446"/>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <source>Attribute Edit Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútum szerkeszt párbeszédablak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="21"/>
         <source>Line edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal szerkesztés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="26"/>
         <source>Classification</source>
-        <translation type="unfinished"></translation>
+        <translation>Osztályozás</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="31"/>
         <source>Range</source>
-        <translation type="unfinished">Tartomány</translation>
+        <translation>Tartomány</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="36"/>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyedi értékek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="41"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájlnév</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="46"/>
         <source>Value map</source>
-        <translation type="unfinished"></translation>
+        <translation>Érték térkép</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="51"/>
         <source>Enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation>Felsorolás</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="56"/>
         <source>Immutable</source>
-        <translation type="unfinished"></translation>
+        <translation>Állandó</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="71"/>
@@ -7158,33 +7078,33 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="136"/>
         <source>Minimum</source>
-        <translation type="unfinished">Minimum</translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="143"/>
         <source>Maximum</source>
-        <translation type="unfinished">Maximum</translation>
+        <translation>Maximum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="150"/>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Lépés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="228"/>
         <source>Slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolóka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="238"/>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="273"/>
         <source>Editable</source>
-        <translation type="unfinished"></translation>
+        <translation>Szerkeszthető</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="245"/>
         <source>Local minimum/maximum = 0/0</source>
-        <translation type="unfinished"></translation>
+        <translation>Helyi minimum/maximum = 0/0</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="263"/>
@@ -7194,7 +7114,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="299"/>
         <source>Simplifies file selection by adding a file chooser dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl kiválasztás egyszerűsítéséhez egy fájl kiválasztó párbeszédablak hozzáadása.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="326"/>
@@ -7204,22 +7124,22 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="336"/>
         <source>Load Data from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Betöltés a rétegből</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="357"/>
         <source>Value</source>
-        <translation type="unfinished">Érték</translation>
+        <translation>Érték</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="362"/>
         <source>Description</source>
-        <translation type="unfinished">Leírás</translation>
+        <translation>Leírás</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="370"/>
         <source>Remove Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelektáltak törlése</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="394"/>
@@ -7229,7 +7149,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="428"/>
         <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az állandó attribútum csak olvasható - a felhasználó nem módosíthatja a tartalmát.</translation>
     </message>
 </context>
 <context>
@@ -7524,7 +7444,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="443"/>
         <source>PDF Format</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF formátum</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="613"/>
@@ -7590,7 +7510,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="832"/>
         <source>Error, could not save file</source>
-        <translation>Hiba, nem sikerült a féjlt menteni</translation>
+        <translation>Hiba, nem sikerült a fájlt menteni</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="840"/>
@@ -7681,7 +7601,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="305"/>
         <source>Add new label</source>
-        <translation>Új cimke hozzáadás</translation>
+        <translation>Új címke hozzáadás</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="316"/>
@@ -7749,7 +7669,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="343"/>
         <source>Export as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-ként exportál</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="351"/>
@@ -7774,7 +7694,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="389"/>
         <source>Move item content</source>
-        <translation type="unfinished"></translation>
+        <translation>Elem tartalom mozgatás</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="394"/>
@@ -7864,7 +7784,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="463"/>
         <source>Align center horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Vízszintesen középre igazít</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="468"/>
@@ -7879,28 +7799,28 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="476"/>
         <source>Align top</source>
-        <translation type="unfinished"></translation>
+        <translation>Felülre igazít</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="479"/>
         <source>Align selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelektált elemek felülre igazítása</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="484"/>
         <location filename="../src/ui/qgscomposerbase.ui" line="487"/>
         <source>Align center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Függőlegesen középre igazít</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="492"/>
         <source>Align bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Alulra igazít</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="495"/>
         <source>Align selected items bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelektált elemek alulra igazítása</translation>
     </message>
 </context>
 <context>
@@ -7959,7 +7879,7 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Font</source>
-        <translation type="obsolete">Betükészlet</translation>
+        <translation type="obsolete">Betűkészlet</translation>
     </message>
     <message>
         <source>Box</source>
@@ -8308,7 +8228,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="225"/>
         <source>Keep layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg lista megörzése</translation>
     </message>
 </context>
 <context>
@@ -8494,7 +8414,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="75"/>
         <source>Segments left:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maradt szegmensek:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="85"/>
@@ -8529,7 +8449,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="189"/>
         <source>Unit label:</source>
-        <translation>Mértékegység cimke:</translation>
+        <translation>Mértékegység címke:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="211"/>
@@ -8882,12 +8802,12 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="30"/>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="31"/>
         <source>inch</source>
-        <translation type="unfinished"></translation>
+        <translation>hüvelyk</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="121"/>
@@ -8963,13 +8883,13 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="84"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="526"/>
         <source>Dots</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontok</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="85"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="530"/>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>Metsz</translation>
     </message>
 </context>
 <context>
@@ -9065,48 +8985,48 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="110"/>
         <source>None</source>
-        <translation type="unfinished">Semmi</translation>
+        <translation>Semmi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="111"/>
         <source>Set default (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezés beállítás (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="205"/>
         <source>Input: </source>
-        <translation type="unfinished"></translation>
+        <translation>Input: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="216"/>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <source>Change</source>
-        <translation type="unfinished">Módosítás</translation>
+        <translation>Módosítás</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="236"/>
         <source>Shortcut conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyorsbillentyű ütközés</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="237"/>
         <source>This shortcut is already assigned to action %1. Reassign?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezt a gyorsbillyentyűt hozzárendelték már a(z) %1 művelethez. Felülbíráljam?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="14"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyors billentyűk konfigurálása</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="27"/>
         <source>Action</source>
-        <translation type="unfinished">Művelet</translation>
+        <translation>Művelet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="32"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyorsbillentyű</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="55"/>
@@ -9116,7 +9036,7 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="62"/>
         <source>Set default</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapértelmezés beállítás</translation>
     </message>
 </context>
 <context>
@@ -9244,33 +9164,33 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
         <translation type="obsolete">A cél vetületi rendszer (SRS) érvénytelen.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="473"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="484"/>
         <source>Failed</source>
         <translation>Sikertelen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="473"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="484"/>
         <source>transform of</source>
         <translation>transzformáció</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="486"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="497"/>
         <source>with error: </source>
         <translation>hiba:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="417"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
         <translation>A forrás vetületi rendszer (CRS) érvénytelen.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="425"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
         <translation>Érvénytelen cél koordinátarendszer (CRS).</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="419"/>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="427"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>A koordinátákat nem tudom átszámítani. A vetület: %1</translation>
     </message>
@@ -9300,12 +9220,12 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="79"/>
         <source>&amp;Copyright Label</source>
-        <translation>&amp;Szerzői jog cimke</translation>
+        <translation>&amp;Szerzői jog címke</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="81"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation>A térképen megjelenített szerzői jog cimke létrehozása.</translation>
+        <translation>A térképen megjelenített szerzői jog címke létrehozása.</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="94"/>
@@ -9319,7 +9239,7 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="13"/>
         <source>Copyright Label Plugin</source>
-        <translation>Szerzői jog cimke modul</translation>
+        <translation>Szerzői jog címke modul</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="57"/>
@@ -9349,7 +9269,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="146"/>
         <source>Enable Copyright Label</source>
-        <translation>Szerzői jog cimke bekapcsolása</translation>
+        <translation>Szerzői jog címke bekapcsolása</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="185"/>
@@ -9404,7 +9324,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="158"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -9416,38 +9336,38 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsCustomProjectionDialog</name>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="100"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="171"/>
         <source>Delete Projection Definition?</source>
         <translation>Vetület definíció törlése?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="101"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="172"/>
         <source>Deleting a projection definition is not reversable. Do you want to delete it?</source>
         <translation>A vetület definíció törlés nem visszefordítható. Törölni akarod?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="599"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="626"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="728"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="782"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="670"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="697"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="799"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="853"/>
         <source>Abort</source>
         <translation>Megszakít</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="604"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="784"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="675"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="855"/>
         <source>New</source>
         <translation>Új</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="649"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="656"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="672"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="689"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="705"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="859"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="874"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="886"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="720"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="727"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="743"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="760"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="776"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="882"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="897"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="909"/>
         <source>QGIS Custom Projection</source>
         <translation>QGIS egyéni vetület</translation>
     </message>
@@ -9472,47 +9392,47 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Ez a proj4 vetület definíció érvénytelen. Javítsd a mentés előtt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="650"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="657"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="673"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="706"/>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="860"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="721"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="728"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="744"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="777"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="883"/>
         <source>This proj4 projection definition is not valid.</source>
         <translation>Ez a proj4 vetület definíció érvénytelen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="875"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="898"/>
         <source>Northing and Easthing must be in decimal form.</source>
         <translation>X és Y szám formában kell.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="887"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="910"/>
         <source>Internal Error (source projection invalid?)</source>
         <translation>Belső hiba (kiinduló vetület érvénytelen?)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="651"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="722"/>
         <source> Please give the projection a name before pressing save.</source>
         <translation>A mentés megnyomása előtt add meg a vetület nevét.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="658"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="729"/>
         <source> Please add the parameters before pressing save.</source>
         <translation>A mentés megnyomása előtt add meg a paramétereket.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="674"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="745"/>
         <source> Please add a proj= clause before pressing save.</source>
         <translation>A mentés megnyomása előtt add meg a proj= részt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="690"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="761"/>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
         <comment>COMMENTED OUT</comment>
         <translation>Ez a proj4 ellipszoid definíció érvénytelen. Adj meg egy ellips= kifejezést a mentés előtt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="707"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="778"/>
         <source> Please correct before pressing save.</source>
         <translation>A mentés megnyomása előtt javítsd ki.</translation>
     </message>
@@ -9835,7 +9755,7 @@ Az adatbázis üzenete:
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="44"/>
         <source>PostgreSQL Connections</source>
-        <translation>PostgraSQL kapcsolat</translation>
+        <translation>PostgreSQL kapcsolat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="56"/>
@@ -9895,7 +9815,7 @@ Az adatbázis üzenete:
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="209"/>
         <source>Build query</source>
-        <translation type="unfinished"></translation>
+        <translation>Lekérdezés készítés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="216"/>
@@ -10227,12 +10147,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="96"/>
         <source>Heading Label</source>
-        <translation>Fejléc cimke</translation>
+        <translation>Fejléc címke</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="117"/>
         <source>Detail label</source>
-        <translation>Részlet cimke</translation>
+        <translation>Részlet címke</translation>
     </message>
 </context>
 <context>
@@ -10374,7 +10294,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used (click on a Column Name entry to edit). You may also change any other column name if desired.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ez a shape fájl fenntartott szavakat tartalmaz. Ez befolyásolhatja a PostgreSQL importot. Módosítsd az oszlopneveket, hogy a jobboldali listában szereplõk fenntartott szavak közül egyik se használd. (kattint az oszlopnév elemre a szerkesztéshez). Más oszlopok nevét is megváltoztathatod, ha szükséges.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ez a shape fájl fenntartott szavakat tartalmaz. Ez befolyásolhatja a PostgreSQL importot. Módosítsd az oszlopneveket, hogy a jobboldali listában szereplők fenntartott szavak közül egyik se használd. (kattint az oszlopnév elemre a szerkesztéshez). Más oszlopok nevét is megváltoztathatod, ha szükséges.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Reserved Words</source>
@@ -11238,7 +11158,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="136"/>
         <source>Delete selected attribute</source>
-        <translation>Kivlasztott attribútumok törlése</translation>
+        <translation>Kiválasztott attribútumok törlése</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="150"/>
@@ -11249,13 +11169,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="99"/>
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="193"/>
         <source>Width</source>
-        <translation type="unfinished">Szélesség</translation>
+        <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="109"/>
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="198"/>
         <source>Precision</source>
-        <translation type="unfinished">Pontosság</translation>
+        <translation>Pontosság</translation>
     </message>
 </context>
 <context>
@@ -11314,7 +11234,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="137"/>
         <source>&lt;b&gt;Links:&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Linkek:&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
@@ -11446,7 +11366,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="293"/>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="337"/>
         <source>Quantiles</source>
-        <translation type="unfinished">Egyenlő számú</translation>
+        <translation>Egyenlő számú</translation>
     </message>
     <message>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="63"/>
@@ -11525,17 +11445,17 @@ p, li { white-space: pre-wrap; }
         <translation>Réteg</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="266"/>
+        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="265"/>
         <source>Warning</source>
         <translation>Figyelmeztetés</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="267"/>
+        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="266"/>
         <source>ERROR</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="271"/>
+        <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="270"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -11635,7 +11555,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="269"/>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="342"/>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Új név a &quot;%1&quot; réteghez</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="284"/>
@@ -11648,14 +11568,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="385"/>
         <source>Question</source>
-        <translation type="unfinished"></translation>
+        <translation>Kérdés</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="386"/>
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Biztos, hogy törölni akarod a(z) %n szelektált réteget?</numerusform>
         </translation>
     </message>
     <message>
@@ -12692,7 +12612,7 @@ sorban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="516"/>
         <source>Cannot check region of map %1</source>
-        <translation type="unfinished">Nem tudom ellenőrizni a %1 térkép régiót</translation>
+        <translation>Nem tudom ellenőrizni a %1 térkép régiót</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="570"/>
@@ -12724,7 +12644,7 @@ sorban</translation>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished">
+        <translation>
 %1 
 a %2 sorban %3 oszlopban</translation>
     </message>
@@ -12912,12 +12832,12 @@ a %2 sorban %3 oszlopban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="265"/>
         <source>Cannot find man page %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem találom a %1 kézikönyv oldalt</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="969"/>
         <source>Not available, description not found (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem érhető el, a leírást nem találom (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="973"/>
@@ -12927,7 +12847,7 @@ a %2 sorban %3 oszlopban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="985"/>
         <source>Not available, incorrect description (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem érhető el, hibás leírás (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1158"/>
@@ -12937,7 +12857,7 @@ a %2 sorban %3 oszlopban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1186"/>
         <source>Output %1 exists! Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 létezik! Felül akarod írni?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1275"/>
@@ -12975,7 +12895,7 @@ a %2 sorban %3 oszlopban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="78"/>
         <source>TextLabel</source>
-        <translation>Szöveg cimke</translation>
+        <translation>Szöveg címke</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="116"/>
@@ -13056,22 +12976,22 @@ a %2 sorban %3 oszlopban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2655"/>
         <source>Cannot find layeroption %1</source>
-        <translation type="unfinished">Nem találom a réteg beállítást %1</translation>
+        <translation>Nem találom a réteg beállítást %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2670"/>
         <source>Cannot find whereoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem találom a where opciót %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2715"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassz réteget</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2841"/>
         <source>%1:&amp;nbsp;no input</source>
-        <translation type="unfinished">%1:&amp;amp;nbsp;nincs input</translation>
+        <translation>%1:&amp;nbsp;nincs input</translation>
     </message>
 </context>
 <context>
@@ -13136,7 +13056,7 @@ a %2 sorban %3 oszlopban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2225"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassz réteget</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2511"/>
@@ -13146,7 +13066,7 @@ a %2 sorban %3 oszlopban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2002"/>
         <source>Input</source>
-        <translation type="unfinished">Input</translation>
+        <translation>Input</translation>
     </message>
 </context>
 <context>
@@ -13170,7 +13090,7 @@ a %2 sorban %3 oszlopban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2941"/>
         <source>Selected categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiválasztott kategóriák</translation>
     </message>
 </context>
 <context>
@@ -13672,7 +13592,7 @@ a %2 sorban %3 oszlopban</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;It is possible to change the default location region later.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A GRASS terjedelem egy területet definiál a raszter modulokhoz. Az alapértelmezett terjedelem egy munkaterületre érvényes. Az egyes térképhalmazokra eltérõ terjedelmet állíthatsz be. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Az alapértelmezett terjedelmet késõbb megváltoztathatod.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A GRASS terjedelem egy területet definiál a raszter modulokhoz. Az alapértelmezett terjedelem egy munkaterületre érvényes. Az egyes térképhalmazokra eltérő terjedelmet állíthatsz be. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Az alapértelmezett terjedelmet később megváltoztathatod.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1798"/>
@@ -13726,7 +13646,7 @@ a %2 sorban %3 oszlopban</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS mapset is a collection of maps used by one user. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A user can read maps from all mapsets in the location but &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;he can open for writing only his mapset (owned by user).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A GRASS térképhalmaz egy felhasználó álhal használt térképek gyûjteménye. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Egy felhasználó a munkaterület összes térképét használhatja, de&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;csak a saját térképhalmazát módosíthatja.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A GRASS térképhalmaz egy felhasználó álhal használt térképek gyűjteménye. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Egy felhasználó a munkaterület összes térképét használhatja, de&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;csak a saját térképhalmazát módosíthatja.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2687"/>
@@ -13751,12 +13671,12 @@ a %2 sorban %3 oszlopban</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="39"/>
         <source>Tree</source>
-        <translation type="unfinished">Fa</translation>
+        <translation>Fa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="44"/>
         <source>Comment</source>
-        <translation type="unfinished">Megjegyzés</translation>
+        <translation>Megjegyzés</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="59"/>
@@ -14312,7 +14232,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="51"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="71"/>
         <source>Warning</source>
-        <translation type="unfinished">Figyelmeztetés</translation>
+        <translation>Figyelmeztetés</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="51"/>
@@ -14854,12 +14774,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="109"/>
         <source>Copy attribute value</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútum érték másolás</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="113"/>
         <source>Copy feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Elem attribútumok másolása</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="123"/>
@@ -14921,28 +14841,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="99"/>
         <source>No input data for interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs adat az interpolációhoz</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="99"/>
         <source>Please add one or more input layers</source>
-        <translation type="unfinished"></translation>
+        <translation>adj meg egy vagy több input réteget</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="108"/>
         <source>Output file name invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Eredményfájl neve hibás</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="108"/>
         <source>Please enter a valid output file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Adj meg egy érvényes eredményfájl nevet</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="163"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="272"/>
         <source>Break lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Törésvonalak</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="167"/>
@@ -14953,12 +14873,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="270"/>
         <source>Points</source>
-        <translation type="unfinished">Pontok</translation>
+        <translation>Pontok</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="297"/>
         <source>Save interpolated raster as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolált raszter mentése másként...</translation>
     </message>
 </context>
 <context>
@@ -15000,37 +14920,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="37"/>
         <source>Vector layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor rétegek:</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="54"/>
         <source>Interpolation attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolált attribútum:</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="81"/>
         <source>Add</source>
-        <translation type="unfinished">Hozzáad</translation>
+        <translation>Hozzáad</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="88"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Töröl</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="96"/>
         <source>Vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor réteg</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="101"/>
         <source>Attribute</source>
-        <translation type="unfinished">Attribútum</translation>
+        <translation>Attribútum</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="106"/>
         <source>Type</source>
-        <translation type="unfinished">Típus</translation>
+        <translation>Típus</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="129"/>
@@ -15288,7 +15208,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="95"/>
         <source>Position</source>
-        <translation>Pozició</translation>
+        <translation>Pozíció</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="589"/>
@@ -15375,7 +15295,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="53"/>
         <source>Default label</source>
-        <translation>Alapértelmezett cimke</translation>
+        <translation>Alapértelmezett címke</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="100"/>
@@ -15395,7 +15315,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="115"/>
         <source>Data defined position</source>
-        <translation>Adat szerinti pozició</translation>
+        <translation>Adat szerinti pozíció</translation>
     </message>
     <message>
         <source>Font transparency</source>
@@ -15494,7 +15414,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="184"/>
         <source>Font size</source>
-        <translation type="unfinished"></translation>
+        <translation>Betűméret</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="362"/>
@@ -15521,15 +15441,15 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>Maximális méretarány amikor a réteg megjelenik. </translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="233"/>
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="831"/>
         <source>&amp;Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Szín</translation>
     </message>
 </context>
 <context>
@@ -15561,64 +15481,64 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsLegend</name>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="118"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="119"/>
         <source>group</source>
         <translation>csoport</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="513"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="514"/>
         <source>&amp;Make to toplevel item</source>
         <translation>&amp;Legfelső elemmé tesz</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="520"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="521"/>
         <source>&amp;Remove</source>
         <translation>&amp;Töröl</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="525"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="526"/>
         <source>Re&amp;name</source>
         <translation>&amp;Átnevez</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="530"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="531"/>
         <source>&amp;Add group</source>
         <translation>&amp;Csoport hozzáadás</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="531"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="532"/>
         <source>&amp;Expand all</source>
         <translation>&amp;Mindent kinyit</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="532"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="533"/>
         <source>&amp;Collapse all</source>
         <translation>&amp;Mindent összezár</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="534"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="535"/>
         <source>Show file groups</source>
         <translation>Fájl csoport megjelenítés</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="758"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="769"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="755"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="766"/>
         <source>Stop editing</source>
-        <translation type="unfinished">Szerkesztés vége</translation>
+        <translation>Szerkesztés vége</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="759"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="770"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="756"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="767"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished">Akarod menteni a változásokat a(z) %1 rétegen?</translation>
+        <translation>Akarod menteni a változásokat a(z) %1 rétegen?</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="2007"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1996"/>
         <source>No Layer Selected</source>
         <translation>Nincs szelektált réteg</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="2008"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1997"/>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
         <translation>Az attribútum tábla megnyitásához egy vektor réteget kell szelektálnod a jelmagyarázatban</translation>
     </message>
@@ -15780,7 +15700,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="345"/>
         <source>Creation of an attribute failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Sikertelen attribútum létrehozás</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="371"/>
@@ -16094,7 +16014,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="468"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="485"/>
         <source>Feature added</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemet hozzáadtam</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="217"/>
@@ -16166,7 +16086,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="104"/>
         <source>Island added</source>
-        <translation type="unfinished"></translation>
+        <translation>Szigetet hozzáadtam</translation>
     </message>
 </context>
 <context>
@@ -16204,7 +16124,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="84"/>
         <source>Ring added</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyűrűt hozzáadtam</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="93"/>
@@ -16247,7 +16167,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdvertex.cpp" line="125"/>
         <source>Added vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Töréspontot hozzáadtam</translation>
     </message>
 </context>
 <context>
@@ -16256,22 +16176,22 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="101"/>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="116"/>
         <source>Delete part</source>
-        <translation type="unfinished"></translation>
+        <translation>Rész törlés</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="101"/>
         <source>This isn&apos;t a multipart geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem több részből álló geometria.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="109"/>
         <source>Part of multipart feature deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Több részbl álló elem részét töröltem</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="116"/>
         <source>Couldn&apos;t remove the selected part.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom törölni a szelektált részt.</translation>
     </message>
 </context>
 <context>
@@ -16279,7 +16199,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="114"/>
         <source>Ring deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyűrűt töröltem</translation>
     </message>
 </context>
 <context>
@@ -16287,7 +16207,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooldeletevertex.cpp" line="83"/>
         <source>Vertex deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Töréspontot töröltem</translation>
     </message>
 </context>
 <context>
@@ -16412,7 +16332,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="495"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútumot módosítottam</translation>
     </message>
 </context>
 <context>
@@ -16430,7 +16350,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="140"/>
         <source>Feature moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemet mozgattam</translation>
     </message>
 </context>
 <context>
@@ -16438,7 +16358,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolmovevertex.cpp" line="167"/>
         <source>Vertex moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Töréspontot mozgattam</translation>
     </message>
 </context>
 <context>
@@ -16446,7 +16366,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="463"/>
         <source>Node tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Csomópont eszköz</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="464"/>
@@ -16457,7 +16377,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="817"/>
         <source>Inserted vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Töréspontot beszúrtam</translation>
     </message>
 </context>
 <context>
@@ -16488,23 +16408,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="115"/>
         <source>Geometry simplified</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometriát egyszerűsítettem</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="279"/>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="300"/>
         <source>Unsupported operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem támogatott művelet</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="279"/>
         <source>Multipart features are not supported for simplification.</source>
-        <translation type="unfinished"></translation>
+        <translation>Több részbl álló elemeket nem lehet egyszerűsíteni.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="300"/>
         <source>This feature cannot be simplified. Check if feature has enough vertices to be simplified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az elemet nem lehet egyszerűsíteni. Ellenőrizd, hogy elegendő töréspontot tartalmaz az egyszerűsítéshez</translation>
     </message>
 </context>
 <context>
@@ -16527,7 +16447,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="82"/>
         <source>Features split</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemek darabolása</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
@@ -16972,49 +16892,49 @@ Felül akarod írni?</translation>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="87"/>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="106"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Összevon</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="124"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="428"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="480"/>
         <source>feature %1</source>
-        <translation type="unfinished"></translation>
+        <translation>elem %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="129"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="223"/>
         <source>Minimum</source>
-        <translation type="unfinished">Minimum</translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="130"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="227"/>
         <source>Maximum</source>
-        <translation type="unfinished">Maximum</translation>
+        <translation>Maximum</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="131"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="235"/>
         <source>Median</source>
-        <translation type="unfinished"></translation>
+        <translation>Medián</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="135"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="239"/>
         <source>Concatenation</source>
-        <translation type="unfinished"></translation>
+        <translation>Láncolás</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="139"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="231"/>
         <source>Mean</source>
-        <translation type="unfinished">Átlag</translation>
+        <translation>Átlag</translation>
     </message>
 </context>
 <context>
@@ -17022,17 +16942,17 @@ Felül akarod írni?</translation>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="13"/>
         <source>Merge feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Elem attribútumok összevonása</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="37"/>
         <source>Take attributes from selected feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútumok a szelektált elemből</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="68"/>
         <source>Remove feature from selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Elem kivétele a szelekcióból</translation>
     </message>
 </context>
 <context>
@@ -17369,17 +17289,17 @@ Bővebb hibaüzenet:
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="80"/>
         <source>If the WMS requires basic authentication, enter a user name and optional password</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha a WMS alap hitelesítést igényel, add meg a felhasználó nevet és jelszót</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="93"/>
         <source>User name</source>
-        <translation type="unfinished"></translation>
+        <translation>Felhasználó név</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="110"/>
         <source>Password</source>
-        <translation type="unfinished">Jelszó</translation>
+        <translation>Jelszó</translation>
     </message>
 </context>
 <context>
@@ -17673,9 +17593,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOSMDataProvider</name>
     <message>
-        <location filename="../src/providers/osm/osmprovider.cpp" line="386"/>
+        <location filename="../src/providers/osm/osmprovider.cpp" line="320"/>
         <source>Open Street Map format</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Street Map formátum</translation>
     </message>
 </context>
 <context>
@@ -17683,17 +17603,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="186"/>
         <source>Integer</source>
-        <translation type="unfinished">Egész</translation>
+        <translation>Egész</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="187"/>
         <source>Real</source>
-        <translation type="unfinished">Valós</translation>
+        <translation>Valós</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="188"/>
         <source>String</source>
-        <translation type="unfinished">Szöveg</translation>
+        <translation>Szöveg</translation>
     </message>
 </context>
 <context>
@@ -18407,7 +18327,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="60"/>
         <source>Prompt to save project changes when required</source>
-        <translation>Kérdés a projekt módosulások mentésére amikor szükséges</translation>
+        <translation>Kérdés a projekt módosulások mentésére, amikor szükséges</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="67"/>
@@ -18447,7 +18367,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="209"/>
         <source>Display classification attribute names in legend</source>
-        <translation>Oszályozás attribútum neve a jelmagyarázatba</translation>
+        <translation>Osztályozás attribútum neve a jelmagyarázatban</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="230"/>
@@ -18472,7 +18392,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="309"/>
         <source>Rendering quality</source>
-        <translation>Megjelenítási minőség</translation>
+        <translation>Megjelenítési minőség</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="394"/>
@@ -18497,17 +18417,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="482"/>
         <source>Preferred measurements units</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferált mérés egységek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="489"/>
         <source>Meters</source>
-        <translation type="unfinished">Méter</translation>
+        <translation>Méter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="496"/>
         <source>Feet</source>
-        <translation type="unfinished">Láb</translation>
+        <translation>Láb</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="515"/>
@@ -18552,7 +18472,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="818"/>
         <source>Show markers only for selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Markerek megjelenítése csak a szelektált elemekhez</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="825"/>
@@ -18685,7 +18605,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="580"/>
         <source>Position</source>
-        <translation>Pozició</translation>
+        <translation>Pozíció</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="595"/>
@@ -18753,7 +18673,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="194"/>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
-        <translation type="unfinished">Sikertelen kapcsolódás %1-hez. Kérem ellenőrizd a paramétereket. Győződj meg, hogy telepítetted a GDAL GeoRaster modult.</translation>
+        <translation>Sikertelen kapcsolódás %1-hez. Kérem ellenőrizd a paramétereket. Győződj meg, hogy telepítetted a GDAL GeoRaster modult.</translation>
     </message>
 </context>
 <context>
@@ -18954,7 +18874,7 @@ A térinformatikai funkciók csak a PostgreSQL/PostGIS rétegekre használhatók
     </message>
     <message>
         <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Nem sikerült a mezõ értékeket megkapni ezzel az SQL utasítással:&lt;/p&gt;&lt;p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Nem sikerült a mező értékeket megkapni ezzel az SQL utasítással:&lt;/p&gt;&lt;p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgquerybuilder.cpp" line="268"/>
@@ -19216,59 +19136,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished">Nem tudom megnyitni a rendszer helyi modul könyvtárat</translation>
+        <translation>Nem tudom megnyitni a rendszer helyi modul könyvtárat</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished">Python modulok lekérése...</translation>
+        <translation>Python modulok lekérése...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished">További modulok telepítése a távoli tárházakból</translation>
+        <translation>További modulok telepítése a távoli tárházakból</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished">Új modulok keresése...</translation>
+        <translation>Új modulok keresése...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="unfinished">Új modul elérhető</translation>
+        <translation>Új modul elérhető</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="unfinished">Modul frissítés elérhető</translation>
+        <translation>Modul frissítés elérhető</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Python modul telepítő</translation>
+        <translation>QGIS Python modul telepítő</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Hiba a tárház olvasása közben:</translation>
+        <translation>Hiba a tárház olvasása közben:</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished">Nincs mit törölni! A modul könyvtár nem létezik:</translation>
+        <translation>Nincs mit törölni! A modul könyvtár nem létezik:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="unfinished">Sikertelen könyvtár törlés:</translation>
+        <translation>Sikertelen könyvtár törlés:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished">Ellenőrizd a jogokat vagy töröld manuálisan</translation>
+        <translation>Ellenőrizd a jogokat vagy töröld manuálisan</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="unfinished">QGIS modul konfliktus:</translation>
+        <translation>QGIS modul konfliktus:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
-        <translation type="obsolete">A modul telepítő egy elavult modult talált, emiatt nem használható ezzel a QGIS verzióval szállított újabb verzió. Valószinüleg egy korábbi telepítésből maradt itt. A modul telepítvel távolítsd el, hogy az új verzióval szállított példány láthatóvá váljon.</translation>
+        <translation type="obsolete">A modul telepítő egy elavult modult talált, emiatt nem használható ezzel a QGIS verzióval szállított újabb verzió. Valószínűleg egy korábbi telepítésből maradt itt. A modul telepítvel távolítsd el, hogy az új verzióval szállított példány láthatóvá váljon.</translation>
     </message>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem tudom értelmezni a tárház outputot</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
@@ -19279,47 +19199,47 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Python modul telepítő</translation>
+        <translation>QGIS Python modul telepítő</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Hiba a tárház olvasása közben:</translation>
+        <translation>Hiba a tárház olvasása közben:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished">minden tárház</translation>
+        <translation>minden tárház</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished">kapcsolódtam</translation>
+        <translation>kapcsolódtam</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="unfinished">nem elérhető</translation>
+        <translation>nem elérhető</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished">Ezt a tárházat bekapcsolták, de nem érhető el</translation>
+        <translation>Ezt a tárházat bekapcsolták, de nem érhető el</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished">nincs engedélyezve</translation>
+        <translation>nincs engedélyezve</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="unfinished">A tárházat nem engedélyezték</translation>
+        <translation>A tárházat nem engedélyezték</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished">A tárházat blokkolom, a Quantum GIS verzióddal nem kompatibilis</translation>
+        <translation>A tárházat blokkolom, a Quantum GIS verzióddal nem kompatibilis</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="unfinished">árvák</translation>
+        <translation>árvák</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="unfinished">bármilyen státusz</translation>
+        <translation>bármilyen státusz</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -19333,31 +19253,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="unfinished">frissíthető és újak</translation>
+        <translation>frissíthető és újak</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="unfinished">Modult nem installálták</translation>
+        <translation>Modult nem installálták</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="unfinished">A modul installálták</translation>
+        <translation>A modul installálták</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished">Ezt a modult telepítetted, de egy újabb verzió elérhető</translation>
+        <translation>Ezt a modult telepítetted, de egy újabb verzió elérhető</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished">Ezt a modult telepítetted, de nem találom egyik bekapcsolt tárházban sem</translation>
+        <translation>Ezt a modult telepítetted, de nem találom egyik bekapcsolt tárházban sem</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished">Ezt a modult nem telepítetted és először látom</translation>
+        <translation>Ezt a modult nem telepítetted és először látom</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished">Ezt a modult telepítetted és újabb mint a tárházban elérhető</translation>
+        <translation>Ezt a modult telepítetted és újabb mint a tárházban elérhető</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -19386,183 +19306,183 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>installed version</source>
-        <translation type="unfinished">installált verzió</translation>
+        <translation>installált verzió</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="unfinished">elérhető verzió</translation>
+        <translation>elérhető verzió</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="unfinished">Ez a legújabb elérhető verzió</translation>
+        <translation>Ez a legújabb elérhető verzió</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="unfinished">Nincs letölthető verzió</translation>
+        <translation>Nincs letölthető verzió</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="unfinished">csak helyben elérhető</translation>
+        <translation>csak helyben elérhető</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="unfinished">modul telepítés</translation>
+        <translation>modul telepítés</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="unfinished">Modul újratelepítés</translation>
+        <translation>Modul újratelepítés</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="unfinished">Modul frissítés</translation>
+        <translation>Modul frissítés</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished">Modul telepítés/frissítés</translation>
+        <translation>Modul telepítés/frissítés</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="unfinished">Korábbi verzióra</translation>
+        <translation>Korábbi verzióra</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished">Biztos vagy benne, hogy vissza akarsz térni egy korábbi verzióhoz? A telepített újabb!</translation>
+        <translation>Biztos vagy benne, hogy vissza akarsz térni egy korábbi verzióhoz? A telepített újabb!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished">Sikertelen modul telepítés</translation>
+        <translation>Sikertelen modul telepítés</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished">A modul eltünt</translation>
+        <translation>A modul eltünt</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished">Látszólag a modult telepítették, de nem tudom hová. Valószínüleg a telepítő egy rossz könyvtárnevet tartalmazott.
+        <translation>Látszólag a modult telepítették, de nem tudom hová. Valószínűleg a telepítő egy rossz könyvtárnevet tartalmazott.
 Nézd át a telepített modulok listáját. Majdnem biztos vagyok, hogy megtalálod ott a modult, de nem tudom eldönteni, hogy melyik az. Ez azt is jelenti, hogy nem tudom eldönteni, hogy telepítve lett-e és nem tudlak értesíteni a frissítésekről. A modul ennek ellenére működhet. Vedd fel a kacsolatot a modul szerzőjével és jelezd a problémát.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished">A modult sikeresen telepítettem</translation>
+        <translation>A modult sikeresen telepítettem</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished">Sikertelen modul telepítés</translation>
+        <translation>Sikertelen modul eltávolítás</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished">Biztos vagy benne, hogy eltávolítod a következő modult?</translation>
+        <translation>Biztos vagy benne, hogy eltávolítod a következő modult?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished">Figyelmeztetés: ezt a modul nem találom egyetlen elérhető tárházban sem!</translation>
+        <translation>Figyelmeztetés: ezt a modul nem találom egyetlen elérhető tárházban sem!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished">A modult sikeresen eltávolítottam</translation>
+        <translation>A modult sikeresen eltávolítottam</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished">Nem tudok ugyanazzal az URL-lel másik tárházat hozzáadni!</translation>
+        <translation>Nem tudok ugyanazzal az URL-lel másik tárházat hozzáadni!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished">Biztos vagy benne, hogy eltávolítod a következő tárházat?</translation>
+        <translation>Biztos vagy benne, hogy eltávolítod a következő tárházat?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished">A modul nem kompatibilis a Quantum GIS verzióddal és valószínüleg nem fog működni.</translation>
+        <translation>A modul nem kompatibilis a Quantum GIS verzióddal és valószínűleg nem fog működni.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="unfinished">Ez modul sérültnek látszik
+        <translation>Ez modul sérültnek látszik
 Telepítettük, de nem tudom betölteni
 A hiba üzenet:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished">Figyelem ez egy nem eltávolítható alap modul</translation>
+        <translation>Figyelem ez egy nem eltávolítható alap modul</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="unfinished">A modul sérült</translation>
+        <translation>A modul sérült</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished">A modulhoz egy újabb Quantum GIS verzió szükséges</translation>
+        <translation>A modulhoz egy újabb Quantum GIS verzió szükséges</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished">A modul egy másik hiányzó modult igényel</translation>
+        <translation>A modul egy másik hiányzó modult igényel</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished">A modult sikeresen újratelepítettem</translation>
+        <translation>A modult sikeresen újratelepítettem</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished">Ezt a modult egy újabb Quantum GIS verzióhoz készítették. Minimálisan szükséges verzió:</translation>
+        <translation>Ezt a modult egy újabb Quantum GIS verzióhoz készítették. Minimálisan szükséges verzió:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished">A modul néhány, a rendszeredből hiányzó komponenstől függ. A következő Python modulokat kell telepítened a használatához:</translation>
+        <translation>A modul néhány, a rendszeredből hiányzó komponenstől függ. A következő Python modulokat kell telepítened a használatához:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished">A modul sérült. Python üzenet:</translation>
+        <translation>A modul sérült. Python üzenet:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished">A szükséges Python modult nem telepítetted.
+        <translation>A szükséges Python modult nem telepítetted.
 További információkért látogasd meg a Quantum GIS wiki oldalát.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished">Python modult telepítettem.
+        <translation>Python modult telepítettem.
 Most engedélyezned kell a modul kezelőben.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished">Python modult újratelepítettem.
+        <translation>Python modult újratelepítettem.
 Most újra kell indítanod a Quantum GIS-t, hogy újra betöltse azt.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished">A Python modult eltávolítottam. Vedd figyelembe, hogy a Quantum GIS újraindítására lehet szükség a teljes eltávolításhoz.</translation>
+        <translation>A Python modult eltávolítottam. Vedd figyelembe, hogy a Quantum GIS újraindítására lehet szükség a teljes eltávolításhoz.</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="unfinished">frissíthető</translation>
+        <translation>frissíthető</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="unfinished">új!</translation>
+        <translation>új!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="unfinished">érvénytelen</translation>
+        <translation>érvénytelen</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ehhez a tárházhoz kapcsolódtam</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>nincs telepítve</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="unfinished"></translation>
+        <translation>telepítve</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="unfinished"></translation>
+        <translation>legalább</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
@@ -19844,35 +19764,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished">Sikeres</translation>
+        <translation>Sikeres</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Gép név feloldása</translation>
+        <translation>Gép név feloldása</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Kapcsolódás...</translation>
+        <translation>Kapcsolódás...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Kapcsolódtam a géphez. Küldöm a kérést...</translation>
+        <translation>Kapcsolódtam a géphez. Küldöm a kérést...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Adatletöltés...</translation>
+        <translation>Adatletöltés...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">Üresjárat</translation>
+        <translation>Üresjárat</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Kapcsolat lezárása</translation>
+        <translation>Kapcsolat lezárása</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
+        <translation>Hiba</translation>
     </message>
 </context>
 <context>
@@ -19907,43 +19827,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished">Telepítés...</translation>
+        <translation>Telepítés...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Gép név felodás...</translation>
+        <translation>Gép név felodás...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Kapcsolódás...</translation>
+        <translation>Kapcsolódás...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Kapcsolódtam a géphez. Küldöm a kérést...</translation>
+        <translation>Kapcsolódtam a géphez. Küldöm a kérést...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Adatletöltés...</translation>
+        <translation>Adatletöltés...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">Üresjárat</translation>
+        <translation>Üresjárat</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Kapcsolat lezárása</translation>
+        <translation>Kapcsolat lezárása...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
+        <translation>Hiba</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished">Nem sikerült kitömöríteni a modul csomagot. Valószinüleg hibás vagy hiányzik a tárházból. Meggyőződhetnél róla, hogy van irási jogod a modul könyvtárra:</translation>
+        <translation>Nem sikerült kitömöríteni a modul csomagot. Valószinűleg hibás vagy hiányzik a tárházból. Meggyőződhetnél róla, hogy van irási jogod a modul könyvtárra:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished">Felhasználó megszakította</translation>
+        <translation>Felhasználó megszakította</translation>
     </message>
 </context>
 <context>
@@ -19968,7 +19888,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished">nem kaptam hibaüzenetet</translation>
+        <translation>nem kaptam hibaüzenetet</translation>
     </message>
 </context>
 <context>
@@ -19981,12 +19901,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="35"/>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
-        <translation type="unfinished"></translation>
+        <translation>A modul hibás vagy feloldatlan függőségeket tartalmaz. Installálták, de nem lehet betölteni. HA valóban szükséged van erre a modulra fordulj a szerzőhöz vagy a &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS felhasználói csoporthoz&lt;/a&gt; és próbáld megoldani a problémát. Vagy eltávolíthatod. Itt a hibaüzenet:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="83"/>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
-        <translation>El akarod távolítani ezt a modult most?  Ha bizonytalan vagy, akkor valószinüleg ezt kell tenned.</translation>
+        <translation>El akarod távolítani ezt a modult most?  Ha bizonytalan vagy, akkor valószinűleg ezt kell tenned.</translation>
     </message>
 </context>
 <context>
@@ -20375,7 +20295,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="358"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="850"/>
         <source>Polynomial 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Felület 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="361"/>
@@ -20394,7 +20314,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="379"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="851"/>
         <source>Polynomial 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Felület 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="394"/>
@@ -20405,7 +20325,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="400"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="852"/>
         <source>Polynomial 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Felület 3</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="415"/>
@@ -20416,7 +20336,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="421"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="853"/>
         <source>Thin plate spline (TPS)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vékony lemez spline (TPS)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="512"/>
@@ -20442,17 +20362,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="305"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="667"/>
         <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;A szelektált fájlhoz már tartozik egy világ fájl! Felül akarod írni ezt az új világ fájllal?&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="439"/>
         <source>&lt;p&gt;The %1 transform is not yet supported.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;A %1 transzformációt még nem támogatjuk.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="480"/>
         <source>Could not write to %1</source>
-        <translation>Nme tudok írni ide %1</translation>
+        <translation>Nem tudok írni ide %1</translation>
     </message>
 </context>
 <context>
@@ -20668,12 +20588,12 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
     <message>
         <source>initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
-        <translation type="obsolete">kezdetben megfelelõnek tünt, de nem tartalmaz egyedi adatokat így nem megfelelõ.
+        <translation type="obsolete">kezdetben megfelelőnek tünt, de nem tartalmaz egyedi adatokat így nem megfelelő.
 </translation>
     </message>
     <message>
         <source>The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="obsolete">A kiválasztott nézet táblában a következõ oszlopok találhatók, melyek közül egyik sem elégíti ki a fenti feltételeket:</translation>
+        <translation type="obsolete">A kiválasztott nézet táblában a következő oszlopok találhatók, melyek közül egyik sem elégíti ki a fenti feltételeket:</translation>
     </message>
     <message>
         <source>Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
@@ -20807,7 +20727,7 @@ A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozás�
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="107"/>
         <source>Unable to access the %1 relation.
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nem érhető el a %1 reláció</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="108"/>
@@ -20829,42 +20749,42 @@ SQL: %2
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="231"/>
         <source>smallint (16bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>kis egész (16bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="232"/>
         <source>integer (32bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>egész (32bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="233"/>
         <source>integer (64bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>egész (64bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="234"/>
         <source>numeric</source>
-        <translation type="unfinished"></translation>
+        <translation>numerikus</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="235"/>
         <source>decimal</source>
-        <translation type="unfinished"></translation>
+        <translation>decimális</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="238"/>
         <source>real</source>
-        <translation type="unfinished"></translation>
+        <translation>valós</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="239"/>
         <source>double</source>
-        <translation type="unfinished"></translation>
+        <translation>dupla</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="242"/>
         <source>char</source>
-        <translation type="unfinished"></translation>
+        <translation>karakter</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="243"/>
@@ -20874,7 +20794,7 @@ SQL: %2
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="244"/>
         <source>text</source>
-        <translation type="unfinished"></translation>
+        <translation>szöveg</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1089"/>
@@ -20896,13 +20816,13 @@ SQL: %2
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1247"/>
         <source>and is not suitable (type is %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>és nem alkalmas (a típus %1)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1335"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés: &apos;%1&apos; kezdetben alkalmasnak tünt, de nem tartalmaz egyedi adatokat és így alkalmatlan.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1346"/>
@@ -20914,7 +20834,7 @@ The view you selected has the following columns, none of which satisfy the above
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2859"/>
         <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 oszlop a %2-ben %3 geometriai típussal bír, melyet a QGIS jelenleg nem támogat.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2866"/>
@@ -20931,7 +20851,11 @@ int4 with a unique constraint on it (which includes the
 primary key), has a PostgreSQL oid column or has a ctid
 column with a 16bit block number.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>A táblában nincs megfelelő oszlop ami kulcsként használható.
+
+A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozásával 
+(amit az elsődleges kulcs magában foglal) vagy egy PostgreSQL oid oszlopra.
+</translation>
     </message>
 </context>
 <context>
@@ -20959,7 +20883,7 @@ Telepítsd a PostGIS-t GEOS támogatással (http://geos.refractions.net)</transl
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="333"/>
         <source>Your database has no working PostGIS support.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Az adatbázisod nem tartalmaz PostGIS támogatást.</translation>
     </message>
 </context>
 <context>
@@ -21154,7 +21078,7 @@ Telepítsd a PostGIS-t GEOS támogatással (http://geos.refractions.net)</transl
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="275"/>
         <source>save absolute paths</source>
-        <translation type="unfinished"></translation>
+        <translation>abszolút elérési út mentés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="283"/>
@@ -21254,7 +21178,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="19"/>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished">Koordinátarendszer kiválasztó</translation>
+        <translation>Koordinátarendszer kiválasztó</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="53"/>
@@ -21292,17 +21216,17 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="19"/>
         <source>&amp;Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Végrehajt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="26"/>
         <source>&amp;Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Elözö</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="33"/>
         <source>&amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Következő</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="56"/>
@@ -21601,7 +21525,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1859"/>
         <source>out of extent</source>
-        <translation type="unfinished">tartományon kívül</translation>
+        <translation>tartományon kívül</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1897"/>
@@ -21639,17 +21563,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="221"/>
         <source>QgsRasterLayer created</source>
-        <translation type="unfinished"></translation>
+        <translation>QgsRasterLayer-t létrehoztam</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="741"/>
         <source>Retrieving stats for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Statisztika kiolvasás %1-re</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="755"/>
         <source>Calculating stats for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Statisztika számítása %1-re</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1510"/>
@@ -21666,7 +21590,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="973"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1002"/>
         <source>Grayscale</source>
-        <translation>Szükefokozatok</translation>
+        <translation>Szürkefokozatok</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="104"/>
@@ -22146,7 +22070,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3134"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3200"/>
         <source>Unknown style format: %1</source>
-        <translation type="unfinished">Ismeretlen stílus formátum: %1</translation>
+        <translation>Ismeretlen stílus formátum: %1</translation>
     </message>
 </context>
 <context>
@@ -22366,7 +22290,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scale Dependent Visibility</source>
-        <translation type="obsolete">Méretarány függõ megjelenítés</translation>
+        <translation type="obsolete">Méretarány függő megjelenítés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1418"/>
@@ -22639,7 +22563,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="842"/>
         <source>TextLabel</source>
-        <translation>Szöveg cimke</translation>
+        <translation>Szöveg címke</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="853"/>
@@ -22928,7 +22852,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="54"/>
         <source>&lt;b&gt;Starting %1...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;%1 indítása ...&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="72"/>
@@ -22982,7 +22906,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidget.cpp" line="133"/>
         <source>Select new preview directory</source>
-        <translation type="unfinished">Válassz új elnézet könyvtárat</translation>
+        <translation>Válassz új elönézet könyvtárat</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidget.cpp" line="182"/>
@@ -23015,7 +22939,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="77"/>
         <source>SVG Preview</source>
-        <translation type="unfinished">SVG előnézet</translation>
+        <translation>SVG előnézet</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="143"/>
@@ -23350,7 +23274,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Több WMS szervert adtál a szerver listához. A proxy mezõket üresen hagytad, ha egy web proxyn keresztûl éred el az internetet a megfelõ értékekkel egyenként ki kell tölteni a proxy mezõt.&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Több WMS szervert adtál a szerver listához. A proxy mezőket üresen hagytad, ha egy web proxyn keresztül éred el az internetet a megfelő értékekkel egyenként ki kell tölteni a proxy mezőt.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="769"/>
@@ -23813,7 +23737,7 @@ The error was:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="48"/>
         <source>Label</source>
-        <translation>Cimke</translation>
+        <translation type="unfinished">Címke</translation>
     </message>
 </context>
 <context>
@@ -23907,8 +23831,8 @@ The error was:
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="563"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="780"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="902"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1043"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1278"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1040"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1273"/>
         <source>SQLite error: %1
 
 SQL: %2</source>
@@ -23925,7 +23849,7 @@ SQL: %2</translation>
 <context>
     <name>QgsSpatiaLiteProvider::SqliteHandles</name>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1387"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1382"/>
         <source>Failure while connecting to: %1
 
 %2</source>
@@ -24858,37 +24782,37 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         <translation type="obsolete">Bár a módosított geometria véglegesítése OK.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2780"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2779"/>
         <source>ERROR: no provider</source>
         <translation>Hiba: nincs kiszolgáló</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2786"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2785"/>
         <source>ERROR: layer not editable</source>
         <translation>HIBA: a réteg nem szerkeszthető</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2869"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2868"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation>Siker: %1 attribútumot hozzáadtam.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2876"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2875"/>
         <source>ERROR: attribute %1 not added</source>
         <translation>Hiba: %1 attribútumot nem adtam hozzá</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2419"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2418"/>
         <source>No renderer object</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2423"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2422"/>
         <source>Classification field not found</source>
         <translation>Osztályozás mezőt nem találom</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2800"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2799"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation>
@@ -24896,7 +24820,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2806"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2805"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation>
@@ -24904,7 +24828,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2822"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2821"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation>
@@ -24912,7 +24836,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2828"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2827"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation>
@@ -24920,7 +24844,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2935"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2934"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation>
@@ -24928,7 +24852,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2940"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2939"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation type="unfinished">
@@ -24936,7 +24860,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2972"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2971"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation>
@@ -24944,7 +24868,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2977"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2976"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation>
@@ -24952,7 +24876,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2990"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2989"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation>
@@ -24960,7 +24884,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2995"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2994"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation>
@@ -24968,7 +24892,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3007"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3006"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation>
@@ -24976,7 +24900,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3017"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3016"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation>
@@ -24984,7 +24908,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2413"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2412"/>
         <source>Unknown renderer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25505,7 +25429,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="467"/>
         <source>Display labels</source>
-        <translation>Cimke megjelenítés</translation>
+        <translation type="unfinished">Címke megjelenítés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="494"/>
@@ -26353,44 +26277,44 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="159"/>
         <source>Undo/Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Visszavonás/Újra</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="160"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Visszavonás</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="161"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Újra</translation>
     </message>
 </context>
 <context>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Kérem add meg az input vektor réteget</translation>
+        <translation>Kérem add meg az input vektor réteget</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">Kérem add meg az input mezőt</translation>
+        <translation>Kérem add meg az input mezőt</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Ellenőrizd a geometria helyességét</translation>
+        <translation>Ellenőrizd a geometria helyességét</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished">Geometriai hibák</translation>
+        <translation>Geometriai hibák</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished">Összes feltárt hiba</translation>
+        <translation>Összes feltárt hiba</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Egyedi értékek listája</translation>
+        <translation>Egyedi értékek listája</translation>
     </message>
     <message>
         <source>Unique values:</source>
@@ -26402,19 +26326,19 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished">Alap statisztika</translation>
+        <translation>Alap statisztika</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished">Statisztikai eredmények</translation>
+        <translation>Statisztikai eredmények</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Legközelebbi szomszéd elemzés</translation>
+        <translation>Legközelebbi szomszéd elemzés</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="unfinished">Legközelebbi szomszéd statisztika</translation>
+        <translation>Legközelebbi szomszéd statisztika</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
@@ -26426,11 +26350,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyedi értékek</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Öszes egyedi érték</translation>
     </message>
 </context>
 <context>
@@ -26563,17 +26487,17 @@ email scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="105"/>
         <source>eVis Database Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>eVis adatbázis kapcsolat</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="106"/>
         <source>eVis Event Id Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>eVis Esemény ID eszköz</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="107"/>
         <source>eVis Event Browser</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="110"/>
@@ -26730,7 +26654,7 @@ p, li { white-space: pre-wrap; }
         <source>Database Host</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
         <translation type="unfinished"></translation>
@@ -26949,29 +26873,29 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="34"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjelenít</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="78"/>
         <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Használd az elözö gombot az elözö fénykép megjelenítéséhez, ha több mint egy fotó megjelenításe lehetséges.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="81"/>
         <source>Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Elözö</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="97"/>
         <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Használd a következő gombot a következő fénykép megjelenítéséhez, ha több mint egy fotó megjelenítése lehetséges.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="100"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Következő</translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="134"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
         <translation type="unfinished"></translation>
@@ -26979,12 +26903,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="138"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="152"/>
         <source>Image display area</source>
-        <translation type="unfinished"></translation>
+        <translation>Képterület</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="155"/>
@@ -26994,7 +26918,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="186"/>
         <source>Options</source>
-        <translation type="unfinished">Opciók</translation>
+        <translation>Opciók</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="205"/>
@@ -27014,7 +26938,7 @@ p, li { white-space: pre-wrap; }
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="267"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
         <translation type="unfinished"></translation>
@@ -27022,7 +26946,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="270"/>
         <source>Path Is Relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Relatív elérési út</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="311"/>
@@ -27110,7 +27034,7 @@ p, li { white-space: pre-wrap; }
         <source>Resets the compass offset values to the default settings.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="671"/>
         <source>The base path or url from which images and documents can be “relative”</source>
         <translation type="unfinished"></translation>
@@ -27121,7 +27045,7 @@ p, li { white-space: pre-wrap; }
         <source>Base Path</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="750"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
         <translation type="unfinished"></translation>
@@ -27169,7 +27093,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>Apply Path to Image rules when loading docs in external applications</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="963"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translation type="unfinished"></translation>
@@ -27197,12 +27121,12 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1029"/>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alkalmazás</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1039"/>
         <source>Add new file type</source>
-        <translation type="unfinished"></translation>
+        <translation>Új fájltípus hozzáadás</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1042"/>
@@ -27212,7 +27136,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1056"/>
         <source>Delete current row</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuális sor törlése</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="1059"/>
@@ -27225,39 +27149,39 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="52"/>
         <source>Zoom in</source>
-        <translation type="unfinished">Nagyítás</translation>
+        <translation>Nagyítás</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="53"/>
         <source>Zoom in to see more detail.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagyítás a részletek megtekintéséhez</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="54"/>
         <source>Zoom out</source>
-        <translation type="unfinished">Kicsinyítés</translation>
+        <translation>Kicsinyítés</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="55"/>
         <source>Zoom out to see more area.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kicsinyítés a nagyobb terület megjelenítéséhez</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="56"/>
         <source>Zoom to full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagyítás a teljes terjedelemre</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="57"/>
         <source>Zoom to display the entire image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagyítás a teljes térkép megjelenítéséhez.</translation>
     </message>
 </context>
 <context>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Észlelt QGIS verzió: </translation>
+        <translation>Észlelt QGIS verzió: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
@@ -27266,183 +27190,184 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az fTools ezen verziója a QGIS 1.0.0 verzióját igényli
+A modult nem engedélyezem.</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation type="unfinished">&amp;Eszközök</translation>
+        <translation>&amp;Eszközök</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished">&amp;Elemző eszközök</translation>
+        <translation>&amp;Elemző eszközök</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Távolság mátrix</translation>
+        <translation>Távolság mátrix</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Össz vonalhossz</translation>
+        <translation>Össz vonalhossz</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Pontok a felületben</translation>
+        <translation>Pontok a felületben</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished">Alap statisztika</translation>
+        <translation>Alap statisztika</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Egyedi értékek listája</translation>
+        <translation>Egyedi értékek listája</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Legközelebbi szomszéd elemzés</translation>
+        <translation>Legközelebbi szomszéd elemzés</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Átlag koordinátá(k)</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">Vonal metszések</translation>
+        <translation>Vonal metszések</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Kutató eszközök</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished">Véletlen szelekció</translation>
+        <translation>Véletlen szelekció</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Véletlen szelekció alhalmazokkal</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished">Véletlen pontok</translation>
+        <translation>Véletlen pontok</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished">Szabályos pontok</translation>
+        <translation>Szabályos pontok</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">Vektor rács</translation>
+        <translation>Vektor rács</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Szelekció pozíció alapján</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Felület a réteg rerjedelemből</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemzö eszközök</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Konvex befoglaló idom</translation>
+        <translation>Konvex befoglaló idom</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Övezet(ek)</translation>
+        <translation>Övezet(ek)</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Metszés</translation>
+        <translation>Metszés</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Unió</translation>
+        <translation>Unió</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Szimmetrikus különbség</translation>
+        <translation>Szimmetrikus különbség</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Vág</translation>
+        <translation>Vág</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Összevon</translation>
+        <translation>Összevon</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Különbség</translation>
+        <translation>Különbség</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished">Geometriai eszközök</translation>
+        <translation>Geometriai eszközök</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Export/geometria oszlop hozzáadás</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Ellenőrizd a geometria helyességét</translation>
+        <translation>Ellenőrizd a geometria helyességét</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Felület centrálisok</translation>
+        <translation>Felület centrálisok</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Delaunay háromszögek</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Csomópontok kivonat</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Geometria egyszerüsítése</translation>
+        <translation>Geometria egyszerűsítése</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished"></translation>
+        <translation>Többrészűből egyrészűekbe</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyrészűekből többrészűbe</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Felületek vonallá</translation>
+        <translation>Felületek vonallá</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Adatkezelö eszközök</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Export új vetületbe</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuális vetület megadása</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútumok kapcsolása</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribútumok kapcsolása hely alapján</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektor réteg darabolás</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="unfinished"></translation>
+        <translation>fTools információ</translation>
     </message>
     <message>
         <source>About fTools</source>
@@ -27468,22 +27393,22 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="75"/>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation type="unfinished"></translation>
+        <translation>Cseréld le azt egy rövid leírásra, hogy mit csinal a modul</translation>
     </message>
 </context>
 <context>
     <name>statResult</name>
     <message>
         <source>Max. len.      : </source>
-        <translation type="unfinished"></translation>
+        <translation>Max. hossz:</translation>
     </message>
     <message>
         <source>Min. len.       : </source>
-        <translation type="unfinished"></translation>
+        <translation>Min. hossz:</translation>
     </message>
     <message>
         <source>Mean. len     : </source>
-        <translation type="unfinished"></translation>
+        <translation>Átlag hossz:</translation>
     </message>
     <message>
         <source>Filled             : </source>
@@ -27491,7 +27416,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Empty           : </source>
-        <translation type="unfinished"></translation>
+        <translation>Üres:</translation>
     </message>
     <message>
         <source>N                   : </source>
@@ -27502,31 +27427,31 @@ Plugin will not be enabled.</source>
     <name>visualThread</name>
     <message>
         <source>Observed mean distance : </source>
-        <translation type="unfinished"></translation>
+        <translation>Mért átlag távolság</translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation type="unfinished"></translation>
+        <translation>Várt átlag távolság</translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation type="unfinished"></translation>
+        <translation>LEgözelebbi szomszéd index:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 elem nem bels lyukat tartalmaz</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 elem hibás töréspont sorrend</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished">%1 elem nem zárt</translation>
+        <translation>%1 elem nem zárt</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished">%1 elem önmagát metszi</translation>
+        <translation>%1 elem önmagát metszi</translation>
     </message>
 </context>
 </TS>
