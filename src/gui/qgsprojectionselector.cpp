@@ -195,13 +195,19 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   // iterate through all incoming CRSs
 
   QSet<QString>::const_iterator i = crsFilter->begin();
+  QRegExp rx( "[^0-9]" );
   while ( i != crsFilter->end() )
   {
     QStringList parts = i->split( ":" );
 
     if ( parts.at( 0 ) == "EPSG" && parts.size() >= 2 )
     {
-      epsgParts.push_back( parts.at( 1 ) );
+      //this line is neccesary to make change projection work
+      //with geoserver because for some reason geoserver returns
+      //EPSG:WGS84(DD) as the first srs and is invalid because the
+      //epsg database expect an integer string      
+	  if(rx.indexIn(parts.at( 1 )) == -1)
+        epsgParts.push_back( parts.at( 1 ) );
     }
 
     ++i;
