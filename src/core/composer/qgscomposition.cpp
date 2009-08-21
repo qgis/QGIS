@@ -186,6 +186,8 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "snapGridOffsetX", mSnapGridOffsetX );
   compositionElem.setAttribute( "snapGridOffsetY", mSnapGridOffsetY );
 
+  compositionElem.setAttribute( "printResolution", mPrintResolution );
+
   composerElem.appendChild( compositionElem );
 
   return true;
@@ -224,6 +226,8 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
+
+  mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
 
   if ( mPaperItem )
   {
