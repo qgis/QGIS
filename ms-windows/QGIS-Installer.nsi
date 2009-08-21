@@ -15,10 +15,10 @@
 
 ;Version variables
 
-!define RELEASE_VERSION_NUMBER "0.11.0"
-!define RELEASE_VERSION_NAME "Metis"
-!define RELEASE_SVN_REVISION "8811"
-!define RELEASE_BINARY_REVISION "2"
+!define RELEASE_VERSION_NUMBER "1.2.0"
+!define RELEASE_VERSION_NAME "Daphnis"
+!define RELEASE_SVN_REVISION "11475"
+!define RELEASE_BINARY_REVISION "0"
 
 !define DEV_VERSION_NUMBER ""
 !define DEV_VERSION_NAME ""
@@ -40,7 +40,7 @@
 
 ;define the QGIS Base Name
 !define RELEASE_QGIS_BASE "Quantum GIS"
-!define DEV_QGIS_BASE "QGIS-Dev"
+!define DEV_QGIS_BASE "Quantum GIS Unstable Dev"
 
 ;Set the installer variables, depending on the selected version to build
 
@@ -301,6 +301,13 @@ Var /GLOBAL DOWNLOAD_MESSAGE_
 Section "Quantum GIS" SecQGIS
 
 	SectionIn RO
+
+        ;Added by Tim to set the reg key so we get default toolbar layout
+        !include ui.nsh
+        ;Added by Tim to set the reg key so we get default plugin loading 
+        !include plugins.nsh
+        ;Added by Tim to set the reg key so we get default python & py plugins
+        !include python_plugins.nsh
 	
 	;Set the INSTALL_DIR variable
 	Var /GLOBAL INSTALL_DIR
@@ -370,7 +377,7 @@ Section "Quantum GIS" SecQGIS
 	;Create the Desktop Shortcut
 	SetShellVarContext current
 	
-	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\qgis.exe" ""\
+	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
 	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
  
 	;Create the Windows Start Menu Shortcuts
@@ -378,7 +385,7 @@ Section "Quantum GIS" SecQGIS
 	
 	CreateDirectory "$SMPROGRAMS\${QGIS_BASE}"
 	
-	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\qgis.exe" ""\
+	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
 	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 	
 	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Web Site.lnk" "$INSTALL_DIR\QGIS-WebSite.url" ""\
@@ -514,11 +521,13 @@ Section "Uninstall"
 	Delete "$INSTDIR\QGIS-WebSite.url"
 		
 	Delete "$INSTDIR\*.dll"	
+	Delete "$INSTDIR\*.csv"	
 	
 	Delete "$INSTDIR\icons\QGIS.ico"
 	Delete "$INSTDIR\icons\QGIS_Web.ico"
 	
 	;remove folders
+	RMDir /r "$INSTDIR\bin"
 	RMDir /r "$INSTDIR\doc"
 	RMDir /r "$INSTDIR\grass"
 	RMDir /r "$INSTDIR\i18n"
