@@ -861,7 +861,7 @@ void QgsPostgresProvider::loadFields()
     QString fieldTypeName = QString::fromUtf8( PQgetvalue( oidResult, 0, 0 ) );
     QString fieldTType = QString::fromUtf8( PQgetvalue( oidResult, 0, 1 ) );
     QString fieldElem = QString::fromUtf8( PQgetvalue( oidResult, 0, 2 ) );
-    QString fieldSize = QString::fromUtf8( PQgetvalue( oidResult, 0, 3 ) );
+    int fieldSize = QString::fromUtf8( PQgetvalue( oidResult, 0, 3 ) ).toInt();
 
     sql = QString( "SELECT attnum FROM pg_attribute WHERE attrelid=%1 AND attname=%2" )
           .arg( tableoid ).arg( quotedValue( fieldName ) );
@@ -888,15 +888,24 @@ void QgsPostgresProvider::loadFields()
           fieldTypeName = fieldTypeName.mid( 1 );
 
         if ( fieldTypeName == "int8" )
+        {
           fieldType = QVariant::LongLong;
+          fieldSize = -1;
+        }
         else if ( fieldTypeName.startsWith( "int" ) ||
                   fieldTypeName == "serial" )
+        {
           fieldType = QVariant::Int;
+          fieldSize = -1;
+        }
         else if ( fieldTypeName == "real" ||
                   fieldTypeName == "double precision" ||
                   fieldTypeName.startsWith( "float" ) ||
                   fieldTypeName == "numeric" )
+        {
           fieldType = QVariant::Double;
+          fieldSize = -1;
+        }
         else if ( fieldTypeName == "text" ||
                   fieldTypeName == "char" ||
                   fieldTypeName == "bpchar" ||
@@ -906,7 +915,9 @@ void QgsPostgresProvider::loadFields()
                   fieldTypeName == "money" ||
                   fieldTypeName.startsWith( "time" ) ||
                   fieldTypeName.startsWith( "date" ) )
+        {
           fieldType = QVariant::String;
+        }
         else
         {
           QgsDebugMsg( "Field " + fieldName + " ignored, because of unsupported type " + fieldTypeName );
@@ -917,12 +928,14 @@ void QgsPostgresProvider::loadFields()
         {
           fieldTypeName = "_" + fieldTypeName;
           fieldType = QVariant::String;
+          fieldSize = -1;
         }
       }
       else if ( fieldTType == "e" )
       {
         // enum
         fieldType = QVariant::String;
+        fieldSize = -1;
       }
       else
       {
@@ -930,7 +943,7 @@ void QgsPostgresProvider::loadFields()
         continue;
       }
 
-      attributeFields.insert( i, QgsField( fieldName, fieldType, fieldTypeName, fieldSize.toInt(), fieldModifier, fieldComment ) );
+      attributeFields.insert( i, QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldModifier, fieldComment ) );
     }
   }
 }
