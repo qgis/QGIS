@@ -14410,7 +14410,7 @@ Czy chcesz go nadpisać?</translation>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="265"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="177"/>
         <source>Image type</source>
-        <translation>Obraz</translation>
+        <translation>Format mapy</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="20"/>
