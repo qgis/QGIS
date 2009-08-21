@@ -1,0 +1,25 @@
+<h3>Właściwości projektu</h3>
+To okno umożliwia zdefiniowanie wielu parametrów związanych z <i>Projektem</i>. Projekt to lista warstw wraz z ich ustawieniami zapisana na dysku jako plik. W projekcie nie są zapisywane same warstwy, a jedynie sposób ich wyświetlenia.<p>
+
+<h4>Zakładka Ogólne</h4>
+<table border=1>
+<tr>
+<td>Tytuł projektu</td><td>Opisowy tytuł projektu. Będzie on wyświetlany na pasku tytułowym okna QGIS</td>
+</tr>
+<tr>
+<td>Jednostki mapy</td><td>Zadeklaruj jednostki mapy odpowiednie dla warstw wyświetlanych w projekcie</td>
+</tr>
+<tr>
+<td>Dokładność wyświetlania kursora</td><td>Użyj ustawień użytkownika, aby określić dokładność wyświetlania na pasku stanu. Wraz z ruchem kursora po obszarze mapy, jego współrzędne są aktualizowane zgodnie z przyjętą dokładnością. Automatyczne (domyślne) ustawienia oznaczają domyślną dokładność bazującą na jednostkach mapy.</td>
+</tr>
+<tr>
+<td>Digitalizacja</td><td>Umożliwia zdefiniowanie tolerancji przyciągania w pikselach, szerokości linii podczas digitalizacji oraz koloru digitalizowanych linii.</td>
+</tr>
+<tr><td>Kolor obiektów wybranych</td><td>Wybrane obiekty będą wyświetlane na mapie w wybranym kolorze.</td>
+</tr>
+</table>
+<a anchor="projections"></a><h4>Zakładka Układ współrzędnych (CRS)</h4>
+Ta zakładka umożliwia zdefiniowanie układu współrzędnych dla bieżącego projektu oraz transformację układu w locie. Nie musisz zapisywać projektu, aby określić i włączyć transformację w locie.<p>
+Aby użyć transformacji w locie, kliknij na <i>Transformuj układ współrzędnych w locie</i>. Następnie wybierz układ współrzędnych projektu (obszaru mapy) z listy układów współrzędnych.
+<p>
+Możesz odszukać układ współrzędnych podając jego kod PostGIS SRID, EPSG lub QGIS SRSRID i klikając na klawisz <i>Znajdź</i>.

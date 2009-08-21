@@ -1,0 +1,20 @@
+<h3>Dodaj tabelę PostGIS</h3>
+Okno dialogowe pozwalające na dodanie warstw PostGIS (tabel z kolumną geometrii) do okna mapy QGIS.
+<h4>Połączenia</h4>
+<ul>
+<li>Wybierz połączenie z bazą z rozwijalnej listy i kliknij <i>Połącz</i>
+<li>Jeśli nie ma żadnych dostępnych połączeń, wybierz przycisk <i>Nowy</i>, aby utworzyć połączenie do swojej bazy
+<li>Aby zmodyfikować połączenie, kliknij przycisk <i>Edytuj</i>
+</ul>
+<h4>Dodawanie warstw</h4>
+Aby dodać warstwę:
+<ol>
+<li>Wybierz połączenie z bazą z rozwijalnej listy
+<li>Kliknij <i>Połącz</i>
+<li>Wskaż wybraną warstwę na liście dostępnych warstw
+<li>Możesz dodać kilka warstw jednocześnie trzymając wciśnięty klawisz Ctrl
+<li>Kliknij <i>Dodaj</i>, aby dodać warstwy do mapy
+</ol>
+<h4>Filtrowanie warstwy</h4>
+Aby ustawić filtr na warstwie przed dodaniem jej do mapy, podwójnie kliknij jej nazwę. Otworzy się okno zapytań SQL, w którym możesz utworzyć zapytanie filtrujące.
+
