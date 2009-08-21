@@ -29,7 +29,6 @@
 #include "qgsdistancearea.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgslogger.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
 #ifndef M_PI
@@ -185,34 +184,48 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
   memcpy( &wkbType, ( wkb + 1 ), sizeof( wkbType ) );
 
   // measure distance or area based on what is the type of geometry
+  bool hasZptr = false;
+
   switch ( wkbType )
   {
+    case QGis::WKBLineString25D:
+      hasZptr = true;
     case QGis::WKBLineString:
-      measureLine( wkb, &res );
+      measureLine( wkb, &res, hasZptr );
+      QgsDebugMsg( "returning " + QString::number( res ) );
       return res;
 
+    case QGis::WKBMultiLineString25D:
+      hasZptr = true;
     case QGis::WKBMultiLineString:
       count = *(( int* )( wkb + 5 ) );
       ptr = wkb + 9;
       for ( i = 0; i < count; i++ )
       {
-        ptr = measureLine( ptr, &res );
+        ptr = measureLine( ptr, &res, hasZptr );
         resTotal += res;
       }
+      QgsDebugMsg( "returning " + QString::number( resTotal ) );
       return resTotal;
 
+    case QGis::WKBPolygon25D:
+      hasZptr = true;
     case QGis::WKBPolygon:
-      measurePolygon( wkb, &res );
+      measurePolygon( wkb, &res, hasZptr );
+      QgsDebugMsg( "returning " + QString::number( res ) );
       return res;
 
+    case QGis::WKBMultiPolygon25D:
+      hasZptr = true;
     case QGis::WKBMultiPolygon:
       count = *(( int* )( wkb + 5 ) );
       ptr = wkb + 9;
       for ( i = 0; i < count; i++ )
       {
-        ptr = measurePolygon( ptr, &res );
+        ptr = measurePolygon( ptr, &res, hasZptr );
         resTotal += res;
       }
+      QgsDebugMsg( "returning " + QString::number( resTotal ) );
       return resTotal;
 
     default:
@@ -222,7 +235,7 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
 }
 
 
-unsigned char* QgsDistanceArea::measureLine( unsigned char* feature, double* area )
+unsigned char* QgsDistanceArea::measureLine( unsigned char* feature, double* area, bool hasZptr )
 {
   unsigned char *ptr = feature + 5;
   unsigned int nPoints = *(( int* )ptr );
@@ -239,6 +252,12 @@ unsigned char* QgsDistanceArea::measureLine( unsigned char* feature, double* are
     ptr += sizeof( double );
     y = *(( double * ) ptr );
     ptr += sizeof( double );
+    if ( hasZptr )
+    {
+      // totally ignore Z value
+      ptr += sizeof( double );
+    }
+
     points.append( QgsPoint( x, y ) );
   }
 
@@ -313,7 +332,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
 }
 
 
-unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* area )
+unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* area, bool hasZptr )
 {
   // get number of rings in the polygon
   unsigned int numRings = *(( int* )( feature + 1 + sizeof( int ) ) );
@@ -344,6 +363,11 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
         ptr += sizeof( double );
         y = *(( double * ) ptr );
         ptr += sizeof( double );
+        if ( hasZptr )
+        {
+          // totally ignore Z value
+          ptr += sizeof( double );
+        }
 
         pnt = QgsPoint( x, y );
 

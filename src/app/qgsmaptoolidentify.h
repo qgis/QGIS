@@ -17,9 +17,11 @@
 #ifndef QGSMAPTOOLIDENTIFY_H
 #define QGSMAPTOOLIDENTIFY_H
 
+#include "qgis.h"
 #include "qgsmaptool.h"
 #include "qgspoint.h"
 #include "qgsfeature.h"
+#include "qgsdistancearea.h"
 
 #include <QObject>
 
@@ -107,6 +109,9 @@ class QgsMapToolIdentify : public QgsMapTool
 
     //! list of identified features
     QgsFeatureList mFeatureList;
+
+    //! Private helper
+    void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
 
   private slots:
     // Let us know when the QgsIdentifyResults dialog box has been closed
