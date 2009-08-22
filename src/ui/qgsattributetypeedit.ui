@@ -61,7 +61,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="lineEditPage">
       <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -320,7 +320,7 @@
      </widget>
      <widget class="QWidget" name="valueMapPage">
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0" colspan="2">
+       <item row="0" column="0" colspan="3">
         <widget class="QLabel" name="valueMapLabel">
          <property name="text">
           <string>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</string>
@@ -337,7 +337,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="2">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -350,7 +350,7 @@
          </property>
         </spacer>
        </item>
-       <item row="2" column="0" colspan="2">
+       <item row="2" column="0" colspan="3">
         <widget class="QTableWidget" name="tableWidget">
          <column>
           <property name="text">
@@ -371,7 +371,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="3" column="1" colspan="2">
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -383,6 +383,13 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="loadFromCSVButton">
+         <property name="text">
+          <string>Load Data from CSV file</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
