@@ -348,7 +348,7 @@ IF (SVN_MARKER)
     IF(MSVC)
 	ADD_CUSTOM_COMMAND(
 		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-		COMMAND for /f usebackq %%a in "(`${SVNVERSION}`)" do echo \#define QGSSVNVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+		COMMAND for /f usebackq %%a in "(`\"${SVNVERSION}\"`)" do echo \#define QGSSVNVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
 		MAIN_DEPENDENCY ${SVN_MARKER}
 		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	)
