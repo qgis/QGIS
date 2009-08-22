@@ -2622,7 +2622,7 @@ void QgisApp::addDatabaseLayer()
 
       // create the layer
       //qWarning("creating layer");
-      QgsVectorLayer *layer = new QgsVectorLayer( connectionInfo + " table=" + *it, *it, "postgres" );
+      QgsVectorLayer *layer = new QgsVectorLayer( connectionInfo + " " + *it, *it, "postgres" );
       if ( layer->isValid() )
       {
         // register this layer with the central layers registry
