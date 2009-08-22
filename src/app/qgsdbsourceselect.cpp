@@ -184,7 +184,7 @@ void QgsDbSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
   {
     mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmGeomCol );
   }
-  else if ( text == tr( "Primay key column" ) )
+  else if ( text == tr( "Primary key column" ) )
   {
     mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmPkCol );
   }
