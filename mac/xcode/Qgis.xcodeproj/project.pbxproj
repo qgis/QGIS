@@ -1093,6 +1093,16 @@
 		72745A130F770319007F4218 /* spit.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A030F770252007F4218 /* spit.png */; };
 		72745A140F770319007F4218 /* wfs.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A040F770252007F4218 /* wfs.png */; };
 		72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */ = {isa = PBXBuildFile; fileRef = 727459F80F770252007F4218 /* coordinate_capture.png */; };
+		72779E95104060DC00CA9DE5 /* 361087368_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E8D104060CF00CA9DE5 /* 361087368_pl_PL */; };
+		72779E96104060DC00CA9DE5 /* 687883780_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E92104060CF00CA9DE5 /* 687883780_pl_PL */; };
+		72779E97104060DC00CA9DE5 /* 689216579_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E93104060CF00CA9DE5 /* 689216579_pl_PL */; };
+		72779E98104060DC00CA9DE5 /* 831088384_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E8E104060CF00CA9DE5 /* 831088384_pl_PL */; };
+		72779E99104060DC00CA9DE5 /* 863656587_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E91104060CF00CA9DE5 /* 863656587_pl_PL */; };
+		72779E9A104060DC00CA9DE5 /* 929865718_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E90104060CF00CA9DE5 /* 929865718_pl_PL */; };
+		72779E9B104060DC00CA9DE5 /* 939347163_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E8F104060CF00CA9DE5 /* 939347163_pl_PL */; };
+		72779E9C104060DC00CA9DE5 /* 985715179_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E94104060CF00CA9DE5 /* 985715179_pl_PL */; };
+		72779E9F1040615000CA9DE5 /* mActionAddImage.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72779E9E1040614100CA9DE5 /* mActionAddImage.png */; };
+		72779EA01040615000CA9DE5 /* mActionAddMap.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72779E9D1040614100CA9DE5 /* mActionAddMap.png */; };
 		727CEC220FBAFFA200F5B88C /* mIconLock.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 727CEC210FBAFF6000F5B88C /* mIconLock.png */; };
 		727E6AF10FEA90E200DF6F64 /* x_sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */; };
 		727E6B040FEA9BC000DF6F64 /* x_spatialite.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B030FEA9BC000DF6F64 /* x_spatialite.c */; };
@@ -3118,6 +3128,8 @@
 				72683FFB0FD6B21A00D90FFC /* mActionFromSelectedFeature.png in Copy - theme-default */,
 				72683FFC0FD6B21A00D90FFC /* mActionMergeFeatures.png in Copy - theme-default */,
 				72683FFD0FD6B21A00D90FFC /* mActionRemoveSelectedFeature.png in Copy - theme-default */,
+				72779E9F1040615000CA9DE5 /* mActionAddImage.png in Copy - theme-default */,
+				72779EA01040615000CA9DE5 /* mActionAddMap.png in Copy - theme-default */,
 			);
 			name = "Copy - theme-default";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3358,6 +3370,14 @@
 				7256F57A0F41C64F0022BE1F /* 995980174_de_DE in Copy - context_help */,
 				7256F57B0F41C64F0022BE1F /* 995980174_en_US in Copy - context_help */,
 				7256F57C0F41C64F0022BE1F /* 995980174_sk_SK in Copy - context_help */,
+				72779E95104060DC00CA9DE5 /* 361087368_pl_PL in Copy - context_help */,
+				72779E96104060DC00CA9DE5 /* 687883780_pl_PL in Copy - context_help */,
+				72779E97104060DC00CA9DE5 /* 689216579_pl_PL in Copy - context_help */,
+				72779E98104060DC00CA9DE5 /* 831088384_pl_PL in Copy - context_help */,
+				72779E99104060DC00CA9DE5 /* 863656587_pl_PL in Copy - context_help */,
+				72779E9A104060DC00CA9DE5 /* 929865718_pl_PL in Copy - context_help */,
+				72779E9B104060DC00CA9DE5 /* 939347163_pl_PL in Copy - context_help */,
+				72779E9C104060DC00CA9DE5 /* 985715179_pl_PL in Copy - context_help */,
 			);
 			name = "Copy - context_help";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5861,6 +5881,16 @@
 		72745A020F770252007F4218 /* scale_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = scale_bar.png; path = ../../images/themes/gis/plugins/scale_bar.png; sourceTree = SOURCE_ROOT; };
 		72745A030F770252007F4218 /* spit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit.png; path = ../../images/themes/gis/plugins/spit.png; sourceTree = SOURCE_ROOT; };
 		72745A040F770252007F4218 /* wfs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wfs.png; path = ../../images/themes/gis/plugins/wfs.png; sourceTree = SOURCE_ROOT; };
+		72779E8D104060CF00CA9DE5 /* 361087368_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 361087368_pl_PL; path = ../../resources/context_help/361087368_pl_PL; sourceTree = SOURCE_ROOT; };
+		72779E8E104060CF00CA9DE5 /* 831088384_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 831088384_pl_PL; path = ../../resources/context_help/831088384_pl_PL; sourceTree = SOURCE_ROOT; };
+		72779E8F104060CF00CA9DE5 /* 939347163_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 939347163_pl_PL; path = ../../resources/context_help/939347163_pl_PL; sourceTree = SOURCE_ROOT; };
+		72779E90104060CF00CA9DE5 /* 929865718_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 929865718_pl_PL; path = ../../resources/context_help/929865718_pl_PL; sourceTree = SOURCE_ROOT; };
+		72779E91104060CF00CA9DE5 /* 863656587_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 863656587_pl_PL; path = ../../resources/context_help/863656587_pl_PL; sourceTree = SOURCE_ROOT; };
+		72779E92104060CF00CA9DE5 /* 687883780_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 687883780_pl_PL; path = ../../resources/context_help/687883780_pl_PL; sourceTree = SOURCE_ROOT; };
+		72779E93104060CF00CA9DE5 /* 689216579_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 689216579_pl_PL; path = ../../resources/context_help/689216579_pl_PL; sourceTree = SOURCE_ROOT; };
+		72779E94104060CF00CA9DE5 /* 985715179_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 985715179_pl_PL; path = ../../resources/context_help/985715179_pl_PL; sourceTree = SOURCE_ROOT; };
+		72779E9D1040614100CA9DE5 /* mActionAddMap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddMap.png; path = ../../images/themes/default/mActionAddMap.png; sourceTree = SOURCE_ROOT; };
+		72779E9E1040614100CA9DE5 /* mActionAddImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddImage.png; path = ../../images/themes/default/mActionAddImage.png; sourceTree = SOURCE_ROOT; };
 		727CEC210FBAFF6000F5B88C /* mIconLock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconLock.png; path = ../../images/themes/default/mIconLock.png; sourceTree = SOURCE_ROOT; };
 		727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_sqlite3.c; sourceTree = "<group>"; };
 		727E6B030FEA9BC000DF6F64 /* x_spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_spatialite.c; sourceTree = "<group>"; };
@@ -9455,6 +9485,14 @@
 				7209ED7F0F39E5D9003DC336 /* 995980174_sk_SK */,
 				726979C30F71392200AFA402 /* 63428984_en_US */,
 				726979C40F71392200AFA402 /* 348772824_en_US */,
+				72779E8D104060CF00CA9DE5 /* 361087368_pl_PL */,
+				72779E8E104060CF00CA9DE5 /* 831088384_pl_PL */,
+				72779E8F104060CF00CA9DE5 /* 939347163_pl_PL */,
+				72779E90104060CF00CA9DE5 /* 929865718_pl_PL */,
+				72779E91104060CF00CA9DE5 /* 863656587_pl_PL */,
+				72779E92104060CF00CA9DE5 /* 687883780_pl_PL */,
+				72779E93104060CF00CA9DE5 /* 689216579_pl_PL */,
+				72779E94104060CF00CA9DE5 /* 985715179_pl_PL */,
 				7209ED800F39E5D9003DC336 /* CMakeLists.txt */,
 				7209ED810F39E5D9003DC336 /* contextids.txt */,
 			);
@@ -10143,6 +10181,8 @@
 				7209EF620F39E5D9003DC336 /* zoomMaster.svg */,
 				7262ED890F7A75FB00498385 /* mActionAddSpatiaLiteLayer.png */,
 				727CEC210FBAFF6000F5B88C /* mIconLock.png */,
+				72779E9D1040614100CA9DE5 /* mActionAddMap.png */,
+				72779E9E1040614100CA9DE5 /* mActionAddImage.png */,
 				72EB12940F7E9B51002C38FA /* plugins */,
 			);
 			name = default;
