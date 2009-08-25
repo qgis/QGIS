@@ -497,6 +497,8 @@ class QgisApp : public QMainWindow
     void deleteSelected();
     //! activates the move feature tool
     void moveFeature();
+    //! activates the reshape features tool
+    void reshapeFeatures();
     //! activates the split features tool
     void splitFeatures();
     //! activates the add vertex tool
@@ -725,6 +727,7 @@ class QgisApp : public QMainWindow
     QAction *mActionCapturePolygon;
     QAction *mActionDeleteSelected;
     QAction *mActionMoveFeature;
+    QAction *mActionReshapeFeatures;
     QAction *mActionSplitFeatures;
     QAction *mActionAddVertex;
     QAction *mActionDeleteVertex;
@@ -847,6 +850,7 @@ class QgisApp : public QMainWindow
         QgsMapTool* mCaptureLine;
         QgsMapTool* mCapturePolygon;
         QgsMapTool* mMoveFeature;
+        QgsMapTool* mReshapeFeatures;
         QgsMapTool* mSplitFeatures;
         QgsMapTool* mSelect;
         QgsMapTool* mVertexAdd;

@@ -171,6 +171,7 @@
 #include "qgsmaptoolnodetool.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolselect.h"
+#include "qgsmaptoolreshape.h"
 #include "qgsmaptoolsplitfeatures.h"
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
@@ -473,6 +474,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mCaptureLine;
   delete mMapTools.mCapturePolygon;
   delete mMapTools.mMoveFeature;
+  delete mMapTools.mReshapeFeatures;
   delete mMapTools.mSplitFeatures;
   delete mMapTools.mSelect;
   delete mMapTools.mVertexAdd;
@@ -659,6 +661,12 @@ void QgisApp::createActions()
   mActionMoveFeature->setStatusTip( tr( "Move Feature" ) );
   connect( mActionMoveFeature, SIGNAL( triggered() ), this, SLOT( moveFeature() ) );
   mActionMoveFeature->setEnabled( false );
+
+  mActionReshapeFeatures = new QAction( getThemeIcon( "mActionReshape.png" ), tr( "Reshape Features" ), this );
+  shortcuts->registerAction( mActionReshapeFeatures );
+  mActionReshapeFeatures->setStatusTip( tr( "Reshape Features" ) );
+  connect( mActionReshapeFeatures, SIGNAL( triggered() ), this, SLOT( reshapeFeatures() ) );
+  mActionReshapeFeatures->setEnabled( false );
 
   mActionSplitFeatures = new QAction( getThemeIcon( "mActionSplitFeatures.png" ), tr( "Split Features" ), this );
   shortcuts->registerAction( mActionSplitFeatures );
@@ -1062,6 +1070,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionCapturePolygon );
   mActionMoveFeature->setCheckable( true );
   mMapToolGroup->addAction( mActionMoveFeature );
+  mActionReshapeFeatures->setCheckable( true );
+  mMapToolGroup->addAction( mActionReshapeFeatures );
   mActionSplitFeatures->setCheckable( true );
   mMapToolGroup->addAction( mActionSplitFeatures );
   mMapToolGroup->addAction( mActionDeleteSelected );
@@ -1175,6 +1185,7 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionAddIsland );
   mEditMenu->addAction( mActionDeleteRing );
   mEditMenu->addAction( mActionDeletePart );
+  mEditMenu->addAction( mActionReshapeFeatures );
   mEditMenu->addAction( mActionSplitFeatures );
   mEditMenu->addAction( mActionMergeFeatures );
   mEditMenu->addAction( mActionNodeTool );
@@ -1383,6 +1394,7 @@ void QgisApp::createToolBars()
   mAdvancedDigitizeToolBar->addAction( mActionAddIsland );
   mAdvancedDigitizeToolBar->addAction( mActionDeleteRing );
   mAdvancedDigitizeToolBar->addAction( mActionDeletePart );
+  mAdvancedDigitizeToolBar->addAction( mActionReshapeFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionSplitFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionMergeFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionNodeTool );
@@ -1605,6 +1617,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionCaptureLine->setIcon( getThemeIcon( "/mActionCaptureLine.png" ) );
   mActionCapturePolygon->setIcon( getThemeIcon( "/mActionCapturePolygon.png" ) );
   mActionMoveFeature->setIcon( getThemeIcon( "/mActionMoveFeature.png" ) );
+  mActionReshapeFeatures->setIcon( getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( getThemeIcon( "/mActionSplitFeatures.png" ) );
   mActionDeleteSelected->setIcon( getThemeIcon( "/mActionDeleteSelected.png" ) );
   mActionAddVertex->setIcon( getThemeIcon( "/mActionAddVertex.png" ) );
@@ -1735,6 +1748,8 @@ void QgisApp::createCanvas()
   mActionCapturePolygon->setVisible( false );
   mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas );
   mMapTools.mMoveFeature->setAction( mActionMoveFeature );
+  mMapTools.mReshapeFeatures = new QgsMapToolReshape( mMapCanvas );
+  mMapTools.mReshapeFeatures->setAction( mActionReshapeFeatures );
   mMapTools.mSplitFeatures = new QgsMapToolSplitFeatures( mMapCanvas );
   mMapTools.mSplitFeatures->setAction( mActionSplitFeatures );
   mMapTools.mSelect = new QgsMapToolSelect( mMapCanvas );
@@ -4337,6 +4352,11 @@ void QgisApp::splitFeatures()
   mMapCanvas->setMapTool( mMapTools.mSplitFeatures );
 }
 
+void QgisApp::reshapeFeatures()
+{
+  mMapCanvas->setMapTool( mMapTools.mReshapeFeatures );
+}
+
 void QgisApp::capturePoint()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -5634,6 +5654,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionMoveVertex->setEnabled( false );
         mActionAddRing->setEnabled( false );
         mActionAddIsland->setEnabled( false );
+        mActionReshapeFeatures->setEnabled( false );
         mActionSplitFeatures->setEnabled( false );
         mActionSimplifyFeature->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
@@ -5650,6 +5671,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         {
           mActionCaptureLine->setEnabled( true );
           mActionCaptureLine->setVisible( true );
+          mActionReshapeFeatures->setEnabled( true );
           mActionSplitFeatures->setEnabled( true );
           mActionSimplifyFeature->setEnabled( true );
           mActionDeletePart->setEnabled( true );
@@ -5659,6 +5681,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         {
           mActionCaptureLine->setEnabled( false );
           mActionCaptureLine->setVisible( false );
+          mActionReshapeFeatures->setEnabled( false );
           mActionSplitFeatures->setEnabled( false );
           mActionSimplifyFeature->setEnabled( false );
           mActionDeletePart->setEnabled( false );
@@ -5679,6 +5702,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionCapturePolygon->setVisible( true );
           mActionAddRing->setEnabled( true );
           mActionAddIsland->setEnabled( true );
+          mActionReshapeFeatures->setEnabled( true );
           mActionSplitFeatures->setEnabled( true );
           mActionSimplifyFeature->setEnabled( true );
           mActionDeleteRing->setEnabled( true );
@@ -5690,6 +5714,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionCapturePolygon->setVisible( false );
           mActionAddRing->setEnabled( false );
           mActionAddIsland->setEnabled( false );
+          mActionReshapeFeatures->setEnabled( false );
           mActionSplitFeatures->setEnabled( false );
           mActionSimplifyFeature->setEnabled( false );
           mActionDeleteRing->setEnabled( false );
