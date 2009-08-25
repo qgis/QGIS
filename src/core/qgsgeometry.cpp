@@ -17,6 +17,7 @@ email                : morb at ozemail dot com dot au
 #include <limits>
 #include <cstdarg>
 #include <cstdio>
+#include <cmath>
 
 #include "qgis.h"
 #include "qgsgeometry.h"
@@ -3219,6 +3220,113 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   return returnCode;
 }
 
+/**Replaces a part of this geometry with another line*/
+int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
+{
+  int returnCode = 0;
+  if ( type() == QGis::Point )
+  {
+    return 1; //cannot reshape points
+  }
+
+  GEOSGeometry* reshapeLineGeos = createGeosLineString( reshapeWithLine.toVector() );
+
+   //make sure this geos geometry is up-to-date
+  if ( !mGeos || mDirtyGeos )
+  {
+    exportWkbToGeos();
+  }
+
+  //single or multi?
+  int numGeoms = GEOSGetNumGeometries(mGeos);
+  if(numGeoms == -1)
+  {
+    return 1;
+  }
+
+  bool isMultiGeom = (numGeoms > 1);
+  bool isLine = ( type() == QGis::Line);
+
+  //polygon or multipolygon?
+  if ( !isMultiGeom )
+  {
+    GEOSGeometry* reshapedGeometry;
+    if(isLine)
+    {
+      reshapedGeometry = reshapeLine( mGeos, reshapeLineGeos );
+    }
+    else
+    {
+      reshapedGeometry = reshapePolygon( mGeos, reshapeLineGeos );
+    }
+
+    GEOSGeom_destroy(reshapeLineGeos);
+    if(reshapedGeometry)
+    {
+      GEOSGeom_destroy( mGeos );
+      mGeos = reshapedGeometry;
+      mDirtyWkb = true;
+      return 0;
+    }
+    else
+    {
+      return 1;
+    }
+  }
+  else
+  {
+    //call reshape for each geometry part and replace mGeos with new geometry if reshape took place
+    bool reshapeTookPlace = false;
+
+    GEOSGeometry* currentReshapeGeometry = 0;
+    GEOSGeometry** newGeoms = new GEOSGeometry*[numGeoms];
+
+    for(int i = 0; i < numGeoms; ++i)
+    {
+      if(isLine)
+      {
+        currentReshapeGeometry = reshapeLine( GEOSGetGeometryN(mGeos, i), reshapeLineGeos);
+      }
+      else
+      {
+        currentReshapeGeometry = reshapePolygon( GEOSGetGeometryN(mGeos, i), reshapeLineGeos);
+      }
+
+      if(currentReshapeGeometry)
+      {
+        newGeoms[i] = currentReshapeGeometry;
+        reshapeTookPlace = true;
+      }
+      else
+      {
+        newGeoms[i] = GEOSGeom_clone( GEOSGetGeometryN(mGeos, i) );
+      }
+    }
+     GEOSGeom_destroy(reshapeLineGeos);
+
+    GEOSGeometry* newMultiGeom = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, newGeoms, numGeoms);
+    delete[] newGeoms;
+    if( ! newMultiGeom )
+    {
+      return 3;
+    }
+
+    if(reshapeTookPlace)
+    {
+      GEOSGeom_destroy( mGeos );
+      mGeos = newMultiGeom;
+      mDirtyWkb = true;
+      return 0;
+    }
+    else
+    {
+      GEOSGeom_destroy(newMultiGeom);
+      return 1;
+    }
+  }
+  return 1;
+}
+
 int QgsGeometry::makeDifference( QgsGeometry* other )
 {
   //make sure geos geometry is up to date
@@ -4801,28 +4909,13 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
   QVector<GEOSGeometry*> testedGeometries;
   GEOSGeometry* intersectGeom = 0;
 
-  //Create a small buffer around the original geometry
-  //and intersect candidate line segments with the buffer.
-  //Then we use the ratio intersection length / segment length to
-  //decide if the line segment belongs to the original geometry or
-  //if it is part of the splitting line
-  double bufferDistance = 0.0000001;
-
   for ( int i = 0; i < GEOSGetNumGeometries( mergedLines ); i++ )
   {
     const GEOSGeometry *testing = GEOSGetGeometryN( mergedLines, i );
-    intersectGeom = GEOSIntersection( mGeos, GEOSBuffer( testing, bufferDistance, DEFAULT_QUADRANT_SEGMENTS ) );
-    double len;
-    GEOSLength( intersectGeom, &len );
-    double testingLen;
-    GEOSLength( testing, &testingLen );
-    double ratio = len / testingLen;
-    //the ratios for geometries that belong to the original line are usually close to 1
-    if ( ratio >= 0.5 && ratio <= 1.5 )
+    if ( lineContainedInLine( testing, mGeos ) == 1 )
     {
       testedGeometries << GEOSGeom_clone( testing );
     }
-    GEOSGeom_destroy( intersectGeom );
   }
 
   mergeGeometriesMultiTypeSplit( testedGeometries );
@@ -4962,6 +5055,331 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
   return 0;
 }
 
+GEOSGeometry* QgsGeometry::reshapePolygon( const GEOSGeometry* polygon, const GEOSGeometry* reshapeLineGeos )
+{
+  //go through outer shell and all inner rings and check if there is exactly one intersection of a ring and the reshape line
+    int nIntersections = 0;
+    int lastIntersectingRing = -2;
+    const GEOSGeometry* lastIntersectingGeom = 0;
+
+    int nRings = GEOSGetNumInteriorRings(polygon);
+    if(nRings < 0)
+    {
+      return 0;
+    }
+
+    //does outer ring intersect?
+    const GEOSGeometry* outerRing = GEOSGetExteriorRing(polygon);
+    if( GEOSIntersects( outerRing, reshapeLineGeos ) == 1)
+    {
+      ++nIntersections;
+      lastIntersectingRing = -1;
+      lastIntersectingGeom = outerRing;
+    }
+
+    //do inner rings intersect?
+    const GEOSGeometry* innerRings[nRings];
+    for(int i = 0; i < nRings; ++i)
+    {
+      innerRings[i] = GEOSGetInteriorRingN(polygon, i);
+      if(GEOSIntersects( innerRings[i], reshapeLineGeos) == 1)
+      {
+        ++nIntersections;
+        lastIntersectingRing = i;
+        lastIntersectingGeom = innerRings[i];
+      }
+    }
+
+    if(nIntersections != 1) //reshape line is only allowed to intersect one ring
+    {
+      return 0;
+    }
+
+    //we have one intersecting ring, let's try to reshape it
+    GEOSGeometry* reshapeResult = reshapeLine( lastIntersectingGeom, reshapeLineGeos);
+    if(!reshapeResult)
+    {
+      return 0;
+    }
+
+    //if reshaping took place, we need to reassemble the polygon and its rings
+    GEOSGeometry* newRing = 0;
+    const GEOSCoordSequence* reshapeSequence = GEOSGeom_getCoordSeq(reshapeResult);
+    GEOSCoordSequence* newCoordSequence = GEOSCoordSeq_clone(reshapeSequence);
+
+    GEOSGeom_destroy(reshapeResult);
+
+    newRing = GEOSGeom_createLinearRing(newCoordSequence);
+    if(!newRing)
+    {
+      return 0;
+    }
+
+
+    GEOSGeometry* newOuterRing = 0;
+    if(lastIntersectingRing == -1)
+    {
+      newOuterRing = newRing;
+    }
+    else
+    {
+      newOuterRing = GEOSGeom_clone(outerRing);
+    }
+
+    GEOSGeometry** newInnerRings = new GEOSGeometry*[nRings];
+    for(int i = 0; i < nRings; ++i)
+    {
+      if( lastIntersectingRing == i)
+      {
+        newInnerRings[i] = newRing;
+      }
+      else
+      {
+        newInnerRings[i] = GEOSGeom_clone(innerRings[i]);
+      }
+    }
+
+    GEOSGeometry* reshapedPolygon = GEOSGeom_createPolygon( newOuterRing, newInnerRings, nRings);
+    delete[] newInnerRings;
+    if(!reshapedPolygon)
+    {
+      return 0;
+    }
+    return reshapedPolygon;
+}
+
+GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeometry* reshapeLineGeos )
+{
+  if ( !line || !reshapeLineGeos )
+  {
+    return 0;
+  }
+
+  //make sure there are at least two instersction between line and reshape geometry
+  GEOSGeometry* intersectGeom = GEOSIntersection( line, reshapeLineGeos);
+  bool atLeastTwoIntersections = (GEOSGeomTypeId(intersectGeom) == GEOS_MULTIPOINT && GEOSGetNumGeometries(intersectGeom) > 1);
+  GEOSGeom_destroy(intersectGeom);
+  if(!atLeastTwoIntersections)
+  {
+    return 0;
+  }
+
+
+  bool isRing = false;
+  if(GEOSGeomTypeId(line) == GEOS_LINEARRING)
+  {
+    isRing = true;
+  }
+
+  //begin and end point of original line
+  const GEOSCoordSequence* lineCoordSeq = GEOSGeom_getCoordSeq( line );
+  if ( !lineCoordSeq )
+  {
+    return 0;
+  }
+  unsigned int lineCoordSeqSize;
+  if ( GEOS_DLL GEOSCoordSeq_getSize( lineCoordSeq, &lineCoordSeqSize ) == 0 )
+  {
+    return 0;
+  }
+  if ( lineCoordSeqSize < 2 )
+  {
+    return 0;
+  }
+  //first and last vertex of line
+  double x1, y1, x2, y2;
+  GEOS_DLL GEOSCoordSeq_getX( lineCoordSeq, 0, &x1 );
+  GEOS_DLL GEOSCoordSeq_getY( lineCoordSeq, 0, &y1 );
+  GEOS_DLL GEOSCoordSeq_getX( lineCoordSeq, lineCoordSeqSize - 1, &x2 );
+  GEOS_DLL GEOSCoordSeq_getY( lineCoordSeq, lineCoordSeqSize - 1, &y2 );
+  GEOSGeometry* beginLineVertex = createGeosPoint( QgsPoint( x1, y1 ) );
+  GEOSGeometry* endLineVertex = createGeosPoint( QgsPoint( x2, y2 ) );
+
+//node line and reshape line
+  GEOSGeometry* nodedGeometry = nodeGeometries( reshapeLineGeos, line );
+  if ( !nodedGeometry )
+  {
+    GEOSGeom_destroy( beginLineVertex );
+    GEOSGeom_destroy( endLineVertex );
+    return 0;
+  }
+
+  //and merge them together
+  GEOSGeometry *mergedLines = GEOSLineMerge( nodedGeometry );
+  GEOSGeom_destroy( nodedGeometry );
+  if ( !mergedLines )
+  {
+    GEOSGeom_destroy( beginLineVertex );
+    GEOSGeom_destroy( endLineVertex );
+    return 0;
+  }
+
+  int numMergedLines = GEOSGetNumGeometries( mergedLines );
+  if ( numMergedLines < 2 ) //some special cases. Normally it is >2
+  {
+    GEOSGeom_destroy( beginLineVertex );
+    GEOSGeom_destroy( endLineVertex );
+    if ( numMergedLines == 1 ) //reshape line is from begin to endpoint. So we keep the reshapeline
+    {
+      return GEOSGeom_clone( reshapeLineGeos );
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
+  QList<GEOSGeometry*> resultLineParts; //collection with the line segments that will be contained in result
+  QList<GEOSGeometry*> probableParts; //parts where we can decide on inclusion only after going through all the candidates
+
+  for ( int i = 0; i < numMergedLines; ++i )
+  {
+    const GEOSGeometry* currentGeom;
+
+    currentGeom = GEOSGetGeometryN( mergedLines, i );
+    const GEOSCoordSequence* currentCoordSeq = GEOSGeom_getCoordSeq( currentGeom );
+    unsigned int currentCoordSeqSize;
+    GEOS_DLL GEOSCoordSeq_getSize( currentCoordSeq, &currentCoordSeqSize );
+    if ( currentCoordSeqSize < 2 )
+    {
+      continue;
+    }
+
+    //get the two endpoints of the current line merge result
+    double xBegin, xEnd, yBegin, yEnd;
+    GEOS_DLL GEOSCoordSeq_getX( currentCoordSeq, 0, &xBegin );
+    GEOS_DLL GEOSCoordSeq_getY( currentCoordSeq, 0, &yBegin );
+    GEOS_DLL GEOSCoordSeq_getX( currentCoordSeq, currentCoordSeqSize - 1, &xEnd );
+    GEOS_DLL GEOSCoordSeq_getY( currentCoordSeq, currentCoordSeqSize - 1, &yEnd );
+    GEOSGeometry* beginCurrentGeomVertex = createGeosPoint( QgsPoint( xBegin, yBegin ) );
+    GEOSGeometry* endCurrentGeomVertex = createGeosPoint( QgsPoint( xEnd, yEnd ) );
+
+    //check how many endpoints of the line merge result are on the (original) line
+    int nEndpointsOnOriginalLine = 0;
+    if ( pointContainedInLine( beginCurrentGeomVertex, line ) == 1 )
+    {
+      nEndpointsOnOriginalLine += 1;
+    }
+
+    if ( pointContainedInLine( endCurrentGeomVertex, line ) == 1 )
+    {
+      nEndpointsOnOriginalLine += 1;
+    }
+
+    //check how many endpoints equal the endpoints of the original line
+    int nEndpointsSameAsOriginalLine = 0;
+    if ( GEOSEquals( beginCurrentGeomVertex, beginLineVertex ) == 1 || GEOSEquals( beginCurrentGeomVertex, endLineVertex ) == 1 )
+    {
+      nEndpointsSameAsOriginalLine += 1;
+    }
+    if ( GEOSEquals( endCurrentGeomVertex, beginLineVertex ) == 1 || GEOSEquals( endCurrentGeomVertex, endLineVertex ) == 1 )
+    {
+      nEndpointsSameAsOriginalLine += 1;
+    }
+
+    //check if the current geometry overlaps the original geometry (GEOSOverlap does not seem to work with linestrings)
+    bool currentGeomOverlapsOriginalGeom = false;
+    bool currentGeomOverlapsReshapeLine = false;
+    if ( QgsGeometry::lineContainedInLine( currentGeom, line ) == 1 )
+    {
+      currentGeomOverlapsOriginalGeom = true;
+    }
+    if ( QgsGeometry::lineContainedInLine( currentGeom, reshapeLineGeos ) == 1 )
+    {
+      currentGeomOverlapsReshapeLine = true;
+    }
+
+
+    //logic to decide if this part belongs to the result
+    if ( nEndpointsSameAsOriginalLine == 1 && nEndpointsOnOriginalLine == 2 && currentGeomOverlapsOriginalGeom )
+    {
+      resultLineParts.push_back( GEOSGeom_clone( currentGeom ) );
+    }
+    //for closed rings, we take one segment from the candidate list
+    else if(isRing && nEndpointsOnOriginalLine == 2 && currentGeomOverlapsOriginalGeom)
+    {
+      probableParts.push_back(GEOSGeom_clone(currentGeom));
+    }
+    else if ( nEndpointsOnOriginalLine == 2 && !currentGeomOverlapsOriginalGeom )
+    {
+      resultLineParts.push_back( GEOSGeom_clone( currentGeom ) );
+    }
+    else if ( nEndpointsSameAsOriginalLine == 2 && !currentGeomOverlapsOriginalGeom )
+    {
+      resultLineParts.push_back( GEOSGeom_clone( currentGeom ) );
+    }
+    else if ( currentGeomOverlapsOriginalGeom && currentGeomOverlapsReshapeLine )
+    {
+      resultLineParts.push_back( GEOSGeom_clone( currentGeom ) );
+    }
+
+    GEOSGeom_destroy( beginCurrentGeomVertex );
+    GEOSGeom_destroy( endCurrentGeomVertex );
+  }
+
+  //add the longest segment from the probable list for rings (only used for polygon rings)
+  if(isRing)
+  {
+    GEOSGeometry* maxGeom = 0; //the longest geometry in the probabla list
+    GEOSGeometry* currentGeom = 0;
+    double maxLength = -DBL_MAX;
+    double currentLength = 0;
+    for(int i = 0; i < probableParts.length(); ++i)
+    {
+      currentGeom = probableParts.at(i);
+      GEOSLength( currentGeom, &currentLength);
+      if(currentLength > maxLength)
+      {
+        maxLength = currentLength;
+        GEOSGeom_destroy(maxGeom);
+        maxGeom = currentGeom;
+      }
+      else
+      {
+        GEOSGeom_destroy(currentGeom);
+      }
+    }
+    resultLineParts.push_back(maxGeom);
+  }
+
+  GEOSGeom_destroy( beginLineVertex );
+  GEOSGeom_destroy( endLineVertex );
+  GEOSGeom_destroy( mergedLines );
+
+  GEOSGeometry* result = 0;
+  if ( resultLineParts.size() < 1 )
+  {
+    return 0;
+  }
+  if ( resultLineParts.size() == 1 ) //the whole result was reshaped
+  {
+    result = resultLineParts[0];
+  }
+  else //>1
+  {
+    GEOSGeometry* lineArray[resultLineParts.size()];
+    for ( int i = 0; i < resultLineParts.size(); ++i )
+    {
+      lineArray[i] = resultLineParts[i];
+    }
+
+    //create multiline from resultLineParts
+    GEOSGeometry* multiLineGeom = GEOSGeom_createCollection( GEOS_MULTILINESTRING, lineArray, resultLineParts.size() );
+
+    //then do a linemerge with the newly combined partstrings
+    result = GEOSLineMerge( multiLineGeom );
+    GEOSGeom_destroy( multiLineGeom );
+  }
+
+  //now test if the result is a linestring. Otherwise something went wrong
+  if( GEOSGeomTypeId(result) != GEOS_LINESTRING)
+  {
+    GEOSGeom_destroy(result);
+    return 0;
+  }
+  return result;
+}
+
 int QgsGeometry::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPoint>& testPoints ) const
 {
   //Find out the intersection points between splitLineGeos and this geometry.
@@ -5020,7 +5438,7 @@ int QgsGeometry::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QLis
   return 0;
 }
 
-GEOSGeometry *QgsGeometry::nodeGeometries( const GEOSGeometry *splitLine, GEOSGeometry *geom ) const
+GEOSGeometry *QgsGeometry::nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom )
 {
   if ( !splitLine || !geom )
   {
@@ -5028,25 +5446,79 @@ GEOSGeometry *QgsGeometry::nodeGeometries( const GEOSGeometry *splitLine, GEOSGe
   }
 
   GEOSGeometry *geometryBoundary = 0;
-  bool deleteBoundary = false;
   if ( GEOSGeomTypeId( geom ) == GEOS_POLYGON || GEOSGeomTypeId( geom ) == GEOS_MULTIPOLYGON )
   {
     geometryBoundary = GEOSBoundary( geom );
-    deleteBoundary = true;
   }
   else
   {
-    geometryBoundary = geom;
+    geometryBoundary = GEOSGeom_clone( geom );
   }
 
   GEOSGeometry *splitLineClone = GEOSGeom_clone( splitLine );
   GEOSGeometry *unionGeometry = GEOSUnion( splitLineClone, geometryBoundary );
   GEOSGeom_destroy( splitLineClone );
 
-  if ( deleteBoundary )
-    GEOSGeom_destroy( geometryBoundary );
-
+  GEOSGeom_destroy( geometryBoundary );
   return unionGeometry;
+}
+
+int QgsGeometry::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry* line2 )
+{
+  if ( !line1 || !line2 )
+  {
+    return -1;
+  }
+
+  double bufferDistance = 0.00001;
+  GEOSGeometry* bufferGeom = GEOSBuffer( line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
+  if ( !bufferGeom )
+  {
+    return -2;
+  }
+
+  GEOSGeometry* intersectionGeom = GEOSIntersection( bufferGeom, line1 );
+
+  //compare ratio between line1Length and intersectGeomLength (usually close to 1 if line1 is contained in line2)
+  double intersectGeomLength;
+  double line1Length;
+
+  GEOSLength( intersectionGeom, &intersectGeomLength );
+  GEOSLength( line1, &line1Length );
+
+  GEOSGeom_destroy( bufferGeom );
+  GEOSGeom_destroy( intersectionGeom );
+
+  double intersectRatio = line1Length / intersectGeomLength;
+  if ( intersectRatio > 0.9 && intersectRatio < 1.1 )
+  {
+    return 1;
+  }
+  return 0;
+}
+
+int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry* line )
+{
+  if ( !point || !line )
+  {
+    return -1;
+  }
+
+  double bufferDistance = 0.0000001;
+  GEOSGeometry* lineBuffer = GEOSBuffer( line, bufferDistance, 8 );
+  if ( !lineBuffer )
+  {
+    return -2;
+  }
+
+  bool contained = false;
+  if ( GEOSContains( lineBuffer, point ) == 1 )
+  {
+    contained = true;
+  }
+
+  GEOSGeom_destroy( lineBuffer );
+  return contained;
 }
 
 int QgsGeometry::numberOfGeometries( GEOSGeometry* g ) const
