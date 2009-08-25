@@ -5326,7 +5326,7 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
     GEOSGeometry* currentGeom = 0;
     double maxLength = -DBL_MAX;
     double currentLength = 0;
-    for ( int i = 0; i < probableParts.length(); ++i )
+    for ( int i = 0; i < probableParts.size(); ++i )
     {
       currentGeom = probableParts.at( i );
       GEOSLength( currentGeom, &currentLength );
