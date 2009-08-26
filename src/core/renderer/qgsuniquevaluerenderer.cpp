@@ -74,16 +74,6 @@ QgsUniqueValueRenderer::~QgsUniqueValueRenderer()
   }
 }
 
-const QList<QgsSymbol*> QgsUniqueValueRenderer::symbols() const
-{
-  QList <QgsSymbol*> symbollist;
-  for ( QMap<QString, QgsSymbol*>::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it )
-  {
-    symbollist.append( it.value() );
-  }
-  return symbollist;
-}
-
 void QgsUniqueValueRenderer::insertValue( QString name, QgsSymbol* symbol )
 {
   mSymbols.insert( name, symbol );
