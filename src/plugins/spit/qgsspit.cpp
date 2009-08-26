@@ -467,7 +467,7 @@ void QgsSpit::dbConnect()
       }
     }
 
-    QString schemaSql = QString( "select nspname from pg_namespace,pg_user where nspowner=usesysid and usename=%1" )
+    QString schemaSql = QString( "select nspname from pg_namespace where has_schema_privilege(nspname, 'CREATE')" )
                         .arg( QgsPgUtil::quotedValue( username ) );
     PGresult *schemas = PQexec( conn, schemaSql.toUtf8() );
     // get the schema names
