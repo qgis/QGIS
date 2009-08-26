@@ -4,6 +4,7 @@ SUBDIRS (copyright_label
   north_arrow 
   scale_bar
   oracle_raster
+  raster_terrain_analysis
   )
 
 IF (POSTGRES_FOUND)
