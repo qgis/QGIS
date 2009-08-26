@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <iostream>
 
 #include <QSettings>
 #include <QMessageBox>
@@ -132,8 +131,6 @@ void QgsNewConnection::testConnection()
   }
   // free pg connection resources
   PQfinish( pd );
-
-
 }
 
 void QgsNewConnection::saveConnection()
