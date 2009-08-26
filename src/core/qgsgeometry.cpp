@@ -3243,7 +3243,13 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
     return 1;
   }
 
-  bool isMultiGeom = ( numGeoms > 1 );
+  bool isMultiGeom = false;
+  int geosTypeId = GEOSGeomTypeId( mGeos );
+  if ( geosTypeId == GEOS_MULTILINESTRING || geosTypeId == GEOS_MULTIPOLYGON )
+  {
+    isMultiGeom = true;
+  }
+
   bool isLine = ( type() == QGis::Line );
 
   //polygon or multipolygon?
@@ -3303,7 +3309,16 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
     }
     GEOSGeom_destroy( reshapeLineGeos );
 
-    GEOSGeometry* newMultiGeom = GEOSGeom_createCollection( GEOS_MULTIPOLYGON, newGeoms, numGeoms );
+    GEOSGeometry* newMultiGeom = 0;
+    if ( isLine )
+    {
+      newMultiGeom = GEOSGeom_createCollection( GEOS_MULTILINESTRING, newGeoms, numGeoms );
+    }
+    else //multipolygon
+    {
+      newMultiGeom = GEOSGeom_createCollection( GEOS_MULTIPOLYGON, newGeoms, numGeoms );
+    }
+
     delete[] newGeoms;
     if ( ! newMultiGeom )
     {
