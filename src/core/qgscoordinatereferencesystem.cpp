@@ -935,7 +935,7 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
 
     if ( createFromEpsg( myElement.text().toLong() ) )
     {
-      // createFromEpsg() sets everything, inlcuding map units
+      // createFromEpsg() sets everything, including map units
       QgsDebugMsg( "Setting from EPSG id" );
     }
     else
@@ -945,7 +945,7 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
 
       if ( createFromProj4( myElement.text() ) )
       {
-        // createFromProj4() sets everything, inlcuding map units
+        // createFromProj4() sets everything, including map units
         QgsDebugMsg( "Setting from proj4 string" );
       }
       else
