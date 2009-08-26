@@ -113,4 +113,15 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      Key is the layer id, the pair consists of snap to vertex = 0/snap to segment = 1,
     snapping tolerance*/
     QMap<QString, LayerEntry> mSnappingLayerSettings;
+
+
+    /*!
+     * Function to save dialog window state
+     */
+    void saveState();
+
+    /*!
+     * Function to restore dialog window state
+     */
+    void restoreState();
 };
