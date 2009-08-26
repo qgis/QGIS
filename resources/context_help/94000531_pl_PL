@@ -1,0 +1,26 @@
+<h3>Właściwości warstwy wektorowej</h3>
+Okno dialogowe pozwala na pracę z ustawieniami i właściwościami warstwy wektorowej. Dostępnych jest pięć zakładek:
+<ol>
+<li><a href="#symbology">Symbolika</a></li>
+<li><a href="#general">Ogólne</a></li>
+<li><a href="#metadata">Metadane</a></li>
+<li><a href="#labels">Etykiety</a></li>
+<li><a href="#actions">Akcje</a></li>
+</ol>
+<a name="symbology">
+<h4>Symbolika</h4>
+</a>
+
+<a name="general">
+<h4>Ogólne</h4>
+</a>
+
+<a name="metadata">
+<h4>Metadane</h4>
+</a>
+<a name="labels">
+<h4>Etykiety</h4>
+</a>
+<a name="actions">
+<h4>Akcje</h4>
+</a>
