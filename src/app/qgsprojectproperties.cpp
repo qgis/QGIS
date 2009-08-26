@@ -205,10 +205,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       mSnappingLayerSettings.insert( *idIter, newEntry );
     }
   }
+  restoreState();
 }
 
 QgsProjectProperties::~QgsProjectProperties()
-{}
+{
+  saveState();
+}
 
 
 
@@ -437,3 +440,22 @@ void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
   btnGrpMapUnits->setEnabled( state == Qt::Unchecked );
 }
 
+/*!
+ * Function to save dialog window state
+ */
+void QgsProjectProperties::saveState()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/ProjectProperties/geometry", saveGeometry() );
+  settings.setValue( "/Windows/ProjectProperties/tab", tabWidget->currentIndex() );
+}
+
+/*!
+ * Function to restore dialog window state
+ */
+void QgsProjectProperties::restoreState()
+{
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/ProjectProperties/geometry" ).toByteArray() );
+  tabWidget->setCurrentIndex( settings.value( "/Windows/ProjectProperties/tab" ).toInt() );
+}
