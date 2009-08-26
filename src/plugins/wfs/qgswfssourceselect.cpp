@@ -231,9 +231,10 @@ int QgsWFSSourceSelect::getCapabilitiesSOAP( const QString& uri, std::list<QStri
 
 void QgsWFSSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-wfs/" );
+  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/" );
+  nc.setWindowTitle( tr( "Create a new WFS connection" ) );
 
-  if ( nc->exec() )
+  if ( nc.exec() )
   {
     populateConnectionList();
   }
@@ -242,6 +243,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
   QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/", cmbConnections->currentText() );
+  nc.setWindowTitle( tr( "Modify WFS connection" ) );
 
   if ( nc.exec() )
   {
