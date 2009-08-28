@@ -22,6 +22,7 @@
 #include "qgsgridfilewriter.h"
 #include "qgsidwinterpolatordialog.h"
 #include "qgstininterpolatordialog.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -93,6 +94,12 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     return;
   }
 
+  QgsRectangle outputBBox = currentBoundingBox();
+  if ( outputBBox.isEmpty() )
+  {
+    return;
+  }
+
   //warn the user if there isn't any input layer
   if ( mLayersTreeWidget->topLevelItemCount() < 1 )
   {
@@ -111,7 +118,6 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
 
   int nLayers = mLayersTreeWidget->topLevelItemCount();
   QList< QgsInterpolator::LayerData > inputLayerList;
-  QgsRectangle combinedLayerExtent;
 
   for ( int i = 0; i < nLayers; ++i )
   {
@@ -126,17 +132,6 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     if ( !theProvider )
     {
       continue;
-    }
-
-    //update extent
-    QgsRectangle currentLayerExtent = theVectorLayer->extent();
-    if ( combinedLayerExtent.isEmpty() )
-    {
-      combinedLayerExtent = currentLayerExtent;
-    }
-    else
-    {
-      combinedLayerExtent.combineExtentWith( &currentLayerExtent );
     }
 
     QgsInterpolator::LayerData currentLayerData;
@@ -189,7 +184,8 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
   }
 
   //create grid file writer
-  QgsGridFileWriter theWriter( theInterpolator, fileName, combinedLayerExtent, mNumberOfColumnsSpinBox->value(), mNumberOfRowsSpinBox->value() );
+  QgsGridFileWriter theWriter( theInterpolator, fileName, outputBBox, mNumberOfColumnsSpinBox->value(), \
+                               mNumberOfRowsSpinBox->value(), mCellsizeXSpinBox->value(), mCellSizeYSpinBox->value() );
   if ( theWriter.writeFile( true ) == 0 )
   {
     mIface->addRasterLayer( fileName, "Interpolation" );
@@ -273,6 +269,9 @@ void QgsInterpolationDialog::on_mAddPushButton_clicked()
   typeComboBox->setCurrentIndex( 0 );
   mLayersTreeWidget->setItemWidget( newLayerItem, 2, typeComboBox );
 
+  //keep bounding box up to date
+  setLayersBoundingBox();
+
   enableOrDisableOkButton();
 }
 
@@ -344,4 +343,219 @@ void QgsInterpolationDialog::on_mInterpolationMethodComboBox_currentIndexChanged
   {
     mInterpolatorDialog = new QgsTINInterpolatorDialog( 0, mIface );
   }
+}
+
+void QgsInterpolationDialog::on_mNumberOfColumnsSpinBox_valueChanged( int value )
+{
+  setNewCellsizeXOnNColumnsChange();
+}
+
+void QgsInterpolationDialog::on_mNumberOfRowsSpinBox_valueChanged( int value )
+{
+  setNewCellsizeYOnNRowschange();
+}
+
+void QgsInterpolationDialog::on_mCellsizeXSpinBox_valueChanged( double value )
+{
+  setNColsOnCellsizeXChange();
+}
+
+void QgsInterpolationDialog::on_mCellSizeYSpinBox_valueChanged( double value )
+{
+  setNRowsOnCellsizeYChange();
+}
+
+void QgsInterpolationDialog::on_mXMinLineEdit_textEdited( const QString& text )
+{
+  setNewCellsizeOnBoundingBoxChange();
+}
+
+void QgsInterpolationDialog::on_mXMaxLineEdit_textEdited( const QString& text )
+{
+  setNewCellsizeOnBoundingBoxChange();
+}
+
+void QgsInterpolationDialog::on_mYMinLineEdit_textEdited( const QString& text )
+{
+  setNewCellsizeOnBoundingBoxChange();
+}
+
+void QgsInterpolationDialog::on_mYMaxLineEdit_textEdited( const QString& text )
+{
+  setNewCellsizeOnBoundingBoxChange();
+}
+
+void QgsInterpolationDialog::on_mBBoxToCurrentExtent_clicked()
+{
+  if ( mIface )
+  {
+    QgsMapCanvas* canvas = mIface->mapCanvas();
+    if ( canvas )
+    {
+      QgsRectangle extent = canvas->extent();
+      mXMinLineEdit->setText( QString::number( extent.xMinimum() ) );
+      mXMaxLineEdit->setText( QString::number( extent.xMaximum() ) );
+      mYMinLineEdit->setText( QString::number( extent.yMinimum() ) );
+      mYMaxLineEdit->setText( QString::number( extent.yMaximum() ) );
+    }
+  }
+}
+
+QgsRectangle QgsInterpolationDialog::boundingBoxOfLayers()
+{
+  int nLayers = mLayersTreeWidget->topLevelItemCount();
+  QList< QgsInterpolator::LayerData > inputLayerList;
+  QgsRectangle combinedLayerExtent;
+
+  for ( int i = 0; i < nLayers; ++i )
+  {
+    QString layerName = mLayersTreeWidget->topLevelItem( i )->text( 0 );
+    QgsVectorLayer* theVectorLayer = vectorLayerFromName( layerName );
+    if ( !theVectorLayer )
+    {
+      continue;
+    }
+
+    QgsVectorDataProvider* theProvider = theVectorLayer->dataProvider();
+    if ( !theProvider )
+    {
+      continue;
+    }
+
+    //update extent
+    QgsRectangle currentLayerExtent = theVectorLayer->extent();
+    if ( combinedLayerExtent.isEmpty() )
+    {
+      combinedLayerExtent = currentLayerExtent;
+    }
+    else
+    {
+      combinedLayerExtent.combineExtentWith( &currentLayerExtent );
+    }
+  }
+  return combinedLayerExtent;
+}
+
+void QgsInterpolationDialog::setLayersBoundingBox()
+{
+  QgsRectangle layersBoundingBox = boundingBoxOfLayers();
+  mXMinLineEdit->setText( QString::number( layersBoundingBox.xMinimum() ) );
+  mXMaxLineEdit->setText( QString::number( layersBoundingBox.xMaximum() ) );
+  mYMinLineEdit->setText( QString::number( layersBoundingBox.yMinimum() ) );
+  mYMaxLineEdit->setText( QString::number( layersBoundingBox.yMaximum() ) );
+  setNewCellsizeOnBoundingBoxChange();
+}
+
+void QgsInterpolationDialog::setNewCellsizeOnBoundingBoxChange()
+{
+  QgsRectangle currentBbox = currentBoundingBox();
+  if ( currentBbox.isEmpty() )
+  {
+    return;
+  }
+
+  if ( currentBbox.width() > 0 && mNumberOfColumnsSpinBox->value() > 0 )
+  {
+    mCellsizeXSpinBox->blockSignals( true );
+    mCellsizeXSpinBox->setValue( currentBbox.width() / mNumberOfColumnsSpinBox->value() );
+    mCellsizeXSpinBox->blockSignals( false );
+  }
+  if ( currentBbox.height() > 0 && mNumberOfRowsSpinBox->value() > 0 )
+  {
+    mCellSizeYSpinBox->blockSignals( true );
+    mCellSizeYSpinBox->setValue( currentBbox.height() / mNumberOfRowsSpinBox->value() );
+    mCellSizeYSpinBox->blockSignals( false );
+  }
+}
+
+void QgsInterpolationDialog::setNewCellsizeXOnNColumnsChange()
+{
+  QgsRectangle currentBBox = currentBoundingBox();
+  if ( !currentBBox.isEmpty() && mNumberOfColumnsSpinBox->value() > 0 )
+  {
+    mCellsizeXSpinBox->blockSignals( true );
+    mCellsizeXSpinBox->setValue( currentBBox.width() / mNumberOfColumnsSpinBox->value() );
+    mCellsizeXSpinBox->blockSignals( false );
+  }
+}
+
+void QgsInterpolationDialog::setNewCellsizeYOnNRowschange()
+{
+  QgsRectangle currentBBox = currentBoundingBox();
+  if ( !currentBBox.isEmpty() && mNumberOfRowsSpinBox->value() > 0 )
+  {
+    mCellSizeYSpinBox->blockSignals( true );
+    mCellSizeYSpinBox->setValue( currentBBox.height() / mNumberOfRowsSpinBox->value() );
+    mCellSizeYSpinBox->blockSignals( false );
+  }
+}
+
+void QgsInterpolationDialog::setNColsOnCellsizeXChange()
+{
+  QgsRectangle currentBBox = currentBoundingBox();
+  int newSize;
+
+  if ( !mCellsizeXSpinBox->value() > 0 )
+  {
+    return;
+  }
+
+  if ( !currentBBox.width() > 0 )
+  {
+    newSize = 0;
+  }
+  else
+  {
+    newSize = ( int )( currentBBox.width() / mCellsizeXSpinBox->value() );
+  }
+
+  mNumberOfColumnsSpinBox->blockSignals( true );
+  mNumberOfColumnsSpinBox->setValue( newSize );
+  mNumberOfColumnsSpinBox->blockSignals( false );
+}
+
+void QgsInterpolationDialog::setNRowsOnCellsizeYChange()
+{
+  QgsRectangle currentBBox = currentBoundingBox();
+  int newSize;
+
+  if ( !mCellSizeYSpinBox->value() > 0 )
+  {
+    return;
+  }
+
+  if ( !currentBBox.height() > 0 )
+  {
+    newSize = 0;
+  }
+  else
+  {
+    newSize = ( int )( currentBBox.height() / mCellSizeYSpinBox->value() );
+  }
+
+  mNumberOfRowsSpinBox->blockSignals( true );
+  mNumberOfRowsSpinBox->setValue( newSize );
+  mNumberOfRowsSpinBox->blockSignals( false );
+}
+
+QgsRectangle QgsInterpolationDialog::currentBoundingBox()
+{
+  QString xMinString = mXMinLineEdit->text();
+  QString xMaxString = mXMaxLineEdit->text();
+  QString yMinString = mYMinLineEdit->text();
+  QString yMaxString = mYMaxLineEdit->text();
+
+  bool xMinOk, xMaxOk, yMinOk, yMaxOk;
+  double xMin = xMinString.toDouble( &xMinOk );
+  double xMax = xMaxString.toDouble( &xMaxOk );
+  double yMin = yMinString.toDouble( &yMinOk );
+  double yMax = yMaxString.toDouble( &yMaxOk );
+
+  if ( !xMinOk || !xMaxOk || !yMinOk || !yMaxOk )
+  {
+    QgsRectangle emptyBbox;
+    return emptyBbox; //error, return empty bounding box
+  }
+
+  return QgsRectangle( xMin, yMin, xMax, yMax );
 }
