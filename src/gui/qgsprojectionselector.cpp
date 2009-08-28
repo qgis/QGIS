@@ -34,6 +34,7 @@
 const int NAME_COLUMN = 0;
 const int EPSG_COLUMN = 1;
 const int QGIS_CRS_ID_COLUMN = 2;
+const int POPULAR_CRSES = 4;
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent,
     const char * name,
@@ -59,7 +60,33 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent,
   // Read settings from persistent storage
   QSettings settings;
   mRecentProjections = settings.value( "/UI/recentProjections" ).toStringList();
+  /*** The reading (above) of internal id from persistent storage should be removed sometims in the future */
+  /*** This is kept now for backwards compatibility */
 
+  QStringList projectionsEpsg  = settings.value( "/UI/recentProjectionsEpsg" ).toStringList();
+  QStringList projectionsProj4 = settings.value( "/UI/recentProjectionsProj4" ).toStringList();
+  if ( projectionsEpsg.size() >= mRecentProjections.size() )
+  {
+    // We had saved state with EPSG and Proj4. Use that instead
+    // to find out the csr id
+    QgsDebugMsg( "Use popular projection list from EPSG/Proj4 saved state" );
+    mRecentProjections.clear();
+    for ( int i = 0; i <  projectionsEpsg.size(); i++ )
+    {
+      // Create a crs from the EPSG
+      QgsCoordinateReferenceSystem crs( projectionsEpsg.at( i ).toLong(), QgsCoordinateReferenceSystem::EpsgCrsId );
+      if ( ! crs.isValid() )
+      {
+        // Couldn't create from EPSG, try the Proj4 string instead
+        if ( ! crs.createFromProj4( projectionsProj4.at( i ) ) )
+        {
+          // No? Skip this entry
+          continue;
+        }
+      }
+      mRecentProjections << QString::number( crs.srsid() );
+    }
+  }
 }
 
 
@@ -75,13 +102,32 @@ QgsProjectionSelector::~QgsProjectionSelector()
   {
     mRecentProjections.removeAll( QString::number( crsId ) );
     mRecentProjections.prepend( QString::number( crsId ) );
-    // Prunse size of list
+    // Prune size of list
     while ( mRecentProjections.size() > 4 )
     {
       mRecentProjections.removeLast();
     }
-    // Save to file
+    // Save to file *** Should be removed sometims in the future ***
     settings.setValue( "/UI/recentProjections", mRecentProjections );
+
+    // Convert to EPGS and proj4, and save those values also
+
+    QStringList projectionsEpsg;
+    QStringList projectionsProj4;
+    for ( int i = 0; i <  mRecentProjections.size(); i++ )
+    {
+      // Create a crs from the crsId
+      QgsCoordinateReferenceSystem crs( mRecentProjections.at( i ).toLong(), QgsCoordinateReferenceSystem::InternalCrsId );
+      if ( ! crs.isValid() )
+      {
+        // No? Skip this entry
+        continue;
+      }
+      projectionsEpsg  << QString::number( crs.epsg() );
+      projectionsProj4 << crs.toProj4();
+    }
+    settings.setValue( "/UI/recentProjectionsEpsg", projectionsEpsg );
+    settings.setValue( "/UI/recentProjectionsProj4", projectionsProj4 );
   }
 }
 
@@ -205,8 +251,8 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
       //this line is neccesary to make change projection work
       //with geoserver because for some reason geoserver returns
       //EPSG:WGS84(DD) as the first srs and is invalid because the
-      //epsg database expect an integer string      
-	  if(rx.indexIn(parts.at( 1 )) == -1)
+      //epsg database expect an integer string
+      if ( rx.indexIn( parts.at( 1 ) ) == -1 )
         epsgParts.push_back( parts.at( 1 ) );
     }
 
