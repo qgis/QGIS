@@ -117,9 +117,8 @@ class QgsMapToolIdentify : public QgsMapTool
     // Let us know when the QgsIdentifyResults dialog box has been closed
     void resultsDialogGone();
 
-    // Check if the mLayer is removing from canvas to clear the results dialog
-    void removeLayer( QString );
-
+    // layer was destroyed
+    void layerDestroyed();
 };
 
 #endif

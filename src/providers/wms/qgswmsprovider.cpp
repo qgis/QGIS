@@ -455,9 +455,9 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
   url += "FORMAT=" + imageMimeType;
 
   //DPI parameter is accepted by QGIS mapserver (and ignored by the other WMS servers)
-  if(mDpi != -1)
+  if ( mDpi != -1 )
   {
-    url += "&DPI=" + QString::number(mDpi);
+    url += "&DPI=" + QString::number( mDpi );
   }
 
   //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
@@ -2161,13 +2161,12 @@ QString QgsWmsProvider::metadata()
 
 QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
 {
-
   QgsDebugMsg( "Entering." );
 
   // Collect which layers to query on
 
   QStringList queryableLayers = QStringList();
-  QString text = "";;
+  QString text = "";
 
   // Test for which layers are suitable for querying with
   for ( QStringList::const_iterator it  = activeSubLayers.begin();
@@ -2187,13 +2186,14 @@ QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
         QString layer = QUrl::toPercentEncoding( *it );
 
         //! \todo Need to tie this into the options provided by GetCapabilities
-        requestUrl += QString( "&QUERY_LAYERS=%1&INFO_FORMAT=text/plain&X=%2&Y=%3" )
-                      .arg( layer ).arg( point.x() ).arg( point.y() );
+        requestUrl += QString( "&QUERY_LAYERS=%1" ).arg( layer );
+        requestUrl += QString( "&INFO_FORMAT=text/plain&X=%1&Y=%2" )
+                      .arg( point.x() ).arg( point.y() );
 
 // X,Y in WMS 1.1.1; I,J in WMS 1.3.0
 //   requestUrl += QString( "&I=%1&J=%2" ).arg( point.x() ).arg( point.y() );
 
-        text += "---------------\n" + retrieveUrl( requestUrl );
+        text += "---------------\n" + QString::fromUtf8( retrieveUrl( requestUrl ) );
       }
     }
   }

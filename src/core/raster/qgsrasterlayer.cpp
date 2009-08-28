@@ -5438,9 +5438,3 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
   QgsDebugMsg( "All checks failed, returning '" + QSTRING_NOT_SET + "'" );
   return TRSTRING_NOT_SET;
 }
-
-
-
-
-
-
