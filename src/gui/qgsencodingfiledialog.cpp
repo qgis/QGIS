@@ -18,6 +18,7 @@
 #include "qgslogger.h"
 #include <QSettings>
 #include <QComboBox>
+#include <QPushButton>
 #include <QLabel>
 #include <QLayout>
 #include <QTextCodec>
@@ -28,6 +29,8 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget * parent,
     const QString & filter, const QString & encoding )
     : QFileDialog( parent, caption, directory, filter )
 {
+  mCancelAll       = false;
+  mCancelAllButton = 0;
   mEncodingComboBox = new QComboBox( this );
   QLabel* l = new QLabel( tr( "Encoding:" ), this );
   layout()->addWidget( l );
@@ -120,4 +123,26 @@ void QgsEncodingFileDialog::saveUsedEncoding()
   QSettings settings;
   settings.setValue( "/UI/encoding", encoding() );
   QgsDebugMsg( QString( "Set encoding " + encoding() + " as default." ) );
+}
+
+void QgsEncodingFileDialog::addCancelAll()
+{
+  if ( ! mCancelAllButton )
+  {
+    mCancelAllButton = new QPushButton( "Cancel &All", NULL );
+    layout()->addWidget( mCancelAllButton ); // Ownership transfered, no need to delete later on
+    connect( mCancelAllButton, SIGNAL( clicked() ), this, SLOT( pbnCancelAll_clicked() ) );
+  }
+}
+
+bool QgsEncodingFileDialog::cancelAll()
+{
+  return mCancelAll;
+}
+
+void QgsEncodingFileDialog::pbnCancelAll_clicked()
+{
+  mCancelAll = true;
+  // Now, continue as the user clicked the cancel button
+  reject();
 }

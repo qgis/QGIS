@@ -2338,9 +2338,12 @@ static void buildSupportedVectorFileFilter_( QString & fileFilters )
 
 */
 
-static void openFilesRememberingFilter_( QString const &filterName,
-    QString const &filters, QStringList & selectedFiles, QString& enc, QString &title )
+static bool openFilesRememberingFilter_( QString const &filterName,
+    QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
+    bool cancelAll = false )
 {
+
+  bool retVal = false;
 
   bool haveLastUsedFilter = false; // by default, there is no last
   // used filter
@@ -2367,6 +2370,12 @@ static void openFilesRememberingFilter_( QString const &filterName,
     openFileDialog->selectFilter( lastUsedFilter );
   }
 
+  // Check if we should add a cancel all button
+  if ( cancelAll )
+  {
+    openFileDialog->addCancelAll();
+  }
+
   if ( openFileDialog->exec() == QDialog::Accepted )
   {
     selectedFiles = openFileDialog->selectedFiles();
@@ -2383,8 +2392,14 @@ static void openFilesRememberingFilter_( QString const &filterName,
     settings.setValue( "/UI/" + filterName, openFileDialog->selectedFilter() );
     settings.setValue( "/UI/" + filterName + "Dir", myPath );
   }
+  else
+  {
+    // Cancel or cancel all
+    retVal = openFileDialog->cancelAll();
+  }
 
   delete openFileDialog;
+  return retVal;
 }   // openFilesRememberingFilter_
 
 
@@ -2938,7 +2953,7 @@ setDataSource_( QDomNode & layerNode, QString const & dataSource )
 
 */
 static
-void
+bool
 findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
 {
   // Prepend that file name to the valid file format filter list since it
@@ -2966,7 +2981,7 @@ findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
     }
     default:
       QgsDebugMsg( "unable to determine data type" );
-      return;
+      return false;
   }
 
   // Prepend the original data source base name to make it easier to pick it
@@ -2982,15 +2997,16 @@ findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
                   .arg( originalDataSource.fileName() )
                   .arg( originalDataSource.absoluteFilePath() );
 
-  openFilesRememberingFilter_( memoryQualifier,
-                               myFileFilters,
-                               selectedFiles,
-                               enc,
-                               title );
+  bool retVal = openFilesRememberingFilter_( memoryQualifier,
+                myFileFilters,
+                selectedFiles,
+                enc,
+                title,
+                true );
 
   if ( selectedFiles.isEmpty() )
   {
-    return;
+    return retVal;
   }
   else
   {
@@ -3000,7 +3016,7 @@ findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
       QgsDebugMsg( "unable to re-read layer" );
     }
   }
-
+  return retVal;
 } // findMissingFile_
 
 
@@ -3019,17 +3035,19 @@ findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
 
 */
 static
-void
+bool
 findLayer_( QString const & fileFilters, QDomNode const & constLayerNode )
 {
   // XXX actually we could possibly get away with a copy of the node
   QDomNode & layerNode = const_cast<QDomNode&>( constLayerNode );
 
+  bool retVal = false;
+
   switch ( providerType_( layerNode ) )
   {
     case IS_FILE:
       QgsDebugMsg( "layer is file based" );
-      findMissingFile_( fileFilters, layerNode );
+      retVal = findMissingFile_( fileFilters, layerNode );
       break;
 
     case IS_DATABASE:
@@ -3044,7 +3062,7 @@ findLayer_( QString const & fileFilters, QDomNode const & constLayerNode )
       QgsDebugMsg( "layer has an unkown type" );
       break;
   }
-
+  return retVal;
 } // findLayer_
 
 
@@ -3064,7 +3082,11 @@ findLayers_( QString const & fileFilters, std::list<QDomNode> const & layerNodes
         i != layerNodes.end();
         ++i )
   {
-    findLayer_( fileFilters, *i );
+    if ( findLayer_( fileFilters, *i ) )
+    {
+      // If findLayer returns true, the user hit Cancel All button
+      break;
+    }
   }
 
 } // findLayers_

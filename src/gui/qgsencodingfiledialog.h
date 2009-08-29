@@ -18,6 +18,7 @@
 
 #include <QFileDialog>
 class QComboBox;
+class QPushButton;
 
 /** \ingroup gui
  * A file dialog which lets the user select the prefered encoding type for a data provider.
@@ -32,12 +33,25 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
     ~QgsEncodingFileDialog();
     /**Returns a string describing the choosen encoding*/
     QString encoding() const;
+    /* Adds a 'Cancel All' button for the user to click */
+    void addCancelAll();
+    /* Returns true if the user clicked 'Cancel All' */
+    bool cancelAll();
+
   public slots:
     void saveUsedEncoding();
+
+    void pbnCancelAll_clicked();
 
   private:
     /**Box to choose the encoding type*/
     QComboBox* mEncodingComboBox;
+
+    /* The button to click */
+    QPushButton *mCancelAllButton;
+
+    /* Set if user clicked 'Cancel All' */
+    bool mCancelAll;
 };
 
 #endif
