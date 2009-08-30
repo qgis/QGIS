@@ -439,7 +439,14 @@ void QgsServerSourceSelect::on_btnAdd_clicked()
   }
   else
   {
-    accept();
+    QgisApp::instance()->addRasterLayer(
+                    connectionInfo(),
+                    leLayerName->text().isEmpty() ? selectedLayers().join( "/" ) : leLayerName->text(),
+                    "wms",
+                    selectedLayers(),
+                    selectedStylesForSelectedLayers(),
+                    selectedImageEncoding(),
+                    selectedCrs() );
   }
 }
 
