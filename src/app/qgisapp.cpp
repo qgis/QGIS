@@ -2778,18 +2778,7 @@ void QgisApp::addWmsLayer()
   QgsDebugMsg( "about to addRasterLayer" );
 
   QgsServerSourceSelect *wmss = new QgsServerSourceSelect( this );
-
-  if ( wmss->exec() )
-  {
-
-    addRasterLayer( wmss->connectionInfo(),
-                    /*wmss->connName()*/wmss->selectedLayers().join( "/" ),
-                    "wms",
-                    wmss->selectedLayers(),
-                    wmss->selectedStylesForSelectedLayers(),
-                    wmss->selectedImageEncoding(),
-                    wmss->selectedCrs() );
-  }
+  wmss->exec();
 }
 
 
