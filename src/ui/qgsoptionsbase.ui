@@ -811,7 +811,7 @@
          <property name="title">
           <string>Vertex markers</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout_1">
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="mMarkersOnlyForSelectedCheckBox">
             <property name="text">

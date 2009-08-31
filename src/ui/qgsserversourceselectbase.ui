@@ -146,7 +146,7 @@
       <attribute name="title">
        <string>Layer Order</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout_1">
        <item row="0" column="0">
         <widget class="QPushButton" name="mLayerUpButton">
          <property name="text">
@@ -194,7 +194,6 @@
       </layout>
       <zorder>mLayerUpButton</zorder>
       <zorder>mLayerDownButton</zorder>
-      <zorder>horizontalSpacer</zorder>
       <zorder>mLayerOrderTreeWidget</zorder>
      </widget>
      <widget class="QWidget" name="tab_2">

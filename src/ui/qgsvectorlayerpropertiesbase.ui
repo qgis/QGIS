@@ -19,7 +19,9 @@
    <string>Layer Properties</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <property name="modal" >
    <bool>true</bool>
