@@ -630,7 +630,7 @@
         <height>399</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout" >
+      <layout class="QGridLayout" name="gridLayout_1" >
        <item row="0" column="0" >
         <widget class="QLabel" name="lblFont" >
          <property name="sizePolicy" >
