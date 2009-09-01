@@ -239,7 +239,7 @@ QAction *QgisAppInterface::actionPasteFeatures() { return qgis->actionPasteFeatu
 QAction *QgisAppInterface::actionEditSeparator1() { return qgis->actionEditSeparator1(); }
 QAction *QgisAppInterface::actionCapturePoint() { return qgis->actionCapturePoint(); }
 QAction *QgisAppInterface::actionCaptureLine() { return qgis->actionCaptureLine(); }
-QAction *QgisAppInterface::actionCapturePologon() { return qgis->actionCapturePologon(); }
+QAction *QgisAppInterface::actionCapturePolygon() { return qgis->actionCapturePolygon(); }
 QAction *QgisAppInterface::actionDeleteSelected() { return qgis->actionDeleteSelected(); }
 QAction *QgisAppInterface::actionMoveFeature() { return qgis->actionMoveFeature(); }
 QAction *QgisAppInterface::actionSplitFeatures() { return qgis->actionSplitFeatures(); }
