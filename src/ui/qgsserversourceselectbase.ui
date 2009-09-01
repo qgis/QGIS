@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>510</width>
-    <height>439</height>
+    <height>508</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -272,7 +272,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <widget class="QPushButton" name="btnHelp">
      <property name="enabled">
       <bool>true</bool>
@@ -288,7 +288,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
+   <item row="4" column="2">
     <spacer>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -304,7 +304,7 @@
      </property>
     </spacer>
    </item>
-   <item row="3" column="3">
+   <item row="4" column="3">
     <widget class="QPushButton" name="btnAdd">
      <property name="enabled">
       <bool>false</bool>
@@ -323,7 +323,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="4">
+   <item row="4" column="4">
     <widget class="QPushButton" name="btnCancel">
      <property name="text">
       <string>C&amp;lose</string>
@@ -336,7 +336,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="4">
+   <item row="5" column="1" colspan="4">
     <widget class="QLabel" name="labelStatus">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
@@ -352,7 +352,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="4">
+   <item row="3" column="1" colspan="4">
     <widget class="QGroupBox" name="gbCRS">
      <property name="title">
       <string>Coordinate Reference System</string>
@@ -394,7 +394,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="1" colspan="3">
+   <item row="2" column="1" colspan="4">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Layer name</string>
