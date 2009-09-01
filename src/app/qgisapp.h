@@ -216,7 +216,7 @@ class QgisApp : public QMainWindow
     QAction *actionEditSeparator1() { return mActionEditSeparator1; }
     QAction *actionCapturePoint() { return mActionCapturePoint; }
     QAction *actionCaptureLine() { return mActionCaptureLine; }
-    QAction *actionCapturePologon() { return mActionCapturePolygon; }
+    QAction *actionCapturePolygon() { return mActionCapturePolygon; }
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
