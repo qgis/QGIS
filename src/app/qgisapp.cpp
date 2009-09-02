@@ -1680,7 +1680,7 @@ void QgisApp::setupConnections()
            mMapTools.mNodeTool, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
 
   //signal when mouse moved over window (coords display in status bar)
-  connect( mMapCanvas, SIGNAL( xyCoordinates( QgsPoint & ) ), this, SLOT( showMouseCoordinate( QgsPoint & ) ) );
+  connect( mMapCanvas, SIGNAL( xyCoordinates( const QgsPoint & ) ), this, SLOT( showMouseCoordinate( const QgsPoint & ) ) );
   connect( mMapCanvas->mapRenderer(), SIGNAL( drawingProgress( int, int ) ), this, SLOT( showProgress( int, int ) ) );
   connect( mMapCanvas->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( hasCrsTransformEnabled( bool ) ) );
   connect( mMapCanvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( destinationSrsChanged() ) );
@@ -4641,7 +4641,7 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
   vlayer->triggerRepaint();
 }
 
-void QgisApp::showMouseCoordinate( QgsPoint & p )
+void QgisApp::showMouseCoordinate( const QgsPoint & p )
 {
   if ( mMapTipsVisible )
   {

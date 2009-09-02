@@ -35,7 +35,7 @@ class MapCoordsDialog : public QDialog, private Ui::MapCoordsDialogBase
 
     void on_btnPointFromCanvas_clicked();
 
-    void maybeSetXY( QgsPoint &, Qt::MouseButton );
+    void maybeSetXY( const QgsPoint &, Qt::MouseButton );
     void updateOK();
 
   private:
