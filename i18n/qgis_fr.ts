@@ -2438,12 +2438,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="13"/>
         <source>Create OSM relation</source>
-        <translation type="unfinished">Créer une relation OSM</translation>
+        <translation>Créer une relation OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="30"/>
         <source>Relation type:</source>
-        <translation type="unfinished">Type de relation :</translation>
+        <translation>Type de relation :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
@@ -2452,31 +2452,31 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="178"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="188"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="106"/>
         <source>Properties</source>
-        <translation type="unfinished">Propriétés</translation>
+        <translation>Propriétés</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="158"/>
         <source>Members</source>
-        <translation type="unfinished">Membres</translation>
+        <translation>Membres</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="260"/>
         <source>Create</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="276"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished">Information OSM</translation>
+        <translation>Information OSM</translation>
     </message>
 </context>
 <context>
@@ -2586,124 +2586,124 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished">Téléchargement OSM</translation>
+        <translation>Téléchargement OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Impossible de sauvegarder le fichier %1 : %2.</translation>
+        <translation>Impossible de sauvegarder le fichier %1 : %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished">En attente du serveur OpenStreetMap...</translation>
+        <translation>En attente du serveur OpenStreetMap...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished">Échec du processus de téléchargement. La réponse du serveur OSM est : %1 - %2</translation>
+        <translation>Échec du processus de téléchargement. La réponse du serveur OSM est : %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished">Erreur de téléchargement OSM</translation>
+        <translation>Erreur de téléchargement OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">Échec du téléchargement : %1.</translation>
+        <translation>Échec du téléchargement : %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished">Obtention des données</translation>
+        <translation>Obtention des données</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished">Le serveur OpenStreetMap d&apos;où vous téléchargez vos données (~ api.openstreetmap.org) a un quota fixe sz téléchargement. Comme expliqué à &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, l&apos;étendue de la latitude ou de la longitude de la région voulue ne doivent être supérieurs à 0.25 degrés. QGIS vous permet de spécifier n&apos;importe quelle étendue mais le serveur OpenStreetMap rejetera toutes les requêtes qui ne satisferont pas aux limites de téléchargements.</translation>
+        <translation>Le serveur OpenStreetMap d&apos;où vous téléchargez vos données (~ api.openstreetmap.org) a un quota fixe sz téléchargement. Comme expliqué à &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, l&apos;étendue de la latitude ou de la longitude de la région voulue ne doivent être supérieurs à 0.25 degrés. QGIS vous permet de spécifier n&apos;importe quelle étendue mais le serveur OpenStreetMap rejetera toutes les requêtes qui ne satisferont pas aux limites de téléchargements.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished">L&apos;ensemble des étendue est trop large !</translation>
+        <translation>L&apos;ensemble des étendues est trop large !</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished">L&apos;étendue de la latitude est trop large !</translation>
+        <translation>L&apos;étendue de la latitude est trop large !</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished">L&apos;étendue de la longitude est trop large !</translation>
+        <translation>L&apos;étendue de la longitude est trop large !</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished">Ok ! L&apos;aire est probablement acceptable pour le server.</translation>
+        <translation>Ok ! L&apos;aire est probablement acceptable pour le serveur.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
         <source>Download OSM data</source>
-        <translation type="unfinished">Télécharger des données OSM</translation>
+        <translation>Télécharger des données OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="40"/>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Emprise</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="48"/>
         <source>Latitude:</source>
-        <translation type="unfinished">Latitude:</translation>
+        <translation>Latitude :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="55"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="96"/>
         <source>   From</source>
-        <translation type="unfinished">   Depuis</translation>
+        <translation>   Depuis</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="72"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="113"/>
         <source>To</source>
-        <translation type="unfinished">Vers</translation>
+        <translation>Vers</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="89"/>
         <source>Longitude:</source>
-        <translation type="unfinished">Longitude:</translation>
+        <translation>Longitude :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="166"/>
         <source>&lt;nothing&gt;</source>
-        <translation type="unfinished">&lt;rien&gt;</translation>
+        <translation>&lt;rien&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="182"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="210"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="196"/>
         <source>Download to:</source>
-        <translation type="unfinished">Télécharger vers :</translation>
+        <translation>Télécharger vers :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="219"/>
         <source>Open data automatically after download</source>
-        <translation type="unfinished">Ouvrir les données automatiquement après le téléchargement</translation>
+        <translation>Ouvrir les données automatiquement après le téléchargement</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="247"/>
         <source>Replace current data (current layer will be removed)</source>
-        <translation type="unfinished">Remplacer les données actuelles (la couche actuelle sera effacée)</translation>
+        <translation>Remplacer les données actuelles (la couche actuelle sera effacée)</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished">Utiliser le moteur de rendu personnalisé</translation>
+        <translation>Utiliser le moteur de rendu personnalisé</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
         <source>Download</source>
-        <translation type="unfinished">Télécharger</translation>
+        <translation>Télécharger</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="365"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>
@@ -2711,7 +2711,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
         <source>OSM Feature</source>
-        <translation type="unfinished">entité OSM</translation>
+        <translation>Entité OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="67"/>
@@ -2730,171 +2730,171 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="582"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="598"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="92"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="95"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="98"/>
         <source>Identify object</source>
-        <translation type="unfinished">Identifier l&apos;entité</translation>
+        <translation>Identifier l&apos;entité</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="126"/>
         <source>Move object</source>
-        <translation type="unfinished">Déplacer l&apos;entité</translation>
+        <translation>Déplacer l&apos;entité</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="154"/>
         <source>Create point</source>
-        <translation type="unfinished">Créer un point</translation>
+        <translation>Créer un point</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="176"/>
         <source>Create line</source>
-        <translation type="unfinished">Créer une ligne</translation>
+        <translation>Créer une ligne</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="204"/>
         <source>Create polygon</source>
-        <translation type="unfinished">Créer un polygone</translation>
+        <translation>Créer un polygone</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="232"/>
         <source>Create relation</source>
-        <translation type="unfinished">Créer une relation</translation>
+        <translation>Créer une relation</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="251"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="254"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="257"/>
         <source>Undo</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="273"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="276"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="279"/>
         <source>Redo</source>
-        <translation type="unfinished">Refaire</translation>
+        <translation>Refaire</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="295"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="298"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="301"/>
         <source>Show/Hide OSM Edit History</source>
-        <translation type="unfinished">Afficher/Masquer l&apos;historique d&apos;édition OSM</translation>
+        <translation>Afficher/Masquer l&apos;historique d&apos;édition OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="331"/>
         <source>Feature:</source>
-        <translation type="unfinished">Entité :</translation>
+        <translation>Entité :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="360"/>
         <source>TYPE, ID:</source>
-        <translation type="unfinished">TYPE, ID :</translation>
+        <translation>TYPE, ID :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="367"/>
         <source>CREATED:</source>
-        <translation type="unfinished">CRÉE :</translation>
+        <translation>CRÉE :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="374"/>
         <source>USER:</source>
-        <translation type="unfinished">UTILISATEUR :</translation>
+        <translation>UTILISATEUR :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="381"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="388"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="395"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>inconnu</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="408"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="411"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="414"/>
         <source>Remove feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer l&apos;entité</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="460"/>
         <source>Properties</source>
-        <translation type="unfinished">Propriétés</translation>
+        <translation>Propriétés</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="506"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="509"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="512"/>
         <source>Remove selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer les étiquettes sélectionnées</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="525"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Relations</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="557"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="560"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="563"/>
         <source>Add relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une relation</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="573"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="576"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="579"/>
         <source>Edit relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer une relation</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="589"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="592"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="595"/>
         <source>Remove relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la sélection </translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="625"/>
         <source>Relation tags:</source>
-        <translation type="unfinished">Étiquette de la relation :</translation>
+        <translation>Étiquette de la relation :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="672"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="680"/>
         <source>Relation members:</source>
-        <translation type="unfinished">Membres de la relation :</translation>
+        <translation>Membres de la relation :</translation>
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished">Extension OSM</translation>
+        <translation>Extension OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished">Le dialogue &apos;Créer une relation OSM&quot; a été fermé automatiquement car la base de données OSM actuelle a été modifiée.</translation>
+        <translation>Le dialogue &apos;Créer une relation OSM&quot; a été fermé automatiquement car la base de données OSM actuelle a été modifiée.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished">OSM Entité Dock Widget</translation>
+        <translation>OSM Entité Dock Widget</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished">Sélectionnez d&apos;abord une entité OSM.</translation>
+        <translation>Sélectionnez d&apos;abord une entité OSM.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished">Sélectionnez d&apos;abord une relation pour éditer.</translation>
+        <translation>Sélectionnez d&apos;abord une relation pour éditer.</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation type="unfinished">La propriété &apos;%1&apos; ne peut être ajoutée deux fois.</translation>
+        <translation>La propriété &apos;%1&apos; ne peut être ajoutée deux fois.</translation>
     </message>
 </context>
 <context>
@@ -2902,22 +2902,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="16"/>
         <source>Import data to OSM</source>
-        <translation type="unfinished">Importer des données vers OSM</translation>
+        <translation>Importer des données vers OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="25"/>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="unfinished">Dans ce dialogue, vous pouvez importer une couche depuis QGIS vers OSM.</translation>
+        <translation>Dans ce dialogue, vous pouvez importer une couche depuis QGIS vers OSM.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="50"/>
         <source>Layer</source>
-        <translation type="unfinished">Couche</translation>
+        <translation>Couche</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="69"/>
         <source>Import only current selection</source>
-        <translation type="unfinished">Importer seulement la sélection actuelle</translation>
+        <translation>Importer seulement la sélection actuelle</translation>
     </message>
 </context>
 <context>
@@ -2925,108 +2925,108 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="16"/>
         <source>Load OSM</source>
-        <translation type="unfinished">Charger OSM</translation>
+        <translation>Charger OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="33"/>
         <source>OpenStreetMap file to load:</source>
-        <translation type="unfinished">Sélectionnez un fichier OSM à ouvrir :</translation>
+        <translation>Sélectionnez un fichier OSM à ouvrir :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="46"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="55"/>
         <source>Add columns for tags:</source>
-        <translation type="unfinished">Ajouter des colonnes d&apos;étiquettes :</translation>
+        <translation>Ajouter des colonnes d&apos;étiquettes :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished">Utiliser le moteur de rendu personnalisé</translation>
+        <translation>Utiliser le moteur de rendu personnalisé</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
         <source>Replace current data (current layers will be removed)</source>
-        <translation type="unfinished">Remplacer les données actuelles (les couches actuelles seront effacées)</translation>
+        <translation>Remplacer les données actuelles (les couches actuelles seront effacées)</translation>
     </message>
 </context>
 <context>
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished">Enregistrer OSM vers un fichier</translation>
+        <translation>Enregistrer OSM vers un fichier</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Impossible de sauvegarder le fichier %1 : %2.</translation>
+        <translation>Impossible de sauvegarder le fichier %1 : %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished">Installation...</translation>
+        <translation>Installation...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished">Sauvegarde des nœuds...</translation>
+        <translation>Sauvegarde des nœuds...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished">Sauvegarde des lignes...</translation>
+        <translation>Sauvegarde des lignes...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished">Sauvegarde des polygones...</translation>
+        <translation>Sauvegarde des polygones...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished">Sauvegarde des relations...</translation>
+        <translation>Sauvegarde des relations...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
         <source>Save OSM</source>
-        <translation type="unfinished">Sauvegarder OSM</translation>
+        <translation>Sauvegarder OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="33"/>
         <source>Where to save:</source>
-        <translation type="unfinished">Emplacement de sauvegarde :</translation>
+        <translation>Emplacement de sauvegarde :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="52"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="61"/>
         <source>Features to save:</source>
-        <translation type="unfinished">Entités à enregistrer :</translation>
+        <translation>Entités à enregistrer :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="81"/>
         <source>Points</source>
-        <translation type="unfinished">Points</translation>
+        <translation>Points</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="91"/>
         <source>Lines</source>
-        <translation type="unfinished">Lignes</translation>
+        <translation>Lignes</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="101"/>
         <source>Polygons</source>
-        <translation type="unfinished">Polygones</translation>
+        <translation>Polygones</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="115"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="125"/>
         <source>Tags</source>
-        <translation type="unfinished">Étiquettes</translation>
+        <translation>Étiquettes</translation>
     </message>
 </context>
 <context>
@@ -3034,35 +3034,35 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="16"/>
         <source>OSM Edit History</source>
-        <translation type="unfinished">Éditer l&apos;historique OSM</translation>
+        <translation>Éditer l&apos;historique OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="25"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="28"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="31"/>
         <source>Clear all</source>
-        <translation type="unfinished">Effacer tout</translation>
+        <translation>Effacer tout</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="34"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="66"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="85"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="57"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="60"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="63"/>
         <source>Undo</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="76"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="79"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="82"/>
         <source>Redo</source>
-        <translation type="unfinished">Refaire</translation>
+        <translation>Refaire</translation>
     </message>
 </context>
 <context>
@@ -3093,75 +3093,75 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
         <source>Upload OSM data</source>
-        <translation type="unfinished">Envoyer des données OSM</translation>
+        <translation>Envoyer des données OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="37"/>
         <source>Ready for upload</source>
-        <translation type="unfinished">Prêt pour l&apos;envoi</translation>
+        <translation>Prêt pour l&apos;envoi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="80"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="85"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="90"/>
         <source>3</source>
-        <translation type="unfinished">3</translation>
+        <translation>3</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="95"/>
         <source>4</source>
-        <translation type="unfinished">4</translation>
+        <translation>4</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="100"/>
         <source>5</source>
-        <translation type="unfinished">5</translation>
+        <translation>5</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="108"/>
         <source>Comment on your changes:</source>
-        <translation type="unfinished">Descriptif de votre changement :</translation>
+        <translation>Descriptif de votre changement :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="134"/>
         <source>OSM account</source>
-        <translation type="unfinished">Compte OSM</translation>
+        <translation>Compte OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="142"/>
         <source>Username:</source>
-        <translation type="unfinished">Utilisateur :</translation>
+        <translation>Utilisateur :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="162"/>
         <source>Password:</source>
-        <translation type="unfinished">Mot de Passe :</translation>
+        <translation>Mot de Passe :</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="179"/>
         <source>Show password</source>
-        <translation type="unfinished">Montrer le mot de passe</translation>
+        <translation>Montrer le mot de passe</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="186"/>
         <source>Save password</source>
-        <translation type="unfinished">Sauvegarder le mot de passe</translation>
+        <translation>Sauvegarder le mot de passe</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished">Envoi OSM</translation>
+        <translation>Envoi OSM</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -6682,109 +6682,109 @@ Erreurs : %2
         <location filename="../src/app/qgisapp.cpp" line="640"/>
         <source>Ctrl+.</source>
         <comment>Capture Points</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="646"/>
         <source>Ctrl+/</source>
         <comment>Capture Lines</comment>
-        <translation type="unfinished">Ctrl+/</translation>
+        <translation>Ctrl+/</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="652"/>
         <source>Ctrl+Shift+/</source>
         <comment>Capture Polygons</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="759"/>
         <source>Ctrl+Shift+I</source>
         <comment>Click on features to identify them</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="765"/>
         <source>Ctrl+Shift+M</source>
         <comment>Measure a Line</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="770"/>
         <source>Ctrl+Shift+J</source>
         <comment>Measure an Area</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="775"/>
         <source>Ctrl+Shift+F</source>
         <comment>Zoom to Full Extents</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="817"/>
         <source>Ctrl+Shift+B</source>
         <comment>Show Bookmarks</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>Ctrl+Shift+N</source>
         <comment>Create a New Vector Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="834"/>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="839"/>
         <source>Ctrl+Shift+R</source>
         <comment>Add a Raster Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="844"/>
         <source>Ctrl+Shift+D</source>
         <comment>Add a PostGIS Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="856"/>
         <source>Ctrl+Shift+L</source>
         <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="868"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="910"/>
         <source>Ctrl+Shift+O</source>
         <comment>Add current layer to overview map</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="926"/>
         <source>Ctrl+Shift+U</source>
         <comment>Show all layers</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="931"/>
         <source>Ctrl+Shift+H</source>
         <comment>Hide all layers</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="950"/>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2015"/>
