@@ -193,7 +193,6 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     static const int context_id = 710979116;
 
   private slots:
-    void on_btnClose_clicked();
     void on_btnSearch_clicked();
     void on_btnAddWMS_clicked();
     void wmsSelectionChanged();
