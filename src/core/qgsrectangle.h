@@ -81,7 +81,7 @@ class CORE_EXPORT QgsRectangle
     //! Expand the rectangle to support zoom out scaling
     void expand( double, const QgsPoint *c = 0 );
     //! return the intersection with the given rectangle
-    QgsRectangle intersect( QgsRectangle *rect ) const;
+    QgsRectangle intersect( const QgsRectangle *rect ) const;
     //! returns true when rectangle intersects with other rectangle
     bool intersects( const QgsRectangle& rect ) const;
     //! return true when rectangle contains other rectangle
