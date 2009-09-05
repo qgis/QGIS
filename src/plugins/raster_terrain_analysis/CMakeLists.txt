@@ -37,6 +37,7 @@ INCLUDE_DIRECTORIES(
      ../../core 
      ../../core/raster 
      ../../gui
+     ../../analysis/raster
      ..
      .
 )
