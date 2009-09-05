@@ -13,9 +13,11 @@ geos_inc_dir = '@GEOS_INCLUDE_DIR@'
 qt_libs = ["QtCore","QtGui","QtNetwork","QtSvg","QtXml"]
 if sys.platform == 'darwin':
   qt_libs.append("QtSql")
-  # possibility of universal build of bindings
+  # possibility of universal build of bindings, if more than 1 arch
   osx_archs = '@CMAKE_OSX_ARCHITECTURES@'
-  if osx_archs == 'ppc;i386' or osx_archs == 'i386;ppc':
+  if osx_archs [-1] == ';' :
+    osx_archs = osx_archs [:-1]
+  if osx_archs.count(';') > 0:
     osx_universal = '@CMAKE_OSX_SYSROOT@'
   else:
     osx_universal = ''

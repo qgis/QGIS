@@ -5,8 +5,11 @@ CURRENT_PROJECT_VERSION = 2.2.0
 // SDKSYS must be set to valid value
 SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
 
-ARCHS = $(NATIVE_ARCH)
+ARCHS = $(NATIVE_ARCH) // ppc i386 ppc64 x86_64
 //ARCHS = ppc i386 // for universal
+
+// python archs may be different
+ARCHS_P = $(ARCH_P_$(SDKSYS)) // in the form arch1;arch2;...
 
 //////////////////////////////////////////////////////////////////////
 // QGIS version info & config
@@ -308,6 +311,9 @@ PYTHON_VERSION_snow = 2.6
 PYTHON_FORM_tig = fw
 PYTHON_FORM_leo = system
 PYTHON_FORM_snow = system
+ARCHS_P_tig = ppc;i386
+ARCHS_P_leo = ppc;i386
+ARCHS_P_snow = i386;x86_64
 
 PYTHON_PREFIX_fw = /Library/Frameworks/Python.framework
 PYTHON_PREFIX_system = /System/Library/Frameworks/Python.framework
