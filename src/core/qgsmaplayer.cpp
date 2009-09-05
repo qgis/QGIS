@@ -152,20 +152,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   QDomElement mne = mnl.toElement();
   mDataSource = mne.text();
 
-  QFileInfo fi( mDataSource );
-  if ( !fi.exists() && fi.isRelative() )
-  {
-    QFileInfo pfi( QgsProject::instance()->fileName() );
-    if ( pfi.exists() )
-    {
-      fi.setFile( pfi.canonicalPath() + QDir::separator() + mDataSource );
-
-      if ( fi.exists() )
-      {
-        mDataSource = fi.canonicalFilePath();
-      }
-    }
-  }
+  mDataSource = QgsProject::instance()->readPath( mDataSource );
 
   // Set the CRS from project file, asking the user if necessary.
   // Make it the saved CRS to have WMS layer projected correctly.
@@ -280,20 +267,8 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QDomElement dataSource = document.createElement( "datasource" );
 
   QString src = source();
-  QFileInfo srcInfo( src );
 
-  bool absolutePath = QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true );
-  if ( !absolutePath && srcInfo.exists() )
-  {
-    QFileInfo pfi( QgsProject::instance()->fileName() );
-    QgsDebugMsg( "project path: " + pfi.canonicalPath() );
-    QgsDebugMsg( "src path: " + srcInfo.canonicalFilePath() );
-    if ( srcInfo.canonicalFilePath().startsWith( pfi.canonicalPath() + "/" ) ) // QFileInfo always uses '/' for directory separator.
-    {
-      src = src.mid( pfi.canonicalPath().size() + 1 );
-      QgsDebugMsg( "use relative path: " + src );
-    }
-  }
+  src = QgsProject::instance()->writePath( src );
 
   QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
