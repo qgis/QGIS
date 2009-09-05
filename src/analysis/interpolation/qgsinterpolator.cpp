@@ -23,12 +23,12 @@
 #else
 #include <math.h>
 #endif
-#ifdef _MSC_VER
+#ifdef WIN32
 #include <float.h>
 #define isnan(f) _isnan(f)
 #endif
 
-QgsInterpolator::QgsInterpolator( const QList<QgsVectorLayer*>& vlayers ): mDataIsCached( false ), mVectorLayers( vlayers ), zCoordInterpolation( false ), mValueAttribute( -1 )
+QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData ): mDataIsCached( false ), mLayerData( layerData )
 {
 
 }
@@ -43,15 +43,9 @@ QgsInterpolator::~QgsInterpolator()
 
 }
 
-void QgsInterpolator::enableAttributeValueInterpolation( int attribute )
-{
-  mValueAttribute = attribute;
-  zCoordInterpolation = false;
-}
-
 int QgsInterpolator::cacheBaseData()
 {
-  if ( mVectorLayers.size() < 1 )
+  if ( mLayerData.size() < 1 )
   {
     return 0;
   }
@@ -60,25 +54,25 @@ int QgsInterpolator::cacheBaseData()
   mCachedBaseData.clear();
   mCachedBaseData.reserve( 100000 );
 
-  QList<QgsVectorLayer*>::iterator v_it = mVectorLayers.begin();
+  QList<LayerData>::iterator v_it = mLayerData.begin();
 
-  for ( ; v_it != mVectorLayers.end(); ++v_it )
+  for ( ; v_it != mLayerData.end(); ++v_it )
   {
-    if (( *v_it ) == 0 )
+    if ( v_it->vectorLayer == 0 )
     {
       continue;
     }
 
-    QgsVectorDataProvider* provider = ( *v_it )->dataProvider();
+    QgsVectorDataProvider* provider = v_it->vectorLayer->dataProvider();
     if ( !provider )
     {
       return 2;
     }
 
     QgsAttributeList attList;
-    if ( !zCoordInterpolation )
+    if ( !v_it->zCoordInterpolation )
     {
-      attList.push_back( mValueAttribute );
+      attList.push_back( v_it->interpolationAttribute );
     }
 
     provider->select( attList );
@@ -89,22 +83,22 @@ int QgsInterpolator::cacheBaseData()
 
     while ( provider->nextFeature( theFeature ) )
     {
-      if ( !zCoordInterpolation )
+      if ( !v_it->zCoordInterpolation )
       {
         QgsAttributeMap attMap = theFeature.attributeMap();
-        QgsAttributeMap::const_iterator att_it = attMap.find( mValueAttribute );
-        if ( att_it == attMap.end() ) //attribute not found, something must be wrong
+        QgsAttributeMap::const_iterator att_it = attMap.find( v_it->interpolationAttribute );
+        if ( att_it == attMap.end() ) //attribute not found, something must be wrong (e.g. NULL value)
         {
-          return 3;
+          continue;
         }
-        attributeValue = att_it.value().toDouble(&attributeConversionOk);
-        if(!attributeConversionOk || isnan(attributeValue)) //don't consider vertices with attributes like 'nan' for the interpolation
+        attributeValue = att_it.value().toDouble( &attributeConversionOk );
+        if ( !attributeConversionOk || isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
         {
           continue;
         }
       }
 
-      if ( addVerticesToCache( theFeature.geometry(), attributeValue ) != 0 )
+      if ( addVerticesToCache( theFeature.geometry(), v_it->zCoordInterpolation, attributeValue ) != 0 )
       {
         return 3;
       }
@@ -114,7 +108,7 @@ int QgsInterpolator::cacheBaseData()
   return 0;
 }
 
-int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, double attributeValue )
+int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double attributeValue )
 {
   if ( !geom )
   {
@@ -136,7 +130,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, double attributeValu
       theVertex.x = *(( double * )( currentWkbPtr ) );
       currentWkbPtr += sizeof( double );
       theVertex.y = *(( double * )( currentWkbPtr ) );
-      if ( zCoordInterpolation && hasZValue )
+      if ( zCoord && hasZValue )
       {
         currentWkbPtr += sizeof( double );
         theVertex.z = *(( double * )( currentWkbPtr ) );
@@ -161,7 +155,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, double attributeValu
         currentWkbPtr += sizeof( double );
         theVertex.y = *(( double * )( currentWkbPtr ) );
         currentWkbPtr += sizeof( double );
-        if ( zCoordInterpolation && hasZValue ) //skip z-coordinate for 25D geometries
+        if ( zCoord && hasZValue ) //skip z-coordinate for 25D geometries
         {
           theVertex.z = *(( double * )( currentWkbPtr ) );
           currentWkbPtr += sizeof( double );
@@ -365,5 +359,6 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, double attributeValu
     default:
       break;
   }
+  mDataIsCached = true;
   return 0;
 }
