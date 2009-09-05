@@ -43,17 +43,6 @@
 #include <QStandardItem>
 
 
-#if defined(WIN32)
-#include <windows.h>
-static QString getShortPath( const QString &path )
-{
-  TCHAR buf[MAX_PATH];
-  GetShortPathName( path.toAscii(), buf, MAX_PATH );
-  return buf;
-}
-#endif
-
-
 QgsGrassTools::QgsGrassTools( QgisInterface *iface,
                               QWidget * parent, const char * name, Qt::WFlags f )
     : QDialog( parent, f ), QgsGrassToolsBase()
@@ -360,7 +349,7 @@ QgsGrassTools::~QgsGrassTools()
 QString QgsGrassTools::appDir( void )
 {
 #if defined(WIN32)
-  return getShortPath( QgsApplication::applicationDirPath() );
+  return QgsGrass::shortPath( QgsApplication::applicationDirPath() );
 #else
   return QgsApplication::applicationDirPath();
 #endif

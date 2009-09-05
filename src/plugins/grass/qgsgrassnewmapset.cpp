@@ -49,16 +49,6 @@ QString temp3( GRASS_VERSION_MINOR );
 QString temp4( GRASS_VERSION_RELEASE );
 #endif
 
-#if defined(WIN32)
-#include <windows.h>
-static QString getShortPath( const QString &path )
-{
-  TCHAR buf[MAX_PATH];
-  GetShortPathName( path.toAscii(), buf, MAX_PATH );
-  return buf;
-}
-#endif
-
 bool QgsGrassNewMapset::mRunning = false;
 
 QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
@@ -439,7 +429,7 @@ void QgsGrassNewMapset::setGrassProjection()
     int errcode;
     const char *oldlocale = setlocale( LC_NUMERIC, NULL );
     setlocale( LC_NUMERIC, "C" );
-    errcode = OSRImportFromProj4( hCRS, proj4.toAscii() );
+    errcode = OSRImportFromProj4( hCRS, proj4.toUtf8() );
     setlocale( LC_NUMERIC, oldlocale );
     if ( errcode != OGRERR_NONE )
     {
@@ -1261,24 +1251,27 @@ void QgsGrassNewMapset::createMapset()
     //       database path
     QgsGrass::activeMode(); // because it calls private gsGrass::init()
 #if defined(WIN32)
-    G__setenv(( char * ) "GISDBASE", getShortPath( mDatabaseLineEdit->text() ).toAscii().data() );
+    G__setenv(( char * ) "GISDBASE", QgsGrass::shortPath( mDatabaseLineEdit->text() ).toUtf8().data() );
 #else
-    G__setenv(( char * ) "GISDBASE", mDatabaseLineEdit->text().toAscii().data() );
+    G__setenv(( char * ) "GISDBASE", mDatabaseLineEdit->text().toUtf8().data() );
 #endif
 
     int ret = 0;
 
-    QgsGrass::resetError();
-    if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+    try
     {
-      ret = G_make_location( location.toAscii().data(), &mCellHead, mProjInfo, mProjUnits, stdout );
+      ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits, stdout );
     }
-    QgsGrass::clearErrorEnv();
+    catch ( QgsGrass::Exception &e )
+    {
+      ret = -1;
+      Q_UNUSED( e );
+    }
 
-    if ( QgsGrass::getError() == QgsGrass::FATAL || ret != 0 )
+    if ( ret != 0 )
     {
       QMessageBox::warning( this, tr( "Create location" ),
-                            tr( "Cannot create new location: %1" ).arg( QgsGrass::getErrorMessage() ) );
+                            tr( "Cannot create new location: %1" ).arg( QgsGrass::errorMessage() ) );
       return;
     }
 

@@ -301,14 +301,13 @@ void QgsGrassPlugin::addVector()
     QgsGrass::setLocation( sel->gisdbase, sel->location );
 
     /* Open vector */
-    QgsGrass::resetError();
-    Vect_set_open_level( 2 );
-    struct Map_info map;
-    int level = Vect_open_old_head( &map, sel->map.toAscii().data(),
-                                    sel->mapset.toAscii().data() );
-
-    if ( QgsGrass::getError() != QgsGrass::FATAL )
+    try
     {
+      Vect_set_open_level( 2 );
+      struct Map_info map;
+      int level = Vect_open_old_head( &map, sel->map.toUtf8().data(),
+                                      sel->mapset.toUtf8().data() );
+
       if ( level >= 2 )
       {
         // Count layers
@@ -336,9 +335,9 @@ void QgsGrassPlugin::addVector()
 
       Vect_close( &map );
     }
-    else
+    catch ( QgsGrass::Exception &e )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open GRASS vector:\n %1" ).arg( QgsGrass::getErrorMessage() ) );
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open GRASS vector:\n %1" ).arg( QString::fromUtf8( e.what() ) ) );
     }
 
     qGisInterface->addVectorLayer( uri, name, "grass" );
@@ -486,25 +485,28 @@ void QgsGrassPlugin::newVector()
                        QgsGrass::getDefaultLocation(),
                        QgsGrass::getDefaultMapset() );
 
-  QgsGrass::resetError();
-  struct Map_info Map;
-  Vect_open_new( &Map, name.toAscii().data(), 0 );
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  try
   {
-    QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "Cannot create new vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
-    return;
-  }
+    struct Map_info Map;
+    Vect_open_new( &Map, name.toUtf8().data(), 0 );
 
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
   ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
-  Vect_build( &Map );
+    Vect_build( &Map );
 #else
-  Vect_build( &Map, stderr );
+    Vect_build( &Map, stderr );
 #endif
-  Vect_set_release_support( &Map );
-  Vect_close( &Map );
+    Vect_set_release_support( &Map );
+    Vect_close( &Map );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QMessageBox::warning( 0, tr( "Warning" ),
+                          tr( "Cannot create new vector: %1" ).arg( QString::fromUtf8( e.what() ) ) );
+    return;
+  }
+
+
 
   // Open in GRASS vector provider
 

@@ -218,7 +218,8 @@ void QgsGrassProvider::update( void )
 
   mValid = false;
 
-  if ( ! mMaps[mLayers[mLayerId].mapId].valid ) return;
+  if ( !mMaps[mLayers[mLayerId].mapId].valid )
+    return;
 
   // Getting the total number of features in the layer
   // It may happen that the field disappeares from the map (deleted features, new map without that field)
@@ -300,7 +301,8 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
   if ( isEdited() || isFrozen() || !mValid )
     return false;
 
-  if ( mCidxFieldIndex < 0 ) return false; // No features, no features in this layer
+  if ( mCidxFieldIndex < 0 || mNextCidx >= mCidxFieldNumCats )
+    return false; // No features, no features in this layer
 
   // Get next line/area id
   int found = 0;
@@ -309,12 +311,17 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
     Vect_cidx_get_cat_by_index( mMap, mCidxFieldIndex, mNextCidx++, &cat, &type, &id );
     // Warning: selection array is only of type line/area of current layer -> check type first
 
-    if ( !( type & mGrassType ) ) continue;
-    if ( !mSelection[id] ) continue;
+    if ( !( type & mGrassType ) )
+      continue;
+
+    if ( !mSelection[id] )
+      continue;
+
     found = 1;
     break;
   }
-  if ( !found ) return false; // No more features
+  if ( !found )
+    return false; // No more features
 #if QGISDEBUG > 3
   QgsDebugMsg( QString( "cat = %1 type = %2 id = %3" ).arg( cat ).arg( type ).arg( id ) );
 #endif
@@ -655,16 +662,15 @@ int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString map
 
   // Open map
   QgsGrass::init();
-  QgsGrass::resetError();
-  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+
+  try
   {
     layer.mapId = openMap( gisdbase, location, mapset, mapName );
   }
-  QgsGrass::clearErrorEnv();
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  catch ( QgsGrass::Exception &e )
   {
-    QgsDebugMsg( QString( "Cannot open vector map: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot open vector map: %1" ).arg( e.what() ) );
     return -1;
   }
 
@@ -1002,7 +1008,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   QgsDebugMsg( QString( "Setting  gisdbase, location: %1, %2" ).arg( gisdbase ).arg( location ) );
 
   // Find the vector
-  const char *ms = G_find_vector2( mapName.toAscii().data(), mapset.toAscii().data() ) ;
+  const char *ms = G_find_vector2( mapName.toUtf8().data(), mapset.toUtf8().data() ) ;
 
   if ( ms == NULL )
   {
@@ -1020,53 +1026,56 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
 
   // Do we have topology and cidx (level2)
   int level = 2;
-  QgsGrass::resetError();
-  Vect_set_open_level( 2 );
-  Vect_open_old_head( map.map, mapName.toAscii().data(), mapset.toAscii().data() );
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  try
   {
-    QgsDebugMsg( QString( "Cannot open GRASS vector head on level2: %1" ).arg( QgsGrass::getErrorMessage() ) );
-    level = 1;
-  }
-  else
-  {
+    Vect_set_open_level( 2 );
+    Vect_open_old_head( map.map, mapName.toUtf8().data(), mapset.toUtf8().data() );
     Vect_close( map.map );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot open GRASS vector head on level2: %1" ).arg( e.what() ) );
+    level = 1;
   }
 
   if ( level == 1 )
   {
     QMessageBox::StandardButton ret = QMessageBox::question( 0, "Warning",
-                                      "GRASS vector map " + mapName +
-                                      + " does not have topology. Build topology?",
+                                      tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mapName ),
                                       QMessageBox::Ok | QMessageBox::Cancel );
 
     if ( ret == QMessageBox::Cancel ) return -1;
   }
 
   // Open vector
-  QgsGrass::resetError(); // to "catch" error after Vect_open_old()
-  Vect_set_open_level( level );
-  Vect_open_old( map.map, mapName.toAscii().data(), mapset.toAscii().data() );
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  try
   {
-    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    Vect_set_open_level( level );
+    Vect_open_old( map.map, mapName.toUtf8().data(), mapset.toUtf8().data() );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
     return -1;
   }
 
   if ( level == 1 )
   {
-    QgsGrass::resetError();
+    try
+    {
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
     ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
-    Vect_build( map.map );
+      Vect_build( map.map );
 #else
-    Vect_build( map.map, stderr );
+      Vect_build( map.map, stderr );
 #endif
-
-    if ( QgsGrass::getError() == QgsGrass::FATAL )
+    }
+    catch ( QgsGrass::Exception &e )
     {
-      QgsDebugMsg( QString( "Cannot build topology: %1" ).arg( QgsGrass::getErrorMessage() ) );
+      Q_UNUSED( e );
+      QgsDebugMsg( QString( "Cannot build topology: %1" ).arg( e.what() ) );
       return -1;
     }
   }
@@ -1092,13 +1101,14 @@ void QgsGrassProvider::updateMap( int mapId )
   map->valid = false;
   map->version++;
 
-  QgsGrass::setLocation( map->gisdbase.toAscii().constData(), map->location.toAscii().constData() );
+  QgsGrass::setLocation( map->gisdbase.toUtf8().constData(), map->location.toUtf8().constData() );
 
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for close ?
-  G__setenv(( char * )"MAPSET", map->mapset.toAscii().data() );
+  G__setenv(( char * )"MAPSET", map->mapset.toUtf8().data() );
 
-  if ( closeMap ) Vect_close( map->map );
+  if ( closeMap )
+    Vect_close( map->map );
 
   QFileInfo di( map->gisdbase + "/" + map->location + "/" + map->mapset + "/vector/" + map->mapName );
   map->lastModified = di.lastModified();
@@ -1107,17 +1117,15 @@ void QgsGrassProvider::updateMap( int mapId )
   map->lastAttributesModified = di.lastModified();
 
   // Reopen vector
-  QgsGrass::resetError(); // to "catch" error after Vect_open_old()
-  Vect_set_open_level( 2 );
-  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+  try
   {
-    Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
+    Vect_set_open_level( 2 );
+    Vect_open_old( map->map, map->mapName.toUtf8().data(), map->mapset.toUtf8().data() );
   }
-  QgsGrass::clearErrorEnv();
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  catch ( QgsGrass::Exception &e )
   {
-    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
 
     // if reopen fails, mLayers should be also updated
     for ( unsigned int i = 0; i <  mLayers.size(); i++ )
@@ -1167,8 +1175,16 @@ void QgsGrassProvider::closeMap( int mapId )
     {
       bool mapsetunset = G__getenv( "MAPSET" ) == NULL || *G__getenv( "MAPSET" ) == 0;
       if ( mapsetunset )
-        G__setenv(( char * )"MAPSET", mMaps[mapId].mapset.toAscii().data() );
-      Vect_close( mMaps[mapId].map );
+        G__setenv(( char * )"MAPSET", mMaps[mapId].mapset.toUtf8().data() );
+      try
+      {
+        Vect_close( mMaps[mapId].map );
+      }
+      catch ( QgsGrass::Exception &e )
+      {
+        Q_UNUSED( e );
+        QgsDebugMsg( QString( "Vect_close failed: %1" ).arg( e.what() ) );
+      }
       if ( mapsetunset )
         G__setenv(( char * )"MAPSET", "" );
     }
@@ -1268,7 +1284,7 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
     GATT *att = ( GATT * ) bsearch( &key, mLayers[layerId].attributes, mLayers[layerId].nAttributes,
                                     sizeof( GATT ), cmpAtt );
 
-    for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end();++iter )
+    for ( QgsAttributeList::const_iterator iter = attlist.begin(); iter != attlist.end(); ++iter )
     {
       if ( att != NULL )
       {
@@ -1306,16 +1322,15 @@ QgsCoordinateReferenceSystem QgsGrassProvider::crs()
   const char *oldlocale = setlocale( LC_NUMERIC, NULL );
   setlocale( LC_NUMERIC, "C" );
 
-  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+  try
   {
     G_get_default_window( &cellhd );
   }
-  QgsGrass::clearErrorEnv();
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  catch ( QgsGrass::Exception &e )
   {
+    Q_UNUSED( e );
     setlocale( LC_NUMERIC, oldlocale );
-    QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( e.what() ) );
     return QgsCoordinateReferenceSystem();
   }
 
@@ -1390,7 +1405,7 @@ bool QgsGrassProvider::isGrassEditable( void )
     return false;
 
   /* Check if current user is owner of mapset */
-  if ( G__mapset_permissions2( mGisdbase.toAscii().data(), mLocation.toAscii().data(), mMapset.toAscii().data() ) != 1 )
+  if ( G__mapset_permissions2( mGisdbase.toUtf8().data(), mLocation.toUtf8().data(), mMapset.toUtf8().data() ) != 1 )
     return false;
 
   // TODO: check format? (cannot edit OGR layers)
@@ -1464,49 +1479,50 @@ bool QgsGrassProvider::startEdit( void )
   GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
   map->valid = false;
 
-  QgsGrass::setLocation( map->gisdbase.toAscii().constData(), map->location.toAscii().constData() );
+  QgsGrass::setLocation( map->gisdbase.toUtf8().constData(), map->location.toUtf8().constData() );
 
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
-  G__setenv(( char * )"MAPSET", map->mapset.toAscii().data() );
+  G__setenv(( char * )"MAPSET", map->mapset.toUtf8().data() );
 
   Vect_close( map->map );
 
   // TODO: Catch error
-
-  QgsGrass::resetError();
-  int level = Vect_open_update( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
-  if ( level < 2 )
+  int level = -1;
+  try
   {
-    if ( QgsGrass::getError() == QgsGrass::FATAL )
-    {
-      QgsDebugMsg( QString( "Cannot open GRASS vector for update: %1" ).arg( QgsGrass::getErrorMessage() ) );
-    }
-    else
+    level = Vect_open_update( map->map, map->mapName.toUtf8().data(), map->mapset.toUtf8().data() );
+    if ( level < 2 )
     {
       QgsDebugMsg( "Cannot open GRASS vector for update on level 2." );
     }
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot open GRASS vector for update: %1" ).arg( e.what() ) );
+  }
 
+  if ( level < 2 )
+  {
     // reopen vector for reading
-    QgsGrass::resetError();
-    Vect_set_open_level( 2 );
-    level = Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
+    try
+    {
+      Vect_set_open_level( 2 );
+      level = Vect_open_old( map->map, map->mapName.toUtf8().data(), map->mapset.toUtf8().data() );
+      if ( level < 2 )
+      {
+        QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::errorMessage() ) );
+      }
+    }
+    catch ( QgsGrass::Exception &e )
+    {
+      Q_UNUSED( e );
+      QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
+    }
 
-    if ( level < 2 )
-    {
-      if ( QgsGrass::getError() == QgsGrass::FATAL )
-      {
-        QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
-      }
-      else
-      {
-        QgsDebugMsg( "Cannot reopen GRASS vector on level 2." );
-      }
-    }
-    else
-    {
+    if ( level >= 2 )
       map->valid = true;
-    }
 
     return false;
   }
@@ -1539,12 +1555,12 @@ bool QgsGrassProvider::closeEdit( bool newMap )
   map->valid = false;
   map->version++;
 
-  QgsGrass::setLocation( map->gisdbase.toAscii().constData(), map->location.toAscii().constData() );
+  QgsGrass::setLocation( map->gisdbase.toUtf8().constData(), map->location.toUtf8().constData() );
 
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for build/close ?
-  G__setenv(( char * ) "MAPSET", map->mapset.toAscii().data() );
+  G__setenv(( char * ) "MAPSET", map->mapset.toUtf8().data() );
 
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
     ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
@@ -1588,14 +1604,15 @@ bool QgsGrassProvider::reopenMap()
   map->lastAttributesModified = di.lastModified();
 
   // Reopen vector
-  QgsGrass::resetError(); // to "catch" error after Vect_open_old()
-  Vect_set_open_level( 2 );
-
-  Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
-
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  try
   {
-    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    Vect_set_open_level( 2 );
+    Vect_open_old( map->map, map->mapName.toUtf8().data(), map->mapset.toUtf8().data() );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( e.what() ) );
     return false;
   }
 
@@ -1828,7 +1845,7 @@ QString *QgsGrassProvider::key( int field )
     return key;
   }
 
-  *key = QString::fromAscii( fi->key );
+  *key = QString::fromUtf8( fi->key );
   return key;
 }
 
@@ -1937,7 +1954,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
   db_init_string( &dbstr );
   QString query;
   query.sprintf( "select * from %s where %s = %d", fi->table, fi->key, cat );
-  db_set_string( &dbstr, query.toAscii().data() );
+  db_set_string( &dbstr, query.toUtf8().data() );
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
 
@@ -2010,7 +2027,7 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
   if ( driver == NULL )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    *error = QString::fromAscii( "Cannot open database" );
+    *error = QString::fromUtf8( "Cannot open database" );
     return error;
   }
 
@@ -2030,7 +2047,7 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
   //  -> it is possible to edit only in current locales at present
   // QCString qcs = mEncoding->fromUnicode(query);
 
-  QByteArray qcs = query.toLocal8Bit();
+  QByteArray qcs = query.toUtf8();
   QgsDebugMsg( QString( "qcs: %1" ).arg( qcs.data() ) );
 
   char *cs = new char[qcs.length() + 1];
@@ -2095,7 +2112,7 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
   if ( driver == NULL )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    *error = QString::fromAscii( "Cannot open database" );
+    *error = QString::fromUtf8( "Cannot open database" );
     return error;
   }
 
@@ -2157,7 +2174,7 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
   if ( driver == NULL )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    *error = QString::fromAscii( "Cannot open database" );
+    *error = QString::fromUtf8( "Cannot open database" );
     return error;
   }
 
@@ -2306,7 +2323,7 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
   if ( driver == NULL )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    *error = QString::fromAscii( "Cannot open database" );
+    *error = QString::fromUtf8( "Cannot open database" );
     return error;
   }
 
