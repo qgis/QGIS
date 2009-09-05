@@ -21,7 +21,7 @@
 #include "qgsderivativefilter.h"
 
 /**Calculates slope values in a window of 3x3 cells based on first order derivatives in x- and y- directions*/
-class QgsSlopeFilter: public QgsDerivativeFilter
+class ANALYSIS_EXPORT QgsSlopeFilter: public QgsDerivativeFilter
 {
   public:
     QgsSlopeFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );

@@ -21,7 +21,7 @@
 #include "qgsninecellfilter.h"
 
 /**Calculates the ruggedness index based on a 3x3 moving window*/
-class QgsRuggednessFilter: public QgsNineCellFilter
+class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
 {
   public:
     QgsRuggednessFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );

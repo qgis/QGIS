@@ -21,7 +21,7 @@
 #include "qgsderivativefilter.h"
 
 /**Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions. Direction is clockwise starting from north*/
-class QgsAspectFilter: public QgsDerivativeFilter
+class ANALYSIS_EXPORT QgsAspectFilter: public QgsDerivativeFilter
 {
   public:
     QgsAspectFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
