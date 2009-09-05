@@ -495,12 +495,12 @@ void QgsInterpolationDialog::setNColsOnCellsizeXChange()
   QgsRectangle currentBBox = currentBoundingBox();
   int newSize;
 
-  if ( !mCellsizeXSpinBox->value() > 0 )
+  if ( mCellsizeXSpinBox->value() <= 0 )
   {
     return;
   }
 
-  if ( !currentBBox.width() > 0 )
+  if ( currentBBox.width() <= 0 )
   {
     newSize = 0;
   }
@@ -519,12 +519,12 @@ void QgsInterpolationDialog::setNRowsOnCellsizeYChange()
   QgsRectangle currentBBox = currentBoundingBox();
   int newSize;
 
-  if ( !mCellSizeYSpinBox->value() > 0 )
+  if ( mCellSizeYSpinBox->value() <= 0 )
   {
     return;
   }
 
-  if ( !currentBBox.height() > 0 )
+  if ( currentBBox.height() <= 0 )
   {
     newSize = 0;
   }

@@ -21,7 +21,7 @@
 #include "qgsninecellfilter.h"
 
 /**Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis*/
-class QgsTotalCurvatureFilter: public QgsNineCellFilter
+class ANALYSIS_EXPORT QgsTotalCurvatureFilter: public QgsNineCellFilter
 {
   public:
     QgsTotalCurvatureFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
