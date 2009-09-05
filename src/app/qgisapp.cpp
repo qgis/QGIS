@@ -1473,17 +1473,38 @@ void QgisApp::createStatusBar()
   mToggleExtentsViewButton->setCheckable( true );
   connect( mToggleExtentsViewButton, SIGNAL( toggled( bool ) ), this, SLOT( extentsViewToggled( bool ) ) );
   statusBar()->addPermanentWidget( mToggleExtentsViewButton, 0 );
-  //coords status bar widget
+
+  // add a label to show current scale
   mCoordsLabel = new QLabel( QString(), statusBar() );
+  mCoordsLabel->setFont( myFont );
   mCoordsLabel->setMinimumWidth( 10 );
   mCoordsLabel->setMaximumHeight( 20 );
-  mCoordsLabel->setFont( myFont );
   mCoordsLabel->setMargin( 3 );
   mCoordsLabel->setAlignment( Qt::AlignCenter );
-  mCoordsLabel->setWhatsThis( tr( "Shows the map coordinates at the "
-                                  "current cursor position. The display is continuously updated "
-                                  "as the mouse is moved." ) );
+  mCoordsLabel->setFrameStyle( QFrame::NoFrame );
+  mCoordsLabel->setText( tr( "Coordinate:" ) );
+  mCoordsLabel->setToolTip( tr( "Current map coordinate" ) );
   statusBar()->addPermanentWidget( mCoordsLabel, 0 );
+
+  //coords status bar widget
+  mCoordsEdit = new QLineEdit( QString(), statusBar() );
+  mCoordsEdit->setFont( myFont );
+  mCoordsEdit->setMinimumWidth( 10 );
+  mCoordsEdit->setMaximumWidth( 200 );
+  mCoordsEdit->setMaximumHeight( 20 );
+  mCoordsEdit->setContentsMargins( 0, 0, 0, 0 );
+  mCoordsEdit->setAlignment( Qt::AlignCenter );
+  mCoordsEdit->setAlignment( Qt::AlignCenter );
+  QRegExp coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
+  mCoordsEditValidator = new QRegExpValidator( coordValidator, mCoordsEdit );
+  mCoordsEdit->setWhatsThis( tr( "Shows the map coordinates at the "
+                                 "current cursor position. The display is continuously updated "
+                                 "as the mouse is moved. It also allows editing to set the canvas "
+                                 "center to a given position." ) );
+  mCoordsEdit->setToolTip( tr( "Current map coordinate (formatted as x,y)" ) );
+  statusBar()->addPermanentWidget( mCoordsEdit, 0 );
+  connect( mCoordsEdit, SIGNAL( editingFinished() ), this, SLOT( userCenter() ) );
+
   // add a label to show current scale
   mScaleLabel = new QLabel( QString(), statusBar() );
   mScaleLabel->setFont( myFont );
@@ -4666,11 +4687,10 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
   }
   else
   {
-    mCoordsLabel->setText( p.toString( mMousePrecisionDecimalPlaces ) );
-    // Set minimum necessary width
-    if ( mCoordsLabel->width() > mCoordsLabel->minimumWidth() )
+    mCoordsEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
+    if ( mCoordsEdit->width() > mCoordsEdit->minimumWidth() )
     {
-      mCoordsLabel->setMinimumWidth( mCoordsLabel->width() );
+      mCoordsEdit->setMinimumWidth( mCoordsEdit->width() );
     }
   }
 }
@@ -4708,6 +4728,33 @@ void QgisApp::userScale()
       mMapCanvas->zoomByFactor( wantedScale / currentScale );
     }
   }
+}
+
+void QgisApp::userCenter()
+{
+  QStringList parts = mCoordsEdit->text().split( ',' );
+  if ( parts.size() != 2 )
+    return;
+
+  bool xOk;
+  double x = parts.at( 0 ).toDouble( &xOk );
+  if ( !xOk )
+    return;
+
+  bool yOk;
+  double y = parts.at( 1 ).toDouble( &yOk );
+  if ( !yOk )
+    return;
+
+  QgsRectangle r = mMapCanvas->extent();
+
+  mMapCanvas->setExtent(
+    QgsRectangle(
+      x - r.width() / 2.0,  y - r.height() / 2.0,
+      x + r.width() / 2.0, y + r.height() / 2.0
+    )
+  );
+  mMapCanvas->refresh();
 }
 
 
@@ -5366,14 +5413,17 @@ void QgisApp::extentsViewToggled( bool theFlag )
   {
     //extents view mode!
     mToggleExtentsViewButton->setIcon( getThemeIcon( "extents.png" ) );
-    mCoordsLabel->setToolTip( tr( "Map coordinates for the current view extents" ) );
+    mCoordsEdit->setToolTip( tr( "Map coordinates for the current view extents" ) );
+    mCoordsEdit->setEnabled( false );
     showExtents();
   }
   else
   {
     //mouse cursor pos view mode!
     mToggleExtentsViewButton->setIcon( getThemeIcon( "tracking.png" ) );
-    mCoordsLabel->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
+    mCoordsEdit->setToolTip( tr( "Map coordinates at mouse cursor position" ) );
+    mCoordsEdit->setEnabled( true );
+    mCoordsLabel->setText( tr( "Coordinate:" ) );
   }
 }
 
@@ -5381,16 +5431,17 @@ void QgisApp::showExtents()
 {
   if ( !mToggleExtentsViewButton->isChecked() )
   {
-    //we are in show coords mode so no need to do anything
     return;
   }
+
   // update the statusbar with the current extents.
   QgsRectangle myExtents = mMapCanvas->extent();
-  mCoordsLabel->setText( tr( "Extents: %1" ).arg( myExtents.toString( true ) ) );
+  mCoordsLabel->setText( tr( "Extents:" ) );
+  mCoordsEdit->setText( myExtents.toString( true ) );
   //ensure the label is big enough
-  if ( mCoordsLabel->width() > mCoordsLabel->minimumWidth() )
+  if ( mCoordsEdit->width() > mCoordsEdit->minimumWidth() )
   {
-    mCoordsLabel->setMinimumWidth( mCoordsLabel->width() );
+    mCoordsEdit->setMinimumWidth( mCoordsEdit->width() );
   }
 } // QgisApp::showExtents
 
@@ -6288,7 +6339,7 @@ QPixmap QgisApp::getThemePixmap( const QString theName )
 void QgisApp::updateUndoActions()
 {
   bool canUndo = false, canRedo = false;
-  QgsMapLayer* layer = this->activeLayer();
+  QgsMapLayer* layer = activeLayer();
   if ( layer )
   {
     QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
