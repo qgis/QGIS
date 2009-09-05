@@ -29,22 +29,22 @@ QgsAspectFilter::~QgsAspectFilter()
 }
 
 float QgsAspectFilter::processNineCellWindow(
-    float* x11, float* x21, float* x31,
-    float* x12, float* x22, float* x32,
-    float* x13, float* x23, float* x33 )
+  float* x11, float* x21, float* x31,
+  float* x12, float* x22, float* x32,
+  float* x13, float* x23, float* x33 )
 {
   float derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
   float derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
 
   if ( derX == mOutputNodataValue ||
        derY == mOutputNodataValue ||
-       (derX == 0.0 && derY == 0.0) )
+       ( derX == 0.0 && derY == 0.0 ) )
   {
     return mOutputNodataValue;
   }
   else
   {
-    return 180.0 + atan2(derX, derY) * 180.0 / M_PI;
+    return 180.0 + atan2( derX, derY ) * 180.0 / M_PI;
   }
 }
 
