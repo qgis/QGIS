@@ -13,7 +13,9 @@
    <string>Create a Layer from a Delimited Text File</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <layout class="QGridLayout" >
    <property name="leftMargin" >
