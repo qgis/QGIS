@@ -3,12 +3,6 @@
 
 SET (RASTER_TERRAIN_SRCS
      qgsrasterterrainanalysisplugin.cpp
-     qgsninecellfilter.cpp
-     qgsruggednessfilter.cpp
-     qgsderivativefilter.cpp
-     qgsslopefilter.cpp
-     qgsaspectfilter.cpp
-     qgstotalcurvaturefilter.cpp
      qgsrasterterrainanalysisdialog.cpp
 )
 
@@ -48,6 +42,7 @@ INCLUDE_DIRECTORIES(
 )
 
 TARGET_LINK_LIBRARIES(rasterterrainplugin
+  qgis_analysis
   qgis_core
   qgis_gui
 )

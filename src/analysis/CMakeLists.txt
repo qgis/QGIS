@@ -18,6 +18,12 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/TriangleInterpolator.cc
   interpolation/Triangulation.cc
   interpolation/Vector3D.cc
+  raster/qgsninecellfilter.cpp
+  raster/qgsruggednessfilter.cpp
+  raster/qgsderivativefilter.cpp
+  raster/qgsslopefilter.cpp
+  raster/qgsaspectfilter.cpp
+  raster/qgstotalcurvaturefilter.cpp
   vector/qgsgeometryanalyzer.cpp
 )
 
