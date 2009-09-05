@@ -118,6 +118,7 @@
 			dependencies = (
 				727E6B4C0FEABF3D00DF6F64 /* PBXTargetDependency */,
 				727E6B4E0FEABF4100DF6F64 /* PBXTargetDependency */,
+				721598611052D6B4003D1610 /* PBXTargetDependency */,
 				727E6B500FEABF4500DF6F64 /* PBXTargetDependency */,
 			);
 			name = "Base Qgis";
@@ -506,6 +507,30 @@
 		720FC8E60F3D5A450069492F /* format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFD0F39E57B003DC336 /* format.cpp */; };
 		720FC8E70F3D5A470069492F /* translator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC050F39E57B003DC336 /* translator.cpp */; };
 		7214353F0FA15C1C00B0B7BC /* mActionAddSpatiaLiteLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7214353E0FA15C0A00B0B7BC /* mActionAddSpatiaLiteLayer.png */; };
+		721598141052B46D003D1610 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		721598281052B8C9003D1610 /* DualEdgeTriangulation.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597BC1052B2B0003D1610 /* DualEdgeTriangulation.cc */; };
+		721598291052B8C9003D1610 /* HalfEdge.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597BE1052B2B0003D1610 /* HalfEdge.cc */; };
+		7215982A1052B8C9003D1610 /* Line3D.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597C01052B2B0003D1610 /* Line3D.cc */; };
+		7215982B1052B8C9003D1610 /* LinTriangleInterpolator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597C21052B2B0003D1610 /* LinTriangleInterpolator.cc */; };
+		7215982C1052B8C9003D1610 /* MathUtils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597C41052B2B0003D1610 /* MathUtils.cc */; };
+		7215982D1052B8C9003D1610 /* Node.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597C61052B2B0003D1610 /* Node.cc */; };
+		7215982E1052B8C9003D1610 /* Point3D.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597C81052B2B0003D1610 /* Point3D.cc */; };
+		7215982F1052B8C9003D1610 /* qgsgridfilewriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597CA1052B2B0003D1610 /* qgsgridfilewriter.cpp */; };
+		721598301052B8C9003D1610 /* qgsidwinterpolator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597CC1052B2B0003D1610 /* qgsidwinterpolator.cpp */; };
+		721598311052B8C9003D1610 /* qgsinterpolator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597CE1052B2B0003D1610 /* qgsinterpolator.cpp */; };
+		721598321052B8C9003D1610 /* qgstininterpolator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597D01052B2B0003D1610 /* qgstininterpolator.cpp */; };
+		721598331052B8C9003D1610 /* TriangleInterpolator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597D21052B2B0003D1610 /* TriangleInterpolator.cc */; };
+		721598341052B8C9003D1610 /* Triangulation.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597D41052B2B0003D1610 /* Triangulation.cc */; };
+		721598351052B8C9003D1610 /* Vector3D.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597D61052B2B0003D1610 /* Vector3D.cc */; };
+		721598361052B8F2003D1610 /* qgsaspectfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597D91052B2B0003D1610 /* qgsaspectfilter.cpp */; };
+		721598371052B8F2003D1610 /* qgsderivativefilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597DB1052B2B0003D1610 /* qgsderivativefilter.cpp */; };
+		721598381052B8F2003D1610 /* qgsninecellfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597DD1052B2B0003D1610 /* qgsninecellfilter.cpp */; };
+		721598391052B8F2003D1610 /* qgsruggednessfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597DF1052B2B0003D1610 /* qgsruggednessfilter.cpp */; };
+		7215983A1052B8F2003D1610 /* qgsslopefilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597E11052B2B0003D1610 /* qgsslopefilter.cpp */; };
+		7215983B1052B8F2003D1610 /* qgstotalcurvaturefilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597E31052B2B0003D1610 /* qgstotalcurvaturefilter.cpp */; };
+		7215983C1052B8FC003D1610 /* qgsgeometryanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721597E61052B2B0003D1610 /* qgsgeometryanalyzer.cpp */; };
+		7215983D1052B9E9003D1610 /* libqgis_analysis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 721598191052B46D003D1610 /* libqgis_analysis.dylib */; };
+		721598421052BA53003D1610 /* libqgis_analysis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 721598191052B46D003D1610 /* libqgis_analysis.dylib */; };
 		7216ADEF0FE571C000552832 /* qgsvectorlayerundocommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7216ADEE0FE571C000552832 /* qgsvectorlayerundocommand.cpp */; };
 		7216ADF20FE5721400552832 /* qgsundowidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7216ADF00FE571F000552832 /* qgsundowidget.cpp */; };
 		7216ADF30FE5721400552832 /* qgsundowidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7216ADF10FE571F000552832 /* qgsundowidget.h */; };
@@ -1077,14 +1102,8 @@
 		726979C60F71393B00AFA402 /* 63428984_en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 726979C30F71392200AFA402 /* 63428984_en_US */; };
 		726C673A1046030F00EFEDCC /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		726C673B1046030F00EFEDCC /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
-		726C674B10460F7700EFEDCC /* qgsaspectfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C671E104602FB00EFEDCC /* qgsaspectfilter.cpp */; };
-		726C674C10460F7700EFEDCC /* qgsderivativefilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C6720104602FB00EFEDCC /* qgsderivativefilter.cpp */; };
-		726C674D10460F7700EFEDCC /* qgsninecellfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C6722104602FB00EFEDCC /* qgsninecellfilter.cpp */; };
 		726C674E10460F7700EFEDCC /* qgsrasterterrainanalysisdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */; };
 		726C674F10460F7700EFEDCC /* qgsrasterterrainanalysisplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */; };
-		726C675010460F7700EFEDCC /* qgsruggednessfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C672A104602FB00EFEDCC /* qgsruggednessfilter.cpp */; };
-		726C675110460F7700EFEDCC /* qgsslopefilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C672D104602FB00EFEDCC /* qgsslopefilter.cpp */; };
-		726C675210460F7700EFEDCC /* qgstotalcurvaturefilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C672F104602FB00EFEDCC /* qgstotalcurvaturefilter.cpp */; };
 		726C675310460F8600EFEDCC /* qgsrasterterrainanalysisdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */; };
 		726C675410460F8600EFEDCC /* qgsrasterterrainanalysisplugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */; };
 		726C675510460FE300EFEDCC /* resources.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 726C6732104602FB00EFEDCC /* resources.qrc */; };
@@ -1369,24 +1388,10 @@
 		72A56C0A0F3C887300BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56C0B0F3C887300BA32A1 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
 		72A56C350F3C8B3500BA32A1 /* qgsinterpolationplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBD80F39E57B003DC336 /* qgsinterpolationplugin.cpp */; };
-		72A56C360F3C8B3A00BA32A1 /* qgsgridfilewriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBCD0F39E57B003DC336 /* qgsgridfilewriter.cpp */; };
-		72A56C370F3C8B4800BA32A1 /* qgsidwinterpolator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBCF0F39E57B003DC336 /* qgsidwinterpolator.cpp */; };
 		72A56C380F3C8B4900BA32A1 /* qgsidwinterpolatordialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBD10F39E57B003DC336 /* qgsidwinterpolatordialog.cpp */; };
 		72A56C390F3C8B4F00BA32A1 /* qgsinterpolationdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBD40F39E57B003DC336 /* qgsinterpolationdialog.cpp */; };
-		72A56C3A0F3C8B5300BA32A1 /* qgsinterpolator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBDA0F39E57B003DC336 /* qgsinterpolator.cpp */; };
 		72A56C3B0F3C8B5B00BA32A1 /* qgsinterpolatordialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBDC0F39E57B003DC336 /* qgsinterpolatordialog.cpp */; };
-		72A56C3C0F3C8B6500BA32A1 /* qgstininterpolator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBDE0F39E57B003DC336 /* qgstininterpolator.cpp */; };
 		72A56C3D0F3C8B6700BA32A1 /* qgstininterpolatordialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBE00F39E57B003DC336 /* qgstininterpolatordialog.cpp */; };
-		72A56C3E0F3C8B6C00BA32A1 /* DualEdgeTriangulation.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBBB0F39E57B003DC336 /* DualEdgeTriangulation.cc */; };
-		72A56C3F0F3C8B6E00BA32A1 /* HalfEdge.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBBD0F39E57B003DC336 /* HalfEdge.cc */; };
-		72A56C400F3C8B7100BA32A1 /* Line3D.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBC10F39E57B003DC336 /* Line3D.cc */; };
-		72A56C410F3C8B7400BA32A1 /* LinTriangleInterpolator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBC30F39E57B003DC336 /* LinTriangleInterpolator.cc */; };
-		72A56C420F3C8B7700BA32A1 /* MathUtils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBC50F39E57B003DC336 /* MathUtils.cc */; };
-		72A56C430F3C8B7800BA32A1 /* Node.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBC70F39E57B003DC336 /* Node.cc */; };
-		72A56C440F3C8B7A00BA32A1 /* Point3D.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBCA0F39E57B003DC336 /* Point3D.cc */; };
-		72A56C450F3C8B7D00BA32A1 /* TriangleInterpolator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBE30F39E57B003DC336 /* TriangleInterpolator.cc */; };
-		72A56C460F3C8B7F00BA32A1 /* Triangulation.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBE50F39E57B003DC336 /* Triangulation.cc */; };
-		72A56C470F3C8B8000BA32A1 /* Vector3D.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBE70F39E57B003DC336 /* Vector3D.cc */; };
 		72A56C5D0F3C9A3900BA32A1 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBF20F39E57B003DC336 /* plugin.cpp */; };
 		72A56C5E0F3C9A3B00BA32A1 /* plugingui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBF40F39E57B003DC336 /* plugingui.cpp */; };
 		72A56CAF0F3CAF2F00BA32A1 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC210F39E57B003DC336 /* plugin.cpp */; };
@@ -1831,6 +1836,17 @@
 			script = "$QTRCC -name $INPUT_FILE_BASE -o \"$DERIVED_FILES_DIR/qrc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		720383540F8B905D0083B883 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		721598151052B46D003D1610 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.h";
@@ -2423,6 +2439,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 720383490F8B905D0083B883;
 			remoteInfo = diagramoverlayplugin;
+		};
+		721598601052D6B4003D1610 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 721597EA1052B46D003D1610 /* qgis_analysis */;
+			remoteInfo = qgis_analysis;
 		};
 		7223B7A50F96AA6C00D905B4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -4736,28 +4759,10 @@
 		7209EBA80F39E57B003DC336 /* mapcalc_select.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mapcalc_select.png; path = ../../src/plugins/grass/themes/default/mapcalc_select.png; sourceTree = SOURCE_ROOT; };
 		7209EBA90F39E57B003DC336 /* world.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = world.png; path = ../../src/plugins/grass/themes/default/world.png; sourceTree = SOURCE_ROOT; };
 		7209EBBA0F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/interpolation/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		7209EBBB0F39E57B003DC336 /* DualEdgeTriangulation.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DualEdgeTriangulation.cc; path = ../../src/plugins/interpolation/DualEdgeTriangulation.cc; sourceTree = SOURCE_ROOT; };
-		7209EBBC0F39E57B003DC336 /* DualEdgeTriangulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DualEdgeTriangulation.h; path = ../../src/plugins/interpolation/DualEdgeTriangulation.h; sourceTree = SOURCE_ROOT; };
-		7209EBBD0F39E57B003DC336 /* HalfEdge.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HalfEdge.cc; path = ../../src/plugins/interpolation/HalfEdge.cc; sourceTree = SOURCE_ROOT; };
-		7209EBBE0F39E57B003DC336 /* HalfEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HalfEdge.h; path = ../../src/plugins/interpolation/HalfEdge.h; sourceTree = SOURCE_ROOT; };
 		7209EBBF0F39E57B003DC336 /* interpolation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = interpolation.png; path = ../../src/plugins/interpolation/interpolation.png; sourceTree = SOURCE_ROOT; };
 		7209EBC00F39E57B003DC336 /* interpolator.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = interpolator.qrc; path = ../../src/plugins/interpolation/interpolator.qrc; sourceTree = SOURCE_ROOT; };
-		7209EBC10F39E57B003DC336 /* Line3D.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Line3D.cc; path = ../../src/plugins/interpolation/Line3D.cc; sourceTree = SOURCE_ROOT; };
-		7209EBC20F39E57B003DC336 /* Line3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Line3D.h; path = ../../src/plugins/interpolation/Line3D.h; sourceTree = SOURCE_ROOT; };
-		7209EBC30F39E57B003DC336 /* LinTriangleInterpolator.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LinTriangleInterpolator.cc; path = ../../src/plugins/interpolation/LinTriangleInterpolator.cc; sourceTree = SOURCE_ROOT; };
-		7209EBC40F39E57B003DC336 /* LinTriangleInterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinTriangleInterpolator.h; path = ../../src/plugins/interpolation/LinTriangleInterpolator.h; sourceTree = SOURCE_ROOT; };
-		7209EBC50F39E57B003DC336 /* MathUtils.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MathUtils.cc; path = ../../src/plugins/interpolation/MathUtils.cc; sourceTree = SOURCE_ROOT; };
-		7209EBC60F39E57B003DC336 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MathUtils.h; path = ../../src/plugins/interpolation/MathUtils.h; sourceTree = SOURCE_ROOT; };
-		7209EBC70F39E57B003DC336 /* Node.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cc; path = ../../src/plugins/interpolation/Node.cc; sourceTree = SOURCE_ROOT; };
-		7209EBC80F39E57B003DC336 /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Node.h; path = ../../src/plugins/interpolation/Node.h; sourceTree = SOURCE_ROOT; };
 		7209EBC90F39E57B003DC336 /* options.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = options.png; path = ../../src/plugins/interpolation/options.png; sourceTree = SOURCE_ROOT; };
-		7209EBCA0F39E57B003DC336 /* Point3D.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Point3D.cc; path = ../../src/plugins/interpolation/Point3D.cc; sourceTree = SOURCE_ROOT; };
-		7209EBCB0F39E57B003DC336 /* Point3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Point3D.h; path = ../../src/plugins/interpolation/Point3D.h; sourceTree = SOURCE_ROOT; };
 		7209EBCC0F39E57B003DC336 /* qgisinterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgisinterpolator.h; path = ../../src/plugins/interpolation/qgisinterpolator.h; sourceTree = SOURCE_ROOT; };
-		7209EBCD0F39E57B003DC336 /* qgsgridfilewriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgridfilewriter.cpp; path = ../../src/plugins/interpolation/qgsgridfilewriter.cpp; sourceTree = SOURCE_ROOT; };
-		7209EBCE0F39E57B003DC336 /* qgsgridfilewriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgridfilewriter.h; path = ../../src/plugins/interpolation/qgsgridfilewriter.h; sourceTree = SOURCE_ROOT; };
-		7209EBCF0F39E57B003DC336 /* qgsidwinterpolator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsidwinterpolator.cpp; path = ../../src/plugins/interpolation/qgsidwinterpolator.cpp; sourceTree = SOURCE_ROOT; };
-		7209EBD00F39E57B003DC336 /* qgsidwinterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsidwinterpolator.h; path = ../../src/plugins/interpolation/qgsidwinterpolator.h; sourceTree = SOURCE_ROOT; };
 		7209EBD10F39E57B003DC336 /* qgsidwinterpolatordialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsidwinterpolatordialog.cpp; path = ../../src/plugins/interpolation/qgsidwinterpolatordialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209EBD20F39E57B003DC336 /* qgsidwinterpolatordialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsidwinterpolatordialog.h; path = ../../src/plugins/interpolation/qgsidwinterpolatordialog.h; sourceTree = SOURCE_ROOT; };
 		7209EBD30F39E57B003DC336 /* qgsidwinterpolatordialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsidwinterpolatordialogbase.ui; path = ../../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui; sourceTree = SOURCE_ROOT; };
@@ -4767,21 +4772,11 @@
 		7209EBD70F39E57B003DC336 /* qgsinterpolationdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsinterpolationdialogbase.ui; path = ../../src/plugins/interpolation/qgsinterpolationdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EBD80F39E57B003DC336 /* qgsinterpolationplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsinterpolationplugin.cpp; path = ../../src/plugins/interpolation/qgsinterpolationplugin.cpp; sourceTree = SOURCE_ROOT; };
 		7209EBD90F39E57B003DC336 /* qgsinterpolationplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsinterpolationplugin.h; path = ../../src/plugins/interpolation/qgsinterpolationplugin.h; sourceTree = SOURCE_ROOT; };
-		7209EBDA0F39E57B003DC336 /* qgsinterpolator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsinterpolator.cpp; path = ../../src/plugins/interpolation/qgsinterpolator.cpp; sourceTree = SOURCE_ROOT; };
-		7209EBDB0F39E57B003DC336 /* qgsinterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsinterpolator.h; path = ../../src/plugins/interpolation/qgsinterpolator.h; sourceTree = SOURCE_ROOT; };
 		7209EBDC0F39E57B003DC336 /* qgsinterpolatordialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsinterpolatordialog.cpp; path = ../../src/plugins/interpolation/qgsinterpolatordialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209EBDD0F39E57B003DC336 /* qgsinterpolatordialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsinterpolatordialog.h; path = ../../src/plugins/interpolation/qgsinterpolatordialog.h; sourceTree = SOURCE_ROOT; };
-		7209EBDE0F39E57B003DC336 /* qgstininterpolator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstininterpolator.cpp; path = ../../src/plugins/interpolation/qgstininterpolator.cpp; sourceTree = SOURCE_ROOT; };
-		7209EBDF0F39E57B003DC336 /* qgstininterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstininterpolator.h; path = ../../src/plugins/interpolation/qgstininterpolator.h; sourceTree = SOURCE_ROOT; };
 		7209EBE00F39E57B003DC336 /* qgstininterpolatordialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstininterpolatordialog.cpp; path = ../../src/plugins/interpolation/qgstininterpolatordialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209EBE10F39E57B003DC336 /* qgstininterpolatordialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstininterpolatordialog.h; path = ../../src/plugins/interpolation/qgstininterpolatordialog.h; sourceTree = SOURCE_ROOT; };
 		7209EBE20F39E57B003DC336 /* qgstininterpolatordialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgstininterpolatordialogbase.ui; path = ../../src/plugins/interpolation/qgstininterpolatordialogbase.ui; sourceTree = SOURCE_ROOT; };
-		7209EBE30F39E57B003DC336 /* TriangleInterpolator.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TriangleInterpolator.cc; path = ../../src/plugins/interpolation/TriangleInterpolator.cc; sourceTree = SOURCE_ROOT; };
-		7209EBE40F39E57B003DC336 /* TriangleInterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TriangleInterpolator.h; path = ../../src/plugins/interpolation/TriangleInterpolator.h; sourceTree = SOURCE_ROOT; };
-		7209EBE50F39E57B003DC336 /* Triangulation.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Triangulation.cc; path = ../../src/plugins/interpolation/Triangulation.cc; sourceTree = SOURCE_ROOT; };
-		7209EBE60F39E57B003DC336 /* Triangulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Triangulation.h; path = ../../src/plugins/interpolation/Triangulation.h; sourceTree = SOURCE_ROOT; };
-		7209EBE70F39E57B003DC336 /* Vector3D.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vector3D.cc; path = ../../src/plugins/interpolation/Vector3D.cc; sourceTree = SOURCE_ROOT; };
-		7209EBE80F39E57B003DC336 /* Vector3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vector3D.h; path = ../../src/plugins/interpolation/Vector3D.h; sourceTree = SOURCE_ROOT; };
 		7209EBEB0F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/north_arrow/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		7209EBED0F39E57B003DC336 /* logo.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = logo.jpg; path = ../../src/plugins/north_arrow/images/logo.jpg; sourceTree = SOURCE_ROOT; };
 		7209EBEE0F39E57B003DC336 /* logo.xcf */ = {isa = PBXFileReference; lastKnownFileType = file; name = logo.xcf; path = ../../src/plugins/north_arrow/images/logo.xcf; sourceTree = SOURCE_ROOT; };
@@ -5768,6 +5763,50 @@
 		7209F4B80F3A5434003DC336 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		7209F4B90F3A5434003DC336 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		7214353E0FA15C0A00B0B7BC /* mActionAddSpatiaLiteLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddSpatiaLiteLayer.png; path = ../../images/themes/gis/mActionAddSpatiaLiteLayer.png; sourceTree = SOURCE_ROOT; };
+		721597BA1052B2B0003D1610 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/analysis/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		721597BC1052B2B0003D1610 /* DualEdgeTriangulation.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DualEdgeTriangulation.cc; path = ../../src/analysis/interpolation/DualEdgeTriangulation.cc; sourceTree = SOURCE_ROOT; };
+		721597BD1052B2B0003D1610 /* DualEdgeTriangulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DualEdgeTriangulation.h; path = ../../src/analysis/interpolation/DualEdgeTriangulation.h; sourceTree = SOURCE_ROOT; };
+		721597BE1052B2B0003D1610 /* HalfEdge.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HalfEdge.cc; path = ../../src/analysis/interpolation/HalfEdge.cc; sourceTree = SOURCE_ROOT; };
+		721597BF1052B2B0003D1610 /* HalfEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HalfEdge.h; path = ../../src/analysis/interpolation/HalfEdge.h; sourceTree = SOURCE_ROOT; };
+		721597C01052B2B0003D1610 /* Line3D.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Line3D.cc; path = ../../src/analysis/interpolation/Line3D.cc; sourceTree = SOURCE_ROOT; };
+		721597C11052B2B0003D1610 /* Line3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Line3D.h; path = ../../src/analysis/interpolation/Line3D.h; sourceTree = SOURCE_ROOT; };
+		721597C21052B2B0003D1610 /* LinTriangleInterpolator.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LinTriangleInterpolator.cc; path = ../../src/analysis/interpolation/LinTriangleInterpolator.cc; sourceTree = SOURCE_ROOT; };
+		721597C31052B2B0003D1610 /* LinTriangleInterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LinTriangleInterpolator.h; path = ../../src/analysis/interpolation/LinTriangleInterpolator.h; sourceTree = SOURCE_ROOT; };
+		721597C41052B2B0003D1610 /* MathUtils.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MathUtils.cc; path = ../../src/analysis/interpolation/MathUtils.cc; sourceTree = SOURCE_ROOT; };
+		721597C51052B2B0003D1610 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MathUtils.h; path = ../../src/analysis/interpolation/MathUtils.h; sourceTree = SOURCE_ROOT; };
+		721597C61052B2B0003D1610 /* Node.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cc; path = ../../src/analysis/interpolation/Node.cc; sourceTree = SOURCE_ROOT; };
+		721597C71052B2B0003D1610 /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Node.h; path = ../../src/analysis/interpolation/Node.h; sourceTree = SOURCE_ROOT; };
+		721597C81052B2B0003D1610 /* Point3D.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Point3D.cc; path = ../../src/analysis/interpolation/Point3D.cc; sourceTree = SOURCE_ROOT; };
+		721597C91052B2B0003D1610 /* Point3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Point3D.h; path = ../../src/analysis/interpolation/Point3D.h; sourceTree = SOURCE_ROOT; };
+		721597CA1052B2B0003D1610 /* qgsgridfilewriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgridfilewriter.cpp; path = ../../src/analysis/interpolation/qgsgridfilewriter.cpp; sourceTree = SOURCE_ROOT; };
+		721597CB1052B2B0003D1610 /* qgsgridfilewriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgridfilewriter.h; path = ../../src/analysis/interpolation/qgsgridfilewriter.h; sourceTree = SOURCE_ROOT; };
+		721597CC1052B2B0003D1610 /* qgsidwinterpolator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsidwinterpolator.cpp; path = ../../src/analysis/interpolation/qgsidwinterpolator.cpp; sourceTree = SOURCE_ROOT; };
+		721597CD1052B2B0003D1610 /* qgsidwinterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsidwinterpolator.h; path = ../../src/analysis/interpolation/qgsidwinterpolator.h; sourceTree = SOURCE_ROOT; };
+		721597CE1052B2B0003D1610 /* qgsinterpolator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsinterpolator.cpp; path = ../../src/analysis/interpolation/qgsinterpolator.cpp; sourceTree = SOURCE_ROOT; };
+		721597CF1052B2B0003D1610 /* qgsinterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsinterpolator.h; path = ../../src/analysis/interpolation/qgsinterpolator.h; sourceTree = SOURCE_ROOT; };
+		721597D01052B2B0003D1610 /* qgstininterpolator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstininterpolator.cpp; path = ../../src/analysis/interpolation/qgstininterpolator.cpp; sourceTree = SOURCE_ROOT; };
+		721597D11052B2B0003D1610 /* qgstininterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstininterpolator.h; path = ../../src/analysis/interpolation/qgstininterpolator.h; sourceTree = SOURCE_ROOT; };
+		721597D21052B2B0003D1610 /* TriangleInterpolator.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TriangleInterpolator.cc; path = ../../src/analysis/interpolation/TriangleInterpolator.cc; sourceTree = SOURCE_ROOT; };
+		721597D31052B2B0003D1610 /* TriangleInterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TriangleInterpolator.h; path = ../../src/analysis/interpolation/TriangleInterpolator.h; sourceTree = SOURCE_ROOT; };
+		721597D41052B2B0003D1610 /* Triangulation.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Triangulation.cc; path = ../../src/analysis/interpolation/Triangulation.cc; sourceTree = SOURCE_ROOT; };
+		721597D51052B2B0003D1610 /* Triangulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Triangulation.h; path = ../../src/analysis/interpolation/Triangulation.h; sourceTree = SOURCE_ROOT; };
+		721597D61052B2B0003D1610 /* Vector3D.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vector3D.cc; path = ../../src/analysis/interpolation/Vector3D.cc; sourceTree = SOURCE_ROOT; };
+		721597D71052B2B0003D1610 /* Vector3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vector3D.h; path = ../../src/analysis/interpolation/Vector3D.h; sourceTree = SOURCE_ROOT; };
+		721597D91052B2B0003D1610 /* qgsaspectfilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsaspectfilter.cpp; path = ../../src/analysis/raster/qgsaspectfilter.cpp; sourceTree = SOURCE_ROOT; };
+		721597DA1052B2B0003D1610 /* qgsaspectfilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsaspectfilter.h; path = ../../src/analysis/raster/qgsaspectfilter.h; sourceTree = SOURCE_ROOT; };
+		721597DB1052B2B0003D1610 /* qgsderivativefilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsderivativefilter.cpp; path = ../../src/analysis/raster/qgsderivativefilter.cpp; sourceTree = SOURCE_ROOT; };
+		721597DC1052B2B0003D1610 /* qgsderivativefilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsderivativefilter.h; path = ../../src/analysis/raster/qgsderivativefilter.h; sourceTree = SOURCE_ROOT; };
+		721597DD1052B2B0003D1610 /* qgsninecellfilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsninecellfilter.cpp; path = ../../src/analysis/raster/qgsninecellfilter.cpp; sourceTree = SOURCE_ROOT; };
+		721597DE1052B2B0003D1610 /* qgsninecellfilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsninecellfilter.h; path = ../../src/analysis/raster/qgsninecellfilter.h; sourceTree = SOURCE_ROOT; };
+		721597DF1052B2B0003D1610 /* qgsruggednessfilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsruggednessfilter.cpp; path = ../../src/analysis/raster/qgsruggednessfilter.cpp; sourceTree = SOURCE_ROOT; };
+		721597E01052B2B0003D1610 /* qgsruggednessfilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsruggednessfilter.h; path = ../../src/analysis/raster/qgsruggednessfilter.h; sourceTree = SOURCE_ROOT; };
+		721597E11052B2B0003D1610 /* qgsslopefilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsslopefilter.cpp; path = ../../src/analysis/raster/qgsslopefilter.cpp; sourceTree = SOURCE_ROOT; };
+		721597E21052B2B0003D1610 /* qgsslopefilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsslopefilter.h; path = ../../src/analysis/raster/qgsslopefilter.h; sourceTree = SOURCE_ROOT; };
+		721597E31052B2B0003D1610 /* qgstotalcurvaturefilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstotalcurvaturefilter.cpp; path = ../../src/analysis/raster/qgstotalcurvaturefilter.cpp; sourceTree = SOURCE_ROOT; };
+		721597E41052B2B0003D1610 /* qgstotalcurvaturefilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstotalcurvaturefilter.h; path = ../../src/analysis/raster/qgstotalcurvaturefilter.h; sourceTree = SOURCE_ROOT; };
+		721597E61052B2B0003D1610 /* qgsgeometryanalyzer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeometryanalyzer.cpp; path = ../../src/analysis/vector/qgsgeometryanalyzer.cpp; sourceTree = SOURCE_ROOT; };
+		721597E71052B2B0003D1610 /* qgsgeometryanalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeometryanalyzer.h; path = ../../src/analysis/vector/qgsgeometryanalyzer.h; sourceTree = SOURCE_ROOT; };
+		721598191052B46D003D1610 /* libqgis_analysis.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libqgis_analysis.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		7216ADEA0FE5714E00552832 /* qgsvectorlayerundocommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectorlayerundocommand.h; path = ../../src/core/qgsvectorlayerundocommand.h; sourceTree = SOURCE_ROOT; };
 		7216ADEE0FE571C000552832 /* qgsvectorlayerundocommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsvectorlayerundocommand.cpp; path = ../../src/core/qgsvectorlayerundocommand.cpp; sourceTree = SOURCE_ROOT; };
 		7216ADF00FE571F000552832 /* qgsundowidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsundowidget.cpp; path = ../../src/app/qgsundowidget.cpp; sourceTree = SOURCE_ROOT; };
@@ -5903,25 +5942,13 @@
 		726979C30F71392200AFA402 /* 63428984_en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 63428984_en_US; path = ../../resources/context_help/63428984_en_US; sourceTree = SOURCE_ROOT; };
 		726979C40F71392200AFA402 /* 348772824_en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 348772824_en_US; path = ../../resources/context_help/348772824_en_US; sourceTree = SOURCE_ROOT; };
 		726C671D104602FB00EFEDCC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/raster_terrain_analysis/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		726C671E104602FB00EFEDCC /* qgsaspectfilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsaspectfilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsaspectfilter.cpp; sourceTree = SOURCE_ROOT; };
-		726C671F104602FB00EFEDCC /* qgsaspectfilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsaspectfilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsaspectfilter.h; sourceTree = SOURCE_ROOT; };
-		726C6720104602FB00EFEDCC /* qgsderivativefilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsderivativefilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsderivativefilter.cpp; sourceTree = SOURCE_ROOT; };
-		726C6721104602FB00EFEDCC /* qgsderivativefilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsderivativefilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsderivativefilter.h; sourceTree = SOURCE_ROOT; };
-		726C6722104602FB00EFEDCC /* qgsninecellfilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsninecellfilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsninecellfilter.cpp; sourceTree = SOURCE_ROOT; };
-		726C6723104602FB00EFEDCC /* qgsninecellfilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsninecellfilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsninecellfilter.h; sourceTree = SOURCE_ROOT; };
 		726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrasterterrainanalysisdialog.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp; sourceTree = SOURCE_ROOT; };
 		726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisdialog.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.h; sourceTree = SOURCE_ROOT; };
 		726C6726104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisdialogbase.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.h; sourceTree = SOURCE_ROOT; };
 		726C6727104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsrasterterrainanalysisdialogbase.ui; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrasterterrainanalysisplugin.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp; sourceTree = SOURCE_ROOT; };
 		726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisplugin.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.h; sourceTree = SOURCE_ROOT; };
-		726C672A104602FB00EFEDCC /* qgsruggednessfilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsruggednessfilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsruggednessfilter.cpp; sourceTree = SOURCE_ROOT; };
-		726C672B104602FB00EFEDCC /* qgsruggednessfilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsruggednessfilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsruggednessfilter.h; sourceTree = SOURCE_ROOT; };
 		726C672C104602FB00EFEDCC /* qgsruggednessindex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsruggednessindex.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsruggednessindex.cpp; sourceTree = SOURCE_ROOT; };
-		726C672D104602FB00EFEDCC /* qgsslopefilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsslopefilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsslopefilter.cpp; sourceTree = SOURCE_ROOT; };
-		726C672E104602FB00EFEDCC /* qgsslopefilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsslopefilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsslopefilter.h; sourceTree = SOURCE_ROOT; };
-		726C672F104602FB00EFEDCC /* qgstotalcurvaturefilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstotalcurvaturefilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgstotalcurvaturefilter.cpp; sourceTree = SOURCE_ROOT; };
-		726C6730104602FB00EFEDCC /* qgstotalcurvaturefilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstotalcurvaturefilter.h; path = ../../src/plugins/raster_terrain_analysis/qgstotalcurvaturefilter.h; sourceTree = SOURCE_ROOT; };
 		726C6731104602FB00EFEDCC /* raster_terrain_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = raster_terrain_icon.png; path = ../../src/plugins/raster_terrain_analysis/raster_terrain_icon.png; sourceTree = SOURCE_ROOT; };
 		726C6732104602FB00EFEDCC /* resources.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resources.qrc; path = ../../src/plugins/raster_terrain_analysis/resources.qrc; sourceTree = SOURCE_ROOT; };
 		726C6733104602FB00EFEDCC /* ui_qgsrasterterrainanalysisdialogbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_qgsrasterterrainanalysisdialogbase.h; path = ../../src/plugins/raster_terrain_analysis/ui_qgsrasterterrainanalysisdialogbase.h; sourceTree = SOURCE_ROOT; };
@@ -6795,7 +6822,7 @@
 		72A239480F74A62200AFC35B /* qgsattributetableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetableview.h; path = ../../src/app/attributetable/qgsattributetableview.h; sourceTree = SOURCE_ROOT; };
 		72A2395B0F74A69300AFC35B /* qgsattributetabledialog.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsattributetabledialog.ui; path = ../../src/ui/qgsattributetabledialog.ui; sourceTree = SOURCE_ROOT; };
 		72A56B310F3C810600BA32A1 /* libdelimitedtextplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libdelimitedtextplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		72A56B4B0F3C822800BA32A1 /* libgeoreferencerplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgeoreferencerplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		72A56B4B0F3C822800BA32A1 /* libgeorefplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgeorefplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B560F3C823800BA32A1 /* libgpsimporterplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgpsimporterplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B600F3C823800BA32A1 /* libgrassplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgrassplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B740F3C824400BA32A1 /* libinterpolationplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libinterpolationplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -7256,6 +7283,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		721598131052B46D003D1610 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				721598141052B46D003D1610 /* libqgis_core.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7223B7850F96A96500D905B4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7277,6 +7312,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				721598421052BA53003D1610 /* libqgis_analysis.dylib in Frameworks */,
 				726C673A1046030F00EFEDCC /* libqgis_core.dylib in Frameworks */,
 				726C673B1046030F00EFEDCC /* libqgis_gui.dylib in Frameworks */,
 			);
@@ -7429,6 +7465,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7215983D1052B9E9003D1610 /* libqgis_analysis.dylib in Frameworks */,
 				72A56B700F3C824400BA32A1 /* libqgis_core.dylib in Frameworks */,
 				72A56BB90F3C84B200BA32A1 /* libqgis_gui.dylib in Frameworks */,
 			);
@@ -7565,7 +7602,7 @@
 				72A07E3A0F3BEE16004FC2A4 /* libqgisgrass.dylib */,
 				72A07E5F0F3BF35F004FC2A4 /* libcopyrightlabelplugin.so */,
 				72A56B310F3C810600BA32A1 /* libdelimitedtextplugin.so */,
-				72A56B4B0F3C822800BA32A1 /* libgeoreferencerplugin.so */,
+				72A56B4B0F3C822800BA32A1 /* libgeorefplugin.so */,
 				72A56B560F3C823800BA32A1 /* libgpsimporterplugin.so */,
 				72A56B600F3C823800BA32A1 /* libgrassplugin.so */,
 				72A56B740F3C824400BA32A1 /* libinterpolationplugin.so */,
@@ -7586,6 +7623,7 @@
 				72FB0B550FFD680F0052360B /* libevisplugin.so */,
 				72DB68E31021D08400ED5F3A /* libosmprovider.so */,
 				726C67411046030F00EFEDCC /* librasterterrainplugin.so */,
+				721598191052B46D003D1610 /* libqgis_analysis.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -7756,6 +7794,7 @@
 			isa = PBXGroup;
 			children = (
 				7209E6610F39E57A003DC336 /* core */,
+				721597B91052B2B0003D1610 /* analysis */,
 				7209EC860F39E57B003DC336 /* ui */,
 				7209E7400F39E57A003DC336 /* gui */,
 				7209E5BA0F39E57A003DC336 /* app */,
@@ -7994,6 +8033,7 @@
 		7209E6610F39E57A003DC336 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				7209E6620F39E57A003DC336 /* CMakeLists.txt */,
 				7209E6810F39E57A003DC336 /* qgis.cpp */,
 				7209E6820F39E57A003DC336 /* qgis.h */,
 				7209E6830F39E57A003DC336 /* qgsapplication.cpp */,
@@ -8104,7 +8144,6 @@
 				7209E7000F39E57A003DC336 /* spatialindex */,
 				72F8D9470F89268C00D10CE5 /* spatialite */,
 				7209E7360F39E57A003DC336 /* symbology */,
-				7209E6620F39E57A003DC336 /* CMakeLists.txt */,
 				7209E6800F39E57A003DC336 /* genlexyacc.bat */,
 			);
 			name = core;
@@ -8888,28 +8927,10 @@
 			isa = PBXGroup;
 			children = (
 				7209EBBA0F39E57B003DC336 /* CMakeLists.txt */,
-				7209EBBB0F39E57B003DC336 /* DualEdgeTriangulation.cc */,
-				7209EBBC0F39E57B003DC336 /* DualEdgeTriangulation.h */,
-				7209EBBD0F39E57B003DC336 /* HalfEdge.cc */,
-				7209EBBE0F39E57B003DC336 /* HalfEdge.h */,
 				7209EBBF0F39E57B003DC336 /* interpolation.png */,
 				7209EBC00F39E57B003DC336 /* interpolator.qrc */,
-				7209EBC10F39E57B003DC336 /* Line3D.cc */,
-				7209EBC20F39E57B003DC336 /* Line3D.h */,
-				7209EBC30F39E57B003DC336 /* LinTriangleInterpolator.cc */,
-				7209EBC40F39E57B003DC336 /* LinTriangleInterpolator.h */,
-				7209EBC50F39E57B003DC336 /* MathUtils.cc */,
-				7209EBC60F39E57B003DC336 /* MathUtils.h */,
-				7209EBC70F39E57B003DC336 /* Node.cc */,
-				7209EBC80F39E57B003DC336 /* Node.h */,
 				7209EBC90F39E57B003DC336 /* options.png */,
-				7209EBCA0F39E57B003DC336 /* Point3D.cc */,
-				7209EBCB0F39E57B003DC336 /* Point3D.h */,
 				7209EBCC0F39E57B003DC336 /* qgisinterpolator.h */,
-				7209EBCD0F39E57B003DC336 /* qgsgridfilewriter.cpp */,
-				7209EBCE0F39E57B003DC336 /* qgsgridfilewriter.h */,
-				7209EBCF0F39E57B003DC336 /* qgsidwinterpolator.cpp */,
-				7209EBD00F39E57B003DC336 /* qgsidwinterpolator.h */,
 				7209EBD10F39E57B003DC336 /* qgsidwinterpolatordialog.cpp */,
 				7209EBD20F39E57B003DC336 /* qgsidwinterpolatordialog.h */,
 				7209EBD30F39E57B003DC336 /* qgsidwinterpolatordialogbase.ui */,
@@ -8919,21 +8940,11 @@
 				7209EBD70F39E57B003DC336 /* qgsinterpolationdialogbase.ui */,
 				7209EBD80F39E57B003DC336 /* qgsinterpolationplugin.cpp */,
 				7209EBD90F39E57B003DC336 /* qgsinterpolationplugin.h */,
-				7209EBDA0F39E57B003DC336 /* qgsinterpolator.cpp */,
-				7209EBDB0F39E57B003DC336 /* qgsinterpolator.h */,
 				7209EBDC0F39E57B003DC336 /* qgsinterpolatordialog.cpp */,
 				7209EBDD0F39E57B003DC336 /* qgsinterpolatordialog.h */,
-				7209EBDE0F39E57B003DC336 /* qgstininterpolator.cpp */,
-				7209EBDF0F39E57B003DC336 /* qgstininterpolator.h */,
 				7209EBE00F39E57B003DC336 /* qgstininterpolatordialog.cpp */,
 				7209EBE10F39E57B003DC336 /* qgstininterpolatordialog.h */,
 				7209EBE20F39E57B003DC336 /* qgstininterpolatordialogbase.ui */,
-				7209EBE30F39E57B003DC336 /* TriangleInterpolator.cc */,
-				7209EBE40F39E57B003DC336 /* TriangleInterpolator.h */,
-				7209EBE50F39E57B003DC336 /* Triangulation.cc */,
-				7209EBE60F39E57B003DC336 /* Triangulation.h */,
-				7209EBE70F39E57B003DC336 /* Vector3D.cc */,
-				7209EBE80F39E57B003DC336 /* Vector3D.h */,
 			);
 			name = interpolation;
 			path = ../../src/plugins/interpolation;
@@ -10591,6 +10602,84 @@
 			path = ../../doc/plugins/geoprocessing/buffer;
 			sourceTree = SOURCE_ROOT;
 		};
+		721597B91052B2B0003D1610 /* analysis */ = {
+			isa = PBXGroup;
+			children = (
+				721597BA1052B2B0003D1610 /* CMakeLists.txt */,
+				721597BB1052B2B0003D1610 /* interpolation */,
+				721597D81052B2B0003D1610 /* raster */,
+				721597E51052B2B0003D1610 /* vector */,
+			);
+			name = analysis;
+			path = ../../src/analysis;
+			sourceTree = SOURCE_ROOT;
+		};
+		721597BB1052B2B0003D1610 /* interpolation */ = {
+			isa = PBXGroup;
+			children = (
+				721597BC1052B2B0003D1610 /* DualEdgeTriangulation.cc */,
+				721597BD1052B2B0003D1610 /* DualEdgeTriangulation.h */,
+				721597BE1052B2B0003D1610 /* HalfEdge.cc */,
+				721597BF1052B2B0003D1610 /* HalfEdge.h */,
+				721597C01052B2B0003D1610 /* Line3D.cc */,
+				721597C11052B2B0003D1610 /* Line3D.h */,
+				721597C21052B2B0003D1610 /* LinTriangleInterpolator.cc */,
+				721597C31052B2B0003D1610 /* LinTriangleInterpolator.h */,
+				721597C41052B2B0003D1610 /* MathUtils.cc */,
+				721597C51052B2B0003D1610 /* MathUtils.h */,
+				721597C61052B2B0003D1610 /* Node.cc */,
+				721597C71052B2B0003D1610 /* Node.h */,
+				721597C81052B2B0003D1610 /* Point3D.cc */,
+				721597C91052B2B0003D1610 /* Point3D.h */,
+				721597CA1052B2B0003D1610 /* qgsgridfilewriter.cpp */,
+				721597CB1052B2B0003D1610 /* qgsgridfilewriter.h */,
+				721597CC1052B2B0003D1610 /* qgsidwinterpolator.cpp */,
+				721597CD1052B2B0003D1610 /* qgsidwinterpolator.h */,
+				721597CE1052B2B0003D1610 /* qgsinterpolator.cpp */,
+				721597CF1052B2B0003D1610 /* qgsinterpolator.h */,
+				721597D01052B2B0003D1610 /* qgstininterpolator.cpp */,
+				721597D11052B2B0003D1610 /* qgstininterpolator.h */,
+				721597D21052B2B0003D1610 /* TriangleInterpolator.cc */,
+				721597D31052B2B0003D1610 /* TriangleInterpolator.h */,
+				721597D41052B2B0003D1610 /* Triangulation.cc */,
+				721597D51052B2B0003D1610 /* Triangulation.h */,
+				721597D61052B2B0003D1610 /* Vector3D.cc */,
+				721597D71052B2B0003D1610 /* Vector3D.h */,
+			);
+			name = interpolation;
+			path = ../../src/analysis/interpolation;
+			sourceTree = SOURCE_ROOT;
+		};
+		721597D81052B2B0003D1610 /* raster */ = {
+			isa = PBXGroup;
+			children = (
+				721597D91052B2B0003D1610 /* qgsaspectfilter.cpp */,
+				721597DA1052B2B0003D1610 /* qgsaspectfilter.h */,
+				721597DB1052B2B0003D1610 /* qgsderivativefilter.cpp */,
+				721597DC1052B2B0003D1610 /* qgsderivativefilter.h */,
+				721597DD1052B2B0003D1610 /* qgsninecellfilter.cpp */,
+				721597DE1052B2B0003D1610 /* qgsninecellfilter.h */,
+				721597DF1052B2B0003D1610 /* qgsruggednessfilter.cpp */,
+				721597E01052B2B0003D1610 /* qgsruggednessfilter.h */,
+				721597E11052B2B0003D1610 /* qgsslopefilter.cpp */,
+				721597E21052B2B0003D1610 /* qgsslopefilter.h */,
+				721597E31052B2B0003D1610 /* qgstotalcurvaturefilter.cpp */,
+				721597E41052B2B0003D1610 /* qgstotalcurvaturefilter.h */,
+			);
+			name = raster;
+			path = ../../src/analysis/raster;
+			sourceTree = SOURCE_ROOT;
+		};
+		721597E51052B2B0003D1610 /* vector */ = {
+			isa = PBXGroup;
+			children = (
+				721597E61052B2B0003D1610 /* qgsgeometryanalyzer.cpp */,
+				721597E71052B2B0003D1610 /* qgsgeometryanalyzer.h */,
+			);
+			name = vector;
+			path = ../../src/analysis/vector;
+			sourceTree = SOURCE_ROOT;
+		};
 		721E07040FABDCAB00558FF9 /* qtermwidget */ = {
 			isa = PBXGroup;
 			children = (
@@ -10716,25 +10805,13 @@
 			isa = PBXGroup;
 			children = (
 				726C671D104602FB00EFEDCC /* CMakeLists.txt */,
-				726C671E104602FB00EFEDCC /* qgsaspectfilter.cpp */,
-				726C671F104602FB00EFEDCC /* qgsaspectfilter.h */,
-				726C6720104602FB00EFEDCC /* qgsderivativefilter.cpp */,
-				726C6721104602FB00EFEDCC /* qgsderivativefilter.h */,
-				726C6722104602FB00EFEDCC /* qgsninecellfilter.cpp */,
-				726C6723104602FB00EFEDCC /* qgsninecellfilter.h */,
 				726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */,
 				726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */,
 				726C6726104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.h */,
 				726C6727104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.ui */,
 				726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */,
 				726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */,
-				726C672A104602FB00EFEDCC /* qgsruggednessfilter.cpp */,
-				726C672B104602FB00EFEDCC /* qgsruggednessfilter.h */,
 				726C672C104602FB00EFEDCC /* qgsruggednessindex.cpp */,
-				726C672D104602FB00EFEDCC /* qgsslopefilter.cpp */,
-				726C672E104602FB00EFEDCC /* qgsslopefilter.h */,
-				726C672F104602FB00EFEDCC /* qgstotalcurvaturefilter.cpp */,
-				726C6730104602FB00EFEDCC /* qgstotalcurvaturefilter.h */,
 				726C6731104602FB00EFEDCC /* raster_terrain_icon.png */,
 				726C6732104602FB00EFEDCC /* resources.qrc */,
 				726C6733104602FB00EFEDCC /* ui_qgsrasterterrainanalysisdialogbase.h */,
@@ -12336,6 +12413,23 @@
 			productReference = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		721597EA1052B46D003D1610 /* qgis_analysis */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 721598161052B46D003D1610 /* Build configuration list for PBXNativeTarget "qgis_analysis" */;
+			buildPhases = (
+				721597EC1052B46D003D1610 /* Sources */,
+				721598131052B46D003D1610 /* Frameworks */,
+			);
+			buildRules = (
+				721598151052B46D003D1610 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = qgis_analysis;
+			productName = qgis_core;
+			productReference = 721598191052B46D003D1610 /* libqgis_analysis.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		7223B77E0F96A96500D905B4 /* oracleplugin */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7223B78A0F96A96500D905B4 /* Build configuration list for PBXNativeTarget "oracleplugin" */;
@@ -12636,9 +12730,9 @@
 			productReference = 72A56B310F3C810600BA32A1 /* libdelimitedtextplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
-		72A56B430F3C822800BA32A1 /* georeferencerplugin */ = {
+		72A56B430F3C822800BA32A1 /* georefplugin */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 72A56B480F3C822800BA32A1 /* Build configuration list for PBXNativeTarget "georeferencerplugin" */;
+			buildConfigurationList = 72A56B480F3C822800BA32A1 /* Build configuration list for PBXNativeTarget "georefplugin" */;
 			buildPhases = (
 				72A56B440F3C822800BA32A1 /* Script - ui */,
 				72A56B450F3C822800BA32A1 /* Sources */,
@@ -12650,9 +12744,9 @@
 			);
 			dependencies = (
 			);
-			name = georeferencerplugin;
+			name = georefplugin;
 			productName = testprog;
-			productReference = 72A56B4B0F3C822800BA32A1 /* libgeoreferencerplugin.so */;
+			productReference = 72A56B4B0F3C822800BA32A1 /* libgeorefplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
 		72A56B4E0F3C823800BA32A1 /* gpsimporterplugin */ = {
@@ -12993,6 +13087,7 @@
 				72E706F20F42611800142011 /* Python */,
 				7209F1C30F39E6E3003DC336 /* config */,
 				7209F1D10F39E760003DC336 /* qgis_core */,
+				721597EA1052B46D003D1610 /* qgis_analysis */,
 				7209F3120F3A2F2B003DC336 /* qgis_gui */,
 				8D0C4E890486CD37000505A6 /* Qgis */,
 				729BBEFE0F40770B001BCB63 /* qgis_help */,
@@ -13024,7 +13119,7 @@
 				72A56B800F3C824400BA32A1 /* quickprintplugin */,
 				726C67361046030F00EFEDCC /* rasterterrain */,
 				72A56B8A0F3C824900BA32A1 /* scalebarplugin */,
-				72A56B430F3C822800BA32A1 /* georeferencerplugin */,
+				72A56B430F3C822800BA32A1 /* georefplugin */,
 				72A56B4E0F3C823800BA32A1 /* gpsimporterplugin */,
 				72A56B580F3C823800BA32A1 /* grassplugin */,
 				72A56B940F3C824900BA32A1 /* spitplugin */,
@@ -13167,7 +13262,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$TARGET_TEMP_DIR/python/python/core\"\n/usr/bin/make\nif [ ! -f core.so ] ; then\n\texit 1\nfi\n\ncd ../gui\n/usr/bin/make\nif [ ! -f gui.so ] ; then\n\texit 1\nfi\n\nexit 0\n";
+			shellScript = "cd \"$TARGET_TEMP_DIR/python/python/core\"\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f core.so ] ; then\n\texit 1\nfi\n\ncd ../gui\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f gui.so ] ; then\n\texit 1\nfi\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		7256FA100F41D03B0022BE1F /* Script - qt.conf */ = {
@@ -13317,7 +13412,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# copy modules with script for conditional stuff\n\nMODDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nmkdir -p \"$MODDIR\"\nCONFDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/config\"\nmkdir -p \"$CONFDIR\"\nSCRIPTSDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/scripts\"\nmkdir \"$SCRIPTSDIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\nMODS=`ls *.png *.qgm *.svg`\nfor m in $MODS\ndo\n\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\tcp -fp $m \"$MODDIR\"\n\tfi\ndone\ncd ..\n\necho \"cp -fp scripts/*.py \\\"$SCRIPTSDIR\\\"\"\ncp -fp scripts/*.py \"$SCRIPTSDIR\"\n\nif [ -d modules-$GRASS_VERSION ] ; then\n\tcd modules-$GRASS_VERSION\n\tMODS=`ls *.png *.qgm *.svg`\n\tfor m in $MODS\n\tdo\n\t\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\t\tcp -fp $m \"$MODDIR\"\n\t\tfi\n\tdone\n\tif [ ! -f \"$CONFDIR/default.qgc\" ] || [ default.qgc -nt \"$CONFDIR/default.qgc\" ] ; then\n\t\techo \"cp -f default.qgc \\\"$CONFDIR\\\"\"\n\t\tcp -fp default.qgc \"$CONFDIR\"\n\tfi\n\nfi\n";
+			shellScript = "# copy modules with script for conditional stuff\n\nMODDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nmkdir -p \"$MODDIR\"\nCONFDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/config\"\nmkdir -p \"$CONFDIR\"\nSCRIPTSDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/scripts\"\nmkdir -p \"$SCRIPTSDIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\nMODS=`ls *.png *.qgm *.svg`\nfor m in $MODS\ndo\n\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\tcp -fp $m \"$MODDIR\"\n\tfi\ndone\ncd ..\n\necho \"cp -fp scripts/*.py \\\"$SCRIPTSDIR\\\"\"\ncp -fp scripts/*.py \"$SCRIPTSDIR\"\n\nif [ -d modules-$GRASS_VERSION ] ; then\n\tcd modules-$GRASS_VERSION\n\tMODS=`ls *.png *.qgm *.svg`\n\tfor m in $MODS\n\tdo\n\t\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\t\tcp -fp $m \"$MODDIR\"\n\t\tfi\n\tdone\n\tif [ ! -f \"$CONFDIR/default.qgc\" ] || [ default.qgc -nt \"$CONFDIR/default.qgc\" ] ; then\n\t\techo \"cp -f default.qgc \\\"$CONFDIR\\\"\"\n\t\tcp -fp default.qgc \"$CONFDIR\"\n\tfi\n\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		729BBF0E0F407818001BCB63 /* Script - ui */ = {
@@ -13854,6 +13949,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		721597EC1052B46D003D1610 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				721598281052B8C9003D1610 /* DualEdgeTriangulation.cc in Sources */,
+				721598291052B8C9003D1610 /* HalfEdge.cc in Sources */,
+				7215982A1052B8C9003D1610 /* Line3D.cc in Sources */,
+				7215982B1052B8C9003D1610 /* LinTriangleInterpolator.cc in Sources */,
+				7215982C1052B8C9003D1610 /* MathUtils.cc in Sources */,
+				7215982D1052B8C9003D1610 /* Node.cc in Sources */,
+				7215982E1052B8C9003D1610 /* Point3D.cc in Sources */,
+				7215982F1052B8C9003D1610 /* qgsgridfilewriter.cpp in Sources */,
+				721598301052B8C9003D1610 /* qgsidwinterpolator.cpp in Sources */,
+				721598311052B8C9003D1610 /* qgsinterpolator.cpp in Sources */,
+				721598321052B8C9003D1610 /* qgstininterpolator.cpp in Sources */,
+				721598331052B8C9003D1610 /* TriangleInterpolator.cc in Sources */,
+				721598341052B8C9003D1610 /* Triangulation.cc in Sources */,
+				721598351052B8C9003D1610 /* Vector3D.cc in Sources */,
+				721598361052B8F2003D1610 /* qgsaspectfilter.cpp in Sources */,
+				721598371052B8F2003D1610 /* qgsderivativefilter.cpp in Sources */,
+				721598381052B8F2003D1610 /* qgsninecellfilter.cpp in Sources */,
+				721598391052B8F2003D1610 /* qgsruggednessfilter.cpp in Sources */,
+				7215983A1052B8F2003D1610 /* qgsslopefilter.cpp in Sources */,
+				7215983B1052B8F2003D1610 /* qgstotalcurvaturefilter.cpp in Sources */,
+				7215983C1052B8FC003D1610 /* qgsgeometryanalyzer.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7223B7840F96A96500D905B4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -13882,14 +14005,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				726C675510460FE300EFEDCC /* resources.qrc in Sources */,
-				726C674B10460F7700EFEDCC /* qgsaspectfilter.cpp in Sources */,
-				726C674C10460F7700EFEDCC /* qgsderivativefilter.cpp in Sources */,
-				726C674D10460F7700EFEDCC /* qgsninecellfilter.cpp in Sources */,
 				726C674E10460F7700EFEDCC /* qgsrasterterrainanalysisdialog.cpp in Sources */,
 				726C674F10460F7700EFEDCC /* qgsrasterterrainanalysisplugin.cpp in Sources */,
-				726C675010460F7700EFEDCC /* qgsruggednessfilter.cpp in Sources */,
-				726C675110460F7700EFEDCC /* qgsslopefilter.cpp in Sources */,
-				726C675210460F7700EFEDCC /* qgstotalcurvaturefilter.cpp in Sources */,
 				726C675310460F8600EFEDCC /* qgsrasterterrainanalysisdialog.h in Sources */,
 				726C675410460F8600EFEDCC /* qgsrasterterrainanalysisplugin.h in Sources */,
 			);
@@ -14138,24 +14255,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				72A56C350F3C8B3500BA32A1 /* qgsinterpolationplugin.cpp in Sources */,
-				72A56C360F3C8B3A00BA32A1 /* qgsgridfilewriter.cpp in Sources */,
-				72A56C370F3C8B4800BA32A1 /* qgsidwinterpolator.cpp in Sources */,
 				72A56C380F3C8B4900BA32A1 /* qgsidwinterpolatordialog.cpp in Sources */,
 				72A56C390F3C8B4F00BA32A1 /* qgsinterpolationdialog.cpp in Sources */,
-				72A56C3A0F3C8B5300BA32A1 /* qgsinterpolator.cpp in Sources */,
 				72A56C3B0F3C8B5B00BA32A1 /* qgsinterpolatordialog.cpp in Sources */,
-				72A56C3C0F3C8B6500BA32A1 /* qgstininterpolator.cpp in Sources */,
 				72A56C3D0F3C8B6700BA32A1 /* qgstininterpolatordialog.cpp in Sources */,
-				72A56C3E0F3C8B6C00BA32A1 /* DualEdgeTriangulation.cc in Sources */,
-				72A56C3F0F3C8B6E00BA32A1 /* HalfEdge.cc in Sources */,
-				72A56C400F3C8B7100BA32A1 /* Line3D.cc in Sources */,
-				72A56C410F3C8B7400BA32A1 /* LinTriangleInterpolator.cc in Sources */,
-				72A56C420F3C8B7700BA32A1 /* MathUtils.cc in Sources */,
-				72A56C430F3C8B7800BA32A1 /* Node.cc in Sources */,
-				72A56C440F3C8B7A00BA32A1 /* Point3D.cc in Sources */,
-				72A56C450F3C8B7D00BA32A1 /* TriangleInterpolator.cc in Sources */,
-				72A56C460F3C8B7F00BA32A1 /* Triangulation.cc in Sources */,
-				72A56C470F3C8B8000BA32A1 /* Vector3D.cc in Sources */,
 				729287FC0F71EAE9006D9489 /* qgsidwinterpolatordialog.h in Sources */,
 				729287FD0F71EAE9006D9489 /* qgsinterpolationdialog.h in Sources */,
 				729287FE0F71EAE9006D9489 /* qgsinterpolationplugin.h in Sources */,
@@ -14511,6 +14614,11 @@
 			target = 720383490F8B905D0083B883 /* diagramoverlayplugin */;
 			targetProxy = 720383860F8BA92B0083B883 /* PBXContainerItemProxy */;
 		};
+		721598611052D6B4003D1610 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 721597EA1052B46D003D1610 /* qgis_analysis */;
+			targetProxy = 721598601052D6B4003D1610 /* PBXContainerItemProxy */;
+		};
 		7223B7A60F96AA6C00D905B4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7223B77E0F96A96500D905B4 /* oracleplugin */;
@@ -14598,7 +14706,7 @@
 		};
 		7256F1B70F411C4B0022BE1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 72A56B430F3C822800BA32A1 /* georeferencerplugin */;
+			target = 72A56B430F3C822800BA32A1 /* georefplugin */;
 			targetProxy = 7256F1B60F411C4B0022BE1F /* PBXContainerItemProxy */;
 		};
 		7256F1B90F411C4B0022BE1F /* PBXTargetDependency */ = {
@@ -14721,7 +14829,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					diagramoverlay_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -14755,7 +14866,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					diagramoverlay_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -14950,6 +15064,71 @@
 			};
 			name = Release;
 		};
+		721598171052B46D003D1610 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					qgis_analysis_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/core,
+					../../src/core/renderer,
+					../../src/analysis/interpolation,
+					"$(GDAL_INC)",
+					"$(GEOS_INC)",
+					"$(PROJ_INC)",
+				);
+				INSTALL_PATH = "@executable_path/$(QGIS_LIB_SUBDIR)";
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(GEOS_LIB)",
+					"$(PROJ_LIB)",
+					"$(GDAL_LIB)",
+					"$(QT_LIB)",
+				);
+				PRODUCT_NAME = qgis_analysis;
+			};
+			name = Debug;
+		};
+		721598181052B46D003D1610 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					qgis_analysis_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/core,
+					../../src/core/renderer,
+					../../src/analysis/interpolation,
+					"$(GDAL_INC)",
+					"$(GEOS_INC)",
+					"$(PROJ_INC)",
+				);
+				INSTALL_PATH = "@executable_path/$(QGIS_LIB_SUBDIR)";
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(GEOS_LIB)",
+					"$(PROJ_LIB)",
+					"$(GDAL_LIB)",
+					"$(QT_LIB)",
+				);
+				PRODUCT_NAME = qgis_analysis;
+			};
+			name = Release;
+		};
 		7223B78B0F96A96500D905B4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -14957,7 +15136,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					oracleplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -14989,7 +15171,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					oracleplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -15104,7 +15289,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					spatialiteprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/provider,
@@ -15133,7 +15321,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					spatialiteprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/provider,
@@ -15163,7 +15354,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					rasterterrainplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -15195,7 +15389,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					rasterterrainplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -15390,7 +15587,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					memoryprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/core,
@@ -15415,7 +15615,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					memoryprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/core,
@@ -15441,7 +15644,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					ogrprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/core,
@@ -15469,7 +15675,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					ogrprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/core,
@@ -15498,7 +15707,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					wmsprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/wms,
@@ -15523,7 +15735,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					wmsprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/wms,
@@ -15549,7 +15764,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					delimitedtextprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/delimitedtext,
@@ -15577,7 +15795,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					delimitedtextprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/delimitedtext,
@@ -15606,7 +15827,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					postgresprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/postgres,
@@ -15633,7 +15857,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					postgresprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/postgres,
@@ -15661,7 +15888,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					gpxprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/gpx,
@@ -15689,7 +15919,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					gpxprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/gpx,
@@ -15718,7 +15951,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					wfsprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/wfs,
@@ -15749,7 +15985,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					wfsprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/wfs,
@@ -15785,6 +16024,7 @@
 					"$(inherited)",
 					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
 					"GRASS_EXPORT=",
+					grassprovider_EXPORTS,
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
 				HEADER_SEARCH_PATHS = (
@@ -15818,6 +16058,7 @@
 					"$(inherited)",
 					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
 					"GRASS_EXPORT=",
+					grassprovider_EXPORTS,
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
 				HEADER_SEARCH_PATHS = (
@@ -15848,7 +16089,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					provider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/provider,
@@ -15871,7 +16115,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					provider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/provider,
@@ -15898,6 +16145,7 @@
 					"$(inherited)",
 					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
 					"GRASS_EXPORT=",
+					qgisgrass_EXPORTS,
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
 				HEADER_SEARCH_PATHS = (
@@ -15932,6 +16180,7 @@
 					"$(inherited)",
 					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
 					"GRASS_EXPORT=",
+					qgisgrass_EXPORTS,
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
 				HEADER_SEARCH_PATHS = (
@@ -15964,7 +16213,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					copyrightlabelplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -15994,7 +16246,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					copyrightlabelplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16025,7 +16280,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					delimitedtextplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16055,7 +16313,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					delimitedtextplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16086,7 +16347,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					georefplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16109,7 +16373,7 @@
 					"$(GSL_LIB)",
 					"$(GDAL_LIB)",
 				);
-				PRODUCT_NAME = georeferencerplugin.so;
+				PRODUCT_NAME = georefplugin.so;
 				TARGET_PLUGINDIR = georeferencer;
 			};
 			name = Debug;
@@ -16120,7 +16384,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					georefplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16143,7 +16410,7 @@
 					"$(GSL_LIB)",
 					"$(GDAL_LIB)",
 				);
-				PRODUCT_NAME = georeferencerplugin.so;
+				PRODUCT_NAME = georefplugin.so;
 				TARGET_PLUGINDIR = georeferencer;
 			};
 			name = Release;
@@ -16155,7 +16422,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					gpsimporterplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16186,7 +16456,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					gpsimporterplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16224,6 +16497,7 @@
 					"GRASS_EXPORT=",
 					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
 					"HAVE_OPENPTY=$(HAVE_OPENPTY)",
+					grassplugin_EXPORTS,
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
 				HEADER_SEARCH_PATHS = (
@@ -16274,6 +16548,7 @@
 					"GRASS_EXPORT=",
 					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
 					"HAVE_OPENPTY=$(HAVE_OPENPTY)",
+					grassplugin_EXPORTS,
 				);
 				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
 				HEADER_SEARCH_PATHS = (
@@ -16319,11 +16594,14 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					interpolationplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
-					../../src/plugins/interpolation,
+					../../src/analysis/interpolation,
 					../../src/core,
 					../../src/core/raster,
 					../../src/core/renderer,
@@ -16350,11 +16628,14 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					interpolationplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
-					../../src/plugins/interpolation,
+					../../src/analysis/interpolation,
 					../../src/core,
 					../../src/core/raster,
 					../../src/core/renderer,
@@ -16382,7 +16663,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					northarrowplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16412,7 +16696,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					northarrowplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16443,7 +16730,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					quickprintplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16473,7 +16763,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					quickprintplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16504,7 +16797,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					scalebarplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16534,7 +16830,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					scalebarplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16565,7 +16864,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					spitplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16602,7 +16904,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					spitplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16640,7 +16945,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					wfsplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16675,7 +16983,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					wfsplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16711,7 +17022,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					coordinatecaptureplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16743,7 +17057,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					coordinatecaptureplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16776,7 +17093,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					dxf2shpconverterplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16807,7 +17127,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					dxf2shpconverterplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16839,7 +17162,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					ogrconverterplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16871,7 +17197,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					ogrconverterplugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16904,7 +17233,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					plugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16934,7 +17266,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					plugin_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -16965,7 +17300,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					osmprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/osm,
@@ -16995,7 +17333,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					osmprovider_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/providers/osm,
@@ -17047,7 +17388,10 @@
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					evis_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -17083,7 +17427,10 @@
 				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
 				EXECUTABLE_PREFIX = lib;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					evis_EXPORTS,
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/plugins,
@@ -17225,7 +17572,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20090815;
+				QGIS_VERSION_BUILD = 20090905;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -17236,7 +17583,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20090815;
+				QGIS_VERSION_BUILD = 20090905;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
@@ -17276,6 +17623,15 @@
 			buildConfigurations = (
 				7209F38C0F3A2F2B003DC336 /* Debug */,
 				7209F38D0F3A2F2B003DC336 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		721598161052B46D003D1610 /* Build configuration list for PBXNativeTarget "qgis_analysis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				721598171052B46D003D1610 /* Debug */,
+				721598181052B46D003D1610 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -17487,7 +17843,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		72A56B480F3C822800BA32A1 /* Build configuration list for PBXNativeTarget "georeferencerplugin" */ = {
+		72A56B480F3C822800BA32A1 /* Build configuration list for PBXNativeTarget "georefplugin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				72A56B490F3C822800BA32A1 /* Debug */,
