@@ -50,9 +50,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
+  cmbIdentifyMode->addItem( tr( "current layer" ), 0 );
+  cmbIdentifyMode->addItem( tr( "top down, stop at first" ), 1 );
+  cmbIdentifyMode->addItem( tr( "top down" ), 2 );
+
   // read the current browser and set it
   QSettings settings;
-  QgsDebugMsg( QString( "Standard Identify radius setting: %1" ).arg( QGis::DEFAULT_IDENTIFY_RADIUS ) );
+  int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
+  cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
   QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
   spinBoxIdentifyValue->setValue( identifyValue );
@@ -349,6 +354,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "proxy/proxyExcludedUrls", proxyExcludeString );
 
   //general settings
+  settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );
   settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );

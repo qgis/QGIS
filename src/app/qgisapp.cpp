@@ -767,7 +767,7 @@ void QgisApp::createActions()
   shortcuts->registerAction( mActionIdentify, tr( "Ctrl+Shift+I", "Click on features to identify them" ) );
   mActionIdentify->setStatusTip( tr( "Click on features to identify them" ) );
   connect( mActionIdentify, SIGNAL( triggered() ), this, SLOT( identify() ) );
-  mActionIdentify->setEnabled( false );
+  mActionIdentify->setEnabled( QSettings().value( "/Map/identifyMode", 0 ).toInt() != 0 );
 
   mActionMeasure = new QAction( getThemeIcon( "mActionMeasure.png" ), tr( "Measure Line " ), this );
   shortcuts->registerAction( mActionMeasure, tr( "Ctrl+Shift+M", "Measure a Line" ) );
@@ -5542,7 +5542,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   if ( !layer )
   {
     mActionSelect->setEnabled( false );
-    mActionIdentify->setEnabled( false );
+    mActionIdentify->setEnabled( QSettings().value( "/Map/identifyMode", 0 ).toInt() != 0 );
     mActionZoomActualSize->setEnabled( false );
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
@@ -5785,18 +5785,24 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     //Enable the Identify tool ( GDAL datasets draw without a provider )
     //but turn off if data provider exists and has no Identify capabilities
     mActionIdentify->setEnabled( true );
-    const QgsRasterLayer* vlayer = dynamic_cast<const QgsRasterLayer*>( layer );
-    const QgsRasterDataProvider* dprovider = vlayer->dataProvider();
-    if ( dprovider )
+
+    QSettings settings;
+    int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
+    if ( identifyMode == 0 )
     {
-      // does provider allow the identify map tool?
-      if ( dprovider->capabilities() & QgsRasterDataProvider::Identify )
+      const QgsRasterLayer *rlayer = dynamic_cast<const QgsRasterLayer*>( layer );
+      const QgsRasterDataProvider* dprovider = rlayer->dataProvider();
+      if ( dprovider )
       {
-        mActionIdentify->setEnabled( TRUE );
-      }
-      else
-      {
-        mActionIdentify->setEnabled( FALSE );
+        // does provider allow the identify map tool?
+        if ( dprovider->capabilities() & QgsRasterDataProvider::Identify )
+        {
+          mActionIdentify->setEnabled( true );
+        }
+        else
+        {
+          mActionIdentify->setEnabled( false );
+        }
       }
     }
   }

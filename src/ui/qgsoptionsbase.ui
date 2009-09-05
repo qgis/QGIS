@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>617</width>
-    <height>521</height>
+    <width>654</width>
+    <height>546</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -503,13 +503,13 @@
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_7">
          <property name="title">
-          <string>Search radius</string>
+          <string>Identify</string>
          </property>
          <layout class="QGridLayout">
           <property name="margin">
            <number>11</number>
           </property>
-          <item row="1" column="0" colspan="2">
+          <item row="2" column="0" colspan="2">
            <widget class="QLabel" name="textLabel2">
             <property name="text">
              <string>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</string>
@@ -519,7 +519,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="textLabel1_3">
             <property name="text">
              <string>Search radius for identifying features and displaying map tips</string>
@@ -529,7 +529,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="1" column="1">
            <widget class="QDoubleSpinBox" name="spinBoxIdentifyValue">
             <property name="suffix">
              <string>%</string>
@@ -542,6 +542,16 @@
             </property>
             <property name="value">
              <double>5.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cmbIdentifyMode"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Mode</string>
             </property>
            </widget>
           </item>

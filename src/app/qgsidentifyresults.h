@@ -30,6 +30,11 @@ class QTreeWidgetItem;
 class QAction;
 class QMenu;
 
+class QgsMapLayer;
+class QgsVectorLayer;
+class QgsRubberBand;
+class QgsMapCanvas;
+
 /**
  *@author Gary E.Sherman
  */
@@ -41,54 +46,26 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     //! Constructor - takes it own copy of the QgsAttributeAction so
     // that it is independent of whoever created it.
-    QgsIdentifyResults( const QgsAttributeAction& actions, QWidget *parent = 0, Qt::WFlags f = 0 );
+    QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WFlags f = 0 );
 
     ~QgsIdentifyResults();
-
-    /** Add an attribute to the feature display node */
-    void addAttribute( QTreeWidgetItem *parent, QString field, QString value );
-
-    /** Add an attribute */
-    void addAttribute( QString field, QString value );
-
-    /** Add a derived attribute (e.g. Length, Area) to the feature display node */
-    void addDerivedAttribute( QTreeWidgetItem *parent, QString field, QString value );
-
-    /** Add an action to the feature display node */
-    void addAction( QTreeWidgetItem *parent, int id, QString field, QString value );
-
-    /** Add an edit action to the feature display node */
-    void addEdit( QTreeWidgetItem *parent, int id );
-
-    /** Add a feature node to the feature display */
-    QTreeWidgetItem * addNode( QString label );
-    /** Set the title for the identify results dialog */
-    void setTitle( QString title );
-    /** Set header column */
-    void setColumnText( int column, const QString & label );
-    void saveWindowLocation();
-    void restorePosition();
-    void closeEvent( QCloseEvent *e );
-    void showAllAttributes();
-
-    /** Resize all of the columns to fit the data in them */
-    void expandColumnsToFit();
 
     /** Remove results */
     void clear();
 
+    /** Add add feature */
+    void addFeature( QgsMapLayer *layer, int fid,
+                     QString displayField, QString displayValue,
+                     const QMap< QString, QString > &attributes,
+                     const QMap< QString, QString > &derivedAttributes );
+
+    void closeEvent( QCloseEvent *e );
+
     /** Set "No features ... " */
     void setMessage( QString shortMsg, QString longMsg );
 
-    /** Set actions */
-    void setActions( const QgsAttributeAction& actions );
-
-    //void accept();
-    //void reject();
-
   signals:
-    void selectedFeatureChanged( int featureId );
-    void editFeature( int featureId );
+    void selectedFeatureChanged( QgsVectorLayer *, int featureId );
 
   public slots:
 
@@ -98,43 +75,39 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void contextMenuEvent( QContextMenuEvent* );
     void popupItemSelected( QAction* menuAction );
 
-    /* Item in tree was clicked */
-    void clicked( QTreeWidgetItem *lvi );
+    void layerDestroyed();
 
     //! Context help
     void on_buttonHelp_clicked();
 
     /* Called when an item is expanded so that we can ensure that the
        column width if expanded to show it */
-    void itemExpanded( QTreeWidgetItem* );
+    void itemExpanded( QTreeWidgetItem * );
 
     //! sends signal if current feature id has changed
-    void handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
-
+    void handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 
   private:
+    QMenu *mActionPopup;
+    QgsRubberBand *mRubberBand;
+    QgsMapCanvas *mCanvas;
 
-    bool mEditable;
-    QgsAttributeAction mActions;
-    int mClickedOnValue;
-    QMenu* mActionPopup;
-    std::vector<std::pair<QString, QString> > mValues;
     static const int context_id = 689216579;
-    int mCurrentFeatureId;
-    QString mDerivedLabel;
 
-    /**
-     Keeps track of what derived-attribute (e.g. Length, Area)
-     root nodes have been generated for each feature in this widget.
+    QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
+    QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
+    QTreeWidgetItem *layerItem( QObject *layer );
+    QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, std::vector< std::pair<QString, QString> > &attributes );
 
-     First item:  Feature root node
-     Second item: Derived-attribute root node for that feature
-     */
-    std::map<QTreeWidgetItem *, QTreeWidgetItem *> mDerivedAttributeRootNodes;
+    void setColumnText( int column, const QString & label );
+    void expandColumnsToFit();
+    void saveWindowLocation();
+    void restorePosition();
 
-    // Convenience function to populate mValues with all of the item names and
-    // values for a item, including the derived ones.
-    void extractAllItemData( QTreeWidgetItem* item );
+    void highlightFeature( QTreeWidgetItem *item );
+    void editFeature( QTreeWidgetItem *item );
+
+    void doAction( QTreeWidgetItem *item );
 };
 
 #endif
