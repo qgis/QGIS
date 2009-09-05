@@ -1,5 +1,5 @@
 
-SUBDIRS(core ui gui app providers plugins helpviewer)
+SUBDIRS(core analysis ui gui app providers plugins helpviewer)
 
 IF (HAVE_PYTHON AND WITH_BINDINGS)
   SUBDIRS(python)
