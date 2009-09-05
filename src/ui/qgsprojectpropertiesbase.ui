@@ -15,7 +15,7 @@
   <property name="windowIcon" >
    <iconset>
     <normaloff/> 
-   <iconset>
+   </iconset>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
