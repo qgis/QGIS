@@ -31,7 +31,7 @@ class ANALYSIS_EXPORT Triangulation
     /**Enumeration describing the behaviour, if two forced lines cross. SnappingType_VERTICE means, that the second inserted forced line is snapped to the closest vertice of the first inserted forced line. DELETE_FIRST means, that the status of the first inserted forced line is reset to that of a normal edge (so that the second inserted forced line remain and the first not*/
     enum forcedCrossBehaviour {SnappingType_VERTICE, DELETE_FIRST, INSERT_VERTICE};
     virtual ~Triangulation();
-    /**Adds a line (e.g. a break-, structure- or an isoline) to the triangulation*/
+    /**Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points*/
     virtual void addLine( Line3D* line, bool breakline ) = 0;
     /**Adds a point to the triangulation*/
     virtual int addPoint( Point3D* p ) = 0;
@@ -88,6 +88,9 @@ class ANALYSIS_EXPORT Triangulation
     //virtual bool saveToTAFF(QString fileName) const=0;
     /**Swaps the edge which is closest to the point with x and y coordinates (if this is possible)*/
     virtual bool swapEdge( double x, double y ) = 0;
+    /**Saves the triangulation as a (line) shapefile
+    @return true in case of success*/
+    virtual bool saveAsShapefile( const QString& fileName ) const = 0;
 };
 
 inline Triangulation::~Triangulation()

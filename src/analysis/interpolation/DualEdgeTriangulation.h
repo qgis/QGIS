@@ -43,7 +43,8 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     DualEdgeTriangulation();
     DualEdgeTriangulation( int nop, Triangulation* decorator );
     virtual ~DualEdgeTriangulation();
-    /**Adds a line (e.g. a break-, structure- or an isoline) to the triangulation*/
+    void setDecorator( Triangulation* d ) {mDecorator = d;}
+    /**Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points*/
     void addLine( Line3D* line, bool breakline );
     /**Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure*/
     int addPoint( Point3D* p );
@@ -104,6 +105,9 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     virtual bool swapEdge( double x, double y );
     /**Returns a value list with the numbers of the four points, which would be affected by an edge swap. This function is e.g. needed by NormVecDecorator to know the points, for which the normals have to be recalculated. The returned ValueList has to be deleted by the code which calls the method*/
     virtual QList<int>* getPointsAroundEdge( double x, double y );
+    /**Saves the triangulation as a (line) shapefile
+    @return true in case of success*/
+    virtual bool saveAsShapefile( const QString& fileName ) const;
 
   protected:
     /**X-coordinate of the upper right corner of the bounding box*/
@@ -137,7 +141,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     /**inserts an edge and makes sure, everything is ok with the storage of the edge. The number of the HalfEdge is returned*/
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     /**inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure*/
-    //int insertForcedSegment(int p1, int p2, bool breakline);
+    int insertForcedSegment( int p1, int p2, bool breakline );
     /**Treshold for the leftOfTest to handle numerical instabilities*/
     //const static double leftOfTresh=0.00001;
     /**Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted*/
@@ -165,7 +169,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     /**Returns true, if it is possible to swap an edge, otherwise false(concave quad or edge on (or outside) the convex hull)*/
     bool swapPossible( unsigned int edge );
     /**divides a polygon in a triangle and two polygons and calls itself recursively for these two polygons. 'poly' is a pointer to a list with the numbers of the edges of the polygon, 'free' is a pointer to a list of free halfedges, and 'mainedge' is the number of the edge, towards which the new triangle is inserted. Mainedge has to be the same as poly->begin(), otherwise the recursion does not work*/
-    //void triangulatePolygon(QList<int>* poly, QList<int>* free, int mainedge);
+    void triangulatePolygon( QList<int>* poly, QList<int>* free, int mainedge );
     /**Tests, if the bounding box of the halfedge with index i intersects the specified bounding box. The main purpose for this method is the drawing of the triangulation*/
     bool halfEdgeBBoxTest( int edge, double xlowleft, double ylowleft, double xupright, double yupright ) const;
     /**Calculates the minimum angle, which would be present, if the specified halfedge would be swapped*/
@@ -188,6 +192,10 @@ inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* dec
 {
   mPointVector.reserve( nop );
   mHalfEdge.reserve( nop );
+  if ( !mDecorator )
+  {
+    mDecorator = this;
+  }
 }
 
 inline double DualEdgeTriangulation::getXMax() const

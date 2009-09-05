@@ -17,12 +17,16 @@
 #ifndef MATHUTILS_H
 #define MATHUTILS_H
 
+#ifndef Q_OS_MACX
 #include <cmath>
+#else
+#include <math.h>
+#endif
 #include "Vector3D.h"
 #include "Point3D.h"
 
 
-namespace MathUtils
+namespace ANALYSIS_EXPORT MathUtils
 {
   /**Calculates the barycentric coordinates of a point (x,y) with respect to p1, p2, p3 and stores the three barycentric coordinates in 'result'. Thus the u-coordinate is stored in result::x, the v-coordinate in result::y and the w-coordinate in result::z. Attention: p1, p2 and p3 have to be ordered counterclockwise*/
   bool calcBarycentricCoordinates( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result );

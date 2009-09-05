@@ -19,15 +19,17 @@
 #define QGSTININTERPOLATOR_H
 
 #include "qgsinterpolator.h"
+#include <QString>
 
 class Triangulation;
 class TriangleInterpolator;
+class QgsFeature;
 
 /**Interpolation in a triangular irregular network*/
 class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 {
   public:
-    QgsTINInterpolator( const QList<QgsVectorLayer*>& inputData );
+    QgsTINInterpolator( const QList<LayerData>& inputData, bool showProgressDialog = false );
     ~QgsTINInterpolator();
 
     /**Calculates interpolation value for map coordinates x, y
@@ -37,12 +39,28 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
        @return 0 in case of success*/
     int interpolatePoint( double x, double y, double& result );
 
+    void setExportTriangulationToFile( bool e ) {mExportTriangulationToFile = e;}
+    void setTriangulationFilePath( const QString& filepath ) {mTriangulationFilePath = filepath;}
+
   private:
     Triangulation* mTriangulation;
     TriangleInterpolator* mTriangleInterpolator;
     bool mIsInitialized;
+    bool mShowProgressDialog;
+    /**If true: export triangulation to shapefile after initialisation*/
+    bool mExportTriangulationToFile;
+    /**File path to export the triangulation*/
+    QString mTriangulationFilePath;
 
+    /**Create dual edge triangulation*/
     void initialize();
+    /**Inserts the vertices of a geometry into the triangulation
+      @param g the geometry
+      @param zCoord true if the z coordinate is the interpolation attribute
+      @param attr interpolation attribute index (if zCoord is false)
+      @param type point/structure line, break line
+      @return 0 in case of success, -1 if the feature could not be inserted because of numerical problems*/
+    int insertData( QgsFeature* f, bool zCoord, int attr, InputType type );
 };
 
 #endif
