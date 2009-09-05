@@ -42,7 +42,15 @@ extern "C"
 QString GRASS_EXPORT QgsGrass::shortPath( const QString &path )
 {
   TCHAR buf[MAX_PATH];
-  GetShortPathName( path.toUtf8().constData(), buf, MAX_PATH );
+  int len = GetShortPathName( path.toUtf8().constData(), buf, MAX_PATH );
+
+  if ( len == 0 || len > MAX_PATH )
+  {
+    QgsDebugMsg( QString( "GetShortPathName('%1') failed with %2: %3" )
+                 .arg( path ).arg( len ).arg( GetLastError() ) );
+    return path;
+  }
+
   QString res = QString::fromUtf8( buf );
   return res;
 }
@@ -173,7 +181,7 @@ void GRASS_EXPORT QgsGrass::init( void )
   QgsDebugMsg( QString( "Valid GRASS gisBase is: %1" ).arg( gisBase ) );
   QString gisBaseEnv = "GISBASE=" + gisBase;
   /* _Correct_ putenv() implementation is not making copy! */
-  char *gisBaseEnvChar = new char[gisBaseEnv.length()+1];
+  char *gisBaseEnvChar = new char[gisBaseEnv.toUtf8().length()+1];
   strcpy( gisBaseEnvChar, gisBaseEnv.toUtf8().constData() );
   putenv( gisBaseEnvChar );
 
@@ -198,14 +206,15 @@ void GRASS_EXPORT QgsGrass::init( void )
 
   // Add path to MSYS bin
   // Warning: MSYS sh.exe will translate this path to '/bin'
-  path.append( sep + shortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" ) );
+  if ( QFileInfo( QCoreApplication::applicationDirPath() + "/msys/bin/" ).isDir() )
+    path.append( sep + shortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" ) );
 #endif
 
   QString p = getenv( "PATH" );
   path.append( sep + p );
 
   QgsDebugMsg( QString( "set PATH: %1" ).arg( path ) );
-  char *pathEnvChar = new char[path.length()+1];
+  char *pathEnvChar = new char[path.toUtf8().length()+1];
   strcpy( pathEnvChar, path.toUtf8().constData() );
   putenv( pathEnvChar );
 
@@ -214,7 +223,7 @@ void GRASS_EXPORT QgsGrass::init( void )
   QString pp = getenv( "PATH" );
   pythonpath.append( sep + pp );
   QgsDebugMsg( QString( "set PYTHONPATH: %1" ).arg( pythonpath ) );
-  char *pythonpathEnvChar = new char[pythonpath.length()+1];
+  char *pythonpathEnvChar = new char[pythonpath.toUtf8().length()+1];
   strcpy( pythonpathEnvChar, pythonpath.toUtf8().constData() );
   putenv( pythonpathEnvChar );
 
