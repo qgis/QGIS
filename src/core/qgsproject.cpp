@@ -1300,3 +1300,154 @@ void QgsProject::dumpProperties() const
 {
   dump_( imp_->properties_ );
 } // QgsProject::dumpProperties
+
+
+// return the absolute path from a filename read from project file
+QString QgsProject::readPath( QString src ) const
+{
+  if ( readBoolEntry( "Paths", "/Absolute", true ) )
+  {
+    return src;
+  }
+
+  // relative path should always start with ./ or ../
+  if ( !src.startsWith( "./" ) && !src.startsWith( "../" ) )
+  {
+#if defined(Q_OS_WIN)
+    if ( src.startsWith( "\\\\" ) ||
+         ( src[0].isLetter() && src[1] == ':' ) )
+    {
+      // UNC or absolute path
+      return src;
+    }
+#else
+    if ( src[0] == '/' )
+    {
+      // absolute path
+      return src;
+    }
+#endif
+
+    // so this one isn't absolute, but also doesn't start // with ./ or ../.
+    // That means that it was saved with an earlier version of "relative path support",
+    // where the source file had to exist and only the project directory was stripped
+    // from the filename.
+    QFileInfo pfi( fileName() );
+    Q_ASSERT( pfi.exists() );
+    QFileInfo fi( pfi.canonicalPath() + "/" + src );
+
+    if ( !fi.exists() )
+    {
+      return src;
+    }
+    else
+    {
+      return fi.canonicalFilePath();
+    }
+  }
+
+  QString srcPath = src;
+  QString projPath = fileName();
+
+#if defined(Q_OS_WIN)
+  srcPath.replace( "\\", "/" );
+  projPath.replace( "\\", "/" );
+#endif
+
+  QStringList srcElems = srcPath.split( "/", QString::SkipEmptyParts );
+  QStringList projElems = projPath.split( "/", QString::SkipEmptyParts );
+
+  // remove project file element
+  projElems.removeLast();
+
+  // append source path elements
+  projElems.append( srcElems );
+  projElems.removeAll( "." );
+
+  // resolve ..
+  int pos;
+  while (( pos = projElems.indexOf( ".." ) ) > 0 )
+  {
+    // remove preceeding element and ..
+    projElems.removeAt( pos - 1 );
+    projElems.removeAt( pos - 1 );
+  }
+
+  return projElems.join( "/" );
+}
+
+// return the absolute or relative path to write it to the project file
+QString QgsProject::writePath( QString src ) const
+{
+  if ( readBoolEntry( "Paths", "/Absolute", true ) )
+  {
+    return src;
+  }
+
+  QString srcPath = src;
+  QString projPath = fileName();
+
+#if defined( Q_OS_WIN )
+  const Qt::CaseSensitivity cs = Qt::CaseInsensitive;
+
+  srcPath.replace( "\\", "/" );
+
+  if ( srcPath.startsWith( "//" ) )
+  {
+    // keep UNC prefix
+    srcPath = "\\\\" + srcPath.mid( 2 );
+  }
+
+  projPath.replace( "\\", "/" );
+  if ( projPath.startsWith( "//" ) )
+  {
+    // keep UNC prefix
+    projPath = "\\\\" + projPath.mid( 2 );
+  }
+#else
+  const Qt::CaseSensitivity cs = Qt::CaseSensitive;
+#endif
+
+  QStringList projElems = projPath.split( "/", QString::SkipEmptyParts );
+  QStringList srcElems = srcPath.split( "/", QString::SkipEmptyParts );
+
+  // remove project file element
+  projElems.removeLast();
+
+  projElems.removeAll( "." );
+  srcElems.removeAll( "." );
+
+  // remove common part
+  int n = 0;
+  while ( srcElems.size() > 0 &&
+          projElems.size() > 0 &&
+          srcElems[0].compare( projElems[0], cs ) == 0 )
+  {
+    srcElems.removeFirst();
+    projElems.removeFirst();
+    n++;
+  }
+
+  if ( n == 0 )
+  {
+    // no common parts; might not even by a file
+    return src;
+  }
+
+  if ( projElems.size() > 0 )
+  {
+    // go up to the common directory
+    for ( int i = 0; i < projElems.size(); i++ )
+    {
+      srcElems.insert( 0, ".." );
+    }
+  }
+  else
+  {
+    // let it start with . nevertheless,
+    // so relative path always start with either ./ or ../
+    srcElems.insert( 0, "." );
+  }
+
+  return srcElems.join( "/" );
+}
