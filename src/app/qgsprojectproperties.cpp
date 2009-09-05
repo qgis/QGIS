@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
+#include "qgsrasterlayer.h"
 
 //qt includes
 #include <QColorDialog>
@@ -205,6 +206,56 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       mSnappingLayerSettings.insert( *idIter, newEntry );
     }
   }
+
+  QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
+
+  const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+
+  twIdentifyLayers->setColumnCount( 3 );
+  twIdentifyLayers->horizontalHeader()->setVisible( true );
+  twIdentifyLayers->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Layer" ) ) );
+  twIdentifyLayers->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Type" ) ) );
+  twIdentifyLayers->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Identifiable" ) ) );
+  twIdentifyLayers->setRowCount( mapLayers.size() );
+  twIdentifyLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
+
+  int i = 0;
+  for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); it++, i++ )
+  {
+    currentLayer = it.value();
+
+    QTableWidgetItem *twi = new QTableWidgetItem( QString::number( i ) );
+    twi->setData( Qt::UserRole, it.key() );
+    twIdentifyLayers->setVerticalHeaderItem( i, twi );
+
+    twIdentifyLayers->setItem( i, 0, new QTableWidgetItem( currentLayer->name() ) );
+
+    QString type;
+    if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+    {
+      type = tr( "Vector" );
+    }
+    else if ( currentLayer->type() == QgsMapLayer::RasterLayer )
+    {
+      QgsRasterLayer *rl = dynamic_cast<QgsRasterLayer *>( currentLayer );
+
+      if ( rl && rl->providerKey() == "wms" )
+      {
+        type = tr( "WMS" );
+      }
+      else
+      {
+        type = tr( "Raster" );
+      }
+    }
+
+    twIdentifyLayers->setItem( i, 1, new QTableWidgetItem( type ) );
+
+    QCheckBox *cb = new QCheckBox();
+    cb->setChecked( !noIdentifyLayerIdList.contains( currentLayer->getLayerID() ) );
+    twIdentifyLayers->setCellWidget( i, 2, cb );
+  }
+
   restoreState();
 }
 
@@ -386,6 +437,19 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
     QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
   }
+
+  QStringList noIdentifyLayerList;
+  for ( int i = 0; i < twIdentifyLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = dynamic_cast<QCheckBox*>( twIdentifyLayers->cellWidget( i, 2 ) );
+    if ( cb && !cb->isChecked() )
+    {
+      QString id = twIdentifyLayers->verticalHeaderItem( i )->data( Qt::UserRole ).toString();
+      noIdentifyLayerList << id;
+    }
+  }
+
+  QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", noIdentifyLayerList );
 
   //todo XXX set canvas colour
   emit refresh();

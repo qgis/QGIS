@@ -21,6 +21,12 @@
 #include "qgscontexthelp.h"
 #include "qgsapplication.h"
 #include "qgisapp.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsrubberband.h"
+#include "qgsgeometry.h"
+#include "qgsattributedialog.h"
+#include "qgsmapcanvas.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -33,13 +39,25 @@
 
 #include "qgslogger.h"
 
-QgsIdentifyResults::QgsIdentifyResults( const QgsAttributeAction& actions,
-                                        QWidget *parent, Qt::WFlags f )
+// Tree hierachy
+//
+// layer [userrole: QgsMapLayer]
+//   feature: displayfield|displayvalue [userrole: fid]
+//     derived attributes
+//       name value
+//     name value
+//     name value
+//     name value
+//   feature
+//     derived attributes
+//       name value
+//     name value
+
+QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Qt::WFlags f )
     : QDialog( parent, f ),
-    mActions( actions ),
-    mClickedOnValue( 0 ),
     mActionPopup( 0 ),
-    mCurrentFeatureId( 0 )
+    mRubberBand( 0 ),
+    mCanvas( canvas )
 {
   setupUi( this );
   lstResults->setColumnCount( 2 );
@@ -48,21 +66,69 @@ QgsIdentifyResults::QgsIdentifyResults( const QgsAttributeAction& actions,
 
   connect( buttonCancel, SIGNAL( clicked() ),
            this, SLOT( close() ) );
-  connect( lstResults, SIGNAL( itemClicked( QTreeWidgetItem*, int ) ),
-           this, SLOT( clicked( QTreeWidgetItem * ) ) );
+
   connect( lstResults, SIGNAL( itemExpanded( QTreeWidgetItem* ) ),
            this, SLOT( itemExpanded( QTreeWidgetItem* ) ) );
 
   connect( lstResults, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
            this, SLOT( handleCurrentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
-
-  // The label to use for the Derived node in the identify results
-  mDerivedLabel = tr( "(Derived)" );
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
 {
   delete mActionPopup;
+}
+
+QTreeWidgetItem *QgsIdentifyResults::layerItem( QObject *layer )
+{
+  QTreeWidgetItem *item;
+
+  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
+  {
+    item = lstResults->topLevelItem( i );
+    if ( item->data( 0, Qt::UserRole ).value<QObject*>() == layer )
+      return item;
+  }
+
+  return 0;
+}
+
+void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
+                                     QString displayField, QString displayValue,
+                                     const QMap<QString, QString> &attributes,
+                                     const QMap<QString, QString> &derivedAttributes )
+{
+  QTreeWidgetItem *item = layerItem( layer );
+
+  if ( item == 0 )
+  {
+    item = new QTreeWidgetItem( QStringList() << layer->name() << tr( "Layer" ) );
+    item->setData( 0, Qt::UserRole, QVariant::fromValue( dynamic_cast<QObject*>( layer ) ) );
+    lstResults->addTopLevelItem( item );
+
+    connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+  }
+
+  QTreeWidgetItem *featItem = new QTreeWidgetItem( QStringList() << displayField << displayValue );
+  featItem->setData( 0, Qt::UserRole, fid );
+
+  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
+  {
+    featItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+  }
+
+  if ( derivedAttributes.size() >= 0 )
+  {
+    QTreeWidgetItem *derivedItem = new QTreeWidgetItem( QStringList() << tr( "(Derived)" ) );
+    featItem->addChild( derivedItem );
+
+    for ( QMap< QString, QString>::const_iterator it = derivedAttributes.begin(); it != derivedAttributes.end(); it++ )
+    {
+      derivedItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+    }
+  }
+
+  item->addChild( featItem );
 }
 
 // Call to show the dialog box.
@@ -96,16 +162,30 @@ void QgsIdentifyResults::closeEvent( QCloseEvent *e )
 
 void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
 {
-  QTreeWidgetItem* item = lstResults->itemAt( lstResults->viewport()->mapFrom( this, event->pos() ) );
+  QTreeWidgetItem *item = lstResults->itemAt( lstResults->viewport()->mapFrom( this, event->pos() ) );
   // if the user clicked below the end of the attribute list, just return
-  if ( item == NULL )
+  if ( !item )
     return;
 
   if ( mActionPopup == 0 )
   {
+    QgsVectorLayer *vlayer = vectorLayer( item );
+    if ( vlayer == 0 )
+      return;
+
+    QgsAttributeAction *actions = vlayer->actions();
+
     mActionPopup = new QMenu();
 
     QAction *a;
+
+    if ( vlayer->isEditable() )
+    {
+      a = mActionPopup->addAction( tr( "Edit feature" ) );
+      a->setEnabled( true );
+      a->setData( QVariant::fromValue( -3 ) );
+    }
+
     a = mActionPopup->addAction( tr( "Copy attribute value" ) );
     a->setEnabled( true );
     a->setData( QVariant::fromValue( -2 ) );
@@ -114,7 +194,7 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
     a->setEnabled( true );
     a->setData( QVariant::fromValue( -1 ) );
 
-    if ( mActions.size() > 0 )
+    if ( actions && actions->size() > 0 )
     {
       // The assumption is made that an instance of QgsIdentifyResults is
       // created for each new Identify Results dialog box, and that the
@@ -124,8 +204,8 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
       a->setEnabled( false );
       mActionPopup->addSeparator();
 
-      QgsAttributeAction::aIter iter = mActions.begin();
-      for ( int j = 0; iter != mActions.end(); ++iter, ++j )
+      QgsAttributeAction::aIter iter = actions->begin();
+      for ( int j = 0; iter != actions->end(); ++iter, ++j )
       {
         QAction* a = mActionPopup->addAction( iter->name() );
         // The menu action stores an integer that is used later on to
@@ -134,13 +214,8 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
       }
     }
 
-    connect( mActionPopup, SIGNAL( triggered( QAction* ) ),
-             this, SLOT( popupItemSelected( QAction* ) ) );
+    connect( mActionPopup, SIGNAL( triggered( QAction* ) ), this, SLOT( popupItemSelected( QAction* ) ) );
   }
-
-  // Save the attribute values as these are needed for substituting into
-  // the action.
-  extractAllItemData( item );
 
   mActionPopup->popup( event->globalPos() );
 }
@@ -160,75 +235,6 @@ void QgsIdentifyResults::saveWindowLocation()
   settings.setValue( "/Windows/Identify/geometry", saveGeometry() );
 }
 
-/** add an attribute and its value to the list */
-void QgsIdentifyResults::addAttribute( QTreeWidgetItem * fnode, QString field, QString value )
-{
-  QStringList labels;
-  labels << field << value;
-  new QTreeWidgetItem( fnode, labels );
-}
-
-void QgsIdentifyResults::addAttribute( QString field, QString value )
-{
-  QStringList labels;
-  labels << field << value;
-  new QTreeWidgetItem( lstResults, labels );
-}
-
-void QgsIdentifyResults::addDerivedAttribute( QTreeWidgetItem * fnode, QString field, QString value )
-{
-  QTreeWidgetItem * daRootNode;
-
-  // Determine if this is the first derived attribute for this feature or not
-  if ( mDerivedAttributeRootNodes.find( fnode ) != mDerivedAttributeRootNodes.end() )
-  {
-    // Reuse existing derived-attribute root node
-    daRootNode = mDerivedAttributeRootNodes[fnode];
-  }
-  else
-  {
-    // Create new derived-attribute root node
-    daRootNode = new QTreeWidgetItem( fnode, QStringList( mDerivedLabel ) );
-    QFont font = daRootNode->font( 0 );
-    font.setItalic( true );
-    daRootNode->setFont( 0, font );
-    mDerivedAttributeRootNodes[fnode] = daRootNode;
-  }
-
-  QStringList labels;
-  labels << field << value;
-  new QTreeWidgetItem( daRootNode, labels );
-}
-
-void QgsIdentifyResults::addEdit( QTreeWidgetItem * fnode, int id )
-{
-  QStringList labels;
-  labels << "edit" << QString::number( id );
-  QTreeWidgetItem *item = new QTreeWidgetItem( fnode, labels );
-
-  item->setIcon( 0, QgisApp::getThemeIcon( "/mIconEditable.png" ) );
-}
-
-void QgsIdentifyResults::addAction( QTreeWidgetItem * fnode, int id, QString field, QString value )
-{
-  QStringList labels;
-  labels << field << value << "action" << QString::number( id );
-  QTreeWidgetItem *item = new QTreeWidgetItem( fnode, labels );
-
-  item->setIcon( 0, QgisApp::getThemeIcon( "/mAction.png" ) );
-}
-
-/** Add a feature node to the list */
-QTreeWidgetItem *QgsIdentifyResults::addNode( QString label )
-{
-  return new QTreeWidgetItem( lstResults, QStringList( label ) );
-}
-
-void QgsIdentifyResults::setTitle( QString title )
-{
-  setWindowTitle( tr( "Identify Results - %1" ).arg( title ) );
-}
-
 void QgsIdentifyResults::setColumnText( int column, const QString & label )
 {
   QTreeWidgetItem* header = lstResults->headerItem();
@@ -238,6 +244,10 @@ void QgsIdentifyResults::setColumnText( int column, const QString & label )
 // Run the action that was selected in the popup menu
 void QgsIdentifyResults::popupItemSelected( QAction* menuAction )
 {
+  QTreeWidgetItem *item = lstResults->currentItem();
+  if ( item == 0 )
+    return;
+
   int id = menuAction->data().toInt();
 
   if ( id < 0 )
@@ -245,13 +255,20 @@ void QgsIdentifyResults::popupItemSelected( QAction* menuAction )
     QClipboard *clipboard = QApplication::clipboard();
     QString text;
 
-    if ( id == -2 )
+    if ( id == -3 )
     {
-      text = mValues[ mClickedOnValue ].second;
+      editFeature( item );
+    }
+    else if ( id == -2 )
+    {
+      text = item->data( 1, Qt::DisplayRole ).toString();
     }
     else
     {
-      for ( std::vector< std::pair<QString, QString> >::const_iterator it = mValues.begin(); it != mValues.end(); it++ )
+      std::vector< std::pair<QString, QString> > attributes;
+      retrieveAttributes( item, attributes );
+
+      for ( std::vector< std::pair<QString, QString> >::iterator it = attributes.begin(); it != attributes.end(); it++ )
       {
         text += QString( "%1: %2\n" ).arg( it->first ).arg( it->second );
       }
@@ -262,15 +279,8 @@ void QgsIdentifyResults::popupItemSelected( QAction* menuAction )
   }
   else
   {
-    mActions.doAction( id, mValues, mClickedOnValue );
+    doAction( item );
   }
-}
-
-/** Expand all the identified features (show their attributes). */
-void QgsIdentifyResults::showAllAttributes()
-{
-  // Easy now with Qt 4.2...
-  lstResults->expandAll();
 }
 
 void QgsIdentifyResults::expandColumnsToFit()
@@ -281,40 +291,86 @@ void QgsIdentifyResults::expandColumnsToFit()
 
 void QgsIdentifyResults::clear()
 {
-  mDerivedAttributeRootNodes.clear();
   lstResults->clear();
+
+  if ( mRubberBand )
+  {
+    delete mRubberBand;
+    mRubberBand = 0;
+  }
 }
 
-void QgsIdentifyResults::setMessage( QString shortMsg, QString longMsg )
+void QgsIdentifyResults::doAction( QTreeWidgetItem *item )
 {
-  QStringList labels;
-  labels << shortMsg << longMsg;
-  new QTreeWidgetItem( lstResults, labels );
-}
-
-void QgsIdentifyResults::setActions( const QgsAttributeAction& actions )
-{
-  mActions = actions;
-}
-
-void QgsIdentifyResults::clicked( QTreeWidgetItem *item )
-{
-  if ( !item )
+  std::vector< std::pair<QString, QString> > attributes;
+  QTreeWidgetItem *featItem = retrieveAttributes( item, attributes );
+  if ( !featItem )
     return;
 
-  if ( item->text( 2 ) == "action" )
-  {
-    int id = item->text( 3 ).toInt();
+  int id = featItem->data( 0, Qt::UserRole ).toInt();
 
-    extractAllItemData( item );
+  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( featItem->parent()->data( 0, Qt::UserRole ).value<QObject *>() );
+  if ( !layer )
+    return;
 
-    mActions.doAction( id, mValues, mClickedOnValue );
-  }
-  else if ( item->text( 0 ) == "edit" )
-  {
-    emit editFeature( item->text( 1 ).toInt() );
-  }
+  layer->actions()->doAction( id, attributes, id );
 }
+
+QTreeWidgetItem *QgsIdentifyResults::featureItem( QTreeWidgetItem *item )
+{
+  QTreeWidgetItem *featItem;
+  if ( item->parent() )
+  {
+    if ( item->parent()->parent() )
+    {
+      // attribute item
+      featItem = item->parent();
+    }
+    else
+    {
+      // feature item
+      featItem = item;
+    }
+  }
+  else
+  {
+    // layer item
+    if ( item->childCount() > 1 )
+      return 0;
+
+    featItem = item->child( 0 );
+  }
+
+  return featItem;
+}
+
+QgsVectorLayer *QgsIdentifyResults::vectorLayer( QTreeWidgetItem *item )
+{
+  if ( item->parent() )
+  {
+    item = featureItem( item )->parent();
+  }
+
+  return dynamic_cast<QgsVectorLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
+}
+
+
+QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, std::vector< std::pair<QString, QString> > &attributes )
+{
+  QTreeWidgetItem *featItem = featureItem( item );
+
+  attributes.clear();
+  for ( int i = 0; i < featItem->childCount(); i++ )
+  {
+    QTreeWidgetItem *item = featItem->child( i );
+    if ( item->childCount() > 0 )
+      continue;
+    attributes.push_back( std::make_pair( item->data( 0, Qt::DisplayRole ).toString(), item->data( 1, Qt::DisplayRole ).toString() ) );
+  }
+
+  return featItem;
+}
+
 void QgsIdentifyResults::on_buttonHelp_clicked()
 {
   QgsContextHelp::run( context_id );
@@ -327,99 +383,94 @@ void QgsIdentifyResults::itemExpanded( QTreeWidgetItem* item )
 
 void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
-  if ( lstResults->model()->rowCount() <= 1 )
-    return;
-
   if ( current == NULL )
   {
-    mCurrentFeatureId = 0;
-    emit selectedFeatureChanged( 0 );
+    emit selectedFeatureChanged( 0, 0 );
     return;
   }
 
-  // move to node where is saved feature ID
-  QTreeWidgetItem* topLevelItem = current;
-  while ( topLevelItem->parent() != NULL )
-  {
-    topLevelItem = topLevelItem->parent();
-  }
-
-  QVariant fid = topLevelItem->data( 0, Qt::UserRole );
-
-  // no data saved...
-  if ( fid.type() != QVariant::Int )
-    return;
-  int fid2 = fid.toInt();
-
-  if ( fid2 == mCurrentFeatureId )
-    return;
-
-  mCurrentFeatureId = fid2;
-  emit selectedFeatureChanged( mCurrentFeatureId );
+  highlightFeature( current );
 }
 
-void QgsIdentifyResults::extractAllItemData( QTreeWidgetItem* item )
+void QgsIdentifyResults::layerDestroyed()
 {
-  // Extracts the name/value pairs from the given item. This includes data
-  // under the (Derived) item.
+  delete layerItem( sender() );
+}
 
-  // A little bit complicated because the user could of right-clicked
-  // on any item in the dialog box. We want a toplevel item, so walk upwards
-  // as far as possible.
-  // We also want to keep track of which row in the identify results table was
-  // actually clicked on. This is stored as an index into the mValues vector.
+void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
+{
+  QgsVectorLayer *layer = vectorLayer( item );
+  if ( !layer )
+    return;
 
-  QTreeWidgetItem* child = item;
-  QTreeWidgetItem* parent = child->parent();
-  while ( parent != 0 )
+  QTreeWidgetItem *featItem = featureItem( item );
+  if ( !featItem )
+    return;
+
+  int fid = featItem->data( 0, Qt::UserRole ).toInt();
+
+  delete mRubberBand;
+  mRubberBand = 0;
+
+  QgsFeature feat;
+  if ( ! layer->featureAtId( fid, feat, true, false ) )
   {
-    child = parent;
-    parent = parent->parent();
+    return;
   }
-  parent = child;
 
-  mValues.clear();
-
-  // For the code below we
-  // need to do the comparison on the text strings rather than the
-  // pointers because if the user clicked on the parent, we need
-  // to pick up which child that actually is (the parent in the
-  // identify results dialog box is just one of the children
-  // that has been chosen by some method).
-
-  int valuesIndex = 0;
-
-  for ( int j = 0; j < parent->childCount(); ++j )
+  if ( !feat.geometry() )
   {
-    // For derived attributes, build up a virtual name
-    if ( parent->child( j )->text( 0 ) == mDerivedLabel )
+    return;
+  }
+
+  mRubberBand = new QgsRubberBand( mCanvas, feat.geometry()->type() == QGis::Polygon );
+
+  if ( mRubberBand )
+  {
+    mRubberBand->setToGeometry( feat.geometry(), layer );
+    mRubberBand->setWidth( 2 );
+    mRubberBand->setColor( Qt::red );
+    mRubberBand->show();
+  }
+}
+
+void QgsIdentifyResults::editFeature( QTreeWidgetItem *item )
+{
+  QgsVectorLayer *layer = vectorLayer( item );
+  if ( !layer || !layer->isEditable() )
+    return;
+
+  QTreeWidgetItem *featItem = featureItem( item );
+  if ( !featItem )
+    return;
+
+  int fid = featItem->data( 0, Qt::UserRole ).toInt();
+
+  QgsFeature f;
+  if ( ! layer->featureAtId( fid, f ) )
+    return;
+
+  QgsAttributeMap src = f.attributeMap();
+
+  layer->beginEditCommand( tr( "Attribute changed" ) );
+  QgsAttributeDialog *ad = new QgsAttributeDialog( layer, &f );
+  if ( ad->exec() )
+  {
+    const QgsAttributeMap &dst = f.attributeMap();
+    for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
     {
-      for ( int k = 0; k < parent->child( j )->childCount(); ++k )
+      if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
       {
-        mValues.push_back(
-          std::make_pair( mDerivedLabel + "."
-                          + parent->child( j )->child( k )->text( 0 ),
-                          parent->child( j )->child( k )->text( 1 ) ) );
-
-        if ( item == parent->child( j )->child( k ) )
-        {
-          mClickedOnValue = valuesIndex;
-        }
-
-        valuesIndex++;
+        layer->changeAttributeValue( f.id(), it.key(), it.value() );
       }
     }
-    else // do the actual feature attributes
-    {
-      mValues.push_back( std::make_pair( parent->child( j )->text( 0 ),
-                                         parent->child( j )->text( 1 ) ) );
-
-      if ( item == parent->child( j ) )
-      {
-        mClickedOnValue = valuesIndex;
-      }
-
-      valuesIndex++;
-    }
+    layer->endEditCommand();
   }
+  else
+  {
+    layer->destroyEditCommand();
+  }
+
+  delete ad;
+  mCanvas->refresh();
 }

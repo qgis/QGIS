@@ -87,6 +87,9 @@ class CORE_EXPORT QgsRectangle
     //! return true when rectangle contains other rectangle
     //! @note added in version 1.1
     bool contains( const QgsRectangle& rect ) const;
+    //! return true when rectangle contains a point
+    //! @note added in version 1.3
+    bool contains( const QgsPoint &p ) const;
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
     void combineExtentWith( QgsRectangle *rect );
     //! expand the rectangle so that covers both the original rectangle and the given point

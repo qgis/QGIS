@@ -57,68 +57,27 @@ class QgsMapToolIdentify : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
-    //! called when map tool is being deactivated
-    virtual void deactivate();
-
-  public slots:
-    //! creates rubberband on top of the feature to highlight it
-    void highlightFeature( int featureId );
-
-    //! edit a feature
-    void editFeature( int featureId );
-
   private:
-
-    /**
-     * \brief function for identifying pixel values at a coordinate in a non-OGC-WMS raster layer
-     *
-     * \param point[in]  The coordinate (as the CRS of the raster layer)
-     */
-    void identifyRasterLayer( const QgsPoint& point );
-
-    /**
-     * \brief function for identifying a pixel in a OGC WMS raster layer
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \note WMS Servers prefer to receive coordinates in image space not CRS space, therefore
-     *       this special variant of identifyRasterLayer.
-     */
-    void identifyRasterWmsLayer( const QgsPoint& point );
-
-    /**
-     * \brief function for identifying features at a coordinate in a vector layer
-     *
-     * \param point[in]  The coordinate (as the CRS of the vector layer)
-     */
-    void identifyVectorLayer( const QgsPoint& point );
-
-    //! show whatever error is exposed by the QgsMapLayer.
-    void showError();
-
-    //! edit a feature
-    void editFeature( QgsFeature &f );
+    bool identifyLayer( QgsMapLayer *layer, int x, int y );
+    bool identifyRasterLayer( QgsRasterLayer *layer, int x, int y );
+    bool identifyVectorLayer( QgsVectorLayer *layer, int x, int y );
 
     //! Pointer to the identify results dialog for name/value pairs
     QgsIdentifyResults *mResults;
 
-    //! Rubber band for highlighting identified feature
-    QgsRubberBand* mRubberBand;
-
-    QgsMapLayer *mLayer;
-
-    //! list of identified features
-    QgsFeatureList mFeatureList;
-
     //! Private helper
     void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
+
+    void addFeature( QgsMapLayer *layer, int fid,
+                     QString displayField, QString displayValue,
+                     const QMap< QString, QString > &attributes,
+                     const QMap< QString, QString > &derivedAttributes );
+
+    /** Add an action to the feature display node */
 
   private slots:
     // Let us know when the QgsIdentifyResults dialog box has been closed
     void resultsDialogGone();
-
-    // layer was destroyed
-    void layerDestroyed();
 };
 
 #endif
