@@ -36,8 +36,7 @@ extern "C"
 class QgsGrassModelItem
 {
   public:
-    QgsGrassModelItem( QgsGrassModelItem *parent, int row, QString name,
-                       QString path, int type );
+    QgsGrassModelItem( QgsGrassModelItem *parent, int row, QString name, QString path, int type );
     QgsGrassModelItem();
     ~QgsGrassModelItem();
 
@@ -81,7 +80,7 @@ QgsGrassModelItem::QgsGrassModelItem()
 
 QgsGrassModelItem::~QgsGrassModelItem()
 {
-  for ( int i = 0; i < mChildren.size();i++ )
+  for ( int i = 0; i < mChildren.size(); i++ )
   {
     delete mChildren[i];
   }
@@ -606,13 +605,13 @@ void QgsGrassModel::addItems( QgsGrassModelItem *item, QStringList list, int typ
 
   // Add new items
 
-  for ( int i = 0; i < list.size();i++ )
+  for ( int i = 0; i < list.size(); i++ )
   {
     QString name = list.at( i );
 // QgsDebugMsg(QString("? add %1").arg(name));
 
     int insertAt = item->mChildren.size();
-    for ( int i = 0; i < item->mChildren.size();i++ )
+    for ( int i = 0; i < item->mChildren.size(); i++ )
     {
       if ( item->mChildren[i]->name() == name )
       {
@@ -897,7 +896,6 @@ QVariant QgsGrassModel::data( const QModelIndex &index, int role ) const
       default:
         return mIconDirectory;
     }
-    return mIconDirectory;
   }
   return item->data( role );
 }

@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include <string.h>
-#include <iostream>
 #include <vector>
 #include <cfloat>
 
