@@ -7,8 +7,11 @@
 // there is no need to set *everything* here.
 
 //SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
-//ARCHS = $(NATIVE_ARCH) // default
+//ARCHS = $(NATIVE_ARCH)  // ppc i386 ppc64 x86_64
 //ARCHS = ppc i386 // for universal
+
+// python archs may be different
+//ARCHS_P = $(ARCH_P_$(SDKSYS)) // in the form arch1;arch2;...
 
 //////////////////////////////////////////////////////////////////////
 // Qt and other support
