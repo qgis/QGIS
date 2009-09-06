@@ -57,6 +57,10 @@ class QgsMapToolIdentify : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
+    virtual void activate();
+
+    virtual void deactivate();
+
   private:
     bool identifyLayer( QgsMapLayer *layer, int x, int y );
     bool identifyRasterLayer( QgsRasterLayer *layer, int x, int y );
@@ -72,8 +76,6 @@ class QgsMapToolIdentify : public QgsMapTool
                      QString displayField, QString displayValue,
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes );
-
-    /** Add an action to the feature display node */
 
   private slots:
     // Let us know when the QgsIdentifyResults dialog box has been closed

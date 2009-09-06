@@ -107,6 +107,10 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     lstResults->addTopLevelItem( item );
 
     connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+
+    QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+    if ( vlayer )
+      connect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
   }
 
   QTreeWidgetItem *featItem = new QTreeWidgetItem( QStringList() << displayField << displayValue );
@@ -183,8 +187,12 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
     {
       a = mActionPopup->addAction( tr( "Edit feature" ) );
       a->setEnabled( true );
-      a->setData( QVariant::fromValue( -3 ) );
+      a->setData( QVariant::fromValue( -4 ) );
     }
+
+    a = mActionPopup->addAction( tr( "Zoom to feature" ) );
+    a->setEnabled( true );
+    a->setData( QVariant::fromValue( -3 ) );
 
     a = mActionPopup->addAction( tr( "Copy attribute value" ) );
     a->setEnabled( true );
@@ -252,30 +260,37 @@ void QgsIdentifyResults::popupItemSelected( QAction* menuAction )
 
   if ( id < 0 )
   {
-    QClipboard *clipboard = QApplication::clipboard();
-    QString text;
-
-    if ( id == -3 )
+    if ( id == -4 )
     {
       editFeature( item );
     }
-    else if ( id == -2 )
+    else if ( id == -3 )
     {
-      text = item->data( 1, Qt::DisplayRole ).toString();
+      zoomToFeature( item );
     }
     else
     {
-      std::vector< std::pair<QString, QString> > attributes;
-      retrieveAttributes( item, attributes );
+      QClipboard *clipboard = QApplication::clipboard();
+      QString text;
 
-      for ( std::vector< std::pair<QString, QString> >::iterator it = attributes.begin(); it != attributes.end(); it++ )
+      if ( id == -2 )
       {
-        text += QString( "%1: %2\n" ).arg( it->first ).arg( it->second );
+        text = item->data( 1, Qt::DisplayRole ).toString();
       }
-    }
+      else
+      {
+        std::vector< std::pair<QString, QString> > attributes;
+        retrieveAttributes( item, attributes );
 
-    QgsDebugMsg( QString( "set clipboard: %1" ).arg( text ) );
-    clipboard->setText( text );
+        for ( std::vector< std::pair<QString, QString> >::iterator it = attributes.begin(); it != attributes.end(); it++ )
+        {
+          text += QString( "%1: %2\n" ).arg( it->first ).arg( it->second );
+        }
+      }
+
+      QgsDebugMsg( QString( "set clipboard: %1" ).arg( text ) );
+      clipboard->setText( text );
+    }
   }
   else
   {
@@ -292,12 +307,40 @@ void QgsIdentifyResults::expandColumnsToFit()
 void QgsIdentifyResults::clear()
 {
   lstResults->clear();
+  clearRubberBand();
+}
 
+void QgsIdentifyResults::activate()
+{
   if ( mRubberBand )
   {
-    delete mRubberBand;
-    mRubberBand = 0;
+    mRubberBand->show();
   }
+
+  if ( lstResults->topLevelItemCount() > 0 )
+  {
+    show();
+    raise();
+  }
+}
+
+void QgsIdentifyResults::deactivate()
+{
+  if ( mRubberBand )
+  {
+    mRubberBand->hide();
+  }
+}
+
+void QgsIdentifyResults::clearRubberBand()
+{
+  if ( !mRubberBand )
+    return;
+
+  delete mRubberBand;
+  mRubberBand = 0;
+  mRubberBandLayer = 0;
+  mRubberBandFid = 0;
 }
 
 void QgsIdentifyResults::doAction( QTreeWidgetItem *item )
@@ -394,7 +437,50 @@ void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem* current, QTr
 
 void QgsIdentifyResults::layerDestroyed()
 {
+  if ( mRubberBandLayer == sender() )
+  {
+    clearRubberBand();
+  }
+
   delete layerItem( sender() );
+
+  if ( lstResults->topLevelItemCount() == 0 )
+  {
+    hide();
+  }
+}
+
+void QgsIdentifyResults::featureDeleted( int fid )
+{
+  QTreeWidgetItem *layItem = layerItem( sender() );
+
+  if ( !layItem )
+    return;
+
+  for ( int i = 0; i < layItem->childCount(); i++ )
+  {
+    QTreeWidgetItem *featItem = layItem->child( i );
+
+    if ( featItem && featItem->data( 0, Qt::UserRole ).toInt() == fid )
+    {
+      if ( mRubberBandLayer == sender() && mRubberBandFid == fid )
+        clearRubberBand();
+      delete featItem;
+      break;
+    }
+  }
+
+  if ( layItem->childCount() == 0 )
+  {
+    if ( mRubberBandLayer == sender() )
+      clearRubberBand();
+    delete layItem;
+  }
+
+  if ( lstResults->topLevelItemCount() == 0 )
+  {
+    hide();
+  }
 }
 
 void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
@@ -409,8 +495,7 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
 
   int fid = featItem->data( 0, Qt::UserRole ).toInt();
 
-  delete mRubberBand;
-  mRubberBand = 0;
+  clearRubberBand();
 
   QgsFeature feat;
   if ( ! layer->featureAtId( fid, feat, true, false ) )
@@ -424,15 +509,53 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
   }
 
   mRubberBand = new QgsRubberBand( mCanvas, feat.geometry()->type() == QGis::Polygon );
-
   if ( mRubberBand )
   {
+    mRubberBandLayer = layer;
+    mRubberBandFid = fid;
     mRubberBand->setToGeometry( feat.geometry(), layer );
     mRubberBand->setWidth( 2 );
     mRubberBand->setColor( Qt::red );
     mRubberBand->show();
   }
 }
+
+void QgsIdentifyResults::zoomToFeature( QTreeWidgetItem *item )
+{
+  QgsVectorLayer *layer = vectorLayer( item );
+  if ( !layer )
+    return;
+
+  QTreeWidgetItem *featItem = featureItem( item );
+  if ( !featItem )
+    return;
+
+  int fid = featItem->data( 0, Qt::UserRole ).toInt();
+
+  QgsFeature feat;
+  if ( ! layer->featureAtId( fid, feat, true, false ) )
+  {
+    return;
+  }
+
+  if ( !feat.geometry() )
+  {
+    return;
+  }
+
+  QgsRectangle rect = mCanvas->mapRenderer()->layerExtentToOutputExtent( layer, feat.geometry()->boundingBox() );
+
+  if ( rect.isEmpty() )
+  {
+    QgsPoint c = rect.center();
+    rect = mCanvas->extent();
+    rect.expand( 0.25, &c );
+  }
+
+  mCanvas->setExtent( rect );
+  mCanvas->refresh();
+}
+
 
 void QgsIdentifyResults::editFeature( QTreeWidgetItem *item )
 {
