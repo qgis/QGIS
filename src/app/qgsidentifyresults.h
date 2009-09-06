@@ -50,19 +50,22 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     ~QgsIdentifyResults();
 
-    /** Remove results */
-    void clear();
-
     /** Add add feature */
     void addFeature( QgsMapLayer *layer, int fid,
                      QString displayField, QString displayValue,
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes );
 
-    void closeEvent( QCloseEvent *e );
+    /** Remove results */
+    void clear();
 
-    /** Set "No features ... " */
-    void setMessage( QString shortMsg, QString longMsg );
+    /** map tool was deactivated */
+    void deactivate();
+
+    /** map tool was activated */
+    void activate();
+
+    void closeEvent( QCloseEvent *e );
 
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, int featureId );
@@ -77,6 +80,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     void layerDestroyed();
 
+    void featureDeleted( int fid );
+
     //! Context help
     void on_buttonHelp_clicked();
 
@@ -89,6 +94,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
   private:
     QMenu *mActionPopup;
+    QgsVectorLayer *mRubberBandLayer;
+    int mRubberBandFid;
     QgsRubberBand *mRubberBand;
     QgsMapCanvas *mCanvas;
 
@@ -98,6 +105,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, std::vector< std::pair<QString, QString> > &attributes );
+    void clearRubberBand();
 
     void setColumnText( int column, const QString & label );
     void expandColumnsToFit();
@@ -105,6 +113,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void restorePosition();
 
     void highlightFeature( QTreeWidgetItem *item );
+    void zoomToFeature( QTreeWidgetItem *item );
     void editFeature( QTreeWidgetItem *item );
 
     void doAction( QTreeWidgetItem *item );

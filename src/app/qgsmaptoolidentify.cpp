@@ -124,6 +124,18 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
   }
 }
 
+void QgsMapToolIdentify::activate()
+{
+  mResults->activate();
+  QgsMapTool::activate();
+}
+
+void QgsMapToolIdentify::deactivate()
+{
+  mResults->deactivate();
+  QgsMapTool::deactivate();
+}
+
 bool QgsMapToolIdentify::identifyLayer( QgsMapLayer *layer, int x, int y )
 {
   bool res = false;
