@@ -2145,7 +2145,7 @@ void QgisApp::about()
                       "- add support for data defined symbol(name)s\n"
                       "- add support for font symbol markers (only data defined - no gui yet)\n"
                       "- add symbol size in map units (ie. symbols that keep the size in mapunits\n"
-                      "  independant of the mapscale)\n"
+                      "  independent of the mapscale)\n"
                       "\n"
                       "Command line arguments:\n"
                       "\n"
