@@ -1361,7 +1361,7 @@ QString QgsProject::readPath( QString src ) const
   projElems.removeLast();
 
   // append source path elements
-  projElems.append( srcElems );
+  projElems << srcElems;
   projElems.removeAll( "." );
 
   // resolve ..

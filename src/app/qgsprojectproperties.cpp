@@ -34,6 +34,7 @@
 
 //qt includes
 #include <QColorDialog>
+#include <QHeaderView>	// Qt 4.4
 #include "qgslogger.h"
 
 //stdc++ includes
