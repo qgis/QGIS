@@ -126,7 +126,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     QgsFeature mFeature;
 
     //Methods
-    /** \brief Applies paramters on the Options tabs and saves the configuration */
+    /** \brief Applies parameters on the Options tabs and saves the configuration */
     void accept( );
 
     /** \brief Modifies the Event Image Path according to the local and global settings */

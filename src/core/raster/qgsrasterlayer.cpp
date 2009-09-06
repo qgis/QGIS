@@ -976,7 +976,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( QString const & theBand
  * This will speed up performance at the expense of hard drive space.
  * Also, write access to the file is required for creating internal pyramids,
  * and to the directory in which the files exists if external
- * pyramids (.ovr) are to be created. If no paramter is passed in
+ * pyramids (.ovr) are to be created. If no parameter is passed in
  * it will default to nearest neighbor resampling.
  *
  * @param theTryInternalFlag - Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
@@ -2991,7 +2991,7 @@ bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader
   //Invalid band number, segfault prevention
   if ( 0 >= theBandNumber || 0 == theList )
   {
-    QgsDebugMsg( "Invalid paramter" );
+    QgsDebugMsg( "Invalid parameter" );
     return false;
   }
 
