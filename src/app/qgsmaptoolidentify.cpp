@@ -100,6 +100,7 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
   else
   {
     connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+    connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -110,6 +111,7 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
       QgsMapLayer *layer = mCanvas->layer( i );
 
       emit identifyProgress( i, mCanvas->layerCount() );
+      emit identifyMessage( tr("Identifying on %1...").arg( layer->name() ) );
 
       if ( noIdentifyLayerIdList.contains( layer->getLayerID() ) )
         continue;
@@ -123,8 +125,10 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     }
 
     emit identifyProgress( mCanvas->layerCount(), mCanvas->layerCount() );
+    emit identifyMessage( tr("Identifying done.") );
 
     disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+    disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
     QApplication::restoreOverrideCursor();
   }
