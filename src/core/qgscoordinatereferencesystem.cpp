@@ -682,7 +682,10 @@ void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
   mCRS = OSRNewSpatialReference( NULL );
   mIsValidFlag = OSRImportFromProj4( mCRS, theProj4String.toLatin1().constData() ) == OGRERR_NONE;
   setMapUnits();
+
+#if defined(QGISDEBUG) && QGISDEBUG>=3
   debugPrint();
+#endif
 
   setlocale( LC_NUMERIC, oldlocale );
 }
@@ -756,7 +759,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
       QgsDebugMsg( "Unsupported map units of " + unit );
       mMapUnits = QGis::UnknownUnit;
     }
-    QgsDebugMsg( "Projection has angular units of " + unit );
+    QgsDebugMsgLevel( "Projection has angular units of " + unit, 3 );
   }
 }
 
@@ -882,11 +885,11 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   {
     if ( OSRExportToWkt( theSrs.mCRS, &otherStr ) == OGRERR_NONE )
     {
-      QgsDebugMsg( QString( "Comparing " ) + thisStr );
-      QgsDebugMsg( QString( "     with " ) + otherStr );
+      QgsDebugMsgLevel( QString( "Comparing " ) + thisStr, 3 );
+      QgsDebugMsgLevel( QString( "     with " ) + otherStr, 3 );
       if ( !strcmp( thisStr, otherStr ) )
       {
-        QgsDebugMsg( QString( "MATCHED!" ) + otherStr );
+        QgsDebugMsgLevel( QString( "MATCHED!" ) + otherStr, 3 );
         CPLFree( thisStr );
         CPLFree( otherStr );
         return true;

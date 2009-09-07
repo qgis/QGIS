@@ -61,6 +61,9 @@ class QgsMapToolIdentify : public QgsMapTool
 
     virtual void deactivate();
 
+  signals:
+    void identifyProgress( int, int );
+
   private:
     bool identifyLayer( QgsMapLayer *layer, int x, int y );
     bool identifyRasterLayer( QgsRasterLayer *layer, int x, int y );
