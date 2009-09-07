@@ -31,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsmaplayerregistry.h"
+#include "qgisapp.h"
 
 #include <QSettings>
 #include <QMessageBox>
@@ -90,15 +91,25 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
       return;
     }
 
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
     res = identifyLayer( layer, e->x(), e->y() );
+
+    QApplication::restoreOverrideCursor();
   }
   else
   {
+    connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
     QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
 
     for ( int i = 0; i < mCanvas->layerCount(); i++ )
     {
       QgsMapLayer *layer = mCanvas->layer( i );
+
+      emit identifyProgress( i, mCanvas->layerCount() );
 
       if ( noIdentifyLayerIdList.contains( layer->getLayerID() ) )
         continue;
@@ -110,6 +121,12 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
           break;
       }
     }
+
+    emit identifyProgress( mCanvas->layerCount(), mCanvas->layerCount() );
+
+    disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+
+    QApplication::restoreOverrideCursor();
   }
 
   if ( res )
@@ -178,8 +195,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   calc.setEllipsoid( ellipsoid );
   calc.setSourceCrs( layer->srs().srsid() );
 
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
   QgsFeatureList featureList;
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
@@ -209,8 +224,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
     // catch exception for 'invalid' point and proceed with no features found
     QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
-
-  QApplication::restoreOverrideCursor();
 
   QgsFeatureList::iterator f_it = featureList.begin();
 
@@ -281,8 +294,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   }
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
-
-  QApplication::restoreOverrideCursor();
 
   return featureCount > 0;
 }
