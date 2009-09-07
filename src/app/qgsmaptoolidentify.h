@@ -63,6 +63,7 @@ class QgsMapToolIdentify : public QgsMapTool
 
   signals:
     void identifyProgress( int, int );
+    void identifyMessage( QString );
 
   private:
     bool identifyLayer( QgsMapLayer *layer, int x, int y );
