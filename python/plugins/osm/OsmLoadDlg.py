@@ -67,8 +67,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
         # load default values to combobox determining style for custom renderer
         self.styles=["Small scale","Medium scale","Large scale"]
-        thisFile=QString(__file__)
-        directory=thisFile.left(thisFile.lastIndexOf('/'))
+        directory=QFileInfo(__file__).canonicalPath()
         self.styleFiles=[directory+"/styles/small_scale.style", directory+"/styles/medium_scale.style", directory+"/styles/big_scale.style"]
         self.styleCombo.addItems(self.styles)
 
