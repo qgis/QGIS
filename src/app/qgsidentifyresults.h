@@ -116,7 +116,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void zoomToFeature( QTreeWidgetItem *item );
     void editFeature( QTreeWidgetItem *item );
 
-    void doAction( QTreeWidgetItem *item );
+    void doAction( QTreeWidgetItem *item, int action );
 };
 
 #endif

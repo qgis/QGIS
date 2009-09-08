@@ -171,59 +171,60 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   if ( !item )
     return;
 
-  if ( mActionPopup == 0 )
+  if ( mActionPopup )
+    delete mActionPopup;
+
+  QgsVectorLayer *vlayer = vectorLayer( item );
+  if ( vlayer == 0 )
+    return;
+
+  mActionPopup = new QMenu();
+
+  QAction *a;
+
+  if ( vlayer->isEditable() )
   {
-    QgsVectorLayer *vlayer = vectorLayer( item );
-    if ( vlayer == 0 )
-      return;
-
-    QgsAttributeAction *actions = vlayer->actions();
-
-    mActionPopup = new QMenu();
-
-    QAction *a;
-
-    if ( vlayer->isEditable() )
-    {
-      a = mActionPopup->addAction( tr( "Edit feature" ) );
-      a->setEnabled( true );
-      a->setData( QVariant::fromValue( -4 ) );
-    }
-
-    a = mActionPopup->addAction( tr( "Zoom to feature" ) );
+    a = mActionPopup->addAction( tr( "Edit feature" ) );
     a->setEnabled( true );
-    a->setData( QVariant::fromValue( -3 ) );
-
-    a = mActionPopup->addAction( tr( "Copy attribute value" ) );
-    a->setEnabled( true );
-    a->setData( QVariant::fromValue( -2 ) );
-
-    a = mActionPopup->addAction( tr( "Copy feature attributes" ) );
-    a->setEnabled( true );
-    a->setData( QVariant::fromValue( -1 ) );
-
-    if ( actions && actions->size() > 0 )
-    {
-      // The assumption is made that an instance of QgsIdentifyResults is
-      // created for each new Identify Results dialog box, and that the
-      // contents of the popup menu doesn't change during the time that
-      // such a dialog box is around.
-      a = mActionPopup->addAction( tr( "Run action" ) );
-      a->setEnabled( false );
-      mActionPopup->addSeparator();
-
-      QgsAttributeAction::aIter iter = actions->begin();
-      for ( int j = 0; iter != actions->end(); ++iter, ++j )
-      {
-        QAction* a = mActionPopup->addAction( iter->name() );
-        // The menu action stores an integer that is used later on to
-        // associate an menu action with an actual qgis action.
-        a->setData( QVariant::fromValue( j ) );
-      }
-    }
-
-    connect( mActionPopup, SIGNAL( triggered( QAction* ) ), this, SLOT( popupItemSelected( QAction* ) ) );
+    a->setData( QVariant::fromValue( -4 ) );
   }
+
+  a = mActionPopup->addAction( tr( "Zoom to feature" ) );
+  a->setEnabled( true );
+  a->setData( QVariant::fromValue( -3 ) );
+
+  a = mActionPopup->addAction( tr( "Copy attribute value" ) );
+  a->setEnabled( true );
+  a->setData( QVariant::fromValue( -2 ) );
+
+  a = mActionPopup->addAction( tr( "Copy feature attributes" ) );
+  a->setEnabled( true );
+  a->setData( QVariant::fromValue( -1 ) );
+
+  QgsAttributeAction *actions = vlayer->actions();
+  if ( actions && actions->size() > 0 )
+  {
+    mActionPopup->addSeparator();
+
+    // The assumption is made that an instance of QgsIdentifyResults is
+    // created for each new Identify Results dialog box, and that the
+    // contents of the popup menu doesn't change during the time that
+    // such a dialog box is around.
+    a = mActionPopup->addAction( tr( "Run action" ) );
+    a->setEnabled( false );
+
+    QgsAttributeAction::aIter iter = actions->begin();
+    for ( int i = 0; iter != actions->end(); ++iter, ++i )
+    {
+      QAction* a = mActionPopup->addAction( iter->name() );
+      a->setEnabled( true );
+      // The menu action stores an integer that is used later on to
+      // associate an menu action with an actual qgis action.
+      a->setData( QVariant::fromValue( i ) );
+    }
+  }
+
+  connect( mActionPopup, SIGNAL( triggered( QAction* ) ), this, SLOT( popupItemSelected( QAction* ) ) );
 
   mActionPopup->popup( event->globalPos() );
 }
@@ -256,15 +257,15 @@ void QgsIdentifyResults::popupItemSelected( QAction* menuAction )
   if ( item == 0 )
     return;
 
-  int id = menuAction->data().toInt();
+  int action = menuAction->data().toInt();
 
-  if ( id < 0 )
+  if ( action < 0 )
   {
-    if ( id == -4 )
+    if ( action == -4 )
     {
       editFeature( item );
     }
-    else if ( id == -3 )
+    else if ( action == -3 )
     {
       zoomToFeature( item );
     }
@@ -273,7 +274,7 @@ void QgsIdentifyResults::popupItemSelected( QAction* menuAction )
       QClipboard *clipboard = QApplication::clipboard();
       QString text;
 
-      if ( id == -2 )
+      if ( action == -2 )
       {
         text = item->data( 1, Qt::DisplayRole ).toString();
       }
@@ -294,7 +295,7 @@ void QgsIdentifyResults::popupItemSelected( QAction* menuAction )
   }
   else
   {
-    doAction( item );
+    doAction( item, action );
   }
 }
 
@@ -343,20 +344,34 @@ void QgsIdentifyResults::clearRubberBand()
   mRubberBandFid = 0;
 }
 
-void QgsIdentifyResults::doAction( QTreeWidgetItem *item )
+void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
 {
   std::vector< std::pair<QString, QString> > attributes;
   QTreeWidgetItem *featItem = retrieveAttributes( item, attributes );
   if ( !featItem )
     return;
 
-  int id = featItem->data( 0, Qt::UserRole ).toInt();
-
   QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( featItem->parent()->data( 0, Qt::UserRole ).value<QObject *>() );
   if ( !layer )
     return;
 
-  layer->actions()->doAction( id, attributes, id );
+  int idx = -1;
+  if ( item->parent() == featItem )
+  {
+    QString fieldName = item->data( 0, Qt::DisplayRole ).toString();
+
+    int idx = -1;
+    for ( QgsFieldMap::const_iterator it = layer->pendingFields().begin(); it != layer->pendingFields().end(); it++ )
+    {
+      if ( it->name() == fieldName )
+      {
+        idx = it.key();
+        break;
+      }
+    }
+  }
+
+  layer->actions()->doAction( action, attributes, idx );
 }
 
 QTreeWidgetItem *QgsIdentifyResults::featureItem( QTreeWidgetItem *item )
