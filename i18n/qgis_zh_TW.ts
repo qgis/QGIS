@@ -1038,6 +1038,32 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Points in polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output Shapefile:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector layer is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output matrix:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum line lengths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>creating new selection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1073,391 +1099,333 @@ p, li { white-space: pre-wrap; }
         <source>Please specify select layer</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Distance matrix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Created output matrix:
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Points in polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Created output Shapefile:
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Vector layer is not valid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sum line lengths</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>DlgAddRelation</name>
     <message>
         <source>OSM Information</source>
-        <translation>OSM 資訊</translation>
+        <translation type="obsolete">OSM 資訊</translation>
     </message>
     <message>
         <source>Create OSM relation</source>
-        <translation>建立OSM關連</translation>
+        <translation type="obsolete">建立OSM關連</translation>
     </message>
     <message>
         <source>Relation type:</source>
-        <translation>關連種類:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation></translation>
+        <translation type="obsolete">關連種類:</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation>屬性</translation>
+        <translation type="obsolete">屬性</translation>
     </message>
     <message>
         <source>Members</source>
-        <translation>成員</translation>
+        <translation type="obsolete">成員</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation>建立</translation>
+        <translation type="obsolete">建立</translation>
     </message>
     <message>
         <source>Storno</source>
-        <translation type="unfinished">取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
 </context>
 <context>
     <name>DlgDownloadOSM</name>
     <message>
         <source>Download OSM data</source>
-        <translation>下載OSM資料</translation>
+        <translation type="obsolete">下載OSM資料</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation>範圍</translation>
+        <translation type="obsolete">範圍</translation>
     </message>
     <message>
         <source>Latitude:</source>
-        <translation>緯度:</translation>
+        <translation type="obsolete">緯度:</translation>
     </message>
     <message>
         <source>   From</source>
-        <translation>   從</translation>
+        <translation type="obsolete">   從</translation>
     </message>
     <message>
         <source>To</source>
-        <translation>至</translation>
+        <translation type="obsolete">至</translation>
     </message>
     <message>
         <source>Longitude:</source>
-        <translation>經度:</translation>
-    </message>
-    <message>
-        <source>&lt;nothing&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">經度:</translation>
     </message>
     <message>
         <source>Download to:</source>
-        <translation>下載到:</translation>
+        <translation type="obsolete">下載到:</translation>
     </message>
     <message>
         <source>Open data automatically after download</source>
-        <translation>下載完畢後自動開啟資料</translation>
+        <translation type="obsolete">下載完畢後自動開啟資料</translation>
     </message>
     <message>
         <source>Replace current data (current layer will be removed)</source>
-        <translation>取代現有的資料(目前的圖前將會移除)</translation>
+        <translation type="obsolete">取代現有的資料(目前的圖前將會移除)</translation>
     </message>
     <message>
         <source>Use custom renderer</source>
-        <translation>使用自訂繪圖</translation>
+        <translation type="obsolete">使用自訂繪圖</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation>下載</translation>
+        <translation type="obsolete">下載</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
     <message>
         <source>OSM Download</source>
-        <translation>OSM下載</translation>
+        <translation type="obsolete">OSM下載</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation>無法儲存檔案 %1: %2.</translation>
+        <translation type="obsolete">無法儲存檔案 %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation>等待OpenStreetMap(OSM)伺服器中...</translation>
+        <translation type="obsolete">等待OpenStreetMap(OSM)伺服器中...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation>下載過程失敗。OpenStreetMap伺服器回應%1 - %2</translation>
+        <translation type="obsolete">下載過程失敗。OpenStreetMap伺服器回應%1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation>OSM下載錯誤</translation>
+        <translation type="obsolete">OSM下載錯誤</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation>下載失敗:%1。</translation>
+        <translation type="obsolete">下載失敗:%1。</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation>取得資料中</translation>
+        <translation type="obsolete">取得資料中</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation>您從OpenStreetMap伺服器(~ api.openstreetmap.org)下載的有固定限制的大小，在 &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;中提到經度或緯度的可下載範圍不能超過0.25度。注意 Quantum GIS 允許您指定您任何範圍，但是 OpenStreetMap 伺服器會依據下載的限制拒絕您的下載。</translation>
+        <translation type="obsolete">您從OpenStreetMap伺服器(~ api.openstreetmap.org)下載的有固定限制的大小，在 &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;中提到經度或緯度的可下載範圍不能超過0.25度。注意 Quantum GIS 允許您指定您任何範圍，但是 OpenStreetMap 伺服器會依據下載的限制拒絕您的下載。</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation>緯度與經度範圍過大!</translation>
+        <translation type="obsolete">緯度與經度範圍過大!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation>緯度範圍過大!</translation>
+        <translation type="obsolete">緯度範圍過大!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation>經度範圍過大!</translation>
+        <translation type="obsolete">經度範圍過大!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation>OK!面積大小伺服器可以接受。</translation>
+        <translation type="obsolete">OK!面積大小伺服器可以接受。</translation>
     </message>
 </context>
 <context>
     <name>DlgImport</name>
     <message>
         <source>Import data to OSM</source>
-        <translation>匯入資料至OSM</translation>
+        <translation type="obsolete">匯入資料至OSM</translation>
     </message>
     <message>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation>在這對話方塊，您可以匯入QGIS中的圖層至作用中的OSM資料</translation>
+        <translation type="obsolete">在這對話方塊，您可以匯入QGIS中的圖層至作用中的OSM資料</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation>圖層</translation>
+        <translation type="obsolete">圖層</translation>
     </message>
     <message>
         <source>Import only current selection</source>
-        <translation>僅匯入目前選取</translation>
+        <translation type="obsolete">僅匯入目前選取</translation>
     </message>
 </context>
 <context>
     <name>DlgLoadOSM</name>
     <message>
         <source>Load OSM</source>
-        <translation>載入OSM</translation>
+        <translation type="obsolete">載入OSM</translation>
     </message>
     <message>
         <source>OpenStreetMap file to load:</source>
-        <translation>OpenStreetMap檔案載入:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation></translation>
+        <translation type="obsolete">OpenStreetMap檔案載入:</translation>
     </message>
     <message>
         <source>Add columns for tags:</source>
-        <translation>為標籤新增欄位:</translation>
+        <translation type="obsolete">為標籤新增欄位:</translation>
     </message>
     <message>
         <source>Use custom renderer</source>
-        <translation>使用自訂的繪圖</translation>
+        <translation type="obsolete">使用自訂的繪圖</translation>
     </message>
     <message>
         <source>Replace current data (current layers will be removed)</source>
-        <translation>取代目前的資料(目前的圖層將會被移除)</translation>
+        <translation type="obsolete">取代目前的資料(目前的圖層將會被移除)</translation>
     </message>
 </context>
 <context>
     <name>DlgSaveOSM</name>
     <message>
         <source>Save OSM to file</source>
-        <translation>儲存OSM為檔案</translation>
+        <translation type="obsolete">儲存OSM為檔案</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation>無法儲存檔案 %1: %2.</translation>
+        <translation type="obsolete">無法儲存檔案 %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation>初始化...</translation>
+        <translation type="obsolete">初始化...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation>儲存結點中...</translation>
+        <translation type="obsolete">儲存結點中...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation>儲存線中...</translation>
+        <translation type="obsolete">儲存線中...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation>儲存多邊形中...</translation>
+        <translation type="obsolete">儲存多邊形中...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation>儲存關連中...</translation>
+        <translation type="obsolete">儲存關連中...</translation>
     </message>
     <message>
         <source>Save OSM</source>
-        <translation>儲存OSM</translation>
+        <translation type="obsolete">儲存OSM</translation>
     </message>
     <message>
         <source>Where to save:</source>
-        <translation>儲存至:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation></translation>
+        <translation type="obsolete">儲存至:</translation>
     </message>
     <message>
         <source>Features to save:</source>
-        <translation>儲存圖徵:</translation>
+        <translation type="obsolete">儲存圖徵:</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation>點</translation>
+        <translation type="obsolete">點</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation>線</translation>
+        <translation type="obsolete">線</translation>
     </message>
     <message>
         <source>Polygons</source>
-        <translation>多邊形</translation>
+        <translation type="obsolete">多邊形</translation>
     </message>
     <message>
         <source>Relations</source>
-        <translation>關連</translation>
+        <translation type="obsolete">關連</translation>
     </message>
     <message>
         <source>Tags</source>
-        <translation>標籤</translation>
+        <translation type="obsolete">標籤</translation>
     </message>
 </context>
 <context>
     <name>DlgUploadOSM</name>
     <message>
         <source>Upload OSM data</source>
-        <translation>上傳OSM資料</translation>
+        <translation type="obsolete">上傳OSM資料</translation>
     </message>
     <message>
         <source>Ready for upload</source>
-        <translation>準備好上傳</translation>
+        <translation type="obsolete">準備好上傳</translation>
     </message>
     <message>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation type="obsolete">1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation type="unfinished">2</translation>
-    </message>
-    <message>
-        <source>3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>5</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">2</translation>
     </message>
     <message>
         <source>Comment on your changes:</source>
-        <translation>為您的更新加上註解:</translation>
+        <translation type="obsolete">為您的更新加上註解:</translation>
     </message>
     <message>
         <source>OSM account</source>
-        <translation>OSM帳號</translation>
+        <translation type="obsolete">OSM帳號</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>使用者名稱:</translation>
+        <translation type="obsolete">使用者名稱:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation>密碼:</translation>
+        <translation type="obsolete">密碼:</translation>
     </message>
     <message>
         <source>Show password</source>
-        <translation>顯示密碼</translation>
+        <translation type="obsolete">顯示密碼</translation>
     </message>
     <message>
         <source>Save password</source>
-        <translation>儲存密碼</translation>
+        <translation type="obsolete">儲存密碼</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation>OSM上傳</translation>
+        <translation type="obsolete">OSM上傳</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation>上傳資料...</translation>
+        <translation type="obsolete">上傳資料...</translation>
     </message>
 </context>
 <context>
     <name>DockWidget</name>
     <message>
         <source>OSM Plugin</source>
-        <translation>OSM附加元件</translation>
+        <translation type="obsolete">OSM附加元件</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation>因為OSM資料庫異動，所以&apos;建立OSM關連&apos;對話方塊將會自動關閉。</translation>
+        <translation type="obsolete">因為OSM資料庫異動，所以&apos;建立OSM關連&apos;對話方塊將會自動關閉。</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished">OSM 圖徵停駐工具</translation>
+        <translation type="obsolete">OSM 圖徵停駐工具</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation>請先選取OSM圖徵。</translation>
+        <translation type="obsolete">請先選取OSM圖徵。</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation>請先選取關連來編輯。</translation>
+        <translation type="obsolete">請先選取關連來編輯。</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation>屬性&apos;%1&apos;不能重覆新增</translation>
+        <translation type="obsolete">屬性&apos;%1&apos;不能重覆新增</translation>
     </message>
 </context>
 <context>
     <name>GeometryDialog</name>
     <message>
         <source>Input vector layer</source>
-        <translation>輸入向量圖層</translation>
+        <translation type="unfinished">輸入向量圖層</translation>
     </message>
     <message>
         <source>Merge all</source>
-        <translation>合併所有</translation>
+        <translation type="unfinished">合併所有</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
@@ -1930,7 +1898,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Dataset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">資料集</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -2008,54 +1976,287 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>OsmDockWidget</name>
+    <name>OsmAddRelationDlg</name>
     <message>
-        <source>OSM Feature</source>
-        <translation>OSM 圖徵</translation>
+        <source>Create OSM relation</source>
+        <translation type="unfinished">建立OSM關連</translation>
+    </message>
+    <message>
+        <source>Relation type:</source>
+        <translation type="unfinished">關連種類:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished">屬性</translation>
+    </message>
+    <message>
+        <source>Members</source>
+        <translation type="unfinished">成員</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation type="unfinished">建立</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <source>OSM Information</source>
+        <translation type="unfinished">OSM 資訊</translation>
+    </message>
+</context>
+<context>
+    <name>OsmDockWidget</name>
+    <message>
+        <source>OSM Feature</source>
+        <translation type="obsolete">OSM 圖徵</translation>
     </message>
     <message>
         <source>Identify object</source>
-        <translation>識別物件</translation>
+        <translation type="obsolete">識別物件</translation>
     </message>
     <message>
         <source>Move object</source>
-        <translation>移動物件</translation>
+        <translation type="obsolete">移動物件</translation>
     </message>
     <message>
         <source>Create point</source>
-        <translation>建立點</translation>
+        <translation type="obsolete">建立點</translation>
     </message>
     <message>
         <source>Create line</source>
-        <translation>建立線</translation>
+        <translation type="obsolete">建立線</translation>
     </message>
     <message>
         <source>Create polygon</source>
-        <translation>建立多邊形</translation>
+        <translation type="obsolete">建立多邊形</translation>
     </message>
     <message>
         <source>Create relation</source>
-        <translation>建立關連</translation>
+        <translation type="obsolete">建立關連</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation>復原</translation>
+        <translation type="obsolete">復原</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation>取消復原</translation>
+        <translation type="obsolete">取消復原</translation>
     </message>
     <message>
         <source>Show/Hide OSM Edit History</source>
-        <translation>顯示/隱藏OSM編輯歷程</translation>
+        <translation type="obsolete">顯示/隱藏OSM編輯歷程</translation>
     </message>
     <message>
         <source>Feature:</source>
-        <translation>圖徵:</translation>
+        <translation type="obsolete">圖徵:</translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation type="obsolete">未知</translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="obsolete">屬性</translation>
+    </message>
+    <message>
+        <source>Add new relation</source>
+        <translation type="obsolete">新增關連</translation>
+    </message>
+    <message>
+        <source>Edit selected relation</source>
+        <translation type="obsolete">編輯選取的關連</translation>
+    </message>
+    <message>
+        <source>E</source>
+        <translation type="obsolete">東</translation>
+    </message>
+    <message>
+        <source>Remove selected relation</source>
+        <translation type="obsolete">移除選取的關連</translation>
+    </message>
+    <message>
+        <source>R</source>
+        <translation type="obsolete">R</translation>
+    </message>
+    <message>
+        <source>Relation tags:</source>
+        <translation type="obsolete">關連標籤:</translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="obsolete">1</translation>
+    </message>
+    <message>
+        <source>Relation members:</source>
+        <translation type="obsolete">關連成員:</translation>
+    </message>
+    <message>
+        <source>Relations</source>
+        <translation type="obsolete">關連</translation>
+    </message>
+</context>
+<context>
+    <name>OsmDownloadDlg</name>
+    <message>
+        <source>Download OSM data</source>
+        <translation type="unfinished">下載OSM資料</translation>
+    </message>
+    <message>
+        <source>Extent</source>
+        <translation type="unfinished">範圍</translation>
+    </message>
+    <message>
+        <source>Latitude:</source>
+        <translation type="unfinished">緯度:</translation>
+    </message>
+    <message>
+        <source>   From</source>
+        <translation type="unfinished">   從</translation>
+    </message>
+    <message>
+        <source>To</source>
+        <translation type="unfinished">至</translation>
+    </message>
+    <message>
+        <source>Longitude:</source>
+        <translation type="unfinished">經度:</translation>
+    </message>
+    <message>
+        <source>&lt;nothing&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download to:</source>
+        <translation type="unfinished">下載到:</translation>
+    </message>
+    <message>
+        <source>Open data automatically after download</source>
+        <translation type="unfinished">下載完畢後自動開啟資料</translation>
+    </message>
+    <message>
+        <source>Replace current data (current layer will be removed)</source>
+        <translation type="unfinished">取代現有的資料(目前的圖前將會移除)</translation>
+    </message>
+    <message>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation type="unfinished">下載</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <source>OSM Download</source>
+        <translation type="unfinished">OSM下載</translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished">無法儲存檔案 %1: %2.</translation>
+    </message>
+    <message>
+        <source>Waiting for OpenStreetMap server ...</source>
+        <translation type="unfinished">等待OpenStreetMap(OSM)伺服器中...</translation>
+    </message>
+    <message>
+        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
+        <translation type="unfinished">下載過程失敗。OpenStreetMap伺服器回應%1 - %2</translation>
+    </message>
+    <message>
+        <source>OSM Download Error</source>
+        <translation type="unfinished">OSM下載錯誤</translation>
+    </message>
+    <message>
+        <source>Download failed: %1.</source>
+        <translation type="unfinished">下載失敗:%1。</translation>
+    </message>
+    <message>
+        <source>Getting data</source>
+        <translation type="unfinished">取得資料中</translation>
+    </message>
+    <message>
+        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
+        <translation type="unfinished">您從OpenStreetMap伺服器(~ api.openstreetmap.org)下載的有固定限制的大小，在 &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;中提到經度或緯度的可下載範圍不能超過0.25度。注意 Quantum GIS 允許您指定您任何範圍，但是 OpenStreetMap 伺服器會依據下載的限制拒絕您的下載。</translation>
+    </message>
+    <message>
+        <source>Both extents are too large!</source>
+        <translation type="unfinished">緯度與經度範圍過大!</translation>
+    </message>
+    <message>
+        <source>Latitude extent is too large!</source>
+        <translation type="unfinished">緯度範圍過大!</translation>
+    </message>
+    <message>
+        <source>Longitude extent is too large!</source>
+        <translation type="unfinished">經度範圍過大!</translation>
+    </message>
+    <message>
+        <source>OK! Area is probably acceptable to server.</source>
+        <translation type="unfinished">OK!面積大小伺服器可以接受。</translation>
+    </message>
+</context>
+<context>
+    <name>OsmFeatureDW</name>
+    <message>
+        <source>OSM Feature</source>
+        <translation type="unfinished">OSM 圖徵</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identify object</source>
+        <translation type="unfinished">識別物件</translation>
+    </message>
+    <message>
+        <source>Move object</source>
+        <translation type="unfinished">移動物件</translation>
+    </message>
+    <message>
+        <source>Create point</source>
+        <translation type="unfinished">建立點</translation>
+    </message>
+    <message>
+        <source>Create line</source>
+        <translation type="unfinished">建立線</translation>
+    </message>
+    <message>
+        <source>Create polygon</source>
+        <translation type="unfinished">建立多邊形</translation>
+    </message>
+    <message>
+        <source>Create relation</source>
+        <translation type="unfinished">建立關連</translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished">復原</translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation type="unfinished">取消復原</translation>
+    </message>
+    <message>
+        <source>Show/Hide OSM Edit History</source>
+        <translation type="unfinished">顯示/隱藏OSM編輯歷程</translation>
+    </message>
+    <message>
+        <source>Feature:</source>
+        <translation type="unfinished">圖徵:</translation>
     </message>
     <message>
         <source>TYPE, ID:</source>
@@ -2071,39 +2272,39 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>unknown</source>
-        <translation>未知</translation>
+        <translation type="unfinished">未知</translation>
     </message>
     <message>
-        <source>Properties</source>
-        <translation>屬性</translation>
-    </message>
-    <message>
-        <source>Add new relation</source>
-        <translation>新增關連</translation>
-    </message>
-    <message>
-        <source>A</source>
+        <source>Remove feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit selected relation</source>
-        <translation>編輯選取的關連</translation>
+        <source>Properties</source>
+        <translation type="unfinished">屬性</translation>
     </message>
     <message>
-        <source>E</source>
-        <translation type="unfinished">東</translation>
+        <source>Remove selected tags</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remove selected relation</source>
-        <translation>移除選取的關連</translation>
+        <source>Relations</source>
+        <translation type="unfinished">關連</translation>
     </message>
     <message>
-        <source>R</source>
-        <translation type="unfinished">R</translation>
+        <source>Add relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove relation</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Relation tags:</source>
-        <translation>關連標籤:</translation>
+        <translation type="unfinished">關連標籤:</translation>
     </message>
     <message>
         <source>1</source>
@@ -2111,34 +2312,249 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Relation members:</source>
-        <translation>關連成員:</translation>
+        <translation type="unfinished">關連成員:</translation>
+    </message>
+    <message>
+        <source>OSM Plugin</source>
+        <translation type="unfinished">OSM附加元件</translation>
+    </message>
+    <message>
+        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
+        <translation type="unfinished">因為OSM資料庫異動，所以&apos;建立OSM關連&apos;對話方塊將會自動關閉。</translation>
+    </message>
+    <message>
+        <source>OSM Feature Dock Widget</source>
+        <translation type="unfinished">OSM 圖徵停駐工具</translation>
+    </message>
+    <message>
+        <source>Choose OSM feature first.</source>
+        <translation type="unfinished">請先選取OSM圖徵。</translation>
+    </message>
+    <message>
+        <source>Choose relation for editing first.</source>
+        <translation type="unfinished">請先選取關連來編輯。</translation>
+    </message>
+    <message>
+        <source>Property &apos;%1&apos; cannot be added twice.</source>
+        <translation type="unfinished">屬性&apos;%1&apos;不能重覆新增</translation>
+    </message>
+</context>
+<context>
+    <name>OsmImportDlg</name>
+    <message>
+        <source>Import data to OSM</source>
+        <translation type="unfinished">匯入資料至OSM</translation>
+    </message>
+    <message>
+        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
+        <translation type="unfinished">在這對話方塊，您可以匯入QGIS中的圖層至作用中的OSM資料</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">圖層</translation>
+    </message>
+    <message>
+        <source>Import only current selection</source>
+        <translation type="unfinished">僅匯入目前選取</translation>
+    </message>
+</context>
+<context>
+    <name>OsmLoadDlg</name>
+    <message>
+        <source>Load OSM</source>
+        <translation type="unfinished">載入OSM</translation>
+    </message>
+    <message>
+        <source>OpenStreetMap file to load:</source>
+        <translation type="unfinished">OpenStreetMap檔案載入:</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add columns for tags:</source>
+        <translation type="unfinished">為標籤新增欄位:</translation>
+    </message>
+    <message>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace current data (current layers will be removed)</source>
+        <translation type="unfinished">取代目前的資料(目前的圖層將會被移除)</translation>
+    </message>
+</context>
+<context>
+    <name>OsmSaveDlg</name>
+    <message>
+        <source>Save OSM</source>
+        <translation type="unfinished">儲存OSM</translation>
+    </message>
+    <message>
+        <source>Where to save:</source>
+        <translation type="unfinished">儲存至:</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Features to save:</source>
+        <translation type="unfinished">儲存圖徵:</translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lines</source>
+        <translation type="unfinished">線</translation>
+    </message>
+    <message>
+        <source>Polygons</source>
+        <translation type="unfinished">多邊形</translation>
     </message>
     <message>
         <source>Relations</source>
-        <translation>關連</translation>
+        <translation type="unfinished">關連</translation>
+    </message>
+    <message>
+        <source>Tags</source>
+        <translation type="unfinished">標籤</translation>
+    </message>
+    <message>
+        <source>Save OSM to file</source>
+        <translation type="unfinished">儲存OSM為檔案</translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished">無法儲存檔案 %1: %2.</translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
+        <translation type="unfinished">初始化...</translation>
+    </message>
+    <message>
+        <source>Saving nodes...</source>
+        <translation type="unfinished">儲存結點中...</translation>
+    </message>
+    <message>
+        <source>Saving lines...</source>
+        <translation type="unfinished">儲存線中...</translation>
+    </message>
+    <message>
+        <source>Saving polygons...</source>
+        <translation type="unfinished">儲存多邊形中...</translation>
+    </message>
+    <message>
+        <source>Saving relations...</source>
+        <translation type="unfinished">儲存關連中...</translation>
+    </message>
+</context>
+<context>
+    <name>OsmUndoRedoDW</name>
+    <message>
+        <source>OSM Edit History</source>
+        <translation type="unfinished">OSM編輯歷程</translation>
+    </message>
+    <message>
+        <source>Clear all</source>
+        <translation type="unfinished">全部清除</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished">復原</translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation type="unfinished">取消復原</translation>
     </message>
 </context>
 <context>
     <name>OsmUndoRedoDockWidget</name>
     <message>
         <source>OSM Edit History</source>
-        <translation>OSM編輯歷程</translation>
+        <translation type="obsolete">OSM編輯歷程</translation>
     </message>
     <message>
         <source>Clear all</source>
-        <translation>全部清除</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation></translation>
+        <translation type="obsolete">全部清除</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation>復原</translation>
+        <translation type="obsolete">復原</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation>取消復原</translation>
+        <translation type="obsolete">取消復原</translation>
+    </message>
+</context>
+<context>
+    <name>OsmUploadDlg</name>
+    <message>
+        <source>Upload OSM data</source>
+        <translation type="unfinished">上傳OSM資料</translation>
+    </message>
+    <message>
+        <source>Ready for upload</source>
+        <translation type="unfinished">準備好上傳</translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <source>2</source>
+        <translation type="unfinished">2</translation>
+    </message>
+    <message>
+        <source>3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comment on your changes:</source>
+        <translation type="unfinished">為您的更新加上註解:</translation>
+    </message>
+    <message>
+        <source>OSM account</source>
+        <translation type="unfinished">OSM帳號</translation>
+    </message>
+    <message>
+        <source>Username:</source>
+        <translation type="unfinished">使用者名稱:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished">密碼:</translation>
+    </message>
+    <message>
+        <source>Show password</source>
+        <translation type="unfinished">顯示密碼</translation>
+    </message>
+    <message>
+        <source>Save password</source>
+        <translation type="unfinished">儲存密碼</translation>
+    </message>
+    <message>
+        <source>OSM Upload</source>
+        <translation type="unfinished">OSM上傳</translation>
+    </message>
+    <message>
+        <source>Uploading data...</source>
+        <translation type="unfinished">上傳資料...</translation>
     </message>
 </context>
 <context>
@@ -3307,10 +3723,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">不是可寫入的。</translation>
     </message>
     <message>
-        <source>Uncatched fatal GRASS error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Couldn&apos;t load SIP module.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3596,6 +4008,14 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Terrain Analysis plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A plugin for raster based terrain analysis</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4765,22 +5185,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>V</source>
         <comment>Add a Vector Layer</comment>
-        <translation>V</translation>
+        <translation type="obsolete">V</translation>
     </message>
     <message>
         <source>R</source>
         <comment>Add a Raster Layer</comment>
-        <translation>R</translation>
+        <translation type="obsolete">R</translation>
     </message>
     <message>
         <source>D</source>
         <comment>Add a PostGIS Layer</comment>
-        <translation>D</translation>
-    </message>
-    <message>
-        <source>N</source>
-        <comment>Create a New Vector Layer</comment>
-        <translation></translation>
+        <translation type="obsolete">D</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
@@ -4790,27 +5205,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>+</source>
         <comment>Show all layers in the overview map</comment>
-        <translation>+</translation>
+        <translation type="obsolete">+</translation>
     </message>
     <message>
         <source>-</source>
         <comment>Remove all layers from overview map</comment>
-        <translation>-</translation>
-    </message>
-    <message>
-        <source>S</source>
-        <comment>Show all layers</comment>
-        <translation></translation>
+        <translation type="obsolete">-</translation>
     </message>
     <message>
         <source>H</source>
         <comment>Hide all layers</comment>
-        <translation>H</translation>
-    </message>
-    <message>
-        <source>P</source>
-        <comment>Set project properties</comment>
-        <translation></translation>
+        <translation type="obsolete">H</translation>
     </message>
     <message>
         <source>F1</source>
@@ -4840,22 +5245,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>F</source>
         <comment>Zoom to Full Extents</comment>
-        <translation>F</translation>
+        <translation type="obsolete">F</translation>
     </message>
     <message>
         <source>I</source>
         <comment>Click on features to identify them</comment>
-        <translation>I</translation>
+        <translation type="obsolete">I</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
         <comment>Measure a Line</comment>
         <translation type="obsolete">Ctrl+M</translation>
-    </message>
-    <message>
-        <source>B</source>
-        <comment>Show Bookmarks</comment>
-        <translation></translation>
     </message>
     <message>
         <source>Ctrl+B</source>
@@ -4868,24 +5268,19 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="obsolete">W</translation>
     </message>
     <message>
-        <source>O</source>
-        <comment>Add current layer to overview map</comment>
-        <translation></translation>
-    </message>
-    <message>
         <source>.</source>
         <comment>Capture Points</comment>
-        <translation>.</translation>
+        <translation type="obsolete">.</translation>
     </message>
     <message>
         <source>/</source>
         <comment>Capture Lines</comment>
-        <translation>/</translation>
+        <translation type="obsolete">/</translation>
     </message>
     <message>
         <source>Ctrl+/</source>
         <comment>Capture Polygons</comment>
-        <translation>Ctrl+/</translation>
+        <translation type="obsolete">Ctrl+/</translation>
     </message>
     <message>
         <source>Ctrl+?</source>
@@ -4988,7 +5383,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
-        <translation>在目前的滑鼠位置顯示地圖座標，而且會隨著滑鼠移動持續更新。</translation>
+        <translation type="obsolete">在目前的滑鼠位置顯示地圖座標，而且會隨著滑鼠移動持續更新。</translation>
     </message>
     <message>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
@@ -5174,12 +5569,7 @@ Please contact the developers.
     <message>
         <source>M</source>
         <comment>Measure a Line</comment>
-        <translation>M</translation>
-    </message>
-    <message>
-        <source>J</source>
-        <comment>Measure an Area</comment>
-        <translation></translation>
+        <translation type="obsolete">M</translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
@@ -5213,7 +5603,7 @@ Please contact the developers.
     <message>
         <source>W</source>
         <comment>Add a Web Mapping Server Layer</comment>
-        <translation>W</translation>
+        <translation type="obsolete">W</translation>
     </message>
     <message>
         <source>Add a Web Mapping Server Layer</source>
@@ -5427,7 +5817,7 @@ Errors: %2
     </message>
     <message>
         <source>Extents: %1</source>
-        <translation>範圍: %1</translation>
+        <translation type="obsolete">範圍: %1</translation>
     </message>
     <message>
         <source>%1 is not a valid or recognized raster data source</source>
@@ -5455,11 +5845,6 @@ Errors: %2
     <message>
         <source>Add SpatiaLite Layer...</source>
         <translation>新增SpatiaLite圖層...</translation>
-    </message>
-    <message>
-        <source>L</source>
-        <comment>Add a SpatiaLite Layer</comment>
-        <translation></translation>
     </message>
     <message>
         <source>Add a SpatiaLite Layer</source>
@@ -5693,6 +6078,120 @@ Grass:
 There is a new GRASS shell. Also there have been many cleanups and consistency
 updates.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+.</source>
+        <comment>Capture Points</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+/</source>
+        <comment>Capture Lines</comment>
+        <translation type="unfinished">Ctrl+/</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+/</source>
+        <comment>Capture Polygons</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reshape Features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+I</source>
+        <comment>Click on features to identify them</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+M</source>
+        <comment>Measure a Line</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+J</source>
+        <comment>Measure an Area</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+F</source>
+        <comment>Zoom to Full Extents</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <comment>Show Bookmarks</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+N</source>
+        <comment>Create a New Vector Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+V</source>
+        <comment>Add a Vector Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+R</source>
+        <comment>Add a Raster Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+D</source>
+        <comment>Add a PostGIS Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+L</source>
+        <comment>Add a SpatiaLite Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+W</source>
+        <comment>Add a Web Mapping Server Layer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+O</source>
+        <comment>Add current layer to overview map</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+U</source>
+        <comment>Show all layers</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+H</source>
+        <comment>Hide all layers</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <comment>Set project properties</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current map coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current map coordinate (formatted as x,y)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extents:</source>
+        <translation type="unfinished">範圍:</translation>
     </message>
 </context>
 <context>
@@ -6552,6 +7051,10 @@ p, li { white-space: pre-wrap; }
         <source>Donors</source>
         <translation>捐助者</translation>
     </message>
+    <message>
+        <source>Qt Image Plugin Search Paths&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAddAttrDialogBase</name>
@@ -7250,7 +7753,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTableModel</name>
     <message>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性已更改</translation>
     </message>
 </context>
 <context>
@@ -7373,6 +7876,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">錯誤</translation>
+    </message>
+    <message>
+        <source>Could not open file %1
+Error was:%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Data from CSV file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9388,7 +9908,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; 斜體 &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(注意: &amp;amp;copy; 是一個版權符號)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -9774,7 +10294,7 @@ geometry.</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
     </message>
     <message>
         <source>You must select a table in order to add a layer.</source>
@@ -9787,6 +10307,10 @@ Check your username and password and try again.
 
 The database said:
 %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Primary key column</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9918,6 +10442,10 @@ The database said:
     <message>
         <source>Multipolygon</source>
         <translation>多個多邊形</translation>
+    </message>
+    <message>
+        <source>Primary key column</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10225,7 +10753,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsDetailedItemWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">表單</translation>
     </message>
     <message>
         <source>Heading Label</source>
@@ -11949,7 +12477,7 @@ Factor</source>
     </message>
     <message>
         <source>Cannot open vector for update.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無法開啟向量且更新。</translation>
     </message>
     <message>
         <source>Info</source>
@@ -12729,7 +13257,9 @@ Factor</source>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+%1
+在行 %2 列 %3</translation>
     </message>
 </context>
 <context>
@@ -12805,7 +13335,9 @@ at line %2 column %3</source>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+%1
+在行 %2 列 %3</translation>
     </message>
     <message>
         <source>Module %1 not found</source>
@@ -13015,7 +13547,9 @@ at line %2 column %3</source>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+%1
+在行 %2 列 %3</translation>
     </message>
     <message>
         <source>Cannot find key %1</source>
@@ -13154,7 +13688,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>New mapset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增地圖集</translation>
     </message>
     <message>
         <source>New mapset successfully created and set as current working mapset.</source>
@@ -13188,7 +13722,9 @@ at line %2 column %3</source>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+%1
+在行 %2 列 %3</translation>
     </message>
     <message>
         <source>Cannot create new location: %1</source>
@@ -13517,6 +14053,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Cannot open GRASS mapset. %1</source>
         <translation>無法開啟GRASS地圖集。%1</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassProvider</name>
+    <message>
+        <source>GRASS vector map %1 does not have topology. Build topology?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14226,16 +14769,28 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Identify Results - %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Copy attribute value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Copy feature attributes</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">圖層</translation>
+    </message>
+    <message>
+        <source>Edit feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute changed</source>
+        <translation type="unfinished">屬性已更改</translation>
     </message>
 </context>
 <context>
@@ -14381,6 +14936,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Type</source>
         <translation>類型</translation>
+    </message>
+    <message>
+        <source>Cellsize X:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cellsize Y:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set to current extent</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14809,7 +15392,7 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>圖層呈現的最大比例。</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15576,12 +16159,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Band</source>
-        <translation>波段</translation>
+        <translation type="obsolete">波段</translation>
     </message>
     <message>
         <source>WMS identify result for %1:
 %2</source>
-        <translation>WMS識別結果是%1:
+        <translation type="obsolete">WMS識別結果是%1:
 %2</translation>
     </message>
     <message>
@@ -15594,20 +16177,20 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>action</source>
-        <translation>動作</translation>
+        <translation type="obsolete">動作</translation>
     </message>
     <message>
         <source>No features found</source>
-        <translation>沒有找到圖徵</translation>
+        <translation type="obsolete">沒有找到圖徵</translation>
     </message>
     <message>
         <source>No features were found in the active layer at the point you clicked</source>
-        <translation>在目前啟動圖層的滑鼠點擊位置上未發現圖徵</translation>
+        <translation type="obsolete">在目前啟動圖層的滑鼠點擊位置上未發現圖徵</translation>
     </message>
     <message numerus="yes">
         <source>%1 - %n feature(s) found</source>
         <comment>Identify results window title</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>%1 - %n 圖徵找到</numerusform>
         </translation>
     </message>
@@ -15615,18 +16198,18 @@ p, li { white-space: pre-wrap; }
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation>無法繪圖 %1 因為:
+        <translation type="obsolete">無法繪圖 %1 因為:
 %2</translation>
     </message>
     <message>
         <source>Could not identify objects on %1 because:
 %2</source>
-        <translation>無法在 %1 識別物件，因為:
+        <translation type="obsolete">無法在 %1 識別物件，因為:
 %2</translation>
     </message>
     <message>
         <source>Attribute changed</source>
-        <translation>屬性已更改</translation>
+        <translation type="obsolete">屬性已更改</translation>
     </message>
     <message>
         <source>firstX</source>
@@ -15644,6 +16227,34 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>lastY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifying on %1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifying done.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identify results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No features at this position found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15683,6 +16294,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Inserted vertex</source>
         <translation>插入轉折點</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolReshape</name>
+    <message>
+        <source>Not a vector layer</source>
+        <translation type="unfinished">不是向量圖層</translation>
+    </message>
+    <message>
+        <source>The current layer is not a vector layer</source>
+        <translation type="unfinished">目前的圖層是不向量圖層</translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation type="unfinished">圖層不可編輯</translation>
+    </message>
+    <message>
+        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
+        <translation type="unfinished">無法編輯向量圖層。請確定它是可以編輯。在圖層的檔案項中，選取為&apos;允許編輯&apos;。</translation>
+    </message>
+    <message>
+        <source>Coordinate transform error</source>
+        <translation type="unfinished">座標轉換錯誤</translation>
+    </message>
+    <message>
+        <source>Cannot transform the point to the layers coordinate system</source>
+        <translation type="unfinished">無法轉換點至圖層的座標系統</translation>
+    </message>
+    <message>
+        <source>Reshape</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16706,11 +17348,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">開啟資料夾</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -17030,6 +17672,18 @@ p, li { white-space: pre-wrap; }
         <source>Popmusic chain (very slow)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>current layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>top down, stop at first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>top down</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -17262,7 +17916,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Search radius</source>
-        <translation>搜尋半徑</translation>
+        <translation type="obsolete">搜尋半徑</translation>
     </message>
     <message>
         <source>Pro&amp;jection</source>
@@ -17522,7 +18176,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>When layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation>當圖層載入後沒有座標參考系統(CRS)</translation>
+        <translation type="obsolete">當圖層載入後沒有座標參考系統(CRS)</translation>
     </message>
     <message>
         <source>Prompt for CRS</source>
@@ -17574,7 +18228,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">地圖單位</translation>
     </message>
     <message>
         <source>pixels</source>
@@ -17600,6 +18254,18 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <source>Feet</source>
         <translation>英呎</translation>
     </message>
+    <message>
+        <source>Identify</source>
+        <translation type="unfinished">識別圖徵</translation>
+    </message>
+    <message>
+        <source>Mode</source>
+        <translation type="unfinished">模式</translation>
+    </message>
+    <message>
+        <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOraclePlugin</name>
@@ -17620,7 +18286,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     <name>QgsOracleSelectGeoraster</name>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -18023,6 +18689,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstaller</name>
     <message>
+        <source>Fetch Python Plugins...</source>
+        <translation type="unfinished">Python附加元件...</translation>
+    </message>
+    <message>
+        <source>Looking for new plugins...</source>
+        <translation type="unfinished">尋找新的附加元件...</translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Conflict:</source>
+        <translation type="unfinished">QGIS附加元件衝突:</translation>
+    </message>
+    <message>
+        <source>QGIS Python Plugin Installer</source>
+        <translation type="unfinished">QGIS Python附加元件安裝</translation>
+    </message>
+    <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18035,28 +18717,8 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fetch Python Plugins...</source>
-        <translation>Python附加元件...</translation>
-    </message>
-    <message>
         <source>Install more plugins from remote repositories</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Looking for new plugins...</source>
-        <translation>尋找新的附加元件...</translation>
-    </message>
-    <message>
-        <source>QGIS Plugin Conflict:</source>
-        <translation>QGIS附加元件衝突:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
@@ -18071,11 +18733,15 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS Python附加元件安裝</translation>
+        <source>Error reading repository:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error reading repository:</source>
+        <source>Couldn&apos;t parse output from the repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open the local plugin directory</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18115,19 +18781,79 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS Python 附加元件安裝</translation>
+        <translation type="unfinished">QGIS Python 附加元件安裝</translation>
+    </message>
+    <message>
+        <source>all repositories</source>
+        <translation type="unfinished">所有附加元件主機</translation>
+    </message>
+    <message>
+        <source>connected</source>
+        <translation type="unfinished">已連線</translation>
+    </message>
+    <message>
+        <source>disabled</source>
+        <translation type="unfinished">停用</translation>
+    </message>
+    <message>
+        <source>any status</source>
+        <translation type="unfinished">任何狀態</translation>
+    </message>
+    <message>
+        <source>not installed</source>
+        <translation type="unfinished">未安裝</translation>
+    </message>
+    <message>
+        <source>installed</source>
+        <translation type="unfinished">已安裝</translation>
+    </message>
+    <message>
+        <source>upgradeable and news</source>
+        <translation type="unfinished">可升級與新版</translation>
+    </message>
+    <message>
+        <source>This plugin is not installed</source>
+        <translation type="unfinished">這附加元件未安裝</translation>
+    </message>
+    <message>
+        <source>This plugin is installed</source>
+        <translation type="unfinished">這附加元件已安裝</translation>
+    </message>
+    <message>
+        <source>This plugin is installed, but there is an updated version available</source>
+        <translation type="unfinished">這附加元件已安裝，且有新版本可以安裝</translation>
+    </message>
+    <message>
+        <source>upgradeable</source>
+        <translation type="unfinished">可升級</translation>
+    </message>
+    <message>
+        <source>Install plugin</source>
+        <translation type="unfinished">安裝附加元件</translation>
+    </message>
+    <message>
+        <source>Reinstall plugin</source>
+        <translation type="unfinished">重新安裝附加元件</translation>
+    </message>
+    <message>
+        <source>Upgrade plugin</source>
+        <translation type="unfinished">升級附加元件</translation>
+    </message>
+    <message>
+        <source>Install/upgrade plugin</source>
+        <translation type="unfinished">安裝/升級附加元件</translation>
+    </message>
+    <message>
+        <source>Downgrade plugin</source>
+        <translation type="unfinished">降級附加元件</translation>
+    </message>
+    <message>
+        <source>Plugin installation failed</source>
+        <translation type="unfinished">附加元件安裝失敗</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>all repositories</source>
-        <translation>所有附加元件主機</translation>
-    </message>
-    <message>
-        <source>connected</source>
-        <translation>已連線</translation>
     </message>
     <message>
         <source>This repository is connected</source>
@@ -18142,10 +18868,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>disabled</source>
-        <translation>停用</translation>
-    </message>
-    <message>
         <source>This repository is disabled</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18156,34 +18878,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>orphans</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>any status</source>
-        <translation>任何狀態</translation>
-    </message>
-    <message>
-        <source>not installed</source>
-        <translation>未安裝</translation>
-    </message>
-    <message>
-        <source>installed</source>
-        <translation>已安裝</translation>
-    </message>
-    <message>
-        <source>upgradeable and news</source>
-        <translation>可升級與新版</translation>
-    </message>
-    <message>
-        <source>This plugin is not installed</source>
-        <translation>這附加元件未安裝</translation>
-    </message>
-    <message>
-        <source>This plugin is installed</source>
-        <translation>這附加元件已安裝</translation>
-    </message>
-    <message>
-        <source>This plugin is installed, but there is an updated version available</source>
-        <translation>這附加元件已安裝，且有新版本可以安裝</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
@@ -18211,10 +18905,6 @@ For more information, please visit its homepage and Quantum GIS wiki.</source>
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>upgradeable</source>
-        <translation>可升級</translation>
     </message>
     <message>
         <source>new!</source>
@@ -18265,32 +18955,8 @@ Here is the error message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Install plugin</source>
-        <translation>安裝附加元件</translation>
-    </message>
-    <message>
-        <source>Reinstall plugin</source>
-        <translation>重新安裝附加元件</translation>
-    </message>
-    <message>
-        <source>Upgrade plugin</source>
-        <translation>升級附加元件</translation>
-    </message>
-    <message>
-        <source>Install/upgrade plugin</source>
-        <translation>安裝/升級附加元件</translation>
-    </message>
-    <message>
-        <source>Downgrade plugin</source>
-        <translation>降級附加元件</translation>
-    </message>
-    <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin installation failed</source>
-        <translation>附加元件安裝失敗</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
@@ -18575,35 +19241,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Downloading data...</source>
-        <translation>下載資料...</translation>
+        <translation type="unfinished">下載資料...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>錯誤</translation>
+        <translation type="unfinished">錯誤</translation>
     </message>
     <message>
         <source>Success</source>
-        <translation>成功</translation>
+        <translation type="unfinished">成功</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation>解析主機名稱...</translation>
+        <translation type="unfinished">解析主機名稱...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation>連線中...</translation>
+        <translation type="unfinished">連線中...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation>主機已連線。傳送需求中...</translation>
+        <translation type="unfinished">主機已連線。傳送需求中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation>閒置</translation>
+        <translation type="unfinished">閒置</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation>關閉連線中...</translation>
+        <translation type="unfinished">關閉連線中...</translation>
     </message>
 </context>
 <context>
@@ -18633,43 +19299,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Downloading data...</source>
-        <translation>下載資料...</translation>
+        <translation type="unfinished">下載資料...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>錯誤</translation>
+        <translation type="unfinished">錯誤</translation>
     </message>
     <message>
         <source>Installing...</source>
-        <translation>安裝中...</translation>
+        <translation type="unfinished">安裝中...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation>解析主機名稱...</translation>
+        <translation type="unfinished">解析主機名稱...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation>連接中...</translation>
+        <translation type="unfinished">連接中...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation>主機已連線。傳送請求中...</translation>
+        <translation type="unfinished">主機已連線。傳送請求中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation>閒置</translation>
+        <translation type="unfinished">閒置</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation>關閉連線中...</translation>
+        <translation type="unfinished">關閉連線中...</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation>附加元件解壓縮失敗。可能是從主機下載失敗。您要先確定您的附加元件資料夾有寫入的權限:</translation>
+        <translation type="unfinished">附加元件解壓縮失敗。可能是從主機下載失敗。您要先確定您的附加元件資料夾有寫入的權限:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation>使用者已放棄</translation>
+        <translation type="unfinished">使用者已放棄</translation>
     </message>
 </context>
 <context>
@@ -18691,7 +19357,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation>無接收到錯誤訊息</translation>
+        <translation type="unfinished">無接收到錯誤訊息</translation>
     </message>
 </context>
 <context>
@@ -19432,6 +20098,33 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
 </context>
 <context>
+    <name>QgsProjectProperties</name>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">圖層</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">類型</translation>
+    </message>
+    <message>
+        <source>Identifiable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsProjectPropertiesBase</name>
     <message>
         <source>Project Properties</source>
@@ -19583,7 +20276,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Title and colors</source>
-        <translation>主題與顏色</translation>
+        <translation type="obsolete">主題與顏色</translation>
     </message>
     <message>
         <source>Project title</source>
@@ -19611,11 +20304,35 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>save absolute paths</source>
-        <translation>儲存絕對路徑</translation>
+        <translation type="obsolete">儲存絕對路徑</translation>
     </message>
     <message>
         <source>Layer units (only used when CRS transformation is disabled)</source>
         <translation>圖層單位(僅在CRS轉換停用時啟用)</translation>
+    </message>
+    <message>
+        <source>General settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save absolute paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifiable layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">圖層</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">類型</translation>
+    </message>
+    <message>
+        <source>Identifiable</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20087,7 +20804,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Retrieving using %1</source>
+        <source>Retrieving %1 using %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 retrieved using %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20405,7 +21126,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unknown style format: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">未知的樣式格式:%1</translation>
     </message>
     <message>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
@@ -21102,6 +21823,91 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsRasterTerrainAnalysisDialog</name>
+    <message>
+        <source>Slope</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aspect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ruggedness index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total curvature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter result file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterTerrainAnalysisDialogBase</name>
+    <message>
+        <source>Raster based terrain analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Analysis:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output format:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add result to project</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterTerrainAnalysisPlugin</name>
+    <message>
+        <source>&amp;Raster based terrain analysis...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aspect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ruggedness index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total curvature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculating </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsRunProcess</name>
     <message>
         <source>Unable to run command</source>
@@ -21191,26 +21997,26 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select new preview directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選擇新的預覽資料夾</translation>
     </message>
     <message>
         <source>Creating icon for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">建立檔案圖示%1</translation>
     </message>
 </context>
 <context>
     <name>QgsSVGDiagramFactoryWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">表單</translation>
     </message>
     <message>
         <source>Search directories</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">搜尋資料夾</translation>
     </message>
     <message>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增...</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -21733,6 +22539,14 @@ p, li { white-space: pre-wrap; }
         <source>Style</source>
         <translation>樣式</translation>
     </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">選項</translation>
+    </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="unfinished">圖層名稱</translation>
+    </message>
 </context>
 <context>
     <name>QgsShapeFile</name>
@@ -22048,11 +22862,11 @@ The error was:
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">地圖單位</translation>
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">像素</translation>
     </message>
 </context>
 <context>
@@ -22188,7 +23002,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
     </message>
 </context>
 <context>
@@ -22266,7 +23080,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">多點</translation>
     </message>
     <message>
         <source>Line</source>
@@ -22282,7 +23096,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">多個多邊形</translation>
     </message>
 </context>
 <context>
@@ -23295,7 +24109,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Load layer properties from style file (.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">載從樣式檔案入圖層屬性</translation>
     </message>
     <message>
         <source>Unknown style format: %1</source>
@@ -23327,7 +24141,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Line edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線-編輯</translation>
     </message>
     <message>
         <source>Unique values</source>
@@ -23343,7 +24157,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Value map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">值地圖(Value map)</translation>
     </message>
     <message>
         <source>Edit range</source>
@@ -23675,6 +24489,14 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
+    </message>
+    <message>
+        <source>Create a new WFS connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify WFS connection</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -24224,7 +25046,7 @@ Tried URL: %1</source>
     <name>SelectionFeature</name>
     <message>
         <source>Node tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">節點工具</translation>
     </message>
     <message>
         <source>Result geometry is invalid. Reverting last changes.
@@ -24301,7 +25123,7 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">唯一值</translation>
     </message>
     <message>
         <source>Total unique values</source>
@@ -24611,7 +25433,7 @@ p, li { white-space: pre-wrap; }
         <source>Database Host</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
         <translation type="unfinished"></translation>
     </message>
@@ -24804,7 +25626,7 @@ p, li { white-space: pre-wrap; }
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24817,22 +25639,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Save?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute Containing Path to File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path Is Relative</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -24852,19 +25659,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Display Compass Bearing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compass Offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -24895,7 +25694,7 @@ p, li { white-space: pre-wrap; }
         <source>Resets the compass offset values to the default settings.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>The base path or url from which images and documents can be “relative”</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24932,7 +25731,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>Apply Path to Image rules when loading docs in external applications</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translation type="unfinished"></translation>
     </message>
@@ -24972,16 +25771,56 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute containing path to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path is relative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remember this</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compass bearing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute containing compass bearing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display compass bearing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compass offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relative paths</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -25016,7 +25855,31 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>&amp;Tools</source>
-        <translation>工具(&amp;T)</translation>
+        <translation type="unfinished">工具(&amp;T)</translation>
+    </message>
+    <message>
+        <source>&amp;Analysis Tools</source>
+        <translation type="unfinished">分析工具(&amp;A)</translation>
+    </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation type="unfinished">研究工具(&amp;R)</translation>
+    </message>
+    <message>
+        <source>&amp;Geoprocessing Tools</source>
+        <translation type="unfinished">地理空間運算工具(&amp;G)</translation>
+    </message>
+    <message>
+        <source>G&amp;eometry Tools</source>
+        <translation type="unfinished">幾何工具(G&amp;)</translation>
+    </message>
+    <message>
+        <source>&amp;Data Management Tools</source>
+        <translation type="unfinished">資料管理工具(&amp;D)</translation>
+    </message>
+    <message>
+        <source>fTools Information</source>
+        <translation type="unfinished">fTools 資訊</translation>
     </message>
     <message>
         <source>Quantum GIS version detected: </source>
@@ -25026,10 +25889,6 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Analysis Tools</source>
-        <translation>分析工具(&amp;A)</translation>
     </message>
     <message>
         <source>Distance matrix</source>
@@ -25064,10 +25923,6 @@ Plugin will not be enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Research Tools</source>
-        <translation>研究工具(&amp;R)</translation>
-    </message>
-    <message>
         <source>Random selection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25094,10 +25949,6 @@ Plugin will not be enabled.</source>
     <message>
         <source>Polygon from layer extent</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Geoprocessing Tools</source>
-        <translation>地理空間運算工具(&amp;G)</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
@@ -25130,10 +25981,6 @@ Plugin will not be enabled.</source>
     <message>
         <source>Difference</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>G&amp;eometry Tools</source>
-        <translation>幾何工具(G&amp;)</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
@@ -25172,10 +26019,6 @@ Plugin will not be enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Data Management Tools</source>
-        <translation>資料管理工具(&amp;D)</translation>
-    </message>
-    <message>
         <source>Export to new projection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25194,10 +26037,6 @@ Plugin will not be enabled.</source>
     <message>
         <source>Split vector layer</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>fTools Information</source>
-        <translation type="unfinished">fTools 資訊</translation>
     </message>
 </context>
 <context>
