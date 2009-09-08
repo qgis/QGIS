@@ -256,6 +256,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   {
     mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "None" ) ) );
   }
+  mMarkerSizeSpinBox->setValue( settings.value( "/qgis/digitizing/marker_size", 7 ).toInt()*2+1 );
 
   chkDisableAttributeValuesDlg->setChecked( settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool() );
 
@@ -483,6 +484,7 @@ void QgsOptions::saveOptions()
   {
     settings.setValue( "/qgis/digitizing/marker_style", "None" );
   }
+  settings.setValue( "/qgis/digitizing/marker_size", (mMarkerSizeSpinBox->value()-1)/2 );
 
   settings.setValue( "/qgis/digitizing/disable_enter_attribute_values_dialog", chkDisableAttributeValuesDlg->isChecked() );
 

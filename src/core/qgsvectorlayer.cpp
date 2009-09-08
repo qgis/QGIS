@@ -438,7 +438,7 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
     std::vector<double>::const_iterator yIt;
     for ( xIt = x.begin(), yIt = y.begin(); xIt != x.end(); ++xIt, ++yIt )
     {
-      drawVertexMarker(( int )( *xIt ), ( int )( *yIt ), *p, mCurrentVertexMarkerType );
+      drawVertexMarker(( int )( *xIt ), ( int )( *yIt ), *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
     }
   }
 
@@ -631,7 +631,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
       for ( int i = 0; i < path.elementCount(); ++i )
       {
         const QPainterPath::Element & e = path.elementAt( i );
-        drawVertexMarker(( int )e.x, ( int )e.y, *p, mCurrentVertexMarkerType );
+        drawVertexMarker(( int )e.x, ( int )e.y, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
       }
     }
 
@@ -668,6 +668,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QImage marker;
     //vertex marker type for selection
     QgsVectorLayer::VertexMarkerType vertexMarker = QgsVectorLayer::NoMarker;
+    int vertexMarkerSize = 7;
 
     if ( mEditable )
     {
@@ -675,6 +676,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       deleteCachedGeometries();
       mCachedGeometriesRect = rendererContext.extent();
       vertexMarker = currentVertexMarkerType();
+      vertexMarkerSize = currentVertexMarkerSize();
       mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
     }
 
@@ -717,6 +719,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         bool sel = mSelectedFeatureIds.contains( fet.id() );
 
         mCurrentVertexMarkerType = QgsVectorLayer::NoMarker;
+        mCurrentVertexMarkerSize = 7;
 
         if ( mEditable )
         {
@@ -726,6 +729,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
           if ( !mVertexMarkerOnlyForSelection || sel )
           {
             mCurrentVertexMarkerType = vertexMarker;
+            mCurrentVertexMarkerSize = vertexMarkerSize;
           }
         }
 
@@ -777,18 +781,16 @@ void QgsVectorLayer::deleteCachedGeometries()
   mCachedGeometriesRect = QgsRectangle();
 }
 
-void QgsVectorLayer::drawVertexMarker( int x, int y, QPainter& p, QgsVectorLayer::VertexMarkerType type )
+void QgsVectorLayer::drawVertexMarker( int x, int y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int m )
 {
   if ( type == QgsVectorLayer::SemiTransparentCircle )
   {
     p.setPen( QColor( 50, 100, 120, 200 ) );
     p.setBrush( QColor( 200, 200, 210, 120 ) );
-    p.drawEllipse( QRectF( x - 7, y - 7, 14, 14 ) );
+    p.drawEllipse( x-m, y-m, m*2+1, m*2+1 );
   }
   else if ( type == QgsVectorLayer::Cross )
   {
-    int size = 15;
-    int m = ( size - 1 ) / 2;
     p.setPen( QColor( 255, 0, 0 ) );
     p.drawLine( x - m, y + m, x + m, y - m );
     p.drawLine( x - m, y - m, x + m, y + m );
@@ -3462,6 +3464,12 @@ QgsVectorLayer::VertexMarkerType QgsVectorLayer::currentVertexMarkerType()
   {
     return QgsVectorLayer::NoMarker;
   }
+}
+
+int QgsVectorLayer::currentVertexMarkerSize()
+{
+  QSettings settings;
+  return settings.value( "/qgis/digitizing/marker_size", 7 ).toInt();
 }
 
 void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
