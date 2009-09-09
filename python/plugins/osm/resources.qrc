@@ -51,7 +51,16 @@
         <file>images/osm_remove.png</file>
     </qresource>
     <qresource prefix="/plugins/osm_plugin" >
-        <file>images/osm_star.png</file>
+        <file>images/osm_removeFeat.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_removeTag.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_removeMember.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_generateTags.png</file>
     </qresource>
     <qresource prefix="/plugins/osm_plugin" >
         <file>images/osm_questionMark.png</file>
@@ -61,5 +70,8 @@
     </qresource>
     <qresource prefix="/plugins/osm_plugin" >
         <file>images/osm_redo.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_clearUndoRedo.png</file>
     </qresource>
 </RCC>

@@ -90,6 +90,9 @@ OsmHandler::OsmHandler( QFile *f, sqlite3 *database )
 OsmHandler::~OsmHandler()
 {
   sqlite3_finalize( mStmtInsertTag );
+  sqlite3_finalize( mStmtInsertNode );
+  sqlite3_finalize( mStmtInsertWay );
+  sqlite3_finalize( mStmtInsertWayMember );
   sqlite3_finalize( mStmtInsertRelation );
   sqlite3_finalize( mStmtInsertRelationMember );
   sqlite3_finalize( mStmtInsertVersion );
@@ -170,11 +173,6 @@ bool OsmHandler::startElement( const QString & pUri, const QString & pLocalName,
   }
   else if ( name == "way" )
   {
-    if ( mObjectType != "way" )
-    {
-      sqlite3_finalize( mStmtInsertNode );
-    }
-
     mObjectId = pAttrs.value( "id" );
     mObjectType = "way";
     mPosId = 1;
@@ -227,12 +225,6 @@ bool OsmHandler::startElement( const QString & pUri, const QString & pLocalName,
   }
   else if ( name == "relation" )
   {
-    if ( mObjectType != "relation" )
-    {
-      sqlite3_finalize( mStmtInsertWay );
-      sqlite3_finalize( mStmtInsertWayMember );
-    }
-
     mObjectId = pAttrs.value( "id" );
     mRelationType = "";
     mObjectType = "relation";
@@ -305,7 +297,6 @@ bool OsmHandler::startElement( const QString & pUri, const QString & pLocalName,
   else if ( name == "bounds" )
   {
     // e.g. <bounds minlat="41.388625" minlon="2.15426" maxlat="41.391732" maxlon="2.158192"/>
-    // notice: getting boundaries from OSM file <bounds> tag was not correct for some maps - cannot be used
 
     // xMin = pAttrs.value("minlon").toDouble();
     // xMax = pAttrs.value("maxlon").toDouble();
