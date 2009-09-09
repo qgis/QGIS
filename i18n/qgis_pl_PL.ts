@@ -171,7 +171,6 @@
         <translation>Połącz</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="23"/>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="126"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="206"/>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="112"/>
@@ -266,25 +265,21 @@
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="13"/>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="10"/>
         <source>fTools About</source>
         <translation>O fTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="36"/>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="11"/>
         <source>fTools</source>
         <translation>fTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="46"/>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="12"/>
         <source>Version x.x-xxxxxx</source>
         <translation>Wersja x.x-xxxxxx</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="102"/>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="13"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -296,42 +291,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="125"/>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="14"/>
         <source>Help</source>
         <translation>Pomoc</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="132"/>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="15"/>
         <source>Web</source>
         <translation>Sieć</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="139"/>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="16"/>
         <source>Close</source>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="29"/>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
         <source>Extract Nodes</source>
         <translation>Wydobądź węzły</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="30"/>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="27"/>
         <source>Input line or polygon vector layer</source>
         <translation>Wejściowa warstwa wektorowa (linie lub poligony)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="31"/>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="41"/>
         <source>Tolerance</source>
         <translation>Tolerancja</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="32"/>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="86"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
@@ -339,19 +327,16 @@ p, li { white-space: pre-wrap; }
         <translation>Pole z unikalnym ID</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="33"/>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
         <source>Output point shapefile</source>
         <translation>Wyjściowy Shapefile (punkty)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="108"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="19"/>
         <source>Geoprocessing</source>
         <translation>Geoprocesing</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="38"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="25"/>
@@ -360,37 +345,31 @@ p, li { white-space: pre-wrap; }
         <translation>Wejściowa warstwa wektorowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="109"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="48"/>
         <source>Intersect layer</source>
         <translation>Warstwa do iloczynu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="110"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="71"/>
         <source>Buffer distance</source>
         <translation>Stała wielkość bufora</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="111"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="111"/>
         <source>Buffer distance field</source>
         <translation>Pole wielkości bufora</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="112"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="118"/>
         <source>Dissolve field</source>
         <translation>Pole agregacji</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="113"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="166"/>
         <source>Dissolve buffer results</source>
         <translation>Agreguj bufory</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="42"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="190"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="93"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="304"/>
@@ -398,38 +377,32 @@ p, li { white-space: pre-wrap; }
         <translation>Wyjściowy Shapefile</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="17"/>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="16"/>
         <source>Locate Line Intersections</source>
         <translation>Znajdź przecięcia linii</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="18"/>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="27"/>
         <source>Input line layer</source>
         <translation>Wejściowa warstwa wektorowa (linie)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="19"/>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="41"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="41"/>
         <source>Input unique ID field</source>
         <translation>Pole z unikalnym ID</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="20"/>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="55"/>
         <source>Intersect line layer</source>
         <translation>Warstwa przecinająca (linie)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="21"/>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="69"/>
         <source>Intersect unique ID field</source>
         <translation>Pole z unikalnym ID</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="22"/>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="96"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="130"/>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="89"/>
@@ -441,156 +414,131 @@ p, li { white-space: pre-wrap; }
         <translation>Wyjściowy Shapefile</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="81"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="16"/>
         <source>Join Attributes</source>
         <translation>Złącz atrybuty</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="62"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="27"/>
         <source>Target vector layer</source>
         <translation>Warstwa wektorowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="82"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="41"/>
         <source>Target join field</source>
         <translation>Pole złączenia (klucz)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="83"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="53"/>
         <source>Join data</source>
         <translation>Złącz z danymi</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="63"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="61"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="41"/>
         <source>Join vector layer</source>
         <translation>Złącz z warstwą wektorową</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="84"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="78"/>
         <source>Join dbf table</source>
         <translation>Złącz z tabelą dbf</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="85"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="113"/>
         <source>Join field</source>
         <translation>Pole złączenia (klucz)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="72"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="157"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="177"/>
         <source>Output table</source>
         <translation>Tabela wyjściowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="73"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="163"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="183"/>
         <source>Only keep matching records</source>
         <translation>Zachowaj tylko pasujące rekordy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="74"/>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="173"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="193"/>
         <source>Keep all records (includeing non-matching target records)</source>
         <translation>Zachowaj wszystkie rekordy (wraz z niepasującymi)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="37"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="16"/>
         <source>Generate Centroids</source>
         <translation>Generuj centroidy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="39"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="41"/>
         <source>Weight field</source>
         <translation>Pole wagi</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="40"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="69"/>
         <source>Number of standard deviations</source>
         <translation>Liczba odchyleń standardowych</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="41"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="76"/>
         <source>Std. Dev.</source>
         <translation>Odchyl. Stand.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="114"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="16"/>
         <source>Create Distance Matrix</source>
         <translation>Stwórz macierz odległości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="115"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="27"/>
         <source>Input point layer</source>
         <translation>Warstwa wyjściowa (punkty)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="116"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="55"/>
         <source>Target point layer</source>
         <translation>Warstwa docelowa (punkty)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="117"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="69"/>
         <source>Target unique ID field</source>
         <translation>Unikalne pole warstwy docelowej</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="118"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="81"/>
         <source>Output matrix type</source>
         <translation>Typ macierzy wyjściowej</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="119"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="87"/>
         <source>Linear (N*k x 3) distance matrix</source>
         <translation>Liniowa (N*k x 3) macierz odległości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="120"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="97"/>
         <source>Standard (N x T) distance matrix</source>
         <translation>Standardowa (N x T) macierz odległości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="121"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="104"/>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
         <translation>Zbiorcza macierz odległości (średnia, odchyl. stand., min., max.)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="122"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="111"/>
         <source>Use only the nearest (k) target points:</source>
         <translation>Użyj tylko (k) najbliższych punktów docelowych:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="123"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="149"/>
         <source>Output distance matrix</source>
         <translation>Zapisz wynik w pliku</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="80"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="239"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="250"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="130"/>
@@ -598,141 +546,116 @@ p, li { white-space: pre-wrap; }
         <translation>Użyj tylko wybranych obiektów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="135"/>
         <source>creating new selection</source>
         <translation>tworzy nową selekcję</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="136"/>
         <source>adding to current selection</source>
         <translation>dodaje do bieżącej selekcji</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="137"/>
         <source>removing from current selection</source>
         <translation>usuwa z bieżącej selekcji</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="138"/>
         <source>Select by location</source>
         <translation>Wybór przez lokalizację</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="139"/>
         <source>Select features in:</source>
         <translation>Wybierz obiekty w:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="140"/>
         <source>that intersect features in:</source>
         <translation>który przecina obiekty w:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="141"/>
         <source>Modify current selection by:</source>
         <translation>Zmodyfikuj bieżącą selekcję przez:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="142"/>
         <source>Please specify input layer</source>
         <translation>Podaj warstwę wejściową</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="143"/>
         <source>Please specify select layer</source>
         <translation>Podaj warstwę wyboru</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="35"/>
         <source>Distance matrix</source>
         <translation>Macierz odległości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="36"/>
         <source>Created output matrix:
 </source>
         <translation>Tworzona macierz wynikowa:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="125"/>
         <source>Points in polygon</source>
         <translation>Punktów w poligonie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="126"/>
         <source>Created output Shapefile:
 </source>
         <translation>Utworzono plik Shapefile:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="127"/>
         <source>Vector layer is not valid</source>
         <translation>Niepoprawna warstwa wektorowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="24"/>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
         <source>Count Points In Polygons</source>
         <translation>Policz punkty w poligonach</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
         <translation>Wejściowa warstwa wektorowa (poligony)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="26"/>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="41"/>
         <source>Input point vector layer</source>
         <translation>Wejściowa warstwa wektorowa (punkty)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="55"/>
         <source>Output count field name</source>
         <translation>Wyjściowe pole</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="28"/>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="62"/>
         <source>PNTCNT</source>
         <translation>LICZBA</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="128"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="16"/>
         <source>Generate Random Points</source>
         <translation>Generuj losowe punkty</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="46"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="31"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="25"/>
         <source>Input Boundary Layer</source>
         <translation>Podaj warstwę z granicą</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="129"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="46"/>
         <source>Minimum distance between points</source>
         <translation>Minimalna odległość pomiędzy punktami</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="130"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="62"/>
         <source>Sample Size</source>
         <translation>Rozmiar próbki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="131"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="75"/>
         <source>Unstratified Sampling Design (Entire layer)</source>
         <translation>Proste próbkowanie (cała warstwa)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="54"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="84"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="125"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="139"/>
@@ -740,31 +663,26 @@ p, li { white-space: pre-wrap; }
         <translation>Użyj tej liczby punktów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="132"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="116"/>
         <source>Stratified Sampling Design (Individual polygons)</source>
         <translation>Szczegółowe próbkowanie (poszczególne poligony)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="133"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="149"/>
         <source>Use this density of points</source>
         <translation>Użyj tej gęstości punktów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="134"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="179"/>
         <source>Use value from input field</source>
         <translation>Użyj wartości z pola wejściowego</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="124"/>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="16"/>
         <source>Random Selection Tool</source>
         <translation>Narzędzie losowego wyboru</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="76"/>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="28"/>
@@ -772,322 +690,270 @@ p, li { white-space: pre-wrap; }
         <translation>Wejściowa warstwa wektorowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="88"/>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="35"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="57"/>
         <source>Randomly Select</source>
         <translation>Wybierz losowo</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="89"/>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="44"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="66"/>
         <source>Number of Features</source>
         <translation>Liczba obiektów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="90"/>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="78"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="102"/>
         <source>Percentage of Features</source>
         <translation>Procent obiektów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="91"/>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="98"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="122"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="101"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="16"/>
         <source>Projection Management Tool</source>
         <translation>Zarządzanie odwzorowaniami</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="102"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="35"/>
         <source>Input spatial reference system</source>
         <translation>Wejściowy układ współrzędnych</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="103"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="49"/>
         <source>Output spatial reference system</source>
         <translation>Wyjściowy układ współrzędnych</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="104"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="55"/>
         <source>Use predefined spatial reference system</source>
         <translation>Wykorzystaj predefiniowany układ współrzędnych </translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="105"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="74"/>
         <source>Choose</source>
         <translation>Wybierz</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="106"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
         <source>Import spatial reference system from existing layer</source>
         <translation>Importuj układ współrzędnych z istniejącej warstwy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="107"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
         <source>Import spatial reference system:</source>
         <translation>Importuj układ współrzędnych:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="45"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="16"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="16"/>
         <source>Generate Regular Points</source>
         <translation>Generuj regularne punkty</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="47"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="38"/>
         <source>Input Coordinates</source>
         <translation>Podaj współrzędne</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="48"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="47"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="65"/>
         <source>X Min</source>
         <translation>X Min</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="49"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="61"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="92"/>
         <source>Y Min</source>
         <translation>Y Min</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="50"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="75"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="119"/>
         <source>X Max</source>
         <translation>X Max</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="51"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="89"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="146"/>
         <source>Y Max</source>
         <translation>Y Max</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="52"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="101"/>
         <source>Grid Spacing</source>
         <translation>Skok siatki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="53"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="109"/>
         <source>Use this point spacing</source>
         <translation>Użyj tego odstępu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="158"/>
         <source>Apply random offset to point spacing</source>
         <translation>Zastosuj losowe wyrównanie punktów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="56"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="178"/>
         <source>Initial inset from corner (LH side)</source>
         <translation>Odstęp od l. g. rogu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="61"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
         <source>Spatial Join</source>
         <translation>Złączenie przestrzenne</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="64"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="53"/>
         <source>Attribute Summary</source>
         <translation>Podsumowanie atrybutów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="65"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="59"/>
         <source>Take attributes of first located feature</source>
         <translation>Pobierz atrybuty z pierwszego obiektu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="66"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="69"/>
         <source>Take summary of intersecting features</source>
         <translation>Pobierz podsumowanie przecinających się obiektów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="67"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="92"/>
         <source>Mean</source>
         <translation>Średnia</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="68"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="105"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="69"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="115"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="70"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="125"/>
         <source>Sum</source>
         <translation>Suma</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="71"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="150"/>
         <source>Output Shapefile:</source>
         <translation>Wyjściowy Shapefile:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="86"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="16"/>
         <source>Random Selection From Within Subsets</source>
         <translation>Losowy wybór w podzbiorach</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="87"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="41"/>
         <source>Input subset field (unique ID field)</source>
         <translation>Pole podzbioru (unikalny ID)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="57"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="16"/>
         <source>Sum Line Length In Polygons</source>
         <translation>Zsumuj długości linii w poligonach</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="58"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="27"/>
         <source>Output summed length field name</source>
         <translation>Wyjściowe pole sumarycznej długości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="59"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="34"/>
         <source>LENGTH</source>
         <translation>DŁUGOŚĆ</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="60"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="127"/>
         <source>Input line vector layer</source>
         <translation>Wejściowa warstwa wektorowa (linie)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="92"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="25"/>
         <source>Grid extent</source>
         <translation>Zasięg siatki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="93"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="40"/>
         <source>Update extents from layer</source>
         <translation>Aktualizuj zasięg z warstwy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="94"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="53"/>
         <source>Update extents from canvas</source>
         <translation>Aktualizuj zasięg z obszaru mapy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="95"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="171"/>
         <source>Parameters</source>
         <translation>Parametry</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="96"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="190"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="97"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="213"/>
         <source>Lock 1:1 ratio</source>
         <translation>Blokuj proporcje 1:1</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="98"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="252"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="99"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="278"/>
         <source>Output grid as polygons</source>
         <translation>Wyjściowa siatka jako poligony</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="100"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="288"/>
         <source>Output grid as lines</source>
         <translation>Wyjściowa siatka jako linie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="43"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="16"/>
         <source>Vector Split</source>
         <translation>Podział wektora</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="44"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="45"/>
         <source>Output folder</source>
         <translation>Kartoteka wyjściowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="75"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="17"/>
         <source>List Unique Values</source>
         <translation>Wyświetl unikalne wartości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="77"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="42"/>
         <source>Target field</source>
         <translation>Pole</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="78"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="56"/>
         <source>Unique values list</source>
         <translation>Lista unikalnych wartości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="79"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="92"/>
         <source>Unique value count</source>
         <translation>Liczba unikalnych wartości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="34"/>
         <source>Sum line lengths</source>
         <translation>Łączna długość linii</translation>
     </message>
@@ -1444,102 +1310,82 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GeometryDialog</name>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="147"/>
         <source>Merge all</source>
         <translation>Połącz wszystko</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="148"/>
         <source>Please specify input vector layer</source>
         <translation>Podaj wejściową warstwę wektorową</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="149"/>
         <source>Please specify output shapefile</source>
         <translation>Podaj wyjściowy Shapefile</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="150"/>
         <source>Please specify valid tolerance value</source>
         <translation>Podaj prawidłowy zakres tolerancji</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="151"/>
         <source>Please specify valid UID field</source>
         <translation>Podaj prawidłowe pole UID</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="172"/>
         <source>Created output shapefile:</source>
         <translation>Utworzono plik Shapefile:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="173"/>
         <source>Would you like to add the new layer to the TOC?</source>
         <translation>Czy chcesz dodać wynikową warstwę do mapy?</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="152"/>
         <source>Singleparts to multipart</source>
         <translation>Połącz obiekty jednoczęściowe w wieloczęściowy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="153"/>
         <source>Output shapefile</source>
         <translation>Wyjściowy Shapefile</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="154"/>
         <source>Multipart to singleparts</source>
         <translation>Rozbij obiekt wieloczęściowy na jednoczęściowe</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="155"/>
         <source>Extract nodes</source>
         <translation>Wydobądź węzły</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="156"/>
         <source>Polygons to lines</source>
         <translation>Poligony na linie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="157"/>
         <source>Input polygon vector layer</source>
         <translation>Wejściowa warstwa wektorowa (poligony)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="158"/>
         <source>Export/Add geometry columns</source>
         <translation>Eksportuj/dodaj kolumnę geometrii</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="159"/>
         <source>Input vector layer</source>
         <translation>Wejściowa warstwa wektorowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="160"/>
         <source>Simplify geometries</source>
         <translation>Uprość geometrię</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="161"/>
         <source>Polygon centroids</source>
         <translation>Centroidy poligonów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="162"/>
         <source>Output point shapefile</source>
         <translation>Wyjściowy Shapefile (punkty)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="169"/>
         <source>Error processing specified tolerance!</source>
         <translation>Błąd przy przetwarzaniu zadanej tolerancji!</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="170"/>
         <source>Please choose larger tolerance...</source>
         <translation>Wybierz proszę większą tolerancję...</translation>
     </message>
@@ -1548,7 +1394,6 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nie znaleziono funkcji</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="174"/>
         <source>Error writing output shapefile.</source>
         <translation>Błąd zapisu wyjściowego Shapefile.</translation>
     </message>
@@ -1557,37 +1402,30 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nie można usunąć istniejącej warstwy...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="163"/>
         <source>Delaunay triangulation</source>
         <translation>Triangulacja Delone</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="164"/>
         <source>Input point vector layer</source>
         <translation>Wejściowa warstwa wektorowa (punkty)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="165"/>
         <source>Polygon from layer extent</source>
         <translation>Poligon z zasięgu warstwy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="166"/>
         <source>Input layer</source>
         <translation>Warstwa wejściowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="167"/>
         <source>Output polygon shapefile</source>
         <translation>Wyjściowy Shapefile (poligony)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="168"/>
         <source>Unable to delete existing shapefile.</source>
         <translation>Nie można usunąć istniejącego Shapefile.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="171"/>
         <source>Unable to delete incomplete shapefile.</source>
         <translation>Błąd usuwania niekompletnego Shapefile.</translation>
     </message>
@@ -1595,32 +1433,26 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>GeoprocessingDialog</name>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="178"/>
         <source>Dissolve all</source>
         <translation>Agreguj wszystko</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="179"/>
         <source>Please specify an input layer</source>
         <translation>Podaj warstwę wejściową</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="180"/>
         <source>Please specify a difference/intersect/union layer</source>
         <translation>Podaj warstwę różnicy/iloczynu/sumy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="181"/>
         <source>Please specify valid buffer value</source>
         <translation>Podaj poprawną wartość bufora</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="182"/>
         <source>Please specify dissolve field</source>
         <translation>Wybierz pole agregacji</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="183"/>
         <source>Please specify output shapefile</source>
         <translation>Podaj wyjściowy plik Shapefile</translation>
     </message>
@@ -1637,27 +1469,22 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Czy chcesz dodać wynikową warstwę do mapy?</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="185"/>
         <source>Buffer(s)</source>
         <translation>Bufor(y)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="186"/>
         <source>Create single minimum convex hull</source>
         <translation>Twórz pojedynczą minimalną otoczkę wypukłą</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="187"/>
         <source>Create convex hulls based on input field</source>
         <translation>Twórz otoczki wypukłe na bazie atrybutów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="188"/>
         <source>Convex hull(s)</source>
         <translation>Otoczka(i) wypukła(e)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="189"/>
         <source>Dissolve</source>
         <translation>Agreguj</translation>
     </message>
@@ -1666,69 +1493,56 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Wyczyść warstwę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="191"/>
         <source>Difference</source>
         <translation>Różnica</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="192"/>
         <source>Intersect layer</source>
         <translation>Warstwa do iloczynu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="193"/>
         <source>Intersect</source>
         <translation>Iloczyn</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="190"/>
         <source>Difference layer</source>
         <translation>Warstwa do różnicy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="184"/>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
         <translation>Nie wybrano obiektów. Dokonaj wyboru lub odznacz &apos;użyj wybranych&apos;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="194"/>
         <source>Symetrical difference</source>
         <translation>Różnica symetryczna</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="195"/>
         <source>Clip layer</source>
         <translation>Maska przycięcia</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="196"/>
         <source>Clip</source>
         <translation>Przytnij</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="197"/>
         <source>Union layer</source>
         <translation>Warstwa sumy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="198"/>
         <source>Union</source>
         <translation>Suma</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="199"/>
         <source>Unable to delete existing shapefile.</source>
         <translation>Nie można usunąć istniejącego Shapefile.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="200"/>
         <source>
 Warnings:</source>
         <translation>
 Uwagi:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="201"/>
         <source>
 Some output geometries may be missing or invalid.
 
@@ -1738,35 +1552,30 @@ Would you like to add the new layer anyway?</source>
 Czy mimo to chcesz dodać utworzoną warstwę do mapy?</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="202"/>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
         <translation>Czy chcesz dodać wynikową warstwę do mapy?</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="203"/>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
         <translation>
 Niezgodność układów współrzędnych: Warstwy posiadają inne układy współrzędnych, wyniki mogą być błędne.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="204"/>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
         <translation>
 Błąd geometrii obiektu: Odrzucono jeden lub więcej wejściowych obiektów z powodu błędnej geometrii.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="205"/>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
         <translation>
 Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną geometrię.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="206"/>
         <source>Created output shapefile:</source>
         <translation>Utworzono plik Shapefile:</translation>
     </message>
@@ -2038,24 +1847,20 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
 <context>
     <name>OsmAddRelationDlg</name>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="10"/>
         <source>OSM Information</source>
         <translation>Informacja OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="11"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="13"/>
         <source>Create OSM relation</source>
         <translation>Twórz relację OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="12"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="30"/>
         <source>Relation type:</source>
         <translation>Typ relacji:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="13"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="126"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="133"/>
@@ -2065,25 +1870,21 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="14"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="106"/>
         <source>Properties</source>
         <translation>Właściwości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="15"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="158"/>
         <source>Members</source>
         <translation>Użytkownicy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="16"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="260"/>
         <source>Create</source>
         <translation>Stwórz</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="17"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="276"/>
         <source>Cancel</source>
         <translation>Anuluj</translation>
@@ -2203,148 +2004,122 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
 <context>
     <name>OsmDownloadDlg</name>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="21"/>
         <source>OSM Download</source>
         <translation>Pobieranie danych OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="22"/>
         <source>Unable to save the file %1: %2.</source>
         <translation>Nie mogę zapisać pliku %1: %2.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="23"/>
         <source>Waiting for OpenStreetMap server ...</source>
         <translation>Oczekiwanie na odpowiedź serwera OpenStreetMap...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="24"/>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
         <translation>Pobieranie nie powiodło się. Odpowiedź serwera OSM: %1 - %2</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="25"/>
         <source>OSM Download Error</source>
         <translation>Błąd pobierania danych OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="26"/>
         <source>Download failed: %1.</source>
         <translation>Pobieranie nie powiódło się: %1.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="27"/>
         <source>Getting data</source>
         <translation>Pobieranie danych</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="28"/>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
         <translation>Serwer OpenStreetMap (~ api.openstreetmap.org) ma określone ograniczenia odnośnie pobierania danych. Jak podano w &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; ani zakres szerokości ani długości geograficznej pobieranego regionu nie może przekraczać 0.25 stopnia. Zauważ, że GIS nie ma takiego ogranicznia, lecz serwer OpenStreetMap odrzuci takie zapytanie.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="29"/>
         <source>Both extents are too large!</source>
         <translation>Obydwa zakresy są zbyt duże!</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="30"/>
         <source>Latitude extent is too large!</source>
         <translation>Zakres szerokości geo. jest zbyt duży!</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="31"/>
         <source>Longitude extent is too large!</source>
         <translation>Zakres długości geo. jest zbyt duży!</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="32"/>
         <source>OK! Area is probably acceptable to server.</source>
         <translation>OK! Zakres jest prawdopodobnie odpowiedni.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="33"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
         <source>Download OSM data</source>
         <translation>Pobierz dane OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="34"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="40"/>
         <source>Extent</source>
         <translation>Zasięg</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="35"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="48"/>
         <source>Latitude:</source>
         <translation>Szerokość geo.:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="36"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="55"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="96"/>
         <source>   From</source>
         <translation>...z</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="37"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="72"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="113"/>
         <source>To</source>
         <translation>do</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="38"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="89"/>
         <source>Longitude:</source>
         <translation>Długość geo.:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="39"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="166"/>
         <source>&lt;nothing&gt;</source>
         <translation>&lt;nic&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="40"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="182"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="210"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="41"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="196"/>
         <source>Download to:</source>
         <translation>Pobierz do:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="42"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="219"/>
         <source>Open data automatically after download</source>
         <translation>Wyświetl dane po pobraniu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="43"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="247"/>
         <source>Replace current data (current layer will be removed)</source>
         <translation>Nadpisz bieżące dane (bieżąca warstwa będzie usunięta)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="44"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
         <source>Use custom renderer</source>
         <translation>Użyj stylu użytkownika</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="45"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
         <source>Download</source>
         <translation>Pobierz</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="46"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="365"/>
         <source>Cancel</source>
         <translation>Anuluj</translation>
@@ -2353,43 +2128,35 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
 <context>
     <name>OsmFeatureDW</name>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="50"/>
         <source>OSM Plugin</source>
         <translation>Wtyczka OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="51"/>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
         <translation>Okno &apos;Twórz relację OSM&apos; zostało zamknięte automatycznie, ponieważ bieżąca baza danych OSM uległa zmianie.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="52"/>
         <source>OSM Feature Dock Widget</source>
         <translation>Widżet obiektu OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="53"/>
         <source>Choose OSM feature first.</source>
         <translation>Najpierw wybierz obiekt OSM.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="54"/>
         <source>Choose relation for editing first.</source>
         <translation>Najpierw wybierz relację do edycji.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="55"/>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
         <translation>Atrybut &apos;%1&apos; nie może być dodany dwukrotnie.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="56"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
         <source>OSM Feature</source>
         <translation>Obiekt OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="57"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="67"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="101"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="129"/>
@@ -2409,7 +2176,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="58"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="92"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="95"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="98"/>
@@ -2417,37 +2183,31 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Informacje o obiekcie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="59"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="126"/>
         <source>Move object</source>
         <translation>Przesuń obiekt</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="60"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="154"/>
         <source>Create point</source>
         <translation>Dodaj punkt</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="61"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="176"/>
         <source>Create line</source>
         <translation>Dodaj linię</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="62"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="204"/>
         <source>Create polygon</source>
         <translation>Dodaj poligon</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="63"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="232"/>
         <source>Create relation</source>
         <translation>Dodaj relację</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="64"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="251"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="254"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="257"/>
@@ -2455,7 +2215,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Cofnij</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="65"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="273"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="276"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="279"/>
@@ -2463,7 +2222,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Ponów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="66"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="295"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="298"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="301"/>
@@ -2471,31 +2229,26 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Pokaż/ukryj historię edycji OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="67"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="331"/>
         <source>Feature:</source>
         <translation>Obiekt:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="68"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="360"/>
         <source>TYPE, ID:</source>
         <translation>Typ, ID:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="69"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="367"/>
         <source>CREATED:</source>
         <translation>UTWORZONY:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="70"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="374"/>
         <source>USER:</source>
         <translation>UŻYTKOWNIK:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="71"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="381"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="388"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="395"/>
@@ -2503,7 +2256,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>nieznany</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="72"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="408"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="411"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="414"/>
@@ -2511,13 +2263,11 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Usuń obiekt</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="73"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="460"/>
         <source>Properties</source>
         <translation>Właściwości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="74"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="506"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="509"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="512"/>
@@ -2525,13 +2275,11 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Usuń wybrane tagi</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="75"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="525"/>
         <source>Relations</source>
         <translation>Relacje</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="76"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="557"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="560"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="563"/>
@@ -2539,7 +2287,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Dodaj relację</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="77"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="573"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="576"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="579"/>
@@ -2547,7 +2294,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Edytuj relację</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="78"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="589"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="592"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="595"/>
@@ -2555,19 +2301,16 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Usuń relację</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="79"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="625"/>
         <source>Relation tags:</source>
         <translation>Atrybuty relacji:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="80"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="672"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="81"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="680"/>
         <source>Relation members:</source>
         <translation>Elementy relacji:</translation>
@@ -2576,25 +2319,21 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
 <context>
     <name>OsmImportDlg</name>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="85"/>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="16"/>
         <source>Import data to OSM</source>
         <translation>Importuj dane do OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="86"/>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="25"/>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
         <translation>Tutaj możesz zaimportować warstwę wyświetloną w QGIS do aktywnych danych OSM.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="87"/>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="50"/>
         <source>Layer</source>
         <translation>Warstwa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="88"/>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="69"/>
         <source>Import only current selection</source>
         <translation>Zaimportuj tylko bieżącą selekcję</translation>
@@ -2603,37 +2342,31 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
 <context>
     <name>OsmLoadDlg</name>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="92"/>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="16"/>
         <source>Load OSM</source>
         <translation>Wczytaj OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="93"/>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="33"/>
         <source>OpenStreetMap file to load:</source>
         <translation>Plik OpenStreetMap do wczytania:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="94"/>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="46"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="95"/>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="55"/>
         <source>Add columns for tags:</source>
         <translation>Dodaj kolumny atrybutów:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="96"/>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
         <source>Use custom renderer</source>
         <translation>Użyj stylu użytkownika</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="97"/>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
         <source>Replace current data (current layers will be removed)</source>
         <translation>Nadpisz bieżące dane (bieżące warstwy będą usunięte)</translation>
@@ -2642,90 +2375,74 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
 <context>
     <name>OsmSaveDlg</name>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="101"/>
         <source>Save OSM to file</source>
         <translation>Zapisz OSM do pliku</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="102"/>
         <source>Unable to save the file %1: %2.</source>
         <translation>Nie mogę zapisać pliku %1: %2.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="103"/>
         <source>Initializing...</source>
         <translation>Inicjalizacja...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="104"/>
         <source>Saving nodes...</source>
         <translation>Zapisywanie węzłów...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="105"/>
         <source>Saving lines...</source>
         <translation>Zapisywanie linii...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="106"/>
         <source>Saving polygons...</source>
         <translation>Zapisywanie poligonów...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="107"/>
         <source>Saving relations...</source>
         <translation>Zapisywanie relacji...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="108"/>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
         <source>Save OSM</source>
         <translation>Zapisz OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="109"/>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="33"/>
         <source>Where to save:</source>
         <translation>Zapisz do:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="110"/>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="52"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="111"/>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="61"/>
         <source>Features to save:</source>
         <translation>Obiekty do zapisania:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="112"/>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="81"/>
         <source>Points</source>
         <translation>Punkty</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="113"/>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="91"/>
         <source>Lines</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="114"/>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="101"/>
         <source>Polygons</source>
         <translation>Poligony</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="115"/>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="115"/>
         <source>Relations</source>
         <translation>Relacje</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="116"/>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="125"/>
         <source>Tags</source>
         <translation>Tagi</translation>
@@ -2734,13 +2451,11 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
 <context>
     <name>OsmUndoRedoDW</name>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="120"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="16"/>
         <source>OSM Edit History</source>
         <translation>Historia edycji OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="121"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="25"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="28"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="31"/>
@@ -2748,7 +2463,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Wyczyść wszystko</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="122"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="34"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="66"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="85"/>
@@ -2756,7 +2470,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="123"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="57"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="60"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="63"/>
@@ -2764,7 +2477,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Cofnij</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="124"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="76"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="79"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="82"/>
@@ -2798,90 +2510,75 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
 <context>
     <name>OsmUploadDlg</name>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="128"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
         <source>Upload OSM data</source>
         <translation>Prześlij dane OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="129"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="37"/>
         <source>Ready for upload</source>
         <translation>Gotowe do przesłania</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="130"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="80"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="131"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="85"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="132"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="90"/>
         <source>3</source>
         <translation>3</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="133"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="95"/>
         <source>4</source>
         <translation>4</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="134"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="100"/>
         <source>5</source>
         <translation>5</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="135"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="108"/>
         <source>Comment on your changes:</source>
         <translation>Komentarz do zmian:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="136"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="134"/>
         <source>OSM account</source>
         <translation>Konto OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="137"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="142"/>
         <source>Username:</source>
         <translation>Użytkownik:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="138"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="162"/>
         <source>Password:</source>
         <translation>Hasło:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="139"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="179"/>
         <source>Show password</source>
         <translation>Pokaż hasło</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="140"/>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="186"/>
         <source>Save password</source>
         <translation>Zapisz hasło</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="141"/>
         <source>OSM Upload</source>
         <translation>Przesyłanie OSM</translation>
     </message>
     <message>
-        <location filename="../python/plugins/osm/python-i18n.cpp" line="142"/>
         <source>Uploading data...</source>
         <translation>Przesyłanie danych...</translation>
     </message>
@@ -2952,14 +2649,14 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <translation>Format pliku GPS eXchange</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="285"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="310"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="304"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="329"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate line length.</source>
         <translation>Przechwycono wyjątek układu współrzędnych podczas transformacji punktu. Nie można obliczyć długości odcinka.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="372"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="401"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="396"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="425"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area.</source>
         <translation>Przechwycono wyjątek układu współrzędnych podczas transformacji punktu. Nie można obliczyć powierzchni poligonu.</translation>
     </message>
@@ -3108,83 +2805,83 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <translation>Błąd Pythona</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="647"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="671"/>
         <source> km2</source>
         <translation>km2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="652"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="676"/>
         <source> ha</source>
         <translation> ha</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="657"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="681"/>
         <source> m2</source>
         <translation>m2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="665"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="685"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="689"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="709"/>
         <source> m</source>
         <translation> m</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="670"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="694"/>
         <source> km</source>
         <translation> km</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="675"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="699"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="680"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="704"/>
         <source> cm</source>
         <translation> cm</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="694"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="718"/>
         <source> sq mile</source>
         <translation>mil2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="699"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="723"/>
         <source> sq ft</source>
         <translation>stóp2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="706"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="730"/>
         <source> mile</source>
         <translation>mila</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="712"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="736"/>
         <source> foot</source>
         <translation> stopa</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="714"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="738"/>
         <source> feet</source>
         <translation>stopy</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="721"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="745"/>
         <source> sq.deg.</source>
         <translation>stopni2.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="726"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="750"/>
         <source> degree</source>
         <translation>stopień</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="728"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="752"/>
         <source> degrees</source>
         <translation>stopnie</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="732"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="756"/>
         <source> unknown</source>
         <translation>nieznany</translation>
     </message>
@@ -8410,7 +8107,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Tekst pochylony &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(uwaga: &amp;amp;copy; wstawia symbol praw autorskich)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="158"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -13420,7 +13117,7 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>Maksymalna skala, dla której warstwa będzie wyświetlana.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="233"/>
         <source>°</source>
         <translation>°</translation>
@@ -14081,54 +13778,54 @@ p, li { white-space: pre-wrap; }
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="350"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="352"/>
         <source>Length</source>
         <translation>Długość</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="355"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="357"/>
         <source>firstX</source>
         <comment>attributes get sorted; translation for lastX should be lexically larger than this one</comment>
         <translation>początkowyX</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="357"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="359"/>
         <source>firstY</source>
         <translation>początkowyY</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="359"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="361"/>
         <source>lastX</source>
         <comment>attributes get sorted; translation for firstX should be lexically smaller than this one</comment>
         <translation>końcowyX</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="361"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="363"/>
         <source>lastY</source>
         <translation>końcowyY</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="368"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="372"/>
         <source>Area</source>
         <translation>Powierzchnia</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="384"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="388"/>
         <source>action</source>
         <translation>akcja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="399"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="403"/>
         <source>No features found</source>
         <translation>Nie znaleziono obiektów</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="399"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="403"/>
         <source>No features were found in the active layer at the point you clicked</source>
         <translation>Nie znaleziono żadnych obiektów na aktywnej warstwie w miejscu kliknięcia</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="402"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="406"/>
         <source>%1 - %n feature(s) found</source>
         <comment>Identify results window title</comment>
         <translation>
@@ -14138,7 +13835,7 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="415"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="419"/>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
@@ -14146,14 +13843,14 @@ p, li { white-space: pre-wrap; }
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="421"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="425"/>
         <source>Could not identify objects on %1 because:
 %2</source>
         <translation>Nie mogę zidentyfikować obiektu na %1 ponieważ:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="495"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="499"/>
         <source>Attribute changed</source>
         <translation>Zmieniono atrybut</translation>
     </message>
@@ -14350,112 +14047,96 @@ Czy chcesz go nadpisać?</translation>
 <context>
     <name>QgsMapserverExportBase</name>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="10"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="14"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="13"/>
         <source>Export to Mapserver</source>
         <translation>Eksport do formatu Mapserver</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="31"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="406"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="31"/>
         <source>Map file</source>
         <translation>Plik mapy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="37"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="457"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="41"/>
         <source>Export LAYER information only</source>
         <translation>Eksportuj tylko informację o warstwie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="17"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="207"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="126"/>
         <source>Map</source>
         <translation>Mapa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="29"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="384"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="144"/>
         <source>Name</source>
         <translation>Nazwa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="28"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="349"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="154"/>
         <source>Height</source>
         <translation>Wysokość</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="27"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="336"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="265"/>
         <source>Width</source>
         <translation>Szerokość</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="18"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="248"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="167"/>
         <source>Units</source>
         <translation>Jednostki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="19"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="265"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="177"/>
         <source>Image type</source>
         <translation>Format mapy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="20"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="279"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="188"/>
         <source>gif</source>
         <translation>gif</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="21"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="284"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="193"/>
         <source>gtiff</source>
         <translation>gtiff</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="22"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="289"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="198"/>
         <source>jpeg</source>
         <translation>jpeg</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="23"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="294"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="203"/>
         <source>png</source>
         <translation>png</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="24"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="299"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="208"/>
         <source>swf</source>
         <translation>swf</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="25"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="304"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="213"/>
         <source>userdefined</source>
         <translation>użytkownika</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="26"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="309"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="218"/>
         <source>wbmp</source>
@@ -14477,28 +14158,24 @@ Czy chcesz go nadpisać?</translation>
         <translation>Prefiks dodany do nazw plików mapy, podziałki i legendy tworzonych podczas eksportu. Powinien być krótki.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="11"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="41"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="278"/>
         <source>Web Interface Definition</source>
         <translation>Web Interface Definition</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="15"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="137"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="293"/>
         <source>Header</source>
         <translation>Nagłówek</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="16"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="182"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="303"/>
         <source>Footer</source>
         <translation>Stopka</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="12"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="88"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="313"/>
         <source>Template</source>
@@ -14530,43 +14207,36 @@ Czy chcesz go nadpisać?</translation>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="32"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="416"/>
         <source>Name for the map file to be created from the QGIS project file</source>
         <translation>Nazwa pliku mapy tworzonego z pliku projektu QGIS</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="36"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="454"/>
         <source>If checked, only the layer information will be processed</source>
         <translation>Jeśli zaznaczone, przetworzeniu podlegać będzie tylko warstwa informacyjna</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="13"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="98"/>
         <source>Path to the MapServer template file</source>
         <translation>Ścieżka do pliku szablonu MapServera</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="30"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="394"/>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
         <translation>Prefiks dodany do nazw plików GIF mapy, podziałki i legendy tworzonych przy użyciu MapFile</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="33"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="430"/>
         <source>Full path to the QGIS project file to export to MapServer map format</source>
         <translation>Pełna ścieżka do projektu QGIS w celu eksportu do formatu map MapServera</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="34"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="437"/>
         <source>QGIS project file</source>
         <translation>Plik projektu QGIS</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="14"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="105"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="150"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="195"/>
@@ -14575,7 +14245,6 @@ Czy chcesz go nadpisać?</translation>
         <translation>Przeglądaj...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/python-i18n.cpp" line="35"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="447"/>
         <source>Save As...</source>
         <translation>Zapisz jako...</translation>
@@ -16565,7 +16234,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstaller</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="22"/>
         <source>Couldn&apos;t parse output from the repository</source>
         <translation>Nie mogę rozczytać zawartości repozytorium </translation>
     </message>
@@ -16574,62 +16242,50 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nie mogę otworzyć katalogu wtyczek systemowych </translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="23"/>
         <source>Couldn&apos;t open the local plugin directory</source>
         <translation>Nie mogę otworzyć katalogu wtyczek użytkownika </translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="12"/>
         <source>Check permissions or remove it manually</source>
         <translation>Sprawdź uprawnienia lub usuń go ręcznie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="13"/>
         <source>Fetch Python Plugins...</source>
         <translation>Pobierz więcej wtyczek...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="14"/>
         <source>Install more plugins from remote repositories</source>
         <translation>Zainstaluj więcej wtyczek z repozytoriów sieciowych</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="15"/>
         <source>Looking for new plugins...</source>
         <translation>Szukam nowych wtyczek...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="18"/>
         <source>There is a new plugin available</source>
         <translation>Dostępna jest nowa wtyczka</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="19"/>
         <source>There is a plugin update available</source>
         <translation>Dostępna jest aktualizacja wtyczki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="20"/>
         <source>QGIS Python Plugin Installer</source>
         <translation>Instalator pytonowych wtyczek Quantum GISa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="21"/>
         <source>Error reading repository:</source>
         <translation>Błąd odczytu repozytorium: </translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="11"/>
         <source>Failed to remove the directory:</source>
         <translation>Nie mogę usunąć katalogu:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="10"/>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
         <translation>Nie ma czego usunąć! Katalog z wtyczką nie istnieje:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="16"/>
         <source>QGIS Plugin Conflict:</source>
         <translation>Konflikt wtyczek Quantum GISa:</translation>
     </message>
@@ -16638,7 +16294,6 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Instalator Wtyczek wykrył starą wtyczkę, blokującą jej nowszą wersję, dostarczoną z tą wersją programu Quantum GIS. Jest to prawdopodobnie pozostałość po starszej instalacji programu. Proszę użyć Instalatora Wtyczek i odinstalować ją w celu odblokowania aktualnej wersji.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="17"/>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
         <translation>Instalator Wtyczek wykrył starą wtyczkę, blokującą jej nowszą wersję, dostarczoną z tą wersją programu Quantum GIS. Jest to prawdopodobnie pozostałość po starszej instalacji programu. Proszę użyć Instalatora Wtyczek i odinstalować ją w celu odblokowania aktualnej wersji.</translation>
     </message>
@@ -16646,167 +16301,134 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="27"/>
         <source>QGIS Python Plugin Installer</source>
         <translation>Instalator pytonowych wtyczek Quantum GISa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="29"/>
         <source>all repositories</source>
         <translation>wszystkie repozytoria</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="69"/>
         <source>Install/upgrade plugin</source>
         <translation>Instaluj/aktualizuj wtyczkę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="30"/>
         <source>connected</source>
         <translation>podłączone</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="31"/>
         <source>This repository is connected</source>
         <translation>To repozytorium jest podłączone</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="32"/>
         <source>unavailable</source>
         <translation>niedostępne</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="33"/>
         <source>This repository is enabled, but unavailable</source>
         <translation>To repozytorium jest włączone, ale nie jest aktualnie dostępne</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="34"/>
         <source>disabled</source>
         <translation>wyłączone</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="35"/>
         <source>This repository is disabled</source>
         <translation>To repozytorium jest wyłączone</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="37"/>
         <source>orphans</source>
         <translation>sieroty</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="38"/>
         <source>any status</source>
         <translation>dowolny stan</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="41"/>
         <source>upgradeable and news</source>
         <translation>aktualizowalne i nowości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="42"/>
         <source>This plugin is not installed</source>
         <translation>Ta wtyczka nie jest zainstalowana</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="43"/>
         <source>This plugin is installed</source>
         <translation>Ta wtyczka jest zainstalowana</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="44"/>
         <source>This plugin is installed, but there is an updated version available</source>
         <translation>Ta wtyczka jest zainstalowana, ale dostępna jest nowsza wersja</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="45"/>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
         <translation>Ta wtyczka jest zainstalowana, ale nie widzę jej w żadnym repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="46"/>
         <source>This plugin is not installed and is seen for the first time</source>
         <translation>Ta wtyczka nie jest zainstalowana i widzę ją pierwszy raz</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="47"/>
         <source>This plugin is installed and is newer than its version available in a repository</source>
         <translation>Ta wtyczka jest zainstalowana i jest nawet nowsza niż wersja dostępna w repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="57"/>
         <source>installed version</source>
         <translation>wersja zainstalowana</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="58"/>
         <source>available version</source>
         <translation>wersja dostępna</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="59"/>
         <source>That&apos;s the newest available version</source>
         <translation>To jest najnowsza dostępna wersja</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="60"/>
         <source>There is no version available for download</source>
         <translation>wtyczka niedostępna w repozytoriach</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="65"/>
         <source>only locally available</source>
         <translation>dostępna tylko lokalnie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="66"/>
         <source>Install plugin</source>
         <translation>Zainstaluj wtyczkę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="67"/>
         <source>Reinstall plugin</source>
         <translation>Przeinstaluj wtyczkę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="68"/>
         <source>Upgrade plugin</source>
         <translation>Aktualizuj wtyczkę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="70"/>
         <source>Downgrade plugin</source>
         <translation>Cofnij wtyczkę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="72"/>
         <source>Plugin installation failed</source>
         <translation>Instalacja wtyczki nie powiodła się</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="75"/>
         <source>Plugin installed successfully</source>
         <translation>Wtyczka zainstalowana pomyślnie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="82"/>
         <source>Plugin uninstall failed</source>
         <translation>Odinstalowanie wtyczki nie powiodło się</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="84"/>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
         <translation>Uwaga: ta wtyczka jest niedostępna w żadnym z włączonych repozytoriów!</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="85"/>
         <source>Plugin uninstalled successfully</source>
         <translation>Wtyczka odinstalowana pomyślnie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="88"/>
         <source>Unable to add another repository with the same URL!</source>
         <translation>Nie można dodać drugiego repozytorium pod tym samym adresem!</translation>
     </message>
@@ -16846,79 +16468,64 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">niesprawna</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="28"/>
         <source>Error reading repository:</source>
         <translation>Błąd odczytu repozytorium:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="36"/>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
         <translation>To repozytorium jest zablokowane z powodu niekompatybilności z Twoją wersją Quantum GISa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="83"/>
         <source>Are you sure you want to uninstall the following plugin?</source>
         <translation>Na pewno chcesz odinstalować tę wtyczkę?</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="89"/>
         <source>Are you sure you want to remove the following repository?</source>
         <translation>Na pewno chcesz usunąć to repozytorium?</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="71"/>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
         <translation>Na pewno chcesz cofnąć wersję wtyczki do ostatniej dostępnej? Zainstalowana wtyczka jest nowsza!</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="73"/>
         <source>Plugin has disappeared</source>
         <translation>Wtyczka zniknęła</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="74"/>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
         <translation>Wszystko wskazuje na to, że zainstalowałem wtyczkę, lecz nie mam pojęcia gdzie. Prawdopodobnie paczka zip była źle przygotowana i zawierała błędnie nazwany katalog.
 Przejrzyj proszę listę zainstalowanych wtyczek. Jestem prawie pewien, że znajdziesz ją tam, lecz ja po prostu nie umiem ustalić, która to. Oznacza to także, że nie będę w stanie określić, czy ta wtyczka jest zainstalowana ani powiadamiać o dostępnych uaktualnieniach. Mimo to może będzie działać. Proszę skontaktuj się z jej autorem i zgłoś ten problem.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="61"/>
         <source>This plugin is broken</source>
         <translation>Ta wtyczka jest zepsuta</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="62"/>
         <source>This plugin requires a newer version of Quantum GIS</source>
         <translation>Ta wtyczka wymaga nowszej wersji programu Quantum GIS</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="64"/>
         <source>This plugin requires a missing module</source>
         <translation>Ta wtyczka wymaga brakującego modułu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="77"/>
         <source>Plugin reinstalled successfully</source>
         <translation>Wtyczka przeinstalowana pomyślnie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="79"/>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
         <translation>Wtyczka jest przeznaczona do nowszej wersji programu Quantum GIS. Minimalna wymagana wersja to:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="81"/>
         <source>The plugin is broken. Python said:</source>
         <translation>Wtyczka jest uszkodzona. Python odpowiedział:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="48"/>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
         <translation>Ta wtyczka jest niekompatybilna z tą wersją programu Quantum GIS i prawdopodobnie nie będzie działać.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="50"/>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
@@ -16927,74 +16534,59 @@ Jest zainstalowana, ale nie mogę jej załadować.
 Oto komunikat błędu:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="80"/>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
         <translation>Ta wtyczka jest zależna od komponentów, które nie są zainstalowane na tym komputerze. Żeby działała, musisz zainstalować następujący moduł Pythona:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="56"/>
         <source>Note that it&apos;s an uninstallable core plugin</source>
         <translation>To jest nieusuwalna wtyczka systemowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="49"/>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
         <translation>Wymagany moduł Pythona nie jest zainstalowany. Dla dalszych informacji proszę odwiedzić jego stronę domową i wiki QGISa.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="76"/>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
         <translation>Wtyczka zainstalowana pomyślnie.
 Musisz ją teraz włączyć w Menedżerze Wtyczek.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="78"/>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
         <translation>Wtyczka przeinstalowana pomyślnie.
 Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="86"/>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
         <translation>Wtyczka odinstalowana pomyślnie. W niektórych przypadkach pełne usunięcie nastąpi po ponownym uruchomieniu programu.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="87"/>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
         <translation>Zamierzasz dodać repozytoria nieautoryzowane i niewspierane przez zespół Quantum GISa. Autorzy generalnie dokładają starań, by ich wtyczki były użyteczne i bezpieczne, lecz nie możemy brać za nich oczywiście żadnej odpowiedzialności.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="63"/>
         <source>at least</source>
         <translation>minimum</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="39"/>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="51"/>
         <source>not installed</source>
         <translation>niezainstalowana</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="40"/>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="52"/>
         <source>installed</source>
         <translation>zainstalowana</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="53"/>
         <source>upgradeable</source>
         <translation>aktualizowalna</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="54"/>
         <source>new!</source>
         <translation>nowość!</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="55"/>
         <source>invalid</source>
         <translation>niesprawna</translation>
     </message>
@@ -17002,266 +16594,224 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
 <context>
     <name>QgsPluginInstallerDialogBase</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="93"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="14"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="21"/>
         <source>QGIS Python Plugin Installer</source>
         <translation>Instalator pytonowych wtyczek Quantum GISa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="97"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="70"/>
         <source>Plugins</source>
         <translation>Wtyczki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="98"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="73"/>
         <source>List of available and installed plugins</source>
         <translation>Lista dostępnych i zainstalowanych wtyczek</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="99"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="84"/>
         <source>Filter:</source>
         <translation>Filtr:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="100"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="94"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="97"/>
         <source>Display only plugins containing this word in their metadata</source>
         <translation>Wyświetlaj tylko wtyczki zawierające w metadanych to wyrażenie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="101"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="113"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="119"/>
         <source>Display only plugins from given repository</source>
         <translation>Wyświetlaj tylko wtyczki z tego repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="102"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="123"/>
         <source>all repositories</source>
         <translation>wszystkie repozytoria</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="103"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="140"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="143"/>
         <source>Display only plugins with matching status</source>
         <translation>Wyświetlaj tylko wtyczki w tym stanie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="104"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="168"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="276"/>
         <source>Status</source>
         <translation>Stan</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="105"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="173"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="281"/>
         <source>Name</source>
         <translation>Nazwa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="106"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="178"/>
         <source>Version</source>
         <translation>Wersja</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="107"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="183"/>
         <source>Description</source>
         <translation>Opis</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="108"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="188"/>
         <source>Author</source>
         <translation>Autor</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="109"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="193"/>
         <source>Repository</source>
         <translation>Repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="110"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="228"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="231"/>
         <source>Install, reinstall or upgrade the selected plugin</source>
         <translation>Zainstaluj, przeinstaluj lub zaktualizuj wybraną wtyczkę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="111"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="234"/>
         <source>Install/upgrade plugin</source>
         <translation>Instaluj/aktualizuj wtyczkę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="112"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="244"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="247"/>
         <source>Uninstall the selected plugin</source>
         <translation>Odinstaluj wybraną wtyczkę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="113"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="250"/>
         <source>Uninstall plugin</source>
         <translation>Odinstaluj wtyczkę</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="114"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="260"/>
         <source>Repositories</source>
         <translation>Repozytoria</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="115"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="263"/>
         <source>List of plugin repositories</source>
         <translation>Lista repozytoriów wtyczek</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="116"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="286"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="127"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="397"/>
         <source>Check for updates on startup</source>
         <translation>Poszukuj aktualizacji przy starcie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="117"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="313"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="316"/>
         <source>Add third party plugin repositories to the list</source>
         <translation>Dodaj do listy niezależne repozytoria wtyczek</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="118"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="319"/>
         <source>Add 3rd party repositories</source>
         <translation>Dodaj niezależne repozytoria</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="119"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="339"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="342"/>
         <source>Add a new plugin repository</source>
         <translation>Dodaj nowe repozytorium wtyczek</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="120"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="345"/>
         <source>Add...</source>
         <translation>Dodaj...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="121"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="352"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="355"/>
         <source>Edit the selected repository</source>
         <translation>Zmień szczegóły wybranego repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="122"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="358"/>
         <source>Edit...</source>
         <translation>Zmień...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="123"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="365"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="368"/>
         <source>Remove the selected repository</source>
         <translation>Usuń wybrane repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="124"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="371"/>
         <source>Delete</source>
         <translation>Usuń</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="94"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="32"/>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
         <translation>Wtyczki będą zainstalowane w katalogu ~/.qgis/python/plugins</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="95"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="45"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="48"/>
         <source>Close the Installer window</source>
         <translation>Zamknij okno Instalatora</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="96"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="51"/>
         <source>Close</source>
         <translation>Zamknij</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="125"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="379"/>
         <source>Options</source>
         <translation>Opcje</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="126"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="382"/>
         <source>Configuration of the plugin installer</source>
         <translation>Konfiguracja instalatora wtyczek</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="128"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="410"/>
         <source>every time QGIS starts</source>
         <translation>przy każdym starcie programu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="129"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="415"/>
         <source>once a day</source>
         <translation>raz dziennie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="130"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="420"/>
         <source>every 3 days</source>
         <translation>co 3 dni</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="131"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="425"/>
         <source>every week</source>
         <translation>co tydzień</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="132"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="430"/>
         <source>every 2 weeks</source>
         <translation>co 2 tygodnie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="133"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="435"/>
         <source>every month</source>
         <translation>co miesiąc</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="134"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="465"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -17271,31 +16821,26 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Uwaga:&lt;/span&gt; Jeśli ta funkcja jest włączona, Quantum GIS będzie informował Cię gdy tylko pojawi się nowa wtyczka lub uaktualnienie jednej z zainstalowanych. W przeciwnym wypadku, sprawdzanie repozytoriów będzie następować dopiero przy otwieraniu Instalatora.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="135"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="488"/>
         <source>Allowed plugins</source>
         <translation>Dopuszczone wtyczki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="136"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="497"/>
         <source>Only show plugins from the official repository</source>
         <translation>Pokazuj wyłącznie wtyczki z oficjalnego repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="137"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="510"/>
         <source>Show all plugins except those marked as experimental</source>
         <translation>Pokazuj wszystkie wtyczki za wyjątkiem oznaczonych jako eksperymentalne</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="138"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="523"/>
         <source>Show all plugins, even those marked as experimental</source>
         <translation>Pokazuj wszystkie wtyczki, nawet eksperymentalne</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="139"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="542"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -17308,42 +16853,34 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="143"/>
         <source>Success</source>
         <translation>Gotowe</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="144"/>
         <source>Resolving host name...</source>
         <translation>Rozwiązywanie nazwy serwera...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="145"/>
         <source>Connecting...</source>
         <translation>Łączenie...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="146"/>
         <source>Host connected. Sending request...</source>
         <translation>Podłączono do serwera. Wysyłanie żądania...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="147"/>
         <source>Downloading data...</source>
         <translation>Pobieranie danych...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="148"/>
         <source>Idle</source>
         <translation>Bezczynność</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="149"/>
         <source>Closing connection...</source>
         <translation>Zamykanie połączenia...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="150"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
@@ -17351,31 +16888,26 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstallerFetchingDialogBase</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="154"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerfetchingbase.ui" line="14"/>
         <source>Fetching repositories</source>
         <translation>Pobieranie zawartości repozytoriów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="155"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerfetchingbase.ui" line="39"/>
         <source>Overall progress:</source>
         <translation>Całkowity postęp:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="156"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerfetchingbase.ui" line="111"/>
         <source>Abort fetching</source>
         <translation>Przerwij</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="157"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerfetchingbase.ui" line="167"/>
         <source>Repository</source>
         <translation>Repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="158"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerfetchingbase.ui" line="172"/>
         <source>State</source>
         <translation>Stan</translation>
@@ -17384,52 +16916,42 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="164"/>
         <source>Connecting...</source>
         <translation>Łączenie...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="162"/>
         <source>Installing...</source>
         <translation>Instalacja...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="163"/>
         <source>Resolving host name...</source>
         <translation>Rozwiązywanie nazwy serwera...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="165"/>
         <source>Host connected. Sending request...</source>
         <translation>Podłączono do serwera. Wysyłanie żądania...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="166"/>
         <source>Downloading data...</source>
         <translation>Pobieranie danych...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="167"/>
         <source>Idle</source>
         <translation>Bezczynność</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="168"/>
         <source>Closing connection...</source>
         <translation>Zamykanie połączenia...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="169"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="171"/>
         <source>Aborted by user</source>
         <translation>Przerwano przez użytkownika</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="170"/>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
         <translation>Nie mogę rozpakować paczki z wtyczką. Prawdopodobnie jest uszkodzona lub brakowało jej na serwerze. Możesz także upewnić się, czy masz prawa do zapisu w katalogu wtyczek:</translation>
     </message>
@@ -17437,19 +16959,16 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstallerInstallingDialogBase</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="175"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="14"/>
         <source>QGIS Python Plugin Installer</source>
         <translation>Instalator pytonowych wtyczek Quantum GISa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="176"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="41"/>
         <source>Installing plugin:</source>
         <translation>Instalacja wtyczki: </translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="177"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
         <source>Connecting...</source>
         <translation>Łączenie...</translation>
@@ -17458,7 +16977,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="181"/>
         <source>no error message received</source>
         <translation>brak komunikatu błędu</translation>
     </message>
@@ -17466,19 +16984,16 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstallerPluginErrorDialogBase</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="185"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="20"/>
         <source>Error loading plugin</source>
         <translation>Błąd wczytania wtyczki </translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="186"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="35"/>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
         <translation>Wtyczka wydaje się być uszkodzona albo jest zależna od modułów, które nie są zainstalowane. Zainstalowała się, ale nie mogę jej załadować. Jeśli jest Ci potrzebna, możesz skontaktować się z jej autorem lub &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;listą dyskusyjną użytkowników programu Quantum GIS&lt;/a&gt; i spróbować rozwiązać problem. Jeśli nie, możesz ją po prostu odinstalować. Poniżej znajduje się dokładny komunikat błędu:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="187"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="83"/>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
         <translation>Czy chcesz od razu odinstalować tę wtyczkę? Jeśli nie masz pewności, co odpowiedzieć, prawdopodobnie chcesz :).</translation>
@@ -17487,46 +17002,39 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginInstallerRepositoryDetailsDialogBase</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="191"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="20"/>
         <source>Repository details</source>
         <translation>Szczegóły repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="192"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="41"/>
         <source>Name:</source>
         <translation>Nazwa:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="193"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="64"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="67"/>
         <source>Enter a name for the repository</source>
         <translation>Podaj nazwę dla repozytorium</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="194"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="74"/>
         <source>URL:</source>
         <translation>Adres:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="195"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="81"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="84"/>
         <source>Enter the repository URL, beginning with &quot;http://&quot;</source>
         <translation>Podaj adres repozytorium, zaczynając od &quot;http://&quot;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="196"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="103"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="106"/>
         <source>Enable or disable the repository (disabled repositories will be omitted)</source>
         <translation>Włącz lub wyłącz repozytorium (wyłączone repozytoria będą pomijane)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="197"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="109"/>
         <source>Enabled</source>
         <translation>Włączone</translation>
@@ -17967,77 +17475,77 @@ p, li { white-space: pre-wrap; }
         <translation>Brak dostępu do relacji</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1020"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1033"/>
         <source>No suitable key column in table</source>
         <translation>Niewłaściwa kolumna z kluczem w tabeli</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1111"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1124"/>
         <source>and </source>
         <translation>i</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1160"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1173"/>
         <source>Unable to find a key column</source>
         <translation>Nie można znaleźć kolumny z kluczem</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1243"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1256"/>
         <source>and is suitable.</source>
         <translation>i jest odpowiedni(a).</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1249"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1262"/>
         <source> and has a suitable constraint)</source>
         <translation>i ma odpowiednie więzy)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1251"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1264"/>
         <source> and does not have a suitable constraint)</source>
         <translation>i nie ma odpowiednich więzów)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1354"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1367"/>
         <source>No suitable key column in view</source>
         <translation>Nieodpowiedni klucz kolumny w widoku</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2858"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2871"/>
         <source>Unknown geometry type</source>
         <translation>Nieznany typ geometrii</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2868"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2881"/>
         <source>Unable to get feature type and srid</source>
         <translation>Nie można pobrać typu obiektu ani srid</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2166"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2179"/>
         <source>Error while adding features</source>
         <translation>Błąd podczas dodawania obiektów</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2206"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2219"/>
         <source>Error while deleting features</source>
         <translation>Błąd podczas usuwania obiektów</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2266"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2279"/>
         <source>Error while adding attributes</source>
         <translation>Błąd podczas dodawania atrybutów</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2311"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2324"/>
         <source>Error while deleting attributes</source>
         <translation>Błąd podczas usuwania atrybutów</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2379"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2392"/>
         <source>Error while changing attributes</source>
         <translation>Błąd podczas zmiany atrybutów</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2465"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2478"/>
         <source>Error while changing geometry values</source>
         <translation>Błąd podczas zmiany wartości geometrii</translation>
     </message>
@@ -18121,38 +17629,38 @@ SQL: %2</translation>
         <translation>text</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1089"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1102"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation>Unikalny indeks na kolumnie &apos;%1&apos; jest nieodpowiedni ponieważ QGIS aktualnie nie obsługuje kolumn innego typu niż int4 jako kluczy.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1117"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1130"/>
         <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
         <translation>Unikalny indeks bazujący na kolumnach %1 jest nieodpowiedni, ponieważ QGIS aktualnie nie obsługuje wielokolumnowych kluczy.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1239"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1252"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation>&apos;%1&apos; pochodzi z &apos;%2.%3.%4&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1247"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1260"/>
         <source>and is not suitable (type is %1)</source>
         <translation>i jest nieodpowiedni(a) (typ jest %1)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1335"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1348"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation>Uwaga &apos;%1&apos; początkowo wyglądało na poprawne, lecz nie zawiera unikalnych danych, więc takim nie jest.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1346"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1359"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
@@ -18161,19 +17669,19 @@ QGIS wymaga, aby widok posiadał kolumnę która może być wykorzystana jako un
 Wybrany widok ma następujące kolumny, z których żadna nie spełnia powyższych warunków:</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2859"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2872"/>
         <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
         <translation>Kolumna %1 w %2 ma geometrię typu %3, której QGIS aktualnie nie wspiera.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2866"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2879"/>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 </source>
         <translation>QGIS nie może określić typu oraz srid kolumny %1 w %2. Zapis łączności z bazą danych:
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1021"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1034"/>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -18399,27 +17907,27 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
 <context>
     <name>QgsProjectionSelector</name>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="615"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="621"/>
         <source>User Defined Coordinate Systems</source>
         <translation>Układy współrzędnych użytkownika</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="692"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="698"/>
         <source>Geographic Coordinate Systems</source>
         <translation>Układy współrzędnych geodezyjnych</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="701"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="707"/>
         <source>Projected Coordinate Systems</source>
         <translation>Układy współrzędnych prostokątnych</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1073"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1079"/>
         <source>Resource Location Error</source>
         <translation>Błąd lokalizacji źródła</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1074"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1080"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
@@ -20783,7 +20291,7 @@ SQL: %2</source>
 <context>
     <name>QgsSpatiaLiteProvider::SqliteHandles</name>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1387"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1385"/>
         <source>Failure while connecting to: %1
 
 %2</source>
@@ -22977,32 +22485,26 @@ Tried URL: %1</source>
 <context>
     <name>VisualDialog</name>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="210"/>
         <source>Please specify input vector layer</source>
         <translation>Podaj wejściową warstwę wektorową</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="211"/>
         <source>Please specify input field</source>
         <translation>Podaj pole wejściowe</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="212"/>
         <source>Check geometry validity</source>
         <translation>Sprawdź poprawność geometrii</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="213"/>
         <source>Geometry errors</source>
         <translation>Błędy geometrii</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="214"/>
         <source>Total encountered errors</source>
         <translation>Łącznie znalezionych błędów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="215"/>
         <source>List unique values</source>
         <translation>Wyświel unikalne wartości</translation>
     </message>
@@ -23015,22 +22517,18 @@ Tried URL: %1</source>
         <translation type="obsolete">Łącznie unikalnych wartości:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="218"/>
         <source>Basics statistics</source>
         <translation>Podstawowe statystyki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="219"/>
         <source>Statistics output</source>
         <translation>Wydruk statystyk</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="220"/>
         <source>Nearest neighbour analysis</source>
         <translation>Analiza najbliższego sąsiedztwa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="221"/>
         <source>Nearest neighbour statistics</source>
         <translation>Statystyki najbliższego sąsiedztwa</translation>
     </message>
@@ -23063,12 +22561,10 @@ Tried URL: %1</source>
         <translation type="obsolete">Obiekt %1 posiada niepoprawną kolejność węzłów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="216"/>
         <source>Unique values</source>
         <translation>Unikalne wartości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="217"/>
         <source>Total unique values</source>
         <translation>Łącznie unikalnych wartości</translation>
     </message>
@@ -23365,7 +22861,7 @@ p, li { white-space: pre-wrap; }
         <source>Database Host</source>
         <translation>Host bazy danych</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
         <translation>Wprowadź nazwę hosta bazy danych. Jeśli baza danych znajduje się na Twoim komputerze, będzie to &quot;localhost&quot;. Jeśli wybrałeś &quot;MSAccess&quot; jako typ bazy danych, opcja ta nie będzie dostępna.</translation>
@@ -23606,7 +23102,7 @@ p, li { white-space: pre-wrap; }
         <source>Next</source>
         <translation>Następny</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="134"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
         <translation>Wszystkie atrybuty punktu związanego z widocznym zdjęciem są wyświetlane tutaj. Jeśli typ pliku odniesienia nie jest obrazem, lecz jednym ze zdefiniowanych w zakładce &quot;Konfiguruj zewnętrzne aplikacje&quot;, podwójne kliknięcie zawartości pola zawierającego ścieżkę do pliku spowoduje uruchomienie aplikacji ze wskazanym plikiem. Jeśli rozszerzenie pliku jest rozpoznawalne, dane atrybutów zostaną wyświetlone na zielono.</translation>
@@ -23652,7 +23148,7 @@ p, li { white-space: pre-wrap; }
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
         <translation>Użyj listy rozwijanej do wyboru pola zawierającego ścieżkę dostępu do obrazu. Może to być ścieżka bezwzględną lub względna.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="267"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
         <translation>Przy sprawdzeniu, ścieżka dostępu do obrazu zostanie określona przez dodanie atrybutu wybranego pola z listy rozwijanej &quot;Atrybut zawierający ścieżkę do obrazu&quot; do &quot;Ścieżki bazowej&quot; zdefiniowanej poniżej.</translation>
@@ -23748,7 +23244,7 @@ p, li { white-space: pre-wrap; }
         <source>Resets the compass offset values to the default settings.</source>
         <translation>Przywraca wartości poprawek kompasu do ustawień domyślnych.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="671"/>
         <source>The base path or url from which images and documents can be “relative”</source>
         <translation>Ścieżka bazowa lub URL, od której będą definiowane dla obrazów i dokumentów ścieżki &quot;względne&quot;</translation>
@@ -23759,7 +23255,7 @@ p, li { white-space: pre-wrap; }
         <source>Base Path</source>
         <translation>Ścieżka bazowa</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="750"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
         <translation>Domyślna &quot;Ścieżka bazowa&quot;, która jest ścieżką do kartoteki warstwy wektorowej zawierającej obrazy.</translation>
@@ -23808,7 +23304,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>Apply Path to Image rules when loading docs in external applications</source>
         <translation>Zastosuj reguły ścieżki do obrazu podczas wczytywania dokumentów do aplikacji zewnętrznych</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="963"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translatorcomment>Coś tu się kupy nie trzyma, bo niegdzie w tekście nie ma ciągu &quot;Restore Defaults&quot;. Dlatego tłumaczenie skrócono.</translatorcomment>
@@ -23897,7 +23393,6 @@ Base Path (i.e. keep only filename from attribute)</source>
 <context>
     <name>fTools</name>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="225"/>
         <source>Quantum GIS version detected: </source>
         <translation>Wykryta wersję Quantum GIS:</translation>
     </message>
@@ -23910,52 +23405,42 @@ Base Path (i.e. keep only filename from attribute)</source>
         <translation type="obsolete">Nie można włączyć wtyczki.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="227"/>
         <source>&amp;Tools</source>
         <translation>&amp;Narzędzia</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="228"/>
         <source>&amp;Analysis Tools</source>
         <translation>Narzędzia &amp;analizy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="229"/>
         <source>Distance matrix</source>
         <translation>Macierz odległości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="230"/>
         <source>Sum line lengths</source>
         <translation>Długość linii w poligonie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="231"/>
         <source>Points in polygon</source>
         <translation>Liczba punktów w poligonie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="232"/>
         <source>Basic statistics</source>
         <translation>Podstawowe statystyki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="233"/>
         <source>List unique values</source>
         <translation>Wyświel unikalne wartości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="234"/>
         <source>Nearest neighbour analysis</source>
         <translation>Analiza najbliższego sąsiedztwa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="235"/>
         <source>Mean coordinate(s)</source>
         <translation>Środek cieżkości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="236"/>
         <source>Line intersections</source>
         <translation>Przecięcia linii</translation>
     </message>
@@ -23964,152 +23449,122 @@ Base Path (i.e. keep only filename from attribute)</source>
         <translation type="obsolete">Narzędzia &amp;próbkowania</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="238"/>
         <source>Random selection</source>
         <translation>Losowy wybór</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="239"/>
         <source>Random selection within subsets</source>
         <translation>Losowy wybór w podzbiorach</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="240"/>
         <source>Random points</source>
         <translation>Losowe punkty</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="241"/>
         <source>Regular points</source>
         <translation>Regularne punkty</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="242"/>
         <source>Vector grid</source>
         <translation>Siatka wektorowa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="243"/>
         <source>Select by location</source>
         <translation>Wybór przez lokalizację</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="245"/>
         <source>&amp;Geoprocessing Tools</source>
         <translation>Narzędzia &amp;geoprocesingu</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="246"/>
         <source>Convex hull(s)</source>
         <translation>Otoczka wypukła</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="247"/>
         <source>Buffer(s)</source>
         <translation>Bufor(y)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="248"/>
         <source>Intersect</source>
         <translation>Iloczyn</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="249"/>
         <source>Union</source>
         <translation>Suma</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="250"/>
         <source>Symetrical difference</source>
         <translation>Różnica symetryczna</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="251"/>
         <source>Clip</source>
         <translation>Przytnij</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="252"/>
         <source>Dissolve</source>
         <translation>Agreguj</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="253"/>
         <source>Difference</source>
         <translation>Różnica</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="254"/>
         <source>G&amp;eometry Tools</source>
         <translation>Narzędzia g&amp;eometrii</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="255"/>
         <source>Export/Add geometry columns</source>
         <translation>Eksportuj/dodaj kolumny geometrii</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="256"/>
         <source>Check geometry validity</source>
         <translation>Sprawdź poprawność geometrii</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="257"/>
         <source>Polygon centroids</source>
         <translation>Centroidy poligonów</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="259"/>
         <source>Extract nodes</source>
         <translation>Wydobądź węzły</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="260"/>
         <source>Simplify geometries</source>
         <translation>Uprość geometrię</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="261"/>
         <source>Multipart to singleparts</source>
         <translation>Rozbij obiekt wieloczęściowy na jednoczęściowe</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="262"/>
         <source>Singleparts to multipart</source>
         <translation>Połącz obiekty jednoczęściowe w wieloczęściowy</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="263"/>
         <source>Polygons to lines</source>
         <translation>Poligony na linie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="264"/>
         <source>&amp;Data Management Tools</source>
         <translation>Narzędzia zarządzania &amp;danymi</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="265"/>
         <source>Export to new projection</source>
         <translation>Eksportuj do nowego układu współrzędnych</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="266"/>
         <source>Define current projection</source>
         <translation>Zdefiniuj bieżący układ współrzędnych</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="267"/>
         <source>Join attributes</source>
         <translation>Złącz atrybuty</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="268"/>
         <source>Join attributes by location</source>
         <translation>Złącz atrybuty według lokalizacji</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="269"/>
         <source>Split vector layer</source>
         <translation>Podziel warstwę wektorową</translation>
     </message>
@@ -24118,17 +23573,14 @@ Base Path (i.e. keep only filename from attribute)</source>
         <translation type="obsolete">O fTools</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="237"/>
         <source>&amp;Research Tools</source>
         <translation>Narzędzia &amp;badawcze</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="258"/>
         <source>Delaunay triangulation</source>
         <translation>Triangulacja Delone</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="244"/>
         <source>Polygon from layer extent</source>
         <translation>Poligon z zasięgu warstwy</translation>
     </message>
@@ -24145,14 +23597,12 @@ Base Path (i.e. keep only filename from attribute)</source>
         <translation type="obsolete">Wyjściowy Shapefile (poligony)</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="226"/>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
         <translation>Ta wersja fTools wymaga przynajmniej QGIS w wersji 1.0.0
 Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="270"/>
         <source>fTools Information</source>
         <translation>Informacje o fTools</translation>
     </message>
@@ -24178,32 +23628,26 @@ Wtyczka nie zostanie włączona.</translation>
 <context>
     <name>statResult</name>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="274"/>
         <source>Max. len.      : </source>
         <translation>Max. dł.      : </translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="275"/>
         <source>Min. len.       : </source>
         <translation>Min. dł.       : </translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="276"/>
         <source>Mean. len     : </source>
         <translation>Średnia dł.     : </translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="277"/>
         <source>Filled             : </source>
         <translation>Wypełniony             : </translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="278"/>
         <source>Empty           : </source>
         <translation>Pusty           : </translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="279"/>
         <source>N                   : </source>
         <translation>N                   : </translation>
     </message>
@@ -24211,37 +23655,30 @@ Wtyczka nie zostanie włączona.</translation>
 <context>
     <name>visualThread</name>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="283"/>
         <source>Observed mean distance : </source>
         <translation>Faktyczna średnia odległość:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="284"/>
         <source>Expected mean distance : </source>
         <translation>Oczekiwana średnia odległość:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="285"/>
         <source>Nearest neighbour index : </source>
         <translation>Wskaźnik najbliższego sąsiedztwa:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="286"/>
         <source>Feature %1 contains an unnested hole</source>
         <translation>Obiekt %1 zawiera niepoprawny pierścień</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="287"/>
         <source>Feature %1 is not closed</source>
         <translation>Obiekt %1 nie jest domknięty</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="288"/>
         <source>Feature %1 is self intersecting</source>
         <translation>Obiekt %1 zawiera wewnętrzne przecięcia</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/python-i18n.cpp" line="289"/>
         <source>Feature %1 has incorrect node ordering</source>
         <translation>Obiekt %1 posiada niepoprawną kolejność węzłów</translation>
     </message>
