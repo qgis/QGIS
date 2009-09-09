@@ -360,7 +360,6 @@ void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
   {
     QString fieldName = item->data( 0, Qt::DisplayRole ).toString();
 
-    int idx = -1;
     for ( QgsFieldMap::const_iterator it = layer->pendingFields().begin(); it != layer->pendingFields().end(); it++ )
     {
       if ( it->name() == fieldName )
