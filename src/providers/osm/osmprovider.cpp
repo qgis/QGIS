@@ -27,9 +27,6 @@
 #include <QDateTime>
 #include <QByteArray>
 
-using namespace std;
-
-
 static const QString TEXT_PROVIDER_KEY = "osm";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Open Street Map data provider";
 static const QString DATE_TIME_FMT = "dd.MM.yyyy HH:mm:ss";
@@ -587,11 +584,11 @@ bool QgsOSMDataProvider::fetchNode( QgsFeature& feature, sqlite3_stmt* stmt, boo
   if ( fetchGeometry )
   {
     char* geo = new char[21];
-    std::memset( geo, 0, 21 );
+    memset( geo, 0, 21 );
     geo[0] = QgsApplication::endian();
     geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBPoint;
-    std::memcpy( geo + 5, &selLon, sizeof( double ) );
-    std::memcpy( geo + 13, &selLat, sizeof( double ) );
+    memcpy( geo + 5, &selLon, sizeof( double ) );
+    memcpy( geo + 13, &selLat, sizeof( double ) );
     feature.setGeometryAndOwnership(( unsigned char * )geo, 24 );    // 24 is size of wkb point structure!
   }
 
@@ -1017,11 +1014,11 @@ bool QgsOSMDataProvider::updateWayWKB( int wayId, int isClosed, char **geo, int 
     ( *geo ) = new char[9 + 16 * memberCnt];
     ( *geolen ) = 9 + 16 * memberCnt;
 
-    std::memset(( *geo ), 0, 9 + 16 * memberCnt );
+    memset(( *geo ), 0, 9 + 16 * memberCnt );
 
     ( *geo )[0] = QgsApplication::endian();
     ( *geo )[( *geo )[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBLineString;
-    std::memcpy(( *geo ) + 5, &memberCnt, 4 );
+    memcpy(( *geo ) + 5, &memberCnt, 4 );
 
     sqlite3_bind_int( stmtSelectMembers, 1, wayId );
 
@@ -1043,8 +1040,8 @@ bool QgsOSMDataProvider::updateWayWKB( int wayId, int isClosed, char **geo, int 
       if ( selLat > maxLat ) maxLat = selLat;
       if ( selLon > maxLon ) maxLon = selLon;
 
-      std::memcpy(( *geo ) + 9 + 16 * i, &selLon, sizeof( double ) );
-      std::memcpy(( *geo ) + 9 + 16 * i + 8, &selLat, sizeof( double ) );
+      memcpy(( *geo ) + 9 + 16 * i, &selLon, sizeof( double ) );
+      memcpy(( *geo ) + 9 + 16 * i + 8, &selLat, sizeof( double ) );
       i++;
     }
 
@@ -1057,11 +1054,11 @@ bool QgsOSMDataProvider::updateWayWKB( int wayId, int isClosed, char **geo, int 
     memberCnt++;
     ( *geo ) = new char[13 + 16 * memberCnt];
     ( *geolen ) = 13 + 16 * memberCnt;
-    std::memset(( *geo ), 0, 13 + 16 * memberCnt );
+    memset(( *geo ), 0, 13 + 16 * memberCnt );
     ( *geo )[0] = QgsApplication::endian();
     ( *geo )[( *geo )[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBPolygon;
-    std::memcpy(( *geo ) + 5, &ringsCnt, 4 );
-    std::memcpy(( *geo ) + 9, &memberCnt, 4 );
+    memcpy(( *geo ) + 5, &ringsCnt, 4 );
+    memcpy(( *geo ) + 9, &memberCnt, 4 );
 
     sqlite3_bind_int( stmtSelectMembers, 1, wayId );
 
@@ -1085,8 +1082,8 @@ bool QgsOSMDataProvider::updateWayWKB( int wayId, int isClosed, char **geo, int 
       if ( selLat > maxLat ) maxLat = selLat;
       if ( selLon > maxLon ) maxLon = selLon;
 
-      std::memcpy(( *geo ) + 13 + 16 * i, &selLon, sizeof( double ) );
-      std::memcpy(( *geo ) + 13 + 16 * i + 8, &selLat, sizeof( double ) );
+      memcpy(( *geo ) + 13 + 16 * i, &selLon, sizeof( double ) );
+      memcpy(( *geo ) + 13 + 16 * i + 8, &selLat, sizeof( double ) );
 
       if ( firstLat == -1000.0 )
         firstLat = selLat;
@@ -1095,8 +1092,8 @@ bool QgsOSMDataProvider::updateWayWKB( int wayId, int isClosed, char **geo, int 
       i++;
     }
     // add last polygon line
-    std::memcpy(( *geo ) + 13 + 16 * i, &firstLon, sizeof( double ) );
-    std::memcpy(( *geo ) + 13 + 16 * i + 8, &firstLat, sizeof( double ) );
+    memcpy(( *geo ) + 13 + 16 * i, &firstLon, sizeof( double ) );
+    memcpy(( *geo ) + 13 + 16 * i + 8, &firstLat, sizeof( double ) );
 
     sqlite3_bind_blob( stmtUpdateWay, 1, ( *geo ), 13 + 16 * memberCnt, SQLITE_TRANSIENT );
   }
@@ -1368,7 +1365,7 @@ bool QgsOSMDataProvider::loadOsmFile( QString osm_filename )
 
   if ( sqlite3_exec( mDatabase, ptr, 0, 0, 0 ) != SQLITE_OK )
   {
-    cout << "Storing osm-file-last-modified info into database failed." << endl;
+    QgsDebugMsg( "Storing osm-file-last-modified info into database failed." );
     // its not fatal situation, lets continue..
   }
 
@@ -1378,7 +1375,7 @@ bool QgsOSMDataProvider::loadOsmFile( QString osm_filename )
 
   if ( sqlite3_exec( mDatabase, ptr2, 0, 0, 0 ) != SQLITE_OK )
   {
-    cout << "Storing osm-provider-version info into database failed." << endl;
+    QgsDebugMsg( "Storing osm-provider-version info into database failed." );
     return false;
   }
 
@@ -1396,7 +1393,7 @@ bool QgsOSMDataProvider::loadOsmFile( QString osm_filename )
 
   if ( sqlite3_exec( mDatabase, ptr3, 0, 0, 0 ) != SQLITE_OK )
   {
-    cout << "Storing default area boundaries information into database failed." << endl;
+    QgsDebugMsg( "Storing default area boundaries information into database failed." );
     // its not critical situation
   }
 
