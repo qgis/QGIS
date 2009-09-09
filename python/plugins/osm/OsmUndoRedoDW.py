@@ -43,7 +43,7 @@ class OsmUndoRedoDW(QDockWidget, Ui_OsmUndoRedoDW, object):
 
         self.undoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_undo.png"))
         self.redoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_redo.png"))
-        self.clearButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_remove.png"))
+        self.clearButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_clearUndoRedo.png"))
 
         self.canvas=plugin.canvas
         self.iface=plugin.iface

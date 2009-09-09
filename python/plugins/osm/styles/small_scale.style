@@ -1,41 +1,74 @@
 #LINE
-highway trunk 4.3 1 150,0,0
+highway trunk 4.6 1 170,221,170
+highway trunk_link 4.6 1 170,221,170
 highway primary 4.3 1 219,112,147
-highway secondary 3.5 1 255,120,0
-highway tertiary 2.2 1 238,230,133
-highway pedestrian 0.8 1 255,255,0
+highway secondary 4 1 255,221,170
+highway tertiary 2.8 1 238,230,133
+highway pedestrian 0.8 1 230,214,182
 highway residential 0.8 1 100,100,100
-highway footway 1.4 3 170,170,170
+highway unclassified 0.8 1 100,100,100
+highway service 0.8 1 100,100,100
+highway footway 1.4 3 255,160,140
+highway path 1.4 3 255,160,140
+highway steps 1.4 3 255,160,140
+highway living_street 2.2 1 207,207,190
+highway cycleway 2 3 0,115,255
+highway construction 3 2 204,238,221
+tracktype grade2 2 3 0,115,255
+highway track 2 2 181,164,130
+highway unsurfaced 2 2 230,214,182
 highway * 1 1 0,255,0
-railway subway 0.7 2 131,111,255
+railway subway 1.5 2 187,187,187
 railway rail 1 4 0,0,0
-railway tram 1 4 175,0,0
+railway tram 1.5 1 119,136,119
+railway preserved 1.5 2 187,187,187
 railway * 0.7 0 0,0,0
 boundary administrative 2 3 85,26,139
+waterway drain 1 1 135,206,255
 power line 2 1 139,139,131
 * * 1 1 200,200,200
 #POLYGON
-leisure park 0 1 0,0,0 88,245,168
-leisure garden 0 1 0,0,0 88,245,168
-landuse forest 0 1 0,0,0 88,245,168
+leisure park 0 0 0,0,0 88,245,168
+leisure garden 0 0 0,0,0 88,245,168
+leisure pitch 0 0 0,0,0 136,204,170
+leisure track 0.05 1 40,40,40 119,221,187
+leisure playground 0.05 1 40,40,40 221,255,255
+leisure golf_course 0 0 0,0,0 187,221,187
+leisure stadium 0 0 0,0,0 102,204,170
+landuse forest 0 0 0,0,0 139,207,102
 landuse allotments 0 1 0,0,0 222,184,135
-tourism zoo 0 1 0,0,0 108,255,185
-building yes 0.01 1 0,0,0 226,226,226
-natural water 0 1 0,0,0 135,206,255
-waterway riverbank 0 1 0,0,0 135,206,255
+landuse construction 0 0 0,0,0 153,153,102
+landuse cemetery 0 0 0,0,0 170,204,170
+landuse brownfield 0 0 0,0,0 153,153,102
+landuse village_green 0 0 0,0,0 204,238,170
+landuse industrial 0 0 0,0,0 221,221,238
+landuse recreation_ground 0 0 0,0,0 204,238,170
+tourism zoo 0 0 0,0,0 180,238,180
+natural water 0 0 0,0,0 135,206,255
+natural wood 0.1 1 40,40,40 170,204,153
+natural land 0 0 0,0,0 170,170,170
+waterway riverbank 0 0 0,0,0 135,206,255
 place island 1 1 0,0,0 255,255,255
-highway trunk 6 1 150,0,0 255,255,255
+highway trunk 6 1 150,0,0 170,221,170
 highway primary 6 1 219,112,147 255,255,255
 highway secondary 4.5 1 255,120,0 255,255,255
 highway tertiary 3 1 238,230,133 255,255,255
-highway pedestrian 1 1 255,255,0 255,255,255
-highway residential 1 1 100,100,100 255,255,255
-highway footway 2 3 170,170,170 255,255,255
+highway pedestrian 0.8 1 230,214,182 255,255,255
+highway residential 1 1 100,100,100 235,235,235
+highway service 1 1 100,100,100 235,235,235
+highway footway 1.4 3 255,160,140 255,255,255
+amenity place_of_worship 0.1 1 0,0,0 123,140,123
+amenity grave_yard 0 0 0,0,0 157,191,157
+amenity school 0.05 1 160,160,110 221,221,170
+power station 0.05 1 170,170,170 187,187,187
+area yes 1 1 100,100,100 235,235,235
+building yes 0 0 0,0,0 204,153,153
+amenity parking 0 0 0,0,0 255,255,153
 * * 1 1 0,0,255 255,255,255
 #POINT
-source:addr uir_adr gpsicons/point.svg 7
 power tower symbol/Cross4.svg 10
 amenity hospital emergency/amenity=hospital.svg 10
+amenity police emergency/amenity=police.svg 10
 amenity parking transport/amenity=parking.svg 10
 amenity bus_station transport/highway=bus_stop.svg 10
 amenity restaurant entertainment/amenity=restaurant.svg 10
@@ -45,4 +78,11 @@ amenity fast_food entertainment/amenity=fast_food.svg 10
 amenity cinema entertainment/amenity=cinema.svg 10
 amenity cafe entertainment/amenity=cafe.svg 10
 amenity bar entertainment/amenity=bar.svg 10
-* * gpsicons/point.svg 7
+amenity pharmacy services/amenity=pharmacy.svg 10
+amenity telephone services/amenity=telephone.svg 10
+amenity atm services/amenity=atm.svg 10
+amenity bank gpsicons/bank.svg 10
+amenity post_box services/amenity=post_box.svg 10
+tourism hostel services/tourism=hotel.svg 10
+source:addr uir_adr gpsicons/point.svg 5
+* * gpsicons/point.svg 5

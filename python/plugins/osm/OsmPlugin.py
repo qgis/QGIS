@@ -34,6 +34,15 @@ import resources_rc
 
 
 
+def versionNumber():
+    """Returns current version number of OpenStreetMap plugin.
+
+    @return current version number of the plugin
+    """
+    return "0.5"
+
+
+
 class OsmPlugin:
     """OsmPlugin is the main class OSM Plugin module.
 
@@ -164,9 +173,14 @@ class OsmPlugin:
 
         del self.dockWidget
         del self.undoredo
+        self.dockWidget=None
+        self.undoredo=None
 
         # remove toolbar
         del self.toolBar
+
+        # w/o osm plugin we don't need osm layers
+        self.dbm.removeAllOsmLayers()
 
 
     def loadOsmFromFile(self):
@@ -206,6 +220,10 @@ class OsmPlugin:
         according to dialog's return code.
         """
 
+        if 'osm' not in QgsProviderRegistry.instance().providerList():
+            QMessageBox.critical(None, "Sorry", "You don't have OSM provider installed!")
+            return
+
         if not self.dbm.currentKey:
             QMessageBox.information(QWidget(), QString("OSM Save to file")
                 ,"No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. \
@@ -226,6 +244,10 @@ Please change this situation first, because OSM Plugin doesn't know what to save
         After closing it, function calls the appropriate actions
         according to dialog's return code.
         """
+
+        if 'osm' not in QgsProviderRegistry.instance().providerList():
+            QMessageBox.critical(None, "Sorry", "You don't have OSM provider installed!")
+            return
 
         self.dlgDownload=OsmDownloadDlg(self)
         self.dlgDownload.exec_()
@@ -270,6 +292,10 @@ Please change this situation first, because OSM Plugin doesn't know what to save
         according to dialog's return code.
         """
 
+        if 'osm' not in QgsProviderRegistry.instance().providerList():
+            QMessageBox.critical(None, "Sorry", "You don't have OSM provider installed!")
+            return
+
         # first check if there are some data; if not upload doesn't have sense
         if not self.dbm.currentKey:
             QMessageBox.information(QWidget(), QString("OSM Upload")
@@ -287,6 +313,10 @@ Please change this situation first, because OSM Plugin doesn't know what to uplo
         After closing it, function calls the appropriate actions
         according to dialog's return code.
         """
+
+        if 'osm' not in QgsProviderRegistry.instance().providerList():
+            QMessageBox.critical(None, "Sorry", "You don't have OSM provider installed!")
+            return
 
         if self.dbm.currentKey is None:
             QMessageBox.information(self.iface.mainWindow(), "OSM Import"

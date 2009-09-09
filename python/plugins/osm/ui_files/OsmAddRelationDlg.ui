@@ -39,7 +39,7 @@
        <property name="sizeType" >
         <enum>QSizePolicy::Fixed</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>24</width>
          <height>20</height>
@@ -74,6 +74,15 @@
      </item>
      <item>
       <widget class="QToolButton" name="typeInfoButton" >
+       <property name="toolTip" >
+        <string>Show type description</string>
+       </property>
+       <property name="statusTip" >
+        <string>Shows brief description of selected relation type.</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Shows brief description of selected relation type.</string>
+       </property>
        <property name="text" >
         <string>...</string>
        </property>
@@ -84,7 +93,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>40</width>
          <height>20</height>
@@ -112,7 +121,7 @@
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -122,6 +131,15 @@
          </item>
          <item>
           <widget class="QToolButton" name="loadStandardTagsButton" >
+           <property name="toolTip" >
+            <string>Generate tags</string>
+           </property>
+           <property name="statusTip" >
+            <string>Fills tag table with tags that are typical for relation of specified type.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Fills tag table with tags that are typical for relation of specified type.</string>
+           </property>
            <property name="text" >
             <string>...</string>
            </property>
@@ -129,6 +147,15 @@
          </item>
          <item>
           <widget class="QToolButton" name="removeTagButton" >
+           <property name="toolTip" >
+            <string>Remove all selected tags</string>
+           </property>
+           <property name="statusTip" >
+            <string>Removes all selected tags.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Removes all selected tags.</string>
+           </property>
            <property name="text" >
             <string>...</string>
            </property>
@@ -164,7 +191,7 @@
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -174,6 +201,15 @@
          </item>
          <item>
           <widget class="QToolButton" name="chooseMemberButton" >
+           <property name="toolTip" >
+            <string>Select member on map</string>
+           </property>
+           <property name="statusTip" >
+            <string>Starts process of selecting next relation member on map.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Starts process of selecting next relation member on map.</string>
+           </property>
            <property name="text" >
             <string>...</string>
            </property>
@@ -184,6 +220,15 @@
          </item>
          <item>
           <widget class="QToolButton" name="removeMemberButton" >
+           <property name="toolTip" >
+            <string>Remove all selected members</string>
+           </property>
+           <property name="statusTip" >
+            <string>Removes all selected members.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Removes all selected members.</string>
+           </property>
            <property name="text" >
             <string>...</string>
            </property>
@@ -234,7 +279,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>40</width>
          <height>20</height>

@@ -16,13 +16,13 @@ Upload phases and their exact order:
 
 
 from ui_OsmUploadDlg import Ui_OsmUploadDlg
+import OsmPlugin
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtNetwork import *
 from PyQt4 import *
 from sys import *
-
 
 
 class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
@@ -917,7 +917,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         userCommentBytes=userComment.toUtf8()
 
         # create http request's body (create XML with info about uploaded way)
-        requestXml=QString("<osm>\n<changeset>\n<tag k=\"created_by\" v=\"QGIS OSM v0.5\"/>\n<tag k=\"comment\" v=\""+userCommentBytes.data()+"\"/>\n</changeset>\n</osm>")
+        requestXml=QString("<osm>\n<changeset>\n<tag k=\"created_by\" v=\"QGIS OSM v"+OsmPlugin.versionNumber()+"\"/>\n<tag k=\"comment\" v=\""+userCommentBytes.data()+"\"/>\n</changeset>\n</osm>")
 
         # send prepared request
         requestBytes=requestXml.toAscii()

@@ -214,11 +214,9 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
 
             st=self.styles[self.styleCombo.currentIndex()]
             if st=="Small scale":
-                rect=QgsRectangle(midX-rX/6,midY-rY/6,midX+rX/6,midY+rY/6)
+                rect=QgsRectangle(midX-rX/5,midY-rY/5,midX+rX/5,midY+rY/5)
             elif st=="Medium scale":
-                rect=QgsRectangle(midX-rX/3,midY-rY/3,midX+rX/3,midY+rY/3)
-            else:
-               rect=QgsRectangle(midX-rX/1.2,midY-rY/1.2,midX+rX/1.2,midY+rY/1.2)
+                rect=QgsRectangle(midX-rX/2,midY-rY/2,midX+rX/2,midY+rY/2)
 
         self.canvas.setExtent(rect)
         self.canvas.refresh()
@@ -310,6 +308,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
                     self.progress = None
                     QMessageBox.information(self,"Error",QString("Failed to load layers: %1")
                             .arg(self.property("osm_failure").toString()))
+                    self.buttonBox.setEnabled(True)
 
             qApp.processEvents()
         return QDialog.event(self,e)

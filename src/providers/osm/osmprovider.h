@@ -24,6 +24,7 @@
 class QgsOSMDataProvider: public QgsVectorDataProvider
 {
     Q_OBJECT
+
   private:
 
     //! provider manages features with one of three geometry types; variable determines feature type of this provider
@@ -237,17 +238,17 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
 
   private:
     /**
-     * Finds out if database (provider is connected to) belongs to (was created from) specified input file.
+     * Finds out if current database belongs to (was created from) specified input file.
      * @param mFileName name of input OSM file
      * @return answer to that question
      */
     bool isDatabaseCompatibleWithInput( QString mFileName );
 
     /**
-     * Finds out if database and provider versions are compatible.
+     * Finds out if current database and provider versions are compatible.
      * @return answer to that question
      */
-    bool isDatabaseCompatibleWithPlugin();
+    bool isDatabaseCompatibleWithProvider();
 
     /**
      * Creates Open Street Map database schema, using c++ library for attempt to sqlite database.
