@@ -280,7 +280,7 @@ void QgsAbout::setPluginInfo()
   myString += "</li>\n</ol>\n";
   //qt image plugins
   myString += "<b>" + tr( "Available Qt Image Plugins" ) + "</b><br>";
-  myString += tr( "Qt Image Plugin Search Paths<br>" );
+  myString += tr( "Qt Image Plugin Search Paths	<br>" );
   myString += QApplication::libraryPaths().join("<br>");
   myString += "<ol>\n<li>\n";
   QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
