@@ -3247,13 +3247,13 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="671"/>
         <location filename="../src/app/qgisapp.cpp" line="673"/>
         <source>Split Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Розділити об&apos;єкти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="677"/>
         <location filename="../src/app/qgisapp.cpp" line="679"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити виділені</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="683"/>
@@ -3265,13 +3265,13 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="689"/>
         <location filename="../src/app/qgisapp.cpp" line="691"/>
         <source>Move Vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вершину</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="695"/>
         <location filename="../src/app/qgisapp.cpp" line="697"/>
         <source>Delete Vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити вершину</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="701"/>
@@ -3293,47 +3293,47 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="713"/>
         <location filename="../src/app/qgisapp.cpp" line="715"/>
         <source>Simplify Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Спростити об&apos;єкт</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="719"/>
         <location filename="../src/app/qgisapp.cpp" line="721"/>
         <source>Delete Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити кільце</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="725"/>
         <location filename="../src/app/qgisapp.cpp" line="727"/>
         <source>Delete Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити частину</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="731"/>
         <location filename="../src/app/qgisapp.cpp" line="733"/>
         <source>Merge selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднати виділені об&apos;єкти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="737"/>
         <location filename="../src/app/qgisapp.cpp" line="739"/>
         <source>Node Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Інструмент редагування вузлів</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="745"/>
         <source>Pan Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Прокрутка карти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="747"/>
         <source>Pan the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Прокрутка карти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="750"/>
         <location filename="../src/app/qgisapp.cpp" line="752"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="751"/>
@@ -3345,7 +3345,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="755"/>
         <location filename="../src/app/qgisapp.cpp" line="757"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Зменшити</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="756"/>
@@ -3357,12 +3357,12 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="760"/>
         <location filename="../src/app/qgisapp.cpp" line="762"/>
         <source>Select Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати об&apos;єкти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="766"/>
         <source>Identify Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначити об&apos;єкти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="767"/>
@@ -3373,12 +3373,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="768"/>
         <source>Click on features to identify them</source>
-        <translation type="unfinished"></translation>
+        <translation>Клацніть на об&apos;єктах для їх визначення</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="772"/>
         <source>Measure Line </source>
-        <translation type="unfinished"></translation>
+        <translation>Виміряти лінію</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="773"/>
@@ -3389,12 +3389,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="774"/>
         <source>Measure a Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Виміряти лінію</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="777"/>
         <source>Measure Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Виміряти площу</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="778"/>
@@ -3405,12 +3405,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="779"/>
         <source>Measure an Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Виміряти площу</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="782"/>
         <source>Zoom Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Повне охоплення</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="783"/>
@@ -3421,19 +3421,19 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="784"/>
         <source>Zoom to Full Extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити до повного охоплення</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="787"/>
         <location filename="../src/app/qgisapp.cpp" line="789"/>
         <source>Zoom to Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити до шару</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="792"/>
         <location filename="../src/app/qgisapp.cpp" line="794"/>
         <source>Zoom to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити до виділеного</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="793"/>
@@ -3444,47 +3444,47 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="797"/>
         <source>Zoom Last</source>
-        <translation type="unfinished"></translation>
+        <translation>Попереднє охоплення</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="799"/>
         <source>Zoom to Last Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити до попереднього охоплення</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="802"/>
         <source>Zoom Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Наступне охоплення</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="804"/>
         <source>Zoom to Forward Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити до наступного охоплення</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="807"/>
         <source>Zoom Actual Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Фактичний розмір</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="809"/>
         <source>Zoom to Actual Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити до фактичного розміру</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="813"/>
         <source>Map Tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Інтерактивна довідка</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="815"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати інформацію про об&apos;єкт, коли курсор миші знаходиться над ним</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="819"/>
         <source>New Bookmark...</source>
-        <translation type="unfinished"></translation>
+        <translation>Нова закладка...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="820"/>
@@ -3496,13 +3496,13 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="821"/>
         <location filename="../src/app/qgisapp.cpp" line="6246"/>
         <source>New Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Нова закладка</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="824"/>
         <location filename="../src/app/qgisapp.cpp" line="826"/>
         <source>Show Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати закладки</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="825"/>
@@ -3513,7 +3513,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="830"/>
@@ -3524,12 +3524,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="831"/>
         <source>Refresh Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити карту</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="836"/>
         <source>New Vector Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Новий векторний шар...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="837"/>
@@ -3540,7 +3540,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="838"/>
         <source>Create a New Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити новий векторний шар</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="841"/>
@@ -3583,7 +3583,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="852"/>
         <source>Ctrl+Shift+D</source>
         <comment>Add a PostGIS Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="853"/>
@@ -3599,7 +3599,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="864"/>
         <source>Ctrl+Shift+L</source>
         <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="865"/>
@@ -3615,7 +3615,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="876"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="877"/>
@@ -3626,63 +3626,63 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="880"/>
         <location filename="../src/app/qgisapp.cpp" line="882"/>
         <source>Open Attribute Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити таблицю атрибутів</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="886"/>
         <source>Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим редагування</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="888"/>
         <source>Toggles the editing state of the current layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключити поточний шар в режим редагування</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="893"/>
         <source>Save as Shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти як Shape-файл...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="895"/>
         <source>Save the current layer as a shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти поточний шар як Shape-файл</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="899"/>
         <source>Save Selection as Shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти виділення як Shape-файл...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="901"/>
         <source>Save the selection as a shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти виділення як Shape-файл</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="905"/>
         <source>Remove Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити шар</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="906"/>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="907"/>
         <source>Remove a Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити шар</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="911"/>
         <source>Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="913"/>
         <source>Set properties of the current layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити властивості поточного шару</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="917"/>
@@ -3693,7 +3693,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="918"/>
         <source>Ctrl+Shift+O</source>
         <comment>Add current layer to overview map</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="919"/>
@@ -3708,96 +3708,96 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="925"/>
         <source>Show all layers in the overview map</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати всі шари в оглядовій карті</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="928"/>
         <source>Remove All From Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити все з огляду</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="930"/>
         <source>Remove all layers from overview map</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити всі шари з оглядової карти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="933"/>
         <source>Show All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати всі шари</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="934"/>
         <source>Ctrl+Shift+U</source>
         <comment>Show all layers</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="935"/>
         <source>Show all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати всі шари</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="938"/>
         <source>Hide All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Зховати всі шари</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="939"/>
         <source>Ctrl+Shift+H</source>
         <comment>Hide all layers</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="940"/>
         <source>Hide all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Зховати всі шари</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="945"/>
         <source>Manage Plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Керування плагінами...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="947"/>
         <source>Open the plugin manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити менеджер плагінів</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="952"/>
         <source>Toggle Full Screen Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Ввімкнути повноекранний режим</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="953"/>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl-F</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="954"/>
         <source>Toggle fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Ввімкнути повноекранний режим</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="957"/>
         <source>Project Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості проекта...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="958"/>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="959"/>
         <source>Set project properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити властивості проекта</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="962"/>
         <source>Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="964"/>
@@ -3807,48 +3807,48 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="968"/>
         <source>Custom CRS...</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувальницька система координат...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="970"/>
         <source>Manage custom coordinate reference systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Управління користувальницькими системами координат</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="974"/>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштувати комбінації клавіш...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="976"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштувати комбінації клавіш</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="982"/>
         <source>Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Мінімізувати</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="983"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="984"/>
         <source>Minimizes the active window to the dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Мінімізувати активне вікно в док</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="987"/>
         <source>Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="989"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключення між попередньо встановленим та заданим користувачем розміром вікна</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="992"/>
@@ -3863,36 +3863,36 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1003"/>
         <source>Help Contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Зміст довідки</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1005"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1007"/>
         <source>F1</source>
         <comment>Help Documentation</comment>
-        <translation type="unfinished"></translation>
+        <translation>F1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1009"/>
         <source>Help Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Довідкова документація</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1012"/>
         <location filename="../src/app/qgisapp.cpp" line="1018"/>
         <source>QGIS Home Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Веб-сайт QGI</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1014"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1021"/>
@@ -3917,72 +3917,72 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1128"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1132"/>
         <source>&amp;Open Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Відкрити недавні проекти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1156"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Правка</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1203"/>
         <source>Panels</source>
-        <translation type="unfinished"></translation>
+        <translation>Панелі</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1204"/>
         <source>Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Панелі інструментів</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1208"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Вид</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1242"/>
         <source>&amp;Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Шар</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1277"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Установки</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1295"/>
         <source>&amp;Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>П&amp;лагіни</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1304"/>
         <source>&amp;Window</source>
-        <translation type="unfinished"></translation>
+        <translation>В&amp;ікно</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1317"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Довідка</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1339"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1359"/>
         <source>Manage Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Управління шарами</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1370"/>
         <source>Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>Оцифровка</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1387"/>
@@ -3992,7 +3992,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1406"/>
         <source>Map Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>Навігація по карті</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1421"/>
@@ -4002,100 +4002,103 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1435"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Плагіни</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1441"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Довідка</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1458"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Індикатор ходу процесу відтворення шарів та інших довготривалих операцій</translatorcomment>
+        <translation>Индикатор ходу процесу</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1472"/>
         <source>Toggle extents and mouse position display</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключити вивід меж або позиції курсору</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1485"/>
         <location filename="../src/app/qgisapp.cpp" line="5426"/>
         <source>Coordinate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Координати:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1486"/>
         <source>Current map coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточні координати на карті</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1500"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Показує координати в поточній позиції курсору. На дисплеї постійно оновлюється по мірі руху миші. Це також дозволяє редагувати, щоб встановити центр полотна в даній позиції.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1504"/>
         <source>Current map coordinate (formatted as x,y)</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточні координати на карті (у форматі x, y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1516"/>
         <source>Scale </source>
-        <translation type="unfinished"></translation>
+        <translation>Масштаб</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1517"/>
         <source>Current map scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточний масштаб карти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1530"/>
         <source>Displays the current map scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати поточний масштаб карти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1531"/>
         <source>Current map scale (formatted as x:y)</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточний масштаб карти (у форматі x:y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1540"/>
         <source>Stop map rendering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Зупинити рендерінг карти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1543"/>
         <source>Render</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Render</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1546"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
-        <translation type="unfinished"></translation>
+        <translation>Якщо включено, рендерінг шарів карти виконується відразу у відповідь на команди навігації та інші події. Якщо вимкнено, рендерінг не виконується. Наприклад, це дозволяє додати велику кількість шарів і призначити їм умовні позначення до їх відображення.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1550"/>
         <source>Toggle map rendering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Переключити рендерінг карти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1563"/>
         <source>Resource Location Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка в місцезнаходженні ресурсу</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1564"/>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка завантаження значків з: 
+ %1
+ Вихід...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1569"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ця іконка показує, чи було ввімкнене перетворення координат на льоту. Натисніть на іконку, щоб відкрити діалогове вікно властивостей проекту для зміни цього режиму.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1573"/>
@@ -4105,7 +4108,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1578"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Готовий</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1737"/>
@@ -4120,7 +4123,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1808"/>
         <source>Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Огляд</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1864"/>
@@ -4130,7 +4133,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1865"/>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Шари</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2017"/>
@@ -4168,7 +4171,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2046"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Версія</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2047"/>
@@ -4304,7 +4307,7 @@ updates.</source>
         <location filename="../src/app/qgisapp.cpp" line="2683"/>
         <location filename="../src/app/qgisapp.cpp" line="2766"/>
         <source>Invalid Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Недійсний шар</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2683"/>
@@ -4315,7 +4318,7 @@ updates.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3245"/>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти як</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3345"/>
@@ -4327,14 +4330,14 @@ updates.</source>
         <location filename="../src/app/qgisapp.cpp" line="3553"/>
         <location filename="../src/app/qgisapp.cpp" line="3628"/>
         <source>QGis files (*.qgs)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGis-файли (*.qgs)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3392"/>
         <location filename="../src/app/qgisapp.cpp" line="3406"/>
         <location filename="../src/app/qgisapp.cpp" line="3462"/>
         <source>QGIS Project Read Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка зчитування проекта QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3463"/>
@@ -4436,7 +4439,7 @@ Try to find missing layers?</source>
         <location filename="../src/app/qgisapp.cpp" line="4176"/>
         <location filename="../src/app/qgisapp.cpp" line="4283"/>
         <source>Layer not editable</source>
-        <translation type="unfinished"></translation>
+        <translation>Шар не редагується</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4177"/>
@@ -4446,16 +4449,16 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4183"/>
         <source>Delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити об&apos;єкти</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="4183"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Видалити %n об&apos;єкт?</numerusform>
+            <numerusform>Видалити %n об&apos;єкта?</numerusform>
+            <numerusform>Видалити %n об&apos;єктів?</numerusform>
         </translation>
     </message>
     <message>
