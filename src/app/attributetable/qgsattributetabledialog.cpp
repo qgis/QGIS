@@ -33,10 +33,10 @@
 #include "qgsmapcanvas.h"
 
 
-class QgsAttributeTableTableDock : public QDockWidget
+class QgsAttributeTableDock : public QDockWidget
 {
   public:
-    QgsAttributeTableTableDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
+    QgsAttributeTableDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
         : QDockWidget( title, parent, flags )
     {
       setObjectName( "AttributeTable" ); // set object name so the position can be saved
@@ -73,7 +73,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   bool myDockFlag = mySettings.value( "/qgis/dockAttributeTable", false ).toBool();
   if ( myDockFlag )
   {
-    mDock = new QgsAttributeTableTableDock( tr( "Attribute table - %1" ).arg( mLayer->name() ), QgisApp::instance() );
+    mDock = new QgsAttributeTableDock( tr( "Attribute table - %1" ).arg( mLayer->name() ), QgisApp::instance() );
     mDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
     mDock->setWidget( this );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
