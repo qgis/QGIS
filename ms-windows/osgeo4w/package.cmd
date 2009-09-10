@@ -130,6 +130,7 @@ cd ..
 copy postinstall.bat %OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
 copy preremove.bat %OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
 copy %PACKAGENAME%.bat.tmpl %OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
+copy qgis-dev.reg.tmpl %OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qgis-dev.reg.tmpl
 
 sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py >%OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py.tmpl
 if errorlevel 1 goto error
