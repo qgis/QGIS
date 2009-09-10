@@ -15,8 +15,8 @@
 
 ;Version variables
 
-!define RELEASE_VERSION_NUMBER "1.2.0"
-!define RELEASE_VERSION_NAME "Daphnis"
+!define RELEASE_VERSION_NUMBER "1.3.0"
+!define RELEASE_VERSION_NAME "Trunk"
 !define RELEASE_SVN_REVISION "11475"
 !define RELEASE_BINARY_REVISION "0"
 
@@ -25,6 +25,8 @@
 !define DEV_SVN_REVISION ""
 !define DEV_BINARY_REVISION ""
 
+; Added by Tim to get optimal compression
+SetCompressor /SOLID lzma
 ;----------------------------------------------------------------------------------------------------------------------------
 
 ;Don't modify the following lines
@@ -39,7 +41,7 @@
 ;----------------------------------------------------------------------------------------------------------------------------
 
 ;define the QGIS Base Name
-!define RELEASE_QGIS_BASE "Quantum GIS Daphnis"
+!define RELEASE_QGIS_BASE "Quantum GIS Trunk"
 !define DEV_QGIS_BASE "Quantum GIS Unstable Dev"
 
 ;Set the installer variables, depending on the selected version to build
