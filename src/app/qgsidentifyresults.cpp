@@ -36,9 +36,24 @@
 #include <QSettings>
 #include <QMenu>
 #include <QClipboard>
+#include <QDockWidget>
 
 #include "qgslogger.h"
 
+class QgsIdentifyResultsDock : public QDockWidget
+{
+  public:
+    QgsIdentifyResultsDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
+        : QDockWidget( title, parent, flags )
+    {
+      setObjectName( "IdentifyResultsTableDock" ); // set object name so the position can be saved
+    }
+
+    virtual void closeEvent( QCloseEvent * ev )
+    {
+      deleteLater();
+    }
+};
 // Tree hierachy
 //
 // layer [userrole: QgsMapLayer]
@@ -57,9 +72,20 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
     : QDialog( parent, f ),
     mActionPopup( 0 ),
     mRubberBand( 0 ),
-    mCanvas( canvas )
+    mCanvas( canvas ),
+    mDock( NULL )
 {
   setupUi( this );
+  QSettings mySettings;
+  bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
+  if ( myDockFlag )
+  {
+    mDock = new QgsIdentifyResultsDock( tr( "Identify Results" ) , QgisApp::instance() );
+    mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    mDock->setWidget( this );
+    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
+    buttonCancel->hide();
+  }
   lstResults->setColumnCount( 2 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
