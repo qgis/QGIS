@@ -97,7 +97,7 @@ INSTALL(TARGETS qgis_analysis
 
 # Added by Tim to install headers
 
-SET(QGIS_ANALYSIS_HDRS
+SET(QGIS_ANALYSIS_HDRS vector/qgsgeometryanalyzer.h
 )
 
 INSTALL(CODE "MESSAGE(\"Installing ANALYSIS headers...\")")
