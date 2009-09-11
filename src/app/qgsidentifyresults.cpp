@@ -54,6 +54,7 @@ class QgsIdentifyResultsDock : public QDockWidget
       deleteLater();
     }
 };
+
 // Tree hierachy
 //
 // layer [userrole: QgsMapLayer]
@@ -124,13 +125,13 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
                                      const QMap<QString, QString> &attributes,
                                      const QMap<QString, QString> &derivedAttributes )
 {
-  QTreeWidgetItem *item = layerItem( layer );
+  QTreeWidgetItem *layItem = layerItem( layer );
 
-  if ( item == 0 )
+  if ( layItem == 0 )
   {
-    item = new QTreeWidgetItem( QStringList() << layer->name() << tr( "Layer" ) );
-    item->setData( 0, Qt::UserRole, QVariant::fromValue( dynamic_cast<QObject*>( layer ) ) );
-    lstResults->addTopLevelItem( item );
+    layItem = new QTreeWidgetItem( QStringList() << layer->name() << tr( "Layer" ) );
+    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( dynamic_cast<QObject*>( layer ) ) );
+    lstResults->addTopLevelItem( layItem );
 
     connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
 
@@ -158,9 +159,7 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     }
   }
 
-  item->addChild( featItem );
-  item->setExpanded( true );
-  featItem->setExpanded( true );
+  layItem->addChild( featItem );
 }
 
 // Call to show the dialog box.
@@ -169,6 +168,28 @@ void QgsIdentifyResults::show()
   // Enfore a few things before showing the dialog box
   lstResults->sortItems( 0, Qt::AscendingOrder );
   expandColumnsToFit();
+
+  if ( lstResults->topLevelItemCount() > 0 )
+  {
+    QTreeWidgetItem *layItem = lstResults->topLevelItem( 0 );
+    QTreeWidgetItem *featItem = layItem->child( 0 );
+
+    if ( layItem->childCount() == 1 )
+    {
+      QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
+      if ( layer && layer->isEditable() )
+      {
+        // if this is the only feature, it's on a vector layer and that layer is editable:
+        // don't show the edit dialog instead of the results window
+        editFeature( featItem );
+        return;
+      }
+    }
+
+    // expand first layer and feature
+    featItem->setExpanded( true );
+    layItem->setExpanded( true );
+  }
 
   QDialog::show();
 }
