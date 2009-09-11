@@ -1,7 +1,9 @@
-The following people have submitted code, patches, graphics, comments,
-feedback, reviews and/or many other things that have aided the development of
-QGIS:
-
+# This file will be used to populate the contributors tab in the about dialog
+# Lines prefixed with # will be ignored
+# The following people have submitted code, patches, graphics, comments,
+# feedback, reviews and/or many other things that have aided the development of
+# QGIS:
+#
 Arthur Nanni
 Baba Yoshihiko
 Brent Wood
@@ -17,12 +19,10 @@ Hyao (IRC nickname)
 Ivan Lucena
 Jean-Denis Giguere 
 Jerrit Collord
-Jürgen E. Fischer
 Magnus Homann
 Markus Neteler
 Maurizio Napolitano
 Paul Ramsey
-Peter Ersts
 Richard Kostecky
 Stefanie Tellex
 Tom Russo

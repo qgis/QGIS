@@ -37,7 +37,6 @@ class QgsAbout : public QDialog, private Ui::QgsAbout
 
   private slots:
     void on_buttonCancel_clicked();
-    void on_listBox1_currentItemChanged( QListWidgetItem *theItem );
     void on_btnQgisUser_clicked();
     void on_btnQgisHome_clicked();
 };

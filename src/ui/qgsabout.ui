@@ -1,84 +1,83 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" >
  <class>QgsAbout</class>
- <widget class="QDialog" name="QgsAbout">
-  <property name="geometry">
+ <widget class="QDialog" name="QgsAbout" >
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>529</width>
-    <height>375</height>
+    <width>753</width>
+    <height>416</height>
    </rect>
   </property>
-  <property name="windowTitle">
+  <property name="windowTitle" >
    <string>About Quantum GIS</string>
   </property>
-  <property name="sizeGripEnabled">
+  <property name="sizeGripEnabled" >
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout">
-   <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="currentIndex" >
       <number>0</number>
      </property>
-     <widget class="QWidget" name="Widget2">
-      <attribute name="title">
+     <widget class="QWidget" name="Widget2" >
+      <attribute name="title" >
        <string>About</string>
       </attribute>
-      <layout class="QGridLayout">
-       <item row="0" column="0">
-        <layout class="QHBoxLayout">
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <layout class="QHBoxLayout" >
          <item>
-          <widget class="QLabel" name="qgisIcon">
-           <property name="maximumSize">
+          <widget class="QLabel" name="qgisIcon" >
+           <property name="maximumSize" >
             <size>
              <width>60</width>
              <height>60</height>
             </size>
            </property>
-           <property name="pixmap">
-            <pixmap resource="../../images/images.qrc">:/images/icons/qgis-icon-60x60.png</pixmap>
+           <property name="pixmap" >
+            <pixmap resource="../../images/images.qrc" >:/images/icons/qgis-icon-60x60.png</pixmap>
            </property>
-           <property name="scaledContents">
+           <property name="scaledContents" >
             <bool>false</bool>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="TextLabel4">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+          <widget class="QLabel" name="TextLabel4" >
+           <property name="text" >
+            <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;">&lt;span style=" font-size:x-large;">Quantum GIS (QGIS)&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
            </property>
-           <property name="alignment">
+           <property name="alignment" >
             <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="lblVersion">
-         <property name="text">
+       <item row="1" column="0" >
+        <widget class="QLabel" name="lblVersion" >
+         <property name="text" >
           <string>Version</string>
          </property>
-         <property name="alignment">
+         <property name="alignment" >
           <set>Qt::AlignCenter</set>
          </property>
-         <property name="wordWrap">
+         <property name="wordWrap" >
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="2" column="0" >
         <spacer>
-         <property name="orientation">
+         <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0">
+         <property name="sizeHint" >
           <size>
            <width>20</width>
            <height>21</height>
@@ -86,35 +85,35 @@ p, li { white-space: pre-wrap; }
          </property>
         </spacer>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
+       <item row="3" column="0" >
+        <widget class="QLabel" name="label" >
+         <property name="text" >
           <string>Quantum GIS is licensed under the GNU General Public License</string>
          </property>
-         <property name="alignment">
+         <property name="alignment" >
           <set>Qt::AlignCenter</set>
          </property>
-         <property name="wordWrap">
+         <property name="wordWrap" >
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
+       <item row="4" column="0" >
+        <widget class="QLabel" name="label_2" >
+         <property name="text" >
           <string>http://www.gnu.org/licenses</string>
          </property>
-         <property name="alignment">
+         <property name="alignment" >
           <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
+       <item row="5" column="0" >
         <spacer>
-         <property name="orientation">
+         <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0">
+         <property name="sizeHint" >
           <size>
            <width>20</width>
            <height>40</height>
@@ -122,24 +121,24 @@ p, li { white-space: pre-wrap; }
          </property>
         </spacer>
        </item>
-       <item row="6" column="0">
-        <layout class="QHBoxLayout">
+       <item row="6" column="0" >
+        <layout class="QHBoxLayout" >
          <item>
-          <widget class="QPushButton" name="btnQgisHome">
-           <property name="text">
+          <widget class="QPushButton" name="btnQgisHome" >
+           <property name="text" >
             <string>QGIS Home Page</string>
            </property>
-           <property name="flat">
+           <property name="flat" >
             <bool>false</bool>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btnQgisUser">
-           <property name="text">
+          <widget class="QPushButton" name="btnQgisUser" >
+           <property name="text" >
             <string>Join our user mailing list</string>
            </property>
-           <property name="flat">
+           <property name="flat" >
             <bool>false</bool>
            </property>
           </widget>
@@ -148,156 +147,161 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Widget3">
-      <attribute name="title">
+     <widget class="QWidget" name="Widget3" >
+      <attribute name="title" >
        <string>What's New</string>
       </attribute>
-      <layout class="QGridLayout">
-       <item row="0" column="0">
-        <widget class="QTextEdit" name="txtWhatsNew">
-         <property name="focusPolicy">
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QTextEdit" name="txtWhatsNew" >
+         <property name="focusPolicy" >
           <enum>Qt::NoFocus</enum>
          </property>
-         <property name="acceptDrops">
+         <property name="acceptDrops" >
           <bool>false</bool>
          </property>
-         <property name="lineWidth">
+         <property name="lineWidth" >
           <number>2</number>
          </property>
-         <property name="readOnly">
+         <property name="readOnly" >
           <bool>true</bool>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>Developers</string>
-      </attribute>
-      <layout class="QGridLayout">
-       <item row="0" column="0">
-        <widget class="QListWidget" name="listBox1">
-         <property name="alternatingRowColors">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="TabPage">
-      <attribute name="title">
+     <widget class="QWidget" name="TabPage" >
+      <attribute name="title" >
        <string>Providers</string>
       </attribute>
-      <layout class="QGridLayout">
-       <item row="0" column="0">
-        <widget class="QTextBrowser" name="txtBrowserPlugins"/>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QTextBrowser" name="txtProviders" />
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>Sponsors</string>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Developers</string>
       </attribute>
-      <layout class="QGridLayout">
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="sponsorsBox">
-         <property name="title">
-          <string>Sponsors</string>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QListWidget" name="lstDevelopers" >
+         <property name="alternatingRowColors" >
+          <bool>true</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QTextBrowser" name="txtSponsors">
-            <property name="openExternalLinks">
-             <bool>true</bool>
-            </property>
-            <property name="openLinks">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="donorsBox">
-         <property name="title">
-          <string>Donors</string>
+         <property name="isWrapping" stdset="0" >
+          <bool>true</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QTextBrowser" name="txtDonors">
-            <property name="openExternalLinks">
-             <bool>true</bool>
-            </property>
-            <property name="openLinks">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
-      <attribute name="title">
+     <widget class="QWidget" name="tab_5" >
+      <attribute name="title" >
+       <string>Contributors</string>
+      </attribute>
+      <widget class="QListWidget" name="lstContributors" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>713</width>
+         <height>314</height>
+        </rect>
+       </property>
+       <property name="alternatingRowColors" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_3" >
+      <attribute name="title" >
        <string>Translators</string>
       </attribute>
-      <layout class="QGridLayout">
-       <item row="0" column="0">
-        <widget class="QTextBrowser" name="txtTranslators"/>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QTextBrowser" name="txtTranslators" />
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2" >
+      <attribute name="title" >
+       <string>Sponsors</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QTextBrowser" name="txtSponsors" >
+         <property name="openExternalLinks" >
+          <bool>true</bool>
+         </property>
+         <property name="openLinks" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_4" >
+      <attribute name="title" >
+       <string>Donors</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QTextBrowser" name="txtDonors" >
+         <property name="openExternalLinks" >
+          <bool>true</bool>
+         </property>
+         <property name="openLinks" >
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
     </widget>
    </item>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout">
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>0</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonCancel">
-       <property name="text">
-        <string>Ok</string>
-       </property>
-       <property name="shortcut">
-        <string/>
-       </property>
-       <property name="autoDefault">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="1" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
+ <layoutdefault spacing="6" margin="11" />
  <tabstops>
   <tabstop>tabWidget</tabstop>
-  <tabstop>btnQgisUser</tabstop>
   <tabstop>btnQgisHome</tabstop>
-  <tabstop>buttonCancel</tabstop>
-  <tabstop>txtBrowserPlugins</tabstop>
-  <tabstop>listBox1</tabstop>
+  <tabstop>btnQgisUser</tabstop>
+  <tabstop>txtProviders</tabstop>
+  <tabstop>lstDevelopers</tabstop>
+  <tabstop>txtSponsors</tabstop>
+  <tabstop>txtTranslators</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>txtDonors</tabstop>
+  <tabstop>lstContributors</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc" />
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>QgsAbout</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>719</x>
+     <y>386</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>674</x>
+     <y>414</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
