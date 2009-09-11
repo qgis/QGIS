@@ -159,6 +159,8 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
   }
 
   item->addChild( featItem );
+  item->setExpanded( true );
+  featItem->setExpanded( true );
 }
 
 // Call to show the dialog box.
