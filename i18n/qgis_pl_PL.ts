@@ -3502,12 +3502,12 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="31"/>
         <source>Raster Terrain Analysis plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Rastrowe analizy terenu</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="32"/>
         <source>A plugin for raster based terrain analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Wtyczka do rastrowych analiz terenu</translation>
     </message>
 </context>
 <context>
@@ -4924,22 +4924,22 @@ Prosimy o kontakt z autorami.
         <location filename="../src/app/qgisapp.cpp" line="1485"/>
         <location filename="../src/app/qgisapp.cpp" line="5426"/>
         <source>Coordinate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Współrzędne:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1486"/>
         <source>Current map coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualne współrzędne mapy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1500"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokazuje współrzędne kursora na mapie. Wynik jest na bieżąco aktualizowany podczas poruszania myszą. Można także wprowadzić współrzędne, aby ustawić środek płótna.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1504"/>
         <source>Current map coordinate (formatted as x,y)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualne współrzędne mapy (zapisane jako x,y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1569"/>
@@ -5277,7 +5277,7 @@ i uaktualnień.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5416"/>
         <source>Map coordinates for the current view extents</source>
-        <translation>Współrzędne mapy dla bieżącego zasięgu widoku</translation>
+        <translation>Współrzędne bieżącego zasięgu widoku</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5439"/>
@@ -5321,7 +5321,7 @@ i uaktualnień.</translation>
         <location filename="../src/app/qgisapp.cpp" line="665"/>
         <location filename="../src/app/qgisapp.cpp" line="667"/>
         <source>Reshape Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień kształt obiektu</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="767"/>
@@ -13919,22 +13919,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="114"/>
         <source>Identifying on %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Identyfikacja na warstwie %1...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="128"/>
         <source>Identifying done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Identyfikacja zakończona.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="144"/>
         <source>Identify results</source>
-        <translation type="unfinished"></translation>
+        <translation>Wynik identyfikacji</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="144"/>
         <source>No features at this position found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono obiektów w tym miejscu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="265"/>
@@ -13976,7 +13976,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="342"/>
         <source>Feature info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacje o obiekcie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="351"/>
@@ -14103,7 +14103,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="98"/>
         <source>Reshape</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmień kształt</translation>
     </message>
 </context>
 <context>
@@ -15537,12 +15537,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="54"/>
         <source>top down, stop at first</source>
-        <translation type="unfinished"></translation>
+        <translation>pierwszy znaleziony (od góry w dół)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="55"/>
         <source>top down</source>
-        <translation type="unfinished"></translation>
+        <translation>wszystkie warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="226"/>
@@ -15606,7 +15606,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="923"/>
         <source>Select Global Default ...</source>
-        <translation>Wskaż domyślne globalnie...</translation>
+        <translation>Wskaż domyślny globalny układ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="318"/>
@@ -15825,7 +15825,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="506"/>
         <source>Identify</source>
-        <translation type="unfinished"></translation>
+        <translation>Identyfikacja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="525"/>
@@ -15875,7 +15875,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="933"/>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation>Gdy tworzona jest nowa warstwa lub wgrywana warstwa nie zawiera informacji o układzie współrzędnych</translation>
+        <translation>Gdy tworzona jest nowa warstwa lub wgrywana warstwa nie zawiera deklaracji ukł. współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="973"/>
@@ -15960,12 +15960,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="949"/>
         <source>Project wide default CRS will be used</source>
-        <translation>Zostanie zastosowany domyślny układ współrzędnych projektu</translation>
+        <translation>Zostanie przypisany układ współrzędnych projektu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="956"/>
         <source>Global default CRS displa&amp;yed below will be used</source>
-        <translation>Zostanie zastosowany &amp;globalny domyślny układ współrzędnych wyświetlony poniżej </translation>
+        <translation>Zostanie przypisany &amp;globalny domyślny układ współrzędnych wyświetlony poniżej </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="868"/>
@@ -18008,22 +18008,22 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="219"/>
         <source>Identifiable</source>
-        <translation></translation>
+        <translation>Przeszukiwana</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="237"/>
         <source>Vector</source>
-        <translation></translation>
+        <translation>Wektor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="245"/>
         <source>WMS</source>
-        <translation></translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="249"/>
         <source>Raster</source>
-        <translation></translation>
+        <translation>Raster</translation>
     </message>
 </context>
 <context>
@@ -18036,7 +18036,7 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="46"/>
         <source>General settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia ogólne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="62"/>
@@ -18046,12 +18046,12 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="144"/>
         <source>Save absolute paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz ścieżki bezwzględne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="154"/>
         <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation>Jednostki warstwy (stosowane jedynie, gdy transformacja układu współrzędnych jest wyłączona)</translation>
+        <translation>Deklarowane jednostki warstwy (tylko przy wyłączonej reprojekcji)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="163"/>
@@ -18071,7 +18071,7 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="317"/>
         <source>Identifiable layers</source>
-        <translation></translation>
+        <translation>Identyfikacja obiektów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="339"/>
@@ -18086,7 +18086,7 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="349"/>
         <source>Identifiable</source>
-        <translation type="unfinished"></translation>
+        <translation>Przeszukiwana</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="40"/>
@@ -18245,7 +18245,7 @@ Z tego powodu wybrór odwzorowania nie będzie działał...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="119"/>
         <source>EPSG ID</source>
-        <translation>EPSG ID</translation>
+        <translation>Kod EPSG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="135"/>
@@ -19670,12 +19670,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="31"/>
         <source>Slope</source>
-        <translation type="unfinished"></translation>
+        <translation>Spadek</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="32"/>
         <source>Aspect</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspozycja</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="33"/>
@@ -19690,7 +19690,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="127"/>
         <source>Enter result file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz plik wynikowy</translation>
     </message>
 </context>
 <context>
@@ -19698,37 +19698,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="13"/>
         <source>Raster based terrain analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analizy terenu</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="21"/>
         <source>Analysis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza:</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="40"/>
         <source>Input layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa wejściowa:</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="50"/>
         <source>Output layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa wyjściowa:</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="74"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="83"/>
         <source>Output format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Format wyjściowy:</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="93"/>
         <source>Add result to project</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj wynikową warstwę do projektu</translation>
     </message>
 </context>
 <context>
@@ -19738,17 +19738,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="53"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="61"/>
         <source>&amp;Raster based terrain analysis...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Analizy terenu...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="93"/>
         <source>Slope</source>
-        <translation type="unfinished"></translation>
+        <translation>Spadek</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="97"/>
         <source>Aspect</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspozycja</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="101"/>
@@ -19763,12 +19763,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="112"/>
         <source>Calculating </source>
-        <translation type="unfinished"></translation>
+        <translation>Obliczanie</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="112"/>
         <source>Abort...</source>
-        <translation type="unfinished"></translation>
+        <translation>Przerwij...</translation>
     </message>
 </context>
 <context>
@@ -23697,17 +23697,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="153"/>
         <source>File path</source>
-        <translation type="unfinished"></translation>
+        <translation>Ścieżka do pliku</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="159"/>
         <source>Attribute containing path to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Atrybut zawierający ścieżkę dostępu do pliku</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="188"/>
         <source>Path is relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Ścieżka jest względna</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="204"/>
@@ -23717,7 +23717,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="618"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="681"/>
         <source>Remember this</source>
-        <translation type="unfinished"></translation>
+        <translation>Pamiętaj</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="239"/>
@@ -23727,32 +23727,32 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="637"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="700"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="258"/>
         <source>Compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Azymut</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="264"/>
         <source>Attribute containing compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Atrybut zawierający azymut</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="293"/>
         <source>Display compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlaj azymut</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="360"/>
         <source>Compass offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Poprawka kompasu</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="496"/>
         <source>Relative paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Względne ścieżki dostępu</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="548"/>
@@ -23878,7 +23878,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Wykryta wersję Quantum GIS:</translation>
+        <translation>Wykryta wersję Quantum GIS:</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
