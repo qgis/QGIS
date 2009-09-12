@@ -16,7 +16,7 @@ ARCHS_P = $(ARCH_P_$(SDKSYS)) // in the form arch1;arch2;...
 //////////////////////////////////////////////////////////////////////
 
 // major-minor-patch must be integers for Mac OS X
-QGIS_RELEASE_NAME = Unstable
+QGIS_RELEASE_NAME = Mimas
 QGIS_VERSION_MAJOR = 1
 QGIS_VERSION_MINOR = 3
 QGIS_VERSION_PATCH = 0

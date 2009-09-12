@@ -1821,6 +1821,8 @@
 		72FB54CC0FAF3ADB00AB2F8D /* qgsattributetablememorymodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C10FAF3A5D00AB2F8D /* qgsattributetablememorymodel.cpp */; };
 		72FB54CE0FAF3B5E00AB2F8D /* qgsattributetabledelegate.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C60FAF3A5D00AB2F8D /* qgsattributetabledelegate.h */; };
 		72FB54CF0FAF3B5E00AB2F8D /* qgsattributetablememorymodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C20FAF3A5D00AB2F8D /* qgsattributetablememorymodel.h */; };
+		72FE24C7105BE1B50026B6CB /* CONTRIBUTORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2E30F4147890022BE1F /* CONTRIBUTORS */; };
+		72FE24C8105BE2400026B6CB /* qgsgeometryanalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597E71052B2B0003D1610 /* qgsgeometryanalyzer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -3966,6 +3968,7 @@
 			files = (
 				7299E8BA0F90F06C002F58DE /* AUTHORS in Copy - doc */,
 				7299E8BB0F90F06C002F58DE /* CODING in Copy - doc */,
+				72FE24C7105BE1B50026B6CB /* CONTRIBUTORS in Copy - doc */,
 				72DBAB500FFD744400E587DC /* DONORS in Copy - doc */,
 				7299E8BC0F90F06C002F58DE /* SPONSORS in Copy - doc */,
 				7299E8BD0F90F06C002F58DE /* TRANSLATORS in Copy - doc */,
@@ -12358,6 +12361,7 @@
 				7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */,
 				7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */,
 				7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */,
+				72FE24C8105BE2400026B6CB /* qgsgeometryanalyzer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
