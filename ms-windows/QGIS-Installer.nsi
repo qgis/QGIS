@@ -16,8 +16,8 @@
 ;Version variables
 
 !define RELEASE_VERSION_NUMBER "1.3.0"
-!define RELEASE_VERSION_NAME "Trunk"
-!define RELEASE_SVN_REVISION "11475"
+!define RELEASE_VERSION_NAME "Mimas"
+!define RELEASE_SVN_REVISION "11639"
 !define RELEASE_BINARY_REVISION "0"
 
 !define DEV_VERSION_NUMBER ""
@@ -41,7 +41,7 @@ SetCompressor /SOLID lzma
 ;----------------------------------------------------------------------------------------------------------------------------
 
 ;define the QGIS Base Name
-!define RELEASE_QGIS_BASE "Quantum GIS Trunk"
+!define RELEASE_QGIS_BASE "Quantum GIS Mimas"
 !define DEV_QGIS_BASE "Quantum GIS Unstable Dev"
 
 ;Set the installer variables, depending on the selected version to build
@@ -61,7 +61,7 @@ SetCompressor /SOLID lzma
 !else if ${INSTALLER_TYPE} == "Release-NoGrass"
 	!define VERSION_NUMBER "${RELEASE_VERSION_NUMBER}"
 	!define VERSION_NAME "${RELEASE_VERSION_NAME}"
-	!define COMPLETE_NAME "${RELEASE_QGIS_BASE} ${RELEASE_VERSION_NUMBER} ${RELEASE_VERSION_NAME}"
+	!define COMPLETE_NAME "${RELEASE_QGIS_BASE} ${RELEASE_VERSION_NUMBER}"
 	!define SVN_REVISION "${RELEASE_SVN_REVISION}"
 	!define BINARY_REVISION "${RELEASE_BINARY_REVISION}"
 	!define QGIS_BASE "${RELEASE_QGIS_BASE}"
