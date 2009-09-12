@@ -1,7 +1,7 @@
 @echo off
 set GRASS_VERSION=6.4.0svn
 set SVNVERSION=c:/cygwin/bin/svnversion
-set PACKAGENAME=qgis-dev
+set PACKAGENAME=qgis-unstable
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -36,8 +36,7 @@ if "%DEVENV%"=="" goto error
 
 PROMPT qgis%VERSION%$g 
 
-set BUILDCONF=RelWithDebInfo
-REM set BUILDCONF=Release
+set BUILDCONF=Release
 
 
 cd ..\..
@@ -129,8 +128,8 @@ echo PACKAGE: %DATE% %TIME%>>%LOG% 2>&1
 cd ..
 copy postinstall.bat %OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
 copy preremove.bat %OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
-copy %PACKAGENAME%.bat.tmpl %OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
-copy qgis-dev.reg.tmpl %OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qgis-dev.reg.tmpl
+copy qgis.bat.tmpl %OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
+copy qgis.reg.tmpl %OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\%PACKAGENAME%.reg.tmpl
 
 sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py >%OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py.tmpl
 if errorlevel 1 goto error
