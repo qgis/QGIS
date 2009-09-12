@@ -429,8 +429,16 @@ QTreeWidgetItem *QgsIdentifyResults::featureItem( QTreeWidgetItem *item )
   {
     if ( item->parent()->parent() )
     {
-      // attribute item
-      featItem = item->parent();
+      if ( item->parent()->parent()->parent() )
+      {
+        // derived attribute item
+        featItem = item->parent()->parent();
+      }
+      else
+      {
+        // attribute item
+        featItem = item->parent();
+      }
     }
     else
     {
