@@ -3057,7 +3057,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="583"/>
         <source>Print Composer</source>
-        <translation>Компонування карти</translation>
+        <translation>Компонувальник карт</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="586"/>
@@ -4540,7 +4540,7 @@ Try to find missing layers?</source>
         <location filename="../src/app/qgisapp.cpp" line="4176"/>
         <location filename="../src/app/qgisapp.cpp" line="4283"/>
         <source>Layer not editable</source>
-        <translation>Шар не редагується</translation>
+        <translation>Шар не підтримує редагування</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4177"/>
@@ -4897,7 +4897,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsabout.cpp" line="220"/>
         <source>Names</source>
-        <translation type="unfinished">Імена</translation>
+        <translation>Імена</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="273"/>
@@ -5065,156 +5065,156 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="19"/>
         <source>Attribute Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії з атрибутами</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="37"/>
         <source>Action properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості дії</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="43"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="59"/>
         <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть ім&apos;я дії тут. Ім&apos;я повинно бути унікальним (QGIS зробить його унікальним, якщо це необхідно).</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="46"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="157"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="56"/>
         <source>Enter the action name here</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть ім&apos;я дії тут</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="66"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="82"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть дію тут. Це може бути будь-яка програма, сценарій чи команда, доступна на вашій системі. Коли дія викликається будь-який набір символів, які починаються з % і слідуючим за ним ім&apos;ям поля будуть замінені на значення цього поля. Спеціальні символи %% буде замінено значенням обраного поля. Подвійні лапки групують текст в єдиний аргумент для програми, сценарію чи команди. Подвійні лапки будуть ігноруватись, якщо перед ними є \ (backslash)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="69"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="162"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Дія</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="79"/>
         <source>Enter the action command here</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть команду дії тут</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="89"/>
         <source>Browse for action</source>
-        <translation type="unfinished"></translation>
+        <translation>Огляд дії</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="92"/>
         <source>Click to browse for an action</source>
-        <translation type="unfinished"></translation>
+        <translation>Клацніть для огляду дії</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="95"/>
         <source>Clicking the button will let you select an application to use as the action</source>
-        <translation type="unfinished"></translation>
+        <translation>Клацання на клавіші дозволить вибрати програму для використанна як дії</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="98"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="105"/>
         <source>The valid attribute names for this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Допустимі імена атрибутів для цього шару</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="112"/>
         <source>Inserts the selected field into the action, prepended with a %</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити вибране поле в дію з попереднім %</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="115"/>
         <source>Insert field</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити поле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="122"/>
         <source>Captures any output from the action</source>
-        <translation type="unfinished"></translation>
+        <translation>Захвачувати будь-який вивід дії</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="125"/>
         <source>Captures the standard output or error generated by the action and displays it in a dialog box</source>
-        <translation type="unfinished"></translation>
+        <translation>Захвачувати стандартний вивід чи помилку згенеровану дією та показати це в діалоговому вікні</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="128"/>
         <source>Capture output</source>
-        <translation type="unfinished"></translation>
+        <translation>Захвачувати вивід</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="144"/>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
-        <translation type="unfinished"></translation>
+        <translation>Цей список містить всі дії, що були визначені для поточного шару. Додавайте дії вводячи деталі в елементи керування нижче і потім натискайте кнопку &quot;Вставити дію&quot;. Дії можна редагувати двічі клацнувши на елементі списку.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="167"/>
         <source>Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Захвачувати</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="175"/>
         <source>Inserts the action into the list above</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити дію в список вище</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="178"/>
         <source>Insert action</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити дію</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="185"/>
         <source>Update the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити вибрану дію</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="188"/>
         <source>Update action</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити дію</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="211"/>
         <source>Move the selected action up</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вибрану дію вгору</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="214"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вгору</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="221"/>
         <source>Move the selected action down</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вибрану дію вниз</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="224"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вниз</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="247"/>
         <source>Remove the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити вибрану дію</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="250"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити</translation>
     </message>
 </context>
 <context>
@@ -5297,57 +5297,57 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="76"/>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="82"/>
         <source>Attribute table - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Таблиця атрибутів - %1</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="417"/>
         <source>Search string parsing error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка розбору пошукового запиту</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="424"/>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="481"/>
         <source>Search results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результати пошуку</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="424"/>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви ввели порожній пошуковий запит.</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="464"/>
         <source>Error during search</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка при пошуку</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="477"/>
         <source>Found %d matching features.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Знайдено %n відповідний об&apos;єкт.</numerusform>
+            <numerusform>Знайдено %n відповідних об&apos;єкта.</numerusform>
+            <numerusform>Знайдено %n відповідних об&apos;єктів.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="479"/>
         <source>No matching features found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не знайдено відповідних об&apos;єктів.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="13"/>
         <source>Attribute Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Таблиця атрибутів</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="46"/>
         <source>Remove selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Зняти виділення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="68"/>
         <source>Move selected to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вибрані до початку</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="83"/>
@@ -5357,7 +5357,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="90"/>
         <source>Invert selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Звернути виділення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="105"/>
@@ -5367,12 +5367,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="112"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished"></translation>
+        <translation>Копіювати вибрані рядки до буферу обміну (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="115"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Копіювати вибрані рядки до буферу обміну</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="130"/>
@@ -5382,12 +5382,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="137"/>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити карту до вибраних рядків (Ctrl-J)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="140"/>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити карту до вибраних рядків</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="155"/>
@@ -5397,42 +5397,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="162"/>
         <source>Toggle editing mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим редагування</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="165"/>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Клацніть для переключення редагування таблиці</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="187"/>
         <source>Look for</source>
-        <translation type="unfinished"></translation>
+        <translation>Шукати</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="197"/>
         <source>in</source>
-        <translation type="unfinished"></translation>
+        <translation>в</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="207"/>
         <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Пошук</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="218"/>
         <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати тільки вибрані записи</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="225"/>
         <source>Search selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>Шукати тільки в вибраних записах</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="245"/>
         <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation>Розширений пошук</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="252"/>
@@ -5461,176 +5461,177 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="113"/>
         <source>Select a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати файл</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="122"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="123"/>
         <source>Could not open file %1
 Error was:%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити файл %1
+Помилка:%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="288"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="309"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточний мінімум для цього значення %1 і поточний максимум %2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="314"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип атрибута не є цілим чи дійсним, тому використання елемента &quot;діапазон&quot; неможливе.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="422"/>
         <source>Enumeration is not available for this attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Перелік недоступний для цього атрибуту</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="513"/>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <source>Attribute Edit Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Діалог редагування атрибутів</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="21"/>
         <source>Line edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Лінійне  редагування</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="26"/>
         <source>Classification</source>
-        <translation type="unfinished"></translation>
+        <translation>Класифікація</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="31"/>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Діапазон</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="36"/>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Унікальні значення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="41"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я файла</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="46"/>
         <source>Value map</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта значень</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="51"/>
         <source>Enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation>Перелік</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="56"/>
         <source>Immutable</source>
-        <translation type="unfinished"></translation>
+        <translation>Незмінний</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="71"/>
         <source>Simple edit box. This is the default editation widget.</source>
-        <translation type="unfinished"></translation>
+        <translation>Просте поле введення. Це віджет редагування за умовчанням.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="95"/>
         <source>Displays combo box containing values of attribute used for classification.</source>
-        <translation type="unfinished"></translation>
+        <translation>Відображає випадаючий список, що містить значення атрибута, які використовуються для класифікації.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="124"/>
         <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Дозволяє встановити числові значення з зазначеного діапазону. Віджет редагування може бути повзунком чи полем вводу.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="136"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>Мінімум</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="143"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимум</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="150"/>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Крок</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="228"/>
         <source>Slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Повзунок</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="238"/>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="273"/>
         <source>Editable</source>
-        <translation type="unfinished"></translation>
+        <translation>Підтримує редагування</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="245"/>
         <source>Local minimum/maximum = 0/0</source>
-        <translation type="unfinished"></translation>
+        <translation>Локальний мінімум/максимум = 0/0</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="263"/>
         <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувач може вибрати одне зі значень, вже використовуємих в атрибуті. Якщо підтримує редагування, лінійне редагування показується з підтримкою автодоповнення, інакше використовується випадаючий список.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="299"/>
         <source>Simplifies file selection by adding a file chooser dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрощує вибір файлів, додаючи діалог вибору файлів.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="326"/>
         <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Випадаючий список з наперед визначеними  елементами. Значення зберігається в атрибуті, опис виводиться в списку.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="336"/>
         <source>Load Data from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити дані з шару</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="357"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Значення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="362"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="370"/>
         <source>Remove Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити вибране</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="390"/>
         <source>Load Data from CSV file</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити дані з файлу CSV</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="401"/>
         <source>Combo box with values that can be used within the column&apos;s type. Must be supported by the provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Випадаючий список значень допустимих для поля даного типу . Елемент повинен підтримуватися джерелом даних.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="435"/>
         <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Незмінний атрибут доступний тільки для читання - користувач не зможе змінити його значення.</translation>
     </message>
 </context>
 <context>
@@ -5688,7 +5689,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="39"/>
         <source>Extent</source>
-        <translation type="unfinished">Межа</translation>
+        <translation>Межа</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="44"/>
@@ -5701,205 +5702,205 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="109"/>
         <source>QGIS - print composer</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - компонувальник карт</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="120"/>
         <source>QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="124"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="125"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="125"/>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="131"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Правка</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="132"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>В&amp;ідмінити</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="132"/>
         <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="135"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Вирізати</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="135"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="137"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Копіювати</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="137"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="139"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Вст&amp;авити</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="139"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="141"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="144"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Вид</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="151"/>
         <source>Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Макет</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="207"/>
         <source>Map 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта 1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="442"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="709"/>
         <source>Choose a file name to save the map as</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть ім&apos;я файла для збереження карти як</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="443"/>
         <source>PDF Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат PDF</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="560"/>
         <source>Big image</source>
-        <translation type="unfinished"></translation>
+        <translation>Велике зображення</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="561"/>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Для створення зображень %1 x %2 потрібно близько %3 МБ пам&apos;яті</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="589"/>
         <source>%1 format (*.%2 *.%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат %1 (*.%2 *.%3)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="613"/>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть ім&apos;я файла для збереження зображення карти як</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="683"/>
         <source>SVG warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередження SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="684"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1302"/>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Не показувати це повідомлення знову</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="688"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Функція SVG експорта в QGIS має кілька проблем пов&apos;язаних з помилками і недоліками у</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="691"/>
         <source>Qt4 svg code. Of note, text does not appear in the SVG file and there are problems with the map bounding box clipping other items such as the legend or scale bar.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt4 svg код. Зокрема, текст не зберігається в SVG-файл і існують проблеми з рамкою карти, що перетинає інші елементи (легенду або масштабну лінійку).&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="696"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt4 svg код. Зокрема, існують проблеми з шарами, які не відсікаються рамкою карти.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="700"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Якщо вам необхідно отримати векторний вихідний файл з QGIS, то передбачається, що ви намагаєтеся роздрукувати в PostScript, якщо вивід в SVG не є задовільним.&lt;/P&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="710"/>
         <source>SVG Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="806"/>
         <source>save template</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти шаблон</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="832"/>
         <source>Save error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка збереження</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="832"/>
         <source>Error, could not save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка, не вдалося зберегти файл</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="840"/>
         <source>Load template</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити шаблон</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="853"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="860"/>
         <source>Read error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка читання</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="853"/>
         <source>Error, could not read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка, не вдалося прочитати файл</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="860"/>
         <source>Content of template file is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірний вміст файла шаблона</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1300"/>
         <source>Project contains WMS layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект містить WMS-шар</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1301"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation type="unfinished"></translation>
+        <translation>Деякі WMS-сервери (наприклад, UMN mapserver) мають обмеження на значення параметрів ширини і висоти (WIDTH і HEIGHT). Під час друку шарів з цих серверів, ці ліміти можуть бути перевищені. У цьому випадку, WMS-шар не буде надрукований</translation>
     </message>
 </context>
 <context>
@@ -5907,268 +5908,268 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="16"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Головне Вікно</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="81"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="134"/>
         <source>Composition</source>
-        <translation type="unfinished"></translation>
+        <translation>Композиція</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="142"/>
         <source>Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Елемент</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="194"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Довідка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="214"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="259"/>
         <source>&amp;Print...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Друк...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="267"/>
         <source>Zoom Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Повне охоплення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="275"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Збільшити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="283"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Зменшити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="291"/>
         <source>Add Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати карту</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="294"/>
         <source>Add new map</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати нову карту</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="302"/>
         <source>Add Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати текст</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="305"/>
         <source>Add new label</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати новий текст</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="313"/>
         <source>Add Vector Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати легенду</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="316"/>
         <source>Add new vect legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати нову легенду</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="324"/>
         <source>Move Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити елемент</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="327"/>
         <source>Select/Move item</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати/Перемістити елемент</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="335"/>
         <source>Export as Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати як зображення...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="343"/>
         <source>Export as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати як PDF...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="351"/>
         <source>Export as SVG...</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати як SVG...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="359"/>
         <source>Add Scalebar</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати масштабну лінійку</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="362"/>
         <source>Add new scalebar</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати нову масштабну лінійку</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="370"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="373"/>
         <source>Refresh view</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити вид</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="381"/>
         <source>Add Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати зображення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="386"/>
         <source>Move Content</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вміст</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="389"/>
         <source>Move item content</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вміст елемента</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="394"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Згрупувати</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="397"/>
         <source>Group items</source>
-        <translation type="unfinished"></translation>
+        <translation>Згрупувати елементи</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="402"/>
         <source>Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Розгрупувати</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="405"/>
         <source>Ungroup items</source>
-        <translation type="unfinished"></translation>
+        <translation>Розгрупувати елементи</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="410"/>
         <source>Raise</source>
-        <translation type="unfinished"></translation>
+        <translation>Підняти</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="413"/>
         <source>Raise selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Підняти вибрані елементи</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="418"/>
         <source>Lower</source>
-        <translation type="unfinished"></translation>
+        <translation>Опустити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="421"/>
         <source>Lower selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Опустити вибрані елементи</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="426"/>
         <source>Bring to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>На передній план</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="429"/>
         <source>Move selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вибрані елементи на передний план</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="434"/>
         <source>Send to Back</source>
-        <translation type="unfinished"></translation>
+        <translation>На задній план</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="437"/>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вибрані елементи на задній план</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="442"/>
         <source>Load From template</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити з шаблона</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="447"/>
         <source>Save as template</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти як шаблон</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="452"/>
         <source>Align left</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти по лівому краю</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="455"/>
         <source>Align selected items left</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти вибрані елементи по лівому краю</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="460"/>
         <source>Align center</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти по центру</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="463"/>
         <source>Align center horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Центрувати по горизонталі</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="468"/>
         <source>Align right</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти по правому краю</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="471"/>
         <source>Align selected items right</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти вибрані елементи по правому краю</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="476"/>
         <source>Align top</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти по верхньому краю</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="479"/>
         <source>Align selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти вибрані елементи по верхньому краю</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="484"/>
         <location filename="../src/ui/qgscomposerbase.ui" line="487"/>
         <source>Align center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Центрувати по вертикалі</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="492"/>
         <source>Align bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти по нижньому краю</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="495"/>
         <source>Align selected items bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти вибрані елементи по нижньому краю</translation>
     </message>
 </context>
 <context>
@@ -6176,47 +6177,47 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="13"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="19"/>
         <source>Composer item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості елемента</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="25"/>
         <source>Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="32"/>
         <source>Frame...</source>
-        <translation type="unfinished"></translation>
+        <translation>Рамка...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="39"/>
         <source>Background...</source>
-        <translation type="unfinished"></translation>
+        <translation>Фон...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="46"/>
         <source>Opacity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Непрозорість:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="63"/>
         <source>Outline width: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина контуру:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
         <source>Position...</source>
-        <translation type="unfinished"></translation>
+        <translation>Позиція...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="80"/>
         <source>Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Рамка</translation>
     </message>
 </context>
 <context>
@@ -6224,7 +6225,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="19"/>
         <source>Label Options</source>
-        <translation type="unfinished">Параметри текста</translation>
+        <translation>Параметри текста</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
