@@ -1,6 +1,6 @@
 qgis (1.3.0) UNRELEASED; urgency=low
 
-  * new development version after 1.2 branch
+  * new upstream release
   * add analysis library and raster terrain analysis plugin
   * alternativly depend on libgdal1-1.6.0-grass
   * include CONTRIBUTORS, TRANSLATORS and DONORS
