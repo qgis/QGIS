@@ -27,15 +27,16 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
   gridLayout->addWidget( itemPropertiesWidget, 9, 0, 1, 5 );
+  QDoubleValidator v( 0 );
 
-  mWidthLineEdit->setValidator( new QDoubleValidator( 0 ) );
-  mHeightLineEdit->setValidator( new QDoubleValidator( 0 ) );
-  mScaleLineEdit->setValidator( new QDoubleValidator( 0 ) );
+  mWidthLineEdit->setValidator( &v );
+  mHeightLineEdit->setValidator( &v );
+  mScaleLineEdit->setValidator( &v );
 
-  mXMinLineEdit->setValidator( new QDoubleValidator( 0 ) );
-  mXMaxLineEdit->setValidator( new QDoubleValidator( 0 ) );
-  mYMinLineEdit->setValidator( new QDoubleValidator( 0 ) );
-  mYMaxLineEdit->setValidator( new QDoubleValidator( 0 ) );
+  mXMinLineEdit->setValidator( &v );
+  mXMaxLineEdit->setValidator( &v );
+  mYMinLineEdit->setValidator( &v );
+  mYMaxLineEdit->setValidator( &v );
 
   mPreviewModeComboBox->insertItem( 0, tr( "Cache" ) );
   mPreviewModeComboBox->insertItem( 1, tr( "Render" ) );
