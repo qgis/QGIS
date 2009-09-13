@@ -1,3 +1,9 @@
+qgis (1.4.0) UNRELEASED; urgency=low
+
+  * new development version after 1.3 branch
+
+ -- Jürgen E. Fischer <fischer@linux-buechse.de>  Mon, 14 Sep 2009 00:56:05 +0200
+
 qgis (1.3.0) UNRELEASED; urgency=low
 
   * new upstream release
