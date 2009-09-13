@@ -3886,7 +3886,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="1012"/>
         <location filename="../src/app/qgisapp.cpp" line="1018"/>
         <source>QGIS Home Page</source>
-        <translation>Веб-сайт QGI</translation>
+        <translation>Веб-сайт QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1014"/>
@@ -4103,7 +4103,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1573"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Статус СК - Клацніть для відкриття діалогу властивостей системи координат</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1578"/>
@@ -4113,12 +4113,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1737"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Робоча область. Це область, в якій відображаються растрові та векторні шари, коли додані до карти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1799"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Область огляду карти. Дана область використовується для виведення оглядової карти, на якій видно поточне охоплення видимої карти QGIS у вигляді червоного прямокутника. Будь-який шар карти може бути доданий в область огляду.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1808"/>
@@ -4128,7 +4128,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1864"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>Легенда карти, в якій перераховані всі шари на робочій області. Клацніть на прапорці для переключення видимості відповідного шару. Двічі клацніть на шарі в легенді, щоб змінити параметри його відображення і інші властивості.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1865"/>
@@ -4138,35 +4138,38 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2017"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви використовуєте QGIS версії %1, ревізії %2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2022"/>
         <source> This copy of QGIS has been built with PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation> Дана версія QGIS зібрана з підтримкою PostgreSQL.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2025"/>
         <source> This copy of QGIS has been built without PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation> Дана версія QGIS зібрана без підтримки PostgreSQL.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2029"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Дана версія QGIS зібрана з підтримкою SpatiaLite.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2032"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Дана версія QGIS зібрана без підтримки SpatiaLite.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2034"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Цей бінарник був перекомпільований в Qt  %1, і зараз запущений в Qt %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2046"/>
@@ -4176,17 +4179,17 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2047"/>
         <source>Whats new in Version 1.2.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>Що нового в версії 1.2.0?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2050"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation type="unfinished"></translation>
+        <translation>Зверніть увагу, що даний випуск відноситься до розряду &quot;нестабільних&quot;. Як такий він містить нові функції і розширює програмний інтерфейс в порівнянні з QGIS 1.0.x і QGIS 1.1.0. Якщо для вас важлива стабільність і довготривала підтримка більше, ніж нові і нетестовані функції, то ми рекомендуємо Вам використовувати копію QGIS зі стабільних випусків 1.0.x.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2058"/>
         <source>This release includes over 140 bug fixes and enhancements over the QGIS 1.1.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дана версія включає більше 140 виправлень помилок і удосконалень в порівнянні з QGIS 1.1.0. Крім того ми додали наступні нові можливості:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2062"/>
@@ -4290,7 +4293,105 @@ Grass:
 
 There is a new GRASS shell. Also there have been many cleanups and consistency
 updates.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Редагування:
+
+Функції редагування в цьому випуску серйозно оновлені. Цей випуск включає додаткові векторні інструменти радагування:
+- delete part of multipart feature
+- delete hole from polygon
+- simplify feature
+- Added a new node tool (in advanced digitizing toolbar).
+- New functionality for merging features
+- Added undo/redo functionality for vector layer editing.
+- Added option to show only markers of selected features in editing mode.
+- Change layer&apos;s icon in legend to reflext that the layer is editable.
+
+In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar
+and there is a new dock widget displaying undo stack of active layer.
+
+About the node tool: It resembles a tool for editing paths by nodes that is
+present in every vector editor. How does it work (in QGIS)? Click on a
+feature, its nodes will be marked by small rectangles. Clicking and dragging a
+node moves it. Double clicking a segment will add a new node. Pressing delete
+key will remove active node. It&apos;s possible to select more active nodes at
+once: by clicking and dragging a rectangle. It&apos;s possible to select a segment&apos;s
+adjacent nodes by clicking on the segment. It&apos;s possible to add/remove active
+nodes by using Ctrl when clicking a node or dragging a rectangle
+
+We recommend that you turn off vertex markers in QGIS options when working with
+this tool: the redraws are much faster and the map is not cluttered with
+markers. 
+
+Keyboard shortcuts:
+
+New feature: configure shortcuts for actions within main window of qgis!
+See menu Setting-&gt;Configure shortcuts
+
+Map Composer:
+
+It is now possible to lock/unlock composer item positions by right mouse click.
+The width and height of the composer map will now remain fixed if user sets the
+composer map extent to the map canvas extent. possibility to display
+current date in composer label by typing (d &apos;June&apos; yyyy) or similar.
+It is now possible to keep the current layers in a composer map even if further
+layers are added to the main map. Export to PDF in composer is now possible.
+
+Attribute tables:
+
+It is now possible to search the attribute table within selected records only.
+General speedups have been made on the attribute table. Setting of field width
+and precision when adding attributes is now possible. Handling of attribute
+types in WFS provider has bee improved.
+
+Attribute aliases for vector layers are now available. The aliases are shown
+instead of the original field names in the info tool and attribute table to
+make things easier for end users. There is now a GUI for setting edit widgets
+for layer attributes.  A new dialog allows loading a value map from a layer
+(could be non-spatial table too!).  The edit widgets settings will also now
+be respected in the attribute table.
+
+Plugins:
+
+- The order of layers in the WMS dialog can now be changed.
+- The eVis plugin, version 1.1.0, has been added to the QGIS project and
+  included as a standard plugin. More information about eVis can be found here:
+  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
+- The interpolation plugin now has the ability to use line layers as constrains
+  for triangulation in interpolation plugin. You can also now save the
+  triangulation to shape file.
+- An new OpenStreetMap provider and plugin have been added to QGIS.
+
+Projects Management:
+
+QGIS now includes support for  project relative position of file data sources
+and svgs. The saving of relative paths of file data sources is optional.
+
+PostGIS &amp; the PostgreSQL Provider:
+
+You can now select the SSL mode when adding a new DB connection. Turning off
+SSL encryption can greatly improve performance of PostGIS data loading where
+connection security is not required. Support has been added for more native
+types and for setting of column comments.
+
+Symbology enhancements:
+
+- allow refresh of symbols via popup menu on the renderer&apos;s symbol selection
+- add support for data defined symbol(name)s
+- add support for font symbol markers (only data defined - no gui yet)
+- add symbol size in map units (ie. symbols that keep the size in mapunits
+  independent of the mapscale)
+
+Command line arguments:
+
+Added command line argument support on windows.
+Enhancement of command line arguments:
+- allow given snapshot sizes
+- allow suppression of splash screen
+- capture map decorations from plugins on snapshots
+
+Grass:
+
+There is a new GRASS shell. Also there have been many cleanups and consistency
+updates.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2527"/>
@@ -4301,7 +4402,7 @@ updates.</source>
         <location filename="../src/app/qgisapp.cpp" line="2528"/>
         <location filename="../src/app/qgisapp.cpp" line="5983"/>
         <source>Invalid Data Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Недійсне джерело даних</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2683"/>
@@ -4323,7 +4424,7 @@ updates.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3345"/>
         <source>Choose a QGIS project file to open</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть файл проекта QGIS для відкриття</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3346"/>
@@ -4349,36 +4450,36 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3487"/>
         <source>Unable to open project</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається відкрити проект</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3552"/>
         <source>Choose a QGIS project file</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть файл проекта QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3586"/>
         <location filename="../src/app/qgisapp.cpp" line="3671"/>
         <source>Saved project to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект збережений до: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3598"/>
         <location filename="../src/app/qgisapp.cpp" line="3678"/>
         <source>Unable to save project</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається зберегти проект</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3599"/>
         <location filename="../src/app/qgisapp.cpp" line="3679"/>
         <source>Unable to save project to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається зберегти проект до %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3606"/>
         <location filename="../src/app/qgisapp.cpp" line="3685"/>
         <source>Unable to save project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається зберегти проект %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3627"/>
@@ -4388,12 +4489,12 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3743"/>
         <source>QGIS: Unable to load project</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS: Неможливо завантажити проект</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3744"/>
         <source>Unable to load project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається завантажити проект %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3831"/>
@@ -4403,37 +4504,37 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3873"/>
         <source>Saved map image to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Зображення карти збережено в %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4154"/>
         <source>No Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Шар не вибраний</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4155"/>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Для видалення об&apos;єктів необхідно вибрати векторний шар в легенді</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4162"/>
         <source>No Vector Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Векторний шар не вибраний</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4163"/>
         <source>Deleting features only works on vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалення об&apos;єктів працює тільки на векторном шарі</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4169"/>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished"></translation>
+        <translation>Джерело не підтримує видалення</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4170"/>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Джерело даних не підтримує видалення об&apos;єктів</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4176"/>
@@ -4444,7 +4545,7 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4177"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для поточного шару не вибраний режим редагування. Виберіть &apos;Розпочати редагування&apos; на панелі інструментів оцифровки.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4183"/>
@@ -4464,12 +4565,12 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4188"/>
         <source>Features deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єкти видалено</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4191"/>
         <source>Problem deleting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка видалення об&apos;єктів</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4192"/>
@@ -4479,7 +4580,7 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4234"/>
         <source>Merging features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднання об&apos;єктів...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4234"/>
@@ -4489,12 +4590,12 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4272"/>
         <source>No active layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Не має активного шару</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4272"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Не знайдений активний шар. Будь ласка, виберіть шар в списку шарів</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4278"/>
@@ -4504,66 +4605,66 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4278"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Інструмент об&apos;єднання об&apos;єктів працює тільки на векторних шарах. Будь ласка, виберіть векторний шар з списку шарів</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4283"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднання об&apos;єктів можливе лише в режимі редагування шарів. Для виконання об&apos;єднання, виберіть  Шар -&gt; Режим редагування</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4291"/>
         <location filename="../src/app/qgisapp.cpp" line="4325"/>
         <source>The merge tool requires at least two selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Для об&apos;єднання об&apos;єктів необхідно вибрати хоча б два об&apos;єкта</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4308"/>
         <location filename="../src/app/qgisapp.cpp" line="4344"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
-        <translation type="unfinished"></translation>
+        <translation>Операція об&apos;єднання призведе до зміни геометричного типу, який не сумістний з поточним шаром, і тому відмінена.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4350"/>
         <source>Merged features</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднані об&apos;єкти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4493"/>
         <source>Features cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирізка об&apos;єктів</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4545"/>
         <source>Features pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єкти вставлені</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4616"/>
         <source>Start editing failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося почати редагування</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4616"/>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Джерело не може бути відкрите для редагування</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4624"/>
         <source>Stop editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Зупинити редагування</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4625"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви хочете зберегти зміни в шарі %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4633"/>
         <location filename="../src/app/qgisapp.cpp" line="4646"/>
         <location filename="../src/app/qgisapp.cpp" line="6264"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4634"/>
@@ -4571,42 +4672,44 @@ Try to find missing layers?</source>
 
 Errors: %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося записати зміни в шар %1
+
+Помилки: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4646"/>
         <source>Problems during roll back</source>
-        <translation type="unfinished"></translation>
+        <translation>Проблеми під час відкату</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4706"/>
         <source>Invalid scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправильний масштаб</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4870"/>
         <source>Python Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Python-консоль</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4928"/>
         <source>There is a new version of QGIS available</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступна нова версія QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4934"/>
         <source>You are running a development version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви працюєте в розроблюваній версії QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4938"/>
         <source>You are running the current version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви працюєте в поточній версії QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4943"/>
         <source>Would you like more information?</source>
-        <translation type="unfinished"></translation>
+        <translation>Хочете більше інформації?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4946"/>
@@ -4614,92 +4717,93 @@ Errors: %2
         <location filename="../src/app/qgisapp.cpp" line="4964"/>
         <location filename="../src/app/qgisapp.cpp" line="4992"/>
         <source>QGIS Version Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація про версію QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4952"/>
         <source>QGIS - Changes in SVN since last release</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - Зміни в SVN з останнього випуску</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4964"/>
         <source>Unable to get current version information from server</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається отримати інформацію про поточну версію з сервера</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4978"/>
         <source>Connection refused - server may be down</source>
-        <translation type="unfinished"></translation>
+        <translation>У підключенні відмовлено - можливо, сервер недоступний</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4981"/>
         <source>QGIS server was not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер QGIS не знайдено</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4984"/>
         <source>Network error while communicating with server</source>
-        <translation type="unfinished"></translation>
+        <translation>Мережна помилка при роботі з сервером</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4987"/>
         <source>Unknown network socket error</source>
-        <translation type="unfinished"></translation>
+        <translation>Невідома помилка мережного з&apos;єднання</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4992"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається зв&apos;язатися з сервером версій QGIS
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5126"/>
         <location filename="../src/app/qgisapp.cpp" line="5171"/>
         <location filename="../src/app/qgisapp.cpp" line="6063"/>
         <source>Layer is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Невірний шар</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5127"/>
         <location filename="../src/app/qgisapp.cpp" line="5172"/>
         <location filename="../src/app/qgisapp.cpp" line="6064"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Шар не дійсний і не може бути доданий на карту</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5216"/>
         <source>Save?</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5217"/>
         <source>Do you want to save the current project?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви хочете зберегти поточний проект?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5416"/>
         <source>Map coordinates for the current view extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Межі поточного огляду в координатах карти</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5424"/>
         <source>Map coordinates at mouse cursor position</source>
-        <translation type="unfinished"></translation>
+        <translation>Координати карти в позиції курсору миші</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5439"/>
         <source>Extents:</source>
-        <translation type="unfinished"></translation>
+        <translation>Межі:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5512"/>
         <source>Maptips require an active layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Для показу інтерактивної довідки необхідний активний шар</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5890"/>
         <source>Open a GDAL Supported Raster Data Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити GDAL-сумістне джерело растрових даних</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5982"/>
@@ -4714,27 +4818,27 @@ Errors: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6150"/>
         <source>Unsupported Data Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Непідтримуване джерело даних</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6247"/>
         <source>Enter a name for the new bookmark:</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть ім&apos;я для нової закладки:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6264"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається створити закладку. Користувальницька база даних відсутня чи пошкоджена</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6278"/>
         <source>Project file is older</source>
-        <translation type="unfinished"></translation>
+        <translation>Застарілий файл проекту</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6279"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
-        <translation>&lt;p&gt;Цей файл проекту був збережений в старій версії QGIS. При збереженні цього файлу проекту, QGIS обновить його до останньої версії, можливо, зробить його нечитаємим для більш старих версій QGIS.&lt;p&gt;Хоча розробники QGIS намагаються зберегти зворотну сумісність, деяка інформація зі старого файлу проекту може бути втрачена. Щоб поліпшити якість QGIS, ми вдячні, якщо ви відправите звіт про помилку (bug) на %3. Не забудьте включити старий файл проекту і заявити версію QGIS, яку Ви використовували, щоб знайти помилку.&lt;p&gt;Щоб усунути це попередження при відкриванні файлу проекту старої версії, зніміть флажок &apos;%5&apos; в %4 меню.&lt;p&gt;Версія файла проекта: %1&lt;br&gt;Поточна версія QGIS: %2</translation>
+        <translation>&lt;p&gt;Цей файл проекту був збережений в старій версії QGIS. При збереженні цього файлу проекту, QGIS обновить його до останньої версії, можливо, зробить його нечитаємим для більш старих версій QGIS.&lt;p&gt;Хоча розробники QGIS намагаються зберегти зворотну сумісність, деяка інформація зі старого файлу проекту може бути втрачена. Щоб поліпшити якість QGIS, ми вдячні, якщо ви відправите звіт про помилку (bug) на %3. Не забудьте включити старий файл проекту і заявити версію QGIS, яку Ви використовували, щоб знайти помилку.&lt;p&gt;Щоб усунути це попередження при відкриванні файлу проекту старої версії, зніміть прапорець &apos;%5&apos; в %4 меню.&lt;p&gt;Версія файла проекта: %1&lt;br&gt;Поточна версія QGIS: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6295"/>
@@ -4745,7 +4849,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6296"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Попереджати при відкритті файла проекта старої версій QGIS</translation>
     </message>
 </context>
 <context>
@@ -4753,7 +4857,7 @@ Errors: %2
     <message>
         <location filename="../src/ui/qgisappbase.ui" line="13"/>
         <source>QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS</translation>
     </message>
 </context>
 <context>
@@ -4761,69 +4865,69 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsabout.cpp" line="117"/>
         <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Програма спонсорства QGIS: підтримка розробки QGIS&lt;p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="121"/>
         <location filename="../src/app/qgsabout.cpp" line="170"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="122"/>
         <location filename="../src/app/qgsabout.cpp" line="171"/>
         <source>Website</source>
-        <translation type="unfinished"></translation>
+        <translation>Веб-сайт</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="166"/>
         <source>&lt;p&gt;The following individuals and institutions have contributed money to fund QGIS development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Нижчеперелічені особи та організації пожертвували гроші в фонд розробки та інших витрат проекта&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="215"/>
         <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Нижчеперелічені зробили внесок в QGIS переводячи користувальницький інтерфейс чи документацію&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="219"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Мова</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="220"/>
         <source>Names</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Імена</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="273"/>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступні плагіни джерел даних QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="276"/>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступні плагіни баз даних Qt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="282"/>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступні плагіни Qt для завантаження зображень</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="283"/>
         <source>Qt Image Plugin Search Paths&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Шлях пошуку плагіну Qt для завантаження зображення&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="14"/>
         <source>About Quantum GIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Про Quantum GIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="27"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Про програму</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="51"/>
@@ -4831,68 +4935,68 @@ Errors: %2
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="66"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Версія</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="92"/>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS випускається під ліцензією GNU General Public License</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="105"/>
         <source>http://www.gnu.org/licenses</source>
-        <translation type="unfinished"></translation>
+        <translation>http://www.gnu.org/licenses</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="130"/>
         <source>QGIS Home Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Веб-сайт QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="140"/>
         <source>Join our user mailing list</source>
-        <translation type="unfinished"></translation>
+        <translation>Приєднатися до списку розсилки для користувачів</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="153"/>
         <source>What&apos;s New</source>
-        <translation type="unfinished"></translation>
+        <translation>Що нового</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="176"/>
         <source>Developers</source>
-        <translation type="unfinished"></translation>
+        <translation>Розробники</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="190"/>
         <source>Providers</source>
-        <translation type="unfinished"></translation>
+        <translation>Джерела</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="200"/>
         <location filename="../src/ui/qgsabout.ui" line="206"/>
         <source>Sponsors</source>
-        <translation type="unfinished"></translation>
+        <translation>Спонсори</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="225"/>
         <source>Donors</source>
-        <translation type="unfinished"></translation>
+        <translation>Донори</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="245"/>
         <source>Translators</source>
-        <translation type="unfinished"></translation>
+        <translation>Перекладачі</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="276"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>Файно</translation>
     </message>
 </context>
 <context>
@@ -4900,33 +5004,33 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="14"/>
         <source>Add Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати атрибут</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="23"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="36"/>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Коментарій:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="49"/>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="62"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="85"/>
         <source>Precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Точність</translation>
     </message>
 </context>
 <context>
@@ -4934,7 +5038,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="82"/>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Виняток</translation>
     </message>
 </context>
 <context>
@@ -4943,17 +5047,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="151"/>
         <source>Select an action</source>
         <comment>File dialog window title</comment>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть дію</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="187"/>
         <source>Missing Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Відсутня інформація</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="188"/>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для створення атрибутивної дії необхідно вказати його ім&apos;я і виконувану дію.</translation>
     </message>
 </context>
 <context>
@@ -5118,17 +5222,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="84"/>
         <source> (int)</source>
-        <translation type="unfinished"></translation>
+        <translation> (ціле)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="88"/>
         <source> (dbl)</source>
-        <translation type="unfinished"></translation>
+        <translation> (дійсне)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="93"/>
         <source> (txt)</source>
-        <translation type="unfinished"></translation>
+        <translation> (текст.)</translation>
     </message>
 </context>
 <context>
@@ -5136,7 +5240,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributedialogbase.ui" line="13"/>
         <source>Enter Attribute Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть значення атрибутів</translation>
     </message>
 </context>
 <context>
@@ -5144,12 +5248,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributeeditor.cpp" line="47"/>
         <source>Select a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть файл</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeeditor.cpp" line="235"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -5157,34 +5261,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="14"/>
         <source>Load values from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити значення з шару</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="45"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Шар</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="52"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="68"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="63"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="83"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Значення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="76"/>
         <source>Select data from attributes in selected layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати дані з атрибутів в вибраному шарі.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="93"/>
         <source>View All</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати все</translation>
     </message>
 </context>
 <context>
@@ -5248,7 +5352,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="83"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="90"/>
@@ -5258,7 +5362,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="105"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="112"/>
@@ -5273,7 +5377,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="130"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="137"/>
@@ -5288,7 +5392,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="155"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="162"/>
@@ -5333,7 +5437,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="252"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -5341,7 +5445,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetablememorymodel.cpp" line="125"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Атрибут змінено</translation>
     </message>
 </context>
 <context>
@@ -5349,7 +5453,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="412"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Атрибут змінено</translation>
     </message>
 </context>
 <context>
@@ -5534,33 +5638,34 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="58"/>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Видалити</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="59"/>
         <source>&amp;Zoom to</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Збільшити до</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="158"/>
         <source>Really Delete?</source>
-        <translation type="unfinished"></translation>
+        <translation>Дійсно видалити?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="159"/>
         <source>Are you sure you want to delete the %1 bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що бажаєте видалити закладку %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="175"/>
         <source>Error deleting bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка видалення закладки</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="176"/>
         <source>Failed to delete the %1 bookmark from the database. The database said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося видалити закладку %1 з бази даних. База даних повідомляє:
+%2</translation>
     </message>
 </context>
 <context>
@@ -5568,27 +5673,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="13"/>
         <source>Geospatial Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Геопросторові закладки</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="29"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="34"/>
         <source>Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="39"/>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Межа</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="44"/>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
@@ -6119,17 +6224,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="19"/>
         <source>Label Options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Параметри текста</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="45"/>
         <source>Margin (mm):</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле (мм):</translation>
     </message>
 </context>
 <context>
@@ -6137,7 +6242,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/core/composer/qgscomposerlegend.cpp" line="28"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Легенда</translation>
     </message>
 </context>
 <context>
@@ -6145,12 +6250,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="13"/>
         <source>Legend item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості елемента легенди</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="19"/>
         <source>Item text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст елемента:</translation>
     </message>
 </context>
 <context>
@@ -6262,12 +6367,12 @@ Error was:%2</source>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="68"/>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="84"/>
         <source>Map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Карти %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="207"/>
         <source>Map will be printed here</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта буде зображена тут</translation>
     </message>
 </context>
 <context>
@@ -6277,21 +6382,21 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="106"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="233"/>
         <source>Cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Кеш</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="41"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="111"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="237"/>
         <source>Render</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Render</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="42"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="116"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="241"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Прямокутник</translation>
     </message>
 </context>
 <context>
@@ -6377,17 +6482,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="69"/>
         <source>Select svg or image file</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть svg-файл чи файл зображення</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="172"/>
         <source>Select new preview directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть новий каталог зображень</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="244"/>
         <source>Creating icon for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Створення іконки для файлу %1</translation>
     </message>
 </context>
 <context>
