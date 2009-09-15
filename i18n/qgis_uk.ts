@@ -6264,102 +6264,102 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="19"/>
         <source>Barscale Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри масштабної лінійки</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="25"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="33"/>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Заголовок:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="47"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="60"/>
         <source>Title...</source>
-        <translation type="unfinished"></translation>
+        <translation>Заголовок...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="67"/>
         <source>Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Шар...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="74"/>
         <source>Item...</source>
-        <translation type="unfinished"></translation>
+        <translation>Елемент...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="85"/>
         <source>Symbol width: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина символа:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Symbol height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Висота символа:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
         <source>Layer space: </source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ шара:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="115"/>
         <source>Symbol space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ символа:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="129"/>
         <source>Icon label space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ текста:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="139"/>
         <source>Box space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ рамки:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="154"/>
         <source>Legend items</source>
-        <translation type="unfinished"></translation>
+        <translation>Елементи легенди</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="160"/>
         <source>down</source>
-        <translation type="unfinished"></translation>
+        <translation>вниз</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="167"/>
         <source>up</source>
-        <translation type="unfinished"></translation>
+        <translation>вгору</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="174"/>
         <source>remove</source>
-        <translation type="unfinished"></translation>
+        <translation>видалити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="181"/>
         <source>edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>правка...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="188"/>
         <source>update</source>
-        <translation type="unfinished"></translation>
+        <translation>оновити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="195"/>
         <source>update all</source>
-        <translation type="unfinished"></translation>
+        <translation>оновити все</translation>
     </message>
 </context>
 <context>
@@ -6405,77 +6405,77 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="20"/>
         <source>Map options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри карти</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="26"/>
         <source>&lt;b&gt;Map&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Карта&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="46"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="62"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Висота</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="84"/>
         <source>Scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштаб:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="94"/>
         <source>1:</source>
-        <translation type="unfinished"></translation>
+        <translation>1:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="107"/>
         <source>Map extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Межі карти</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="118"/>
         <source>X min:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мін. X:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="125"/>
         <source>Y min:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мін. Y:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="146"/>
         <source>X max:</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. X:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="153"/>
         <source>Y max:</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. Y:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="172"/>
         <source>set to map canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Встановити межі на полотні карти</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="195"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="218"/>
         <source>Update preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити попередній перегляд</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="225"/>
         <source>Keep layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Тримати список шарів</translation>
     </message>
 </context>
 <context>
@@ -6501,47 +6501,47 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="19"/>
         <source>Picture Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри зображення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="31"/>
         <source>Search directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Директорії для пошуку</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="50"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="57"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="83"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="146"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Огляд...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="163"/>
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="182"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Висота:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="201"/>
         <source>Rotation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Обертання:</translation>
     </message>
 </context>
 <context>
@@ -6550,44 +6550,44 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="34"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="292"/>
         <source>Single Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Одинарна рамка</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="35"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="296"/>
         <source>Double Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Подвійна рамка</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="36"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="300"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="304"/>
         <source>Line Ticks Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Штрих вгору/вниз</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="37"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="308"/>
         <source>Line Ticks Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Штрих вниз</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="38"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="312"/>
         <source>Line Ticks Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Штрих вгору</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="39"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="316"/>
         <source>Numeric</source>
-        <translation type="unfinished"></translation>
+        <translation>Числовий</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="67"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="154"/>
         <source>Map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта %1</translation>
     </message>
 </context>
 <context>
@@ -6595,72 +6595,72 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="19"/>
         <source>Barscale Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри масштабної лінійки</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="25"/>
         <source>Segment size (map units):</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір сегмента (одиниці карти):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="45"/>
         <source>Map units per bar unit:</source>
-        <translation type="unfinished"></translation>
+        <translation>Одиниць карти в поділці:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="62"/>
         <source>Number of segments:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість сегментів:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="75"/>
         <source>Segments left:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сегменти ліворуч:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="85"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="101"/>
         <source>Map:</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="127"/>
         <source>Height (mm):</source>
-        <translation type="unfinished"></translation>
+        <translation>Висота (мм):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="137"/>
         <source>Line width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина лінії:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="169"/>
         <source>Label space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ мітки:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="179"/>
         <source>Box space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ рамки:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="189"/>
         <source>Unit label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Позначення одиниць:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="211"/>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="218"/>
         <source>Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір...</translation>
     </message>
 </context>
 <context>
@@ -6668,47 +6668,47 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="21"/>
         <source>Vector Legend Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри векторної легенди</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="53"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="92"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="113"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Заголовок</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="149"/>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Шари</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="154"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Група</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="159"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="167"/>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Рамка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="182"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт</translation>
     </message>
 </context>
 <context>
@@ -6716,37 +6716,37 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscompositionbase.ui" line="19"/>
         <source>Composition</source>
-        <translation type="unfinished"></translation>
+        <translation>Композиція</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionbase.ui" line="43"/>
         <source>Paper</source>
-        <translation type="unfinished"></translation>
+        <translation>Папір</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionbase.ui" line="118"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Орієнтація</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionbase.ui" line="134"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Висота</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionbase.ui" line="150"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionbase.ui" line="166"/>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Одиниці</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionbase.ui" line="182"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір</translation>
     </message>
 </context>
 <context>
@@ -6754,163 +6754,163 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="30"/>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation>мм</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="31"/>
         <source>inch</source>
-        <translation type="unfinished"></translation>
+        <translation>дюйм</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="35"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="244"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="360"/>
         <source>Landscape</source>
-        <translation type="unfinished"></translation>
+        <translation>Ландшафт</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="36"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="364"/>
         <source>Portrait</source>
-        <translation type="unfinished"></translation>
+        <translation>Портрет</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="83"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="522"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Solid</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="84"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="526"/>
         <source>Dots</source>
-        <translation type="unfinished"></translation>
+        <translation>Крапки</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="85"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="530"/>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>Перехрестя</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="120"/>
         <source>A5 (148x210 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A5 (148x210 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="121"/>
         <source>A4 (210x297 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A4 (210x297 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="122"/>
         <source>A3 (297x420 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A3 (297x420 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="123"/>
         <source>A2 (420x594 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A2 (420x594 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="124"/>
         <source>A1 (594x841 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A1 (594x841 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="125"/>
         <source>A0 (841x1189 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>A0 (841x1189 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="126"/>
         <source>B5 (176 x 250 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B5 (176 x 250 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="127"/>
         <source>B4 (250 x 353 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B4 (250 x 353 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="128"/>
         <source>B3 (353 x 500 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B3 (353 x 500 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="129"/>
         <source>B2 (500 x 707 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B2 (500 x 707 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="130"/>
         <source>B1 (707 x 1000 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B1 (707 x 1000 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="131"/>
         <source>B0 (1000 x 1414 mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>B0 (1000 x 1414 мм)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="133"/>
         <source>Legal (8.5x14 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>Legal (8.5x14 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="134"/>
         <source>ANSI A (Letter; 8.5x11 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI A (Letter; 8.5x11 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="135"/>
         <source>ANSI B (Tabloid; 11x17 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI B (Tabloid; 11x17 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="136"/>
         <source>ANSI C (17x22 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI C (17x22 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="137"/>
         <source>ANSI D (22x34 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI D (22x34 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="138"/>
         <source>ANSI E (34x44 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>ANSI E (34x44 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="139"/>
         <source>Arch A (9x12 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch A (9x12 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="140"/>
         <source>Arch B (12x18 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch B (12x18 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="141"/>
         <source>Arch C (18x24 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch C (18x24 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="142"/>
         <source>Arch D (24x36 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch D (24x36 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="143"/>
         <source>Arch E (36x48 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch E (36x48 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="144"/>
         <source>Arch E1 (30x42 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arch E1 (30x42 дюймів)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="148"/>
@@ -6918,7 +6918,7 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="178"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="211"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувальницький</translation>
     </message>
 </context>
 <context>
@@ -6926,87 +6926,87 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="19"/>
         <source>Composition</source>
-        <translation type="unfinished"></translation>
+        <translation>Композиція</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="25"/>
         <source>Paper</source>
-        <translation type="unfinished"></translation>
+        <translation>Папір</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="100"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Орієнтація</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="116"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Висота</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="132"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="148"/>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Одиниці</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="164"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="177"/>
         <source>Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Прив&apos;язування</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="183"/>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Прив&apos;язати до сітки</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="190"/>
         <source>Grid resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Роздільна здатність сітки:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="200"/>
         <source>Offset x:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зсув по x:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="210"/>
         <source>Offset y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зсув по y:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="220"/>
         <source>Pen width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина пера:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="230"/>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір сітки:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="250"/>
         <source>Grid style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль сітки:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="269"/>
         <source>Print quality (dpi)</source>
-        <translation type="unfinished"></translation>
+        <translation>Якість друку (dpi)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="282"/>
         <source>Print as raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Друкувати як растр</translation>
     </message>
 </context>
 <context>
@@ -7014,58 +7014,58 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="110"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ніщо</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="111"/>
         <source>Set default (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити за замовчуванням (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="205"/>
         <source>Input: </source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть нову комбінацію:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="216"/>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <source>Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="236"/>
         <source>Shortcut conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфлікт комбінацій клавіш</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="237"/>
         <source>This shortcut is already assigned to action %1. Reassign?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ця комбінація клавіш вже назначена для дії %1. Переназначити?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="14"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштувати комбінації клавіш</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="27"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Дія</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="32"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Комбінація клавіш</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="55"/>
         <source>Set none</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="62"/>
         <source>Set default</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити за замовчуванням</translation>
     </message>
 </context>
 <context>
@@ -7073,32 +7073,32 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="13"/>
         <source>Continuous color</source>
-        <translation type="unfinished"></translation>
+        <translation>Безперервний колір</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="54"/>
         <source>Maximum Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальне значення:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="80"/>
         <source>Outline Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина контуру:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="93"/>
         <source>Minimum Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мінімальне значення:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="109"/>
         <source>Classification Field:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле класифікації:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="119"/>
         <source>Draw polygon outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Малювати контури полігонів</translation>
     </message>
 </context>
 <context>
