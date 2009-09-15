@@ -9,7 +9,7 @@ ARCHS = $(NATIVE_ARCH) // ppc i386 ppc64 x86_64
 //ARCHS = ppc i386 // for universal
 
 // python archs may be different
-ARCHS_P = $(ARCH_P_$(SDKSYS)) // in the form arch1;arch2;...
+ARCHS_P = $(ARCHS_P_$(SDKSYS)) // in the form arch1;arch2;...
 
 //////////////////////////////////////////////////////////////////////
 // QGIS version info & config
