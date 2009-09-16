@@ -172,6 +172,7 @@
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolreshape.h"
+#include "qgsmaptoolrotatepointsymbols.h"
 #include "qgsmaptoolsplitfeatures.h"
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
@@ -740,6 +741,12 @@ void QgisApp::createActions()
   connect( mActionNodeTool, SIGNAL( triggered() ), this, SLOT( nodeTool() ) );
   mActionNodeTool->setEnabled( false );
 
+  mActionRotatePointSymbols = new QAction( getThemeIcon( "mActionRotatePointSymbols.png" ), tr( "Rotate Point Symbols" ), this );
+  shortcuts->registerAction( mActionRotatePointSymbols );
+  mActionRotatePointSymbols->setStatusTip( tr( "Rotate Point Symbols" ) );
+  connect( mActionRotatePointSymbols, SIGNAL( triggered() ), this, SLOT( rotatePointSymbols() ) );
+  mActionRotatePointSymbols->setEnabled( false );
+
   // View Menu Items
 
   mActionPan = new QAction( getThemeIcon( "mActionPan.png" ), tr( "Pan Map" ), this );
@@ -1094,7 +1101,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMergeFeatures );
   mActionNodeTool->setCheckable( true );
   mMapToolGroup->addAction( mActionNodeTool );
-
+  mActionRotatePointSymbols->setCheckable( true );
+  mMapToolGroup->addAction( mActionRotatePointSymbols );
 }
 
 void QgisApp::createMenus()
@@ -1189,6 +1197,7 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionSplitFeatures );
   mEditMenu->addAction( mActionMergeFeatures );
   mEditMenu->addAction( mActionNodeTool );
+  mEditMenu->addAction( mActionRotatePointSymbols );
 
   if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
   {
@@ -1398,6 +1407,7 @@ void QgisApp::createToolBars()
   mAdvancedDigitizeToolBar->addAction( mActionSplitFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionMergeFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionNodeTool );
+  mAdvancedDigitizeToolBar->addAction( mActionRotatePointSymbols );
   mToolbarMenu->addAction( mAdvancedDigitizeToolBar->toggleViewAction() );
 
 
@@ -1788,6 +1798,8 @@ void QgisApp::createCanvas()
   mMapTools.mDeletePart->setAction( mActionDeletePart );
   mMapTools.mNodeTool = new QgsMapToolNodeTool( mMapCanvas );
   mMapTools.mNodeTool->setAction( mActionNodeTool );
+  mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
+  mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
   //ensure that non edit tool is initialised or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;
 }
@@ -4298,6 +4310,11 @@ void QgisApp::nodeTool()
   mMapCanvas->setMapTool( mMapTools.mNodeTool );
 }
 
+void QgisApp::rotatePointSymbols()
+{
+  mMapCanvas->setMapTool( mMapTools.mRotatePointSymbolsTool );
+}
+
 void QgisApp::splitFeatures()
 {
   mMapCanvas->setMapTool( mMapTools.mSplitFeatures );
@@ -5639,10 +5656,18 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionSplitFeatures->setEnabled( false );
         mActionSimplifyFeature->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
+        mActionRotatePointSymbols->setEnabled( false );
 
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
         {
           mActionMoveVertex->setEnabled( true );
+        }
+        if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues )
+        {
+          if ( QgsMapToolRotatePointSymbols::layerIsRotatable( vlayer ) )
+          {
+            mActionRotatePointSymbols->setEnabled( true );
+          }
         }
         return;
       }
@@ -5752,6 +5777,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyFeatures->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
+    mActionRotatePointSymbols->setEnabled( false );
+    mActionNodeTool->setEnabled( false );
+    mActionDeletePart->setEnabled( false );
 
     //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate
     //If you load a layer with a provider and idenitfy ability then load another without, the tool would be disabled for both

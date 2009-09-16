@@ -40,6 +40,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmovevertex.cpp
   qgsmaptoolnodetool.cpp
   qgsmaptoolreshape.cpp
+  qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
@@ -52,6 +53,7 @@ SET(QGIS_APP_SRCS
   qgsogrsublayersdialog.cpp
   qgsoptions.cpp
   qgspastetransformations.cpp
+  qgspointrotationitem.cpp
   qgspluginitem.cpp
   qgspluginmanager.cpp
   qgspluginmetadata.cpp
