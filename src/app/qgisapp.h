@@ -523,6 +523,8 @@ class QgisApp : public QMainWindow
     void mergeSelectedFeatures();
     //! provides operations with nodes
     void nodeTool();
+    //! activates the rotate points tool
+    void rotatePointSymbols();
 
     //! activates the selection tool
     void select();
@@ -742,6 +744,7 @@ class QgisApp : public QMainWindow
     QAction *mActionDeletePart;
     QAction *mActionMergeFeatures;
     QAction *mActionNodeTool;
+    QAction *mActionRotatePointSymbols;
     QAction *mActionEditSeparator3;
 
     QAction *mActionPan;
@@ -864,6 +867,7 @@ class QgisApp : public QMainWindow
         QgsMapTool* mDeleteRing;
         QgsMapTool* mDeletePart;
         QgsMapTool* mNodeTool;
+        QgsMapTool* mRotatePointSymbolsTool;
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool;

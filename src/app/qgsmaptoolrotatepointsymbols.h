@@ -1,0 +1,68 @@
+/***************************************************************************
+    qgsmaptoolrotatepointsymbols.h
+    ---------------------
+    begin                : September 2009
+    copyright            : (C) 2009 by Marco Hugentobler
+    email                : marco at hugis dot net
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSMAPTOOLROTATEPOINTSYMBOLS_H
+#define QGSMAPTOOLROTATEPOINTSYMBOLS_H
+
+#include "qgsmaptooledit.h"
+
+class QgsPointRotationItem;
+
+/**A class that allows to interactively manipulate the value of the rotation field(s) for point layers*/
+class QgsMapToolRotatePointSymbols: public QgsMapToolEdit
+{
+  public:
+    QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas );
+    ~QgsMapToolRotatePointSymbols();
+
+    void canvasPressEvent( QMouseEvent * e );
+    void canvasMoveEvent( QMouseEvent * e );
+    void canvasReleaseEvent( QMouseEvent * e );
+
+    bool isEditTool() {return true;}
+
+    /**Returns true if the symbols of a maplayer can be rotated. This means the layer \
+      is a vector layer, has type point or multipoint and has at least one rotation attribute in the renderer*/
+    static bool layerIsRotatable( QgsMapLayer* ml );
+
+  private:
+    QgsVectorLayer* mActiveLayer;
+    int mFeatureNumber;
+    /**Last azimut between mouse and edited point*/
+    double mCurrentMouseAzimut;
+    /**Last feature rotation*/
+    double mCurrentRotationFeature;
+    bool mRotating;
+    QList<int> mCurrentRotationAttributes;
+    /**Screen coordinate of the snaped feature*/
+    QPoint mSnappedPoint;
+    /**Item that displays rotation during mouse move*/
+    QgsPointRotationItem* mRotationItem;
+
+    /**Finds out the rotation attributes of mActiveLayers
+      @param vl the point vector layer
+      @param attList out: the list containing the rotation indices
+      @return 0 in case of success*/
+    static int layerRotationAttributes( const QgsVectorLayer* vl, QList<int>& attList );
+    void drawArrow( double azimut ) const;
+    /**Calculates the azimut between mousePos and mSnappedPoint*/
+    double calculateAzimut( const QPoint& mousePos );
+    /**Create item that shows rotation to the user*/
+    void createPixmapItem();
+    /**Sets the rotation of the pixmap item*/
+    void setPixmapItemRotation( double rotation );
+};
+
+#endif // QGSMAPTOOLROTATEPOINTSYMBOLS_H
