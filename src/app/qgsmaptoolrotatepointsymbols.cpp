@@ -231,7 +231,7 @@ double QgsMapToolRotatePointSymbols::calculateAzimut( const QPoint& mousePos )
 {
   int dx = mousePos.x() - mSnappedPoint.x();
   int dy = mousePos.y() - mSnappedPoint.y();
-  return 180 - atan2( dx, dy ) * 180.0 / M_PI;
+  return 180 - atan2( (double) dx, (double) dy ) * 180.0 / M_PI;
 }
 
 void QgsMapToolRotatePointSymbols::createPixmapItem()
