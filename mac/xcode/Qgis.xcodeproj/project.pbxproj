@@ -1149,6 +1149,9 @@
 		72820FEF0FACCFA90011C963 /* mActionDeleteRing.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FEE0FACCF970011C963 /* mActionDeleteRing.png */; };
 		72820FF00FACCFA90011C963 /* mActionDeletePart.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FED0FACCF970011C963 /* mActionDeletePart.png */; };
 		72820FF10FACCFA90011C963 /* mActionSimplify.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FEC0FACCF970011C963 /* mActionSimplify.png */; };
+		7286D63B1062763F008D83A6 /* mActionRotatePointSymbols.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7286D63A10627610008D83A6 /* mActionRotatePointSymbols.png */; };
+		7286D640106276D3008D83A6 /* qgsmaptoolrotatepointsymbols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7286D63C1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.cpp */; };
+		7286D641106276D3008D83A6 /* qgspointrotationitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */; };
 		7292873D0F71C0DF006D9489 /* qgssearchstringparser.yy in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6CE0F39E57A003DC336 /* qgssearchstringparser.yy */; };
 		7292873E0F71C103006D9489 /* qgssearchstringlexer.ll in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6CD0F39E57A003DC336 /* qgssearchstringlexer.ll */; };
 		729287430F71C2CB006D9489 /* qgsapplication.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6840F39E57A003DC336 /* qgsapplication.h */; };
@@ -3142,6 +3145,7 @@
 				7256F4670F41C4DD0022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-default */,
 				7256F4680F41C4DD0022BE1F /* mActionRemoveLayer.png in Copy - theme-default */,
 				72D84C141044BBC7009F8F39 /* mActionReshape.png in Copy - theme-default */,
+				7286D63B1062763F008D83A6 /* mActionRotatePointSymbols.png in Copy - theme-default */,
 				724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */,
 				7256F4690F41C4DD0022BE1F /* mActionSaveAsSVG.png in Copy - theme-default */,
 				7256F46A0F41C4DD0022BE1F /* mActionSaveMapAsImage.png in Copy - theme-default */,
@@ -5947,14 +5951,12 @@
 		726C671D104602FB00EFEDCC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/raster_terrain_analysis/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrasterterrainanalysisdialog.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp; sourceTree = SOURCE_ROOT; };
 		726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisdialog.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.h; sourceTree = SOURCE_ROOT; };
-		726C6726104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisdialogbase.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.h; sourceTree = SOURCE_ROOT; };
 		726C6727104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsrasterterrainanalysisdialogbase.ui; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrasterterrainanalysisplugin.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp; sourceTree = SOURCE_ROOT; };
 		726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisplugin.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.h; sourceTree = SOURCE_ROOT; };
 		726C672C104602FB00EFEDCC /* qgsruggednessindex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsruggednessindex.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsruggednessindex.cpp; sourceTree = SOURCE_ROOT; };
 		726C6731104602FB00EFEDCC /* raster_terrain_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = raster_terrain_icon.png; path = ../../src/plugins/raster_terrain_analysis/raster_terrain_icon.png; sourceTree = SOURCE_ROOT; };
 		726C6732104602FB00EFEDCC /* resources.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resources.qrc; path = ../../src/plugins/raster_terrain_analysis/resources.qrc; sourceTree = SOURCE_ROOT; };
-		726C6733104602FB00EFEDCC /* ui_qgsrasterterrainanalysisdialogbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_qgsrasterterrainanalysisdialogbase.h; path = ../../src/plugins/raster_terrain_analysis/ui_qgsrasterterrainanalysisdialogbase.h; sourceTree = SOURCE_ROOT; };
 		726C67411046030F00EFEDCC /* librasterterrainplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = librasterterrainplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		726C675B1046118B00EFEDCC /* 151694916_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 151694916_pl_PL; path = ../../resources/context_help/151694916_pl_PL; sourceTree = SOURCE_ROOT; };
 		726C675C1046118B00EFEDCC /* 94000531_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 94000531_pl_PL; path = ../../resources/context_help/94000531_pl_PL; sourceTree = SOURCE_ROOT; };
@@ -6009,6 +6011,11 @@
 		72832D0D1036242E002E3B72 /* osm_addRelation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_addRelation.png; path = ../../python/plugins/osm/images/osm_addRelation.png; sourceTree = SOURCE_ROOT; };
 		72832D0E1036242E002E3B72 /* osm_urDetails.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_urDetails.png; path = ../../python/plugins/osm/images/osm_urDetails.png; sourceTree = SOURCE_ROOT; };
 		72832D0F1036242E002E3B72 /* osm_removeRelation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeRelation.png; path = ../../python/plugins/osm/images/osm_removeRelation.png; sourceTree = SOURCE_ROOT; };
+		7286D63A10627610008D83A6 /* mActionRotatePointSymbols.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRotatePointSymbols.png; path = ../../images/themes/default/mActionRotatePointSymbols.png; sourceTree = SOURCE_ROOT; };
+		7286D63C1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolrotatepointsymbols.cpp; path = ../../src/app/qgsmaptoolrotatepointsymbols.cpp; sourceTree = SOURCE_ROOT; };
+		7286D63D1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolrotatepointsymbols.h; path = ../../src/app/qgsmaptoolrotatepointsymbols.h; sourceTree = SOURCE_ROOT; };
+		7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspointrotationitem.cpp; path = ../../src/app/qgspointrotationitem.cpp; sourceTree = SOURCE_ROOT; };
+		7286D63F1062769D008D83A6 /* qgspointrotationitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspointrotationitem.h; path = ../../src/app/qgspointrotationitem.h; sourceTree = SOURCE_ROOT; };
 		7299396A0FE3037600244D1A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = "../../src/plugins/grass/modules-6.3/CMakeLists.txt"; sourceTree = SOURCE_ROOT; };
 		7299396B0FE3037600244D1A /* r.surf.fractal.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.1.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.1.png"; sourceTree = SOURCE_ROOT; };
 		7299396C0FE3037600244D1A /* r.surf.fractal.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.2.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.2.png"; sourceTree = SOURCE_ROOT; };
@@ -7969,6 +7976,10 @@
 				72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */,
 				7216ADF00FE571F000552832 /* qgsundowidget.cpp */,
 				7216ADF10FE571F000552832 /* qgsundowidget.h */,
+				7286D63C1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.cpp */,
+				7286D63D1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.h */,
+				7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */,
+				7286D63F1062769D008D83A6 /* qgspointrotationitem.h */,
 				72A239420F74A62200AFC35B /* attributetable */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				7209E5D00F39E57A003DC336 /* legend */,
@@ -10229,6 +10240,7 @@
 				7209EF310F39E5D9003DC336 /* mActionRemoveAllFromOverview.png */,
 				7209EF320F39E5D9003DC336 /* mActionRemoveLayer.png */,
 				72D84C131044BBB7009F8F39 /* mActionReshape.png */,
+				7286D63A10627610008D83A6 /* mActionRotatePointSymbols.png */,
 				7209EF330F39E5D9003DC336 /* mActionSaveAsSVG.png */,
 				7209EF340F39E5D9003DC336 /* mActionSaveMapAsImage.png */,
 				7209EF350F39E5D9003DC336 /* mActionScaleBar.png */,
@@ -10814,14 +10826,12 @@
 				726C671D104602FB00EFEDCC /* CMakeLists.txt */,
 				726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */,
 				726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */,
-				726C6726104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.h */,
 				726C6727104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.ui */,
 				726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */,
 				726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */,
 				726C672C104602FB00EFEDCC /* qgsruggednessindex.cpp */,
 				726C6731104602FB00EFEDCC /* raster_terrain_icon.png */,
 				726C6732104602FB00EFEDCC /* resources.qrc */,
-				726C6733104602FB00EFEDCC /* ui_qgsrasterterrainanalysisdialogbase.h */,
 			);
 			name = raster_terrain_analysis;
 			path = ../../src/plugins/raster_terrain_analysis;
@@ -14598,6 +14608,8 @@
 				72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */,
 				72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */,
 				72820FE70FACCEC80011C963 /* qgsmaptoolsimplify.h in Sources */,
+				7286D640106276D3008D83A6 /* qgsmaptoolrotatepointsymbols.cpp in Sources */,
+				7286D641106276D3008D83A6 /* qgspointrotationitem.cpp in Sources */,
 				72FB54C90FAF3AD400AB2F8D /* qgsattributetabledelegate.cpp in Sources */,
 				72FB54CA0FAF3AD800AB2F8D /* qgsattributetablefiltermodel.cpp in Sources */,
 				72FB54CB0FAF3ADA00AB2F8D /* qgsattributetableidcolumnpair.cpp in Sources */,
@@ -17584,7 +17596,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20090905;
+				QGIS_VERSION_BUILD = 20090917;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -17595,7 +17607,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20090905;
+				QGIS_VERSION_BUILD = 20090917;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
