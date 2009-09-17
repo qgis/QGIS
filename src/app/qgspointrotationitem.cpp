@@ -53,7 +53,7 @@ void QgsPointRotationItem::paint( QPainter * painter )
   double h, dAngel;
   if ( mPixmap.width() > 0 && mPixmap.height() > 0 )
   {
-    h = sqrt( mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
+    h = sqrt( (double) mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
     dAngel = acos( mPixmap.width() / ( h * 2 ) ) * 180 / M_PI; //the diagonal angel of the original rect
     x = h * cos(( mRotation - dAngel ) * M_PI / 180 );
     y = h * sin(( mRotation - dAngel ) * M_PI / 180 );
