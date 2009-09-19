@@ -188,6 +188,7 @@ class QgsAttributeTableModel: public QAbstractTableModel
 
     mutable QgsAttributeMap *mLastRow;
     QgsAttributeList mAttributes;
+    QMap< int, const QMap<QString, QVariant> * > mValueMaps;
 
     QList<QgsAttributeTableIdColumnPair> mSortList;
     QHash<int, int> mIdRowMap;

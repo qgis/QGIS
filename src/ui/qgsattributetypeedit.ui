@@ -56,15 +56,20 @@
        <string>Immutable</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Hidden</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="lineEditPage">
-      <layout class="QVBoxLayout" name="verticalLayout_9">
+      <layout class="QVBoxLayout" name="verticalLayout_1">
        <item>
         <widget class="QLabel" name="lineEditLabel">
          <property name="text">
@@ -432,7 +437,7 @@
        <item>
         <widget class="QLabel" name="immutableLabel">
          <property name="text">
-          <string>Immutable attribute is read-only - user is not able to modify the contents.</string>
+          <string>An immutable attribute is read-only - the user is not able to modify the contents.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -441,6 +446,33 @@
        </item>
        <item>
         <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>304</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="hiddenPage">
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="QLabel" name="hiddenLabel">
+         <property name="text">
+          <string>A hidden attribute will be invisible - the user is not able to see it's contents.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_7">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>

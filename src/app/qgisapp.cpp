@@ -3667,9 +3667,6 @@ void QgisApp::openProject( const QString & fileName )
       {
         QgsDebugMsg( "unable to load project " + fileName );
       }
-      else
-      {
-      }
     }
     catch ( QgsIOException & io_exception )
     {

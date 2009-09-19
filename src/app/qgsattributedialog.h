@@ -55,6 +55,7 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
   private:
     QString mSettingsPath;
     QList<QWidget *> mpWidgets;
+    QList<int> mpIndizes;
     QgsVectorLayer *mLayer;
     QgsFeature *  mpFeature;
 

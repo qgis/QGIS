@@ -93,6 +93,12 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     //! sends signal if current feature id has changed
     void handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 
+    /* Item in tree was clicked */
+    void itemClicked( QTreeWidgetItem *lvi, int column );
+
+    void addEditAction();
+    void removeEditAction();
+
   private:
     QMenu *mActionPopup;
     QgsVectorLayer *mRubberBandLayer;
@@ -107,6 +113,9 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     QTreeWidgetItem *layerItem( QObject *layer );
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, std::vector< std::pair<QString, QString> > &attributes );
     void clearRubberBand();
+    void addEditAction( QTreeWidgetItem * );
+    void addOrRemoveEditAction( bool addItem );
+    void disconnectLayer( QObject *object );
 
     void setColumnText( int column, const QString & label );
     void expandColumnsToFit();

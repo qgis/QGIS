@@ -43,7 +43,8 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
   const QgsFieldMap &theFieldMap = vl->pendingFields();
 
-  if ( theFieldMap.isEmpty() ) return;
+  if ( theFieldMap.isEmpty() )
+    return;
 
   QgsAttributeMap myAttributes = mpFeature->attributeMap();
   //
@@ -64,8 +65,6 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   mypScrollArea->setWidgetResizable( true );
   QGridLayout * mypInnerLayout = new QGridLayout( mypInnerFrame );
 
-
-
   int index = 0;
   for ( QgsAttributeMap::const_iterator it = myAttributes.begin();
         it != myAttributes.end();
@@ -76,6 +75,10 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     //show attribute alias if available
     QString myFieldName = vl->attributeDisplayName( it.key() );
     int myFieldType = field.type();
+
+    QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, vl, it.key(), it.value() );
+    if ( !myWidget )
+      continue;
 
     QLabel * mypLabel = new QLabel();
     mypInnerLayout->addWidget( mypLabel, index, 0 );
@@ -93,9 +96,8 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       mypLabel->setText( myFieldName + tr( " (txt)" ) );
     }
 
-    QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, vl, it.key(), it.value() );
-
     mypInnerLayout->addWidget( myWidget, index, 1 );
+    mpIndizes << it.key();
     mpWidgets << myWidget;
     ++index;
   }
@@ -124,8 +126,9 @@ void QgsAttributeDialog::accept()
   {
     QVariant value;
 
-    if ( QgsAttributeEditor::retrieveValue( mpWidgets.value( myIndex ), mLayer, it.key(), value ) )
-      mpFeature->changeAttribute( it.key(), value );
+    int idx = mpIndizes.value( myIndex );
+    if ( QgsAttributeEditor::retrieveValue( mpWidgets.value( myIndex ), mLayer, idx, value ) )
+      mpFeature->changeAttribute( idx, value );
 
     ++myIndex;
   }

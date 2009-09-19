@@ -226,6 +226,10 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
       setPage( 7 );
       break;
 
+    case QgsVectorLayer::Hidden:
+      setPage( 8 );
+      break;
+
     case QgsVectorLayer::LineEdit:
       setPage( 0 );
       break;
@@ -500,6 +504,9 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 7:
       mEditType = QgsVectorLayer::Immutable;
+      break;
+    case 8:
+      mEditType = QgsVectorLayer::Hidden;
       break;
     default:
       mEditType = QgsVectorLayer::LineEdit;
