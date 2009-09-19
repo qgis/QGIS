@@ -111,7 +111,7 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
       QgsMapLayer *layer = mCanvas->layer( i );
 
       emit identifyProgress( i, mCanvas->layerCount() );
-      emit identifyMessage( tr("Identifying on %1...").arg( layer->name() ) );
+      emit identifyMessage( tr( "Identifying on %1..." ).arg( layer->name() ) );
 
       if ( noIdentifyLayerIdList.contains( layer->getLayerID() ) )
         continue;
@@ -125,7 +125,7 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     }
 
     emit identifyProgress( mCanvas->layerCount(), mCanvas->layerCount() );
-    emit identifyMessage( tr("Identifying done.") );
+    emit identifyMessage( tr( "Identifying done." ) );
 
     disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
     disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
@@ -243,15 +243,29 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
 
     for ( QgsAttributeMap::const_iterator it = attr.begin(); it != attr.end(); ++it )
     {
-      QString attributeName = layer->attributeDisplayName( it.key() );
+      QString attributeName  = layer->attributeDisplayName( it.key() );
+      QString attributeValue = it->isNull() ? "NULL" : it->toString();
+
+      switch ( layer->editType( it.key() ) )
+      {
+        case QgsVectorLayer::Hidden:
+          continue;
+
+        case QgsVectorLayer::ValueMap:
+          attributeValue = layer->valueMap( it.key() ).key( it->toString(), QString( "(%1)" ).arg( it->toString() ) );
+          break;
+
+        default:
+          break;
+      }
 
       if ( fields[it.key()].name() == layer->displayField() )
       {
         displayField = attributeName;
-        displayValue = it->toString();
+        displayValue = attributeValue;
       }
 
-      attributes.insert( attributeName, it->isNull() ? "NULL" : it->toString() );
+      attributes.insert( attributeName, attributeValue );
     }
 
     // Calculate derived attributes and insert:
@@ -293,6 +307,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
       str = QLocale::system().toString( f_it->geometry()->asPoint().y(), 'g', 10 );
       derivedAttributes.insert( "Y", str );
     }
+
+    derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : QString::number( fid ) );
 
     mResults->addFeature( layer, fid, displayField, displayValue, attributes, derivedAttributes );
   }
