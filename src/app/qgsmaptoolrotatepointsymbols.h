@@ -50,6 +50,8 @@ class QgsMapToolRotatePointSymbols: public QgsMapToolEdit
     QPoint mSnappedPoint;
     /**Item that displays rotation during mouse move*/
     QgsPointRotationItem* mRotationItem;
+    /**True if ctrl was pressed during the last mouse move event*/
+    bool mCtrlPressed;
 
     /**Finds out the rotation attributes of mActiveLayers
       @param vl the point vector layer
@@ -63,6 +65,8 @@ class QgsMapToolRotatePointSymbols: public QgsMapToolEdit
     void createPixmapItem();
     /**Sets the rotation of the pixmap item*/
     void setPixmapItemRotation( double rotation );
+    /**Rounds value to 15 degree integer (used if ctrl pressed)*/
+    static int roundTo15Degrees(double n);
 };
 
 #endif // QGSMAPTOOLROTATEPOINTSYMBOLS_H

@@ -25,7 +25,8 @@
 #include <QMouseEvent>
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), \
-    mActiveLayer( 0 ), mFeatureNumber( 0 ), mCurrentMouseAzimut( 0.0 ), mCurrentRotationFeature( 0.0 ), mRotating( false ), mRotationItem( 0 )
+    mActiveLayer( 0 ), mFeatureNumber( 0 ), mCurrentMouseAzimut( 0.0 ), mCurrentRotationFeature( 0.0 ), \
+    mRotating( false ), mRotationItem( 0 ), mCtrlPressed(false)
 {
 
 }
@@ -161,7 +162,20 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QMouseEvent * e )
   {
     mCurrentMouseAzimut -= 360;
   }
-  setPixmapItemRotation( (int)(mCurrentRotationFeature) );
+
+  //if shift-modifier is pressed, round to 15 degrees
+  int displayValue;
+  if(e->modifiers() & Qt::ControlModifier)
+  {
+    displayValue = roundTo15Degrees(mCurrentRotationFeature);
+    mCtrlPressed = true;
+  }
+  else
+  {
+    displayValue = (int)(mCurrentRotationFeature);
+    mCtrlPressed = false;
+  }
+  setPixmapItemRotation(displayValue);
 }
 
 void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent * e )
@@ -172,10 +186,20 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent * e )
     bool rotateSuccess = true;
 
     //write mCurrentRotationFeature to all rotation attributes of feature (mFeatureNumber)
+    int rotation;
+    if(mCtrlPressed) //round to 15 degrees
+    {
+      rotation = roundTo15Degrees(mCurrentRotationFeature);
+    }
+    else
+    {
+      rotation = (int)mCurrentRotationFeature;
+    }
+
     QList<int>::const_iterator it = mCurrentRotationAttributes.constBegin();
     for ( ; it != mCurrentRotationAttributes.constEnd(); ++it )
     {
-      if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, *it, (int)(mCurrentRotationFeature), true ) )
+      if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, *it, rotation, true ) )
       {
         rotateSuccess = false;
       }
@@ -246,5 +270,11 @@ void QgsMapToolRotatePointSymbols::setPixmapItemRotation( double rotation )
 {
   mRotationItem->setSymbolRotation( rotation );
   mRotationItem->update();
+}
+
+int QgsMapToolRotatePointSymbols::roundTo15Degrees(double n)
+{
+  int m = (int)(n / 15.0 + 0.5);
+  return (m * 15);
 }
 
