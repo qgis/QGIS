@@ -69,7 +69,7 @@ void QgsPointRotationItem::paint( QPainter * painter )
   QFontMetricsF fm( mFont );
   painter->fillRect( mPixmap.width(), 0, mItemSize.width() - mPixmap.width(), mItemSize.height(), QColor( Qt::white ) );
   painter->setFont( mFont );
-  painter->drawText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, QString::number( mRotation, 'f', 2 ) );
+  painter->drawText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, QString::number( mRotation) );
 }
 
 void QgsPointRotationItem::setPointLocation( const QgsPoint& p )
@@ -82,7 +82,7 @@ void QgsPointRotationItem::setSymbol( const QString& symbolPath )
 {
   mPixmap = QPixmap( symbolPath );
   QFontMetricsF fm( mFont );
-  mItemSize.setWidth( mPixmap.width() + fm.width( "360.99" ) );
+  mItemSize.setWidth( mPixmap.width() + fm.width( "360" ) );
   double pixmapHeight = mPixmap.height();
   double fontHeight = fm.height();
   if ( pixmapHeight >= fontHeight )

@@ -128,7 +128,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent * e )
     mRotationItem->setPointLocation( snapResults.at( 0 ).snappedVertex );
   }
   mCurrentMouseAzimut = calculateAzimut( e->pos() );
-  setPixmapItemRotation( mCurrentMouseAzimut );
+  setPixmapItemRotation( (int)(mCurrentMouseAzimut) );
   mRotating = true;
 }
 
@@ -161,7 +161,7 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QMouseEvent * e )
   {
     mCurrentMouseAzimut -= 360;
   }
-  setPixmapItemRotation( mCurrentRotationFeature );
+  setPixmapItemRotation( (int)(mCurrentRotationFeature) );
 }
 
 void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent * e )
@@ -175,7 +175,7 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent * e )
     QList<int>::const_iterator it = mCurrentRotationAttributes.constBegin();
     for ( ; it != mCurrentRotationAttributes.constEnd(); ++it )
     {
-      if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, *it, mCurrentRotationFeature, true ) )
+      if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, *it, (int)(mCurrentRotationFeature), true ) )
       {
         rotateSuccess = false;
       }
