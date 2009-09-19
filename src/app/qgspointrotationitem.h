@@ -34,7 +34,7 @@ class QgsPointRotationItem: public QgsMapCanvasItem
 
     /**Sets the rotation of the symbol and displays the new rotation number. \
     Units are degrees, starting from north direction, clockwise direction*/
-    void setSymbolRotation( double r ) {mRotation = r;}
+    void setSymbolRotation( int r ) {mRotation = r;}
 
     /**Sets a symbol from image file*/
     void setSymbol( const QString& symbolPath );
@@ -45,7 +45,7 @@ class QgsPointRotationItem: public QgsMapCanvasItem
     QFont mFont;
     /**Symboll pixmap*/
     QPixmap mPixmap;
-    double mRotation;
+    int mRotation;
 };
 
 #endif // QGSPOINTROTATIONITEM_H
