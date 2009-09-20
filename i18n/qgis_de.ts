@@ -61,7 +61,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="24"/>
         <source>Coordinate Capture Plugin</source>
-        <translation>Koordinatenaufnahmeplugin</translation>
+        <translation>Koordinatenaufnahmeerweiterung</translation>
     </message>
 </context>
 <context>
@@ -69,12 +69,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS Plugin-Vorlage</translation>
+        <translation>QGIS-Erweiterungsvorlage</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>Plugin-Vorlage</translation>
+        <translation>Erweiterungsvorlage</translation>
     </message>
 </context>
 <context>
@@ -1131,7 +1131,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="55"/>
         <source>Welcome to your automatically generated plugin!</source>
-        <translation>Willkommen zu Ihrem automatisch installierten Plugin!</translation>
+        <translation>Willkommen zu Ihrer automatisch installierten Erweiterung!</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="56"/>
@@ -1156,27 +1156,27 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="62"/>
         <source>QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.</source>
-        <translation>QgsPlugin ist eine Grundlage, die das notwendige Verhalten Ihres Plugins definiert und bereitstellt. Lesen Sie weiter für mehr Details.</translation>
+        <translation>QgsPlugin ist eine Grundlage, die das notwendige Verhalten Ihrer Erweiterung definiert und bereitstellt. Lesen Sie weiter für mehr Details.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="63"/>
         <source>What are all the files in my generated plugin directory for?</source>
-        <translation>Wozu sind die ganzen Dateien in dem gerade erstellten Plugin-Ordner nützlich?</translation>
+        <translation>Wozu sind die ganzen Dateien in dem gerade erstellten Erweiterungsordner nützlich?</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="64"/>
         <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
-        <translation>Dies ist die CMake-Datei, die den Plugin erstellt. Sie sollten die anwendungsspezifischen Abhängigkeiten und die Quelldateien in der CMake-Datei ergänzen.</translation>
+        <translation>Dies ist die CMake-Datei, die die Erweiterung erstellt. Sie sollten die anwendungsspezifischen Abhängigkeiten und die Quelldateien in der CMake-Datei ergänzen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="65"/>
         <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
-        <translation>Dies ist die Klasse, die Ihre Applikation mit QGIS verbindet. Sie werden sehen, dass bereits eine Vielzahl an Methoden bereitstehen, inklusive einiger Beispiele, etwa wie Raster- oder Vektorlayer in das Kartenfenster integriert werden können. Diese Klasse ist eine feste Instanz des QGIS Plugin-Interfaces, welche notwendiges Verhalten des Plugins definiert. Genau gesagt, enthält ein Plugin eine Reihe statischer Methoden und Klassenmitglieder, damit der QGIS Pluginmanager und der Pluginlader jedes Plugin identifizieren, einen passenden Menüeintrag erstellen kann usw. Beachten Sie, dass Sie auch mehrere Icons für die Werkzeugleiste sowie mehrere Menüeinträge für ein einzelnes Plugin erstellen können. Vordefiniert wird jedoch nur ein einzelnes Icon und ein Menüeintrag, die so vorkonfiguriert werden, dass die Methode run() dieser Klasse bei ihrer Auswahl gestarted wird. Diese durch den Pluginbuilder bereitgestellte vordefinierte Implementierung ist sehr gut dokumentiert. Beziehen Sie sich daher bitte auf den Quellcode für weitere Hinweise.</translation>
+        <translation>Dies ist die Klasse, die Ihre Applikation mit QGIS verbindet. Sie werden sehen, dass bereits eine Vielzahl an Methoden bereitstehen, inklusive einiger Beispiele, etwa wie Raster- oder Vektorlayer in das Kartenfenster integriert werden können. Diese Klasse ist eine feste Instanz der QGIS-Erweiterungsschnittstelle, welche notwendiges Verhalten der Erweiterung definiert. Genau gesagt, enthält eine Erweiterung eine Reihe statischer Methoden und Klassenmitglieder, damit der QGIS-Erweiterungsmanager und der Erweiterungslader die Erweiterung identifizieren, einen passenden Menüeintrag erstellen kann usw. Beachten Sie, dass Sie auch mehrere Icons für die Werkzeugleiste sowie mehrere Menüeinträge für eine einzelne Erweiterung erstellen können. Vordefiniert wird jedoch nur ein einzelnes Icon und ein Menüeintrag, die so vorkonfiguriert werden, dass die Methode run() dieser Klasse bei ihrer Auswahl gestarted wird. Diese durch die Erweiterungserstellung bereitgestellte vordefinierte Implementierung ist sehr gut dokumentiert. Beziehen Sie sich daher bitte auf den Quellcode für weitere Hinweise.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="66"/>
         <source>This is a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).</source>
-        <translation>Dies ist eine Qt Designer &apos;ui&apos; Datei. Sie definiert das Aussehen des vordefinierten Plugindialogs ohne irgendeine Anwendungsfunktion. Sie können die Vorlage an Ihre Bedürfnisse anpassen oder auch löschen, wenn Ihr Plugin keinen Benutzerdialog braucht (z.B. für angepasste MapTools).</translation>
+        <translation>Dies ist eine Qt Designer &apos;ui&apos; Datei. Sie definiert das Aussehen des vordefinierten Erweiterungsdialogs ohne irgendeine Anwendungsfunktion. Sie können die Vorlage an Ihre Bedürfnisse anpassen oder auch löschen, wenn Ihre Erweiterung keinen Benutzerdialog braucht (z.B. für angepasste MapTools).</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="67"/>
@@ -1186,12 +1186,12 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="68"/>
         <source>This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&apos;:/Homann/&apos;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.</source>
-        <translation>Dies ist die Qt4-Resourcendatei für Ihren plugin. Der für Ihr Plugin erstellte Makefile ist erstellt, um die Resourcendatei zu kompilieren. Alles was Sie hier tun müssen, ist die zusätzlichen Icons usw. mit Hilfe des einfachen XML-Formates zu ergänzen. Beachten Sie, die Namensräume für Ihre Resourcen z.B. (&apos;:/Homann/&apos;). Es ist wichtig diesen Prefix für all Ihre Resourcen zu verwenden. Wir schlagen vor, Sie bauen ein irgendwelche anderen Bilder und Laufzeitdaten in die Resourcendatei ein.</translation>
+        <translation>Dies ist die Qt4-Resourcendatei für Ihre Erweiterung. Der für Ihre Erweiterung erstellte Makefile ist erstellt, um die Resourcendatei zu kompilieren. Alles was Sie hier tun müssen, ist die zusätzlichen Icons usw. mit Hilfe des einfachen XML-Formates zu ergänzen. Beachten Sie, die Namensräume für Ihre Resourcen z.B. (&apos;:/Homann/&apos;). Es ist wichtig diesen Prefix für all Ihre Resourcen zu verwenden. Wir schlagen vor, Sie bauen ein irgendwelche anderen Bilder und Laufzeitdaten in die Resourcendatei ein.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="69"/>
         <source>This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.</source>
-        <translation>Dies ist das Icon, dass für Ihr Pluginmenü und die Werkzeugleiste benutzt wird. Ersetzen Sie das Icon einfach durch ihr eigenes, um Ihr Plugin von den anderen zu unterscheiden.</translation>
+        <translation>Dies ist das Icon, dass für Ihr Erweiterungsmenü und die Werkzeugleiste benutzt wird. Ersetzen Sie das Icon einfach durch ihr eigenes, um Ihre Erweiterung von den anderen zu unterscheiden.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="70"/>
@@ -1206,7 +1206,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="72"/>
         <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
-        <translation>Für Fragen und Kommentare in Bezug auf das &apos;Plugin-Builder&apos; Template und die Erstellung eigener Funktionen in QGIS mit Hilfe des Plugin-Interfaces kontaktieren Sie uns bitter unter:</translation>
+        <translation>Für Fragen und Kommentare in Bezug auf die &apos;Erweitungsersteller&apos;vorlage und die Erstellung eigener Funktionen in QGIS mit Hilfe der Erweiterungsschnittstellen kontaktieren Sie uns bitte unter:</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="73"/>
@@ -1216,7 +1216,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="74"/>
         <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
-        <translation>QGIS ist veröffentlicht unter der GNU General Public License. Wenn Sie ein nützliches Plugin erstellt haben, überlegen Sie bitte, es der Community bereitzustellen.</translation>
+        <translation>QGIS ist veröffentlicht unter der GNU General Public License. Wenn Sie eine nützliche Erweiterung erstellt haben, überlegen Sie bitte, es der Community bereitzustellen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="75"/>
@@ -1619,7 +1619,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <name>OsmFeatureDW</name>
     <message>
         <source>OSM Plugin</source>
-        <translation>OSM-Plugin</translation>
+        <translation>OSM-Erweiterung</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
@@ -2097,7 +2097,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="273"/>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
-        <translation>Keine Datenlieferanten-Plugins verfügbar. Es können keine Vektorlayer geladen werden</translation>
+        <translation>Keine Datenlieferantenerweiterung verfügbar. Es können keine Vektorlayer geladen werden</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="290"/>
@@ -2145,7 +2145,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
         <location filename="../src/providers/grass/qgsgrass.cpp" line="140"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="172"/>
         <source>GRASS plugin</source>
-        <translation>GRASS plugin</translation>
+        <translation>GRASS-Erweiterung</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="141"/>
@@ -2246,7 +2246,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="39"/>
         <source>[plugindescription]</source>
-        <translation>[plugindescription]</translation>
+        <translation>[erweiterungsbeschreibung]</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="63"/>
@@ -2271,7 +2271,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="31"/>
         <source>WFS plugin</source>
-        <translation>WFS-Plugin</translation>
+        <translation>WFS-Erweiterung</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="32"/>
@@ -2697,7 +2697,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="40"/>
         <source>Quick Print is a plugin to quickly print a map with minimal effort.</source>
-        <translation>Quick Print ist ein Plugin, um mal eben schnell und ohne großen Aufwandt eine Karte zu drucken.</translation>
+        <translation>Quick Print ist eine Erweiterung, um mal eben schnell und ohne großen Aufwand eine Karte zu drucken.</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="69"/>
@@ -2781,12 +2781,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="25"/>
         <source>Interpolation plugin</source>
-        <translation>Interpolationsplugin</translation>
+        <translation>Interpolationserweiterung</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="26"/>
         <source>A plugin for interpolation based on vertices of a vector layer</source>
-        <translation>Ein Plugin für die Stützpunktinterpolation von Vektorlayern</translation>
+        <translation>Eine Erweiterung für die Stützpunktinterpolation von Vektorlayern</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="27"/>
@@ -2806,13 +2806,13 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="290"/>
         <source>Error Loading Plugin</source>
-        <translation>Fehler beim Laden des Plugins</translation>
+        <translation>Fehler beim Laden der Erweiterung</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="291"/>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation>Beim Laden eines Plugins trat ein Fehler auf. Die folgenden Informationen könnten den QGIS-Entwicklern bei der Lösung des Problem helfen: %1.</translation>
+        <translation>Beim Laden einer Erweiterung trat ein Fehler auf. Die folgenden Informationen könnten den QGIS-Entwicklern bei der Lösung des Problem helfen: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2937"/>
@@ -2822,7 +2822,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="422"/>
         <source>Error when reading metadata of plugin %1</source>
-        <translation>Fehler beim Lesen der Metadaten des Plugins %1</translation>
+        <translation>Fehler beim Lesen der Metadaten der Erweiterung %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="87"/>
@@ -2891,7 +2891,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="548"/>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation>Plugin %1</translation>
+        <translation>Erweiterung %1</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="552"/>
@@ -2906,7 +2906,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="569"/>
         <source>Error while unloading plugin %1</source>
-        <translation>Fehler beim Entladen des Plugins %1</translation>
+        <translation>Fehler beim Entladen der Erweiterung %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="421"/>
@@ -2979,12 +2979,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="31"/>
         <source>Raster Terrain Analysis plugin</source>
-        <translation>Rastergeländeanalyse Plugin</translation>
+        <translation>Rastergeländeanalyse-Erweiterung</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="32"/>
         <source>A plugin for raster based terrain analysis</source>
-        <translation>Ein Plugin zur rasterbasierten Geländeanalyse</translation>
+        <translation>Eine Erweiterung zur rasterbasierten Geländeanalyse</translation>
     </message>
 </context>
 <context>
@@ -3098,7 +3098,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1304"/>
         <source>&amp;Plugins</source>
-        <translation>&amp;Plugins</translation>
+        <translation>&amp;Erweiterungen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1540"/>
@@ -3171,7 +3171,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="411"/>
         <source>Restoring loaded plugins</source>
-        <translation>Stelle die geladenen Plugins wieder her</translation>
+        <translation>Stelle die geladenen Erweiterungen wieder her</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="416"/>
@@ -3564,7 +3564,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="954"/>
         <source>Open the plugin manager</source>
-        <translation>Öffne den Pluginmanager</translation>
+        <translation>Öffne den Erweiterungsmanager</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="642"/>
@@ -3683,7 +3683,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1445"/>
         <source>Plugins</source>
-        <translation>Plugins</translation>
+        <translation>Erweiterungen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1588"/>
@@ -3795,7 +3795,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="400"/>
         <source>Checking provider plugins</source>
-        <translation>Provider-Plugins werden geprüft</translation>
+        <translation>Provider-Erweiterungen werden geprüft</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="404"/>
@@ -4275,7 +4275,7 @@ Bitte kontaktieren Sie die Entwickler.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="952"/>
         <source>Manage Plugins...</source>
-        <translation>Plugins verwalten...</translation>
+        <translation>Erweiterungen verwalten...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="959"/>
@@ -4553,17 +4553,17 @@ Wertabbildungen aus Layern (können auch nicht-räumliche Tabellen sein) wurde
 ergänzt.  Die Bearbeitungselement werden nun auch in der Attributtabelle
 angezeigt.
 
-Plugins:
+Erweiterungen:
 
 - Die Layerreihenfolge im WMS-Dialog kann nun geändert werden.
-- Das eVis-Plugin, Version 1.1.0 wurde dem QGIS-Projekt hinzugefügt und
+- Das eVis-Erweiterung, Version 1.1.0 wurde dem QGIS-Projekt hinzugefügt und
   als Standardplugin integriert. Nähere Information über eVis sind zu finden
   unter:
   http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
 - Das Interpolationsplugin hat nun die Möglichkeit Linienlayer als Begrenzung
   der Triangulation zu benutzen. Die Triangulation kann nun auch als Shapedatei
   gespeichert werden.
-- Ein neuer OpenStreetMap-Datenlieferant und ein -Plugin wurden QGIS
+- Ein neuer OpenStreetMap-Datenlieferant und eine -Erweiterung wurden QGIS
   hinzugefügt.
 
 Projektverwaltung:
@@ -4597,7 +4597,7 @@ Kommandozeilenargumente werden nun auch unter Windows unterstützt.
 Erweiterung der Kommandozeilenargumente:
 - Schnappschußgröße kann vorgegeben weden
 - Logoanzeige beim Programmstart kann unterdrückt werden
-- Die Dekorationen von Plugins sind nun in Schnappschüssen enthalten
+- Die Dekorationen von Erweiterungen sind nun in Schnappschüssen enthalten
 
 GRASS:
 
@@ -4850,14 +4850,14 @@ Soll versucht werden die fehlenden Layer zu finden?</translation>
   &lt;li&gt;Added ability to select the primary key for views.&lt;/li&gt;
   &lt;li&gt;Zoom to a coordinate by entering it in the status bar coordinate display.&lt;/li&gt;
 &lt;/ul&gt;</source>
-        <translation>&lt;p&gt;OSM-Plugin- &amp;amp; Datenliefererantenaktualisierungen:&lt;/p&gt;
+        <translation>&lt;p&gt;OSM-Erweiterung- &amp;amp; Datenliefererantenaktualisierungen:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;Neue OSM-Stildateien.&lt;/li&gt;
   &lt;li&gt;Neue Icons.&lt;/li&gt;
   &lt;li&gt;Dialogtexte aktualisiert und vervollständigt.&lt;/li&gt;
   &lt;li&gt;Verbesserung beim Speichern von OSM in Dateien.&lt;/li&gt;
   &lt;li&gt;Einige Korrekturen bezüglich Kodierungen... ascii to utf-8.&lt;/li&gt;
-  &lt;li&gt;alle OSM-Layer werden nun automatisch entfernt, wenn das OSM-Plugin im Pluginmanager entfernt wird.&lt;/li&gt;
+  &lt;li&gt;alle OSM-Layer werden nun automatisch entfernt, wenn die OSM-Erweiterung im Erweiterungsmanager entfernt wird.&lt;/li&gt;
   &lt;li&gt;weiterer Fehlerkorrekturen.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Andere erwähnenswerte Funktionen und Verbesserungen dieser Ausgabe&lt;/p&gt;
@@ -4865,7 +4865,7 @@ Soll versucht werden die fehlenden Layer zu finden?</translation>
   &lt;li&gt;Markergröße beim Editieren kann nun eingestellt werden.&lt;/li&gt;
   &lt;li&gt;Analyse-Bibliothek wurde integriert.&lt;/li&gt;
   &lt;li&gt;Abfrage über mehrere Layer.&lt;/li&gt;
-  &lt;li&gt;Plugin zur Rastergeländeanalyse wurde hinzugefügt (zur Berechnung von Böschungsverhältnissen und -neigungen usw.).&lt;/li&gt;
+  &lt;li&gt;Erweiterung zur Rastergeländeanalyse wurde hinzugefügt (zur Berechnung von Böschungsverhältnissen und -neigungen usw.).&lt;/li&gt;
   &lt;li&gt;Ein Bearbeitungswerkzeug für Linien und Polygone wurde ergänzt. Das Teil zwischen zwei Punkten einer Linie kann durch eine andere ersetzt werden.&lt;/li&gt;
   &lt;li&gt;Punktfang im Meßwerkzeug.&lt;/li&gt;
   &lt;li&gt;Primärschlüssel von View können nun gewählt werden.&lt;/li&gt;
@@ -5129,17 +5129,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="284"/>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation>Verfügbare QGIS-Datenlieferantenplugins</translation>
+        <translation>Verfügbare QGIS-Datenlieferantenerweiterungen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="287"/>
         <source>Available Qt Database Plugins</source>
-        <translation>Verfügbare Qt-Datenbankplugins</translation>
+        <translation>Verfügbare Qt-Datenbankerweiterungen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="293"/>
         <source>Available Qt Image Plugins</source>
-        <translation>Verfügbare Qt-Bildformatplugins</translation>
+        <translation>Verfügbare Qt-Bildformaterweiterungen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="133"/>
@@ -5175,7 +5175,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="294"/>
         <source>Qt Image Plugin Search Paths	&lt;br&gt;</source>
-        <translation>Qt-Bildpluginsuchpfade	&lt;br&gt;</translation>
+        <translation>Qt-Bilderweiterungssuchpfade	&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="220"/>
@@ -7376,7 +7376,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="13"/>
         <source>Copyright Label Plugin</source>
-        <translation>Urhebersrechtsnachweis-Plugin</translation>
+        <translation>Urhebersrechtsnachweis-Erweiterung</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="187"/>
@@ -7444,7 +7444,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Fügen Sie unten Ihr Copyright Label ein. Dieses Plugin unterstützt grundlegende html markup tags um Label zu formatieren. Z.B.:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Fügen Sie unten Ihr Copyright Label ein. Diese Erweiterung unterstützt grundlegende html markup tags um Label zu formatieren. Z.B.:&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; zeigt ein Copyright Symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -9074,7 +9074,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="132"/>
         <source>    Based on original Georeferencer Plugin</source>
-        <translation>    Basiert auf dem Original-Georeferenzierplugin</translation>
+        <translation>    Basiert auf der Original-Georeferenzierungserweiterungen</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="133"/>
@@ -12028,7 +12028,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="19"/>
         <source>Interpolation plugin</source>
-        <translation>Interpolationsplugin</translation>
+        <translation>Interpolationserweiterung</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="31"/>
@@ -14281,7 +14281,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="13"/>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="237"/>
         <source>North Arrow Plugin</source>
-        <translation>Nordpfeil Plugin</translation>
+        <translation>Nordpfeil-Erweiterung</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="37"/>
@@ -15355,7 +15355,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="194"/>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
-        <translation>Die Verbindung zu %1 schlug fehl. Bitte überprüfen Sie die Verbindungsparameter und stellen Sie sicher, dass das GDAL-Georaster-Plugin installiert ist.</translation>
+        <translation>Die Verbindung zu %1 schlug fehl. Bitte überprüfen Sie die Verbindungsparameter und stellen Sie sicher, dass die GDAL-Georaster-Erweiterung installiert ist.</translation>
     </message>
 </context>
 <context>
@@ -15574,7 +15574,7 @@ Geodatenverarbeitungsfunktionen sind nur für PostgreSQL/PostGIS-Layer vorgesehe
     <message>
         <location filename="../src/ui/qgspgquerybuilderbase.ui" line="21"/>
         <source>PostgreSQL Query Builder</source>
-        <translation>PostgreSQL Query Builder</translation>
+        <translation>PostgreSQL-Abfragenerstellung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgquerybuilderbase.ui" line="330"/>
@@ -15754,31 +15754,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation>Konnte lokales Pluginverzeichnis nicht öffnen</translation>
+        <translation>Konnte lokales Erweiterungsverzeichnis nicht öffnen</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation>Python-Plugins herunterladen...</translation>
+        <translation>Python-Erweiterung herunterladen...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation>Mehr Plugins von entfernten Repositorys installieren</translation>
+        <translation>Mehr Erweiterungen von entfernten Repositorys installieren</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation>Neue Plugins werden gesucht...</translation>
+        <translation>Neue Erweiterungen werden gesucht...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation>Es gibt ein neues Plugin</translation>
+        <translation>Es gibt eine neue Erweiterung</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation>Es gibt ein Plugin-Update</translation>
+        <translation>Es gibt ein Erweiterungsupdate</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS-Python-Plugin-Installation</translation>
+        <translation>QGIS-Python-Erweiterungsinstallation</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -15786,7 +15786,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation>Nichts zu entfernen! Pluginverzeichnis existiert nicht:</translation>
+        <translation>Nichts zu entfernen! Erweiterungsverzeichnis existiert nicht:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
@@ -15798,18 +15798,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation>QGIS-Plugin-Konflikt:</translation>
+        <translation>QGIS-Erweiterungskonflikt:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation>Der Plugin-Installer hat ein veraltetes Plugin erkannt, das ein neueres, mit dieser QGIS-Version geliefertes, verdeckt. Dies ist wahrscheinlich ein Überbleibsel einer ältereren QGIS-Installation. Bitte entfernen Sie es mit dem Plugin-Installer, um die mitgelieferte Ausgabe sichtbar zu machen.</translation>
+        <translation>Die Erweiterungsinstallation hat eine veraltete Erweiterung erkannt, das ein neueres, mit dieser QGIS-Version geliefertes, verdeckt. Dies ist wahrscheinlich ein Überbleibsel einer ältereren QGIS-Installation. Bitte entfernen Sie es unter Erweiterungsinstallation, um die mitgelieferte Ausgabe sichtbar zu machen.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS-Python-Plugin-Installation</translation>
+        <translation>QGIS-Python-Erweiterungsinstallation</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -15861,27 +15861,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation>Dieses Plugin ist nicht installiert</translation>
+        <translation>Diese Erweiterung ist nicht installiert</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation>Dieses Plugin ist installiert</translation>
+        <translation>Diese Erweiterung ist installiert</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation>Dieses Plugin ist installiert, aber es gibt eine neuere Version</translation>
+        <translation>Diese Erweiterung ist installiert, aber es gibt eine neuere Version</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation>Dieses Plugin ist installiert, aber in keinem aktivierten Repository zu finden</translation>
+        <translation>Diese Erweiterung ist installiert, aber in keinem aktivierten Repository zu finden</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation>Dieses Plugin ist nicht installiert und wurde zum ersten Mal entdeckt</translation>
+        <translation>Diese Erweiterung ist nicht installiert und wurde zum ersten Mal entdeckt</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation>Dieses Plugin ist installiert und ist aktueller als die Version in einem Repository</translation>
+        <translation>Diese Erweiterung ist installiert und ist aktueller als die Version in einem Repository</translation>
     </message>
     <message>
         <source>installed version</source>
@@ -15905,61 +15905,61 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Install plugin</source>
-        <translation>Plugin installieren</translation>
+        <translation>Erweiterung installieren</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation>Plugin erneut installieren</translation>
+        <translation>Erweiterung erneut installieren</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation>Plugin aktualisieren</translation>
+        <translation>Erweiterung aktualisieren</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation>Plugin installieren/aktualisieren</translation>
+        <translation>Erweiterung installieren/aktualisieren</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation>Frühere Version des Plugins installieren</translation>
+        <translation>Frühere Version der Erweiterung installieren</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation>Sind Sie sicher, dass sie eine früherer Version des Plugins installieren wollen?  Die installierte ist aktueller!</translation>
+        <translation>Sind Sie sicher, dass sie eine früherer Version der Erweiterung installieren wollen?  Die installierte ist aktueller!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation>Plugin-Installation schlug fehl</translation>
+        <translation>Installation der Erweiterung schlug fehl</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation>Plugin ist verschwunden</translation>
+        <translation>Erweiterung ist verschwunden</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation>Das Plugin scheint installiert worden zu sein, aber der Ort konnte nicht festgestellt werden. Wahrscheinlich enthielt das Plugin-Paket ein falsch benanntes Verzeichnis.
-Bitte durchsuchen Sie die Liste der installierten Plugins. Dies bedeutet ausserdem, dass es nicht möglich ist festzustellen, dass das Plugin installiert ist und ob es Updates gibt. Nichtdestotrotz könnte das Plugin funktionieren. Bitte kontaktieren Sie den Plugin-Autor und setzen Ihn davon in Kenntnis.</translation>
+        <translation>Die Erweiterung scheint installiert worden zu sein, aber der Ort konnte nicht festgestellt werden. Wahrscheinlich enthielt das Erweiterungspaket ein falsch benanntes Verzeichnis.
+Bitte durchsuchen Sie die Liste der installierten Erweiterung. Dies bedeutet ausserdem, dass es nicht möglich ist festzustellen, dass die Erweiterung installiert ist und ob es Updates gibt. Nichtdestotrotz könnte die Erweiterung funktionieren. Bitte kontaktieren Sie den Erweiterungsautor und setzen Ihn davon in Kenntnis.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation>Plugin erfolgreich installiert</translation>
+        <translation>Erweiterung erfolgreich installiert</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation>Plugin-Deinstallation gescheitert</translation>
+        <translation>Erweiterungsdeinstallation gescheitert</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation>Sind Sie sicher, dass sie folgendes Plugin deinstallieren wollen?</translation>
+        <translation>Sind Sie sicher, dass Sie folgende Erweiterung deinstallieren wollen?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation>Warnung: dieses Plugin ist in keinem verfügbaren Repository enthalten!</translation>
+        <translation>Warnung: diese Erweiterung ist in keinem verfügbaren Repository enthalten!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation>Plugin erfolgreich deinstalliert</translation>
+        <translation>Erweiterung erfolgreich deinstalliert</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
@@ -15971,47 +15971,47 @@ Bitte durchsuchen Sie die Liste der installierten Plugins. Dies bedeutet ausserd
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation>Dieses Plugin ist inkompatibel mit Ihrer Quantum GIS-Version und wird wahrscheinlich nicht funktionieren.</translation>
+        <translation>Diese Erweiterung ist inkompatibel mit Ihrer Quantum GIS-Version und wird wahrscheinlich nicht funktionieren.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation>Dieses Plugin scheint defekt zu sein.
+        <translation>Diese Erweiterung scheint defekt zu sein.
 Es wurde installiert, konnte aber nicht geladen werden.
 Hier die Fehlermeldung:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation>Beachten Sie, dass es ein nicht installierbares Core-Plugin ist</translation>
+        <translation>Beachten Sie, dass es eine nicht installierbare Kernerweiterung ist</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation>Dieses Plugin ist defekt</translation>
+        <translation>Diese Erweiterung ist defekt</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation>Diese Plugin benötigt eine neuere Quantum GIS-Version</translation>
+        <translation>Diese Erweiterung benötigt eine neuere Quantum GIS-Version</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation>Dieses Plugin benötigt ein fehlendes Modul</translation>
+        <translation>Diese Erweiterung benötigt ein fehlendes Modul</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation>Plugin erfolgreich neuinstalliert</translation>
+        <translation>Erweiterung erfolgreich neuinstalliert</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation>Dieses Plugin ist für eine neuere Version von Quantum GIS bestimmt. Die minimal erforderliche Version ist:</translation>
+        <translation>Diese Erweiterung ist für eine neuere Version von Quantum GIS bestimmt. Die minimal erforderliche Version ist:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation>Dieses Plugin hängt von einigen auf Ihrem System fehlenden Komponenten ab. Sie müssen folgende Pythonmodule installieren, um es zu aktivieren:</translation>
+        <translation>Diese Erweiterung hängt von einigen auf Ihrem System fehlenden Komponenten ab. Sie müssen folgende Pythonmodule installieren, um es zu aktivieren:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation>Das Plugin ist defekt. Python meldete:</translation>
+        <translation>Diese Erweiterung ist defekt. Python meldete:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
@@ -16022,22 +16022,22 @@ Für weitere Informationen besuchen Sie bitte dessen Homepage und das Quantum GI
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation>Python-Plugin installiert.
+        <translation>Python-Erweiterung installiert.
 Sie müssen es noch im Plugin-Manager aktivieren.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation>Python plugin neuinstalliert.
+        <translation>Python-Erweiterung neuinstalliert.
 Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation>Python-Plugin deinstalliert. Beachten Sie, dass Sie Quantum GIS u.U. neustarten müssen, um es komplett zu entfernen.</translation>
+        <translation>Python-Erweiterung deinstalliert. Beachten Sie, dass Sie Quantum GIS u.U. neustarten müssen, um es komplett zu entfernen.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation>Sie sind dabei mehrere Plugin-Repositories hinzuzufügen, die vom Quantum GIS-Team weder autorisiert noch unterstützt werden. Plugin-Autoren sind grundsätzlich bemüht, das ihre Arbeit nützlich und sicher ist. Allerdings können wird keine Verantwortung dafür übernehmen.</translation>
+        <translation>Sie sind dabei mehrere Erweiterungsrepositories hinzuzufügen, die vom Quantum GIS-Team weder autorisiert noch unterstützt werden. Erweiterungsautoren sind grundsätzlich bemüht, das ihre Arbeit nützlich und sicher ist. Allerdings können wird keine Verantwortung dafür übernehmen.</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -16070,17 +16070,17 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="14"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="21"/>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS-Python-Plugin-Installation</translation>
+        <translation>QGIS-Python-Erweiterungsinstallation</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="70"/>
         <source>Plugins</source>
-        <translation>Plugins</translation>
+        <translation>Erweiterungen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="73"/>
         <source>List of available and installed plugins</source>
-        <translation>Liste der verfügbaren und installierten Plugins</translation>
+        <translation>Liste der verfügbaren und installierten Erweiterungen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="84"/>
@@ -16091,13 +16091,13 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="94"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="97"/>
         <source>Display only plugins containing this word in their metadata</source>
-        <translation>Nur Plugins anzeigen deren Metadaten dieses Wort enthalten</translation>
+        <translation>Nur Erweiterungen anzeigen deren Metadaten dieses Wort enthalten</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="113"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="119"/>
         <source>Display only plugins from given repository</source>
-        <translation>Nur Plugins des angegebenen Repository anzeigen</translation>
+        <translation>Nur Erweiterungen des angegebenen Repository anzeigen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="123"/>
@@ -16108,7 +16108,7 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="140"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="143"/>
         <source>Display only plugins with matching status</source>
-        <translation>Nur passende Plugins anzeigen</translation>
+        <translation>Nur passende Erweiterungen anzeigen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="168"/>
@@ -16146,23 +16146,23 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="228"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="231"/>
         <source>Install, reinstall or upgrade the selected plugin</source>
-        <translation>Gewähltes Plugin installieren, neu installieren oder aktualisieren</translation>
+        <translation>Gewählte Erweiterung installieren, neu installieren oder aktualisieren</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="234"/>
         <source>Install/upgrade plugin</source>
-        <translation>Plugin installieren/aktualisieren</translation>
+        <translation>Erweiterung installieren/aktualisieren</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="244"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="247"/>
         <source>Uninstall the selected plugin</source>
-        <translation>Das gewählte Plugin deinstallieren</translation>
+        <translation>Die gewählte Erweiterung deinstallieren</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="250"/>
         <source>Uninstall plugin</source>
-        <translation>Gewähltes Plugin deinstallieren</translation>
+        <translation>Gewählte Erweiterung deinstallieren</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="260"/>
@@ -16172,7 +16172,7 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="263"/>
         <source>List of plugin repositories</source>
-        <translation>Liste der Plugin-Repositories</translation>
+        <translation>Liste der Erweiterungsrepositories</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="286"/>
@@ -16188,18 +16188,18 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="313"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="316"/>
         <source>Add third party plugin repositories to the list</source>
-        <translation>Plugin-Repositories von Dritten zur Liste hinzufügen</translation>
+        <translation>Erweiterungsrepositories dritter zur Liste hinzufügen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="319"/>
         <source>Add 3rd party repositories</source>
-        <translation>Plugin-Repositories hinzufügen</translation>
+        <translation>Erweiterungsrepositories hinzufügen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="339"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="342"/>
         <source>Add a new plugin repository</source>
-        <translation>Ein neues Plugin-Repository ergänzen</translation>
+        <translation>Ein neues Erweiterungsrepository ergänzen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="345"/>
@@ -16231,7 +16231,7 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="32"/>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
-        <translation>Das Plugin wird nach ~/.qgis/python/plugins installiert</translation>
+        <translation>Die Erweiterung wird nach ~/.qgis/python/plugins installiert</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="45"/>
@@ -16252,7 +16252,7 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="382"/>
         <source>Configuration of the plugin installer</source>
-        <translation>Konfiguration des Plugin-Installer</translation>
+        <translation>Konfiguration der Erweiterungsinstallation</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="410"/>
@@ -16295,27 +16295,27 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis:&lt;/span&gt; Wenn diese Funktion aktiv ist, wird Quantum GIS Sie immer informieren, wenn ein neues Plugin oder ein Plugin-Update verfügbar ist. Anderenfalls erfolgt die Repository-Abfrage beim Öffnen des Plugin-Installer-Fensters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis:&lt;/span&gt; Wenn diese Funktion aktiv ist, wird Quantum GIS Sie immer informieren, wenn eine neue Erweiterung oder ein Erweiterungsupdate verfügbar ist. Anderenfalls erfolgt die Repository-Abfrage beim Öffnen des Erweiterungsinstallationsfensters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="488"/>
         <source>Allowed plugins</source>
-        <translation>Erlaubte Plugins</translation>
+        <translation>Erlaubte Erweiterungen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="497"/>
         <source>Only show plugins from the official repository</source>
-        <translation>Nur Plugins des offiziellen Repositories anzeigen</translation>
+        <translation>Nur Erweiterungen des offiziellen Repositories anzeigen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="510"/>
         <source>Show all plugins except those marked as experimental</source>
-        <translation>Alle Plugins außer denen als experimentell markierten anzeigen</translation>
+        <translation>Alle Erweiterungen außer denen als experimentell markierten anzeigen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="523"/>
         <source>Show all plugins, even those marked as experimental</source>
-        <translation>Alle inklusive der als experimentell markierten Plugins anzeigen</translation>
+        <translation>Alle inklusive der als experimentell markierten Erweiterungen anzeigen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="542"/>
@@ -16328,7 +16328,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis:&lt;/span&gt; Experimentelle Plugins sind grundsätzlich für den Produktiveinsatz ungeeignet. Diese Plugins in einer frühen Entwicklungsphase und sollten als &apos;unvollständig&apos; oder &apos;Machbarkeitsstudie&apos; angesehen werden. QGIS empfiehlt die Installation dieser Plugins außer zu Testzwecken nicht.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis:&lt;/span&gt; Experimentelle Erweiterungen sind grundsätzlich für den Produktiveinsatz ungeeignet. Diese Erweiterungen in einer frühen Entwicklungsphase und sollten als &apos;unvollständig&apos; oder &apos;Machbarkeitsstudie&apos; angesehen werden. QGIS empfiehlt die Installation dieser Erweiterungen außer zu Testzwecken nicht.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -16430,7 +16430,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation>Plugin-Paket konnte nicht ausgepackt werden. Es ist wahrscheinlich defekt oder fehlt im Repository. Sie sollten sicherstellen, dass Sie Schreibrechte im Plugin-Verzeichnis haben:</translation>
+        <translation>Erweiterungspaket konnte nicht ausgepackt werden. Es ist wahrscheinlich defekt oder fehlt im Repository. Sie sollten sicherstellen, dass Sie Schreibrechte im Erweiterungsverzeichnis haben:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
@@ -16442,12 +16442,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="14"/>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS-Python-Plugin-Installation</translation>
+        <translation>QGIS-Python-Erweiterungsinstallation</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="41"/>
         <source>Installing plugin:</source>
-        <translation>Plugin wird installiert:</translation>
+        <translation>Erweiterung wird installiert:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
@@ -16467,17 +16467,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="20"/>
         <source>Error loading plugin</source>
-        <translation>Fehler beim Laden des Plugins</translation>
+        <translation>Fehler beim Laden der Erweiterung</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="35"/>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
-        <translation>Das Plugin scheint ungültig zu sein oder ihm fehlen Abhängigkeiten. Es wurde installiert, aber konnte nicht geladen werden. Wenn Sie das Plugin wirklich brauchen, kontaktieren Sie den Autor oder die &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS-Benutzergruppe&lt;/a&gt;, um das Problem zu lösen. Anderenfalls können Sie es einfach wieder deinstallieren. Im folgenden die Fehlermeldung:</translation>
+        <translation>Die Erweiterung scheint ungültig zu sein oder ihm fehlen Abhängigkeiten. Es wurde installiert, aber konnte nicht geladen werden. Wenn Sie die Erweiterung wirklich brauchen, kontaktieren Sie den Autor oder die &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS-Benutzergruppe&lt;/a&gt;, um das Problem zu lösen. Anderenfalls können Sie es einfach wieder deinstallieren. Im folgenden die Fehlermeldung:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="83"/>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
-        <translation>Wollen Sie das Plugin jetzt deinstallieren? Im Zweifelsfall sollten Sie dies wahrscheinlich tun.</translation>
+        <translation>Wollen Sie die Erweiterung jetzt deinstallieren? Im Zweifelsfall sollten Sie dies wahrscheinlich tun.</translation>
     </message>
 </context>
 <context>
@@ -16526,7 +16526,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="236"/>
         <source>No Plugins</source>
-        <translation>Keine Plugins</translation>
+        <translation>Keine Erweiterungen</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="86"/>
@@ -16546,7 +16546,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="236"/>
         <source>No QGIS plugins found in %1</source>
-        <translation>Keine QGIS-Plugins in %1 gefunden</translation>
+        <translation>Keine QGIS-Erweiterung in %1 gefunden</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="566"/>
@@ -16556,7 +16556,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="566"/>
         <source>Failed to open plugin installer!</source>
-        <translation>Plugin-Installer konnte nicht geöffnet werden!</translation>
+        <translation>Erweiterungsinstallation konnte nicht geöffnet werden!</translation>
     </message>
 </context>
 <context>
@@ -16564,12 +16564,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="16"/>
         <source>QGIS Plugin Manager</source>
-        <translation>QGIS Plugin Manager</translation>
+        <translation>QGIS-Erweiterungsmanager</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="25"/>
         <source>To enable / disable a plugin, click its checkbox or description</source>
-        <translation>Checkbox oder Beschreibung anklicken, um ein Plugin zu (de-)aktivieren</translation>
+        <translation>Checkbox oder Beschreibung anklicken, um eine Erweiterungen zu (de-)aktivieren</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="45"/>
@@ -16579,7 +16579,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="58"/>
         <source>Plugin Directory:</source>
-        <translation>Plugin-Verzeichnis:</translation>
+        <translation>Erweiterungsverzeichnis:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="71"/>
@@ -16589,7 +16589,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="84"/>
         <source>Plugin Installer</source>
-        <translation>Plugin-Installer</translation>
+        <translation>Erweiterungsinstallation</translation>
     </message>
 </context>
 <context>
@@ -19198,7 +19198,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="13"/>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="302"/>
         <source>Scale Bar Plugin</source>
-        <translation>Maßstabsplugin</translation>
+        <translation>Maßstabserweiterung</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="75"/>
@@ -19284,7 +19284,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="276"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Dieses Plugin zeichnet eine Maßstabsleiste auf die Karte. Bitte beachten Sie, dass die Größenoption eine &apos;bevorzugte&apos; Größe ist, die durch QGIS zoomstufenabhängig variiert wird. Die Größe wird in Karteneinheiten aus den Projektinformationen errechnet.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Diese Erweiterung zeichnet eine Maßstabsleiste auf die Karte. Bitte beachten Sie, dass die Größenoption eine &apos;bevorzugte&apos; Größe ist, die durch QGIS zoomstufenabhängig variiert wird. Die Größe wird in Karteneinheiten aus den Projektinformationen errechnet.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -20971,12 +20971,12 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="426"/>
         <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation>Dieser Knopf öffnet den PostgreSQL-Query-Builder und ermöglicht, statt aller Objekte, eine Untermenge der Objekte auf dem Kartenfenster darzustellen</translation>
+        <translation>Dieser Knopf öffnet die PostgreSQL-Abfragenerstellung und ermöglicht, statt aller Objekte, eine Untermenge der Objekte auf dem Kartenfenster darzustellen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="429"/>
         <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
-        <translation>Die Abfrage zur Begrenzung der Anzahl der Objekte wird hier angezeigt. Dies wird im Moment nur bei PostgreSQL-Layern unterstützt. Klicken Sie auf auf &apos;Query Builder&apos;, um eine Abfrage einzugeben oder zu ändern</translation>
+        <translation>Die Abfrage zur Begrenzung der Anzahl der Objekte wird hier angezeigt. Dies wird im Moment nur bei PostgreSQL-Layern unterstützt. Klicken Sie auf auf &apos;Abfrageerstellung&apos;, um eine Abfrage einzugeben oder zu ändern</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="553"/>
@@ -21864,7 +21864,7 @@ URL %1 versucht</translation>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="13"/>
         <source>QGIS Quick Print Plugin</source>
-        <translation>QGIS-Schnelldruck-Plugin</translation>
+        <translation>QGIS-Schnelldruck-Erweiterung</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="38"/>
@@ -22127,12 +22127,12 @@ URL %1 versucht</translation>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS-Plugin-Vorlage</translation>
+        <translation>QGIS-Erweiterungsvorlage</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="47"/>
         <source>Plugin Template</source>
-        <translation>Plugin-Vorlage</translation>
+        <translation>Erweiterungsvorlage</translation>
     </message>
 </context>
 <context>
@@ -23194,7 +23194,7 @@ Plugin wird nicht aktiviert.</translation>
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="75"/>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation>Dies durch eine Kurzbeschreibung der Pluginfunktion ersetzen</translation>
+        <translation>Dies durch eine Kurzbeschreibung der Erweiterungsfunktion ersetzen</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="80"/>
