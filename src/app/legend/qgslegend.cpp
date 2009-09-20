@@ -368,6 +368,8 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
   QTreeWidgetItem *destItem = mDropTarget;
 
   QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>( mItemBeingMoved );
+  mItemBeingMoved = NULL;
+
   QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>( destItem );
 
   // no change?
@@ -474,8 +476,6 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
   }
 
   checkLayerOrderUpdate();
-
-  mItemBeingMoved = NULL;
 }
 
 void QgsLegend::mouseDoubleClickEvent( QMouseEvent* e )
