@@ -1,4 +1,4 @@
-del "%OSGEO4W_STARTMENU%\Quantum GIS (trunk).lnk"
-del "%ALLUSERSPROFILE%\Desktop\Quantum GIS (trunk).lnk"
-del "%OSGEO4W_ROOT%"\bin\qgis-dev.bat
-del "%OSGEO4W_ROOT%"\apps\qgis-dev\python\qgis\qgisconfig.py
+del "%OSGEO4W_STARTMENU%\Quantum GIS (@version@).lnk"
+del "%ALLUSERSPROFILE%\Desktop\Quantum GIS (@version@).lnk"
+del "%OSGEO4W_ROOT%"\bin\@package@.bat
+del "%OSGEO4W_ROOT%"\apps\@package@\python\qgis\qgisconfig.py
