@@ -50,8 +50,6 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
      */
     void restoreGeometry();
 
-    static QWidget *createEditor( QgsVectorLayer *vl, int idx, const QVariant &value );
-
   private:
     QString mSettingsPath;
     QList<QWidget *> mpWidgets;
