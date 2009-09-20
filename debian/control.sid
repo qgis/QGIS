@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev,
  libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
  python-sip4-dev (>= 4.5.0), libfontconfig1-dev, libxi-dev, libxrandr-dev, libxrender-dev, libice-dev,
  libsm-dev, pyqt4-dev-tools
-Build-Conflicts: libqgis1.4.0-dev, qgis-dev
+Build-Conflicts: libqgis{QGIS_ABI}-dev, qgis-dev
 Standards-Version: 3.8.3
 XS-Python-Version: current
 Homepage: http://qgis.org/
@@ -39,7 +39,7 @@ Description: Quantum GIS - architecture-independent data
  This package contains architecture-independent supporting data files for use 
  with Quantum GIS.
 
-Package: libqgis1.4.0
+Package: libqgis{QGIS_ABI}
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: qgis (<=0.9.2rc1), libqgis-core1, libqgis-gui1, libqgis0, libqgis1
@@ -50,10 +50,10 @@ Description: Quantum GIS - shared libraries
  This package contains the shared core and gui library that provide an
  interface for plugins and stand-alone applications.
 
-Package: libqgis1.4.0-dev
+Package: libqgis{QGIS_ABI}-dev
 Architecture: any
 Section: libdevel
-Depends: libqgis1.4.0 (= ${binary:Version}), libgdal1-dev,
+Depends: libqgis{QGIS_ABI} (= ${binary:Version}), libgdal1-dev,
  libpq-dev, libgeos-dev (>= 3.0.0), grass-dev,
  libsqlite3-dev, libgsl0-dev, proj, libexpat1-dev, libqt4-core (>=4.2.0),
  libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0), libqt4-qt3support (>=4.2.0),
@@ -70,7 +70,7 @@ Description: Quantum GIS - development files
 
 Package: qgis-plugin-grass
 Architecture: any
-Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, libgdal1-1.6.0-grass, grass64
+Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, libgdal1-1.6.0-grass, grass{GRASS_ABI}
 Description: GRASS plugin for Quantum GIS
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
