@@ -478,7 +478,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
   else
     str = tr( "No matching features found." );
 
-  QMessageBox::information( this, tr( "Search results" ), str );
+  QgisApp::instance()->statusBar()->showMessage( str );
 }
 
 void QgsAttributeTableDialog::search()
