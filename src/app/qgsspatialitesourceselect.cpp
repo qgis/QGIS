@@ -181,7 +181,7 @@ sqlite3 *QgsSpatiaLiteSourceSelect::openSpatiaLiteDb( const char *path )
   // trying to open the SQLite DB
   mSqlitePath = QString::fromUtf8( path );
 
-  ret = sqlite3_open_v2( mSqlitePath.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
+  ret = sqlite3_open_v2( path, &handle, SQLITE_OPEN_READWRITE, NULL );
   if ( ret )
   {
     // failure
@@ -290,9 +290,8 @@ void QgsSpatiaLiteSourceSelect::populateConnectionList()
   while ( it != keys.end() )
   {
     // retrieving the SQLite DB name and full path
-    QString text = *it + tr( " @ " );
+    QString text = *it + tr( "@" );
     text += settings.value( *it + "/sqlitepath", "###unknown###" ).toString();
-
     cmbConnections->addItem( text );
     ++it;
   }
@@ -360,7 +359,7 @@ void QgsSpatiaLiteSourceSelect::deleteConnection()
 {
   QSettings settings;
   QString subKey = cmbConnections->currentText();
-  int idx = subKey.indexOf( " @ " );
+  int idx = subKey.indexOf( "@" );
   if ( idx > 0 )
     subKey.truncate( idx );
 
@@ -455,7 +454,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
 
   QSettings settings;
   QString subKey = cmbConnections->currentText();
-  int idx = subKey.indexOf( " @ " );
+  int idx = subKey.indexOf( "@" );
   if ( idx > 0 )
     subKey.truncate( idx );
 
