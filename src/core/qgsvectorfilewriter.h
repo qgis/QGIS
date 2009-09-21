@@ -98,6 +98,9 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** geometry type which is being used */
     QGis::WkbType mWkbType;
+
+    /** map attribute indizes to OGR field indexes */
+    QMap<int, int> mAttrIdxToOgrIdx;
 };
 
 #endif
