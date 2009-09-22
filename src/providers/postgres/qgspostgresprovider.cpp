@@ -907,7 +907,6 @@ void QgsPostgresProvider::loadFields()
           fieldSize = -1;
         }
         else if ( fieldTypeName == "text" ||
-                  fieldTypeName == "char" ||
                   fieldTypeName == "bpchar" ||
                   fieldTypeName == "varchar" ||
                   fieldTypeName == "bool" ||
@@ -915,6 +914,11 @@ void QgsPostgresProvider::loadFields()
                   fieldTypeName == "money" ||
                   fieldTypeName.startsWith( "time" ) ||
                   fieldTypeName.startsWith( "date" ) )
+        {
+          fieldType = QVariant::String;
+          fieldSize = -1;
+        }
+        else if ( fieldTypeName == "char" )
         {
           fieldType = QVariant::String;
         }
@@ -1381,6 +1385,11 @@ bool QgsPostgresProvider::uniqueData( QString schemaName,
                 .arg( quotedIdentifier( colName ) )
                 .arg( quotedIdentifier( schemaName ) )
                 .arg( quotedIdentifier( tableName ) );
+
+  if ( !sqlWhereClause.isEmpty() )
+  {
+    sql += " where " + sqlWhereClause;
+  }
 
   Result unique = connectionRO->PQexec( sql );
 
@@ -2506,7 +2515,16 @@ int QgsPostgresProvider::capabilities() const
 
 void QgsPostgresProvider::setSubsetString( QString theSQL )
 {
+  QString prevWhere = sqlWhereClause;
+
   sqlWhereClause = theSQL;
+
+  if( !uniqueData( mSchemaName, mTableName, primaryKey ) )
+  {
+    sqlWhereClause = prevWhere;
+    return;
+  }
+
   // Update datasource uri too
   mUri.setSql( theSQL );
   // Update yet another copy of the uri. Why are there 3 copies of the
