@@ -2926,7 +2926,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Rasterdaten über GDAL Projektionsinformationen hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="315"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="314"/>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
         <translation>SQLite DB (*.sqlite);;Alle Dateien (*.*)</translation>
     </message>
@@ -5490,7 +5490,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="424"/>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="481"/>
         <source>Search results</source>
         <translation>Suchergebnisse</translation>
     </message>
@@ -7449,7 +7448,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; zeigt ein Copyright Symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="160"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -12506,7 +12505,7 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>Maximaler Massstab bis zu dem dieser Layer angezeigt wird.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="233"/>
         <source>°</source>
         <translation>°</translation>
@@ -13367,27 +13366,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsMapToolRotatePointSymbols</name>
     <message>
-        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="91"/>
+        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature</source>
         <translation>Kein Punktsymbol</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="91"/>
+        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
         <translation>Es wurde kein Punktsymbol an der angeklickten Position gefunden. Bitte klicken Sie näher an das Objekt oder erhöhen Sie die Suchtoleranz unter Einstellungen-&gt;Optionen-&gt;Digitialisierung-&gt;Suchradius für Knickpunktbearbeitung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="105"/>
+        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>No rotation Attributes</source>
         <translation>Keine Rotationsattribute</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="105"/>
+        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>The active point layer does not have a rotation attribute</source>
         <translation>Der aktive Punktlayer hat kein Rotationsattribute</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="171"/>
+        <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="185"/>
         <source>Rotate symbol</source>
         <translation>Symbol drehen</translation>
     </message>
@@ -19995,47 +19994,51 @@ SQL: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="265"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="565"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="564"/>
         <source>unknown error cause</source>
         <translation>unbekannte Fehlerursache</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="293"/>
-        <source> @ </source>
-        <translation> @ </translation>
+        <source>@</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="314"/>
+        <source> @ </source>
+        <translation type="obsolete"> @ </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="313"/>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
         <translation>Zu öffnende SpatiaLite/SQLite-DB wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="368"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="367"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>Sind Sie sicher, dass Sie die Verbindung %1 und alle zugehörigen Einstellungen löschen wollen?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="370"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="369"/>
         <source>Confirm Delete</source>
         <translation>Löschen bestätigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="442"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="441"/>
         <source>Select Table</source>
         <translation>Tabelle wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="442"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="441"/>
         <source>You must select a table in order to add a Layer.</source>
         <translation>Zum Hinzufügen eines Layers müssen Sie eine Tabelle wählen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="571"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="570"/>
         <source>SpatiaLite getTableInfo Error</source>
         <translation>SpatiaLite-getTableInfo-Fehler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="572"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="571"/>
         <source>Failure exploring tables from: %1
 
 %2</source>
@@ -22414,7 +22417,7 @@ p, li { white-space: pre-wrap; }
         <source>Database Host</source>
         <translation>Datenbank-Host</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
         <translation>Einen Datenbank-Host eingeben. Wenn die Datenbank sich auf Ihrer Arbeitsstation befindet sollten Sie &quot;localhost&quot; eingeben. Wenn Sie &quot;MSAccess&quot; als Datenbanktyp gewählt haben, ist diese Option nicht verfügbar.</translation>
@@ -22655,7 +22658,7 @@ p, li { white-space: pre-wrap; }
         <source>Next</source>
         <translation>Nächstes</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="108"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
         <translation>Alle Attributinformation des mit dem angezeigten Foto verknüpften Punktes wird hier angezeigt.  Wenn der durch den anzezeigten Datensatz referenzierte Dateityp kein Bild ist, aber er in &quot;Externe Anwendungen konfigurieren&quot;-Reiter definiert ist, kann über eine Doppelklick auf den Feldwert mit dem Dateipfad die Anwendung zur Anzeige oder Abspielung des Dateiinhalts geöffnet. Wenn die Dateierweiterung erkannt wurde, werden die Attributdaten in grün angezeigt.</translation>
@@ -22699,7 +22702,7 @@ p, li { white-space: pre-wrap; }
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
         <translation>Nutzen Sie die Drop-Down-Liste, um das Felder zur wählen, dass das Bildverzeichnis enthält. Dieser kann ein absoluter oder relativer Pfad sein.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="185"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
         <translation>Wenn angehakt wird der Pfad zum Bild durch anhängen des in der &quot;Dateipfad-Attribut&quot;-Drop-Down-Liste ausgewählten Attributs an &quot;Grundpfad&quot; unten definiert.</translation>
@@ -22852,7 +22855,7 @@ p, li { white-space: pre-wrap; }
         <source>Relative paths</source>
         <translation>Relative Pfad</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="502"/>
         <source>The base path or url from which images and documents can be “relative”</source>
         <translation>Der Grundpfad oder URL zu denen auf den sich &quot;relative&quot; Bilder und Dokumente beziehen</translation>
@@ -22873,7 +22876,7 @@ p, li { white-space: pre-wrap; }
         <source>If checked, the Base Path will be saved for the next session.</source>
         <translation>Wenn angehakt wird der Grundpfad zur nächsten Sitzung gespeichert.</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="570"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
         <translation>Legt den voreingestellten Grundpfad fest, der das Verzeichnis des Vektorlayers mit den Bildinformationen ist.</translation>
@@ -22911,7 +22914,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>Apply Path to Image rules when loading docs in external applications</source>
         <translation>Bildpfadregel auch anwenden, wenn Dokumente mit externen Anwendungen geladen werden</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="729"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translation>Speichern sichert die Einstellungen ohne die Optionsseite zu schließen. &quot;Voreinstellungen wiederherstellen&quot; wird alle Felder auf ihre Voreinstellungen zurücksetzen.  Es hat den gleichen Effekt wie alle &quot;Auf Voreinstellungen zurücksetzen&quot; einzel anzuklicken.</translation>
