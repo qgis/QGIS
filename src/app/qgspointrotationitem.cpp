@@ -53,7 +53,7 @@ void QgsPointRotationItem::paint( QPainter * painter )
   double h, dAngel;
   if ( mPixmap.width() > 0 && mPixmap.height() > 0 )
   {
-    h = sqrt( (double) mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
+    h = sqrt(( double ) mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
     dAngel = acos( mPixmap.width() / ( h * 2 ) ) * 180 / M_PI; //the diagonal angel of the original rect
     x = h * cos(( mRotation - dAngel ) * M_PI / 180 );
     y = h * sin(( mRotation - dAngel ) * M_PI / 180 );
@@ -69,7 +69,7 @@ void QgsPointRotationItem::paint( QPainter * painter )
   QFontMetricsF fm( mFont );
   painter->fillRect( mPixmap.width(), 0, mItemSize.width() - mPixmap.width(), mItemSize.height(), QColor( Qt::white ) );
   painter->setFont( mFont );
-  painter->drawText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, QString::number( mRotation) );
+  painter->drawText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, QString::number( mRotation ) );
 }
 
 void QgsPointRotationItem::setPointLocation( const QgsPoint& p )
@@ -78,10 +78,24 @@ void QgsPointRotationItem::setPointLocation( const QgsPoint& p )
   setPos( transformedPoint.x() - mPixmap.width() / 2.0, transformedPoint.y() - mPixmap.height() / 2.0 );
 }
 
-void QgsPointRotationItem::setSymbol( const QString& symbolPath )
+void QgsPointRotationItem::setSymbol( const QImage& symbolImage )
 {
-  mPixmap = QPixmap( symbolPath );
+  mPixmap = QPixmap::fromImage( symbolImage );
   QFontMetricsF fm( mFont );
+
+  //draw arrow
+  QPainter p( &mPixmap );
+  QPen pen;
+  pen.setWidth( 1 );
+  pen.setColor( QColor( Qt::red ) );
+  p.setPen( pen );
+  int halfItemWidth = mPixmap.width() / 2;
+  int quarterItemHeight = mPixmap.height() / 4;
+  p.drawLine( halfItemWidth, mPixmap.height(), halfItemWidth, 0 );
+  p.drawLine( halfItemWidth, 0, mPixmap.width() / 4, quarterItemHeight );
+  p.drawLine( halfItemWidth, 0, mPixmap.width() * 0.75, quarterItemHeight );
+
+  //set item size
   mItemSize.setWidth( mPixmap.width() + fm.width( "360" ) );
   double pixmapHeight = mPixmap.height();
   double fontHeight = fm.height();
