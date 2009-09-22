@@ -17,6 +17,7 @@
 #define QGSMAPTOOLROTATEPOINTSYMBOLS_H
 
 #include "qgsmaptooledit.h"
+#include "qgsfeature.h"
 
 class QgsPointRotationItem;
 
@@ -61,12 +62,12 @@ class QgsMapToolRotatePointSymbols: public QgsMapToolEdit
     void drawArrow( double azimut ) const;
     /**Calculates the azimut between mousePos and mSnappedPoint*/
     double calculateAzimut( const QPoint& mousePos );
-    /**Create item that shows rotation to the user*/
-    void createPixmapItem();
+    /**Create item with the point symbol for a specific feature. This will be used to show the rotation to the user*/
+    void createPixmapItem( QgsFeature& f );
     /**Sets the rotation of the pixmap item*/
     void setPixmapItemRotation( double rotation );
     /**Rounds value to 15 degree integer (used if ctrl pressed)*/
-    static int roundTo15Degrees(double n);
+    static int roundTo15Degrees( double n );
 };
 
 #endif // QGSMAPTOOLROTATEPOINTSYMBOLS_H

@@ -36,8 +36,8 @@ class QgsPointRotationItem: public QgsMapCanvasItem
     Units are degrees, starting from north direction, clockwise direction*/
     void setSymbolRotation( int r ) {mRotation = r;}
 
-    /**Sets a symbol from image file*/
-    void setSymbol( const QString& symbolPath );
+    /**Sets rotation symbol from image (takes ownership)*/
+    void setSymbol( const QImage& symbolImage );
 
   private:
     QgsPointRotationItem();

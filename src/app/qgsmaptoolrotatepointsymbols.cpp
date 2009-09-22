@@ -26,7 +26,7 @@
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), \
     mActiveLayer( 0 ), mFeatureNumber( 0 ), mCurrentMouseAzimut( 0.0 ), mCurrentRotationFeature( 0.0 ), \
-    mRotating( false ), mRotationItem( 0 ), mCtrlPressed(false)
+    mRotating( false ), mRotationItem( 0 ), mCtrlPressed( false )
 {
 
 }
@@ -123,13 +123,13 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent * e )
   }
 
   mCurrentRotationFeature = attIt.value().toDouble();
-  createPixmapItem();
+  createPixmapItem( pointFeature );
   if ( mRotationItem )
   {
     mRotationItem->setPointLocation( snapResults.at( 0 ).snappedVertex );
   }
   mCurrentMouseAzimut = calculateAzimut( e->pos() );
-  setPixmapItemRotation( (int)(mCurrentMouseAzimut) );
+  setPixmapItemRotation(( int )( mCurrentMouseAzimut ) );
   mRotating = true;
 }
 
@@ -165,17 +165,17 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QMouseEvent * e )
 
   //if shift-modifier is pressed, round to 15 degrees
   int displayValue;
-  if(e->modifiers() & Qt::ControlModifier)
+  if ( e->modifiers() & Qt::ControlModifier )
   {
-    displayValue = roundTo15Degrees(mCurrentRotationFeature);
+    displayValue = roundTo15Degrees( mCurrentRotationFeature );
     mCtrlPressed = true;
   }
   else
   {
-    displayValue = (int)(mCurrentRotationFeature);
+    displayValue = ( int )( mCurrentRotationFeature );
     mCtrlPressed = false;
   }
-  setPixmapItemRotation(displayValue);
+  setPixmapItemRotation( displayValue );
 }
 
 void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent * e )
@@ -187,13 +187,13 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent * e )
 
     //write mCurrentRotationFeature to all rotation attributes of feature (mFeatureNumber)
     int rotation;
-    if(mCtrlPressed) //round to 15 degrees
+    if ( mCtrlPressed ) //round to 15 degrees
     {
-      rotation = roundTo15Degrees(mCurrentRotationFeature);
+      rotation = roundTo15Degrees( mCurrentRotationFeature );
     }
     else
     {
-      rotation = (int)mCurrentRotationFeature;
+      rotation = ( int )mCurrentRotationFeature;
     }
 
     QList<int>::const_iterator it = mCurrentRotationAttributes.constBegin();
@@ -255,15 +255,51 @@ double QgsMapToolRotatePointSymbols::calculateAzimut( const QPoint& mousePos )
 {
   int dx = mousePos.x() - mSnappedPoint.x();
   int dy = mousePos.y() - mSnappedPoint.y();
-  return 180 - atan2( (double) dx, (double) dy ) * 180.0 / M_PI;
+  return 180 - atan2(( double ) dx, ( double ) dy ) * 180.0 / M_PI;
 }
 
-void QgsMapToolRotatePointSymbols::createPixmapItem()
+void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
 {
-  delete mRotationItem;
-  mRotationItem = new QgsPointRotationItem( mCanvas );
-  mRotationItem->setSymbol( QgsApplication::defaultThemePath() + "mActionArrowUp.png" );
-  mCanvas->scene()->addItem( mRotationItem );
+  if ( !mCanvas )
+  {
+    return;
+  }
+
+  if ( mActiveLayer && mActiveLayer->renderer() )
+  {
+    //get the image that is used for that symbol, but without point rotation
+    QImage pointImage;
+    //copy renderer
+    QgsRenderer* r = mActiveLayer->renderer()->clone();
+
+    //set all symbol fields of the cloned renderer to -1. Very ugly but necessary
+    QList<QgsSymbol*> symbolList( r->symbols() );
+    QList<QgsSymbol*>::iterator it = symbolList.begin();
+    for ( ; it != symbolList.end(); ++it )
+    {
+      ( *it )->setRotationClassificationField( -1 );
+    }
+
+
+    //get reference to current render context
+    QgsMapRenderer* mapRenderer = mCanvas->mapRenderer();
+    if ( !mapRenderer )
+    {
+      delete r;
+      return;
+    }
+    QgsRenderContext* renderContext = mCanvas->mapRenderer()->rendererContext(); //todo: check if pointers are not 0
+    if ( !renderContext )
+    {
+      delete r;
+      return;
+    }
+
+    r->renderFeature( *renderContext, f, &pointImage, false );
+    mRotationItem = new QgsPointRotationItem( mCanvas );
+    mRotationItem->setSymbol( pointImage );
+    delete r;
+  }
 }
 
 void QgsMapToolRotatePointSymbols::setPixmapItemRotation( double rotation )
@@ -272,9 +308,9 @@ void QgsMapToolRotatePointSymbols::setPixmapItemRotation( double rotation )
   mRotationItem->update();
 }
 
-int QgsMapToolRotatePointSymbols::roundTo15Degrees(double n)
+int QgsMapToolRotatePointSymbols::roundTo15Degrees( double n )
 {
-  int m = (int)(n / 15.0 + 0.5);
-  return (m * 15);
+  int m = ( int )( n / 15.0 + 0.5 );
+  return ( m * 15 );
 }
 

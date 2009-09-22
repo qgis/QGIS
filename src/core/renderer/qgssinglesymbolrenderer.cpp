@@ -72,6 +72,15 @@ QgsSingleSymbolRenderer& QgsSingleSymbolRenderer::operator=( const QgsSingleSymb
 
     for ( QMap<QString, QgsSymbol *>::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); it++ )
       mSymbols[ it.key()] = new QgsSymbol( *it.value() );
+
+    if ( mSymbols.size() > 0 )
+    {
+      mSymbol0 = mSymbols[0];
+    }
+    else
+    {
+      mSymbol0 = 0;
+    }
   }
   updateSymbolAttributes();
   return *this;
