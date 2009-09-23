@@ -183,7 +183,7 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
   for ( int i = 0; i < 6; i++ )
     tblAttributes->item( row, i )->setFlags( tblAttributes->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
-  QPushButton * pb = new QPushButton( editTypeButtonText( layer->editType( idx ) ) );
+  QPushButton *pb = new QPushButton( editTypeButtonText( layer->editType( idx ) ) );
   tblAttributes->setCellWidget( row, 6, pb );
   connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
   mButtonMap.insert( idx, pb );
@@ -200,15 +200,13 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
 
 void QgsVectorLayerProperties::attributeTypeDialog( )
 {
-  int index = -1;
-  QMap<int, QPushButton*>::iterator it = mButtonMap.begin();
-  for ( ; it != mButtonMap.end() ; it++ )
-  {
-    if ( it.value()->isDown() )
-    {
-      index = it.key();
-    }
-  }
+  QPushButton *pb = dynamic_cast<QPushButton *>( sender() );
+  if ( !pb )
+    return;
+
+  int index = mButtonMap.key( pb, -1 );
+  if ( index == -1 )
+    return;
 
   QgsAttributeTypeDialog attributeTypeDialog( layer );
 
@@ -243,6 +241,7 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
     return;
 
   QgsVectorLayer::EditType editType = attributeTypeDialog.editType();
+
   mEditTypeMap.insert( index, editType );
 
   QString buttonText;
@@ -258,9 +257,8 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
     default:
       break;
   }
-  QPushButton *pb = dynamic_cast<QPushButton*>( tblAttributes->cellWidget( index, 6 ) );
-  pb->setText( editTypeButtonText( editType ) );
 
+  pb->setText( editTypeButtonText( editType ) );
 }
 
 
