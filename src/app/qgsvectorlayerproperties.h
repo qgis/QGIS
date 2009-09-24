@@ -116,6 +116,19 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void toggleEditing( QgsMapLayer * );
 
   protected:
+    enum attrColumns
+    {
+      attrIdCol = 0,
+      attrNameCol,
+      attrTypeCol,
+      attrLengthCol,
+      attrPrecCol,
+      attrCommentCol,
+      attrEditTypeCol,
+      attrAliasCol,
+      attrColCount,
+    };
+
     QgsVectorLayer *layer;
     /**Renderer dialog which is shown*/
     QDialog* mRendererDialog;
