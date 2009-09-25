@@ -117,6 +117,9 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   mModelValues->blockSignals( true );
   lstValues->setUpdatesEnabled( false );
 
+  /**MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
+  QSet<QString> insertedValues;
+
   while ( mLayer->nextFeature( feat ) &&
           ( limit == 0 || mModelValues->rowCount() != limit ) )
   {
@@ -130,12 +133,12 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
     }
 
     // add item only if it's not there already
-    QList<QStandardItem *> items = mModelValues->findItems( value );
-    if ( items.isEmpty() )
+    if ( !insertedValues.contains( value ) )
     {
       QStandardItem *myItem = new QStandardItem( value );
       myItem->setEditable( false );
       mModelValues->insertRow( mModelValues->rowCount(), myItem );
+      insertedValues.insert( value );
     }
   }
   // Unblock for normal use
