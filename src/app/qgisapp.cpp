@@ -510,21 +510,21 @@ void QgisApp::dropEvent( QDropEvent *event )
   QList<QUrl>urls = event->mimeData()->urls();
   for ( i = urls.begin(); i != urls.end(); i++ )
   {
-    QUrl mUrl = *i;
+    QString fileName = i->toLocalFile();
     // seems that some drag and drop operations include an empty url
     // so we test for length to make sure we have something
-    if ( mUrl.path().length() > 0 )
+    if ( !fileName.isEmpty() )
     {
       // check to see if we are opening a project file
-      QFileInfo fi( mUrl.path() );
+      QFileInfo fi( fileName );
       if ( fi.completeSuffix() == "qgs" )
       {
-        QgsDebugMsg( "Opening project " + mUrl.path() );
+        QgsDebugMsg( "Opening project " + fileName );
       }
       else
       {
-        QgsDebugMsg( "Adding " + mUrl.path() + " to the map canvas" );
-        openLayer( mUrl.path() );
+        QgsDebugMsg( "Adding " + fileName + " to the map canvas" );
+        openLayer( fileName );
       }
     }
   }
