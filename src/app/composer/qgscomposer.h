@@ -224,6 +224,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void setSelectionTool();
 
+  protected:
+
+    void paintEvent( QPaintEvent* event );
+
   private slots:
 
     //! Raise, unminimize and activate this window
@@ -282,6 +286,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Window menu action to select this window
     QAction *mWindowAction;
 #endif
+
+    /**False if first paint already happened (used to create cache of composer maps for screen resolution after reading from project files)*/
+    bool mFirstPaint;
 
     //! Help context id
     static const int context_id = 985715179;

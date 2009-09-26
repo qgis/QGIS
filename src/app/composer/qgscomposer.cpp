@@ -65,7 +65,7 @@
 #include <QSizeGrip>
 #include "qgslogger.h"
 
-QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
+QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
 {
   setupUi( this );
   setupTheme();
@@ -297,6 +297,27 @@ void QgsComposer::open( void )
     show(); //make sure the window is displayed - with a saved project, it's possible to not have already called show()
     //is that a bug?
     activate(); //bring the composer window to the front
+  }
+}
+
+void QgsComposer::paintEvent( QPaintEvent* event )
+{
+  QMainWindow::paintEvent( event );
+  //The cached content of the composer maps need to be recreated it is the first paint event of the composer after reading from XML file.
+  //Otherwise the resolution of the composer map is not suitable for screen
+  if ( mFirstPaint )
+  {
+    QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
+    for ( ; it != mItemWidgetMap.constEnd(); ++it )
+    {
+      QgsComposerMap* cm = dynamic_cast<QgsComposerMap*>( it.key() );
+      if ( cm )
+      {
+        cm->cache();
+        cm->update();
+      }
+    }
+    mFirstPaint = false;
   }
 }
 
@@ -1352,3 +1373,5 @@ void QgsComposer::cleanupAfterTemplateRead()
     }
   }
 }
+
+
