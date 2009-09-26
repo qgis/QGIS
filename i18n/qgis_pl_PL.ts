@@ -1910,7 +1910,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="185"/>
         <source>Members</source>
-        <translation>Użytkownicy</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="205"/>
@@ -5392,7 +5392,7 @@ i uaktualnień.</translation>
         <location filename="../src/app/qgisapp.cpp" line="744"/>
         <location filename="../src/app/qgisapp.cpp" line="746"/>
         <source>Rotate Point Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Obróć symbol (tylko obiekty punktowe)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="774"/>
@@ -6478,12 +6478,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="218"/>
         <source>Show selected records only</source>
-        <translation>Pokazuj tylko wybrane rekordy</translation>
+        <translation>Pokazuj tylko wybrane</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="245"/>
         <source>Advanced search</source>
-        <translation>Zaawansowane wyszukiwanie</translation>
+        <translation>Kreator zapytań</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="252"/>
@@ -6493,7 +6493,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="225"/>
         <source>Search selected records only</source>
-        <translation>Szukaj tylko w wybranych rekordach</translation>
+        <translation>Szukaj tylko w wybranych</translation>
     </message>
 </context>
 <context>
@@ -6596,7 +6596,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="61"/>
         <source>Hidden</source>
-        <translation type="unfinished">Ukryty</translation>
+        <translation>Ukryty</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="76"/>
@@ -14145,12 +14145,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="311"/>
         <source>feature id</source>
-        <translation type="unfinished"></translation>
+        <translation>id obiektu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="311"/>
         <source>new feature</source>
-        <translation type="unfinished"></translation>
+        <translation>nowy obiekt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="338"/>
@@ -14315,7 +14315,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="185"/>
         <source>Rotate symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Obróć symbol</translation>
     </message>
 </context>
 <context>
@@ -21011,7 +21011,7 @@ SQL: %2</source>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="293"/>
         <source>@</source>
-        <translation type="unfinished"></translation>
+        <translation>@</translation>
     </message>
     <message>
         <source> @ </source>
@@ -21989,7 +21989,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="560"/>
         <source>Hidden</source>
-        <translation type="unfinished">Ukryty</translation>
+        <translation>Ukryty</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="722"/>
@@ -23096,7 +23096,7 @@ Tried URL: %1</source>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="985"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1056"/>
         <source>Node tool</source>
-        <translation>Edycja wierzchołków</translation>
+        <translation>Edytuj wierzchołki</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="986"/>
