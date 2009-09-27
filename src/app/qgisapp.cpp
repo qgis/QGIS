@@ -4773,32 +4773,37 @@ void QgisApp::loadPythonSupport()
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );
 #endif
-  QLibrary pythonlib( pythonlibName );
+  QString version = QString("%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
+  QgsDebugMsg( QString("load library %1 (%2)").arg( pythonlibName ).arg( version ) );
+  QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
   pythonlib.setLoadHints( QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint );
-  if ( pythonlib.load() )
-  {
-    //QgsDebugMsg("Python support library loaded successfully.");
-    typedef QgsPythonUtils*( *inst )();
-    inst pythonlib_inst = ( inst ) cast_to_fptr( pythonlib.resolve( "instance" ) );
-    if ( pythonlib_inst )
-    {
-      //QgsDebugMsg("Python support library's instance() symbol resolved.");
-      mPythonUtils = pythonlib_inst();
-      mPythonUtils->initPython( mQgisInterface );
-    }
-    else
-    {
-      //using stderr on purpose because we want end users to see this [TS]
-      QgsDebugMsg( "Couldn't resolve python support library's instance() symbol." );
-    }
-  }
-  else
+  if ( !pythonlib.load() )
   {
     //using stderr on purpose because we want end users to see this [TS]
     QgsDebugMsg( "Couldn't load Python support library: " + pythonlib.errorString() );
+    pythonlib.setFileName( pythonlibName );
+    if ( !pythonlib.load() )
+    {
+      qWarning( "Couldn't load Python support library: %s", pythonlib.errorString().toUtf8().data() );
+      return;
+    }
   }
+
+  //QgsDebugMsg("Python support library loaded successfully.");
+  typedef QgsPythonUtils*( *inst )();
+  inst pythonlib_inst = ( inst ) cast_to_fptr( pythonlib.resolve( "instance" ) );
+  if ( !pythonlib_inst )
+  {
+    //using stderr on purpose because we want end users to see this [TS]
+    QgsDebugMsg( "Couldn't resolve python support library's instance() symbol." );
+    return;
+  }
+
+  //QgsDebugMsg("Python support library's instance() symbol resolved.");
+  mPythonUtils = pythonlib_inst();
+  mPythonUtils->initPython( mQgisInterface );
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
@@ -4811,7 +4816,6 @@ void QgisApp::loadPythonSupport()
     mActionPluginSeparator2 = mPluginMenu->addSeparator();
     mPluginMenu->addAction( mActionShowPythonDialog );
     std::cout << "Python support ENABLED :-) " << std::endl; // OK
-
   }
 }
 
