@@ -58,18 +58,14 @@ endif
 define gentemplate
 $(2): $(1)
 	sed \
-		-e "s/{QGIS_ABI}/$(QGIS_ABI)/" \
-		-e "s/{GRASS_ABI}/$(GRASS_ABI)/" $$^ >$$@
+		-e "s/{QGIS_ABI}/$(QGIS_ABI)/g" \
+		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@
 endef
 
-TEMPLATES := $(patsubst %.$(DISTRIBUTION),%,$(wildcard debian/*.$(DISTRIBUTION)))
-TEMPLATES += $(patsubst %.in,%,$(wildcard debian/*.in))
+TEMPLATES := $(foreach t,$(wildcard debian/*.in debian/*.$(DISTRIBUTION)),$(basename $(t)))
 TEMPLATES += $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))
 
-templates: $(TEMPLATES)
-
-$(eval $(call gentemplate,debian/%.$(DISTRIBUTION),debian/%))
-$(eval $(call gentemplate,debian/%.in,debian/%))
+$(foreach t,$(wildcard debian/*.in debian/*.$(DISTRIBUTION)),$(eval $(call gentemplate,$(t),$(basename $(t)))))
 $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(eval $(call gentemplate,$(t),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))))
 
 debian/build/CMakeCache.txt: CMakeLists.txt
@@ -89,7 +85,7 @@ build-stamp: debian/build/CMakeCache.txt
 
 	touch $@
 
-clean: templates
+clean: $(TEMPLATES)
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
@@ -157,4 +153,4 @@ endif
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install templates
+.PHONY: build clean binary-indep binary-arch binary install debian/control
