@@ -102,7 +102,7 @@
 #include "qgsogrsublayersdialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
-#include "qgsgeomtypedialog.h"
+#include "qgsnewvectorlayerdialog.h"
 #include "qgshelpviewer.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslegend.h"
@@ -3139,6 +3139,9 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
 
 void QgisApp::newVectorLayer()
 {
+  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
+  QgsDebugMsg( "newVectorLayer called" );
+  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
 
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
@@ -3148,13 +3151,14 @@ void QgisApp::newVectorLayer()
   QGis::WkbType geometrytype;
   QString fileformat;
 
-  QgsGeomTypeDialog geomDialog( this );
+  QgsNewVectorLayerDialog geomDialog( this );
   if ( geomDialog.exec() == QDialog::Rejected )
   {
     return;
   }
   geometrytype = geomDialog.selectedType();
   fileformat = geomDialog.selectedFileFormat();
+  QgsDebugMsg ( QString( "New file format will be: %1" ).arg( fileformat ) );
 
   std::list<std::pair<QString, QString> > attributes;
   geomDialog.attributes( attributes );
@@ -3260,6 +3264,9 @@ void QgisApp::newVectorLayer()
   fileNames.append( fileName );
   //todo: the last parameter will change accordingly to layer type
   addVectorLayers( fileNames, enc, "file" );
+  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
+  QgsDebugMsg( "newVectorLayer done!" );
+  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
 }
 
 void QgisApp::fileOpen()
