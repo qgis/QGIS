@@ -6,11 +6,12 @@
 // commented values values shown here are defaults
 // there is no need to set *everything* here.
 
+// SDKSYS must be set to valid value
 //SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
-//ARCHS = $(NATIVE_ARCH)  // ppc i386 ppc64 x86_64
-//ARCHS = ppc i386 // for universal
+// default to universal, per system; space-separated list
+//ARCHS = $(ARCHS_$(SDKSYS)) // ppc i386 ppc64 x86_64
 
-// python archs may be different
+// python archs use ; separator, must match what's in ARCHS
 //ARCHS_P = $(ARCH_P_$(SDKSYS)) // in the form arch1;arch2;...
 
 //////////////////////////////////////////////////////////////////////
@@ -150,9 +151,9 @@
 //SPATIALITE_LIBADD = $(GEOS_LIB) $(PROJ_LIB)
 
 //PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/$(PYTHON_VERSION)
-//PYTHON_BIN = $(PYTHON_BIN_$(PYTHON_FORM))
-//PYTHON_USRBIN = $(PYTHON_USRBIN_$(PYTHON_FORM))
+//PYTHON_BIN = $(PYTHON_BIN_$(PYTHON_FORM)) // Python executables
+//PYTHON_USRBIN = $(PYTHON_USRBIN_$(PYTHON_FORM)) // User-installed executables
 //PYTHON_INC = $(PYTHON_PREFIX)/Headers
 //PYTHON_LIB = -framework Python // must always be framework, full path will work
-//PYSITE = $(PYSITE_$(PYTHON_FORM))
+//PYSITE = $(PYSITE_$(PYTHON_FORM)) // site-packages
 //PYTHON = $(PYTHON_PREFIX)/bin/python

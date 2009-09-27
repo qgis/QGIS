@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1038
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf110
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Monaco;}
 {\colortbl;\red255\green255\blue255;}
 \vieww10500\viewh12500\viewkind0
@@ -10,7 +10,7 @@
 \b0\fs24 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\i \cf0 2.1.7	2009-5-8\
+\i \cf0 2.2.1	2009-9-27\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \i0 \cf0 \
@@ -90,13 +90,15 @@ The xcconfig file is a simple text file with environment variables and values, a
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \ul Defaults\
 \ulnone \
-The default configuration is for the native architecture, without using a system SDK.  GDAL, PROJ, GEOS and SQLite frameworks are used.  Spatialite is expected in the SQLite framework.  Postgres and GSL are expected in default /usr/local builds.  Expat is from the system on Leopard and above, and is expected in /usr/local on Tiger.  GRASS support is from a GRASS-6.4.app application.  The python.org Python framework is used on Tiger, and the system Python is used on Leopard and above.\
+The default configuration is for a universal build, with the Leopard (10.5) SDK.  GDAL, PROJ, GEOS and SQLite frameworks are used.  Spatialite is expected in the SQLite framework.  Postgres and GSL are expected in default /usr/local builds.  Expat is from the system on Leopard and above, and is expected in /usr/local on Tiger.  GRASS support is from a GRASS-6.4.app application.  The python.org Python framework is used on Tiger, and the system Python is used on Leopard and above.\
 \
 By default, Qt, GSL, the Postgres client library are bundled in the Qgis application.\
 \
 \ul Minimal Config\ulnone \
 \
-You must set at least SDKSYS to match the system you are building for.\
+You 
+\b must set at least SDKSYS
+\b0  to match the system you are building for.  Other defaults will adjust automatically to match the SDK.\
 \
 For Tiger, you need to set BISON (see below).\
 \
@@ -126,16 +128,25 @@ ln -s /Users/Shared/unix /Developer/SDKs/MacOSX10.4u.sdk/Users/Shared/unix
 \
 
 \f1\fs20 ARCHS
-\f0\fs24  is a list of which architectures to build, the default is the native arch of your Mac.  Uncomment the universal line if that's what you want.\
-\
+\f0\fs24  is a list of which architectures to build, the default is universal to match the SDK used.  Uncomment and set ARCHS if you want a single arch.  This is a 
+\i space-separated
+\i0  list.\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
-\cf0 \ul Misc Support\
+
+\f1\fs20 \cf0 ARCHS_P
+\f0\fs24  is a list of which architectures to build for Python, this must match the archs in ARCHS.  This one is a 
+\i semicolon-separated
+\i0  list.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+\
+\ul Misc Support\
 \ulnone \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f1\fs20 \cf0 QTDIR
-\f0\fs24  is where the Qt applications and plugins are installed.  
+\f1\fs20 \cf0 QT_PLUGINS_DIR
+\f0\fs24  is where the Qt plugins are installed.  
 \f1\fs20 QTBIN
 \f0\fs24  is where the Qt command-line programs are found.  The default is for a binary installation of Qt.  If built from source, you may need to change these.\
 \
@@ -150,10 +161,6 @@ ln -s /Users/Shared/unix /Developer/SDKs/MacOSX10.4u.sdk/Users/Shared/unix
 
 \f1\fs20 GPSBABEL
 \f0\fs24  is the full path to the gpsbabel CLI program.  Used for bundling gpsbabel.\
-\
-
-\f1\fs20 SIP_system
-\f0\fs24  is the full path to the sip program when installed for the system Python on Leopard.  If the INSTALL instructions are followed to install SIP, this shouldn't need to be changed.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -196,6 +203,16 @@ See detailed dependency notes below.\
 \f0\fs24  forms in the settings.\
 \
 - GRASS - GRASS.app \ul must\ulnone  be installed as it was built.  If it was moved or renamed after installation, GRASS support in Qgis won't work.  This goes for building Qgis as well as running it to use full GRASS support.\
+\
+- Python/SIP/PyQt - this is a complex installation.  Python can be either in the system or separately installed in 
+\f1\fs20 /Library/Frameworks
+\f0\fs24 .  SIP/PyQt has both binary program and Python components.  Programs and Python modules will be installed inside the Python framework for a 
+\f1\fs20 /Library/Frameworks
+\f0\fs24  install.  But the system Python has a user location for Python modules, and programs should be installed elsewhere, like /usr/local/bin (follow the Qgis install instructions for SIP/PyQt).\
+\
+SIP/PyQt programs are found with the 
+\f1\fs20 PYTHON_USRBIN
+\f0\fs24  setting.  This is automatic if you follow the Qgis SIP/PyQt install instructions.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -243,8 +260,10 @@ For a complete clean, trash the build folder from the project folder (NOT from t
 
 \b0 \cf0 \
 When finished building, The final \ul Qgis.app\ulnone  is put in the 
-\f1\fs20 mac/xcode/build/[SDKSYS/]Release
-\f0\fs24  folder.\
+\f1\fs20 mac/xcode/build/[SDKSYS]/Release
+\f0\fs24  (or 
+\f1\fs20 /Debug
+\f0\fs24 ) folder.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
