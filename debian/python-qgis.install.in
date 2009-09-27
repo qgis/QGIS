@@ -1,4 +1,4 @@
 usr/lib/python*/{dist,site}-packages/qgis/__init__.py
 usr/lib/python*/{dist,site}-packages/qgis/qgisconfig.py
 usr/lib/python*/{dist,site}-packages/qgis/*.so
-usr/lib/libqgispython.so*
+usr/lib/libqgispython.so.{QGIS_ABI}
