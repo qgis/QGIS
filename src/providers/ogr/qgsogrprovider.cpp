@@ -1383,6 +1383,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
                                        QGis::WkbType vectortype,
                                        const std::list<std::pair<QString, QString> >& attributes )
 {
+  QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ));
   OGRSFDriverH driver;
   QgsApplication::registerOgrDrivers();
   driver = OGRGetDriverByName( format.toAscii() );
