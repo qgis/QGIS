@@ -326,7 +326,7 @@
 		7209F4350F3A468C003DC336 /* qgsdbfilterproxymodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6050F39E57A003DC336 /* qgsdbfilterproxymodel.cpp */; };
 		7209F4360F3A468C003DC336 /* qgsdbtablemodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6090F39E57A003DC336 /* qgsdbtablemodel.cpp */; };
 		7209F4370F3A468C003DC336 /* qgsdelattrdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60B0F39E57A003DC336 /* qgsdelattrdialog.cpp */; };
-		7209F4380F3A468C003DC336 /* qgsgeomtypedialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60D0F39E57A003DC336 /* qgsgeomtypedialog.cpp */; };
+		7209F4380F3A468C003DC336 /* qgsnewvectorlayerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60D0F39E57A003DC336 /* qgsnewvectorlayerdialog.cpp */; };
 		7209F4390F3A468C003DC336 /* qgsgraduatedsymboldialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60F0F39E57A003DC336 /* qgsgraduatedsymboldialog.cpp */; };
 		7209F43A0F3A468C003DC336 /* qgshelpviewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6110F39E57A003DC336 /* qgshelpviewer.cpp */; };
 		7209F43B0F3A468C003DC336 /* qgsidentifyresults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6130F39E57A003DC336 /* qgsidentifyresults.cpp */; };
@@ -1254,7 +1254,7 @@
 		7292888E0F71FE65006D9489 /* qgsdbsourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6080F39E57A003DC336 /* qgsdbsourceselect.h */; };
 		7292888F0F71FE65006D9489 /* qgsdbtablemodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60A0F39E57A003DC336 /* qgsdbtablemodel.h */; };
 		729288900F71FE65006D9489 /* qgsdelattrdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60C0F39E57A003DC336 /* qgsdelattrdialog.h */; };
-		729288910F71FE65006D9489 /* qgsgeomtypedialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60E0F39E57A003DC336 /* qgsgeomtypedialog.h */; };
+		729288910F71FE65006D9489 /* qgsnewvectorlayerdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60E0F39E57A003DC336 /* qgsnewvectorlayerdialog.h */; };
 		729288920F71FE65006D9489 /* qgsgraduatedsymboldialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6100F39E57A003DC336 /* qgsgraduatedsymboldialog.h */; };
 		729288930F71FE65006D9489 /* qgshelpviewer.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6120F39E57A003DC336 /* qgshelpviewer.h */; };
 		729288940F71FE65006D9489 /* qgsidentifyresults.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6140F39E57A003DC336 /* qgsidentifyresults.h */; };
@@ -4087,8 +4087,8 @@
 		7209E60A0F39E57A003DC336 /* qgsdbtablemodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsdbtablemodel.h; path = ../../src/app/qgsdbtablemodel.h; sourceTree = SOURCE_ROOT; };
 		7209E60B0F39E57A003DC336 /* qgsdelattrdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsdelattrdialog.cpp; path = ../../src/app/qgsdelattrdialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209E60C0F39E57A003DC336 /* qgsdelattrdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsdelattrdialog.h; path = ../../src/app/qgsdelattrdialog.h; sourceTree = SOURCE_ROOT; };
-		7209E60D0F39E57A003DC336 /* qgsgeomtypedialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeomtypedialog.cpp; path = ../../src/app/qgsgeomtypedialog.cpp; sourceTree = SOURCE_ROOT; };
-		7209E60E0F39E57A003DC336 /* qgsgeomtypedialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeomtypedialog.h; path = ../../src/app/qgsgeomtypedialog.h; sourceTree = SOURCE_ROOT; };
+		7209E60D0F39E57A003DC336 /* qgsnewvectorlayerdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsnewvectorlayerdialog.cpp; path = ../../src/app/qgsnewvectorlayerdialog.cpp; sourceTree = SOURCE_ROOT; };
+		7209E60E0F39E57A003DC336 /* qgsnewvectorlayerdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsnewvectorlayerdialog.h; path = ../../src/app/qgsnewvectorlayerdialog.h; sourceTree = SOURCE_ROOT; };
 		7209E60F0F39E57A003DC336 /* qgsgraduatedsymboldialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgraduatedsymboldialog.cpp; path = ../../src/app/qgsgraduatedsymboldialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6100F39E57A003DC336 /* qgsgraduatedsymboldialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgraduatedsymboldialog.h; path = ../../src/app/qgsgraduatedsymboldialog.h; sourceTree = SOURCE_ROOT; };
 		7209E6110F39E57A003DC336 /* qgshelpviewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgshelpviewer.cpp; path = ../../src/app/qgshelpviewer.cpp; sourceTree = SOURCE_ROOT; };
@@ -4883,7 +4883,7 @@
 		7209EC9F0F39E57B003DC336 /* qgsdelattrdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsdelattrdialogbase.ui; path = ../../src/ui/qgsdelattrdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECA00F39E57B003DC336 /* qgsdetaileditemwidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsdetaileditemwidgetbase.ui; path = ../../src/ui/qgsdetaileditemwidgetbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECA10F39E57B003DC336 /* qgsgenericprojectionselectorbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgenericprojectionselectorbase.ui; path = ../../src/ui/qgsgenericprojectionselectorbase.ui; sourceTree = SOURCE_ROOT; };
-		7209ECA20F39E57B003DC336 /* qgsgeomtypedialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgeomtypedialogbase.ui; path = ../../src/ui/qgsgeomtypedialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7209ECA20F39E57B003DC336 /* qgsnewvectorlayerdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsnewvectorlayerdialogbase.ui; path = ../../src/ui/qgsnewvectorlayerdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECA30F39E57B003DC336 /* qgsgraduatedsymboldialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgraduatedsymboldialogbase.ui; path = ../../src/ui/qgsgraduatedsymboldialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECA40F39E57B003DC336 /* qgshelpviewerbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgshelpviewerbase.ui; path = ../../src/ui/qgshelpviewerbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECA50F39E57B003DC336 /* qgsidentifyresultsbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsidentifyresultsbase.ui; path = ../../src/ui/qgsidentifyresultsbase.ui; sourceTree = SOURCE_ROOT; };
@@ -7815,8 +7815,8 @@
 				7209E60A0F39E57A003DC336 /* qgsdbtablemodel.h */,
 				7209E60B0F39E57A003DC336 /* qgsdelattrdialog.cpp */,
 				7209E60C0F39E57A003DC336 /* qgsdelattrdialog.h */,
-				7209E60D0F39E57A003DC336 /* qgsgeomtypedialog.cpp */,
-				7209E60E0F39E57A003DC336 /* qgsgeomtypedialog.h */,
+				7209E60D0F39E57A003DC336 /* qgsnewvectorlayerdialog.cpp */,
+				7209E60E0F39E57A003DC336 /* qgsnewvectorlayerdialog.h */,
 				7209E60F0F39E57A003DC336 /* qgsgraduatedsymboldialog.cpp */,
 				7209E6100F39E57A003DC336 /* qgsgraduatedsymboldialog.h */,
 				7209E6110F39E57A003DC336 /* qgshelpviewer.cpp */,
@@ -9226,7 +9226,7 @@
 				7209EC9F0F39E57B003DC336 /* qgsdelattrdialogbase.ui */,
 				7209ECA00F39E57B003DC336 /* qgsdetaileditemwidgetbase.ui */,
 				7209ECA10F39E57B003DC336 /* qgsgenericprojectionselectorbase.ui */,
-				7209ECA20F39E57B003DC336 /* qgsgeomtypedialogbase.ui */,
+				7209ECA20F39E57B003DC336 /* qgsnewvectorlayerdialogbase.ui */,
 				7209ECA30F39E57B003DC336 /* qgsgraduatedsymboldialogbase.ui */,
 				7209ECA40F39E57B003DC336 /* qgshelpviewerbase.ui */,
 				7209ECA50F39E57B003DC336 /* qgsidentifyresultsbase.ui */,
@@ -14408,7 +14408,7 @@
 				7209F4350F3A468C003DC336 /* qgsdbfilterproxymodel.cpp in Sources */,
 				7209F4360F3A468C003DC336 /* qgsdbtablemodel.cpp in Sources */,
 				7209F4370F3A468C003DC336 /* qgsdelattrdialog.cpp in Sources */,
-				7209F4380F3A468C003DC336 /* qgsgeomtypedialog.cpp in Sources */,
+				7209F4380F3A468C003DC336 /* qgsnewvectorlayerdialog.cpp in Sources */,
 				7209F4390F3A468C003DC336 /* qgsgraduatedsymboldialog.cpp in Sources */,
 				7209F43A0F3A468C003DC336 /* qgshelpviewer.cpp in Sources */,
 				7209F43B0F3A468C003DC336 /* qgsidentifyresults.cpp in Sources */,
@@ -14498,7 +14498,7 @@
 				7292888E0F71FE65006D9489 /* qgsdbsourceselect.h in Sources */,
 				7292888F0F71FE65006D9489 /* qgsdbtablemodel.h in Sources */,
 				729288900F71FE65006D9489 /* qgsdelattrdialog.h in Sources */,
-				729288910F71FE65006D9489 /* qgsgeomtypedialog.h in Sources */,
+				729288910F71FE65006D9489 /* qgsnewvectorlayerdialog.h in Sources */,
 				729288920F71FE65006D9489 /* qgsgraduatedsymboldialog.h in Sources */,
 				729288930F71FE65006D9489 /* qgshelpviewer.h in Sources */,
 				729288940F71FE65006D9489 /* qgsidentifyresults.h in Sources */,
@@ -17543,7 +17543,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20090918;
+				QGIS_VERSION_BUILD = 20090927;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -17554,7 +17554,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20090918;
+				QGIS_VERSION_BUILD = 20090927;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
