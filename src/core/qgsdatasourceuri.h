@@ -57,6 +57,10 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aPassword,
                         SSLmode sslmode = SSLprefer );
 
+    //! Set database
+    // \note added in 1.4
+    void setDatabase( const QString &database );
+
     //! Set all data source related members at once
     void setDataSource( const QString& aSchema,
                         const QString& aTable,

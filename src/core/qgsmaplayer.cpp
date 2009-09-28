@@ -40,6 +40,7 @@
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
+#include "qgsvectorlayer.h"
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
@@ -145,14 +146,30 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 
   QDomElement element = layer_node.toElement();
 
-  // XXX not needed? QString type = element.attribute("type");
+  QDomNode mnl;
+  QDomElement mne;
+
+  // read provider
+  QString provider;
+  mnl = layer_node.namedItem( "provider" );
+  mne = mnl.toElement();
+  provider = mne.text();
 
   // set data source
-  QDomNode mnl = layer_node.namedItem( "datasource" );
-  QDomElement mne = mnl.toElement();
+  mnl = layer_node.namedItem( "datasource" );
+  mne = mnl.toElement();
   mDataSource = mne.text();
 
-  mDataSource = QgsProject::instance()->readPath( mDataSource );
+  if ( provider == "spatialite" )
+  {
+    QgsDataSourceURI uri( mDataSource );
+    uri.setDatabase( QgsProject::instance()->readPath( uri.database() ) );
+    mDataSource = uri.uri();
+  }
+  else
+  {
+    mDataSource = QgsProject::instance()->readPath( mDataSource );
+  }
 
   // Set the CRS from project file, asking the user if necessary.
   // Make it the saved CRS to have WMS layer projected correctly.
@@ -268,7 +285,18 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   QString src = source();
 
-  src = QgsProject::instance()->writePath( src );
+  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( this );
+  if ( vlayer && vlayer->providerType() == "spatialite" )
+  {
+    QgsDataSourceURI uri( src );
+    QString database = QgsProject::instance()->writePath( uri.database() );
+    uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
+    src = uri.uri();
+  }
+  else
+  {
+    src = QgsProject::instance()->writePath( src );
+  }
 
   QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
