@@ -195,15 +195,21 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="2" >
-           <widget class="QLabel" name="textLabel1_5" >
-            <property name="text" >
-             <string>&lt;b>Note: &lt;/b>Theme changes take effect the next time QGIS is started</string>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
-            <property name="alignment" >
-             <set>Qt::AlignVCenter</set>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
             </property>
-           </widget>
-          </item>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>10</height>
+             </size>
+            </property>
+           </spacer>
+          </item>          
           <item row="2" column="0" colspan="2" >
            <widget class="QCheckBox" name="capitaliseCheckBox" >
             <property name="text" >
@@ -782,7 +788,7 @@
           <item row="1" column="0" colspan="2" >
            <widget class="QLabel" name="mDefaultSnappingToleranceTextLabel" >
             <property name="text" >
-             <string>Default snapping tolerance in layer units</string>
+             <string>Default snapping tolerance</string>
             </property>
            </widget>
           </item>
@@ -812,7 +818,7 @@
           <item row="2" column="0" colspan="3" >
            <widget class="QLabel" name="mVertexSearchRadiusVertexEditLabel" >
             <property name="text" >
-             <string>Search radius for vertex edits in layer units</string>
+             <string>Search radius for vertex edits</string>
             </property>
            </widget>
           </item>
