@@ -1863,13 +1863,13 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
         <source>Show type description</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż opis typu</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="81"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="84"/>
         <source>Shows brief description of selected relation type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż krótki opis typu wybranej relcji.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="87"/>
@@ -1888,7 +1888,8 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="135"/>
         <source>Generate tags</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>znaczniki? etykiety? tagi?</translatorcomment>
+        <translation>Wygeneruj tagi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="138"/>
@@ -1899,23 +1900,23 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="151"/>
         <source>Remove all selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń wszystkie wybrane tagi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="154"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="157"/>
         <source>Removes all selected tags.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuwa wszystkie wybrane tagi.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="185"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Elelmenty</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="205"/>
         <source>Select member on map</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaż element na mapie</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="208"/>
@@ -1926,13 +1927,13 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="224"/>
         <source>Remove all selected members</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń wszystkie wybrane elementy</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="227"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="230"/>
         <source>Removes all selected members.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuwa wybrane elementy.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="305"/>
@@ -6692,12 +6693,12 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="440"/>
         <source>An immutable attribute is read-only - the user is not able to modify the contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Atrybut niezmienny jest tylko do odczytu - użytkownik nie ma prawa do modyfikowania zawartości.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="467"/>
         <source>A hidden attribute will be invisible - the user is not able to see it&apos;s contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukryty atrybut będzie niewidoczny- użytkownik nie ma prawa oglądać jego zawartości.</translation>
     </message>
     <message>
         <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
@@ -12803,7 +12804,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsidentifyresults.cpp" line="181"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="291"/>
         <source>(Actions)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Akcje)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="261"/>
@@ -12829,12 +12830,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="386"/>
         <source>Expand all</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozwiń wszystkie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="390"/>
         <source>Collapse all</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwiń wszystkie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="403"/>
@@ -14295,22 +14296,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak obiektu punktowego</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie wykryto obiektu punktowego w miejscu kliknięcia. Kliknij bliżej obiektu lub dostosuj tolerancję wyszukiwania w oknie Ustawienia -&gt; Opcje -&gt; Digitalizacja -&gt; Promień wyszukiwania przy edycji wierzchołków</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>No rotation Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak atrybutów rotacji</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktywna warstwa punktowa nie zawiera atrybutu rotacji</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="185"/>
@@ -16072,12 +16073,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="785"/>
         <source>Default snapping tolerance in layer units</source>
-        <translation>Domyślna tolerancja przyciągania w jednostkach warstwy</translation>
+        <translation>Domyślna tolerancja przyciągania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="815"/>
         <source>Search radius for vertex edits in layer units</source>
-        <translation>Promień wyszukiwania przy edycji wierzchołków w jednostkach warstwy</translation>
+        <translation>Promień wyszukiwania przy edycji wierzchołków</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="888"/>
@@ -19902,12 +19903,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="33"/>
         <source>Ruggedness index</source>
-        <translation type="unfinished"></translation>
+        <translation>Indeks szorstkości</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="34"/>
         <source>Total curvature</source>
-        <translation type="unfinished"></translation>
+        <translation>Krzywizna całkowita</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="127"/>
@@ -19975,12 +19976,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="101"/>
         <source>Ruggedness index</source>
-        <translation type="unfinished"></translation>
+        <translation>Indeks szorstkości</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="105"/>
         <source>Total curvature</source>
-        <translation type="unfinished"></translation>
+        <translation>Krzywizna całkowita</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="112"/>
