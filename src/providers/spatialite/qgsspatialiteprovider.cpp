@@ -99,10 +99,10 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri ): QgsVectorDat
   }
   //fill type names into sets
   mNativeTypes
-  << QgsVectorDataProvider::NativeType( tr( "BLOB" ), "SQLITE_BLOB", QVariant::ByteArray )
+  << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), "SQLITE_BLOB", QVariant::ByteArray )
   << QgsVectorDataProvider::NativeType( tr( "Text" ), "SQLITE_TEXT", QVariant::String )
-  << QgsVectorDataProvider::NativeType( tr( "Double" ), "SQLITE_FLOAT", QVariant::Double, 0, 20, 0, 20 )
-  << QgsVectorDataProvider::NativeType( tr( "Integer" ), "SQLITE_INTEGER", QVariant::LongLong, 0, 20 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "SQLITE_FLOAT", QVariant::Double, 0, 20, 0, 20 )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "SQLITE_INTEGER", QVariant::LongLong, 0, 20 )
   ;
 }
 

@@ -228,20 +228,20 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   //fill type names into sets
   mNativeTypes
   // integer types
-  << QgsVectorDataProvider::NativeType( tr( "smallint (16bit)" ), "int2", QVariant::Int )
-  << QgsVectorDataProvider::NativeType( tr( "integer (32bit)" ), "int4", QVariant::Int )
-  << QgsVectorDataProvider::NativeType( tr( "integer (64bit)" ), "int8", QVariant::LongLong )
-  << QgsVectorDataProvider::NativeType( tr( "numeric" ), "numeric", QVariant::LongLong, 1, 20, 0, 20 )
-  << QgsVectorDataProvider::NativeType( tr( "decimal" ), "decimal", QVariant::LongLong, 1, 20, 0, 20 )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (smallint - 16bit)" ), "int2", QVariant::Int )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 32bit)" ), "int4", QVariant::Int )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64bit)" ), "int8", QVariant::LongLong )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), "numeric", QVariant::LongLong, 1, 20, 0, 20 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "decimal", QVariant::LongLong, 1, 20, 0, 20 )
 
   // floating point
-  << QgsVectorDataProvider::NativeType( tr( "real" ), "real", QVariant::Double )
-  << QgsVectorDataProvider::NativeType( tr( "double" ), "double precision", QVariant::Double )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "real", QVariant::Double )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double )
 
   // string types
-  << QgsVectorDataProvider::NativeType( tr( "char" ), "char", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "varchar" ), "varchar", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "text" ), "text", QVariant::String )
+  << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "Text, variable length (varchar)" ), "varchar", QVariant::String, 1, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "Text (text)" ), "text", QVariant::String )
   ;
 
   if ( primaryKey.isEmpty() )
