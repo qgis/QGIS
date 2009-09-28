@@ -49,16 +49,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri ): QgsVectorDat
   // parsing members from the uri structure
   mTableName = mUri.table();
   geometryColumn = mUri.geometryColumn();
-
-  // extracting the DB path
-  int idx = uri.indexOf( "dbname='" );
-  if ( idx >= 0 )
-    mSqlitePath = uri.mid( idx + 8 );
-  else
-    mSqlitePath = uri;
-  idx = mSqlitePath.indexOf( "' table=" );
-  if ( idx > 0 )
-    mSqlitePath.truncate( idx );
+  mSqlitePath = mUri.database();
 
   // trying to open the SQLite DB
   spatialite_init( 0 );

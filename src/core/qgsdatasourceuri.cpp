@@ -432,3 +432,8 @@ void QgsDataSourceURI::setDataSource( const QString &schema,
   mSql = sql;
   mKeyColumn = keyColumn;
 }
+
+void QgsDataSourceURI::setDatabase( const QString &database )
+{
+  mDatabase = database;
+}

@@ -1373,6 +1373,11 @@ QString QgsProject::readPath( QString src ) const
     projElems.removeAt( pos - 1 );
   }
 
+#if !defined(Q_OS_WIN)
+  // make path absolute
+  projElems.prepend( "" );
+#endif
+
   return projElems.join( "/" );
 }
 
