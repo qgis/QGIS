@@ -74,6 +74,13 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       */
     virtual bool featureAtId( int featureId,
                               QgsFeature & feature, bool fetchGeometry = true, QgsAttributeList fetchAttributes = QgsAttributeList() );
+
+    /** Accessor for sql where clause used to limit dataset */
+    virtual QString subsetString();
+
+    /** mutator for sql where clause used to limit dataset size */
+    virtual void setSubsetString( QString theSQL );
+
     /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
      *  @param fetchAttributes list of attributes which should be fetched
      *  @param rect spatial filter
@@ -285,6 +292,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       * SQLite statement handle
      */
     sqlite3_stmt *sqliteStatement;
+    /**
+     * String used to define a subset of the layer
+     */
+    QString mSubsetString;
     /**
        * Spatial reference id of the layer
        */
