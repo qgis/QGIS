@@ -17,6 +17,7 @@
 /* $Id$ */
 
 #include "qgscomposerpicture.h"
+#include "qgsproject.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileInfo>
@@ -209,7 +210,7 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
     return false;
   }
   QDomElement composerPictureElem = doc.createElement( "ComposerPicture" );
-  composerPictureElem.setAttribute( "file", mSourceFile.fileName() );
+  composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourceFile.fileName() ) );
   composerPictureElem.setAttribute( "rotation", QString::number( mRotation ) );
   _writeXML( composerPictureElem, doc );
   elem.appendChild( composerPictureElem );
@@ -233,7 +234,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   mDefaultSvgSize = QSize( 0, 0 );
   mCachedDpi = 0;
 
-  QString fileName = itemElem.attribute( "file" );
+  QString fileName = QgsProject::instance()->readPath( itemElem.attribute( "file" ) );
   setPictureFile( fileName );
 
   mRotation = itemElem.attribute( "rotation" ).toDouble();
