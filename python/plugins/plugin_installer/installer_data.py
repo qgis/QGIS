@@ -85,7 +85,9 @@ authorRepos  = [("Carson Farmer's Repository", "http://www.ftools.ca/cfarmerQgis
                 ("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com", ""),
                 ("Barry Rowlingson's Repository", "http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml", ""),
                 ("Volkan Kepoglu's Repository","http://ggit.metu.edu.tr/~volkan/plugins.xml", ""),
-                ("GIS-Lab Repository",         "http://gis-lab.info/programs/qgis/qgis-repo.xml", "")]
+                ("GIS-Lab Repository",         "http://gis-lab.info/programs/qgis/qgis-repo.xml", ""),
+                ("Marco Hugentobler's Repository","http://karlinapp.ethz.ch/python_plugins/python_plugins.xml", ""),
+                ("Sourcepole Repository",      "http://build.sourcepole.ch/qgis/plugins.xml", "")]
 
 
 
