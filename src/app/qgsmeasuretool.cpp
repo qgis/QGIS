@@ -44,6 +44,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   mRightMouseClicked = false;
 
   mDialog = new QgsMeasureDialog( this );
+  mSnapper.setMapCanvas( canvas );
 }
 
 QgsMeasureTool::~QgsMeasureTool()
@@ -130,7 +131,7 @@ void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
     if ( mRightMouseClicked )
       mDialog->restart();
 
-    QgsPoint  idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+    QgsPoint idPoint = snapPoint( e->pos() );
     mDialog->mousePress( idPoint );
   }
 }
@@ -140,12 +141,7 @@ void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
   if ( !mRightMouseClicked )
   {
     QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-    QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->pos().x(), e->pos().y() );
-
-    if ( vl )
-    {
-      vl->snapPoint( point, QgsTolerance::defaultTolerance( vl, mCanvas->mapRenderer() ) );
-    }
+    QgsPoint point = snapPoint( e->pos() );
 
     mRubberBand->movePoint( point );
     mDialog->mouseMove( point );
@@ -156,12 +152,7 @@ void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
 void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
 {
   QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->pos().x(), e->pos().y() );
-
-  if ( vl )
-  {
-    vl->snapPoint( point, QgsTolerance::defaultTolerance( vl, mCanvas->mapRenderer() ) );
-  }
+  QgsPoint point = snapPoint( e->pos() );
 
   if ( e->button() == Qt::RightButton && ( e->buttons() & Qt::LeftButton ) == 0 ) // restart
   {
@@ -193,4 +184,17 @@ void QgsMeasureTool::addPoint( QgsPoint &point )
 
   mRubberBand->addPoint( point );
   mDialog->addPoint( point );
+}
+
+QgsPoint QgsMeasureTool::snapPoint( const QPoint& p )
+{
+  QList<QgsSnappingResult> snappingResults;
+  if ( mSnapper.snapToBackgroundLayers( p, snappingResults ) != 0 || snappingResults.size() < 1 )
+  {
+    return mCanvas->getCoordinateTransform()->toMapCoordinates( p );
+  }
+  else
+  {
+    return snappingResults.constBegin()->snappedVertex;
+  }
 }
