@@ -19,6 +19,7 @@
 #define QGSMEASURETOOL_H
 
 #include "qgsmaptool.h"
+#include "qgsmapcanvassnapper.h"
 
 class QgsDistanceArea;
 class QgsMapCanvas;
@@ -88,6 +89,12 @@ class QgsMeasureTool : public QgsMapTool
     //! indicates whether we've recently warned the user about having the wrong
     // project projection
     bool mWrongProjectProjection;
+
+    QgsMapCanvasSnapper mSnapper;
+
+    //! Returns the snapped (map) coordinate
+    //@param p (pixel) coordinate
+    QgsPoint snapPoint( const QPoint& p );
 
 };
 
