@@ -747,7 +747,9 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   mComposition->setPlotStyle( QgsComposition::Print );
 
   QSvgGenerator generator;
+#if QT_VERSION >= 0x040500
   generator.setTitle( QgsProject::instance()->title() );
+#endif
   generator.setFileName( myOutputFileNameQString );
   //width in pixel
   int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
