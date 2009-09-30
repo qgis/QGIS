@@ -62,6 +62,14 @@ class CORE_EXPORT QgsSearchTreeNode
       opMINUS,
       opMUL,
       opDIV,
+      opPOW,
+      opSQRT,
+      opSIN,
+      opCOS,
+      opTAN,
+      opASIN,
+      opACOS,
+      opATAN,
 
       // comparison
       opEQ,   // =
@@ -118,11 +126,10 @@ class CORE_EXPORT QgsSearchTreeNode
     //! returns error message
     const QString& errorMsg() { return mError; }
 
-  protected:
-
     //! returns scalar value of node
     QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes );
 
+  protected:
     //! wrapper around valueAgainst()
     bool getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node,
                    const QgsFieldMap& fields, const QgsAttributeMap& attributes );

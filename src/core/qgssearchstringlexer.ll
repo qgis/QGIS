@@ -68,7 +68,15 @@ string      "'"{str_char}*"'"
 "~"   {  yylval.op = QgsSearchTreeNode::opRegexp; return COMPARISON; }
 "LIKE" { yylval.op = QgsSearchTreeNode::opLike; return COMPARISON; }
 
-[+-/*]    { return yytext[0]; }
+"sqrt" { yylval.op = QgsSearchTreeNode::opSQRT; return FUNCTION;}
+"sin"  { yylval.op = QgsSearchTreeNode::opSIN; return FUNCTION;}
+"cos"  { yylval.op = QgsSearchTreeNode::opCOS; return FUNCTION;}
+"tan"  { yylval.op = QgsSearchTreeNode::opTAN; return FUNCTION;}
+"asin" { yylval.op = QgsSearchTreeNode::opASIN; return FUNCTION;}
+"acos" { yylval.op = QgsSearchTreeNode::opACOS; return FUNCTION;}
+"atan" { yylval.op = QgsSearchTreeNode::opATAN; return FUNCTION;}
+
+[+-/*^]    { return yytext[0]; }
 
 [()]      { return yytext[0]; }
 

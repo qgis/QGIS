@@ -52,7 +52,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 
 %}
 
-%union { QgsSearchTreeNode* node; double number; QgsSearchTreeNode::Operator op; }
+%union { QgsSearchTreeNode* node; double number; QgsSearchTreeNode::Operator op;}
 
 %start root
 
@@ -60,6 +60,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 
 %token <number> NUMBER
 %token <op> COMPARISON
+%token <op> FUNCTION
 
 %token STRING
 %token COLUMN_REF
@@ -82,6 +83,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 // operator precedence
 // all operators have left associativity
 // (right associtativity is used for  assigment)
+%left '^'
 %left '*' '/'
 %left '+' '-'
 %left UMINUS  // fictious symbol (for unary minus)
@@ -94,6 +96,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %%
 
 root: search_cond { /*gParserRootNode = $1;*/ }
+      | scalar_exp {}
     ;
 
 search_cond:
@@ -114,7 +117,9 @@ comp_predicate:
     ;
 
 scalar_exp:
-     scalar_exp '*' scalar_exp    { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opMUL,  $1, $3); joinTmpNodes($$,$1,$3); }
+    FUNCTION '(' scalar_exp ')' {$$ = new QgsSearchTreeNode($1, $3, 0); joinTmpNodes($$, $3, 0);}
+    |  scalar_exp '^' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPOW, $1, $3); joinTmpNodes($$, $1, $3); }
+    | scalar_exp '*' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opMUL,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '/' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opDIV,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '+' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPLUS, $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '-' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opMINUS,$1, $3); joinTmpNodes($$,$1,$3); }
