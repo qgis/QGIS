@@ -181,12 +181,6 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     /** \brief set to true if in state of drawing. Concurrent requests to draw method are returned if set to true */
     bool mDrawing;
 
-    /**Store last scale factor to avoid unnecessary repaints in case preview mode is 'Render'*/
-    double mLastScaleFactorX;
-
-    /**Store the last map extent to decide if cache needs to be updatet*/
-    QgsRectangle mCachedMapExtent;
-
     /**Offset in x direction for showing map cache image*/
     double mXOffset;
     /**Offset in y direction for showing map cache image*/
