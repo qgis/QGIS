@@ -303,6 +303,7 @@ void QgsComposer::open( void )
 void QgsComposer::paintEvent( QPaintEvent* event )
 {
   QMainWindow::paintEvent( event );
+#if 0 //MH: disabled for now as there are segfaults on some systems
   //The cached content of the composer maps need to be recreated it is the first paint event of the composer after reading from XML file.
   //Otherwise the resolution of the composer map is not suitable for screen
   if ( mFirstPaint )
@@ -313,12 +314,13 @@ void QgsComposer::paintEvent( QPaintEvent* event )
       QgsComposerMap* cm = dynamic_cast<QgsComposerMap*>( it.key() );
       if ( cm )
       {
+        mFirstPaint = false;
         cm->cache();
         cm->update();
       }
     }
-    mFirstPaint = false;
   }
+#endif //0
 }
 
 void QgsComposer::activate()
