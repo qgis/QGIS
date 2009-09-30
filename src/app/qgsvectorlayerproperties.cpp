@@ -26,6 +26,7 @@
 #include "qgscontexthelp.h"
 #include "qgscontinuouscolordialog.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfieldcalculator.h"
 #include "qgsgraduatedsymboldialog.h"
 #include "qgslabeldialog.h"
 #include "qgslabel.h"
@@ -92,6 +93,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
   mDeleteAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mToggleEditingButton->setIcon( QgisApp::getThemeIcon( "/mActionToggleEditing.png" ) );
+  mCalculateFieldButton->setIcon( QgisApp::getThemeIcon( "/mActionCalculateField.png" ) );
 
 
   // Create the Label dialog tab
@@ -356,6 +358,7 @@ void QgsVectorLayerProperties::updateButtons()
     int cap = layer->dataProvider()->capabilities();
     mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
     mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
+    mCalculateFieldButton->setEnabled(( cap &  QgsVectorDataProvider::AddAttributes ) && ( cap & QgsVectorDataProvider::ChangeAttributeValues ) );
     mToggleEditingButton->setChecked( true );
   }
   else
@@ -363,6 +366,7 @@ void QgsVectorLayerProperties::updateButtons()
     mAddAttributeButton->setEnabled( false );
     mDeleteAttributeButton->setEnabled( false );
     mToggleEditingButton->setChecked( false );
+    mCalculateFieldButton->setEnabled( false );
   }
 }
 
@@ -1114,6 +1118,17 @@ void QgsVectorLayerProperties::on_tblAttributes_cellChanged( int row, int column
       layer->addAttributeAlias( idx, aliasItem->text() );
     }
   }
+}
+
+void QgsVectorLayerProperties::on_mCalculateFieldButton_clicked()
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  QgsFieldCalculator calc( layer );
+  calc.exec();
 }
 
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const
