@@ -407,25 +407,25 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
         default:
           return QgsSearchTreeValue( 3, QString::number( mOp ) ); // unknown operator
         case opPOW:
-          if (( val1 == 0 && val2 < 0 ) || ( val2 < 0 && ( val2 - std::floor( val2 ) ) > 0 ) )
+          if (( val1 == 0 && val2 < 0 ) || ( val2 < 0 && ( val2 - floor( val2 ) ) > 0 ) )
           {
             return QgsSearchTreeValue( 4, "Error in power function" );
           }
-          return QgsSearchTreeValue( std::pow( val1, val2 ) );
+          return QgsSearchTreeValue( pow( val1, val2 ) );
         case opSQRT:
-          return QgsSearchTreeValue( std::sqrt( val1 ) );
+          return QgsSearchTreeValue( sqrt( val1 ) );
         case opSIN:
-          return QgsSearchTreeValue( std::sin( val1 ) );
+          return QgsSearchTreeValue( sin( val1 ) );
         case opCOS:
-          return QgsSearchTreeValue( std::cos( val1 ) );
+          return QgsSearchTreeValue( cos( val1 ) );
         case opTAN:
-          return QgsSearchTreeValue( std::tan( val1 ) );
+          return QgsSearchTreeValue( tan( val1 ) );
         case opASIN:
-          return QgsSearchTreeValue( std::asin( val1 ) );
+          return QgsSearchTreeValue( asin( val1 ) );
         case opACOS:
-          return QgsSearchTreeValue( std::acos( val1 ) );
+          return QgsSearchTreeValue( acos( val1 ) );
         case opATAN:
-          return QgsSearchTreeValue( std::atan( val1 ) );
+          return QgsSearchTreeValue( atan( val1 ) );
       }
     }
 
