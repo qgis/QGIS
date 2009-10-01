@@ -45,7 +45,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
   {
     QVariant::Type type = it->type();
-    if ( type == QVariant::Int || type == QVariant::Double )
+    if ( type == QVariant::Int || type == QVariant::Double || type == QVariant::LongLong )
     {
       displayName = mVectorLayer->attributeDisplayName( it.key() );
       classificationComboBox->addItem( displayName, it.key() );
