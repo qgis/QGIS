@@ -31,6 +31,7 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
   public slots:
     void accept();
 
+    void on_mUpdateExistingFieldCheckBox_stateChanged( int state );
     void on_mFieldsListWidget_itemDoubleClicked( QListWidgetItem * item );
     void on_mValueListWidget_itemDoubleClicked( QListWidgetItem * item );
     void on_mPlusPushButton_clicked();
