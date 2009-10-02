@@ -1,95 +1,115 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" >
  <class>QgsFieldCalculatorBase</class>
- <widget class="QDialog" name="QgsFieldCalculatorBase">
-  <property name="geometry">
+ <widget class="QDialog" name="QgsFieldCalculatorBase" >
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>383</width>
-    <height>496</height>
+    <width>615</width>
+    <height>628</height>
    </rect>
   </property>
-  <property name="windowTitle">
+  <property name="windowTitle" >
    <string>Field calculator</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
-   <item row="0" column="0">
-    <widget class="QLabel" name="mFieldNameLabel">
-     <property name="text">
-      <string>Output field name:</string>
+  <layout class="QGridLayout" name="gridLayout_5" >
+   <item row="0" column="0" >
+    <widget class="QCheckBox" name="mUpdateExistingFieldCheckBox" >
+     <property name="text" >
+      <string>Update existing field</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QLineEdit" name="mOutputFieldNameLineEdit"/>
+   <item row="0" column="1" colspan="2" >
+    <widget class="QComboBox" name="mExistingFieldComboBox" />
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mOutputFieldTypeLabel">
-     <property name="text">
-      <string>Output field type:</string>
+   <item row="1" column="0" colspan="3" >
+    <widget class="QCheckBox" name="mOnlyUpdateSelectedCheckBox" >
+     <property name="text" >
+      <string>Only update selected features</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QComboBox" name="mOutputFieldTypeComboBox"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mOutputFieldWidthLabel">
-     <property name="text">
-      <string>Output field width:</string>
+   <item row="2" column="0" colspan="3" >
+    <widget class="QGroupBox" name="mNewFieldGroupBox" >
+     <property name="title" >
+      <string>New field</string>
      </property>
+     <layout class="QGridLayout" name="gridLayout_3" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="mFieldNameLabel" >
+        <property name="text" >
+         <string>Output field name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="3" >
+       <widget class="QLineEdit" name="mOutputFieldNameLineEdit" />
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="mOutputFieldTypeLabel" >
+        <property name="text" >
+         <string>Output field type:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="3" >
+       <widget class="QComboBox" name="mOutputFieldTypeComboBox" />
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="mOutputFieldWidthLabel" >
+        <property name="text" >
+         <string>Output field width:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QSpinBox" name="mOuputFieldWidthSpinBox" />
+      </item>
+      <item row="2" column="2" >
+       <widget class="QLabel" name="mOutputFieldPrecisionLabel" >
+        <property name="text" >
+         <string>Output field precision:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" >
+       <widget class="QSpinBox" name="mOutputFieldPrecisionSpinBox" />
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QSpinBox" name="mOuputFieldWidthSpinBox"/>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLabel" name="mOutputFieldPrecisionLabel">
-     <property name="text">
-      <string>Output field precision:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <widget class="QSpinBox" name="mOutputFieldPrecisionSpinBox"/>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="mFieldsGroupBox">
-     <property name="title">
+   <item row="3" column="0" colspan="2" >
+    <widget class="QGroupBox" name="mFieldsGroupBox" >
+     <property name="title" >
       <string>Fields</string>
      </property>
-     <widget class="QListWidget" name="mFieldsListWidget">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>221</width>
-        <height>151</height>
-       </rect>
-      </property>
-     </widget>
+     <layout class="QGridLayout" name="gridLayout_4" >
+      <item row="0" column="0" >
+       <widget class="QListWidget" name="mFieldsListWidget" />
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="3" column="2" colspan="2">
-    <widget class="QGroupBox" name="mValuesGroupBox">
-     <property name="title">
+   <item row="3" column="2" >
+    <widget class="QGroupBox" name="mValuesGroupBox" >
+     <property name="title" >
       <string>Values</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0" colspan="2">
-       <widget class="QListWidget" name="mValueListWidget"/>
+     <layout class="QGridLayout" name="gridLayout_2" >
+      <item row="0" column="0" colspan="2" >
+       <widget class="QListWidget" name="mValueListWidget" />
       </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="mSamplePushButton">
-        <property name="text">
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="mSamplePushButton" >
+        <property name="text" >
          <string>Sample</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="mAllPushButton">
-        <property name="text">
+      <item row="1" column="1" >
+       <widget class="QPushButton" name="mAllPushButton" >
+        <property name="text" >
          <string>All</string>
         </property>
        </widget>
@@ -97,106 +117,106 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="4">
-    <widget class="QGroupBox" name="mOperatorsGroupBox">
-     <property name="title">
+   <item row="4" column="0" colspan="3" >
+    <widget class="QGroupBox" name="mOperatorsGroupBox" >
+     <property name="title" >
       <string>Operators</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="mPlusPushButton">
-        <property name="text">
+     <layout class="QGridLayout" name="gridLayout" >
+      <item row="0" column="0" >
+       <widget class="QPushButton" name="mPlusPushButton" >
+        <property name="text" >
          <string>+</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="mMultiplyPushButton">
-        <property name="text">
+      <item row="0" column="1" >
+       <widget class="QPushButton" name="mMultiplyPushButton" >
+        <property name="text" >
          <string>*</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="mSqrtButton">
-        <property name="text">
+      <item row="0" column="2" >
+       <widget class="QPushButton" name="mSqrtButton" >
+        <property name="text" >
          <string>sqrt</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="mSinButton">
-        <property name="text">
+      <item row="0" column="3" >
+       <widget class="QPushButton" name="mSinButton" >
+        <property name="text" >
          <string>sin</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="mTanButton">
-        <property name="text">
+      <item row="0" column="4" >
+       <widget class="QPushButton" name="mTanButton" >
+        <property name="text" >
          <string>tan</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
-       <widget class="QPushButton" name="mACosButton">
-        <property name="text">
+      <item row="0" column="5" >
+       <widget class="QPushButton" name="mACosButton" >
+        <property name="text" >
          <string>acos</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="6">
-       <widget class="QPushButton" name="mOpenBracketPushButton">
-        <property name="text">
+      <item row="0" column="6" >
+       <widget class="QPushButton" name="mOpenBracketPushButton" >
+        <property name="text" >
          <string>(</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="mMinusPushButton">
-        <property name="text">
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="mMinusPushButton" >
+        <property name="text" >
          <string>-</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="mDividePushButton">
-        <property name="text">
+      <item row="1" column="1" >
+       <widget class="QPushButton" name="mDividePushButton" >
+        <property name="text" >
          <string>/</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="mExpButton">
-        <property name="text">
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="mExpButton" >
+        <property name="text" >
          <string>^</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="mCosButton">
-        <property name="text">
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="mCosButton" >
+        <property name="text" >
          <string>cos</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="4">
-       <widget class="QPushButton" name="mASinButton">
-        <property name="text">
+      <item row="1" column="4" >
+       <widget class="QPushButton" name="mASinButton" >
+        <property name="text" >
          <string>asin</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="5">
-       <widget class="QPushButton" name="mATanButton">
-        <property name="text">
+      <item row="1" column="5" >
+       <widget class="QPushButton" name="mATanButton" >
+        <property name="text" >
          <string>atan</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="6">
-       <widget class="QPushButton" name="mCloseBracketPushButton">
-        <property name="text">
+      <item row="1" column="6" >
+       <widget class="QPushButton" name="mCloseBracketPushButton" >
+        <property name="text" >
          <string>)</string>
         </property>
        </widget>
@@ -204,22 +224,22 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
-    <widget class="QLabel" name="mFieldCalculatorExpressionLabel">
-     <property name="text">
+   <item row="5" column="0" colspan="2" >
+    <widget class="QLabel" name="mFieldCalculatorExpressionLabel" >
+     <property name="text" >
       <string>Field calculator expression:</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="4">
-    <widget class="QTextEdit" name="mExpressionTextEdit"/>
+   <item row="6" column="0" colspan="3" >
+    <widget class="QTextEdit" name="mExpressionTextEdit" />
    </item>
-   <item row="7" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="orientation">
+   <item row="7" column="0" colspan="2" >
+    <widget class="QDialogButtonBox" name="mButtonBox" >
+     <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons">
+     <property name="standardButtons" >
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -234,11 +254,11 @@
    <receiver>QgsFieldCalculatorBase</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>157</x>
      <y>274</y>
     </hint>
@@ -250,11 +270,11 @@
    <receiver>QgsFieldCalculatorBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>286</x>
      <y>274</y>
     </hint>

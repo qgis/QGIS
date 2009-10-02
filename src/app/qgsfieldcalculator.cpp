@@ -32,6 +32,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVector
   mOuputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
 
+  mUpdateExistingFieldCheckBox->setCheckState( Qt::Checked );
+
   //disable ok button until there is text for output field and expression
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
@@ -65,43 +67,60 @@ void QgsFieldCalculator::accept()
 
     mVectorLayer->beginEditCommand( "Field calculator" );
 
-    //create new field
-    QgsField newField( mOutputFieldNameLineEdit->text() );
-    if ( mOutputFieldTypeComboBox->currentText() == tr( "Double" ) )
-    {
-      newField.setType( QVariant::Double );
-    }
-    else if ( mOutputFieldTypeComboBox->currentText() == tr( "Integer" ) )
-    {
-      newField.setType( QVariant::Int );
-    }
-    else if ( mOutputFieldTypeComboBox->currentText() == tr( "String" ) )
-    {
-      newField.setType( QVariant::String );
-    }
+    int attributeId = -1; //id of the field (can be existing field or newly created one
 
-    newField.setLength( mOuputFieldWidthSpinBox->value() );
-    newField.setPrecision( mOutputFieldPrecisionSpinBox->value() );
-
-
-    if ( !mVectorLayer->addAttribute( newField ) )
+    //update existing field
+    if ( mUpdateExistingFieldCheckBox->checkState() == Qt::Checked )
     {
-      mVectorLayer->destroyEditCommand();
-      return;
-    }
-
-    //get index of the new field
-    const QgsFieldMap fieldList = mVectorLayer->pendingFields();
-    int attributeId = -1;
-    QgsFieldMap::const_iterator it = fieldList.constBegin();
-    for ( ; it != fieldList.constEnd(); ++it )
-    {
-      if ( it.value().name() == mOutputFieldNameLineEdit->text() )
+      QMap<QString, int>::const_iterator fieldIt = mFieldMap.find( mExistingFieldComboBox->currentText() );
+      if ( fieldIt != mFieldMap.end() )
       {
-        attributeId = it.key();
-        break;
+        attributeId = fieldIt.value();
       }
     }
+    //create new field
+    else
+    {
+      //create new field
+      QgsField newField( mOutputFieldNameLineEdit->text() );
+      if ( mOutputFieldTypeComboBox->currentText() == tr( "Double" ) )
+      {
+        newField.setType( QVariant::Double );
+      }
+      else if ( mOutputFieldTypeComboBox->currentText() == tr( "Integer" ) )
+      {
+        newField.setType( QVariant::Int );
+      }
+      else if ( mOutputFieldTypeComboBox->currentText() == tr( "String" ) )
+      {
+        newField.setType( QVariant::String );
+      }
+
+      newField.setLength( mOuputFieldWidthSpinBox->value() );
+      newField.setPrecision( mOutputFieldPrecisionSpinBox->value() );
+
+      if ( !mVectorLayer->addAttribute( newField ) )
+      {
+        QMessageBox::critical( 0, tr( "Provider error" ), tr( "Could not add the new field to the provider." ) );
+        mVectorLayer->destroyEditCommand();
+        return;
+      }
+
+      //get index of the new field
+      const QgsFieldMap fieldList = mVectorLayer->pendingFields();
+
+      QgsFieldMap::const_iterator it = fieldList.constBegin();
+      for ( ; it != fieldList.constEnd(); ++it )
+      {
+        if ( it.value().name() == mOutputFieldNameLineEdit->text() )
+        {
+          attributeId = it.key();
+          break;
+        }
+      }
+    }
+
+
     if ( attributeId == -1 )
     {
       mVectorLayer->destroyEditCommand();
@@ -112,9 +131,21 @@ void QgsFieldCalculator::accept()
     QgsFeature feature;
     bool calculationSuccess = true;
 
+    bool onlySelected = ( mOnlyUpdateSelectedCheckBox->checkState() == Qt::Checked );
+    QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
+
+
     mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
     while ( mVectorLayer->nextFeature( feature ) )
     {
+      if ( onlySelected )
+      {
+        if ( !selectedIds.contains( feature.id() ) )
+        {
+          continue;
+        }
+      }
+
       QgsSearchTreeValue value = searchTree->valueAgainst( mVectorLayer->pendingFields(), feature.attributeMap() );
       if ( value.isError() )
       {
@@ -158,10 +189,27 @@ void QgsFieldCalculator::populateFields()
   QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
   for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
   {
+
     QString fieldName = fieldIt.value().name();
+
+    //insert into field list and field combo box
     mFieldMap.insert( fieldName, fieldIt.key() );
     mFieldsListWidget->addItem( fieldName );
+    mExistingFieldComboBox->addItem( fieldName );
   }
+}
+
+void QgsFieldCalculator::on_mUpdateExistingFieldCheckBox_stateChanged( int state )
+{
+  if ( state == Qt::Checked )
+  {
+    mNewFieldGroupBox->setEnabled( false );
+  }
+  else
+  {
+    mNewFieldGroupBox->setEnabled( true );
+  }
+  setOkButtonState();
 }
 
 void QgsFieldCalculator::on_mFieldsListWidget_itemDoubleClicked( QListWidgetItem * item )
@@ -343,7 +391,8 @@ void QgsFieldCalculator::getFieldValues( int limit )
 void QgsFieldCalculator::setOkButtonState()
 {
   bool okEnabled = true;
-  if ( mOutputFieldNameLineEdit->text().isEmpty() || mExpressionTextEdit->toPlainText().isEmpty() )
+  if (( mOutputFieldNameLineEdit->text().isEmpty() && mUpdateExistingFieldCheckBox->checkState() == Qt::Unchecked )\
+      || mExpressionTextEdit->toPlainText().isEmpty() )
   {
     okEnabled = false;
   }
