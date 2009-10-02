@@ -7515,11 +7515,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Remove selection</source>
-        <translation>取消選擇</translation>
+        <translation type="obsolete">取消選擇</translation>
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation>將選取的記錄移動到頂端</translation>
+        <translation type="obsolete">將選取的記錄移動到頂端</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
@@ -7592,6 +7592,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Search selected records only</source>
         <translation>僅搜尋選取記錄</translation>
+    </message>
+    <message>
+        <source>Unselect all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selection to top</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8240,10 +8248,6 @@ Error was:%2</source>
     </message>
     <message>
         <source>%1 format (*.%2 *.%3)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Qt4 svg code. Of note, text does not appear in the SVG file and there are problems with the map bounding box clipping other items such as the legend or scale bar.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11199,6 +11203,156 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsFieldCalculator</name>
+    <message>
+        <source>Double</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Integer</source>
+        <translation type="unfinished">整數</translation>
+    </message>
+    <message>
+        <source>String</source>
+        <translation type="unfinished">字串</translation>
+    </message>
+    <message>
+        <source>Syntax error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not add the new field to the provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">錯誤</translation>
+    </message>
+    <message>
+        <source>An error occured while evaluating the calculation string.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsFieldCalculatorBase</name>
+    <message>
+        <source>Field calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update existing field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only update selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field precision:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fields</source>
+        <translation type="unfinished">欄位</translation>
+    </message>
+    <message>
+        <source>Values</source>
+        <translation type="unfinished">值</translation>
+    </message>
+    <message>
+        <source>Sample</source>
+        <translation type="unfinished">查詢欄位取樣值</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation type="unfinished">運算符號</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished">+</translation>
+    </message>
+    <message>
+        <source>*</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sqrt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>tan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>acos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <source>/</source>
+        <translation type="unfinished">/</translation>
+    </message>
+    <message>
+        <source>^</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>asin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>atan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field calculator expression:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsFillStyleWidgetBase</name>
     <message>
         <source>Form1</source>
@@ -11793,34 +11947,34 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Real</source>
-        <translation>實數</translation>
+        <translation type="obsolete">實數</translation>
     </message>
     <message>
         <source>Integer</source>
-        <translation>整數</translation>
+        <translation type="obsolete">整數</translation>
     </message>
     <message>
         <source>String</source>
-        <translation>字串</translation>
+        <translation type="obsolete">字串</translation>
     </message>
 </context>
 <context>
     <name>QgsGeomTypeDialogBase</name>
     <message>
         <source>Type</source>
-        <translation>類型</translation>
+        <translation type="obsolete">類型</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation>點</translation>
+        <translation type="obsolete">點</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>線</translation>
+        <translation type="obsolete">線</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation>多邊形</translation>
+        <translation type="obsolete">多邊形</translation>
     </message>
     <message>
         <source>OK</source>
@@ -11832,7 +11986,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New Vector Layer</source>
-        <translation>新增向量圖層</translation>
+        <translation type="obsolete">新增向量圖層</translation>
     </message>
     <message>
         <source>Attributes:</source>
@@ -11864,35 +12018,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>File format</source>
-        <translation type="unfinished">檔案格式</translation>
+        <translation type="obsolete">檔案格式</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation type="unfinished">屬性</translation>
+        <translation type="obsolete">屬性</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">名稱</translation>
+        <translation type="obsolete">名稱</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Delete selected attribute</source>
-        <translation type="unfinished">刪除選取的屬性</translation>
+        <translation type="obsolete">刪除選取的屬性</translation>
     </message>
     <message>
         <source>Add attribute</source>
-        <translation type="unfinished">新增屬性</translation>
+        <translation type="obsolete">新增屬性</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">寬度</translation>
+        <translation type="obsolete">寬度</translation>
     </message>
     <message>
         <source>Precision</source>
-        <translation type="unfinished">精確度</translation>
+        <translation type="obsolete">精確度</translation>
     </message>
 </context>
 <context>
@@ -17185,6 +17339,88 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsNewVectorLayerDialog</name>
+    <message>
+        <source>Text data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whole number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ESRI Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsNewVectorLayerDialogBase</name>
+    <message>
+        <source>New Vector Layer</source>
+        <translation type="unfinished">新增向量圖層</translation>
+    </message>
+    <message>
+        <source>File format</source>
+        <translation type="unfinished">檔案格式</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">類型</translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="unfinished">點</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished">線</translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation type="unfinished">多邊形</translation>
+    </message>
+    <message>
+        <source>New attribute</source>
+        <translation type="unfinished">新屬性</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">名稱</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">寬度</translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation type="unfinished">精確度</translation>
+    </message>
+    <message>
+        <source>Add attribute to list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add to attributes list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attributes list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete selected attribute</source>
+        <translation type="unfinished">刪除選取的屬性</translation>
+    </message>
+    <message>
+        <source>Removed selected attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsNorthArrowPlugin</name>
     <message>
         <source>Bottom Left</source>
@@ -17362,15 +17598,27 @@ p, li { white-space: pre-wrap; }
     <name>QgsOgrProvider</name>
     <message>
         <source>Integer</source>
-        <translation type="unfinished">整數</translation>
+        <translation type="obsolete">整數</translation>
     </message>
     <message>
         <source>Real</source>
-        <translation type="unfinished">實數</translation>
+        <translation type="obsolete">實數</translation>
     </message>
     <message>
         <source>String</source>
-        <translation type="unfinished">字串</translation>
+        <translation type="obsolete">字串</translation>
+    </message>
+    <message>
+        <source>Whole number (integer)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal number (real)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text (string)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17758,7 +18006,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</source>
-        <translation type="unfinished">&lt;b&gt;注意:&lt;/b&gt;主題的更改會在下一次QGIS啟動時生效</translation>
+        <translation type="obsolete">&lt;b&gt;注意:&lt;/b&gt;主題的更改會在下一次QGIS啟動時生效</translation>
     </message>
     <message>
         <source>&amp;Rendering</source>
@@ -18149,11 +18397,11 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Default snapping tolerance in layer units</source>
-        <translation type="unfinished">預設接合容許範圍(圖層單位)</translation>
+        <translation type="obsolete">預設接合容許範圍(圖層單位)</translation>
     </message>
     <message>
         <source>Search radius for vertex edits in layer units</source>
-        <translation>搜尋預編輯轉折點半徑值(圖層單位)</translation>
+        <translation type="obsolete">搜尋預編輯轉折點半徑值(圖層單位)</translation>
     </message>
     <message>
         <source>Vertex markers</source>
@@ -18306,6 +18554,14 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     <message>
         <source>Marker size</source>
         <translation type="unfinished">標記的大小</translation>
+    </message>
+    <message>
+        <source>Default snapping tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search radius for vertex edits</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20049,43 +20305,43 @@ column with a 16bit block number.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>smallint (16bit)</source>
+        <source>Whole number (smallint - 16bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>integer (32bit)</source>
+        <source>Whole number (integer 32bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>integer (64bit)</source>
+        <source>Whole number (integer 64bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>numeric</source>
+        <source>Decimal number (numeric)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>decimal</source>
+        <source>Decimal number (decimal)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>real</source>
+        <source>Decimal number (real)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>double</source>
+        <source>Decimal number (double)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>char</source>
+        <source>Text, fixed length (char)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>varchar</source>
+        <source>Text, variable length (varchar)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>text</source>
+        <source>Text (text)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20356,10 +20612,6 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save absolute paths</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Identifiable layers</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20373,6 +20625,18 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Identifiable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>absolute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>relative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save paths</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22942,20 +23206,24 @@ SQL: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>BLOB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Double</source>
+        <source>Integer</source>
+        <translation type="obsolete">整數</translation>
+    </message>
+    <message>
+        <source>Binary object (BLOB)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Integer</source>
-        <translation type="unfinished">整數</translation>
+        <source>Decimal number (double)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whole number (integer)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24432,6 +24700,10 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Specify CRS</source>
         <translation>指定座標參考系統(CRS)</translation>
+    </message>
+    <message>
+        <source>Field calculator</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

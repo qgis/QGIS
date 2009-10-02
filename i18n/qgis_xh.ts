@@ -4105,14 +4105,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remove selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4182,6 +4174,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unselect all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selection to top</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4498,10 +4498,6 @@ Error was:%2</source>
     </message>
     <message>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Qt4 svg code. Of note, text does not appear in the SVG file and there are problems with the map bounding box clipping other items such as the legend or scale bar.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6285,6 +6281,156 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsFieldCalculator</name>
+    <message>
+        <source>Double</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Integer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>String</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Syntax error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not add the new field to the provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error occured while evaluating the calculation string.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsFieldCalculatorBase</name>
+    <message>
+        <source>Field calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update existing field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only update selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field precision:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fields</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sample</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>*</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sqrt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>tan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>acos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>^</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>asin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>atan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field calculator expression:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGPSDeviceDialog</name>
     <message>
         <source>New device %1</source>
@@ -6756,76 +6902,6 @@ p, li { white-space: pre-wrap; }
     <name>QgsGenericProjectionSelectorBase</name>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeomTypeDialog</name>
-    <message>
-        <source>String</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Integer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Real</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeomTypeDialogBase</name>
-    <message>
-        <source>New Vector Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Precision</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete selected attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add attribute</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10767,6 +10843,88 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsNewVectorLayerDialog</name>
+    <message>
+        <source>Text data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whole number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ESRI Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsNewVectorLayerDialogBase</name>
+    <message>
+        <source>New Vector Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add attribute to list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add to attributes list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attributes list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete selected attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removed selected attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsNorthArrowPlugin</name>
     <message>
         <source>Bottom Left</source>
@@ -10903,15 +11061,15 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOgrProvider</name>
     <message>
-        <source>Integer</source>
+        <source>Whole number (integer)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Real</source>
+        <source>Decimal number (real)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>String</source>
+        <source>Text (string)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11299,10 +11457,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Capitalise layer names in legend</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11455,14 +11609,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Default snapping tolerance in layer units</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search radius for vertex edits in layer units</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>map units</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11612,6 +11758,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Marker size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default snapping tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search radius for vertex edits</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13091,43 +13245,43 @@ The view you selected has the following columns, none of which satisfy the above
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>smallint (16bit)</source>
+        <source>Whole number (smallint - 16bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>integer (32bit)</source>
+        <source>Whole number (integer 32bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>integer (64bit)</source>
+        <source>Whole number (integer 64bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>numeric</source>
+        <source>Decimal number (numeric)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>decimal</source>
+        <source>Decimal number (decimal)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>real</source>
+        <source>Decimal number (real)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>double</source>
+        <source>Decimal number (double)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>char</source>
+        <source>Text, fixed length (char)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>varchar</source>
+        <source>Text, variable length (varchar)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>text</source>
+        <source>Text (text)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13314,10 +13468,6 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save absolute paths</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Identifiable layers</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13331,6 +13481,18 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Identifiable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>absolute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>relative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save paths</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15199,19 +15361,19 @@ SQL: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>BLOB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Double</source>
+        <source>Binary object (BLOB)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Integer</source>
+        <source>Decimal number (double)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whole number (integer)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16317,6 +16479,10 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Specify CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field calculator</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
