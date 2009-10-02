@@ -22,9 +22,9 @@
 QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVectorLayer( vl )
 {
   setupUi( this );
-  mOutputFieldTypeComboBox->addItem( tr( "Double" ) );
-  mOutputFieldTypeComboBox->addItem( tr( "Integer" ) );
-  mOutputFieldTypeComboBox->addItem( tr( "String" ) );
+  mOutputFieldTypeComboBox->addItem( tr( "Whole number (integer)" ), "Integer" );
+  mOutputFieldTypeComboBox->addItem( tr( "Decimal number (double)" ), "Double" );
+  mOutputFieldTypeComboBox->addItem( tr( "Text (string)" ), "String" );
 
   populateFields();
 
@@ -83,15 +83,16 @@ void QgsFieldCalculator::accept()
     {
       //create new field
       QgsField newField( mOutputFieldNameLineEdit->text() );
-      if ( mOutputFieldTypeComboBox->currentText() == tr( "Double" ) )
+      int index = mOutputFieldTypeComboBox->currentIndex();
+      if ( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole ) ==  "Double" )
       {
         newField.setType( QVariant::Double );
       }
-      else if ( mOutputFieldTypeComboBox->currentText() == tr( "Integer" ) )
+      else if ( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole ) == "Integer"  )
       {
         newField.setType( QVariant::Int );
       }
-      else if ( mOutputFieldTypeComboBox->currentText() == tr( "String" ) )
+      else if ( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole ) == "String"  )
       {
         newField.setType( QVariant::String );
       }

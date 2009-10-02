@@ -12,7 +12,7 @@
   <property name="windowTitle" >
    <string>Field calculator</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_5" >
+  <layout class="QGridLayout" >
    <item row="0" column="0" >
     <widget class="QCheckBox" name="mUpdateExistingFieldCheckBox" >
      <property name="text" >
@@ -35,11 +35,14 @@
      <property name="title" >
       <string>New field</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3" >
+     <layout class="QGridLayout" >
       <item row="0" column="0" >
        <widget class="QLabel" name="mFieldNameLabel" >
         <property name="text" >
-         <string>Output field name:</string>
+         <string>Output field name</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mOutputFieldNameLineEdit</cstring>
         </property>
        </widget>
       </item>
@@ -49,7 +52,10 @@
       <item row="1" column="0" >
        <widget class="QLabel" name="mOutputFieldTypeLabel" >
         <property name="text" >
-         <string>Output field type:</string>
+         <string>Output field type</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mOutputFieldTypeComboBox</cstring>
         </property>
        </widget>
       </item>
@@ -59,7 +65,10 @@
       <item row="2" column="0" >
        <widget class="QLabel" name="mOutputFieldWidthLabel" >
         <property name="text" >
-         <string>Output field width:</string>
+         <string>Output field width</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mOuputFieldWidthSpinBox</cstring>
         </property>
        </widget>
       </item>
@@ -69,7 +78,10 @@
       <item row="2" column="2" >
        <widget class="QLabel" name="mOutputFieldPrecisionLabel" >
         <property name="text" >
-         <string>Output field precision:</string>
+         <string>Output field precision</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mOutputFieldPrecisionSpinBox</cstring>
         </property>
        </widget>
       </item>
@@ -84,7 +96,7 @@
      <property name="title" >
       <string>Fields</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4" >
+     <layout class="QGridLayout" >
       <item row="0" column="0" >
        <widget class="QListWidget" name="mFieldsListWidget" />
       </item>
@@ -96,7 +108,7 @@
      <property name="title" >
       <string>Values</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" >
+     <layout class="QGridLayout" >
       <item row="0" column="0" colspan="2" >
        <widget class="QListWidget" name="mValueListWidget" />
       </item>
@@ -122,7 +134,7 @@
      <property name="title" >
       <string>Operators</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
+     <layout class="QGridLayout" >
       <item row="0" column="0" >
        <widget class="QPushButton" name="mPlusPushButton" >
         <property name="text" >
@@ -227,20 +239,23 @@
    <item row="5" column="0" colspan="2" >
     <widget class="QLabel" name="mFieldCalculatorExpressionLabel" >
      <property name="text" >
-      <string>Field calculator expression:</string>
+      <string>Field calculator expression</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mExpressionTextEdit</cstring>
      </property>
     </widget>
    </item>
    <item row="6" column="0" colspan="3" >
     <widget class="QTextEdit" name="mExpressionTextEdit" />
    </item>
-   <item row="7" column="0" colspan="2" >
+   <item row="7" column="0" colspan="3" >
     <widget class="QDialogButtonBox" name="mButtonBox" >
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
