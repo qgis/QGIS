@@ -22,10 +22,13 @@
    <item row="0" column="0" >
     <widget class="QLabel" name="mSegmentSizeLabel" >
      <property name="text" >
-      <string>Segment size (map units):</string>
+      <string>Segment size (map units)</string>
      </property>
      <property name="wordWrap" >
       <bool>true</bool>
+     </property>
+     <property name="buddy" >
+      <cstring>mSegmentSizeSpinBox</cstring>
      </property>
     </widget>
    </item>
@@ -42,10 +45,13 @@
    <item row="0" column="2" colspan="2" >
     <widget class="QLabel" name="mMapUnitsPerBarUnitLabel" >
      <property name="text" >
-      <string>Map units per bar unit:</string>
+      <string>Map units per bar unit</string>
      </property>
      <property name="wordWrap" >
       <bool>true</bool>
+     </property>
+     <property name="buddy" >
+      <cstring>mMapUnitsPerBarUnitSpinBox</cstring>
      </property>
     </widget>
    </item>
@@ -59,10 +65,13 @@
    <item row="1" column="0" >
     <widget class="QLabel" name="mNumbereOfSegmentsLabel" >
      <property name="text" >
-      <string>Number of segments:</string>
+      <string>Number of segments</string>
      </property>
      <property name="wordWrap" >
       <bool>true</bool>
+     </property>
+     <property name="buddy" >
+      <cstring>mNumberOfSegmentsSpinBox</cstring>
      </property>
     </widget>
    </item>
@@ -72,7 +81,10 @@
    <item row="1" column="2" colspan="2" >
     <widget class="QLabel" name="mSegmentsLeftLabel" >
      <property name="text" >
-      <string>Segments left:</string>
+      <string>Segments left</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mSegmentsLeftSpinBox</cstring>
      </property>
     </widget>
    </item>
@@ -82,7 +94,10 @@
    <item row="2" column="0" >
     <widget class="QLabel" name="mStyleLabel" >
      <property name="text" >
-      <string>Style:</string>
+      <string>Style</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mStyleComboBox</cstring>
      </property>
     </widget>
    </item>
@@ -98,7 +113,7 @@
       </sizepolicy>
      </property>
      <property name="text" >
-      <string>Map:</string>
+      <string>Map</string>
      </property>
      <property name="wordWrap" >
       <bool>true</bool>
@@ -124,7 +139,10 @@
    <item row="3" column="0" >
     <widget class="QLabel" name="mHeightLabel" >
      <property name="text" >
-      <string>Height (mm):</string>
+      <string>Height (mm)</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mHeightSpinBox</cstring>
      </property>
     </widget>
    </item>
@@ -134,7 +152,7 @@
    <item row="3" column="2" colspan="2" >
     <widget class="QLabel" name="mLineWidthLabel" >
      <property name="text" >
-      <string>Line width:</string>
+      <string>Line width</string>
      </property>
      <property name="wordWrap" >
       <bool>true</bool>
@@ -166,7 +184,10 @@
    <item row="4" column="0" >
     <widget class="QLabel" name="mLabelBarSpaceLabel" >
      <property name="text" >
-      <string>Label space:</string>
+      <string>Label space</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mLabelBarSpaceSpinBox</cstring>
      </property>
     </widget>
    </item>
@@ -176,7 +197,10 @@
    <item row="4" column="2" colspan="2" >
     <widget class="QLabel" name="mBoxSpaceLabel" >
      <property name="text" >
-      <string>Box space:</string>
+      <string>Box space</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mBoxSizeSpinBox</cstring>
      </property>
     </widget>
    </item>
@@ -186,7 +210,7 @@
    <item row="5" column="0" >
     <widget class="QLabel" name="mUnitLabelLabel" >
      <property name="text" >
-      <string>Unit label:</string>
+      <string>Unit label</string>
      </property>
      <property name="wordWrap" >
       <bool>true</bool>
@@ -223,9 +247,19 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
-  <tabstop>mUnitLabelLineEdit</tabstop>
+  <tabstop>mSegmentSizeSpinBox</tabstop>
+  <tabstop>mMapUnitsPerBarUnitSpinBox</tabstop>
+  <tabstop>mNumberOfSegmentsSpinBox</tabstop>
+  <tabstop>mSegmentsLeftSpinBox</tabstop>
+  <tabstop>mStyleComboBox</tabstop>
   <tabstop>mMapComboBox</tabstop>
+  <tabstop>mHeightSpinBox</tabstop>
+  <tabstop>mLineWidthSpinBox</tabstop>
+  <tabstop>mLabelBarSpaceSpinBox</tabstop>
+  <tabstop>mBoxSizeSpinBox</tabstop>
+  <tabstop>mUnitLabelLineEdit</tabstop>
   <tabstop>mFontButton</tabstop>
+  <tabstop>mColorPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

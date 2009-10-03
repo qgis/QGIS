@@ -22,7 +22,10 @@
       <item row="0" column="0" >
        <widget class="QLabel" name="mColorLabel" >
         <property name="text" >
-         <string>Color:</string>
+         <string>Color</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mFrameColorButton</cstring>
         </property>
        </widget>
       </item>
@@ -43,7 +46,10 @@
       <item row="1" column="0" colspan="2" >
        <widget class="QLabel" name="mOpacityLabel" >
         <property name="text" >
-         <string>Opacity:</string>
+         <string>Opacity</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mOpacitySlider</cstring>
         </property>
        </widget>
       </item>
@@ -60,7 +66,10 @@
       <item row="2" column="0" colspan="2" >
        <widget class="QLabel" name="mOutlineWidthLabel" >
         <property name="text" >
-         <string>Outline width: </string>
+         <string>Outline width</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mOutlineWidthSpinBox</cstring>
         </property>
        </widget>
       </item>
