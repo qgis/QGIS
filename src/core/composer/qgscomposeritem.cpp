@@ -570,8 +570,8 @@ void QgsComposerItem::drawSelectionBoxes( QPainter* p )
     }
     else //draw blue squares
     {
-      p->setPen( QPen( QColor( 0, 0, 255 ) ) );
-      p->setBrush( QBrush( QColor( 0, 0, 255 ) ) );
+      p->setPen( QColor( 50, 100, 120, 200 ) );
+      p->setBrush( QColor( 200, 200, 210, 120 ) );
       p->drawRect( QRectF( 0, 0, rectHandlerSize, rectHandlerSize ) );
       p->drawRect( QRectF( rect().width() - rectHandlerSize, 0, rectHandlerSize, rectHandlerSize ) );
       p->drawRect( QRectF( rect().width() - rectHandlerSize, rect().height() - rectHandlerSize, rectHandlerSize, rectHandlerSize ) );
