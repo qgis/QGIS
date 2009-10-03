@@ -22,8 +22,6 @@ QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
-  //temporary hack until this is implemented
-  tabNorthArrowOptions->removeTab( tabNorthArrowOptions->indexOf( tabIcon ) );
 }
 
 QgsNorthArrowPluginGui::~QgsNorthArrowPluginGui()

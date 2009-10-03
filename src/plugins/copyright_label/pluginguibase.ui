@@ -13,85 +13,10 @@
    <string>Copyright Label Plugin</string>
   </property>
   <property name="windowIcon" >
-   <iconset>
-    <normaloff/>
-   </iconset>
+   <iconset/>
   </property>
   <layout class="QGridLayout" >
-   <property name="leftMargin" >
-    <number>9</number>
-   </property>
-   <property name="topMargin" >
-    <number>9</number>
-   </property>
-   <property name="rightMargin" >
-    <number>9</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>9</number>
-   </property>
-   <property name="horizontalSpacing" >
-    <number>6</number>
-   </property>
-   <property name="verticalSpacing" >
-    <number>6</number>
-   </property>
-   <item row="3" column="2" >
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="label" >
-       <property name="text" >
-        <string>Color</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsColorButton" name="pbnColorChooser" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Expanding" hsizetype="Fixed" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize" >
-        <size>
-         <width>100</width>
-         <height>0</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="2" >
+   <item row="0" column="0" colspan="4" >
     <widget class="QTextEdit" name="textEdit3" >
      <property name="readOnly" >
       <bool>true</bool>
@@ -99,178 +24,121 @@
      <property name="html" >
       <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Verdana'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">&lt;span style=" font-size:12pt;">Description&lt;/span>&lt;/p>
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">&lt;span style=" font-weight:600;">&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span>&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt; font-weight:600;">&lt;span style=" font-weight:400; font-style:italic;">&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span>&lt;/p>
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt; font-style:italic;">&lt;span style=" font-style:normal;">(note: &amp;amp;copy; gives a copyright symbol)&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;">&lt;span style=" font-size:12pt;">Description&lt;/span>&lt;/p>
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;">&lt;/p>
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;">Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p>
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;">&lt;span style=" font-weight:600;">&amp;lt;b&amp;gt; Bold text &amp;lt;/b&amp;gt; &lt;/span>&lt;/p>
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-weight:600;">&lt;span style=" font-weight:400; font-style:italic;">&amp;lt;i&amp;gt; Italics &amp;lt;/i&amp;gt;&lt;/span>&lt;/p>
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;">&lt;span style=" font-style:normal;">(note: &amp;amp;copy; gives a copyright symbol)&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
      </property>
     </widget>
    </item>
-   <item row="4" column="2" >
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
-      <number>0</number>
-     </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>131</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="cboxEnabled" >
-       <property name="text" >
-        <string>Enable Copyright Label</string>
-       </property>
-       <property name="checked" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="2" >
+   <item row="1" column="0" colspan="4" >
     <widget class="QTextEdit" name="txtCopyrightText" >
      <property name="html" >
       <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Verdana'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">© QGIS 2009&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:10pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Verdana';">© QGIS 2009&lt;/p>&lt;/body>&lt;/html></string>
      </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QLabel" name="textLabel16" >
+     <property name="text" >
+      <string>Placement</string>
+     </property>
+     <property name="buddy" >
+      <cstring>cboPlacement</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QComboBox" name="cboPlacement" >
+     <item>
+      <property name="text" >
+       <string>Bottom Left</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Top Left</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Bottom Right</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Top Right</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="2" column="2" >
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
-      <number>6</number>
+    <widget class="QLabel" name="textLabel15" >
+     <property name="text" >
+      <string>Orientation</string>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="textLabel16" >
-       <property name="text" >
-        <string>Placement</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cboPlacement" >
-       <item>
-        <property name="text" >
-         <string>Bottom Left</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>Top Left</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>Bottom Right</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>Top Right</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="textLabel15" >
-       <property name="text" >
-        <string>Orientation</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cboOrientation" >
-       <item>
-        <property name="text" >
-         <string>Horizontal</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>Vertical</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item rowspan="5" row="0" column="1" >
-    <widget class="Line" name="line1" >
-     <property name="maximumSize" >
-      <size>
-       <width>2</width>
-       <height>32767</height>
-      </size>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::VLine</enum>
-     </property>
-     <property name="frameShadow" >
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+     <property name="buddy" >
+      <cstring>cboOrientation</cstring>
      </property>
     </widget>
    </item>
-   <item rowspan="5" row="0" column="0" >
-    <widget class="QLabel" name="pixmapLabel2" >
-     <property name="maximumSize" >
-      <size>
-       <width>150</width>
-       <height>32767</height>
-      </size>
+   <item row="2" column="3" >
+    <widget class="QComboBox" name="cboOrientation" >
+     <item>
+      <property name="text" >
+       <string>Horizontal</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Vertical</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>Color</string>
      </property>
-     <property name="pixmap" >
-      <pixmap resource="copyright_plugin.qrc" >:/copyright.png</pixmap>
-     </property>
-     <property name="scaledContents" >
-      <bool>false</bool>
+     <property name="buddy" >
+      <cstring>pbnColorChooser</cstring>
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="3" >
+   <item row="3" column="1" >
+    <widget class="QgsColorButton" name="pbnColorChooser" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Fixed" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>100</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" colspan="2" >
+    <widget class="QCheckBox" name="cboxEnabled" >
+     <property name="text" >
+      <string>Enable copyright label</string>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="4" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
@@ -290,6 +158,15 @@ p, li { white-space: pre-wrap; }
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>textEdit3</tabstop>
+  <tabstop>txtCopyrightText</tabstop>
+  <tabstop>cboPlacement</tabstop>
+  <tabstop>cboOrientation</tabstop>
+  <tabstop>pbnColorChooser</tabstop>
+  <tabstop>cboxEnabled</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="copyright_plugin.qrc" />
  </resources>
