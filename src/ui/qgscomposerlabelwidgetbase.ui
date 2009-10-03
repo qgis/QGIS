@@ -42,7 +42,10 @@
    <item row="2" column="0" >
     <widget class="QLabel" name="mMarginTextLabel" >
      <property name="text" >
-      <string>Margin (mm):</string>
+      <string>Margin (mm)</string>
+     </property>
+     <property name="buddy" >
+      <cstring>mMarginDoubleSpinBox</cstring>
      </property>
     </widget>
    </item>
@@ -53,7 +56,9 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
+  <tabstop>mTextEdit</tabstop>
   <tabstop>mFontButton</tabstop>
+  <tabstop>mMarginDoubleSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

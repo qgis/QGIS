@@ -19,23 +19,8 @@
    <property name="mouseTracking" >
     <bool>true</bool>
    </property>
-   <layout class="QVBoxLayout" >
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <property name="leftMargin" >
-     <number>9</number>
-    </property>
-    <property name="topMargin" >
-     <number>9</number>
-    </property>
-    <property name="rightMargin" >
-     <number>9</number>
-    </property>
-    <property name="bottomMargin" >
-     <number>9</number>
-    </property>
-    <item>
+   <layout class="QGridLayout" >
+    <item row="0" column="0" >
      <widget class="QSplitter" name="mSplitter" >
       <property name="mouseTracking" >
        <bool>true</bool>
@@ -171,51 +156,12 @@
       </widget>
      </widget>
     </item>
-    <item>
-     <layout class="QHBoxLayout" >
-      <property name="spacing" >
-       <number>6</number>
+    <item row="1" column="0" >
+     <widget class="QDialogButtonBox" name="buttonBox" >
+      <property name="standardButtons" >
+       <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::NoButton</set>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QPushButton" name="helpPButton" >
-        <property name="text" >
-         <string>Help</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="closePButton" >
-        <property name="text" >
-         <string>Close</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -502,5 +448,22 @@
   <tabstop>mSplitter</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsComposerBase</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>612</x>
+     <y>583</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>735</x>
+     <y>567</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
