@@ -239,7 +239,7 @@ static void setTitleBarText_( QWidget & qgisApp )
     else
     {
       QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption += projectFileInfo.baseName();
+      caption += " " + projectFileInfo.baseName();
     }
   }
   else
