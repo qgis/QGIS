@@ -1025,14 +1025,9 @@ void QgsComposer::restoreWindowState()
   }
 }
 
-void QgsComposer::on_helpPButton_clicked()
+void QgsComposer::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run( context_id );
-}
-
-void QgsComposer::on_closePButton_clicked()
-{
-  close();
 }
 
 void  QgsComposer::writeXML( QDomDocument& doc )

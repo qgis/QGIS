@@ -188,10 +188,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void saveWindowState();
 
     //! Slot for when the help button is clicked
-    void on_helpPButton_clicked();
-
-    //! Slot for when the close button is clicked
-    void on_closePButton_clicked();
+    void on_buttonBox_helpRequested();
 
     /**Add a composer map to the item/widget map and creates a configuration widget for it*/
     void addComposerMap( QgsComposerMap* map );
