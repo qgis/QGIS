@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>QGIS Options</string>
+   <string>Options</string>
   </property>
   <property name="windowIcon" >
    <iconset>
