@@ -50,9 +50,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
-  cmbIdentifyMode->addItem( tr( "current layer" ), 0 );
-  cmbIdentifyMode->addItem( tr( "top down, stop at first" ), 1 );
-  cmbIdentifyMode->addItem( tr( "top down" ), 2 );
+  cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
+  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
+  cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
 
   // read the current browser and set it
   QSettings settings;
