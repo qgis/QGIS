@@ -140,7 +140,6 @@ void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
 {
   if ( !mRightMouseClicked )
   {
-    QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
     QgsPoint point = snapPoint( e->pos() );
 
     mRubberBand->movePoint( point );
@@ -151,7 +150,6 @@ void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
 
 void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
 {
-  QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QgsPoint point = snapPoint( e->pos() );
 
   if ( e->button() == Qt::RightButton && ( e->buttons() & Qt::LeftButton ) == 0 ) // restart
