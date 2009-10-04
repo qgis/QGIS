@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
 # 
 # Locate Line Intersections
@@ -123,11 +124,11 @@ class Dialog(QDialog, Ui_Dialog):
 		fieldList = self.getFieldList(layer1)
 		index1 = provider1.fieldNameIndex(field1)
 		field1 = fieldList[index1]
-		field1.setName("1_" + unicode(field1.name()))
+		field1.setName(unicode(field1.name()) + "_1")
 		fieldList = self.getFieldList(layer2)
 		index2 = provider2.fieldNameIndex(field2)
 		field2 = fieldList[index2]
-		field2.setName("2_" + unicode(field2.name()))
+		field2.setName(unicode(field2.name()) + "_2")
 		fieldList = {0:field1, 1:field2}
 		sRs = provider1.crs()
 		check = QFile(self.shapefileName)
