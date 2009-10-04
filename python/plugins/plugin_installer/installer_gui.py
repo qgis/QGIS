@@ -152,7 +152,10 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     tmpDir = QDir.tempPath()
     tmpPath = QDir.cleanPath(tmpDir+"/"+fileName)
     self.file = QFile(tmpPath)
-    self.http = QPHttp(url.host())
+    port = url.port()
+    if port < 0:
+      port = 80
+    self.http = QPHttp(url.host(), port)
     self.connect(self.http, SIGNAL("stateChanged ( int )"), self.stateChanged) 
     self.connect(self.http, SIGNAL("dataReadProgress ( int , int )"), self.readProgress)
     self.connect(self.http, SIGNAL("requestFinished (int, bool)"), self.requestFinished)
