@@ -196,9 +196,6 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
   drawBackground( painter );
 
-
-  double currentScaleFactorX = horizontalViewScaleFactor();
-
   if ( mComposition->plotStyle() == QgsComposition::Preview && mPreviewMode == Rectangle )
   {
     QFont messageFont( "", 12 );
