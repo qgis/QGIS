@@ -227,7 +227,16 @@ static void buildSupportedVectorFileFilter_( QString & fileFilters );
   */
 static void setTitleBarText_( QWidget & qgisApp )
 {
-  QString caption = QgisApp::tr( "Quantum GIS - %1 " ).arg( QGis::QGIS_VERSION );
+  QString caption = QgisApp::tr( "Quantum GIS " );
+
+  if ( QString( QGis::QGIS_VERSION ).endsWith( "Trunk" ) )
+  {
+    caption += QString( "r%1" ).arg( QGis::QGIS_SVN_VERSION );
+  }
+  else
+  {
+    caption += QGis::QGIS_VERSION;
+  }
 
   if ( QgsProject::instance()->title().isEmpty() )
   {
@@ -239,12 +248,12 @@ static void setTitleBarText_( QWidget & qgisApp )
     else
     {
       QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption += " " + projectFileInfo.baseName();
+      caption += " - " + projectFileInfo.baseName();
     }
   }
   else
   {
-    caption += QgsProject::instance()->title();
+    caption += " - " + QgsProject::instance()->title();
   }
 
   qgisApp.setWindowTitle( caption );
@@ -3158,7 +3167,7 @@ void QgisApp::newVectorLayer()
   }
   geometrytype = geomDialog.selectedType();
   fileformat = geomDialog.selectedFileFormat();
-  QgsDebugMsg ( QString( "New file format will be: %1" ).arg( fileformat ) );
+  QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
 
   std::list<std::pair<QString, QString> > attributes;
   geomDialog.attributes( attributes );
@@ -4780,8 +4789,8 @@ void QgisApp::loadPythonSupport()
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );
 #endif
-  QString version = QString("%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
-  QgsDebugMsg( QString("load library %1 (%2)").arg( pythonlibName ).arg( version ) );
+  QString version = QString( "%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
+  QgsDebugMsg( QString( "load library %1 (%2)" ).arg( pythonlibName ).arg( version ) );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
