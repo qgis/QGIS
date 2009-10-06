@@ -57,22 +57,6 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
 
   private slots:
     /**
-     * Launched when attribute has been added
-     * @param idx attribute index
-     */
-    //virtual void attributeAdded (int idx);
-    /**
-     * Launched when attribute has been deleted
-     * @param idx attribute index
-     */
-    //virtual void attributeDeleted (int idx);
-    /**
-     * Launched when layer has been modified
-     * Rebuilds the model
-     * @param onlyGeometry true if only geometry has changed
-     */
-    //virtual void layerModified(bool onlyGeometry);
-    /**
      * Launched when attribute value has been changed
      * @param fid feature id
      * @param idx attribute index
@@ -82,18 +66,12 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
 
   private:
     /**
-     * Returns data on the given index
-     * @param index model index
-     * @param role data role
+     * load feature fid into mFeat
+     * @param fid feature id
+     * @return feature exists
      */
-    virtual QVariant data( const QModelIndex &index, int role ) const;
-    /**
-     * Updates data on given index
-     * @param index model index
-     * @param value new data value
-     * @param role data role
-     */
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+    virtual bool featureAtId( int fid );
+
     /**
      * Loads the layer into the model
      */

@@ -22,9 +22,8 @@
 #include <QObject>
 #include <QHash>
 
-//QGIS Includes
-#include "qgsfeature.h" //QgsAttributeMap
-#include "qgsvectorlayer.h" //QgsAttributeList
+#include "qgsfeature.h" // QgsAttributeMap
+#include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsattributetableidcolumnpair.h"
 
 class QgsAttributeTableModel: public QAbstractTableModel
@@ -203,6 +202,14 @@ class QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void loadLayer();
 
+    /**
+     * load feature fid into mFeat
+     * @param fid feature id
+     * @return feature exists
+     */
+    virtual bool featureAtId( int fid );
+
+    QVariant data( const QModelIndex &index, int role );
 };
 
 

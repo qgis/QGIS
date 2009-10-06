@@ -17,7 +17,7 @@
 #define QGSATTRIBUTETABLEDELEGATE_H
 
 #include <QItemDelegate>
-#include "qgsvectorlayer.h"
+
 class QPainter;
 class QgsVectorLayer;
 

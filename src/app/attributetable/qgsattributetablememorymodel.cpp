@@ -46,92 +46,18 @@ QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel
   loadLayer();
 }
 
-QVariant QgsAttributeTableMemoryModel::data( const QModelIndex &index, int role ) const
+bool QgsAttributeTableMemoryModel::featureAtId( int fid )
 {
-  if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
-    return QVariant();
-
-  QVariant::Type fldType = mLayer->pendingFields()[ mAttributes[index.column()] ].type();
-  bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
-
-  if ( role == Qt::TextAlignmentRole )
+  if ( mFeatureMap.contains( fid ) )
   {
-    if ( fldNumeric )
-      return QVariant( Qt::AlignRight );
-    else
-      return QVariant( Qt::AlignLeft );
+    mFeat = mFeatureMap[ fid ];
+    return true;
   }
-
-  // if we don't have the row in current cache, load it from layer first
-  if ( mLastRowId != rowToId( index.row() ) )
+  else
   {
-    //bool res = mLayer->featureAtId(rowToId(index.row()), mFeat, false, true);
-    bool res = mFeatureMap.contains( rowToId( index.row() ) );
-
-    if ( !res )
-      return QVariant( "ERROR" );
-
-    mLastRowId = rowToId( index.row() );
-    mFeat = mFeatureMap[rowToId( index.row() )];
-    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
-  }
-
-  if ( !mLastRow )
-    return QVariant( "ERROR" );
-
-  QVariant &val = ( *mLastRow )[ mAttributes[index.column()] ];
-
-  if ( val.isNull() )
-  {
-    // if the value is NULL, show that in table, but don't show "NULL" text in editor
-    if ( role == Qt::EditRole )
-      return QVariant();
-    else
-      return QVariant( "NULL" );
-  }
-
-  // force also numeric data for EditRole to be strings
-  // otherwise it creates spinboxes instead of line edits
-  // (probably not what we do want)
-  if ( fldNumeric && role == Qt::EditRole )
-    return val.toString();
-
-  // convert to QString from some other representation
-  // this prevents displaying greater numbers in exponential format
-  return val.toString();
-}
-
-bool QgsAttributeTableMemoryModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-  if ( !index.isValid() || role != Qt::EditRole )
+    QgsDebugMsg( QString( "feature %1 not loaded" ).arg( fid ) );
     return false;
-
-  if ( !mLayer->isEditable() )
-    return false;
-
-  //bool res = mLayer->featureAtId(rowToId(index.row()), mFeat, false, true);
-  bool res = mFeatureMap.contains( rowToId( index.row() ) );
-
-  if ( res )
-  {
-    mLastRowId = rowToId( index.row() );
-    mFeat = mFeatureMap[rowToId( index.row() )];
-    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
-
-
-// QgsDebugMsg(mFeatureMap[rowToId(index.row())].id());
-    mFeatureMap[rowToId( index.row() )].changeAttribute( mAttributes[ index.column()], value );
-    // propagate back to the layer
-    mLayer->beginEditCommand( tr( "Attribute changed" ) );
-    mLayer->changeAttributeValue( rowToId( index.row() ), mAttributes[ index.column()], value, true );
-    mLayer->endEditCommand();
   }
-
-  if ( !mLayer->isModified() )
-    return false;
-
-  emit dataChanged( index, index );
-  return true;
 }
 
 void QgsAttributeTableMemoryModel::featureDeleted( int fid )
@@ -149,22 +75,6 @@ void QgsAttributeTableMemoryModel::featureAdded( int fid )
   mFeatureMap.insert( fid, f );
   QgsAttributeTableModel::featureAdded( fid );
 }
-
-#if 0
-void QgsAttributeTableMemoryModel::attributeAdded( int idx )
-{
-  QgsDebugMsg( "entered." );
-  loadLayer();
-  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
-}
-
-void QgsAttributeTableMemoryModel::attributeDeleted( int idx )
-{
-  QgsDebugMsg( "entered." );
-  loadLayer();
-  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
-}
-#endif
 
 void QgsAttributeTableMemoryModel::layerDeleted()
 {
