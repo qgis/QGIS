@@ -141,10 +141,11 @@ class QgsVectorDataProvider : QgsDataProvider
        * Return unique values of an attribute
        * @param index the index of the attribute
        * @param values reference to the list to fill
+       * @param limit maximum number of values to return (added in 1.4)
        *
        * Default implementation simply iterates the features 
        */
-      virtual void uniqueValues(int index, QList<QVariant> &uniqueValues /Out/);
+      virtual void uniqueValues(int index, QList<QVariant> &uniqueValues /Out/, int limit = -1);
 
       /**Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
       or if the given attribute is not an enum type.

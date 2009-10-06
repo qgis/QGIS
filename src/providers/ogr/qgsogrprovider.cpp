@@ -58,7 +58,9 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     ogrDataSource( 0 ),
     extent_( 0 ),
     ogrLayer( 0 ),
-    ogrDriver( 0 )
+    ogrOrigLayer( 0 ),
+    ogrDriver( 0 ),
+    featuresCounted( -1 )
 {
   QgsApplication::registerOgrDrivers();
 
@@ -75,16 +77,14 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   // This part of the code parses the uri transmitted to the ogr provider to
   // get the options the client wants us to apply
 
-  QString mFilePath;
-  QString theLayerName;
-  int theLayerIndex = 0;
-
   // If there is no & in the uri, then the uri is just the filename. The loaded
   // layer will be layer 0.
   //this is not true for geojson
   if ( ! uri.contains( '|', Qt::CaseSensitive ) )
   {
     mFilePath = uri;
+    mLayerIndex = 0;
+    mLayerName = QString::null;
   }
   else
   {
@@ -102,22 +102,29 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
       if ( theInstruction.at( 0 ) == QString( "layerid" ) )
       {
         bool ok;
-        theLayerIndex = theInstruction.at( 1 ).toInt( &ok );
+        mLayerIndex = theInstruction.at( 1 ).toInt( &ok );
         if ( ! ok )
         {
-          theLayerIndex = 0;
+          mLayerIndex = -1;
         }
       }
+
       if ( theInstruction.at( 0 ) == QString( "layername" ) )
       {
-        theLayerName = theInstruction.at( 1 );
+        mLayerName = theInstruction.at( 1 );
+      }
+
+      if ( theInstruction.at( 0 ) == QString( "subset" ) )
+      {
+        mSubsetString = theInstruction.at( 1 );
       }
     }
   }
 
   QgsDebugMsg( "mFilePath: " + mFilePath );
-  QgsDebugMsg( "theLayerIndex: " + theLayerIndex );
-  QgsDebugMsg( "theLayerName: " + theLayerName );
+  QgsDebugMsg( "mLayerIndex: " + QString::number( mLayerIndex ) );
+  QgsDebugMsg( "mLayerName: " + mLayerName );
+  QgsDebugMsg( "mSubsetString: " + mSubsetString );
 
   CPLPushErrorHandler( CPLQuietErrorHandler );
   ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), TRUE, &ogrDriver );
@@ -144,35 +151,19 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
     // We get the layer which was requested by the uri. The layername
     // has precedence over the layerid if both are given.
-    if ( theLayerName.isNull() )
+    if ( mLayerName.isNull() )
     {
-      ogrLayer = OGR_DS_GetLayer( ogrDataSource, theLayerIndex );
+      ogrOrigLayer = OGR_DS_GetLayer( ogrDataSource, mLayerIndex );
     }
     else
     {
-      ogrLayer = OGR_DS_GetLayerByName( ogrDataSource, ( char* )( theLayerName.toLocal8Bit().data() ) );
+      ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, mLayerName.toLocal8Bit().data() );
     }
 
-    // get the extent_ (envelope) of the layer
-
-    QgsDebugMsg( "Starting get extent" );
-
-    // TODO: This can be expensive, do we really need it!
-
     extent_ = calloc( sizeof( OGREnvelope ), 1 );
-    OGR_L_GetExtent( ogrLayer, ( OGREnvelope * ) extent_, TRUE );
 
-    QgsDebugMsg( "Finished get extent" );
-
-    // getting the total number of features in the layer
-    // TODO: This can be expensive, do we really need it!
-    featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE );
-
-    // check the validity of the layer
-
-    QgsDebugMsg( "checking validity" );
-    loadFields();
-    QgsDebugMsg( "Done checking validity" );
+    ogrLayer = ogrOrigLayer;
+    setSubsetString( mSubsetString );
   }
   else
   {
@@ -191,6 +182,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
 QgsOgrProvider::~QgsOgrProvider()
 {
+  if ( ogrLayer != ogrOrigLayer )
+  {
+    OGR_DS_ReleaseResultSet( ogrDataSource, ogrLayer );
+  }
+
   OGR_DS_Destroy( ogrDataSource );
   ogrDataSource = 0;
   free( extent_ );
@@ -200,6 +196,80 @@ QgsOgrProvider::~QgsOgrProvider()
     OGR_G_DestroyGeometry( mSelectionRectangle );
     mSelectionRectangle = 0;
   }
+}
+
+bool QgsOgrProvider::setSubsetString( QString theSQL )
+{
+  if ( theSQL == mSubsetString && featuresCounted >= 0 )
+    return true;
+
+  OGRLayerH prevLayer = ogrLayer;
+  QString prevSubsetString = mSubsetString;
+  mSubsetString = theSQL;
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    QString sql = QString( "SELECT * FROM %1 WHERE %2" )
+                  .arg( quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) ) )
+                  .arg( mSubsetString );
+    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, sql.toUtf8().data(), NULL, NULL );
+
+    if ( !ogrLayer )
+    {
+      ogrLayer = prevLayer;
+      mSubsetString = prevSubsetString;
+      return false;
+    }
+  }
+  else
+  {
+    ogrLayer = ogrOrigLayer;
+  }
+
+  if ( prevLayer != ogrOrigLayer )
+  {
+    OGR_DS_ReleaseResultSet( ogrDataSource, prevLayer );
+  }
+
+  QString uri = mFilePath;
+  if ( !mLayerName.isNull() )
+  {
+    uri += QString( "|layername=%1" ).arg( mLayerName );
+  }
+  else if ( mLayerIndex >= 0 )
+  {
+    uri += QString( "|layerid=%1" ).arg( mLayerIndex );
+  }
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    uri += QString( "|subset=%1" ).arg( mSubsetString );
+  }
+  setDataSourceUri( uri );
+
+  // get the extent_ (envelope) of the layer
+  QgsDebugMsg( "Starting get extent" );
+
+  // TODO: This can be expensive, do we really need it!
+  OGR_L_GetExtent( ogrLayer, ( OGREnvelope * ) extent_, TRUE );
+
+  QgsDebugMsg( "Finished get extent" );
+
+  // getting the total number of features in the layer
+  // TODO: This can be expensive, do we really need it!
+  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE );
+
+  // check the validity of the layer
+  QgsDebugMsg( "checking validity" );
+  loadFields();
+  QgsDebugMsg( "Done checking validity" );
+
+  return true;
+}
+
+QString QgsOgrProvider::subsetString()
+{
+  return mSubsetString;
 }
 
 QStringList QgsOgrProvider::subLayers() const
@@ -866,19 +936,15 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
 bool QgsOgrProvider::createSpatialIndex()
 {
-  QFileInfo fi( dataSourceUri() );     // to get the base name
-  QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( fi.completeBaseName() ) );  // quote the layer name so spaces are handled
-  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), OGR_L_GetSpatialFilter( ogrLayer ), "" );
+  QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+
+  QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
+
+  QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .qix file is there
   QFile indexfile( fi.path().append( "/" ).append( fi.completeBaseName() ).append( ".qix" ) );
-  if ( indexfile.exists() )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return indexfile.exists();
 }
 
 bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
@@ -897,8 +963,10 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
     returnvalue = false;
   }
 
+  QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+
   QFileInfo fi( dataSourceUri() );     // to get the base name
-  QString sql = QString( "REPACK %1" ).arg( fi.completeBaseName() );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
+  QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, NULL );
   featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
   return returnvalue;
@@ -1383,7 +1451,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
                                        QGis::WkbType vectortype,
                                        const std::list<std::pair<QString, QString> >& attributes )
 {
-  QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ));
+  QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
   OGRSFDriverH driver;
   QgsApplication::registerOgrDrivers();
   driver = OGRGetDriverByName( format.toAscii() );
@@ -1543,27 +1611,37 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
   return srs;
 }
 
-void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues )
+void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
 {
   QgsField fld = mAttributeFields[index];
   QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
 
-  QString sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" )
+  QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
                 .arg( quotedIdentifier( theLayerName ) );
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += QString( " WHERE %1" ).arg( mSubsetString );
+  }
+
+  sql += QString( " ORDER BY %1" ).arg( fld.name() );
 
   uniqueValues.clear();
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
   if ( l == 0 )
-    return QgsVectorDataProvider::uniqueValues( index, uniqueValues );
+    return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
 
   OGRFeatureH f;
   while ( 0 != ( f = OGR_L_GetNextFeature( l ) ) )
   {
     uniqueValues << convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
     OGR_F_Destroy( f );
+
+    if ( limit >= 0 && uniqueValues.size() >= limit )
+      break;
   }
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
@@ -1577,6 +1655,11 @@ QVariant QgsOgrProvider::minimumValue( int index )
   QString sql = QString( "SELECT MIN(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
                 .arg( quotedIdentifier( theLayerName ) );
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += QString( " WHERE %1" ).arg( mSubsetString );
+  }
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
 
@@ -1606,6 +1689,11 @@ QVariant QgsOgrProvider::maximumValue( int index )
   QString sql = QString( "SELECT MAX(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
                 .arg( quotedIdentifier( theLayerName ) );
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += QString( " WHERE %1" ).arg( mSubsetString );
+  }
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
   if ( l == 0 )
@@ -1639,22 +1727,25 @@ bool QgsOgrProvider::syncToDisc()
   OGR_L_SyncToDisk( ogrLayer );
 
   //for shapefiles: is there already a spatial index?
-  QFileInfo fi( dataSourceUri() );
-  QString filePath = fi.filePath();
-
-  //remove the suffix and add .qix
-  int suffixLength = fi.suffix().length();
-  if ( suffixLength > 0 )
+  if ( !mFilePath.isEmpty() )
   {
-    QString indexFilePath = filePath;
-    indexFilePath.chop( suffixLength );
-    indexFilePath.append( "qix" );
-    QFile indexFile( indexFilePath );
-    if ( indexFile.exists() ) //there is already a spatial index file
+    QFileInfo fi( mFilePath );
+
+    //remove the suffix and add .qix
+    int suffixLength = fi.suffix().length();
+    if ( suffixLength > 0 )
     {
-      //the already existing spatial index is removed automatically by OGR
-      return createSpatialIndex();
+      QString indexFilePath = mFilePath;
+      indexFilePath.chop( suffixLength );
+      indexFilePath.append( "qix" );
+      QFile indexFile( indexFilePath );
+      if ( indexFile.exists() ) //there is already a spatial index file
+      {
+        //the already existing spatial index is removed automatically by OGR
+        return createSpatialIndex();
+      }
     }
   }
+
   return true;
 }

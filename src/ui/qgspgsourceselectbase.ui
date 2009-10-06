@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsDbSourceSelectBase</class>
- <widget class="QDialog" name="QgsDbSourceSelectBase">
+ <class>QgsPgSourceSelectBase</class>
+ <widget class="QDialog" name="QgsPgSourceSelectBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
+    <width>672</width>
     <height>687</height>
    </rect>
   </property>
@@ -248,7 +248,7 @@
   <connection>
    <sender>btnCancel</sender>
    <signal>clicked()</signal>
-   <receiver>QgsDbSourceSelectBase</receiver>
+   <receiver>QgsPgSourceSelectBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

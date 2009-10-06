@@ -153,7 +153,7 @@ void QgsSpatiaLiteSourceSelect::setLayerType( QString table, QString column, QSt
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
 }
 
-sqlite3 *QgsSpatiaLiteSourceSelect::openSpatiaLiteDb( const char *path )
+sqlite3 *QgsSpatiaLiteSourceSelect::openSpatiaLiteDb( QString path )
 {
   sqlite3 *handle = NULL;
   bool gcSpatiaLite = false;
@@ -179,9 +179,9 @@ sqlite3 *QgsSpatiaLiteSourceSelect::openSpatiaLiteDb( const char *path )
   QString errCause;
 
   // trying to open the SQLite DB
-  mSqlitePath = QString::fromUtf8( path );
+  mSqlitePath = path;
 
-  ret = sqlite3_open_v2( path, &handle, SQLITE_OPEN_READWRITE, NULL );
+  ret = sqlite3_open_v2( path.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
   if ( ret )
   {
     // failure
@@ -303,8 +303,6 @@ void QgsSpatiaLiteSourceSelect::addNewConnection()
 {
 // Retrieve last used project dir from persistent settings
   sqlite3 *handle;
-  char *path = NULL;
-  int sz;
   QSettings settings;
   QString fullPath;
   QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", "." ).toString();
@@ -321,13 +319,7 @@ void QgsSpatiaLiteSourceSelect::addNewConnection()
     QString myPath = myFI.path();
     QString myName = myFI.fileName();
 
-    // transforming full path as char *
-    QByteArray utf8 = fullPath.toUtf8();
-    sz = utf8.size();
-    path = new char[sz + 1];
-    memcpy( path, utf8.data(), sz );
-    path[sz] = '\0';
-    handle = openSpatiaLiteDb( path );
+    handle = openSpatiaLiteDb( myFI.canonicalPath() );
     if ( handle )
     {
       // OK, this one is a valid SpatiaLite DB
@@ -350,8 +342,6 @@ void QgsSpatiaLiteSourceSelect::addNewConnection()
   }
 
   delete openFileDialog;
-  if ( path != NULL )
-    delete path;
   populateConnectionList();
 }
 
@@ -449,8 +439,6 @@ void QgsSpatiaLiteSourceSelect::addTables()
 void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
 {
   sqlite3 *handle;
-  char *path = NULL;
-  int sz;
 
   QSettings settings;
   QString subKey = cmbConnections->currentText();
@@ -458,26 +446,19 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   if ( idx > 0 )
     subKey.truncate( idx );
 
-  QString key = "/SpatiaLite/connections/" + subKey;
+  QFileInfo fi( settings.value( QString( "/SpatiaLite/connections/%1/sqlitepath" ).arg( subKey ) ).toString() );
 
-  QString fullPath = settings.value( key + "/sqlitepath" ).toString();
-
-  // transforming full path as char *
-  QByteArray utf8 = fullPath.toUtf8();
-  sz = utf8.size();
-  path = new char[sz + 1];
-  memcpy( path, utf8.data(), sz );
-  path[sz] = '\0';
+  if ( !fi.exists() )
+    // db doesn't exists
+    return;
 
   // trying to connect to SpatiaLite DB
-  handle = openSpatiaLiteDb( path );
+  handle = openSpatiaLiteDb( fi.canonicalFilePath() );
   if ( handle == NULL )
   {
     // unexpected error; invalid SpatiaLite DB
-    delete path;
     return;
   }
-  delete path;
 
   QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );

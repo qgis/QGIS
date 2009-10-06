@@ -64,7 +64,7 @@ class QgsDataProvider : QObject
        * that can be used by the data provider to create a subset.
        * Must be implemented in the dataprovider.
       */
-      virtual void setSubsetString(QString subset);
+      virtual bool setSubsetString(QString subset);
 
 
       /**

@@ -63,13 +63,14 @@ SET(QGIS_APP_SRCS
   qgsprojectproperties.cpp
   qgsrasterlayerproperties.cpp
   qgssearchquerybuilder.cpp
-  qgsserversourceselect.cpp
+  qgswmssourceselect.cpp
   qgsshortcutsmanager.cpp
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
   qgsundowidget.cpp
   qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
+  qgsquerybuilder.cpp
 
   composer/qgscomposer.cpp
   composer/qgscomposeritemwidget.cpp
@@ -159,7 +160,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsprojectproperties.h
   qgsrasterlayerproperties.h
   qgssearchquerybuilder.h
-  qgsserversourceselect.h
+  qgswmssourceselect.h
   qgssinglesymboldialog.h
   qgssnappingdialog.h
   qgsuniquevaluedialog.h
@@ -167,6 +168,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdbtablemodel.h
   qgsspatialitetablemodel.h
   qgsundowidget.h
+  qgsquerybuilder.h
 
   composer/qgscomposer.h
   composer/qgscomposeritemwidget.h
@@ -181,7 +183,6 @@ SET (QGIS_APP_MOC_HDRS
   legend/qgslegend.h
   legend/qgslegendlayer.h
   legend/qgslegendlayerfile.h
-  
   
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
@@ -198,14 +199,12 @@ IF (POSTGRES_FOUND)
   ENDIF(HAVE_PGCONFIG)
 
   SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
-    qgsdbsourceselect.cpp
+    qgspgsourceselect.cpp
     qgsnewconnection.cpp
-    qgspgquerybuilder.cpp
     )
   SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
-    qgsdbsourceselect.h
+    qgspgsourceselect.h
     qgsnewconnection.h
-    qgspgquerybuilder.h
     )
 ENDIF (POSTGRES_FOUND)
 

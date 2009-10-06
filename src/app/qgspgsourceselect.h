@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#ifndef QGSDBSOURCESELECT_H
-#define QGSDBSOURCESELECT_H
-#include "ui_qgsdbsourceselectbase.h"
+#ifndef QGSPGSOURCESELECT_H
+#define QGSPGSOURCESELECT_H
+#include "ui_qgspgsourceselectbase.h"
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsdbtablemodel.h"
@@ -28,11 +28,6 @@ extern "C"
 }
 
 #include <QThread>
-
-#include <vector>
-#include <list>
-#include <utility>
-
 #include <QMap>
 #include <QPair>
 #include <QIcon>
@@ -42,12 +37,12 @@ class QStringList;
 class QgsGeomColumnTypeThread;
 class QgisApp;
 
-class QgsDbSourceSelectDelegate : public QItemDelegate
+class QgsPgSourceSelectDelegate : public QItemDelegate
 {
     Q_OBJECT;
 
   public:
-    QgsDbSourceSelectDelegate( QObject *parent = NULL ) : QItemDelegate( parent )
+    QgsPgSourceSelectDelegate( QObject *parent = NULL ) : QItemDelegate( parent )
     {
     }
 
@@ -58,9 +53,16 @@ class QgsDbSourceSelectDelegate : public QItemDelegate
       const QStyleOptionViewItem &option,
       const QModelIndex &index ) const
     {
-      QComboBox *cb = new QComboBox( parent );
-      cb->addItems( index.data( Qt::UserRole + 1 ).toStringList() );
-      return cb;
+      QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
+
+      if( values.size()> 0 )
+      {
+        QComboBox *cb = new QComboBox( parent );
+        cb->addItems( values );
+        return cb;
+      }
+
+      return NULL;
     }
 
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -73,22 +75,22 @@ class QgsDbSourceSelectDelegate : public QItemDelegate
 };
 
 
-/*! \class QgsDbSourceSelect
+/*! \class QgsPgSourceSelect
  * \brief Dialog to create connections and add tables from PostgresQL.
  *
  * This dialog allows the user to define and save connection information
  * for PostGIS enabled PostgreSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
+class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
 {
     Q_OBJECT
   public:
 
     //! Constructor
-    QgsDbSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsPgSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
-    ~QgsDbSourceSelect();
+    ~QgsPgSourceSelect();
     //! Opens the create connection dialog to build a new connection
     void addNewConnection();
     //! Opens a dialog to edit an existing connection
@@ -131,8 +133,8 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setSearchExpression( const QString& regexp );
 
   private:
-    typedef std::pair<QString, QString> geomPair;
-    typedef std::list<geomPair > geomCol;
+    typedef QPair<QString, QString> geomPair;
+    typedef QList<geomPair> geomCol;
 
     bool getGeometryColumnInfo( PGconn *pd,
                                 geomCol& details,
@@ -143,7 +145,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     bool getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly );
 
     /** get primary key candidates (all int4 columns) */
-    QStringList pkCandidates( PGconn *pg, QString schemaName, QString tableName );
+    QStringList pkCandidates( PGconn *pg, QString schemaName, QString viewName );
 
     // queue another query for the thread
     void addSearchGeometryColumn( const QString &schema, const QString &table, const QString &column );
@@ -169,6 +171,8 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Model that acts as datasource for mTableTreeWidget
     QgsDbTableModel mTableModel;
     QgsDbFilterProxyModel mProxyModel;
+
+    QString layerURI( const QModelIndex &index );
 };
 
 
@@ -208,4 +212,4 @@ class QgsGeomColumnTypeThread : public QThread
     std::vector<QString> schemas, tables, columns;
 };
 
-#endif // QGSDBSOURCESELECT_H
+#endif // QGSPGSOURCESELECT_H

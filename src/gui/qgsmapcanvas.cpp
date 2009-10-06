@@ -1261,8 +1261,6 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 
 void QgsMapCanvas::panAction( QMouseEvent * e )
 {
-  QgsDebugMsg( "panAction: entering." );
-
   if ( mDrawing )
   {
     return;
@@ -1285,8 +1283,6 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
   QPoint pnt( 0, 0 );
   if ( !reset )
     pnt += mCanvasProperties->mouseLastXY - mCanvasProperties->rubberStartPoint;
-
-  QgsDebugMsg( "moveCanvasContents: pnt " + QString::number( pnt.x() ) + "," + QString::number( pnt.y() ) );
 
   mMap->setPanningOffset( pnt );
 
