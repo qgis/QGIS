@@ -52,12 +52,15 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     void on_mAllPushButton_clicked();
     void on_mOutputFieldNameLineEdit_textChanged( const QString& text );
     void on_mExpressionTextEdit_textChanged();
-    void on_mOutputFieldTypeComboBox_currentIndexChanged( const QString& text );
+    void on_mOutputFieldTypeComboBox_activated( int index );
 
   private:
     //default constructor forbidden
     QgsFieldCalculator();
+    /**Inserts existing fields into the combo box*/
     void populateFields();
+    /**Inserts the types supported by the provider into the combo box*/
+    void populateOutputFieldTypes();
     /**Gets field values and inserts them into mValueListWidget
     @limit 0: get all feature, != 0 stop after getting limit values*/
     void getFieldValues( int limit );
