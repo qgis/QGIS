@@ -335,7 +335,7 @@ QVariant QgsVectorDataProvider::maximumValue( int index )
   return mCacheMaxValues[index];
 }
 
-void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values )
+void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, int limit )
 {
   QgsFeature f;
   QgsAttributeList keys;
@@ -352,6 +352,9 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values )
       values.append( f.attributeMap()[index] );
       set.insert( f.attributeMap()[index].toString() );
     }
+
+    if ( limit >= 0 && values.size() >= limit )
+      break;
   }
 }
 

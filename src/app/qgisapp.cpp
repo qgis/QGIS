@@ -131,7 +131,7 @@
 #include "qgsrasterlayerproperties.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
-#include "qgsserversourceselect.h"
+#include "qgswmssourceselect.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsundowidget.h"
 #include "qgsvectordataprovider.h"
@@ -183,7 +183,7 @@
 // Conditional Includes
 //
 #ifdef HAVE_POSTGRESQL
-#include "qgsdbsourceselect.h"
+#include "qgspgsourceselect.h"
 #endif
 #ifdef HAVE_SPATIALITE
 #include "qgsspatialitesourceselect.h"
@@ -2586,7 +2586,7 @@ void QgisApp::addDatabaseLayer()
   // only supports postgis layers at present
   // show the postgis dialog
 
-  QgsDbSourceSelect *dbs = new QgsDbSourceSelect( this );
+  QgsPgSourceSelect *dbs = new QgsPgSourceSelect( this );
 
   mMapCanvas->freeze();
 
@@ -2742,7 +2742,7 @@ void QgisApp::addWmsLayer()
   // Fudge for now
   QgsDebugMsg( "about to addRasterLayer" );
 
-  QgsServerSourceSelect *wmss = new QgsServerSourceSelect( this );
+  QgsWMSSourceSelect *wmss = new QgsWMSSourceSelect( this );
   wmss->exec();
 }
 
@@ -3148,10 +3148,6 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
 
 void QgisApp::newVectorLayer()
 {
-  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
-  QgsDebugMsg( "newVectorLayer called" );
-  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
-
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -3273,9 +3269,6 @@ void QgisApp::newVectorLayer()
   fileNames.append( fileName );
   //todo: the last parameter will change accordingly to layer type
   addVectorLayers( fileNames, enc, "file" );
-  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
-  QgsDebugMsg( "newVectorLayer done!" );
-  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
 }
 
 void QgisApp::fileOpen()

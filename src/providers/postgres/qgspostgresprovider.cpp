@@ -229,8 +229,8 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mNativeTypes
   // integer types
   << QgsVectorDataProvider::NativeType( tr( "Whole number (smallint - 16bit)" ), "int2", QVariant::Int )
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 32bit)" ), "int4", QVariant::Int )
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64bit)" ), "int8", QVariant::LongLong )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 32bit)" ), "int4", QVariant::Int )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64bit)" ), "int8", QVariant::LongLong )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (numeric)" ), "numeric", QVariant::LongLong, 1, 20, 0, 20 )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (decimal)" ), "decimal", QVariant::LongLong, 1, 20, 0, 20 )
 
@@ -240,8 +240,8 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   // string types
   << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "Text, variable length (varchar)" ), "varchar", QVariant::String, 1, 255 )
-  << QgsVectorDataProvider::NativeType( tr( "Text (text)" ), "text", QVariant::String )
+  << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String )
   ;
 
   if ( primaryKey.isEmpty() )
@@ -1669,7 +1669,7 @@ QVariant QgsPostgresProvider::minimumValue( int index )
 }
 
 // Returns the list of unique values of an attribute
-void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues )
+void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
 {
   uniqueValues.clear();
 
@@ -1690,6 +1690,11 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
             .arg( quotedIdentifier( fld.name() ) )
             .arg( mSchemaTableName )
             .arg( sqlWhereClause );
+    }
+
+    if ( limit >= 0 )
+    {
+      sql += QString( " LIMIT %1" ).arg( limit );
     }
 
     Result res = connectionRO->PQexec( sql );
@@ -2513,16 +2518,16 @@ int QgsPostgresProvider::capabilities() const
   return enabledCapabilities;
 }
 
-void QgsPostgresProvider::setSubsetString( QString theSQL )
+bool QgsPostgresProvider::setSubsetString( QString theSQL )
 {
   QString prevWhere = sqlWhereClause;
 
   sqlWhereClause = theSQL;
 
-  if( !uniqueData( mSchemaName, mTableName, primaryKey ) )
+  if ( !uniqueData( mSchemaName, mTableName, primaryKey ) )
   {
     sqlWhereClause = prevWhere;
-    return;
+    return false;
   }
 
   // Update datasource uri too
@@ -2534,6 +2539,8 @@ void QgsPostgresProvider::setSubsetString( QString theSQL )
   // need to recalculate the number of features...
   getFeatureCount();
   calculateExtents();
+
+  return true;
 }
 
 long QgsPostgresProvider::getFeatureCount()

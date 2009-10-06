@@ -39,13 +39,13 @@ QgsDbTableModel::~QgsDbTableModel()
 void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString tableName, QString geometryColName, const QStringList &pkCols, QString sql )
 {
   //is there already a root item with the given scheme Name?
-  QStandardItem* schemaItem;
-  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, 0 );
+  QStandardItem *schemaItem;
+  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, dbtmSchema );
 
   //there is already an item for this schema
   if ( schemaItems.size() > 0 )
   {
-    schemaItem = schemaItems.at( 0 );
+    schemaItem = schemaItems.at( dbtmSchema );
   }
   else //create a new toplevel item for this schema
   {
@@ -75,7 +75,6 @@ void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString t
   QStandardItem* sqlItem = new QStandardItem( sql );
   sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-
   childItemList.push_back( schemaNameItem );
   childItemList.push_back( tableItem );
   childItemList.push_back( typeItem );
@@ -87,7 +86,7 @@ void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString t
   ++mTableCount;
 }
 
-void QgsDbTableModel::setSql( const QModelIndex& index, const QString &sql )
+void QgsDbTableModel::setSql( const QModelIndex &index, const QString &sql )
 {
   if ( !index.isValid() || !index.parent().isValid() )
   {
@@ -95,9 +94,9 @@ void QgsDbTableModel::setSql( const QModelIndex& index, const QString &sql )
   }
 
   //find out schema name and table name
-  QModelIndex schemaSibling = index.sibling( index.row(), 0 );
-  QModelIndex tableSibling = index.sibling( index.row(), 1 );
-  QModelIndex geomSibling = index.sibling( index.row(), 3 );
+  QModelIndex schemaSibling = index.sibling( index.row(), dbtmSchema );
+  QModelIndex tableSibling = index.sibling( index.row(), dbtmTable );
+  QModelIndex geomSibling = index.sibling( index.row(), dbtmGeomCol );
 
   if ( !schemaSibling.isValid() || !tableSibling.isValid() || !geomSibling.isValid() )
   {
@@ -108,13 +107,13 @@ void QgsDbTableModel::setSql( const QModelIndex& index, const QString &sql )
   QString tableName = itemFromIndex( tableSibling )->text();
   QString geomName = itemFromIndex( geomSibling )->text();
 
-  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, 0 );
+  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, dbtmSchema );
   if ( schemaItems.size() < 1 )
   {
     return;
   }
 
-  QStandardItem* schemaItem = schemaItems.at( 0 );
+  QStandardItem* schemaItem = schemaItems.at( dbtmSchema );
   int numChildren = schemaItem->rowCount();
 
   QModelIndex currentChildIndex;
@@ -123,18 +122,18 @@ void QgsDbTableModel::setSql( const QModelIndex& index, const QString &sql )
 
   for ( int i = 0; i < numChildren; ++i )
   {
-    currentChildIndex = indexFromItem( schemaItem->child( i, 0 ) );
+    currentChildIndex = indexFromItem( schemaItem->child( i, dbtmSchema ) );
     if ( !currentChildIndex.isValid() )
     {
       continue;
     }
-    currentTableIndex = currentChildIndex.sibling( i, 1 );
+    currentTableIndex = currentChildIndex.sibling( i, dbtmTable );
     if ( !currentTableIndex.isValid() )
     {
       continue;
     }
 
-    currentGeomIndex = currentChildIndex.sibling( i, 3 );
+    currentGeomIndex = currentChildIndex.sibling( i, dbtmGeomCol );
     if ( !currentGeomIndex.isValid() )
     {
       continue;
@@ -160,7 +159,7 @@ void QgsDbTableModel::setGeometryTypesForTable( const QString& schema, const QSt
 
   //find schema item and table item
   QStandardItem* schemaItem;
-  QList<QStandardItem*> schemaItems = findItems( schema, Qt::MatchExactly, 0 );
+  QList<QStandardItem*> schemaItems = findItems( schema, Qt::MatchExactly, dbtmSchema );
 
   if ( schemaItems.size() < 1 )
   {
@@ -177,7 +176,7 @@ void QgsDbTableModel::setGeometryTypesForTable( const QString& schema, const QSt
 
   for ( int i = 0; i < numChildren; ++i )
   {
-    currentChildIndex = indexFromItem( schemaItem->child( i, 0 ) );
+    currentChildIndex = indexFromItem( schemaItem->child( i, dbtmSchema ) );
     if ( !currentChildIndex.isValid() )
     {
       continue;

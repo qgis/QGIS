@@ -1108,18 +1108,21 @@ QString QgsVectorLayer::subsetString()
   return mDataProvider->subsetString();
 }
 
-void QgsVectorLayer::setSubsetString( QString subset )
+bool QgsVectorLayer::setSubsetString( QString subset )
 {
   if ( ! mDataProvider )
   {
     QgsLogger::warning( " QgsVectorLayer::setSubsetString() invoked with null mDataProvider" );
-    return;
+    return false;
   }
 
-  mDataProvider->setSubsetString( subset );
+  bool res = mDataProvider->setSubsetString( subset );
+
   // get the updated data source string from the provider
   mDataSource = mDataProvider->dataSourceUri();
   updateExtents();
+
+  return res;
 }
 
 void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f )

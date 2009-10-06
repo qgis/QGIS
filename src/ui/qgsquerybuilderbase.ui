@@ -1,8 +1,8 @@
 <ui version="4.0" >
  <author>Gary Sherman</author>
- <comment>Query builder for PostgreSQL layers (using PostGIS)	</comment>
- <class>QgsPgQueryBuilderBase</class>
- <widget class="QDialog" name="QgsPgQueryBuilderBase" >
+ <comment>Query builder for vector layers</comment>
+ <class>QgsQueryBuilderBase</class>
+ <widget class="QDialog" name="QgsQueryBuilderBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -18,7 +18,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle" >
-   <string>PostgreSQL Query Builder</string>
+   <string>Query Builder</string>
   </property>
   <property name="windowIcon" >
    <iconset>
@@ -409,7 +409,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>Cancel</sender>
    <signal>clicked()</signal>
-   <receiver>QgsPgQueryBuilderBase</receiver>
+   <receiver>QgsQueryBuilderBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

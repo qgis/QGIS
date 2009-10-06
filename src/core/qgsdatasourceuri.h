@@ -94,6 +94,7 @@ class CORE_EXPORT QgsDataSourceURI
   private:
     void skipBlanks( const QString &uri, int &i );
     QString getValue( const QString &uri, int &i );
+    QString escape( const QString &uri ) const;
 
     /* data */
 
