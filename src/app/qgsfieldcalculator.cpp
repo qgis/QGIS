@@ -16,17 +16,16 @@
 #include "qgsfieldcalculator.h"
 #include "qgssearchtreenode.h"
 #include "qgssearchstring.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include <QMessageBox>
 
 QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVectorLayer( vl )
 {
   setupUi( this );
-  mOutputFieldTypeComboBox->addItem( tr( "Whole number (integer)" ), "Integer" );
-  mOutputFieldTypeComboBox->addItem( tr( "Decimal number (double)" ), "Double" );
-  mOutputFieldTypeComboBox->addItem( tr( "Text (string)" ), "String" );
 
   populateFields();
+  populateOutputFieldTypes();
 
   //default values for field width and precision
   mOuputFieldWidthSpinBox->setValue( 10 );
@@ -82,23 +81,11 @@ void QgsFieldCalculator::accept()
     else
     {
       //create new field
-      QgsField newField( mOutputFieldNameLineEdit->text() );
-      int index = mOutputFieldTypeComboBox->currentIndex();
-      if ( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole ) ==  "Double" )
-      {
-        newField.setType( QVariant::Double );
-      }
-      else if ( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole ) == "Integer"  )
-      {
-        newField.setType( QVariant::Int );
-      }
-      else if ( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole ) == "String"  )
-      {
-        newField.setType( QVariant::String );
-      }
-
-      newField.setLength( mOuputFieldWidthSpinBox->value() );
-      newField.setPrecision( mOutputFieldPrecisionSpinBox->value() );
+      QgsField newField( mOutputFieldNameLineEdit->text(),
+                         ( QVariant::Type ) mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole ).toInt(),
+                         mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole + 1 ).toString(),
+                         mOuputFieldWidthSpinBox->value(),
+                         mOutputFieldPrecisionSpinBox->value() );
 
       if ( !mVectorLayer->addAttribute( newField ) )
       {
@@ -198,6 +185,36 @@ void QgsFieldCalculator::populateFields()
     mFieldsListWidget->addItem( fieldName );
     mExistingFieldComboBox->addItem( fieldName );
   }
+}
+
+void QgsFieldCalculator::populateOutputFieldTypes()
+{
+  if ( !mVectorLayer )
+  {
+    return;
+  }
+
+  QgsVectorDataProvider* provider = mVectorLayer->dataProvider();
+  if ( !provider )
+  {
+    return;
+  }
+
+  mOutputFieldTypeComboBox->blockSignals( true );
+  const QList< QgsVectorDataProvider::NativeType > &typelist = provider->nativeTypes();
+  for ( int i = 0; i < typelist.size(); i++ )
+  {
+    mOutputFieldTypeComboBox->addItem( typelist[i].mTypeDesc );
+    mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mTypeName, Qt::UserRole + 1 );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMinLen, Qt::UserRole + 2 );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMaxLen, Qt::UserRole + 3 );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMinPrec, Qt::UserRole + 4 );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMaxPrec, Qt::UserRole + 5 );
+  }
+  mOutputFieldTypeComboBox->blockSignals( false );
+  mOutputFieldTypeComboBox->setCurrentIndex( 0 );
+  on_mOutputFieldTypeComboBox_activated( 0 );
 }
 
 void QgsFieldCalculator::on_mUpdateExistingFieldCheckBox_stateChanged( int state )
@@ -321,16 +338,23 @@ void QgsFieldCalculator::on_mExpressionTextEdit_textChanged()
   setOkButtonState();
 }
 
-void QgsFieldCalculator::on_mOutputFieldTypeComboBox_currentIndexChanged( const QString& text )
+void QgsFieldCalculator::on_mOutputFieldTypeComboBox_activated( int index )
 {
-  if ( text == tr( "Double" ) )
-  {
-    mOutputFieldPrecisionSpinBox->setEnabled( true );
-  }
-  else
-  {
-    mOutputFieldPrecisionSpinBox->setEnabled( false );
-  }
+  mOuputFieldWidthSpinBox->setMinimum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 2 ).toInt() );
+  mOuputFieldWidthSpinBox->setMaximum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 3 ).toInt() );
+  mOuputFieldWidthSpinBox->setEnabled( mOuputFieldWidthSpinBox->minimum() < mOuputFieldWidthSpinBox->maximum() );
+  if ( mOuputFieldWidthSpinBox->value() < mOuputFieldWidthSpinBox->minimum() )
+    mOuputFieldWidthSpinBox->setValue( mOuputFieldWidthSpinBox->minimum() );
+  if ( mOuputFieldWidthSpinBox->value() > mOuputFieldWidthSpinBox->maximum() )
+    mOuputFieldWidthSpinBox->setValue( mOuputFieldWidthSpinBox->maximum() );
+
+  mOutputFieldPrecisionSpinBox->setMinimum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 4 ).toInt() );
+  mOutputFieldPrecisionSpinBox->setMaximum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 5 ).toInt() );
+  mOutputFieldPrecisionSpinBox->setEnabled( mOutputFieldPrecisionSpinBox->minimum() < mOutputFieldPrecisionSpinBox->maximum() );
+  if ( mOutputFieldPrecisionSpinBox->value() < mOutputFieldPrecisionSpinBox->minimum() )
+    mOutputFieldPrecisionSpinBox->setValue( mOutputFieldPrecisionSpinBox->minimum() );
+  if ( mOutputFieldPrecisionSpinBox->value() > mOutputFieldPrecisionSpinBox->maximum() )
+    mOutputFieldPrecisionSpinBox->setValue( mOutputFieldPrecisionSpinBox->maximum() );
 }
 
 void QgsFieldCalculator::getFieldValues( int limit )
