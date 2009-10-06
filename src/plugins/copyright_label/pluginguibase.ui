@@ -13,7 +13,9 @@
    <string>Copyright Label Plugin</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" colspan="4" >
