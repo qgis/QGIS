@@ -55,7 +55,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   outStream.setRealNumberPrecision( 8 );
   writeHeader( outStream );
 
-  double currentYValue = mInterpolationExtent.yMaximum();
+  double currentYValue = mInterpolationExtent.yMaximum() - mCellSizeY / 2.0; //calculate value in the center of the cell
   double currentXValue;
   double interpolatedValue;
 
@@ -68,7 +68,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
 
   for ( int i = 0; i < mNumRows; ++i )
   {
-    currentXValue = mInterpolationExtent.xMinimum();
+    currentXValue = mInterpolationExtent.xMinimum() + mCellSizeX / 2.0; //calculate value in the center of the cell
     for ( int j = 0; j < mNumColumns; ++j )
     {
       if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue ) == 0 )
