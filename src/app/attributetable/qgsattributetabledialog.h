@@ -24,9 +24,6 @@
 
 #include "ui_qgsattributetabledialog.h"
 
-class QgsMapLayer;
-class QgsVectorLayer;
-
 #include "qgsvectorlayer.h" //QgsFeatureIds
 
 class QDialogButtonBox;

@@ -218,7 +218,7 @@ void QgsAttributeTableDialog::on_mRemoveSelectionButton_clicked()
 
 void QgsAttributeTableDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
 {
-  mFilterModel->mHideUnselected = theFlag;
+  mFilterModel->setHideUnselected( theFlag );
   mFilterModel->invalidate();
   //TODO: weird
   //mModel->changeLayout();
