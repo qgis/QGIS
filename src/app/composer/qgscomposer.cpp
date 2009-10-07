@@ -481,6 +481,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( myOutputFileNameQString );
+  printer.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
 
   print( printer );
 }
@@ -504,16 +505,6 @@ void QgsComposer::print( QPrinter &printer )
   if ( containsWMSLayer() )
   {
     showWMSPrintingWarning();
-  }
-
-  //try to set most of the print dialog settings based on composer properties
-  if ( mComposition->paperHeight() > mComposition->paperWidth() )
-  {
-    printer.setOrientation( QPrinter::Portrait );
-  }
-  else
-  {
-    printer.setOrientation( QPrinter::Landscape );
   }
 
   //set resolution based on composer setting
