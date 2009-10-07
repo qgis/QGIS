@@ -1075,20 +1075,23 @@ int QgsOgrProvider::capabilities() const
 #endif
 
     // OGR doesn't handle shapefiles without attributes, ie. missing DBFs well, fixes #803
-    if ( ogrDriverName.startsWith( "ESRI" ) && mAttributeFields.size() == 0 )
+    if ( ogrDriverName.startsWith( "ESRI" ) )
     {
-      QgsDebugMsg( "OGR doesn't handle shapefile without attributes well, ie. missing DBFs" );
-      ability &= ~( AddFeatures | DeleteFeatures | ChangeAttributeValues | AddAttributes | DeleteAttributes );
+      if ( mAttributeFields.size() == 0 )
+      {
+        QgsDebugMsg( "OGR doesn't handle shapefile without attributes well, ie. missing DBFs" );
+        ability &= ~( AddFeatures | DeleteFeatures | ChangeAttributeValues | AddAttributes | DeleteAttributes );
+      }
+
+      if (( ability & ChangeAttributeValues ) == 0 )
+      {
+        // on readonly shapes OGR reports that it can delete features although it can't RandomWrite
+        ability &= ~( AddAttributes | DeleteFeatures );
+      }
     }
   }
 
   return ability;
-
-  /*
-  return (QgsVectorDataProvider::AddFeatures
-  | QgsVectorDataProvider::ChangeAttributeValues
-  | QgsVectorDataProvider::CreateSpatialIndex);
-  */
 }
 
 
