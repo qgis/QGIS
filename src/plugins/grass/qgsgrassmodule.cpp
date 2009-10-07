@@ -2646,7 +2646,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   }
 
   // Read "whereoption" if defined
-  opt = qdesc.attribute( "where" );
+  opt = qdesc.attribute( "whereoption" );
   if ( !opt.isNull() )
   {
     QDomNode optNode = QgsGrassModule::nodeByKey( gdesc, opt );
@@ -2697,6 +2697,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   {
     mUri.push_back( QString() );
     mOgrLayers.push_back( QString() );
+    mOgrWheres.push_back( QString() );
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
   }
 
@@ -2709,9 +2710,11 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
     if ( mType == Ogr && layer->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
-      if ( vector->providerType() != "ogr"
-           && vector->providerType() != "postgres" ) continue;
+      QgsVectorLayer *vector = dynamic_cast<QgsVectorLayer*>( layer );
+      if ( !vector ||
+           ( vector->providerType() != "ogr" && vector->providerType() != "postgres" )
+         )
+        continue;
 
       QgsDataProvider *provider = vector->dataProvider();
 
@@ -2732,10 +2735,45 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
         ogrLayer += dsUri.table();
         ogrWhere = dsUri.sql();
       }
-      else
+      else if ( vector->providerType() == "ogr" )
       {
-        uri = provider->dataSourceUri();
-        ogrLayer = "";
+        QStringList items = provider->dataSourceUri().split( "|" );
+
+        if ( items.size() > 1 )
+        {
+          uri = items[0];
+
+          ogrLayer = "";
+          ogrWhere = "";
+
+          for ( int i = 1; i < items.size(); i++ )
+          {
+            QStringList args = items[i].split( "=" );
+
+            if ( args.size() != 2 )
+              continue;
+
+            if ( args[0] == "layername" && args[0] == "layerid" )
+            {
+              ogrLayer = args[1];
+            }
+            else if ( args[0] == "subset" )
+            {
+              ogrWhere = args[1];
+            }
+          }
+
+          if ( uri.endsWith( ".shp", Qt::CaseInsensitive ) )
+          {
+            ogrLayer = "";
+          }
+        }
+        else
+        {
+          uri = items[0];
+          ogrLayer = "";
+          ogrWhere = "";
+        }
       }
 
       QgsDebugMsg( "uri = " + uri );
@@ -2804,11 +2842,11 @@ QStringList QgsGrassModuleGdalInput::options()
     }
 #endif //GDAL_VERSION_NUM
     list.push_back( opt );
+  }
 
-    if ( !mOgrWhereOption.isNull() && mOgrWheres[current].length() > 0 )
-    {
-      list.push_back( mOgrWhereOption + "=" + mOgrWheres[current] );
-    }
+  if ( !mOgrWhereOption.isNull() && mOgrWheres[current].length() > 0 )
+  {
+    list.push_back( mOgrWhereOption + "=" + mOgrWheres[current] );
   }
 
   return list;
