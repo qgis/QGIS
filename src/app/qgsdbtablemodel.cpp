@@ -73,7 +73,7 @@ void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString t
   pkItem->setData( pkCols );
   pkItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   QStandardItem* sqlItem = new QStandardItem( sql );
-  sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
   childItemList.push_back( schemaNameItem );
   childItemList.push_back( tableItem );

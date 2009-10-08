@@ -39,6 +39,8 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   mOrigSubsetString = layer->subsetString();
 
   lblDataUri->setText( layer->publicSource() );
+  txtSQL->setText( mOrigSubsetString );
+
   populateFields();
 }
 

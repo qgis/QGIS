@@ -1054,10 +1054,15 @@ QString QgsPostgresProvider::getPrimaryKey()
 
         Result result = connectionRO->PQexec( sql );
 
-        if ( PQresultStatus( result ) != PGRES_TUPLES_OK ||
-             PQntuples( result ) != 1 ||
-             QString( PQgetvalue( result, 0, 0 ) ) != "int4" ||
-             !uniqueData( mSchemaName, mTableName, primaryKey ) )
+        QString type;
+        if ( PQresultStatus( result ) == PGRES_TUPLES_OK &&
+             PQntuples( result ) == 1 )
+        {
+          type = PQgetvalue( result, 0, 0 );
+        }
+
+        if (( type != "int4" && type != "oid" ) ||
+            !uniqueData( mSchemaName, mTableName, primaryKey ) )
         {
           primaryKey = "";
         }
@@ -2901,8 +2906,10 @@ bool QgsPostgresProvider::getGeometryDetails()
   }
   else // something went wrong...
   {
-    log.prepend( tr( "Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:\n" )
-                 .arg( geometryColumn ).arg( mSchemaTableName ) );
+    log.prepend( tr( "Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:\n%3" )
+                 .arg( geometryColumn )
+                 .arg( mSchemaTableName )
+                 .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
     showMessageBox( tr( "Unable to get feature type and srid" ), log );
   }
 
