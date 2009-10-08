@@ -685,14 +685,26 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
 
 QString QgsPostgresProvider::whereClause( int featureId ) const
 {
+  QString whereClause;
+
   if ( primaryKeyType != "tid" )
   {
-    return QString( "%1=%2" ).arg( quotedIdentifier( primaryKey ) ).arg( featureId );
+    whereClause = QString( "%1=%2" ).arg( quotedIdentifier( primaryKey ) ).arg( featureId );
   }
   else
   {
-    return QString( "%1='(%2,%3)'" ).arg( quotedIdentifier( primaryKey ) ).arg( featureId >> 16 ).arg( featureId & 0xffff );
+    whereClause = QString( "%1='(%2,%3)'" ).arg( quotedIdentifier( primaryKey ) ).arg( featureId >> 16 ).arg( featureId & 0xffff );
   }
+
+  if ( !sqlWhereClause.isEmpty() )
+  {
+    if ( !whereClause.isEmpty() )
+      whereClause += " and ";
+
+    whereClause += "(" + sqlWhereClause + ")";
+  }
+
+  return whereClause;
 }
 
 bool QgsPostgresProvider::featureAtId( int featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
