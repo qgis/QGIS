@@ -17347,7 +17347,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2899"/>
         <source>Unable to get feature type and srid</source>
-        <translation>Kann den Fearture-Typ und die SRID nicht ermitteln</translation>
+        <translation>Kann den Objekttyp und die SRID nicht ermitteln</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2188"/>

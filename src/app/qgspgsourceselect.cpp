@@ -67,7 +67,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
 
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
 
-  mTablesTreeView->setItemDelegateForColumn( QgsDbTableModel::dbtmPkCol, new QgsPgSourceSelectDelegate( this ) );
+  mTablesTreeView->setItemDelegate( new QgsPgSourceSelectDelegate( this ) );
 
   QSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "/qgis/addPostgisDC", false ).toBool() ?
@@ -325,9 +325,9 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
   }
 
   uri += QString( " table=\"%1\".\"%2\" (%3) sql=%4" )
-               .arg( schemaName ).arg( tableName )
-               .arg( geomColumnName )
-               .arg( sql );
+         .arg( schemaName ).arg( tableName )
+         .arg( geomColumnName )
+         .arg( sql );
 
   return uri;
 }
@@ -341,7 +341,7 @@ void QgsPgSourceSelect::addTables()
   QModelIndexList::const_iterator selected_it = selectedIndices.constBegin();
   for ( ; selected_it != selectedIndices.constEnd(); ++selected_it )
   {
-    if ( !selected_it->parent().isValid() || selected_it->column()>0 )
+    if ( !selected_it->parent().isValid() || selected_it->column() > 0 )
     {
       //top level items only contain the schema names
       continue;
@@ -501,18 +501,23 @@ QString QgsPgSourceSelect::connectionInfo()
 
 void QgsPgSourceSelect::setSql( const QModelIndex &index )
 {
-  QgsDebugMsg( QString("%1,%2").arg( index.row() ).arg( index.column() ) );
   if ( !index.parent().isValid() )
   {
     QgsDebugMsg( "schema item found" );
     return;
   }
- 
+
   QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( mProxyModel.mapToSource( index ) ), "querybuilder", "postgres" );
+
+  if ( !vlayer->isValid() )
+  {
+    delete vlayer;
+    return;
+  }
 
   // create a query builder object
   QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
-  if( gb->exec() )
+  if ( gb->exec() )
   {
     mTableModel.setSql( mProxyModel.mapToSource( index ), gb->sql() );
   }
@@ -537,7 +542,7 @@ QStringList QgsPgSourceSelect::pkCandidates( PGconn *pg, QString schemaName, QSt
   QStringList cols;
   cols << QString::null;
 
-  QString sql = QString( "select attname from pg_attribute join pg_type on atttypid=pg_type.oid WHERE pg_type.typname='int4' AND attrelid=regclass('\"%1\".\"%2\"')" ).arg( schemaName ).arg( viewName );
+  QString sql = QString( "select attname from pg_attribute join pg_type on atttypid=pg_type.oid WHERE pg_type.typname IN ('int4','oid') AND attrelid=regclass('\"%1\".\"%2\"')" ).arg( schemaName ).arg( viewName );
   QgsDebugMsg( sql );
   PGresult *colRes = PQexec( pg, sql.toUtf8() );
 
@@ -614,7 +619,7 @@ bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
           as = type = "WAITING";
         }
 
-        mTableModel.addTableEntry( type, schemaName, tableName, column, relkind=="v" ? pkCandidates( pg, schemaName, tableName ) : QStringList(), "" );
+        mTableModel.addTableEntry( type, schemaName, tableName, column, relkind == "v" ? pkCandidates( pg, schemaName, tableName ) : QStringList(), "" );
         n++;
       }
     }
@@ -694,7 +699,7 @@ bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
 
         addSearchGeometryColumn( schema, table, column );
         //details.push_back(geomPair(fullDescription(schema, table, column, "WAITING"), "WAITING"));
-        mTableModel.addTableEntry( "Waiting", schema, table, column, relkind=="v" ? pkCandidates( pg, schema, table ) : QStringList(), "" );
+        mTableModel.addTableEntry( "Waiting", schema, table, column, relkind == "v" ? pkCandidates( pg, schema, table ) : QStringList(), "" );
         n++;
       }
     }

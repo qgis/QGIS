@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgdbsourceselect.h  -  description
+                          qgpgsourceselect.h  -  description
                              -------------------
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
@@ -53,13 +53,25 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
       const QStyleOptionViewItem &option,
       const QModelIndex &index ) const
     {
-      QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
-
-      if( values.size()> 0 )
+      if ( index.column() == QgsDbTableModel::dbtmSql )
       {
-        QComboBox *cb = new QComboBox( parent );
-        cb->addItems( values );
-        return cb;
+        QLineEdit *le = new QLineEdit( parent );
+        le->setText( index.data( Qt::DisplayRole ).toString() );
+        return le;
+      }
+
+
+      if ( index.column() == QgsDbTableModel::dbtmPkCol )
+      {
+        QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
+
+        if ( values.size() > 0 )
+        {
+          QComboBox *cb = new QComboBox( parent );
+          cb->addItems( values );
+          cb->setCurrentIndex( cb->findText( index.data( Qt::DisplayRole ).toString() ) );
+          return cb;
+        }
       }
 
       return NULL;
@@ -68,9 +80,12 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
     {
       QComboBox *cb = dynamic_cast<QComboBox *>( editor );
-      if ( !cb )
-        return;
-      model->setData( index, cb->currentText() );
+      if ( cb )
+        model->setData( index, cb->currentText() );
+
+      QLineEdit *le = dynamic_cast<QLineEdit *>( editor );
+      if ( le )
+        model->setData( index, le->text() );
     }
 };
 
