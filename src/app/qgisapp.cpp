@@ -3084,10 +3084,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   {
     if ( !saveDirty() )
     {
-      mMapCanvas->freeze( true );
-      removeAllLayers();
-      mMapCanvas->freeze( false );
-      return;
+      return; //cancel pressed
     }
   }
 
