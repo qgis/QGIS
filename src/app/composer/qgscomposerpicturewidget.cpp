@@ -34,7 +34,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
-  gridLayout->addWidget( itemPropertiesWidget, 4, 0, 1, 1 );
+  gridLayout->addWidget( itemPropertiesWidget, 6, 0, 1, 4 );
 
   mWidthLineEdit->setValidator( new QDoubleValidator( this ) );
   mHeightLineEdit->setValidator( new QDoubleValidator( this ) );

@@ -678,7 +678,7 @@ void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
   }
 }
 
-void QgsComposerItem::drawText( QPainter* p, int x, int y, const QString& text, const QFont& font ) const
+void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const
 {
   QFont textFont = scaledFontPixelSize( font );
 
@@ -687,7 +687,7 @@ void QgsComposerItem::drawText( QPainter* p, int x, int y, const QString& text, 
   p->setPen( QColor( 0, 0, 0 ) ); //draw text always in black
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
-  p->drawText( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE, text );
+  p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
   p->restore();
 }
 
