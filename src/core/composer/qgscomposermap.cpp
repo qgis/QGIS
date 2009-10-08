@@ -42,12 +42,15 @@
 int QgsComposerMap::mCurrentComposerId = 0;
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
-    : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false )
+    : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
+    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mShowGridAnnotation( false ), \
+    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal )
 {
   mComposition = composition;
   mMapRenderer = mComposition->mapRenderer();
   mId = mCurrentComposerId++;
   mPreviewMode = QgsComposerMap::Rectangle;
+  mCurrentRectangle = rect();
 
   // Cache
   mCacheUpdated = false;
@@ -69,7 +72,9 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 }
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
-    : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false )
+    : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
+    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mShowGridAnnotation( false ), \
+    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal )
 {
   //Offset
   mXOffset = 0.0;
@@ -81,8 +86,9 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   mMapRenderer = mComposition->mapRenderer();
   mId = mCurrentComposerId++;
   mPreviewMode = QgsComposerMap::Rectangle;
+  mCurrentRectangle = rect();
+
   setToolTip( tr( "Map %1" ).arg( mId ) );
-  QGraphicsRectItem::show();
 }
 
 QgsComposerMap::~QgsComposerMap()
@@ -242,6 +248,11 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   painter->setClipRect( thisPaintRect , Qt::NoClip );
 
   drawFrame( painter );
+  if ( mGridEnabled )
+  {
+    drawGrid( painter );
+  }
+
   if ( isSelected() )
   {
     drawSelectionBoxes( painter );
@@ -537,6 +548,30 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   }
   composerMapElem.appendChild( layerSetElem );
 
+  //grid
+  QDomElement gridElem = doc.createElement( "Grid" );
+  gridElem.setAttribute( "show", mGridEnabled );
+  gridElem.setAttribute( "gridStyle", mGridStyle );
+  gridElem.setAttribute( "intervalX", mGridIntervalX );
+  gridElem.setAttribute( "intervalY", mGridIntervalY );
+  gridElem.setAttribute( "offsetX", mGridOffsetX );
+  gridElem.setAttribute( "offsetY", mGridOffsetY );
+  gridElem.setAttribute( "penWidth", mGridPen.widthF() );
+  gridElem.setAttribute( "penColorRed", mGridPen.color().red() );
+  gridElem.setAttribute( "penColorGreen", mGridPen.color().green() );
+  gridElem.setAttribute( "penColorBlue", mGridPen.color().blue() );
+
+  //grid annotation
+  QDomElement annotationElem = doc.createElement( "Annotation" );
+  annotationElem.setAttribute( "show", mShowGridAnnotation );
+  annotationElem.setAttribute( "position", mGridAnnotationPosition );
+  annotationElem.setAttribute( "frameDistance", mAnnotationFrameDistance );
+  annotationElem.setAttribute( "direction", mGridAnnotationDirection );
+  annotationElem.setAttribute( "font", mGridAnnotationFont.toString() );
+
+  gridElem.appendChild( annotationElem );
+  composerMapElem.appendChild( gridElem );
+
   elem.appendChild( composerMapElem );
   return _writeXML( composerMapElem, doc );
 }
@@ -608,6 +643,34 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   mNumCachedLayers = 0;
   mCacheUpdated = false;
 
+  //grid
+  QDomNodeList gridNodeList = itemElem.elementsByTagName( "Grid" );
+  if ( gridNodeList.size() > 0 )
+  {
+    QDomElement gridElem = gridNodeList.at( 0 ).toElement();
+    mGridEnabled = ( gridElem.attribute( "show", "0" ) != "0" );
+    mGridStyle = QgsComposerMap::GridStyle( gridElem.attribute( "gridStyle", "0" ).toInt() );
+    mGridIntervalX = gridElem.attribute( "intervalX", "0" ).toDouble();
+    mGridIntervalY = gridElem.attribute( "intervalY", "0" ).toDouble();
+    mGridOffsetX = gridElem.attribute( "offsetX", "0" ).toDouble();
+    mGridOffsetY = gridElem.attribute( "offsetY", "0" ).toDouble();
+    mGridPen.setWidthF( gridElem.attribute( "penWidth", "0" ).toDouble() );
+    mGridPen.setColor( QColor( gridElem.attribute( "penColorRed", "0" ).toInt(), \
+                               gridElem.attribute( "penColorGreen", "0" ).toInt(), \
+                               gridElem.attribute( "penColorBlue", "0" ).toInt() ) );
+
+    QDomNodeList annotationNodeList = gridElem.elementsByTagName( "Annotation" );
+    if ( annotationNodeList.size() > 0 )
+    {
+      QDomElement annotationElem = annotationNodeList.at( 0 ).toElement();
+      mShowGridAnnotation = ( annotationElem.attribute( "show", "0" ) != "0" );
+      mGridAnnotationPosition = QgsComposerMap::GridAnnotationPosition( annotationElem.attribute( "position", "0" ).toInt() );
+      mAnnotationFrameDistance = annotationElem.attribute( "frameDistance", "0" ).toDouble();
+      mGridAnnotationDirection = QgsComposerMap::GridAnnotationDirection( annotationElem.attribute( "direction", "0" ).toInt() );
+      mGridAnnotationFont.fromString( annotationElem.attribute( "font", "" ) );
+    }
+  }
+
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( composerItemList.size() > 0 )
@@ -615,6 +678,8 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
     _readXML( composerItemElem, doc );
   }
+
+  updateBoundingRect();
 
   if ( mPreviewMode != Rectangle )
   {
@@ -648,4 +713,285 @@ void QgsComposerMap::syncLayerSet()
       mLayerSet.removeAt( i );
     }
   }
+}
+
+void QgsComposerMap::drawGrid( QPainter* p )
+{
+  p->setPen( mGridPen );
+
+  QList< QPair< double, QLineF > > verticalLines;
+  verticalGridLines( verticalLines );
+  QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
+  QList< QPair< double, QLineF > > horizontalLines;
+  horizontalGridLines( horizontalLines );
+  QList< QPair< double, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
+
+  //simpler approach: draw vertical lines first, then horizontal ones
+  if ( mGridStyle == QgsComposerMap::Solid )
+  {
+    for ( ; vIt != verticalLines.constEnd(); ++vIt )
+    {
+      p->drawLine( vIt->second );
+    }
+
+    for ( ; hIt != horizontalLines.constEnd(); ++hIt )
+    {
+      p->drawLine( hIt->second );
+    }
+  }
+  //more complicated approach. Find out all the crossings between the lines
+  //needs to be adapted once rotation is possible
+  else if ( mGridStyle == QgsComposerMap::Cross )
+  {
+
+    double resolutionXSize = mGridIntervalX * ( rect().width() / mExtent.width() );
+    double resolutionYSize = mGridIntervalY * ( rect().height() / mExtent.height() );
+
+    QLineF currHLine;
+    QLineF currVLine;
+    for ( ; hIt != horizontalLines.constEnd(); ++hIt )
+    {
+      currHLine = hIt->second;
+      vIt = verticalLines.constBegin();
+      for ( ; vIt != verticalLines.constEnd(); ++vIt )
+      {
+        currVLine = vIt->second;
+
+        //intersection
+        //find out intersection point
+        QPointF intersectionPoint;
+        QLineF::IntersectType t = currHLine.intersect( currVLine, &intersectionPoint );
+        if ( t == QLineF::BoundedIntersection )
+        {
+          p->drawLine( intersectionPoint.x() - resolutionXSize / 6.0, intersectionPoint.y(), intersectionPoint.x() + resolutionXSize / 6.0, intersectionPoint.y() );
+          p->drawLine( intersectionPoint.x(), intersectionPoint.y() - resolutionYSize / 6.0, intersectionPoint.x(), intersectionPoint.y() + resolutionYSize / 6.0 );
+        }
+      }
+    }
+  }
+
+  if ( mShowGridAnnotation )
+  {
+    drawGridAnnotations( p, horizontalLines, verticalLines );
+  }
+}
+
+void QgsComposerMap::drawGridAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines )
+{
+  //annotations. todo: make left / right, within / outside and distances configurable
+  //current annotation, width and height
+  QString currentAnnotationString;
+  double currentFontWidth = 0;
+  double currentFontHeight = fontAscentMillimeters( mGridAnnotationFont );
+
+  QList< QPair< double, QLineF > >::const_iterator vIt = vLines.constBegin();
+  for ( ; vIt != vLines.constEnd(); ++vIt )
+  {
+    currentAnnotationString = QString::number( vIt->first );
+    currentFontWidth = textWidthMillimeters( mGridAnnotationFont, currentAnnotationString );
+
+    if ( mGridAnnotationPosition == OutsideMapFrame )
+    {
+      drawText( p, vIt->second.x1() - currentFontWidth / 2.0, vIt->second.y1() - mAnnotationFrameDistance, currentAnnotationString, mGridAnnotationFont );
+      drawText( p, vIt->second.x2() - currentFontWidth / 2.0, vIt->second.y2() + mAnnotationFrameDistance + currentFontHeight, currentAnnotationString, mGridAnnotationFont );
+    }
+    else
+    {
+      drawText( p, vIt->second.x1() - currentFontWidth / 2.0, vIt->second.y1() + mAnnotationFrameDistance + currentFontHeight, currentAnnotationString, mGridAnnotationFont );
+      drawText( p, vIt->second.x2() - currentFontWidth / 2.0, vIt->second.y2() - mAnnotationFrameDistance, currentAnnotationString, mGridAnnotationFont );
+    }
+  }
+
+  QList< QPair< double, QLineF > >::const_iterator hIt = hLines.constBegin();
+  for ( ; hIt != hLines.constEnd(); ++hIt )
+  {
+    currentAnnotationString = QString::number( hIt->first );
+    currentFontWidth = textWidthMillimeters( mGridAnnotationFont, currentAnnotationString );
+
+    if ( mGridAnnotationPosition == OutsideMapFrame )
+    {
+      drawText( p, hIt->second.x1() - ( mAnnotationFrameDistance + currentFontWidth ), hIt->second.y1() + currentFontHeight / 2.0, currentAnnotationString, mGridAnnotationFont );
+      drawText( p, hIt->second.x2() + mAnnotationFrameDistance, hIt->second.y2() + currentFontHeight / 2.0, currentAnnotationString, mGridAnnotationFont );
+    }
+    else
+    {
+      drawText( p, hIt->second.x1() + mAnnotationFrameDistance, hIt->second.y1() + currentFontHeight / 2.0, currentAnnotationString, mGridAnnotationFont );
+      drawText( p, hIt->second.x2() - ( mAnnotationFrameDistance + currentFontWidth ), hIt->second.y2() + currentFontHeight / 2.0, currentAnnotationString, mGridAnnotationFont );
+    }
+  }
+}
+
+int QgsComposerMap::verticalGridLines( QList< QPair< double, QLineF > >& lines ) const
+{
+  lines.clear();
+  if ( !mGridIntervalX > 0.0 )
+  {
+    return 1;
+  }
+
+  //consider the possible shift in case of content move
+  QgsRectangle mapExtent = transformedExtent();
+
+  double currentLevel = ( int )(( mapExtent.xMinimum() - mGridOffsetX ) / mGridIntervalX + 1.0 ) * mGridIntervalX + mGridOffsetX;
+
+  double xCanvasCoord;
+
+  double border = 0.0;
+  if ( frame() )
+  {
+    border = pen().widthF();
+  }
+
+  while ( currentLevel <= mapExtent.xMaximum() )
+  {
+    xCanvasCoord = rect().width() * ( currentLevel - mapExtent.xMinimum() ) / mapExtent.width();
+    lines.push_back( qMakePair( currentLevel, QLineF( xCanvasCoord, border, xCanvasCoord, rect().height() - border ) ) );
+    currentLevel += mGridIntervalX;
+  }
+  return 0;
+}
+
+int QgsComposerMap::horizontalGridLines( QList< QPair< double, QLineF > >& lines ) const
+{
+  lines.clear();
+  if ( !mGridIntervalY > 0.0 )
+  {
+    return 1;
+  }
+
+  //consider the possible shift in case of content move
+  QgsRectangle mapExtent = transformedExtent();
+
+  double currentLevel = ( int )(( mapExtent.yMinimum() - mGridOffsetY ) / mGridIntervalY + 1.0 ) * mGridIntervalY + mGridOffsetY;
+  double yCanvasCoord;
+
+  double border = 0.0;
+  if ( frame() )
+  {
+    border = pen().widthF();
+  }
+
+  while ( currentLevel <= mapExtent.yMaximum() )
+  {
+    yCanvasCoord = rect().height() * ( 1 - ( currentLevel - mapExtent.yMinimum() ) / mapExtent.height() );
+    lines.push_back( qMakePair( currentLevel, QLineF( border, yCanvasCoord, rect().width() - border, yCanvasCoord ) ) );
+    currentLevel += mGridIntervalY;
+  }
+  return 0;
+}
+
+void QgsComposerMap::setGridPenWidth( double w )
+{
+  mGridPen.setWidthF( w );
+}
+
+void QgsComposerMap::setGridPenColor( const QColor& c )
+{
+  mGridPen.setColor( c );
+}
+
+QRectF QgsComposerMap::boundingRect() const
+{
+  return mCurrentRectangle;
+}
+
+void QgsComposerMap::updateBoundingRect()
+{
+  QRectF rectangle = rect();
+  double xExtension = maxExtensionXDirection();
+  double yExtension = maxExtensionYDirection();
+  rectangle.setLeft( rectangle.left() - xExtension );
+  rectangle.setRight( rectangle.right() + xExtension );
+  rectangle.setTop( rectangle.top() - yExtension );
+  rectangle.setBottom( rectangle.bottom() + yExtension );
+  if ( rectangle != mCurrentRectangle )
+  {
+    prepareGeometryChange();
+    mCurrentRectangle = rectangle;
+  }
+}
+
+QgsRectangle QgsComposerMap::transformedExtent() const
+{
+  double paperToMapFactor = mExtent.width() / rect().width();
+  double xMapOffset = -mXOffset * paperToMapFactor;
+  double yMapOffset = mYOffset * paperToMapFactor;
+  return QgsRectangle( mExtent.xMinimum() + xMapOffset, mExtent.yMinimum() + yMapOffset, mExtent.xMaximum() + xMapOffset, mExtent.yMaximum() + yMapOffset );
+}
+
+double QgsComposerMap::maxExtensionXDirection() const
+{
+  if ( mGridAnnotationPosition != OutsideMapFrame )
+  {
+    return 0;
+  }
+
+  QList< QPair< double, QLineF > > horizontalLines;
+  if ( horizontalGridLines( horizontalLines ) != 0 )
+  {
+    return 0;
+  }
+
+  double currentExtension = 0;
+  double maxExtension = 0;
+  QString currentAnnotationString;
+
+  QList< QPair< double, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
+  for ( ; hIt != horizontalLines.constEnd(); ++hIt )
+  {
+    currentAnnotationString = QString::number( hIt->first );
+    if ( mGridAnnotationDirection == Vertical )
+    {
+      currentExtension =  fontAscentMillimeters( mGridAnnotationFont ) + mAnnotationFrameDistance;
+    }
+    else
+    {
+      currentExtension = textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ) + mAnnotationFrameDistance;
+    }
+
+    if ( currentExtension > maxExtension )
+    {
+      maxExtension = currentExtension;
+    }
+  }
+
+  return maxExtension;
+}
+
+double QgsComposerMap::maxExtensionYDirection() const
+{
+  if ( mGridAnnotationPosition != OutsideMapFrame )
+  {
+    return 0;
+  }
+
+  QList< QPair< double, QLineF > > verticalLines;
+  if ( verticalGridLines( verticalLines ) != 0 )
+  {
+    return 0;
+  }
+
+  double currentExtension = 0;
+  double maxExtension = 0;
+  QString currentAnnotationString;
+
+  QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
+  for ( ; vIt != verticalLines.constEnd(); ++vIt )
+  {
+    currentAnnotationString = QString::number( vIt->first );
+    if ( mGridAnnotationDirection == Horizontal )
+    {
+      currentExtension = fontAscentMillimeters( mGridAnnotationFont ) + mAnnotationFrameDistance;
+    }
+    else
+    {
+      currentExtension = textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ) + mAnnotationFrameDistance;
+    }
+
+    if ( currentExtension > maxExtension )
+    {
+      maxExtension = currentExtension;
+    }
+  }
+  return maxExtension;
 }
