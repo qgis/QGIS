@@ -28,6 +28,10 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QVector>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -79,17 +83,17 @@ template <TYPE>
   for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
   {
     int state;
-    //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToInstance(PyList_GET_ITEM(sipPy, i), (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToInstance(PyList_GET_ITEM(sipPy, i), sipClass_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
     QVector<TYPE> * t = reinterpret_cast< QVector<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
-      sipReleaseInstance(t, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), state);
+      sipReleaseInstance(t, sipClass_TYPE, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseInstance(t, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), state);
+    sipReleaseInstance(t, sipClass_TYPE, state);
   }
 
   *sipCppPtr = ql;
@@ -104,6 +108,10 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QVector>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -155,17 +163,17 @@ template <TYPE>
   for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
   {
     int state;
-    //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToInstance(PyList_GET_ITEM(sipPy, i), (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToInstance(PyList_GET_ITEM(sipPy, i), sipClass_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
     QVector<QVector<TYPE> > * t = reinterpret_cast< QVector< QVector<TYPE> > * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
-      sipReleaseInstance(t, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), state);
+      sipReleaseInstance(t, sipClass_TYPE, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseInstance(t, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), state);
+    sipReleaseInstance(t, sipClass_TYPE, state);
   }
 
   *sipCppPtr = ql;
@@ -179,6 +187,10 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QSet>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -229,6 +241,10 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QSet>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -245,7 +261,7 @@ template <TYPE>
     TYPE *t = new TYPE(*it);
     PyObject *tobj;
 
-    if ((tobj = sipConvertFromNewInstance(t, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), sipTransferObj)) == NULL)
+    if ((tobj = sipConvertFromNewInstance(t, sipClass_TYPE, sipTransferObj)) == NULL)
     {
       Py_DECREF(l);
       delete t;
@@ -265,7 +281,7 @@ template <TYPE>
       return 0;
 
     for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-      if (!sipCanConvertToInstance(PyList_GET_ITEM(sipPy, i), (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), SIP_NOT_NONE))
+      if (!sipCanConvertToInstance(PyList_GET_ITEM(sipPy, i), sipClass_TYPE, SIP_NOT_NONE))
         return 0;
 
     return 1;
@@ -276,16 +292,16 @@ template <TYPE>
   for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
   {
     int state;
-    TYPE* t = reinterpret_cast<TYPE *>(sipConvertToInstance(PyList_GET_ITEM(sipPy, i), (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    TYPE* t = reinterpret_cast<TYPE *>(sipConvertToInstance(PyList_GET_ITEM(sipPy, i), sipClass_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
-      sipReleaseInstance(t, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), state);
+      sipReleaseInstance(t, sipClass_TYPE, state);
       delete qset;
       return 0;
     }
     qset->insert(*t);
-    sipReleaseInstance(t, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), state);
+    sipReleaseInstance(t, sipClass_TYPE, state);
   }
 
   *sipCppPtr = qset;
@@ -301,6 +317,10 @@ template<TYPE>
 {
 %TypeHeaderCode
 #include <QMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -366,7 +386,7 @@ template<TYPE>
       Py_ssize_t j = 0;
       while (PyDict_Next(tobj, &j, &kobj2, &tobj2))
       {
-        if (!sipCanConvertToInstance(tobj2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), SIP_NOT_NONE))
+        if (!sipCanConvertToInstance(tobj2, sipClass_TYPE, SIP_NOT_NONE))
           return 0;
       }
       
@@ -393,17 +413,17 @@ template<TYPE>
       int k2 = PyInt_AsLong(kobj2);
       int state;
       
-      TYPE* fa = reinterpret_cast<TYPE*>(sipConvertToInstance(tobj2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), sipTransferObj,SIP_NOT_NONE,&state,sipIsErr));
+      TYPE* fa = reinterpret_cast<TYPE*>(sipConvertToInstance(tobj2, sipClass_TYPE, sipTransferObj,SIP_NOT_NONE,&state,sipIsErr));
       
       if (*sipIsErr)
       {
-        sipReleaseInstance(tobj2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), state);
+        sipReleaseInstance(tobj2, sipClass_TYPE, state);
         delete qm;
         return 0;
       }
       
       qm2.insert(k2, *fa);
-      sipReleaseInstance(tobj2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE), state);
+      sipReleaseInstance(tobj2, sipClass_TYPE, state);
     }
     qm->insert(k, qm2);
   }
@@ -418,6 +438,10 @@ template<TYPE>
 {
 %TypeHeaderCode
 #include <QMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -434,7 +458,7 @@ template<TYPE>
     {
         QString *t1 = new QString(i.key());
 
-        PyObject *t1obj = sipConvertFromNewInstance(t1, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString), sipTransferObj);
+        PyObject *t1obj = sipConvertFromNewInstance(t1, sipClass_QString, sipTransferObj);
         PyObject *t2obj = PyInt_FromLong( (long) i.value() );
 
         if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
@@ -480,7 +504,7 @@ template<TYPE>
 
         while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
         {
-            if (!sipCanConvertToInstance(t1obj, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString), SIP_NOT_NONE))
+            if (!sipCanConvertToInstance(t1obj, sipClass_QString, SIP_NOT_NONE))
                 return 0;
         } 
 
@@ -493,19 +517,19 @@ template<TYPE>
     {
         int state;
 
-        QString *t1 = reinterpret_cast<QString *>(sipConvertToInstance(t1obj, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString), sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+        QString *t1 = reinterpret_cast<QString *>(sipConvertToInstance(t1obj, sipClass_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
         QVariant::Type t2 = (QVariant::Type) PyInt_AsLong(t1obj);
 
         if (*sipIsErr)
         {
-            sipReleaseInstance(t1, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString), state);
+            sipReleaseInstance(t1, sipClass_QString, state);
             delete qm;
             return 0;
         }
 
         qm->insert(*t1, t2);
 
-        sipReleaseInstance(t1, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString), state);
+        sipReleaseInstance(t1, sipClass_QString, state);
     }
  
     *sipCppPtr = qm;
@@ -518,7 +542,11 @@ template<TYPE1, TYPE2>
 %MappedType QMap<TYPE1, TYPE2*>
 {
 %TypeHeaderCode
-#include <qmap.h>
+#include <QMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -536,8 +564,8 @@ template<TYPE1, TYPE2>
         TYPE1 *t1 = new TYPE1(i.key());
         TYPE2 *t2 = i.value();
 
-        PyObject *t1obj = sipConvertFromNewInstance(t1, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE1), sipTransferObj);
-        PyObject *t2obj = sipConvertFromInstance(t2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2), sipTransferObj);
+        PyObject *t1obj = sipConvertFromNewInstance(t1, sipClass_TYPE1, sipTransferObj);
+        PyObject *t2obj = sipConvertFromInstance(t2, sipClass_TYPE2, sipTransferObj);
 
         if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
         {
@@ -581,10 +609,10 @@ template<TYPE1, TYPE2>
 
         while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
         {
-            if (!sipCanConvertToInstance(t1obj, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE1), SIP_NOT_NONE))
+            if (!sipCanConvertToInstance(t1obj, sipClass_TYPE1, SIP_NOT_NONE))
                 return 0;
 
-            if (!sipCanConvertToInstance(t2obj, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2), SIP_NOT_NONE))
+            if (!sipCanConvertToInstance(t2obj, sipClass_TYPE2, SIP_NOT_NONE))
                 return 0;
         } 
 
@@ -597,13 +625,13 @@ template<TYPE1, TYPE2>
     {
         int state1, state2;
 
-        TYPE1 *t1 = reinterpret_cast<TYPE1 *>(sipConvertToInstance(t1obj, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE1), sipTransferObj, SIP_NOT_NONE, &state1, sipIsErr));
-        TYPE2 *t2 = reinterpret_cast<TYPE2 *>(sipConvertToInstance(t2obj, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2), sipTransferObj, SIP_NOT_NONE, &state2, sipIsErr));
+        TYPE1 *t1 = reinterpret_cast<TYPE1 *>(sipConvertToInstance(t1obj, sipClass_TYPE1, sipTransferObj, SIP_NOT_NONE, &state1, sipIsErr));
+        TYPE2 *t2 = reinterpret_cast<TYPE2 *>(sipConvertToInstance(t2obj, sipClass_TYPE2, sipTransferObj, SIP_NOT_NONE, &state2, sipIsErr));
  
         if (*sipIsErr)
         {
-            sipReleaseInstance(t1, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE1), state1);
-            sipReleaseInstance(t2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2), state2);
+            sipReleaseInstance(t1, sipClass_TYPE1, state1);
+            sipReleaseInstance(t2, sipClass_TYPE2, state2);
 
             delete qm;
             return 0;
@@ -611,8 +639,8 @@ template<TYPE1, TYPE2>
 
         qm->insert(*t1, t2);
 
-        sipReleaseInstance(t1, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE1), state1);
-        sipReleaseInstance(t2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2), state2);
+        sipReleaseInstance(t1, sipClass_TYPE1, state1);
+        sipReleaseInstance(t2, sipClass_TYPE2, state2);
     }
  
     *sipCppPtr = qm;
@@ -626,6 +654,10 @@ template<double, TYPE2>
 {
 %TypeHeaderCode
 #include <QMultiMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -644,7 +676,7 @@ template<double, TYPE2>
       const double t1 = i.key();
       TYPE2 * t2 = &i.value();
       PyObject *t1obj = PyFloat_FromDouble(t1);
-      PyObject *t2obj = sipConvertFromInstance(t2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2), sipTransferObj);
+      PyObject *t2obj = sipConvertFromInstance(t2, sipClass_TYPE2, sipTransferObj);
       if (PyDict_GetItem(d, t1obj) == NULL) {
        PyObject *lst = PyList_New(0);
        PyDict_SetItem(d, t1obj, lst);
@@ -697,7 +729,7 @@ template<double, TYPE2>
         {
          for (int i = 0; i < PyList_GET_SIZE(t2obj); ++i) {
            if (!sipCanConvertToInstance(PyList_GET_ITEM(t2obj, i),
-                                        (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2), SIP_NOT_NONE))
+                                        sipClass_TYPE2, SIP_NOT_NONE))
              return 0;
          }
         }
@@ -714,7 +746,7 @@ template<double, TYPE2>
          TYPE2 *t2 =
            reinterpret_cast<TYPE2 *>(sipConvertToInstance(PyList_GET_ITEM(t2obj,
                                                                           i),
-                                                          (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2),
+                                                          sipClass_TYPE2,
                                                           sipTransferObj,
                                                           SIP_NOT_NONE,
                                                           &state2,
@@ -722,7 +754,7 @@ template<double, TYPE2>
 
          if (*sipIsErr)
            {
-             sipReleaseInstance(t2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2), state2);
+             sipReleaseInstance(t2, sipClass_TYPE2, state2);
 
              delete qm;
              return 0;
@@ -730,7 +762,7 @@ template<double, TYPE2>
 
          qm->insert(k, *t2);
 
-         sipReleaseInstance(t2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_TYPE2), state2);
+         sipReleaseInstance(t2, sipClass_TYPE2, state2);
        }
     }
 
@@ -744,6 +776,10 @@ template<double, TYPE2>
 {
 %TypeHeaderCode
 #include <QMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -759,7 +795,7 @@ template<double, TYPE2>
         QgsOverlayObject* oobj = new QgsOverlayObject(*it.value());
 
         PyObject* keyobj = PyInt_FromLong(it.key());
-        PyObject* pyOobj = sipConvertFromInstance(oobj, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_QgsOverlayObject), sipTransferObj);
+        PyObject* pyOobj = sipConvertFromInstance(oobj, sipClass_QgsOverlayObject, sipTransferObj);
         PyDict_SetItem(d, keyobj, pyOobj);
 
         if(pyOobj == NULL || keyobj == NULL || PyDict_SetItem(d, keyobj, pyOobj) < 0)
@@ -797,18 +833,18 @@ template<double, TYPE2>
     {
         int state;
         int t1 = (int)(PyFloat_AsDouble(t1obj));
-        QgsOverlayObject* t2 = reinterpret_cast<QgsOverlayObject*>(sipConvertToInstance(t2obj, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_QgsOverlayObject), sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+        QgsOverlayObject* t2 = reinterpret_cast<QgsOverlayObject*>(sipConvertToInstance(t2obj, sipClass_QgsOverlayObject, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
         if (*sipIsErr)
         {
-            sipReleaseInstance(t2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_QgsOverlayObject), state);
+            sipReleaseInstance(t2, sipClass_QgsOverlayObject, state);
             delete qm;
             return 0;
         }
 
         qm->insert(t1, t2);
 
-        sipReleaseInstance(t2, (sipWrapperType *) sipTypeAsPyTypeObject (sipType_QgsOverlayObject), state);
+        sipReleaseInstance(t2, sipClass_QgsOverlayObject, state);
     }
 
     *sipCppPtr = qm;
