@@ -202,6 +202,12 @@
              <height>0</height>
             </size>
            </property>
+           <property name="decimals">
+            <number>6</number>
+           </property>
+           <property name="maximum">
+            <double>1000000</double>
+           </property>
            <property name="value" >
             <number>0</number>
            </property>
