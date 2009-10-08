@@ -297,23 +297,29 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
     int a = geomColumnName.indexOf( " AS " );
     QString typeName = geomColumnName.mid( a + 4 ); //only the type name
     geomColumnName = geomColumnName.left( a ); //only the geom column name
-
-    if ( !sql.isEmpty() )
-    {
-      sql += " AND ";
-    }
+    QString geomFilter;
 
     if ( typeName == "POINT" )
     {
-      sql += QString( "GeometryType(\"%1\") IN ('POINT','MULTIPOINT')" ).arg( geomColumnName );
+      geomFilter = QString( "GeometryType(\"%1\") IN ('POINT','MULTIPOINT')" ).arg( geomColumnName );
     }
     else if ( typeName == "LINESTRING" )
     {
-      sql += QString( "GeometryType(\"%1\") IN ('LINESTRING','MULTILINESTRING')" ).arg( geomColumnName );
+      geomFilter = QString( "GeometryType(\"%1\") IN ('LINESTRING','MULTILINESTRING')" ).arg( geomColumnName );
     }
     else if ( typeName == "POLYGON" )
     {
-      sql += QString( "GeometryType(\"%1\") IN ('POLYGON','MULTIPOLYGON')" ).arg( geomColumnName );
+      geomFilter = QString( "GeometryType(\"%1\") IN ('POLYGON','MULTIPOLYGON')" ).arg( geomColumnName );
+    }
+
+    if ( !geomFilter.isEmpty() && !sql.contains( geomFilter ) )
+    {
+      if ( !sql.isEmpty() )
+      {
+        sql += " AND ";
+      }
+
+      sql += geomFilter;
     }
   }
 
