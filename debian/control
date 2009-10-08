@@ -70,7 +70,7 @@ Description: Quantum GIS - development files
 
 Package: qgis-plugin-grass
 Architecture: any
-Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, libgdal1-1.6.0-grass, grass640-5
+Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, libgdal1-1.6.0-grass, grass64
 Description: GRASS plugin for Quantum GIS
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
