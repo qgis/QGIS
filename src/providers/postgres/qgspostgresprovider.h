@@ -341,6 +341,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     QString quotedValue( QString value ) const;
 
+    /** expression to retrieve value
+     */
+    QString fieldExpression( const QgsField &fld ) const;
+
     /** Load the field list
     */
     void loadFields();
