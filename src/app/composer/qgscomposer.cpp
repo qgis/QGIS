@@ -116,7 +116,6 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   mActionAddImage->setCheckable( true );
   mActionMoveItemContent->setCheckable( true );
 
-#ifdef Q_WS_MAC
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
   appMenu->addAction( QgisApp::instance()->actionAbout() );
   appMenu->addAction( QgisApp::instance()->actionOptions() );
@@ -128,6 +127,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   fileMenu->addSeparator();
   fileMenu->addAction( mActionPrint );
 
+#if 0
   QMenu *editMenu = menuBar()->addMenu( tr( "Edit" ) );
   QAction *undoAction = editMenu->addAction( tr( "&Undo" ), this, SLOT( undo() ), tr( "Ctrl+Z" ) );
   undoAction->setEnabled( false );
@@ -140,6 +140,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   pasteAction->setEnabled( false );
   QAction *deleteAction = editMenu->addAction( tr( "Delete" ) );
   deleteAction->setEnabled( false );
+#endif //0
 
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
   viewMenu->addAction( mActionZoomIn );
@@ -164,16 +165,18 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   layoutMenu->addAction( mActionMoveItemsToTop );
   layoutMenu->addAction( mActionMoveItemsToBottom );
 
+#ifdef Q_WS_MAC
 #ifndef Q_WS_MAC64 /* assertion failure in NSMenuItem setSubmenu (Qt 4.5.0-snapshot-20080830) */
   menuBar()->addMenu( QgisApp::instance()->windowMenu() );
 
   menuBar()->addMenu( QgisApp::instance()->helpMenu() );
 #endif
+#endif
+
 
   // Create action to select this window and add it to Window menu
   mWindowAction = new QAction( windowTitle(), this );
   connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
-#endif
 
   mQgis = qgis;
   mFirstTime = true;

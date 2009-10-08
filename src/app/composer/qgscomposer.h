@@ -279,10 +279,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! To know which item to show if selection changes
     QMap<QgsComposerItem*, QWidget*> mItemWidgetMap;
 
-#ifdef Q_WS_MAC
     //! Window menu action to select this window
     QAction *mWindowAction;
-#endif
 
     /**False if first paint already happened (used to create cache of composer maps for screen resolution after reading from project files)*/
     bool mFirstPaint;
