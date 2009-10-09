@@ -974,7 +974,7 @@ QString QgsPostgresProvider::getPrimaryKey()
   // can be used as a key into the table. Primary keys are always
   // unique indices, so we catch them as well.
 
-  QString sql = QString( "select indkey from pg_index where indisunique='t' and indrelid=regclass(%1)::oid" )
+  QString sql = QString( "select indkey from pg_index where indisunique and indrelid=regclass(%1)::oid and indpred is null" )
                 .arg( quotedValue( mSchemaTableName ) );
 
   QgsDebugMsg( "Getting unique index using '" + sql + "'" );
