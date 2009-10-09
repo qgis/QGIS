@@ -8368,7 +8368,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="13"/>
         <source>Field calculator</source>
-        <translation>Feld-rechner</translation>
+        <translation>Feldrechner</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="19"/>
@@ -8388,122 +8388,122 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="42"/>
         <source>Output field name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabefeldname:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="52"/>
         <source>Output field type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabefeldtyp:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="62"/>
         <source>Output field width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabefeldbreite:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="72"/>
         <source>Output field precision:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabefeldgenauigkeit:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="85"/>
         <source>Fields</source>
-        <translation type="unfinished">Felder</translation>
+        <translation>Felder</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="97"/>
         <source>Values</source>
-        <translation type="unfinished">Werte</translation>
+        <translation>Werte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="106"/>
         <source>Sample</source>
-        <translation type="unfinished">Stichprobe</translation>
+        <translation>Stichprobe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="113"/>
         <source>All</source>
-        <translation type="unfinished">Alle</translation>
+        <translation>Alle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="123"/>
         <source>Operators</source>
-        <translation type="unfinished">Operatoren</translation>
+        <translation>Operatoren</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="129"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="136"/>
         <source>*</source>
-        <translation type="unfinished">*</translation>
+        <translation>*</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="143"/>
         <source>sqrt</source>
-        <translation type="unfinished"></translation>
+        <translation>sqrt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="150"/>
         <source>sin</source>
-        <translation type="unfinished"></translation>
+        <translation>sin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="157"/>
         <source>tan</source>
-        <translation type="unfinished"></translation>
+        <translation>tan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="164"/>
         <source>acos</source>
-        <translation type="unfinished"></translation>
+        <translation>acos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="171"/>
         <source>(</source>
-        <translation type="unfinished"></translation>
+        <translation>(</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="178"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="185"/>
         <source>/</source>
-        <translation type="unfinished"></translation>
+        <translation>/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="192"/>
         <source>^</source>
-        <translation type="unfinished"></translation>
+        <translation>^</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="199"/>
         <source>cos</source>
-        <translation type="unfinished"></translation>
+        <translation>cos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="206"/>
         <source>asin</source>
-        <translation type="unfinished"></translation>
+        <translation>asin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="213"/>
         <source>atan</source>
-        <translation type="unfinished"></translation>
+        <translation>atan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="220"/>
         <source>)</source>
-        <translation type="unfinished"></translation>
+        <translation>)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="230"/>
         <source>Field calculator expression:</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldrechnerausdruck:</translation>
     </message>
 </context>
 <context>
@@ -14402,22 +14402,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="31"/>
         <source>Text data</source>
-        <translation type="unfinished"></translation>
+        <translation>Text</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="32"/>
         <source>Whole number</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganzzahl</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="33"/>
         <source>Decimal number</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimalzahl</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="36"/>
         <source>ESRI Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI-Shapedatei</translation>
     </message>
 </context>
 <context>
@@ -14425,82 +14425,82 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="13"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished">Neuer Vektorlayer</translation>
+        <translation>Neuer Vektorlayer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="25"/>
         <source>File format</source>
-        <translation type="unfinished">Dateiformat</translation>
+        <translation>Dateiformat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="42"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="91"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="205"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="48"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="55"/>
         <source>Line</source>
-        <translation type="unfinished">Linie</translation>
+        <translation>Linie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="62"/>
         <source>Polygon</source>
-        <translation type="unfinished">Polygon</translation>
+        <translation>Polygon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="72"/>
         <source>New attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Neues Attribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="78"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="200"/>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="104"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="210"/>
         <source>Width</source>
-        <translation type="unfinished">Breite</translation>
+        <translation>Breite</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="117"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="215"/>
         <source>Precision</source>
-        <translation type="unfinished">Genauigkeit</translation>
+        <translation>Genauigkeit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="156"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut der Liste hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="162"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Attributliste hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="178"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributliste</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="242"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished">Gewähltes Attribut löschen</translation>
+        <translation>Gewähltes Attribut löschen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="245"/>
         <source>Removed selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Gewähltes Attribute gelöscht</translation>
     </message>
 </context>
 <context>
@@ -14691,17 +14691,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="186"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganzzahl (integer)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="187"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimalzahl (real)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="188"/>
         <source>Text (string)</source>
-        <translation type="unfinished"></translation>
+        <translation>Text (string)</translation>
     </message>
 </context>
 <context>
@@ -15546,12 +15546,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="791"/>
         <source>Default snapping tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Voreingestellte Fangtoleranz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="821"/>
         <source>Search radius for vertex edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchradius für Knickpunktbearbeitung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="973"/>
@@ -17257,52 +17257,52 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="231"/>
         <source>Whole number (smallint - 16bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleine Ganzzahl (16bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="232"/>
         <source>Whole number (integer 32bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganzzahl (32bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="233"/>
         <source>Whole number (integer 64bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganzzahl (64bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="234"/>
         <source>Decimal number (numeric)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimalzahl (numeric)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="235"/>
         <source>Decimal number (decimal)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimalzahl (decimal)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="238"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimalzahl (real)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="239"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimalzahl (double)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="242"/>
         <source>Text, fixed length (char)</source>
-        <translation type="unfinished"></translation>
+        <translation>Text, feste Länge (char)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="243"/>
         <source>Text, variable length (varchar)</source>
-        <translation type="unfinished"></translation>
+        <translation>Text, variable Länge (varchar)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="244"/>
         <source>Text (text)</source>
-        <translation type="unfinished"></translation>
+        <translation>Text, unbegrenze Länge (text)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1037"/>
@@ -17677,17 +17677,17 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="145"/>
         <source>absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>Absolut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="150"/>
         <source>relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Relativ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="158"/>
         <source>Save paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfade speichern</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="229"/>
@@ -20258,17 +20258,17 @@ Der Fehler war:
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="103"/>
         <source>Binary object (BLOB)</source>
-        <translation type="unfinished"></translation>
+        <translation>Binärobjekt (BLOB)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="105"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dezimalzahl (double)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="106"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganzzahl (integer)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="230"/>
@@ -20367,7 +20367,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="293"/>
         <source>@</source>
-        <translation type="unfinished"></translation>
+        <translation>@</translation>
     </message>
     <message>
         <source> @ </source>
@@ -21750,7 +21750,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="547"/>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Feldrechner</translation>
     </message>
 </context>
 <context>
