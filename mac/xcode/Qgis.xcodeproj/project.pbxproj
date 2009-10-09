@@ -359,7 +359,7 @@
 		7209F4560F3A468C003DC336 /* qgspythondialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E64F0F39E57A003DC336 /* qgspythondialog.cpp */; };
 		7209F4570F3A468C003DC336 /* qgsrasterlayerproperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6510F39E57A003DC336 /* qgsrasterlayerproperties.cpp */; };
 		7209F4580F3A468C003DC336 /* qgssearchquerybuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6530F39E57A003DC336 /* qgssearchquerybuilder.cpp */; };
-		7209F4590F3A468C003DC336 /* qgsserversourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6550F39E57A003DC336 /* qgsserversourceselect.cpp */; };
+		7209F4590F3A468C003DC336 /* qgswmssourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6550F39E57A003DC336 /* qgswmssourceselect.cpp */; };
 		7209F45A0F3A468C003DC336 /* qgssinglesymboldialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6570F39E57A003DC336 /* qgssinglesymboldialog.cpp */; };
 		7209F45B0F3A468C003DC336 /* qgssnappingdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6590F39E57A003DC336 /* qgssnappingdialog.cpp */; };
 		7209F45C0F3A468C003DC336 /* qgsuniquevaluedialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E65C0F39E57A003DC336 /* qgsuniquevaluedialog.cpp */; };
@@ -386,9 +386,9 @@
 		7209F4710F3A470F003DC336 /* qgslegendsymbologygroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E5E20F39E57A003DC336 /* qgslegendsymbologygroup.cpp */; };
 		7209F4720F3A470F003DC336 /* qgslegendsymbologyitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E5E40F39E57A003DC336 /* qgslegendsymbologyitem.cpp */; };
 		7209F4730F3A470F003DC336 /* qgslegendvectorsymbologyitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E5E60F39E57A003DC336 /* qgslegendvectorsymbologyitem.cpp */; };
-		7209F4A60F3A5229003DC336 /* qgsdbsourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6070F39E57A003DC336 /* qgsdbsourceselect.cpp */; };
+		7209F4A60F3A5229003DC336 /* qgspgsourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6070F39E57A003DC336 /* qgspgsourceselect.cpp */; };
 		7209F4A70F3A5229003DC336 /* qgsnewconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6390F39E57A003DC336 /* qgsnewconnection.cpp */; };
-		7209F4A80F3A5229003DC336 /* qgspgquerybuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6430F39E57A003DC336 /* qgspgquerybuilder.cpp */; };
+		7209F4A80F3A5229003DC336 /* qgsquerybuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6430F39E57A003DC336 /* qgsquerybuilder.cpp */; };
 		7209F4BA0F3A5434003DC336 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F4B80F3A5434003DC336 /* CoreFoundation.framework */; };
 		7209F4BB0F3A5434003DC336 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F4B90F3A5434003DC336 /* CoreServices.framework */; };
 		7209F5AB0F3A56C9003DC336 /* qgis.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6820F39E57A003DC336 /* qgis.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1251,7 +1251,7 @@
 		7292888B0F71FE65006D9489 /* qgscompositionwidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E5CF0F39E57A003DC336 /* qgscompositionwidget.h */; };
 		7292888C0F71FE65006D9489 /* qgscontinuouscolordialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6020F39E57A003DC336 /* qgscontinuouscolordialog.h */; };
 		7292888D0F71FE65006D9489 /* qgscustomprojectiondialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6040F39E57A003DC336 /* qgscustomprojectiondialog.h */; };
-		7292888E0F71FE65006D9489 /* qgsdbsourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6080F39E57A003DC336 /* qgsdbsourceselect.h */; };
+		7292888E0F71FE65006D9489 /* qgspgsourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6080F39E57A003DC336 /* qgspgsourceselect.h */; };
 		7292888F0F71FE65006D9489 /* qgsdbtablemodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60A0F39E57A003DC336 /* qgsdbtablemodel.h */; };
 		729288900F71FE65006D9489 /* qgsdelattrdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60C0F39E57A003DC336 /* qgsdelattrdialog.h */; };
 		729288910F71FE65006D9489 /* qgsnewvectorlayerdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E60E0F39E57A003DC336 /* qgsnewvectorlayerdialog.h */; };
@@ -1272,13 +1272,13 @@
 		729288A00F71FE65006D9489 /* qgsnewhttpconnection.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E63C0F39E57A003DC336 /* qgsnewhttpconnection.h */; };
 		729288A10F71FE65006D9489 /* qgsoptions.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6400F39E57A003DC336 /* qgsoptions.h */; };
 		729288A20F71FE65006D9489 /* qgspastetransformations.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6420F39E57A003DC336 /* qgspastetransformations.h */; };
-		729288A30F71FE65006D9489 /* qgspgquerybuilder.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6440F39E57A003DC336 /* qgspgquerybuilder.h */; };
+		729288A30F71FE65006D9489 /* qgsquerybuilder.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6440F39E57A003DC336 /* qgsquerybuilder.h */; };
 		729288A40F71FE65006D9489 /* qgspluginmanager.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6480F39E57A003DC336 /* qgspluginmanager.h */; };
 		729288A50F71FE65006D9489 /* qgsprojectproperties.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E64E0F39E57A003DC336 /* qgsprojectproperties.h */; };
 		729288A60F71FE65006D9489 /* qgspythondialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6500F39E57A003DC336 /* qgspythondialog.h */; };
 		729288A70F71FE65006D9489 /* qgsrasterlayerproperties.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6520F39E57A003DC336 /* qgsrasterlayerproperties.h */; };
 		729288A80F71FE65006D9489 /* qgssearchquerybuilder.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6540F39E57A003DC336 /* qgssearchquerybuilder.h */; };
-		729288A90F71FE65006D9489 /* qgsserversourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6560F39E57A003DC336 /* qgsserversourceselect.h */; };
+		729288A90F71FE65006D9489 /* qgswmssourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6560F39E57A003DC336 /* qgswmssourceselect.h */; };
 		729288AA0F71FE65006D9489 /* qgssinglesymboldialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6580F39E57A003DC336 /* qgssinglesymboldialog.h */; };
 		729288AB0F71FE65006D9489 /* qgssnappingdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E65A0F39E57A003DC336 /* qgssnappingdialog.h */; };
 		729288AC0F71FE65006D9489 /* qgsuniquevaluedialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E65D0F39E57A003DC336 /* qgsuniquevaluedialog.h */; };
@@ -4085,8 +4085,8 @@
 		7209E6040F39E57A003DC336 /* qgscustomprojectiondialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscustomprojectiondialog.h; path = ../../src/app/qgscustomprojectiondialog.h; sourceTree = SOURCE_ROOT; };
 		7209E6050F39E57A003DC336 /* qgsdbfilterproxymodel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsdbfilterproxymodel.cpp; path = ../../src/app/qgsdbfilterproxymodel.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6060F39E57A003DC336 /* qgsdbfilterproxymodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsdbfilterproxymodel.h; path = ../../src/app/qgsdbfilterproxymodel.h; sourceTree = SOURCE_ROOT; };
-		7209E6070F39E57A003DC336 /* qgsdbsourceselect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsdbsourceselect.cpp; path = ../../src/app/qgsdbsourceselect.cpp; sourceTree = SOURCE_ROOT; };
-		7209E6080F39E57A003DC336 /* qgsdbsourceselect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsdbsourceselect.h; path = ../../src/app/qgsdbsourceselect.h; sourceTree = SOURCE_ROOT; };
+		7209E6070F39E57A003DC336 /* qgspgsourceselect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspgsourceselect.cpp; path = ../../src/app/qgspgsourceselect.cpp; sourceTree = SOURCE_ROOT; };
+		7209E6080F39E57A003DC336 /* qgspgsourceselect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspgsourceselect.h; path = ../../src/app/qgspgsourceselect.h; sourceTree = SOURCE_ROOT; };
 		7209E6090F39E57A003DC336 /* qgsdbtablemodel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsdbtablemodel.cpp; path = ../../src/app/qgsdbtablemodel.cpp; sourceTree = SOURCE_ROOT; };
 		7209E60A0F39E57A003DC336 /* qgsdbtablemodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsdbtablemodel.h; path = ../../src/app/qgsdbtablemodel.h; sourceTree = SOURCE_ROOT; };
 		7209E60B0F39E57A003DC336 /* qgsdelattrdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsdelattrdialog.cpp; path = ../../src/app/qgsdelattrdialog.cpp; sourceTree = SOURCE_ROOT; };
@@ -4145,8 +4145,8 @@
 		7209E6400F39E57A003DC336 /* qgsoptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsoptions.h; path = ../../src/app/qgsoptions.h; sourceTree = SOURCE_ROOT; };
 		7209E6410F39E57A003DC336 /* qgspastetransformations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspastetransformations.cpp; path = ../../src/app/qgspastetransformations.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6420F39E57A003DC336 /* qgspastetransformations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspastetransformations.h; path = ../../src/app/qgspastetransformations.h; sourceTree = SOURCE_ROOT; };
-		7209E6430F39E57A003DC336 /* qgspgquerybuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspgquerybuilder.cpp; path = ../../src/app/qgspgquerybuilder.cpp; sourceTree = SOURCE_ROOT; };
-		7209E6440F39E57A003DC336 /* qgspgquerybuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspgquerybuilder.h; path = ../../src/app/qgspgquerybuilder.h; sourceTree = SOURCE_ROOT; };
+		7209E6430F39E57A003DC336 /* qgsquerybuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsquerybuilder.cpp; path = ../../src/app/qgsquerybuilder.cpp; sourceTree = SOURCE_ROOT; };
+		7209E6440F39E57A003DC336 /* qgsquerybuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsquerybuilder.h; path = ../../src/app/qgsquerybuilder.h; sourceTree = SOURCE_ROOT; };
 		7209E6450F39E57A003DC336 /* qgspluginitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspluginitem.cpp; path = ../../src/app/qgspluginitem.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6460F39E57A003DC336 /* qgspluginitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspluginitem.h; path = ../../src/app/qgspluginitem.h; sourceTree = SOURCE_ROOT; };
 		7209E6470F39E57A003DC336 /* qgspluginmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspluginmanager.cpp; path = ../../src/app/qgspluginmanager.cpp; sourceTree = SOURCE_ROOT; };
@@ -4163,8 +4163,8 @@
 		7209E6520F39E57A003DC336 /* qgsrasterlayerproperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterlayerproperties.h; path = ../../src/app/qgsrasterlayerproperties.h; sourceTree = SOURCE_ROOT; };
 		7209E6530F39E57A003DC336 /* qgssearchquerybuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssearchquerybuilder.cpp; path = ../../src/app/qgssearchquerybuilder.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6540F39E57A003DC336 /* qgssearchquerybuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssearchquerybuilder.h; path = ../../src/app/qgssearchquerybuilder.h; sourceTree = SOURCE_ROOT; };
-		7209E6550F39E57A003DC336 /* qgsserversourceselect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsserversourceselect.cpp; path = ../../src/app/qgsserversourceselect.cpp; sourceTree = SOURCE_ROOT; };
-		7209E6560F39E57A003DC336 /* qgsserversourceselect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsserversourceselect.h; path = ../../src/app/qgsserversourceselect.h; sourceTree = SOURCE_ROOT; };
+		7209E6550F39E57A003DC336 /* qgswmssourceselect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgswmssourceselect.cpp; path = ../../src/app/qgswmssourceselect.cpp; sourceTree = SOURCE_ROOT; };
+		7209E6560F39E57A003DC336 /* qgswmssourceselect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgswmssourceselect.h; path = ../../src/app/qgswmssourceselect.h; sourceTree = SOURCE_ROOT; };
 		7209E6570F39E57A003DC336 /* qgssinglesymboldialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssinglesymboldialog.cpp; path = ../../src/app/qgssinglesymboldialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6580F39E57A003DC336 /* qgssinglesymboldialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssinglesymboldialog.h; path = ../../src/app/qgssinglesymboldialog.h; sourceTree = SOURCE_ROOT; };
 		7209E6590F39E57A003DC336 /* qgssnappingdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssnappingdialog.cpp; path = ../../src/app/qgssnappingdialog.cpp; sourceTree = SOURCE_ROOT; };
@@ -4883,7 +4883,7 @@
 		7209EC9B0F39E57B003DC336 /* qgscompositionwidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscompositionwidgetbase.ui; path = ../../src/ui/qgscompositionwidgetbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC9C0F39E57B003DC336 /* qgscontinuouscolordialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscontinuouscolordialogbase.ui; path = ../../src/ui/qgscontinuouscolordialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC9D0F39E57B003DC336 /* qgscustomprojectiondialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscustomprojectiondialogbase.ui; path = ../../src/ui/qgscustomprojectiondialogbase.ui; sourceTree = SOURCE_ROOT; };
-		7209EC9E0F39E57B003DC336 /* qgsdbsourceselectbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsdbsourceselectbase.ui; path = ../../src/ui/qgsdbsourceselectbase.ui; sourceTree = SOURCE_ROOT; };
+		7209EC9E0F39E57B003DC336 /* qgspgsourceselectbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgspgsourceselectbase.ui; path = ../../src/ui/qgspgsourceselectbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC9F0F39E57B003DC336 /* qgsdelattrdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsdelattrdialogbase.ui; path = ../../src/ui/qgsdelattrdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECA00F39E57B003DC336 /* qgsdetaileditemwidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsdetaileditemwidgetbase.ui; path = ../../src/ui/qgsdetaileditemwidgetbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECA10F39E57B003DC336 /* qgsgenericprojectionselectorbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgenericprojectionselectorbase.ui; path = ../../src/ui/qgsgenericprojectionselectorbase.ui; sourceTree = SOURCE_ROOT; };
@@ -4900,13 +4900,13 @@
 		7209ECAC0F39E57B003DC336 /* qgsnewhttpconnectionbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsnewhttpconnectionbase.ui; path = ../../src/ui/qgsnewhttpconnectionbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECAD0F39E57B003DC336 /* qgsoptionsbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsoptionsbase.ui; path = ../../src/ui/qgsoptionsbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECAE0F39E57B003DC336 /* qgspastetransformationsbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgspastetransformationsbase.ui; path = ../../src/ui/qgspastetransformationsbase.ui; sourceTree = SOURCE_ROOT; };
-		7209ECAF0F39E57B003DC336 /* qgspgquerybuilderbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgspgquerybuilderbase.ui; path = ../../src/ui/qgspgquerybuilderbase.ui; sourceTree = SOURCE_ROOT; };
+		7209ECAF0F39E57B003DC336 /* qgsquerybuilderbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsquerybuilderbase.ui; path = ../../src/ui/qgsquerybuilderbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB00F39E57B003DC336 /* qgspluginmanagerbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgspluginmanagerbase.ui; path = ../../src/ui/qgspluginmanagerbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB10F39E57B003DC336 /* qgsprojectionselectorbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsprojectionselectorbase.ui; path = ../../src/ui/qgsprojectionselectorbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB20F39E57B003DC336 /* qgsprojectpropertiesbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsprojectpropertiesbase.ui; path = ../../src/ui/qgsprojectpropertiesbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB30F39E57B003DC336 /* qgspythondialog.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgspythondialog.ui; path = ../../src/ui/qgspythondialog.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB40F39E57B003DC336 /* qgsrasterlayerpropertiesbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsrasterlayerpropertiesbase.ui; path = ../../src/ui/qgsrasterlayerpropertiesbase.ui; sourceTree = SOURCE_ROOT; };
-		7209ECB50F39E57B003DC336 /* qgsserversourceselectbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsserversourceselectbase.ui; path = ../../src/ui/qgsserversourceselectbase.ui; sourceTree = SOURCE_ROOT; };
+		7209ECB50F39E57B003DC336 /* qgswmssourceselectbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgswmssourceselectbase.ui; path = ../../src/ui/qgswmssourceselectbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB60F39E57B003DC336 /* qgssinglesymboldialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgssinglesymboldialogbase.ui; path = ../../src/ui/qgssinglesymboldialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB70F39E57B003DC336 /* qgssnappingdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgssnappingdialogbase.ui; path = ../../src/ui/qgssnappingdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB80F39E57B003DC336 /* qgsuniquevaluedialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsuniquevaluedialogbase.ui; path = ../../src/ui/qgsuniquevaluedialogbase.ui; sourceTree = SOURCE_ROOT; };
@@ -7817,8 +7817,8 @@
 				7209E6040F39E57A003DC336 /* qgscustomprojectiondialog.h */,
 				7209E6050F39E57A003DC336 /* qgsdbfilterproxymodel.cpp */,
 				7209E6060F39E57A003DC336 /* qgsdbfilterproxymodel.h */,
-				7209E6070F39E57A003DC336 /* qgsdbsourceselect.cpp */,
-				7209E6080F39E57A003DC336 /* qgsdbsourceselect.h */,
+				7209E6070F39E57A003DC336 /* qgspgsourceselect.cpp */,
+				7209E6080F39E57A003DC336 /* qgspgsourceselect.h */,
 				7209E6090F39E57A003DC336 /* qgsdbtablemodel.cpp */,
 				7209E60A0F39E57A003DC336 /* qgsdbtablemodel.h */,
 				7209E60B0F39E57A003DC336 /* qgsdelattrdialog.cpp */,
@@ -7887,8 +7887,8 @@
 				7209E6400F39E57A003DC336 /* qgsoptions.h */,
 				7209E6410F39E57A003DC336 /* qgspastetransformations.cpp */,
 				7209E6420F39E57A003DC336 /* qgspastetransformations.h */,
-				7209E6430F39E57A003DC336 /* qgspgquerybuilder.cpp */,
-				7209E6440F39E57A003DC336 /* qgspgquerybuilder.h */,
+				7209E6430F39E57A003DC336 /* qgsquerybuilder.cpp */,
+				7209E6440F39E57A003DC336 /* qgsquerybuilder.h */,
 				7209E6450F39E57A003DC336 /* qgspluginitem.cpp */,
 				7209E6460F39E57A003DC336 /* qgspluginitem.h */,
 				7209E6470F39E57A003DC336 /* qgspluginmanager.cpp */,
@@ -7905,8 +7905,8 @@
 				7209E6520F39E57A003DC336 /* qgsrasterlayerproperties.h */,
 				7209E6530F39E57A003DC336 /* qgssearchquerybuilder.cpp */,
 				7209E6540F39E57A003DC336 /* qgssearchquerybuilder.h */,
-				7209E6550F39E57A003DC336 /* qgsserversourceselect.cpp */,
-				7209E6560F39E57A003DC336 /* qgsserversourceselect.h */,
+				7209E6550F39E57A003DC336 /* qgswmssourceselect.cpp */,
+				7209E6560F39E57A003DC336 /* qgswmssourceselect.h */,
 				7209E6570F39E57A003DC336 /* qgssinglesymboldialog.cpp */,
 				7209E6580F39E57A003DC336 /* qgssinglesymboldialog.h */,
 				7209E6590F39E57A003DC336 /* qgssnappingdialog.cpp */,
@@ -9232,7 +9232,7 @@
 				7209EC9B0F39E57B003DC336 /* qgscompositionwidgetbase.ui */,
 				7209EC9C0F39E57B003DC336 /* qgscontinuouscolordialogbase.ui */,
 				7209EC9D0F39E57B003DC336 /* qgscustomprojectiondialogbase.ui */,
-				7209EC9E0F39E57B003DC336 /* qgsdbsourceselectbase.ui */,
+				7209EC9E0F39E57B003DC336 /* qgspgsourceselectbase.ui */,
 				7209EC9F0F39E57B003DC336 /* qgsdelattrdialogbase.ui */,
 				7209ECA00F39E57B003DC336 /* qgsdetaileditemwidgetbase.ui */,
 				72AA0BE61073946500D00B43 /* qgsfieldcalculatorbase.ui */,
@@ -9251,13 +9251,13 @@
 				7209ECAC0F39E57B003DC336 /* qgsnewhttpconnectionbase.ui */,
 				7209ECAD0F39E57B003DC336 /* qgsoptionsbase.ui */,
 				7209ECAE0F39E57B003DC336 /* qgspastetransformationsbase.ui */,
-				7209ECAF0F39E57B003DC336 /* qgspgquerybuilderbase.ui */,
+				7209ECAF0F39E57B003DC336 /* qgsquerybuilderbase.ui */,
 				7209ECB00F39E57B003DC336 /* qgspluginmanagerbase.ui */,
 				7209ECB10F39E57B003DC336 /* qgsprojectionselectorbase.ui */,
 				7209ECB20F39E57B003DC336 /* qgsprojectpropertiesbase.ui */,
 				7209ECB30F39E57B003DC336 /* qgspythondialog.ui */,
 				7209ECB40F39E57B003DC336 /* qgsrasterlayerpropertiesbase.ui */,
-				7209ECB50F39E57B003DC336 /* qgsserversourceselectbase.ui */,
+				7209ECB50F39E57B003DC336 /* qgswmssourceselectbase.ui */,
 				7209ECB60F39E57B003DC336 /* qgssinglesymboldialogbase.ui */,
 				7209ECB70F39E57B003DC336 /* qgssnappingdialogbase.ui */,
 				7209ECB80F39E57B003DC336 /* qgsuniquevaluedialogbase.ui */,
@@ -14456,7 +14456,7 @@
 				7209F4560F3A468C003DC336 /* qgspythondialog.cpp in Sources */,
 				7209F4570F3A468C003DC336 /* qgsrasterlayerproperties.cpp in Sources */,
 				7209F4580F3A468C003DC336 /* qgssearchquerybuilder.cpp in Sources */,
-				7209F4590F3A468C003DC336 /* qgsserversourceselect.cpp in Sources */,
+				7209F4590F3A468C003DC336 /* qgswmssourceselect.cpp in Sources */,
 				7209F45A0F3A468C003DC336 /* qgssinglesymboldialog.cpp in Sources */,
 				7209F45B0F3A468C003DC336 /* qgssnappingdialog.cpp in Sources */,
 				7209F45C0F3A468C003DC336 /* qgsuniquevaluedialog.cpp in Sources */,
@@ -14481,9 +14481,9 @@
 				7209F4710F3A470F003DC336 /* qgslegendsymbologygroup.cpp in Sources */,
 				7209F4720F3A470F003DC336 /* qgslegendsymbologyitem.cpp in Sources */,
 				7209F4730F3A470F003DC336 /* qgslegendvectorsymbologyitem.cpp in Sources */,
-				7209F4A60F3A5229003DC336 /* qgsdbsourceselect.cpp in Sources */,
+				7209F4A60F3A5229003DC336 /* qgspgsourceselect.cpp in Sources */,
 				7209F4A70F3A5229003DC336 /* qgsnewconnection.cpp in Sources */,
-				7209F4A80F3A5229003DC336 /* qgspgquerybuilder.cpp in Sources */,
+				7209F4A80F3A5229003DC336 /* qgsquerybuilder.cpp in Sources */,
 				726979A80F7136D700AFA402 /* qgsnewogrconnection.cpp in Sources */,
 				726979A90F7136D800AFA402 /* qgsogrhelperfunctions.cpp in Sources */,
 				726979AA0F7136D800AFA402 /* qgsopenvectorlayerdialog.cpp in Sources */,
@@ -14507,7 +14507,7 @@
 				7292888B0F71FE65006D9489 /* qgscompositionwidget.h in Sources */,
 				7292888C0F71FE65006D9489 /* qgscontinuouscolordialog.h in Sources */,
 				7292888D0F71FE65006D9489 /* qgscustomprojectiondialog.h in Sources */,
-				7292888E0F71FE65006D9489 /* qgsdbsourceselect.h in Sources */,
+				7292888E0F71FE65006D9489 /* qgspgsourceselect.h in Sources */,
 				7292888F0F71FE65006D9489 /* qgsdbtablemodel.h in Sources */,
 				729288900F71FE65006D9489 /* qgsdelattrdialog.h in Sources */,
 				729288910F71FE65006D9489 /* qgsnewvectorlayerdialog.h in Sources */,
@@ -14535,13 +14535,13 @@
 				729288A00F71FE65006D9489 /* qgsnewhttpconnection.h in Sources */,
 				729288A10F71FE65006D9489 /* qgsoptions.h in Sources */,
 				729288A20F71FE65006D9489 /* qgspastetransformations.h in Sources */,
-				729288A30F71FE65006D9489 /* qgspgquerybuilder.h in Sources */,
+				729288A30F71FE65006D9489 /* qgsquerybuilder.h in Sources */,
 				729288A40F71FE65006D9489 /* qgspluginmanager.h in Sources */,
 				729288A50F71FE65006D9489 /* qgsprojectproperties.h in Sources */,
 				729288A60F71FE65006D9489 /* qgspythondialog.h in Sources */,
 				729288A70F71FE65006D9489 /* qgsrasterlayerproperties.h in Sources */,
 				729288A80F71FE65006D9489 /* qgssearchquerybuilder.h in Sources */,
-				729288A90F71FE65006D9489 /* qgsserversourceselect.h in Sources */,
+				729288A90F71FE65006D9489 /* qgswmssourceselect.h in Sources */,
 				729288AA0F71FE65006D9489 /* qgssinglesymboldialog.h in Sources */,
 				729288AB0F71FE65006D9489 /* qgssnappingdialog.h in Sources */,
 				729288AC0F71FE65006D9489 /* qgsuniquevaluedialog.h in Sources */,
