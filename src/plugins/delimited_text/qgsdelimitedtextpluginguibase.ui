@@ -164,7 +164,7 @@ p, li { white-space: pre-wrap; }
    <item row="5" column="0" colspan="2" >
     <widget class="QLabel" name="label_2" >
      <property name="text" >
-      <string>Delimeter type</string>
+      <string>Delimiter type</string>
      </property>
      <property name="buddy" >
       <cstring>delimiterPlain</cstring>
