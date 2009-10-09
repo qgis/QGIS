@@ -548,7 +548,7 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document, const QgsVec
   symbol.appendChild( fillcolor );
 
   appendText( symbol, document, "fillpattern", QgsSymbologyUtils::brushStyle2QString( mBrush.style() ) );
-  appendText( symbol, document, "texturepath", mTextureFilePath );
+  appendText( symbol, document, "texturepath", QgsProject::instance()->writePath( mTextureFilePath ) );
 
   return returnval;
 }
@@ -668,7 +668,7 @@ bool QgsSymbol::readXML( QDomNode &synode, const QgsVectorLayer *vl )
 
   QDomNode texturepathnode = synode.namedItem( "texturepath" );
   QDomElement texturepathelement = texturepathnode.toElement();
-  setCustomTexture( texturepathelement.text() );
+  setCustomTexture( QgsProject::instance()->readPath( texturepathelement.text() ) );
 
   //run this after setting the custom texture path, so we override the brush if it isn't the custom pattern brush.
   QDomNode fillpnode = synode.namedItem( "fillpattern" );
