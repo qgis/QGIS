@@ -123,24 +123,10 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
   QAction *closeAction = fileMenu->addAction( tr( "Close" ), this, SLOT( close() ), tr( "Ctrl+W" ) );
   fileMenu->addAction( mActionExportAsImage );
+  fileMenu->addAction( mActionExportAsPDF );
   fileMenu->addAction( mActionExportAsSVG );
   fileMenu->addSeparator();
   fileMenu->addAction( mActionPrint );
-
-#if 0
-  QMenu *editMenu = menuBar()->addMenu( tr( "Edit" ) );
-  QAction *undoAction = editMenu->addAction( tr( "&Undo" ), this, SLOT( undo() ), tr( "Ctrl+Z" ) );
-  undoAction->setEnabled( false );
-  editMenu->addSeparator();
-  QAction *cutAction = editMenu->addAction( tr( "Cu&t" ), this, SLOT( cut() ), tr( "Ctrl+X" ) );
-  cutAction->setEnabled( false );
-  QAction *copyAction = editMenu->addAction( tr( "&Copy" ), this, SLOT( copy() ), tr( "Ctrl+C" ) );
-  copyAction->setEnabled( false );
-  QAction *pasteAction = editMenu->addAction( tr( "&Paste" ), this, SLOT( paste() ), tr( "Ctrl+V" ) );
-  pasteAction->setEnabled( false );
-  QAction *deleteAction = editMenu->addAction( tr( "Delete" ) );
-  deleteAction->setEnabled( false );
-#endif //0
 
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
   viewMenu->addAction( mActionZoomIn );
