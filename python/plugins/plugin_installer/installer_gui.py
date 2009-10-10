@@ -338,7 +338,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           a.setToolTip(0,self.tr("This repository is disabled"))
         else:
           a.setToolTip(0,self.tr("This repository is blocked due to incompatibility with your Quantum GIS version"))
-        a.setDisabled(True)
+        for i in [0,1,2]:
+          a.setForeground(i,QBrush(QColor(Qt.gray)))
     for i in [0,1,2]:
       self.treeRepositories.resizeColumnToContents(i)
     self.comboFilter1.addItem(self.tr("orphans"))
