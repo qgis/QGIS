@@ -84,7 +84,7 @@ void QgsNewOgrConnection::testConnection()
   poDS = OGROpen( QFile::encodeName( uri ).constData(), FALSE, &pahDriver );
   if ( poDS == NULL )
   {
-    QMessageBox::information( this, tr( "Test connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" ).arg( CPLGetLastErrorMsg() ) );
+    QMessageBox::information( this, tr( "Test connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
   else
   {
