@@ -150,7 +150,9 @@ void QgsSpit::removeConnection()
     settings.remove( key + "/port" );
     settings.remove( key + "/username" );
     settings.remove( key + "/password" );
+    settings.remove( key + "/sslmode" );
     settings.remove( key + "/save" );
+    settings.remove( key );
 
     cmbConnections->removeItem( cmbConnections->currentIndex() );
   }
