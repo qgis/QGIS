@@ -86,7 +86,7 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
     return 1;
   }
 
-  QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( vlayer );
+  QgsVectorLayer* vectorLayer = qobject_cast<QgsVectorLayer *>( vlayer );
   if ( !vectorLayer )
   {
     return 2;
@@ -148,7 +148,7 @@ int QgsLegendModel::addRasterLayerItem( QStandardItem* layerItem, QgsMapLayer* r
     return 1;
   }
 
-  QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( rlayer );
+  QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer *>( rlayer );
   if ( !rasterLayer )
   {
     return 2;
@@ -274,7 +274,7 @@ void QgsLegendModel::updateVectorClassificationItem( QStandardItem* classificati
   {
     return;
   }
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
   if ( !vl )
   {
     return;
@@ -354,7 +354,7 @@ void QgsLegendModel::updateRasterClassificationItem( QStandardItem* classificati
     return;
   }
 
-  QgsRasterLayer* rl = dynamic_cast<QgsRasterLayer*>( ml );
+  QgsRasterLayer* rl = qobject_cast<QgsRasterLayer *>( ml );
   if ( !rl )
   {
     return;
@@ -596,7 +596,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
       if ( currentChildElement.tagName() == "RasterItem" )
       {
         //get icon from current layer
-        QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( currentLayer );
+        QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
         if ( rasterLayer )
         {
           childItem->setIcon( QIcon( rasterLayer->legendAsPixmap( true ) ) );
@@ -606,7 +606,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
       else if ( currentChildElement.tagName() == "VectorClassificationItem" )
       {
         //read QgsSymbol from xml and get icon
-        QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+        QgsVectorLayer* vectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
         if ( vectorLayer )
         {
           //look for symbol

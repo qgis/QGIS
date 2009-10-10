@@ -199,7 +199,7 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
 
 void QgsVectorLayerProperties::attributeTypeDialog( )
 {
-  QPushButton *pb = dynamic_cast<QPushButton *>( sender() );
+  QPushButton *pb = qobject_cast<QPushButton *>( sender() );
   if ( !pb )
     return;
 
@@ -596,7 +596,7 @@ void QgsVectorLayerProperties::apply()
   {
     int idx = tblAttributes->item( i, attrIdCol )->text().toInt();
 
-    QPushButton *pb = dynamic_cast<QPushButton*>( tblAttributes->cellWidget( i, attrEditTypeCol ) );
+    QPushButton *pb = qobject_cast<QPushButton *>( tblAttributes->cellWidget( i, attrEditTypeCol ) );
     if ( !pb )
       continue;
 
@@ -623,13 +623,13 @@ void QgsVectorLayerProperties::apply()
   }
 
   QgsSingleSymbolDialog *sdialog =
-    dynamic_cast < QgsSingleSymbolDialog * >( widgetStackRenderers->currentWidget() );
+    qobject_cast<QgsSingleSymbolDialog *>( widgetStackRenderers->currentWidget() );
   QgsGraduatedSymbolDialog *gdialog =
-    dynamic_cast < QgsGraduatedSymbolDialog * >( widgetStackRenderers->currentWidget() );
+    qobject_cast<QgsGraduatedSymbolDialog *>( widgetStackRenderers->currentWidget() );
   QgsContinuousColorDialog *cdialog =
-    dynamic_cast < QgsContinuousColorDialog * >( widgetStackRenderers->currentWidget() );
+    qobject_cast<QgsContinuousColorDialog *>( widgetStackRenderers->currentWidget() );
   QgsUniqueValueDialog* udialog =
-    dynamic_cast< QgsUniqueValueDialog * >( widgetStackRenderers->currentWidget() );
+    qobject_cast<QgsUniqueValueDialog *>( widgetStackRenderers->currentWidget() );
 
   if ( sdialog )
   {
@@ -1124,7 +1124,7 @@ QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const
       thePlugin = ( *it )->plugin();
       if ( thePlugin && thePlugin->type() == QgisPlugin::VECTOR_OVERLAY )
       {
-        theOverlayPlugin = dynamic_cast<QgsVectorOverlayPlugin*>( thePlugin );
+        theOverlayPlugin = dynamic_cast<QgsVectorOverlayPlugin *>( thePlugin );
         if ( theOverlayPlugin )
         {
           pluginList.push_back( theOverlayPlugin );

@@ -197,7 +197,7 @@ void QgsSingleSymbolDialog::refreshMarkers()
   {
     if ( mVectorLayer )
     {
-      const QgsSingleSymbolRenderer *renderer = dynamic_cast<const QgsSingleSymbolRenderer*>( mVectorLayer->renderer() );
+      const QgsSingleSymbolRenderer *renderer = dynamic_cast<const QgsSingleSymbolRenderer *>( mVectorLayer->renderer() );
 
       if ( renderer )
       {

@@ -402,7 +402,7 @@ void QgsQuickPrint::printMap()
     if ( mypLayer )
     {
       QgsVectorLayer *mypVectorLayer  =
-        dynamic_cast<QgsVectorLayer *>( mypLayer );
+        qobject_cast<QgsVectorLayer *>( mypLayer );
       if ( mypVectorLayer )
       {
         QString myLayerName = mypVectorLayer->name();
@@ -684,7 +684,7 @@ void QgsQuickPrint::scaleTextLabels( int theScaleFactor, SymbolScalingType theDi
     if ( mypLayer )
     {
       QgsVectorLayer *mypVectorLayer  =
-        dynamic_cast<QgsVectorLayer *>( mypLayer );
+        qobject_cast<QgsVectorLayer *>( mypLayer );
       if ( mypVectorLayer )
       {
         QgsLabel * mypLabel = mypVectorLayer->label();
@@ -724,7 +724,7 @@ void QgsQuickPrint::scalePointSymbols( int theScaleFactor, SymbolScalingType the
     if ( mypLayer )
     {
       QgsVectorLayer *mypVectorLayer  =
-        dynamic_cast<QgsVectorLayer *>( mypLayer );
+        qobject_cast<QgsVectorLayer *>( mypLayer );
       if ( mypVectorLayer )
       {
         const QgsRenderer* mypRenderer = mypVectorLayer->renderer();

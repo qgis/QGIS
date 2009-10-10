@@ -54,7 +54,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
     : QDialog( parent, fl ),
     // Constant that signals property not used.
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
-    mRasterLayer( dynamic_cast<QgsRasterLayer*>( lyr ) )
+    mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
 {
 
   ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
@@ -2205,7 +2205,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   //
   int myXDivisions = myGraphImageWidth / 10;
   myPainter.setPen( Qt::gray );
-  for ( int i = 0;i < myXDivisions;++i )
+  for ( int i = 0; i < myXDivisions; ++i )
   {
     QPolygon myPolygon;
     myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth, myImageHeight - myXGutterHeight );
@@ -2219,7 +2219,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   //
   int myYDivisions = myGraphImageHeight / 10;
   myPainter.setPen( Qt::gray );
-  for ( int i = myYDivisions;i > 0;--i )
+  for ( int i = myYDivisions; i > 0; --i )
   {
 
     QPolygon myPolygon;

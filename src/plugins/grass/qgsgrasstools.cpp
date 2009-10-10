@@ -149,7 +149,7 @@ void QgsGrassTools::runModule( QString name )
 
 #ifdef HAVE_OPENPTY
     sh = new QgsGrassShell( this, mTabWidget );
-    m = dynamic_cast<QWidget *>( sh );
+    m = qobject_cast<QWidget *>( sh );
 #else
     QMessageBox::warning( 0, tr( "Warning" ), tr( "GRASS Shell is not compiled." ) );
 #endif // HAVE_OPENPTY
@@ -158,7 +158,7 @@ void QgsGrassTools::runModule( QString name )
   }
   else
   {
-    m = dynamic_cast<QWidget *>( new QgsGrassModule( this, name,
+    m = qobject_cast<QWidget *>( new QgsGrassModule( this, name,
                                  mIface, path, mTabWidget ) );
   }
 

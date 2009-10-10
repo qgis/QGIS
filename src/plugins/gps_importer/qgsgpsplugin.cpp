@@ -122,7 +122,7 @@ void QgsGPSPlugin::run()
   {
     if ( iter.value()->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( iter.value() );
+      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( iter.value() );
       if ( vLayer->providerType() == "gpx" )
         gpxLayers.push_back( vLayer );
     }

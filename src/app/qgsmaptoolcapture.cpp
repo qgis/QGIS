@@ -89,7 +89,7 @@ void QgsMapToolCapture::deactivate()
 
 int QgsMapToolCapture::addVertex( const QPoint& p )
 {
-  QgsVectorLayer *vlayer = dynamic_cast <QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
   if ( !vlayer )
   {

@@ -34,7 +34,7 @@
 
 //qt includes
 #include <QColorDialog>
-#include <QHeaderView>	// Qt 4.4
+#include <QHeaderView>  // Qt 4.4
 #include "qgslogger.h"
 
 //stdc++ includes
@@ -238,7 +238,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     }
     else if ( currentLayer->type() == QgsMapLayer::RasterLayer )
     {
-      QgsRasterLayer *rl = dynamic_cast<QgsRasterLayer *>( currentLayer );
+      QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( currentLayer );
 
       if ( rl && rl->providerKey() == "wms" )
       {
@@ -373,7 +373,7 @@ void QgsProjectProperties::apply()
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
-  QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex()==0 );
+  QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex() == 0 );
 
   //set the colour for selections
   QColor myColour = pbnSelectionColour->color();
@@ -442,7 +442,7 @@ void QgsProjectProperties::apply()
   QStringList noIdentifyLayerList;
   for ( int i = 0; i < twIdentifyLayers->rowCount(); i++ )
   {
-    QCheckBox *cb = dynamic_cast<QCheckBox*>( twIdentifyLayers->cellWidget( i, 2 ) );
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twIdentifyLayers->cellWidget( i, 2 ) );
     if ( cb && !cb->isChecked() )
     {
       QString id = twIdentifyLayers->verticalHeaderItem( i )->data( Qt::UserRole ).toString();

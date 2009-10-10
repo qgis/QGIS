@@ -357,7 +357,7 @@ void QgsMapRenderer::render( QPainter* painter )
       //create overlay objects for features within the view extent
       if ( ml->type() == QgsMapLayer::VectorLayer && overlayManager )
       {
-        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( vl )
         {
           QList<QgsVectorOverlay*> thisLayerOverlayList;

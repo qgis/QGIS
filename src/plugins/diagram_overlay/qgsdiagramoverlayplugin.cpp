@@ -97,7 +97,7 @@ void QgsDiagramOverlayPlugin::projectRead()
       if ( overlayElem.attribute( "type" ) == "diagram" )
       {
         //get a pointer to the vector layer which owns the diagram overlay (use QgsMapLayerRegistry)
-        currentVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+        currentVectorLayer = qobject_cast<QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
         if ( !currentVectorLayer )
         {
           continue;

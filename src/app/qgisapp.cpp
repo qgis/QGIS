@@ -4063,7 +4063,7 @@ void QgisApp::attributeTable()
     return;
   }
 
-  QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>( mMapLegend->currentLayer() );
+  QgsVectorLayer * myLayer = qobject_cast<QgsVectorLayer *>( mMapLegend->currentLayer() );
   QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer );
   mDialog->show();
   // the dialog will be deleted by itself on close
@@ -4094,7 +4094,7 @@ void QgisApp::deleteSelected()
     return;
   }
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
     QMessageBox::information( this, tr( "No Vector Layer Selected" ),
@@ -4210,7 +4210,7 @@ void QgisApp::mergeSelectedFeatures()
     QMessageBox::information( 0, tr( "No active layer" ), tr( "No active layer found. Please select a layer in the layer list" ) );
     return;
   }
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( activeMapLayer );
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
   if ( !vl )
   {
     QMessageBox::information( 0, tr( "Active layer is not vector" ), tr( "The merge features tool only works on vector layers. Please select a vector layer from the layer list" ) );
@@ -4426,7 +4426,7 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
   if ( selectionLayer )
   {
     // Test for feature support in this layer
-    QgsVectorLayer* selectionVectorLayer = dynamic_cast<QgsVectorLayer*>( selectionLayer );
+    QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( selectionLayer );
 
     if ( selectionVectorLayer != 0 )
     {
@@ -4455,7 +4455,7 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
   if ( selectionLayer )
   {
     // Test for feature support in this layer
-    QgsVectorLayer* selectionVectorLayer = dynamic_cast<QgsVectorLayer*>( selectionLayer );
+    QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( selectionLayer );
 
     if ( selectionVectorLayer != 0 )
     {
@@ -4481,7 +4481,7 @@ void QgisApp::editPaste( QgsMapLayer * destinationLayer )
   if ( pasteLayer )
   {
     // Test for feature support in this layer
-    QgsVectorLayer* pasteVectorLayer = dynamic_cast<QgsVectorLayer*>( pasteLayer );
+    QgsVectorLayer* pasteVectorLayer = qobject_cast<QgsVectorLayer *>( pasteLayer );
 
     if ( pasteVectorLayer != 0 )
     {
@@ -4547,7 +4547,7 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
   if ( !layer )
     return;
 
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return;
 
@@ -5562,7 +5562,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   /***********Vector layers****************/
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
     const QgsVectorDataProvider* dprovider = vlayer->dataProvider();
     bool layerHasSelection = ( vlayer->selectedFeatureCount() != 0 );
 
@@ -5799,7 +5799,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
     if ( identifyMode == 0 )
     {
-      const QgsRasterLayer *rlayer = dynamic_cast<const QgsRasterLayer*>( layer );
+      const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
       const QgsRasterDataProvider* dprovider = rlayer->dataProvider();
       if ( dprovider )
       {
@@ -6300,7 +6300,7 @@ void QgisApp::updateUndoActions()
   QgsMapLayer* layer = activeLayer();
   if ( layer )
   {
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer && vlayer->isEditable() )
     {
       canUndo = vlayer->undoStack()->canUndo();

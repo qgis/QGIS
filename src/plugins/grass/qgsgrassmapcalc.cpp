@@ -278,7 +278,7 @@ void QgsGrassMapcalc::mousePressEvent( QMouseEvent* e )
 
         if ( typeid( **it ) == typeid( QgsGrassMapcalcConnector ) )
         {
-          mConnector = dynamic_cast <QgsGrassMapcalcConnector *>( *it );
+          mConnector = dynamic_cast<QgsGrassMapcalcConnector *>( *it );
           mConnector->setSelected( true );
           mConnector->selectEnd( p );
           mStartMoveConnectorPoints[0] = mConnector->point( 0 );
@@ -288,7 +288,7 @@ void QgsGrassMapcalc::mousePressEvent( QMouseEvent* e )
         }
         else if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
         {
-          mObject = dynamic_cast <QgsGrassMapcalcObject *>( *it );
+          mObject = dynamic_cast<QgsGrassMapcalcObject *>( *it );
           mObject->setSelected( true );
 
           int tool = Select;
@@ -492,21 +492,23 @@ QStringList QgsGrassMapcalc::checkRegion()
   {
     --it;
 
-    if ( typeid( **it ) != typeid( QgsGrassMapcalcObject ) ) continue;
+    QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
+    if ( !obj )
+      continue;
 
-    QgsGrassMapcalcObject *obj =
-      dynamic_cast <QgsGrassMapcalcObject *>( *it );
-
-    if ( obj->type() != QgsGrassMapcalcObject::Map ) continue;
+    if ( obj->type() != QgsGrassMapcalcObject::Map )
+      continue;
 
     struct Cell_head window;
 
     QStringList mm = obj->value().split( "@" );
-    if ( mm.size() < 1 ) continue;
+    if ( mm.size() < 1 )
+      continue;
 
     QString map = mm.at( 0 );
     QString mapset = QgsGrass::getDefaultMapset();
-    if ( mm.size() > 1 ) mapset = mm.at( 1 );
+    if ( mm.size() > 1 )
+      mapset = mm.at( 1 );
 
     if ( !QgsGrass::mapRegion( QgsGrass::Raster,
                                QgsGrass::getDefaultGisdbase(),
@@ -546,21 +548,23 @@ bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, bool all )
   {
     --it;
 
-    if ( typeid( **it ) != typeid( QgsGrassMapcalcObject ) ) continue;
+    QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
+    if ( !obj )
+      continue;
 
-    QgsGrassMapcalcObject *obj =
-      dynamic_cast <QgsGrassMapcalcObject *>( *it );
-
-    if ( obj->type() != QgsGrassMapcalcObject::Map ) continue;
+    if ( obj->type() != QgsGrassMapcalcObject::Map )
+      continue;
 
     struct Cell_head mapWindow;
 
     QStringList mm = obj->value().split( "@" );
-    if ( mm.size() < 1 ) continue;
+    if ( mm.size() < 1 )
+      continue;
 
     QString map = mm.at( 0 );
     QString mapset = QgsGrass::getDefaultMapset();
-    if ( mm.size() > 1 ) mapset = mm.at( 1 );
+    if ( mm.size() > 1 )
+      mapset = mm.at( 1 );
 
     if ( !QgsGrass::mapRegion( QgsGrass::Raster,
                                QgsGrass::getDefaultGisdbase(),
@@ -954,16 +958,14 @@ void QgsGrassMapcalc::growCanvas( int left, int right, int top, int bottom )
 
     if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
     {
-      QgsGrassMapcalcObject *obj =
-        dynamic_cast <QgsGrassMapcalcObject *>( *it );
+      QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
 
       QPoint p = obj->center();
       obj->setCenter( p.x() + left, p.y() + top );
     }
     else if ( typeid( **it ) == typeid( QgsGrassMapcalcConnector ) )
     {
-      QgsGrassMapcalcConnector *con =
-        dynamic_cast <QgsGrassMapcalcConnector *>( *it );
+      QgsGrassMapcalcConnector *con = dynamic_cast<QgsGrassMapcalcConnector *>( *it );
 
       for ( int i = 0; i < 2; i++ )
       {
@@ -996,7 +998,8 @@ void QgsGrassMapcalc::autoGrow()
   while ( it != l.constBegin() )
   {
     --it;
-    if ( ! dynamic_cast<QgsGrassMapcalcItem *>( *it ) ) continue;
+    if ( !dynamic_cast<QgsGrassMapcalcItem *>( *it ) )
+      continue;
 
     // Exclude current
     if (( mTool != Select ) && ( *it == mObject || *it == mConnector ) )
@@ -1120,8 +1123,7 @@ void QgsGrassMapcalc::save()
 
     if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
     {
-      QgsGrassMapcalcObject *obj =
-        dynamic_cast <QgsGrassMapcalcObject *>( *it );
+      QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
 
       QString type;
       if ( obj->type() == QgsGrassMapcalcObject::Map )
@@ -1171,8 +1173,7 @@ void QgsGrassMapcalc::save()
     }
     else if ( typeid( **it ) == typeid( QgsGrassMapcalcConnector ) )
     {
-      QgsGrassMapcalcConnector *con =
-        dynamic_cast <QgsGrassMapcalcConnector *>( *it );
+      QgsGrassMapcalcConnector *con = dynamic_cast<QgsGrassMapcalcConnector *>( *it );
 
       stream << "  <connector id=\"" + QString::number( con->id() )
       + "\">\n";
@@ -1418,7 +1419,8 @@ void QgsGrassMapcalc::clear()
   while ( it != l.constBegin() )
   {
     --it;
-    if ( ! dynamic_cast<QgsGrassMapcalcItem *>( *it ) ) continue;
+    if ( !dynamic_cast<QgsGrassMapcalcItem *>( *it ) )
+      continue;
 
     delete *it;
   }
@@ -1982,7 +1984,7 @@ bool QgsGrassMapcalcConnector::tryConnectEnd( int end )
 
     if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
     {
-      object = dynamic_cast <QgsGrassMapcalcObject *>( *it );
+      object = dynamic_cast<QgsGrassMapcalcObject *>( *it );
       break;
     }
   }

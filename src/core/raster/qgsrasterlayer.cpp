@@ -4380,7 +4380,7 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   CPLFree( myGdalBlueData );
 
 #ifdef QGISDEBUG
-  QPixmap* pm = dynamic_cast<QPixmap*>( theQPainter->device() );
+  QPixmap* pm = qobject_cast<QPixmap *>( theQPainter->device() );
   if ( pm )
   {
     QgsDebugMsg( "theQPainter stats: " );

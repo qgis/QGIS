@@ -35,7 +35,7 @@ QgsMapToolReshape::~QgsMapToolReshape()
 void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
 {
   //check if we operate on a vector layer //todo: move this to a function in parent class to avoid duplication
-  QgsVectorLayer *vlayer = dynamic_cast <QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
   if ( !vlayer )
   {
@@ -78,42 +78,42 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
     mRubberBand = 0;
 
     //find out bounding box of mCaptureList
-    if(mCaptureList.size() < 1)
+    if ( mCaptureList.size() < 1 )
     {
       return;
     }
-    QgsPoint firstPoint = mCaptureList.at(0);
-    QgsRectangle bbox(firstPoint.x(), firstPoint.y(), firstPoint.x(), firstPoint.y());
-    for(int i = 1; i < mCaptureList.size(); ++i)
+    QgsPoint firstPoint = mCaptureList.at( 0 );
+    QgsRectangle bbox( firstPoint.x(), firstPoint.y(), firstPoint.x(), firstPoint.y() );
+    for ( int i = 1; i < mCaptureList.size(); ++i )
     {
-      bbox.combineExtentWith(mCaptureList.at(i).x(), mCaptureList.at(i).y());
+      bbox.combineExtentWith( mCaptureList.at( i ).x(), mCaptureList.at( i ).y() );
     }
 
     //query all the features that intersect bounding box of capture line
-    vlayer->select(QgsAttributeList(), bbox, true, false);
+    vlayer->select( QgsAttributeList(), bbox, true, false );
     QgsFeature f;
     int reshapeReturn;
     bool reshapeDone = false;
 
     vlayer->beginEditCommand( tr( "Reshape" ) );
-    while(vlayer->nextFeature(f))
+    while ( vlayer->nextFeature( f ) )
     {
       //query geometry
       //call geometry->reshape(mCaptureList)
       //register changed geometry in vector layer
       QgsGeometry* geom = f.geometry();
-      if(geom)
+      if ( geom )
       {
-        reshapeReturn = geom->reshapeGeometry(mCaptureList);
-        if(reshapeReturn == 0)
+        reshapeReturn = geom->reshapeGeometry( mCaptureList );
+        if ( reshapeReturn == 0 )
         {
-          vlayer->changeGeometry(f.id(), geom);
+          vlayer->changeGeometry( f.id(), geom );
           reshapeDone = true;
         }
       }
     }
 
-    if(reshapeDone)
+    if ( reshapeDone )
     {
       vlayer->endEditCommand();
     }

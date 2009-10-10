@@ -195,6 +195,8 @@ bool QgsGeometryAnalyzer::exportGeometryInformation( QgsVectorLayer* layer,
     const QString& shapefileName,
     const QString& fileEncoding )
 {
+  return false;
+#if 0
   QgsVectorDataProvider* provider = layer->dataProvider();
   QgsAttributeList allAttrs = provider->attributeIndexes();
   provider->select( allAttrs, QgsRectangle(), true );
@@ -223,7 +225,7 @@ bool QgsGeometryAnalyzer::exportGeometryInformation( QgsVectorLayer* layer,
     writer.addFeature( outFeat );
   }
   return true;
-
+#endif
 }
 bool QgsGeometryAnalyzer::simplifyGeometry( QgsVectorLayer* layer,
     const QString shapefileName,

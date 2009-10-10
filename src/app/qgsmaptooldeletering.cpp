@@ -73,7 +73,7 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent * e )
   if ( !currentLayer )
     return;
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   if ( !vlayer )
     return;
 

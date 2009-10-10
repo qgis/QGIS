@@ -3203,7 +3203,7 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
 
 bool QgsVectorLayer::copySymbologySettings( const QgsMapLayer& other )
 {
-  const QgsVectorLayer* vl = dynamic_cast<const QgsVectorLayer*>( &other );
+  const QgsVectorLayer* vl = qobject_cast<const QgsVectorLayer *>( &other );
 
   // exit if both vectorlayer are the same
   if ( this == vl )
@@ -3233,7 +3233,7 @@ bool QgsVectorLayer::hasCompatibleSymbology( const QgsMapLayer& other ) const
 {
   // vector layers are symbology compatible if they have the same type, the same sequence of numerical/ non numerical fields and the same field names
 
-  const QgsVectorLayer* otherVectorLayer = dynamic_cast<const QgsVectorLayer*>( &other );
+  const QgsVectorLayer* otherVectorLayer = qobject_cast<const QgsVectorLayer *>( &other );
   if ( otherVectorLayer )
   {
     if ( otherVectorLayer->type() != type() )

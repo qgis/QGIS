@@ -113,7 +113,7 @@ std::list<QgsLegendLayerFile*> QgsLegendGroup::legendLayerFiles()
   std::list<QgsLegendLayerFile*> result;
   for ( int i = 0; i < childCount(); ++i )
   {
-    QgsLegendLayer* childItem = dynamic_cast<QgsLegendLayer*>( child( i ) );
+    QgsLegendLayer* childItem = dynamic_cast<QgsLegendLayer *>( child( i ) );
     if ( childItem )
     {
       std::list<QgsLegendLayerFile*> childList = childItem->legendLayerFiles();

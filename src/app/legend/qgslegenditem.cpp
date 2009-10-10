@@ -50,11 +50,11 @@ void QgsLegendItem::print( QgsLegendItem * theItem )
   Q3ListViewItemIterator myIterator( theItem );
   while ( myIterator.current() )
   {
-    LEGEND_ITEM_TYPE curtype = dynamic_cast<QgsLegendItem *>( myIterator.current() )->type();
+    LEGEND_ITEM_TYPE curtype = qobject_cast<QgsLegendItem *>( myIterator.current() )->type();
     QgsDebugMsg( QString( "%1 - %2" ).arg( myIterator.current()->text( 0 ) ).arg( curtype ) );
     if ( myIterator.current()->childCount() > 0 )
     {
-      //print(dynamic_cast<QgsLegendItem *>(myIterator.current()));
+      //print(qobject_cast<QgsLegendItem *>(myIterator.current()));
     }
     ++myIterator;
   }
@@ -63,22 +63,22 @@ void QgsLegendItem::print( QgsLegendItem * theItem )
 
 QgsLegendItem* QgsLegendItem::firstChild()
 {
-  return dynamic_cast<QgsLegendItem*>( child( 0 ) );
+  return dynamic_cast<QgsLegendItem *>( child( 0 ) );
 }
 
 QgsLegendItem* QgsLegendItem::nextSibling()
 {
-  return dynamic_cast<QgsLegendItem*>( dynamic_cast<QgsLegend*>( treeWidget() )->nextSibling( this ) );
+  return dynamic_cast<QgsLegendItem *>( dynamic_cast<QgsLegend*>( treeWidget() )->nextSibling( this ) );
 }
 
 QgsLegendItem* QgsLegendItem::findYoungerSibling()
 {
-  return dynamic_cast<QgsLegendItem*>( dynamic_cast<QgsLegend*>( treeWidget() )->previousSibling( this ) );
+  return dynamic_cast<QgsLegendItem *>( dynamic_cast<QgsLegend*>( treeWidget() )->previousSibling( this ) );
 }
 
 void QgsLegendItem::moveItem( QgsLegendItem* after )
 {
-  dynamic_cast<QgsLegend*>( treeWidget() )->moveItem( this, after );
+  qobject_cast<QgsLegend *>( treeWidget() )->moveItem( this, after );
 }
 
 void QgsLegendItem::removeAllChildren()
@@ -114,7 +114,7 @@ void QgsLegendItem::restoreAppearanceSettings()
 QgsLegend* QgsLegendItem::legend() const
 {
   QTreeWidget* treeWidgetPtr = treeWidget();
-  QgsLegend* legendPtr = dynamic_cast<QgsLegend*>( treeWidgetPtr );
+  QgsLegend* legendPtr = qobject_cast<QgsLegend *>( treeWidgetPtr );
   return legendPtr;
 }
 

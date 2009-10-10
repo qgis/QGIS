@@ -77,7 +77,7 @@ QgsMapToolNodeTool::~QgsMapToolNodeTool()
 void QgsMapToolNodeTool::layersChanged()
 {
   //deselection of feature when layer has changed
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( mSelectionFeature != NULL && mSelectionFeature->vlayer() != vlayer )
   {
     delete mSelectionFeature;
@@ -88,7 +88,7 @@ void QgsMapToolNodeTool::layersChanged()
 void QgsMapToolNodeTool::currentLayerChanged( QgsMapLayer* layer )
 {
   //deselection of feature when current layer has changed
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( mSelectionFeature != NULL && mSelectionFeature->vlayer() != vlayer )
   {
     delete mSelectionFeature;
@@ -114,7 +114,7 @@ void QgsMapToolNodeTool::layerModified( bool onlyGeometry )
 {
   //handling modification of
   QgsFeature feat;
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( mSelectionFeature != NULL && !mChangingGeometry && ( vlayer->featureAtId( mSelectionFeature->featureId(), feat, true, false ) ) )
   {
     try
@@ -139,7 +139,7 @@ void QgsMapToolNodeTool::createMovingRubberBands()
 {
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   QList<VertexEntry> vertexMap = mSelectionFeature->vertexMap();
   QgsGeometry* geometry = mSelectionFeature->feature()->geometry();
   int beforeVertex, afterVertex;
@@ -326,7 +326,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = 0;
   if ( currentLayer )
   {
-    vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   }
 
   if ( mSelectionFeature == NULL )
@@ -493,7 +493,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = 0;
   if ( currentLayer )
   {
-    vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   }
   mClicked = true;
   mLastCoordinates = new QgsPoint( e->pos().x(), e->pos().y() );
@@ -626,7 +626,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = 0;
   if ( currentLayer )
   {
-    vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   }
 
   mClicked = false;
@@ -787,7 +787,7 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
   QMultiMap<double, QgsSnappingResult> currentResultList;
   if ( currentLayer )
   {
-    vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   }
 
   QList<QgsSnappingResult> snapResults;

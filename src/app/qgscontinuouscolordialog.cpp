@@ -54,7 +54,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
 
   //restore the correct colors for minimum and maximum values
 
-  const QgsContinuousColorRenderer* renderer = dynamic_cast < const QgsContinuousColorRenderer * >( layer->renderer() );;
+  const QgsContinuousColorRenderer* renderer = dynamic_cast<const QgsContinuousColorRenderer *>( layer->renderer() );;
 
   if ( renderer )
   {
@@ -124,7 +124,7 @@ void QgsContinuousColorDialog::apply()
 
   //find the minimum and maximum for the classification variable
   double minimum, maximum;
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>( mVectorLayer->dataProvider() );
+  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
   if ( provider )
   {
     minimum = provider->minimumValue( classfield ).toDouble();

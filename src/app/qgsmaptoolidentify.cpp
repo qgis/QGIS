@@ -163,11 +163,11 @@ bool QgsMapToolIdentify::identifyLayer( QgsMapLayer *layer, int x, int y )
 
   if ( layer->type() == QgsMapLayer::RasterLayer )
   {
-    res = identifyRasterLayer( dynamic_cast<QgsRasterLayer *>( layer ), x, y );
+    res = identifyRasterLayer( qobject_cast<QgsRasterLayer *>( layer ), x, y );
   }
   else
   {
-    res = identifyVectorLayer( dynamic_cast<QgsVectorLayer *>( layer ), x, y );
+    res = identifyVectorLayer( qobject_cast<QgsVectorLayer *>( layer ), x, y );
   }
 
   return res;
