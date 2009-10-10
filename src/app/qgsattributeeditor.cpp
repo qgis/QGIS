@@ -32,11 +32,11 @@
 
 void QgsAttributeEditor::selectFileName( void )
 {
-  QPushButton *pb = dynamic_cast<QPushButton *>( sender() );
+  QPushButton *pb = qobject_cast<QPushButton *>( sender() );
   if ( !pb )
     return;
 
-  QWidget *hbox = dynamic_cast<QWidget *>( pb->parent() );
+  QWidget *hbox = qobject_cast<QWidget *>( pb->parent() );
   if ( !hbox )
     return;
 
@@ -264,7 +264,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   bool modified = false;
   QString text;
 
-  QLineEdit *le = dynamic_cast<QLineEdit *>( widget );
+  QLineEdit *le = qobject_cast<QLineEdit *>( widget );
   if ( le )
   {
     text = le->text();
@@ -275,7 +275,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     }
   }
 
-  QComboBox *cb = dynamic_cast<QComboBox *>( widget );
+  QComboBox *cb = qobject_cast<QComboBox *>( widget );
   if ( cb )
   {
     if ( editType == QgsVectorLayer::UniqueValues ||
@@ -290,18 +290,18 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     }
   }
 
-  QSpinBox *sb = dynamic_cast<QSpinBox *>( widget );
+  QSpinBox *sb = qobject_cast<QSpinBox *>( widget );
   if ( sb )
   {
     text = QString::number( sb->value() );
   }
 
-  QSlider *slider = dynamic_cast<QSlider *>( widget );
+  QSlider *slider = qobject_cast<QSlider *>( widget );
   if ( slider )
   {
     text = QString::number( slider->value() );
   }
-  QDoubleSpinBox *dsb = dynamic_cast<QDoubleSpinBox *>( widget );
+  QDoubleSpinBox *dsb = qobject_cast<QDoubleSpinBox *>( widget );
   if ( dsb )
   {
     text = QString::number( dsb->value() );
@@ -369,7 +369,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::Enumeration:
     case QgsVectorLayer::ValueMap:
     {
-      QComboBox *cb = dynamic_cast<QComboBox *>( editor );
+      QComboBox *cb = qobject_cast<QComboBox *>( editor );
       if ( cb == NULL )
         return false;
 
@@ -388,14 +388,14 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       {
         if ( editType == QgsVectorLayer::EditRange )
         {
-          QSpinBox *sb = dynamic_cast<QSpinBox*>( editor );
+          QSpinBox *sb = qobject_cast<QSpinBox *>( editor );
           if ( sb == NULL )
             return false;
           sb->setValue( value.toInt() );
         }
         else
         {
-          QSlider *sl = dynamic_cast<QSlider *>( editor );
+          QSlider *sl = qobject_cast<QSlider *>( editor );
           if ( sl == NULL )
             return false;
           sl->setValue( value.toInt() );
@@ -404,7 +404,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       }
       else if ( myFieldType == QVariant::Double )
       {
-        QDoubleSpinBox *dsb = dynamic_cast<QDoubleSpinBox*>( editor );
+        QDoubleSpinBox *dsb = qobject_cast<QDoubleSpinBox *>( editor );
         if ( dsb == NULL )
           return false;
         dsb->setValue( value.toDouble() );
@@ -418,7 +418,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::Immutable:
     default:
     {
-      QLineEdit *le = dynamic_cast<QLineEdit*>( editor );
+      QLineEdit *le = qobject_cast<QLineEdit *>( editor );
       if ( le == NULL )
         return false;
 

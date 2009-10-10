@@ -134,15 +134,15 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
                                      const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( layer );
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
 
   if ( layItem == 0 )
   {
     layItem = new QTreeWidgetItem( QStringList() << layer->name() << tr( "Layer" ) );
-    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( dynamic_cast<QObject*>( layer ) ) );
+    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
     lstResults->addTopLevelItem( layItem );
 
-    QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer )
     {
       connect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
@@ -176,7 +176,7 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     }
   }
 
-  if ( vlayer && (vlayer->actions()->size() > 0 || vlayer->isEditable() ) )
+  if ( vlayer && ( vlayer->actions()->size() > 0 || vlayer->isEditable() ) )
   {
     QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
@@ -218,7 +218,7 @@ void QgsIdentifyResults::show()
 
     if ( layItem->childCount() == 1 )
     {
-      QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
       if ( layer )
       {
         highlightFeature( featItem );
@@ -286,7 +286,7 @@ void QgsIdentifyResults::addOrRemoveEditAction( bool addItem )
 
     if ( addItem )
     {
-      if( !actionsItem )
+      if ( !actionsItem )
       {
         actionsItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
         actionsItem->setData( 0, Qt::UserRole, "actions" );
@@ -295,7 +295,7 @@ void QgsIdentifyResults::addOrRemoveEditAction( bool addItem )
 
       addEditAction( actionsItem );
     }
-    else if( actionsItem )
+    else if ( actionsItem )
     {
       for ( int k = 0; k < actionsItem->childCount(); k++ )
       {
@@ -305,9 +305,9 @@ void QgsIdentifyResults::addOrRemoveEditAction( bool addItem )
 
         delete editItem;
 
-        if( actionsItem->childCount()==0 )
+        if ( actionsItem->childCount() == 0 )
           delete actionsItem;
-         
+
         break;
       }
     }
@@ -560,7 +560,7 @@ void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
   if ( !featItem )
     return;
 
-  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( featItem->parent()->data( 0, Qt::UserRole ).value<QObject *>() );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( featItem->parent()->data( 0, Qt::UserRole ).value<QObject *>() );
   if ( !layer )
     return;
 
@@ -625,7 +625,7 @@ QgsVectorLayer *QgsIdentifyResults::vectorLayer( QTreeWidgetItem *item )
     item = featureItem( item )->parent();
   }
 
-  return dynamic_cast<QgsVectorLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
+  return qobject_cast<QgsVectorLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
 
@@ -689,7 +689,7 @@ void QgsIdentifyResults::disconnectLayer( QObject *layer )
   if ( !layer )
     return;
 
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( vlayer )
   {
     disconnect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );

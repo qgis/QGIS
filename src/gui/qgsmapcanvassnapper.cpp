@@ -85,7 +85,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
     {
       return 2;
     }
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
     if ( !vlayer )
     {
       return 3;
@@ -187,7 +187,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
         layer = QgsMapLayerRegistry::instance()->mapLayer( *layerIt );
         if ( layer )
         {
-          vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+          vlayer = qobject_cast<QgsVectorLayer *>( layer );
           if ( vlayer )
           {
             snapLayer.mLayer = vlayer;
@@ -223,7 +223,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
         return 2;
       }
 
-      QgsVectorLayer* currentVectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+      QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( !currentVectorLayer )
       {
         return 3;

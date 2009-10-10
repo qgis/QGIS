@@ -147,7 +147,7 @@ void QgsLegend::selectAll( bool select )
 
   while ( theItem )
   {
-    QgsLegendItem* litem = dynamic_cast<QgsLegendItem*>( theItem );
+    QgsLegendItem* litem = dynamic_cast<QgsLegendItem *>( theItem );
     if ( litem && litem->type() == QgsLegendItem::LEGEND_LAYER_FILE )
     {
       theItem->setCheckState( 0, ( select ? Qt::Checked : Qt::Unchecked ) );
@@ -173,14 +173,14 @@ void QgsLegend::removeLayer( QString layer_key )
 
   while ( theItem )
   {
-    QgsLegendItem *li = dynamic_cast<QgsLegendItem*>( theItem );
+    QgsLegendItem *li = dynamic_cast<QgsLegendItem *>( theItem );
     if ( li )
     {
       // save legend layer (parent of a legend layer file we're going to delete)
-      QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( li );
+      QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
       if ( ll ) lastLL = ll;
 
-      QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( li );
+      QgsLegendLayerFile* llf = qobject_cast<QgsLegendLayerFile *>( li );
       if ( llf )
       {
         if ( llf->layer() && llf->layer()->getLayerID() == layer_key )
@@ -259,8 +259,8 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
     updateLineWidget();
     scrollToItem( item );
 
-    QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>( mItemBeingMoved );
-    QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>( item );
+    QgsLegendItem* origin = dynamic_cast<QgsLegendItem *>( mItemBeingMoved );
+    QgsLegendItem* dest = dynamic_cast<QgsLegendItem *>( item );
 
     if ( item )
     {
@@ -325,7 +325,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
       // of the viewport, so we can drop after the last top level item.
       QgsDebugMsg( "You are below the table" );
       mDropTarget = topLevelItem( topLevelItemCount() - 1 );
-      dest = dynamic_cast<QgsLegendItem*>( mDropTarget );
+      dest = dynamic_cast<QgsLegendItem *>( mDropTarget );
       QgsLegendItem::DRAG_ACTION action = dest->accept( origin );
       if ( action == QgsLegendItem::REORDER ||  action == QgsLegendItem::INSERT )
       {
@@ -367,10 +367,10 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 
   QTreeWidgetItem *destItem = mDropTarget;
 
-  QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>( mItemBeingMoved );
+  QgsLegendItem* origin = dynamic_cast<QgsLegendItem *>( mItemBeingMoved );
   mItemBeingMoved = NULL;
 
-  QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>( destItem );
+  QgsLegendItem* dest = dynamic_cast<QgsLegendItem *>( destItem );
 
   // no change?
   if ( !dest || !origin || ( dest == origin ) )
@@ -390,7 +390,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
     if ( dest->childCount() > 1 )
     {
       //find the first layer in the legend layer group != origLayer and copy its settings
-      QgsLegendItem* currentItem = dynamic_cast<QgsLegendItem*>( dest->child( 0 ) );
+      QgsLegendItem* currentItem = dynamic_cast<QgsLegendItem *>( dest->child( 0 ) );
       while ( currentItem )
       {
         if ( currentItem != origin )
@@ -426,7 +426,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
             origLayer->copySymbologySettings( *currentLayer );
             break;
           }
-          currentItem = dynamic_cast<QgsLegendItem*>( currentItem )->nextSibling();
+          currentItem = dynamic_cast<QgsLegendItem *>( currentItem )->nextSibling();
         }
       }
     }
@@ -496,7 +496,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
 
   QMenu theMenu;
 
-  QgsLegendItem* li = dynamic_cast<QgsLegendItem*>( item );
+  QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( item );
   if ( li )
   {
 
@@ -616,7 +616,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   doItemsLayout();
 
   // setup connections that will update the layer icons
-  if ( dynamic_cast<QgsVectorLayer *>( layer ) )
+  if ( qobject_cast<QgsVectorLayer *>( layer ) )
   {
     QgsDebugMsg( "Connecting signals for updating icons, layer " + layer->name() );
     connect( layer, SIGNAL( editingStarted() ), llayer, SLOT( updateIcon() ) );
@@ -626,23 +626,23 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
 
 QgsLegendLayerFile* QgsLegend::currentLayerFile()
 {
-  QgsLegendItem* citem = dynamic_cast<QgsLegendItem*>( currentItem() );
+  QgsLegendItem* citem = dynamic_cast<QgsLegendItem *>( currentItem() );
 
   if ( citem )
   {
-    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( citem );
+    QgsLegendLayerFile* llf = qobject_cast<QgsLegendLayerFile *>( citem );
     if ( llf )
     {
       return llf; //the current item is itself a legend layer file
     }
 
-    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( citem );
+    QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( citem );
     if ( ll )
     {
       return ll->firstLayerFile(); //the current item is a legend layer, so return its first layer
     }
 
-    QgsLegendLayer* lpl = dynamic_cast<QgsLegendLayer*>( citem->parent() );
+    QgsLegendLayer* lpl = dynamic_cast<QgsLegendLayer *>( citem->parent() );
     if ( lpl )
     {
       return lpl->firstLayerFile(); //the parent of the current item is a legend layer, return its first layer
@@ -672,7 +672,7 @@ void QgsLegend::legendGroupRemove()
     return;
   }
 
-  QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup*>( currentItem() );
+  QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
   if ( lg )
   {
     //delete the legend layers first
@@ -696,7 +696,7 @@ void QgsLegend::legendLayerRemove()
   }
 
   //if the current item is a legend layer: remove all layers of the current legendLayer
-  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( currentItem() );
+  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( currentItem() );
   if ( ll )
   {
     std::list<QgsMapLayer*> maplayers = ll->mapLayers();
@@ -725,7 +725,7 @@ void QgsLegend::legendLayerRemove()
   }
 
   //if the current item is a legend layer file
-  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( currentItem() );
+  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile *>( currentItem() );
   if ( llf )
   {
     if ( llf->layer() )
@@ -745,7 +745,7 @@ bool QgsLegend::removeLayer( QgsMapLayer* ml, bool askCancelOnEditable )
     return false;
   }
 
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
   if ( vl )
   {
     //is layer editable and changed?
@@ -800,7 +800,7 @@ void QgsLegend::legendLayerShowProperties()
     return;
   }
 
-  QgsLegendItem* li = dynamic_cast<QgsLegendItem*>( currentItem() );
+  QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( currentItem() );
   QgsLegendLayerFile* llf = 0;
 
   if ( !li )
@@ -810,11 +810,11 @@ void QgsLegend::legendLayerShowProperties()
 
   if ( li->type() == QgsLegendItem::LEGEND_LAYER_FILE )
   {
-    llf = dynamic_cast<QgsLegendLayerFile*>( li );
+    llf = qobject_cast<QgsLegendLayerFile *>( li );
   }
   else if ( li->type() == QgsLegendItem::LEGEND_LAYER )
   {
-    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( li );
+    QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
     llf = ll->firstLayerFile();
   }
 
@@ -853,7 +853,7 @@ void QgsLegend::legendLayerShowProperties()
   }
   else // VECTOR
   {
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( ml );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( ml );
 
     QgsVectorLayerProperties *vlp = NULL; // See note above about reusing this
     if ( vlp )
@@ -880,19 +880,19 @@ void QgsLegend::legendLayerShowInOverview()
     return;
   }
 
-  QgsLegendItem* li = dynamic_cast<QgsLegendItem*>( currentItem() );
+  QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( currentItem() );
   if ( !li )
     return;
 
   if ( li->type() == QgsLegendItem::LEGEND_LAYER_FILE )
   {
-    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( li );
+    QgsLegendLayerFile* llf = qobject_cast<QgsLegendLayerFile *>( li );
     if ( !llf ) return;
     llf->showInOverview();
   }
   else if ( li->type() == QgsLegendItem::LEGEND_LAYER )
   {
-    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( li );
+    QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
     if ( !ll ) return;
     ll->showInOverview();
   }
@@ -933,7 +933,7 @@ bool QgsLegend::writeXML( QDomNode & legendnode, QDomDocument & document )
   QTreeWidgetItem* currentItem = firstItem();
   while ( currentItem )
   {
-    QgsLegendItem *item = dynamic_cast<QgsLegendItem*>( currentItem );
+    QgsLegendItem *item = dynamic_cast<QgsLegendItem *>( currentItem );
     if ( item )
     {
       switch ( item->type() )
@@ -1055,7 +1055,7 @@ bool QgsLegend::writeXML( QDomNode & legendnode, QDomDocument & document )
 
         case QgsLegendItem::LEGEND_LAYER_FILE:
           legendlayerfilenode = document.createElement( "legendlayerfile" );
-          llf = dynamic_cast<QgsLegendLayerFile*>( item );
+          llf = qobject_cast<QgsLegendLayerFile *>( item );
           if ( llf )
           {
             QgsMapLayer* layer = llf->layer();
@@ -1219,7 +1219,7 @@ bool QgsLegend::readXML( QDomNode& legendnode )
           refreshLayerSymbology( theMapLayer->getLayerID() );
 
           // setup connections that will update the layer icons
-          if ( dynamic_cast<QgsVectorLayer *>( theMapLayer ) )
+          if ( qobject_cast<QgsVectorLayer *>( theMapLayer ) )
           {
             QgsDebugMsg( "Connecting signals for updating icons, layer " + theMapLayer->name() );
             connect( theMapLayer, SIGNAL( editingStarted() ), lastLayer, SLOT( updateIcon() ) );
@@ -1280,7 +1280,7 @@ void QgsLegend::storeInitialPosition( QTreeWidgetItem* li )
 
 void QgsLegend::resetToInitialPosition( QTreeWidgetItem* li )
 {
-  QgsLegendItem* formerParent = dynamic_cast<QgsLegendItem*>( li->parent() ); //todo: make sure legend layers are updated
+  QgsLegendItem* formerParent = dynamic_cast<QgsLegendItem *>( li->parent() ); //todo: make sure legend layers are updated
   if ( mRestoreInformation == FIRST_ITEM )
   {
     QgsDebugMsg( "FIRST_ITEM" );
@@ -1308,7 +1308,7 @@ void QgsLegend::resetToInitialPosition( QTreeWidgetItem* li )
     {
       formerParent->release(( QgsLegendItem* )li );
     }
-    dynamic_cast<QgsLegendItem*>( li )->moveItem( dynamic_cast<QgsLegendItem*>( mRestoreItem ) );
+    dynamic_cast<QgsLegendItem *>( li )->moveItem( dynamic_cast<QgsLegendItem*>( mRestoreItem ) );
     if ( mRestoreItem->parent() )
     {
       (( QgsLegendItem* )( mRestoreItem->parent() ) )->receive(( QgsLegendItem* )li );
@@ -1323,7 +1323,7 @@ QgsLegendLayer* QgsLegend::findLegendLayer( const QString& layerKey )
   QTreeWidgetItem* theItem = firstItem();
   do
   {
-    theLegendLayer = dynamic_cast<QgsLegendLayer*>( theItem );
+    theLegendLayer = dynamic_cast<QgsLegendLayer *>( theItem );
     if ( theLegendLayer ) //item is a legend layer
     {
       theMapLayers = theLegendLayer->mapLayers();
@@ -1395,7 +1395,7 @@ QTreeWidgetItem* QgsLegend::firstItem()
 /**Returns the next item (next sibling or next item on level above)*/
 QTreeWidgetItem* QgsLegend::nextItem( QTreeWidgetItem* item )
 {
-  QgsLegendItem* litem = dynamic_cast<QgsLegendItem*>( item );
+  QgsLegendItem* litem = dynamic_cast<QgsLegendItem *>( item );
   if ( !litem )
   {
     return 0;
@@ -1408,23 +1408,23 @@ QTreeWidgetItem* QgsLegend::nextItem( QTreeWidgetItem* item )
   {
     return litem->nextSibling();
   }
-  else if ( !( litem->parent() ) )
+  else if ( !litem->parent() )
   {
     return 0;
   }
   //go to other levels to find the next item
-  else if ( litem->parent() && (( QgsLegendItem* )( litem->parent() ) )->nextSibling() )
+  else if ( litem->parent() && dynamic_cast<QgsLegendItem *>( litem->parent() )->nextSibling() )
   {
-    return ( dynamic_cast<QgsLegendItem*>( litem->parent() )->nextSibling() );
+    return dynamic_cast<QgsLegendItem *>( litem->parent() )->nextSibling();
   }
-  else if ( litem->parent() && litem->parent()->parent() && (( QgsLegendItem* )( litem->parent()->parent() ) )->nextSibling() )
+  else if ( litem->parent() && litem->parent()->parent() && dynamic_cast<QgsLegendItem*>( litem->parent()->parent() )->nextSibling() )
   {
-    return ( dynamic_cast<QgsLegendItem*>( litem->parent()->parent() )->nextSibling() );
+    return dynamic_cast<QgsLegendItem *>( litem->parent()->parent() )->nextSibling();
   }
   else if ( litem->parent() && litem->parent()->parent() && litem->parent()->parent()->parent() &&
-            (( QgsLegendItem* )( litem->parent()->parent()->parent() ) )->nextSibling() )//maximum four nesting states in the current legend
+            dynamic_cast<QgsLegendItem *>( litem->parent()->parent()->parent() )->nextSibling() )//maximum four nesting states in the current legend
   {
-    return ( dynamic_cast<QgsLegendItem*>( litem->parent()->parent()->parent() )->nextSibling() );
+    return dynamic_cast<QgsLegendItem *>( litem->parent()->parent()->parent() )->nextSibling();
   }
   else
   {
@@ -1438,7 +1438,7 @@ QTreeWidgetItem* QgsLegend::nextSibling( QTreeWidgetItem* item )
   QModelIndex nextsidx = thisidx.sibling( thisidx.row() + 1, thisidx.column() );
   if ( nextsidx.isValid() )
   {
-    return dynamic_cast<QgsLegendItem*>( itemFromIndex( nextsidx ) );
+    return dynamic_cast<QgsLegendItem *>( itemFromIndex( nextsidx ) );
   }
   else
   {
@@ -1452,7 +1452,7 @@ QTreeWidgetItem* QgsLegend::previousSibling( QTreeWidgetItem* item )
   QModelIndex nextsidx = thisidx.sibling( thisidx.row() - 1, thisidx.column() );
   if ( nextsidx.isValid() )
   {
-    return dynamic_cast<QgsLegendItem*>( itemFromIndex( nextsidx ) );
+    return dynamic_cast<QgsLegendItem *>( itemFromIndex( nextsidx ) );
   }
   else
   {
@@ -1464,7 +1464,7 @@ QDomNode QgsLegend::nextDomNode( const QDomNode& theNode )
 {
   if ( !theNode.firstChild().isNull() )
   {
-    return ( theNode.firstChild() );
+    return theNode.firstChild();
   }
 
   QDomNode currentNode = theNode;
@@ -1484,12 +1484,12 @@ QDomNode QgsLegend::nextDomNode( const QDomNode& theNode )
 
 void QgsLegend::insertItem( QTreeWidgetItem* move, QTreeWidgetItem* into )
 {
-  QgsLegendItem* movedItem = dynamic_cast<QgsLegendItem*>( move );
-  QgsLegendItem* intoItem = dynamic_cast<QgsLegendItem*>( into );
+  QgsLegendItem* movedItem = dynamic_cast<QgsLegendItem *>( move );
+  QgsLegendItem* intoItem = dynamic_cast<QgsLegendItem *>( into );
 
   if ( movedItem && intoItem )
   {
-    QgsLegendItem* parentItem = dynamic_cast<QgsLegendItem*>( movedItem->parent() );
+    QgsLegendItem* parentItem = dynamic_cast<QgsLegendItem *>( movedItem->parent() );
     movedItem->storeAppearanceSettings();//store settings in the moved item and its children
     removeItem( movedItem );
     intoItem->insert( movedItem );
@@ -1549,8 +1549,8 @@ void QgsLegend::updateMapCanvasLayerSet()
   QTreeWidgetItem* theItem = firstItem();
   while ( theItem )
   {
-    QgsLegendItem *li = dynamic_cast<QgsLegendItem*>( theItem );
-    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( li );
+    QgsLegendItem *li = dynamic_cast<QgsLegendItem *>( theItem );
+    QgsLegendLayerFile* llf = qobject_cast<QgsLegendLayerFile *>( li );
     if ( llf )
     {
       QgsMapCanvasLayer& lyr = llf->canvasLayer();
@@ -1573,7 +1573,7 @@ void QgsLegend::enableOverviewModeAllLayers( bool isInOverview )
   QTreeWidgetItem* theItem = firstItem();
   while ( theItem )
   {
-    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( theItem );
+    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile *>( theItem );
     if ( llf )
     {
       llf->setInOverview( isInOverview );
@@ -1590,8 +1590,8 @@ std::deque<QString> QgsLegend::layerIDs()
   QTreeWidgetItem* theItem = firstItem();
   while ( theItem )
   {
-    QgsLegendItem *li = dynamic_cast<QgsLegendItem*>( theItem );
-    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( li );
+    QgsLegendItem *li = dynamic_cast<QgsLegendItem *>( theItem );
+    QgsLegendLayerFile* llf = qobject_cast<QgsLegendLayerFile *>( li );
     if ( llf )
     {
       QgsMapLayer *lyr = llf->layer();
@@ -1695,7 +1695,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
   }
 
   //if the text of a QgsLegendLayer has changed, change the display names of all its maplayers
-  QgsLegendLayer* theLegendLayer = dynamic_cast<QgsLegendLayer*>( item ); //item is a legend layer
+  QgsLegendLayer* theLegendLayer = dynamic_cast<QgsLegendLayer *>( item ); //item is a legend layer
   if ( theLegendLayer )
   {
     std::list<QgsMapLayer*> theMapLayers = theLegendLayer->mapLayers();
@@ -1713,7 +1713,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
   if ( it->second == item->checkState( 0 ) )
     return;
 
-  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( item ); //item is a layer file
+  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile *>( item ); //item is a layer file
   if ( llf )
   {
     if ( llf->layer() )
@@ -1721,7 +1721,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
       llf->setVisible( item->checkState( 0 ) == Qt::Checked );
     }
     //update check state of the legend layer
-    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( item->parent()->parent() );
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( item->parent()->parent() );
     if ( ll )
     {
       ll->updateCheckState();
@@ -1730,7 +1730,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     //update check state of the legend group (if any)
     if ( item->parent()->parent()->parent() )
     {
-      QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup*>( item->parent()->parent()->parent() );
+      QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item->parent()->parent()->parent() );
       if ( lg )
       {
         lg->updateCheckState();
@@ -1745,7 +1745,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
   }
 
   std::list<QgsLegendLayerFile*> subfiles;
-  QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup*>( item ); //item is a legend group
+  QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item ); //item is a legend group
   if ( lg )
   {
     //set all the child layer files to the new check state
@@ -1791,7 +1791,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     mStateOfCheckBoxes[item] = item->checkState( 0 );
   }
 
-  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( item ); //item is a legend layer
+  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( item ); //item is a legend layer
   if ( ll )
   {
     //set all the child layer files to the new check state
@@ -1841,7 +1841,7 @@ void QgsLegend::openEditor()
 
 void QgsLegend::makeToTopLevelItem()
 {
-  QgsLegendItem* theItem = dynamic_cast<QgsLegendItem*>( currentItem() );
+  QgsLegendItem* theItem = dynamic_cast<QgsLegendItem *>( currentItem() );
   if ( theItem )
   {
     theItem->storeAppearanceSettings();
@@ -1872,7 +1872,7 @@ void QgsLegend::showLegendLayerFileGroups()
     // but doing this setHidden() call does result in correct drawing.
     theItem->setHidden( false );
 
-    theFileGroup = dynamic_cast<QgsLegendLayerFileGroup*>( theItem );
+    theFileGroup = dynamic_cast<QgsLegendLayerFileGroup *>( theItem );
     if ( theFileGroup )
     {
       theFileGroup->setHidden( !mShowLegendLayerFiles );
@@ -1886,14 +1886,14 @@ void QgsLegend::legendLayerZoom()
   std::list<QgsLegendLayerFile*> layerFiles;
 
   //find current Layer
-  QgsLegendLayer* currentLayer = dynamic_cast<QgsLegendLayer*>( currentItem() );
+  QgsLegendLayer* currentLayer = dynamic_cast<QgsLegendLayer *>( currentItem() );
   if ( currentLayer )
   {
     layerFiles = currentLayer->legendLayerFiles();
   }
   else
   {
-    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( currentItem() );
+    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile *>( currentItem() );
     if ( llf )
     {
       // user selected legend layer file - use just that one
@@ -1942,17 +1942,17 @@ void QgsLegend::legendLayerZoom()
 
 void QgsLegend::legendLayerZoomNative()
 {
-  QgsLegendItem* citem = dynamic_cast<QgsLegendItem*>( currentItem() );
+  QgsLegendItem* citem = dynamic_cast<QgsLegendItem *>( currentItem() );
   if ( !citem )
   {
     return;
   }
-  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( citem );
+  QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( citem );
   if ( !ll )
   {
     return;
   }
-  QgsRasterLayer *layer =  dynamic_cast<QgsRasterLayer*>( ll->firstMapLayer() );
+  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( ll->firstMapLayer() );
   if ( layer )
   {
     QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixel() ) );
@@ -1978,19 +1978,19 @@ void QgsLegend::legendLayerAttributeTable()
   QgsVectorLayer *vlayer = 0;
 
   // try whether it's a legend layer
-  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( currentItem() );
+  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( currentItem() );
   if ( ll )
   {
-    vlayer = dynamic_cast<QgsVectorLayer*>( ll->firstMapLayer() );
+    vlayer = qobject_cast<QgsVectorLayer *>( ll->firstMapLayer() );
   }
 
   if ( !vlayer )
   {
     // try whether it's a legend layer file
-    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( currentItem() );
+    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile *>( currentItem() );
     if ( llf )
     {
-      vlayer = dynamic_cast<QgsVectorLayer*>( llf->layer() );
+      vlayer = qobject_cast<QgsVectorLayer *>( llf->layer() );
     }
   }
 

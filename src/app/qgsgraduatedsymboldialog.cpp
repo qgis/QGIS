@@ -53,7 +53,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
   }
 
   //restore the correct settings
-  const QgsGraduatedSymbolRenderer* renderer = dynamic_cast < const QgsGraduatedSymbolRenderer * >( layer->renderer() );
+  const QgsGraduatedSymbolRenderer* renderer = dynamic_cast<const QgsGraduatedSymbolRenderer *>( layer->renderer() );
 
   //
   // Set up the mode combo

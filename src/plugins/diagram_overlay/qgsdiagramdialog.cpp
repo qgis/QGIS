@@ -101,7 +101,7 @@ void QgsDiagramDialog::on_mClassificationComboBox_currentIndexChanged( const QSt
   {
     return;
   }
-  QgsDiagramRendererWidget* rendererWidget = dynamic_cast<QgsDiagramRendererWidget*>( mWidgetStackRenderers->currentWidget() );
+  QgsDiagramRendererWidget* rendererWidget = dynamic_cast<QgsDiagramRendererWidget *>( mWidgetStackRenderers->currentWidget() );
   if ( !rendererWidget )
   {
     return;
@@ -165,7 +165,7 @@ void QgsDiagramDialog::apply() const
 
   if ( factoryWidget )
   {
-    QgsDiagramFactoryWidget* diagramFactoryWidget = dynamic_cast<QgsDiagramFactoryWidget*>( factoryWidget );
+    QgsDiagramFactoryWidget* diagramFactoryWidget = dynamic_cast<QgsDiagramFactoryWidget *>( factoryWidget );
     if ( factoryWidget )
     {
       diagramFactory = diagramFactoryWidget->createFactory();
@@ -188,7 +188,7 @@ void QgsDiagramDialog::apply() const
 
   //attList contains the category attributes
   QgsAttributeList attList;
-  QgsWKNDiagramFactory* wknDiagramFactory = dynamic_cast<QgsWKNDiagramFactory*>( diagramFactory );
+  QgsWKNDiagramFactory* wknDiagramFactory = dynamic_cast<QgsWKNDiagramFactory *>( diagramFactory );
   if ( wknDiagramFactory )
   {
     attList += wknDiagramFactory->categoryAttributes();
@@ -201,7 +201,7 @@ void QgsDiagramDialog::apply() const
   QWidget* rendererWidget = mWidgetStackRenderers->currentWidget();
   if ( rendererWidget )
   {
-    QgsDiagramRendererWidget* diagramRendererWidget = dynamic_cast<QgsDiagramRendererWidget*>( rendererWidget );
+    QgsDiagramRendererWidget* diagramRendererWidget = dynamic_cast<QgsDiagramRendererWidget *>( rendererWidget );
     if ( diagramRendererWidget )
     {
       diagramRenderer = diagramRendererWidget->createRenderer( classAttr, attList );
@@ -249,7 +249,7 @@ void QgsDiagramDialog::apply() const
 
 void QgsDiagramDialog::restoreSettings( const QgsVectorOverlay* overlay )
 {
-  const QgsDiagramOverlay* previousDiagramOverlay = dynamic_cast<const QgsDiagramOverlay*>( overlay );
+  const QgsDiagramOverlay* previousDiagramOverlay = dynamic_cast<const QgsDiagramOverlay *>( overlay );
   if ( overlay )
   {
     //set check state according to QgsDiagramOverlay
@@ -261,7 +261,7 @@ void QgsDiagramDialog::restoreSettings( const QgsVectorOverlay* overlay )
     {
       mDisplayDiagramsCheckBox->setCheckState( Qt::Unchecked );
     }
-    const QgsDiagramRenderer* previousDiagramRenderer = dynamic_cast<const QgsDiagramRenderer*>( previousDiagramOverlay->diagramRenderer() );
+    const QgsDiagramRenderer* previousDiagramRenderer = dynamic_cast<const QgsDiagramRenderer *>( previousDiagramOverlay->diagramRenderer() );
 
     if ( previousDiagramRenderer && previousDiagramRenderer->factory() )
     {
@@ -269,7 +269,7 @@ void QgsDiagramDialog::restoreSettings( const QgsVectorOverlay* overlay )
       QgsDiagramFactoryWidget* newWidget = 0;
 
 
-      QgsWKNDiagramFactory* theWKNFactory = dynamic_cast<QgsWKNDiagramFactory*>( theFactory );
+      QgsWKNDiagramFactory* theWKNFactory = dynamic_cast<QgsWKNDiagramFactory *>( theFactory );
       if ( theWKNFactory )
       {
         QString wknType = theWKNFactory->diagramType();
@@ -286,7 +286,7 @@ void QgsDiagramDialog::restoreSettings( const QgsVectorOverlay* overlay )
         newWidget->setExistingFactory( theWKNFactory );
       }
 
-      QgsSVGDiagramFactory* theSVGFactory = dynamic_cast<QgsSVGDiagramFactory*>( theFactory );
+      QgsSVGDiagramFactory* theSVGFactory = dynamic_cast<QgsSVGDiagramFactory *>( theFactory );
       if ( theSVGFactory )
       {
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Proportional SVG symbols" ) ) );
@@ -322,7 +322,7 @@ void QgsDiagramDialog::restoreSettings( const QgsVectorOverlay* overlay )
       //apply the renderer settings to the renderer specific dialog
       if ( mWidgetStackRenderers->count() > 0 )
       {
-        QgsDiagramRendererWidget* rendererWidget = dynamic_cast<QgsDiagramRendererWidget*>( mWidgetStackRenderers->currentWidget() );
+        QgsDiagramRendererWidget* rendererWidget = dynamic_cast<QgsDiagramRendererWidget *>( mWidgetStackRenderers->currentWidget() );
         if ( rendererWidget )
         {
           rendererWidget->applySettings( previousDiagramRenderer );

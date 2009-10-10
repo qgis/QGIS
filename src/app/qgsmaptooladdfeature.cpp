@@ -42,7 +42,7 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 
 void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 {
-  QgsVectorLayer *vlayer = dynamic_cast <QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
   if ( !vlayer )
   {
@@ -288,7 +288,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           memcpy( &wkb[1+sizeof( int )], &length, sizeof( int ) );
           int position = 1 + 2 * sizeof( int );
           double x, y;
-          for ( QList<QgsPoint>::iterator it = mCaptureList.begin();it != mCaptureList.end();++it )
+          for ( QList<QgsPoint>::iterator it = mCaptureList.begin(); it != mCaptureList.end(); ++it )
           {
             QgsPoint savePoint = *it;
             x = savePoint.x();
@@ -323,7 +323,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           memcpy( &wkb[position], &length, sizeof( int ) );
           position += sizeof( int );
           double x, y;
-          for ( QList<QgsPoint>::iterator it = mCaptureList.begin();it != mCaptureList.end();++it )
+          for ( QList<QgsPoint>::iterator it = mCaptureList.begin(); it != mCaptureList.end(); ++it )
           {
             QgsPoint savePoint = *it;
             x = savePoint.x();
@@ -362,7 +362,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           int position = 1 + 3 * sizeof( int );
           double x, y;
           QList<QgsPoint>::iterator it;
-          for ( it = mCaptureList.begin();it != mCaptureList.end();++it )
+          for ( it = mCaptureList.begin(); it != mCaptureList.end(); ++it )
           {
             QgsPoint savePoint = *it;
             x = savePoint.x();
@@ -411,7 +411,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           position += sizeof( int );
           double x, y;
           QList<QgsPoint>::iterator it;
-          for ( it = mCaptureList.begin();it != mCaptureList.end();++it )//add the captured points to the polygon
+          for ( it = mCaptureList.begin(); it != mCaptureList.end(); ++it )//add the captured points to the polygon
           {
             QgsPoint savePoint = *it;
             x = savePoint.x();

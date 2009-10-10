@@ -285,7 +285,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   QString src = source();
 
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( this );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
   if ( vlayer && vlayer->providerType() == "spatialite" )
   {
     QgsDataSourceURI uri( src );

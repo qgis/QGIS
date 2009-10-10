@@ -68,7 +68,7 @@ QgsLegendLayerFile::QgsLegendLayerFile( QTreeWidgetItem * theLegendItem, QString
   // Add check if vector layer when connecting to selectionChanged slot
   // Ticket #811 - racicot
   QgsMapLayer *currentLayer = mLyr.layer();
-  QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >( currentLayer );
+  QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
   if ( isVectLyr )
   {
     connect( mLyr.layer(), SIGNAL( editingStarted() ), this, SLOT( updateLegendItem() ) );
@@ -217,7 +217,7 @@ void QgsLegendLayerFile::saveAsShapefile()
 
 void QgsLegendLayerFile::table()
 {
-  QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>( mLyr.layer() );
+  QgsVectorLayer * myLayer = qobject_cast<QgsVectorLayer *>( mLyr.layer() );
   QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer );
   mDialog->show();
   // the dialog will be deleted by itself on close
@@ -235,7 +235,7 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
   if ( mLyr.layer()->type() != QgsMapLayer::VectorLayer )
     return;
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mLyr.layer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mLyr.layer() );
 
   // get a name for the shapefile
   // Get a file to process, starting at the current directory
@@ -349,7 +349,7 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
 
 bool QgsLegendLayerFile::isEditing()
 {
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mLyr.layer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mLyr.layer() );
   return vlayer && vlayer->isEditable();
 }
 
@@ -385,7 +385,7 @@ void QgsLegendLayerFile::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingA
 
   if ( lyr->type() == QgsMapLayer::VectorLayer )
   {
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( lyr );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
     // attribute table
     theMenu.addAction( tr( "&Open attribute table" ), this, SLOT( table() ) );
@@ -414,7 +414,7 @@ void QgsLegendLayerFile::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingA
   else if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
     // TODO: what was this for?
-    //QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>(lyr);
+    //QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>(lyr);
     //theMenu.addAction(tr("&Convert to..."), rlayer, SLOT(convertTo()));
   }
 

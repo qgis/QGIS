@@ -437,7 +437,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
   }
 
   //test if change item is a composer item. If so, prefer call to  setSceneRect() instead of setTransform() and setRect()
-  QgsComposerItem* changeComposerItem = dynamic_cast<QgsComposerItem*>( changeItem );
+  QgsComposerItem* changeComposerItem = dynamic_cast<QgsComposerItem *>( changeItem );
 
   double mx = 0.0, my = 0.0, rx = 0.0, ry = 0.0;
   QPointF snappedPosition = mComposition->snapPointToGrid( currentPosition );

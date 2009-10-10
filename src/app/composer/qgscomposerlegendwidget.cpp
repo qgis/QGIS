@@ -200,7 +200,7 @@ void QgsComposerLegendWidget::on_mBoxSpaceSpinBox_valueChanged( double d )
 
 void QgsComposerLegendWidget::on_mMoveDownPushButton_clicked()
 {
-  QStandardItemModel* itemModel = dynamic_cast<QStandardItemModel*>( mItemTreeView->model() );
+  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
   {
     return;
@@ -250,7 +250,7 @@ void QgsComposerLegendWidget::on_mMoveDownPushButton_clicked()
 
 void QgsComposerLegendWidget::on_mMoveUpPushButton_clicked()
 {
-  QStandardItemModel* itemModel = dynamic_cast<QStandardItemModel*>( mItemTreeView->model() );
+  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
   {
     return;
@@ -301,7 +301,7 @@ void QgsComposerLegendWidget::on_mMoveUpPushButton_clicked()
 
 void QgsComposerLegendWidget::on_mRemovePushButton_clicked()
 {
-  QStandardItemModel* itemModel = dynamic_cast<QStandardItemModel*>( mItemTreeView->model() );
+  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
   {
     return;
@@ -325,7 +325,7 @@ void QgsComposerLegendWidget::on_mRemovePushButton_clicked()
 
 void QgsComposerLegendWidget::on_mEditPushButton_clicked()
 {
-  QStandardItemModel* itemModel = dynamic_cast<QStandardItemModel*>( mItemTreeView->model() );
+  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
   {
     return;
@@ -359,7 +359,7 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
 void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
 {
   //get current item
-  QStandardItemModel* itemModel = dynamic_cast<QStandardItemModel*>( mItemTreeView->model() );
+  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
   {
     return;

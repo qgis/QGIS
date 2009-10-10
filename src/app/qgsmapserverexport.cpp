@@ -208,7 +208,7 @@ void QgsMapserverExport::writeMapFile()
       mapFile << "  TYPE ";
       if ( lyr->type() == QgsMapLayer::VectorLayer )
       {
-        QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( lyr );
+        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( lyr );
         switch ( vlayer->wkbType() )
         {
           case QGis::WKBPoint:
@@ -256,7 +256,7 @@ void QgsMapserverExport::writeMapFile()
         case QgsMapLayer::VectorLayer:
           // get the provider type
         {
-          QgsVectorLayer* vlyr = dynamic_cast<QgsVectorLayer*>( lyr );
+          QgsVectorLayer* vlyr = qobject_cast<QgsVectorLayer *>( lyr );
           QString providerType = vlyr->providerType();
           if ( providerType == "postgres" )
           {

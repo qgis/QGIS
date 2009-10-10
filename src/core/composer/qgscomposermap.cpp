@@ -468,7 +468,7 @@ bool QgsComposerMap::containsWMSLayer() const
     currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *layer_it );
     if ( currentLayer )
     {
-      QgsRasterLayer* currentRasterLayer = dynamic_cast<QgsRasterLayer*>( currentLayer );
+      QgsRasterLayer* currentRasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
       if ( currentRasterLayer )
       {
         const QgsRasterDataProvider* rasterProvider = 0;

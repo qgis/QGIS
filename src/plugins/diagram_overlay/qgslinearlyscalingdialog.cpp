@@ -57,7 +57,7 @@ QgsDiagramRenderer* QgsLinearlyScalingDialog::createRenderer( int classAttr, con
 
 void QgsLinearlyScalingDialog::applySettings( const QgsDiagramRenderer* renderer )
 {
-  const QgsDiagramRenderer* linearRenderer = dynamic_cast<const QgsDiagramRenderer*>( renderer );
+  const QgsDiagramRenderer* linearRenderer = dynamic_cast<const QgsDiagramRenderer *>( renderer );
   if ( linearRenderer )
   {
     QList<QgsDiagramItem> itemList = linearRenderer->diagramItems();

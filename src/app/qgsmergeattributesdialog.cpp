@@ -157,7 +157,7 @@ int QgsMergeAttributesDialog::findComboColumn( QComboBox* c ) const
 
 void QgsMergeAttributesDialog::comboValueChanged( const QString & text )
 {
-  QComboBox* senderComboBox = dynamic_cast<QComboBox*>( sender() );
+  QComboBox* senderComboBox = qobject_cast<QComboBox *>( sender() );
   if ( !senderComboBox )
   {
     return;
@@ -211,7 +211,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   {
     return;
   }
-  QComboBox* comboBox = dynamic_cast<QComboBox*>( cellWidget );
+  QComboBox* comboBox = qobject_cast<QComboBox *>( cellWidget );
   if ( !comboBox )
   {
     return;
@@ -422,7 +422,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
 
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
-    QComboBox* currentComboBox = dynamic_cast<QComboBox*>( mTableWidget->cellWidget( 0, i ) );
+    QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( currentComboBox )
     {
       currentComboBox->setCurrentIndex( currentComboBox->findText( tr( "feature %1" ).arg( featureId ) ) );
@@ -473,7 +473,7 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
   //remove feature option from the combo box (without altering the current merge values)
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
-    QComboBox* currentComboBox = dynamic_cast<QComboBox*>( mTableWidget->cellWidget( 0, i ) );
+    QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( currentComboBox )
     {
       currentComboBox->blockSignals( true );

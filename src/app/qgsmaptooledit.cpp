@@ -87,7 +87,7 @@ QgsVectorLayer* QgsMapToolEdit::currentVectorLayer()
     return 0;
   }
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   if ( !vlayer )
   {
     return 0;

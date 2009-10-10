@@ -121,7 +121,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   appMenu->addAction( QgisApp::instance()->actionOptions() );
 
   QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
-  QAction *closeAction = fileMenu->addAction( tr( "Close" ), this, SLOT( close() ), tr( "Ctrl+W" ) );
+  fileMenu->addAction( tr( "Close" ), this, SLOT( close() ), tr( "Ctrl+W" ) );
   fileMenu->addAction( mActionExportAsImage );
   fileMenu->addAction( mActionExportAsPDF );
   fileMenu->addAction( mActionExportAsSVG );
@@ -300,7 +300,7 @@ void QgsComposer::paintEvent( QPaintEvent* event )
     QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
     for ( ; it != mItemWidgetMap.constEnd(); ++it )
     {
-      QgsComposerMap* cm = dynamic_cast<QgsComposerMap*>( it.key() );
+      QgsComposerMap* cm = qobject_cast<QgsComposerMap *>( it.key() );
       if ( cm )
       {
         mFirstPaint = false;
@@ -1077,7 +1077,7 @@ void QgsComposer::readXML( const QDomDocument& doc )
     delete( *it );
   }
   //delete composition widget
-  QgsCompositionWidget* oldCompositionWidget = dynamic_cast<QgsCompositionWidget*>( mCompositionOptionsFrame->children().at( 0 ) );
+  QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mCompositionOptionsFrame->children().at( 0 ) );
   delete oldCompositionWidget;
   delete mCompositionOptionsLayout;
   mCompositionOptionsLayout = 0;
@@ -1271,7 +1271,7 @@ bool QgsComposer::containsWMSLayer() const
   for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
   {
     currentItem = item_it.key();
-    currentMap = dynamic_cast<QgsComposerMap*>( currentItem );
+    currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
     if ( currentMap )
     {
       if ( currentMap->containsWMSLayer() )
@@ -1308,7 +1308,7 @@ void QgsComposer::cleanupAfterTemplateRead()
   for ( ; itemIt != mItemWidgetMap.constEnd(); ++itemIt )
   {
     //update all legends completely
-    QgsComposerLegend* legendItem = dynamic_cast<QgsComposerLegend*>( itemIt.key() );
+    QgsComposerLegend* legendItem = dynamic_cast<QgsComposerLegend *>( itemIt.key() );
     if ( legendItem )
     {
       legendItem->updateLegend();
@@ -1316,7 +1316,7 @@ void QgsComposer::cleanupAfterTemplateRead()
     }
 
     //update composer map extent if it does not intersect the full extent of all layers
-    QgsComposerMap* mapItem = dynamic_cast<QgsComposerMap*>( itemIt.key() );
+    QgsComposerMap* mapItem = dynamic_cast<QgsComposerMap *>( itemIt.key() );
     if ( mapItem )
     {
       //test if composer map extent intersects extent of all layers

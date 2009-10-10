@@ -36,7 +36,7 @@ QgsMapToolAddIsland::~QgsMapToolAddIsland()
 void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
 {
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = dynamic_cast <QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
   if ( !vlayer )
   {

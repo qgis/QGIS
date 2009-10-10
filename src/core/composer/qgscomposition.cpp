@@ -79,7 +79,7 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
 
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
-    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem*>( *itemIt );
+    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem *>( *itemIt );
     if ( composerItem && composerItem != mPaperItem )
     {
       return composerItem;
@@ -97,7 +97,7 @@ QList<QgsComposerItem*> QgsComposition::selectedComposerItems()
 
   for ( ; itemIter != graphicsItemList.end(); ++itemIter )
   {
-    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem*>( *itemIter );
+    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem *>( *itemIter );
     if ( composerItem )
     {
       composerItemList.push_back( composerItem );
@@ -115,7 +115,7 @@ QList<const QgsComposerMap*> QgsComposition::composerMapItems() const
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
-    const QgsComposerMap* composerMap = dynamic_cast<const QgsComposerMap*>( *itemIt );
+    const QgsComposerMap* composerMap = dynamic_cast<const QgsComposerMap *>( *itemIt );
     if ( composerMap )
     {
       resultList.push_back( composerMap );
@@ -133,7 +133,7 @@ const QgsComposerMap* QgsComposition::getComposerMapById( int id ) const
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
-    const QgsComposerMap* composerMap = dynamic_cast<const QgsComposerMap*>( *itemIt );
+    const QgsComposerMap* composerMap = dynamic_cast<const QgsComposerMap *>( *itemIt );
     if ( composerMap )
     {
       if ( composerMap->id() == id )

@@ -40,7 +40,7 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( QgisInterface* i
 
   for ( ; layer_it != mapLayers.end(); ++layer_it )
   {
-    QgsRasterLayer* rl = dynamic_cast<QgsRasterLayer*>( layer_it.value() );
+    QgsRasterLayer* rl = qobject_cast<QgsRasterLayer *>( layer_it.value() );
     if ( rl )
     {
       mInputLayerComboBox->addItem( rl->name(), QVariant( rl->getLayerID() ) );

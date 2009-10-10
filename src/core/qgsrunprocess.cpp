@@ -55,7 +55,7 @@ QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
     mOutput->showMessage( false ); // non-blocking
 
     // get notification of delete if it's derived from QObject
-    QObject* mOutputObj = dynamic_cast<QObject*>( mOutput );
+    QObject* mOutputObj = dynamic_cast<QObject *>( mOutput );
     if ( mOutputObj )
     {
       connect( mOutputObj, SIGNAL( destroyed() ), this, SLOT( dialogGone() ) );

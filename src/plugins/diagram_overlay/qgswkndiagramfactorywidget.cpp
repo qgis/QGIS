@@ -100,7 +100,7 @@ QgsDiagramFactory* QgsWKNDiagramFactoryWidget::createFactory()
 
 void QgsWKNDiagramFactoryWidget::setExistingFactory( const QgsDiagramFactory* f )
 {
-  const QgsWKNDiagramFactory* existingWKNFactory = dynamic_cast<const QgsWKNDiagramFactory*>( f );
+  const QgsWKNDiagramFactory* existingWKNFactory = dynamic_cast<const QgsWKNDiagramFactory *>( f );
   if ( existingWKNFactory )
   {
     //insert attribute names and colors into mAttributesTreeWidget

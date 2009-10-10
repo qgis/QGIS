@@ -79,11 +79,11 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
 
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
     {
-      QComboBox *cb = dynamic_cast<QComboBox *>( editor );
+      QComboBox *cb = qobject_cast<QComboBox *>( editor );
       if ( cb )
         model->setData( index, cb->currentText() );
 
-      QLineEdit *le = dynamic_cast<QLineEdit *>( editor );
+      QLineEdit *le = qobject_cast<QLineEdit *>( editor );
       if ( le )
         model->setData( index, le->text() );
     }

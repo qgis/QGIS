@@ -137,7 +137,7 @@ void QgsMapToolMoveVertex::canvasReleaseEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = 0;
   if ( currentLayer )
   {
-    vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   }
 
   if ( vlayer && mRecentSnappingResults.size() > 0 )
@@ -198,7 +198,7 @@ void QgsMapToolMoveVertex::removeRubberBands()
 {
   //cleanup rubber bands and list
   QList<QgsRubberBand*>::iterator rb_it = mRubberBands.begin();
-  for ( ;rb_it != mRubberBands.end(); ++rb_it )
+  for ( ; rb_it != mRubberBands.end(); ++rb_it )
   {
     delete *rb_it;
   }

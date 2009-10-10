@@ -44,7 +44,7 @@ bool QgsMapToolRotatePointSymbols::layerIsRotatable( QgsMapLayer* ml )
   }
 
   //a vector layer
-  QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( ml );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( ml );
   if ( !vLayer )
   {
     return false;
