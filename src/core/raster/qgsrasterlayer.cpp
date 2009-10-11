@@ -432,7 +432,7 @@ bool QgsRasterLayer::isValidRasterFileName( QString const & theFileNameQString,
   if ( myDataset == NULL )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
-      retErrMsg = CPLGetLastErrorMsg();
+      retErrMsg = QString::fromUtf8( CPLGetLastErrorMsg() );
     return false;
   }
   else if ( GDALGetRasterCount( myDataset ) == 0 )
@@ -1884,7 +1884,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
 
       if ( err != CPLE_None )
       {
-        QgsLogger::warning( "RaterIO error: " + QString( CPLGetLastErrorMsg() ) );
+        QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
       }
 
       double value = readValue( data, type, 0 );
@@ -4380,7 +4380,7 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   CPLFree( myGdalBlueData );
 
 #ifdef QGISDEBUG
-  QPixmap* pm = qobject_cast<QPixmap *>( theQPainter->device() );
+  QPixmap *pm = dynamic_cast<QPixmap *>( theQPainter->device() );
   if ( pm )
   {
     QgsDebugMsg( "theQPainter stats: " );
@@ -5070,7 +5070,7 @@ void *QgsRasterLayer::readData( GDALRasterBandH gdalBand, QgsRasterViewPort *vie
                                  type, 0, 0 );
     if ( myErr != CPLE_None )
     {
-      QgsLogger::warning( "RaterIO error: " + QString( CPLGetLastErrorMsg() ) );
+      QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     }
   }
   return data;

@@ -824,7 +824,7 @@ void QgsComposerMap::drawGridAnnotations( QPainter* p, const QList< QPair< doubl
 int QgsComposerMap::verticalGridLines( QList< QPair< double, QLineF > >& lines ) const
 {
   lines.clear();
-  if ( !mGridIntervalX > 0.0 )
+  if ( mGridIntervalX <= 0.0 )
   {
     return 1;
   }
@@ -854,7 +854,7 @@ int QgsComposerMap::verticalGridLines( QList< QPair< double, QLineF > >& lines )
 int QgsComposerMap::horizontalGridLines( QList< QPair< double, QLineF > >& lines ) const
 {
   lines.clear();
-  if ( !mGridIntervalY > 0.0 )
+  if ( mGridIntervalY <= 0.0 )
   {
     return 1;
   }
