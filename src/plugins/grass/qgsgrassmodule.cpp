@@ -563,7 +563,7 @@ void QgsGrassModuleStandardOptions::freezeOutput()
 #ifdef WIN32
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    QgsGrassModuleOption *opt = qobject_cast<QgsGrassModuleOption *>( mItems[i] );
+    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
     if ( !opt )
       continue;
 
@@ -632,7 +632,7 @@ void QgsGrassModuleStandardOptions::thawOutput()
 #ifdef WIN32
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    QgsGrassModuleOption *opt = qobject_cast<QgsGrassModuleOption *>( mItems[i] );
+    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
     if ( !opt )
       continue;
 

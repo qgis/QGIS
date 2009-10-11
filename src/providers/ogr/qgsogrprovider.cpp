@@ -168,8 +168,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   else
   {
     QgsLogger::critical( "Data source is invalid" );
-    const char *er = CPLGetLastErrorMsg();
-    QgsLogger::critical( er );
+    QgsLogger::critical( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     valid = false;
   }
 
