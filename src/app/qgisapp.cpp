@@ -2304,8 +2304,6 @@ static bool openFilesRememberingFilter_( QString const &filterName,
     bool cancelAll = false )
 {
 
-  bool retVal = false;
-
   bool haveLastUsedFilter = false; // by default, there is no last
   // used filter
 
@@ -2319,28 +2317,9 @@ static bool openFilesRememberingFilter_( QString const &filterName,
   QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
 
   QgsDebugMsg( "Opening file dialog with filters: " + filters );
-
-  QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0,
-      title, lastUsedDir, filters, QString( "" ) );
-
-  // allow for selection of more than one file
-  openFileDialog->setFileMode( QFileDialog::ExistingFiles );
-
-  if ( haveLastUsedFilter )     // set the filter to the last one used
+  selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
+  if ( !selectedFiles.isEmpty() )
   {
-    openFileDialog->selectFilter( lastUsedFilter );
-  }
-
-  // Check if we should add a cancel all button
-  if ( cancelAll )
-  {
-    openFileDialog->addCancelAll();
-  }
-
-  if ( openFileDialog->exec() == QDialog::Accepted )
-  {
-    selectedFiles = openFileDialog->selectedFiles();
-    enc = openFileDialog->encoding();
     // Fix by Tim - getting the dirPath from the dialog
     // directly truncates the last node in the dir path.
     // This is a workaround for that
@@ -2350,17 +2329,11 @@ static bool openFilesRememberingFilter_( QString const &filterName,
 
     QgsDebugMsg( "Writing last used dir: " + myPath );
 
-    settings.setValue( "/UI/" + filterName, openFileDialog->selectedFilter() );
+    settings.setValue( "/UI/" + filterName, lastUsedFilter );
     settings.setValue( "/UI/" + filterName + "Dir", myPath );
+    return true;
   }
-  else
-  {
-    // Cancel or cancel all
-    retVal = openFileDialog->cancelAll();
-  }
-
-  delete openFileDialog;
-  return retVal;
+  return false;
 }   // openFilesRememberingFilter_
 
 
@@ -3281,33 +3254,19 @@ void QgisApp::fileOpen()
     // Retrieve last used project dir from persistent settings
     QSettings settings;
     QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
-
-    QFileDialog * openFileDialog = new QFileDialog( this,
-        tr( "Choose a QGIS project file to open" ),
-        lastUsedDir, tr( "QGis files (*.qgs)" ) );
-    openFileDialog->setFileMode( QFileDialog::ExistingFile );
-
-
-    QString fullPath;
-    if ( openFileDialog->exec() == QDialog::Accepted )
+    QString fullPath = QFileDialog::getOpenFileName( this, tr( "Choose a QGIS project file to open" ), lastUsedDir, tr( "QGis files (*.qgs)" ) );
+    if ( fullPath.isNull() )
     {
-      // Fix by Tim - getting the dirPath from the dialog
-      // directly truncates the last node in the dir path.
-      // This is a workaround for that
-      fullPath = openFileDialog->selectedFiles().first();
-      QFileInfo myFI( fullPath );
-      QString myPath = myFI.path();
-      // Persist last used project dir
-      settings.setValue( "/UI/lastProjectDir", myPath );
-    }
-    else
-    {
-      // if they didn't select anything, just return
-      delete openFileDialog;
       return;
     }
 
-    delete openFileDialog;
+    // Fix by Tim - getting the dirPath from the dialog
+    // directly truncates the last node in the dir path.
+    // This is a workaround for that
+    QFileInfo myFI( fullPath );
+    QString myPath = myFI.path();
+    // Persist last used project dir
+    settings.setValue( "/UI/lastProjectDir", myPath );
 
     delete mComposer;
     mComposer = new QgsComposer( this );
@@ -3563,55 +3522,31 @@ void QgisApp::fileSaveAs()
   // Retrieve last used project dir from persistent settings
   QSettings settings;
   QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
-
-  std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
-      tr( "Choose a file name to save the QGIS project file as" ),
-      lastUsedDir, tr( "QGis files (*.qgs)" ) ) );
-
-  saveFileDialog->setFileMode( QFileDialog::AnyFile );
-
-  saveFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-
-  saveFileDialog->setConfirmOverwrite( true );
-
-  // if we don't have a file name, then obviously we need to get one; note
-  // that the project file name is reset to null in fileNew()
-  QFileInfo fullPath;
-
-  if ( saveFileDialog->exec() == QDialog::Accepted )
+  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Choose a file name to save the QGIS project file as" ), lastUsedDir, tr( "QGis files (*.qgs)" ) );
+  if ( saveFilePath.isNull() ) //canceled
   {
-    // Fix by Tim - getting the dirPath from the dialog
-    // directly truncates the last node in the dir path.
-    // This is a workaround for that
-    fullPath.setFile( saveFileDialog->selectedFiles().first() );
-    QString myPath = fullPath.path();
-    // Persist last used project dir
-    settings.setValue( "/UI/lastProjectDir", myPath );
-  }
-  else
-  {
-    // if they didn't select anything, just return
-    // delete saveFileDialog; auto_ptr auto deletes
     return;
   }
+  QFileInfo myFI( saveFilePath );
+  QString myPath = myFI.path();
+  settings.setValue( "/UI/lastProjectDir", myPath );
 
   // make sure the .qgs extension is included in the path name. if not, add it...
-  if ( "qgs" != fullPath.suffix() )
+  if ( "qgs" != myFI.suffix() )
   {
-    QString newFilePath = fullPath.filePath() + ".qgs";
-    fullPath.setFile( newFilePath );
+    saveFilePath = myFI.filePath() + ".qgs";
   }
 
   try
   {
-    QgsProject::instance()->setFileName( fullPath.filePath() );
+    QgsProject::instance()->setFileName( saveFilePath );
 
     if ( QgsProject::instance()->write() )
     {
       setTitleBarText_( *this ); // update title bar
       statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
       // add this to the list of recently used project files
-      saveRecentProjectPath( fullPath.filePath(), settings );
+      saveRecentProjectPath( saveFilePath, settings );
     }
     else
     {

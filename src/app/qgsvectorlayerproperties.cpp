@@ -956,60 +956,28 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistant state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
-
-  //create a file dialog
-  std::auto_ptr < QFileDialog > myFileDialog
-  (
-    new QFileDialog(
-      this,
-      tr( "Load layer properties from style file (.qml)" ),
-      myLastUsedDir,
-      tr( "QGIS Layer Style File (*.qml)" )
-    )
-  );
-  myFileDialog->setFileMode( QFileDialog::AnyFile );
-  myFileDialog->setAcceptMode( QFileDialog::AcceptOpen );
-
-  //prompt the user for a file name
-  QString myFileName;
-  if ( myFileDialog->exec() == QDialog::Accepted )
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file (.qml)" ), myLastUsedDir, tr( "QGIS Layer Style File (*.qml)" ) );
+  if ( myFileName.isNull() )
   {
-    QStringList myFiles = myFileDialog->selectedFiles();
-    if ( !myFiles.isEmpty() )
-    {
-      myFileName = myFiles[0];
-    }
+    return;
   }
 
-  if ( !myFileName.isEmpty() )
+  bool defaultLoadedFlag = false;
+  QString myMessage = layer->loadNamedStyle( myFileName, defaultLoadedFlag );
+  //reset if the default style was loaded ok only
+  if ( defaultLoadedFlag )
   {
-    if ( myFileDialog->selectedFilter() == tr( "QGIS Layer Style File (*.qml)" ) )
-    {
-      //ensure the user never omitted the extension from the file name
-      if ( !myFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
-      {
-        myFileName += ".qml";
-      }
-      bool defaultLoadedFlag = false;
-      QString myMessage = layer->loadNamedStyle( myFileName, defaultLoadedFlag );
-      //reset if the default style was loaded ok only
-      if ( defaultLoadedFlag )
-      {
-        reset();
-      }
-      else
-      {
-        //let the user know what went wrong
-        QMessageBox::information( this, tr( "Saved Style" ), myMessage );
-      }
-    }
-    else
-    {
-      QMessageBox::warning( this, tr( "QGIS" ),
-                            tr( "Unknown style format: %1" ).arg( myFileDialog->selectedFilter() ) );
-    }
-    myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
+    reset();
   }
+  else
+  {
+    //let the user know what went wrong
+    QMessageBox::information( this, tr( "Saved Style" ), myMessage );
+  }
+
+  QFileInfo myFI( myFileName );
+  QString myPath = myFI.path();
+  myQSettings.setValue( "style/lastStyleDir", myPath );
 }
 
 
@@ -1017,64 +985,37 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistant state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
-
-  //create a file dialog
-  std::auto_ptr < QFileDialog > myFileDialog
-  (
-    new QFileDialog(
-      this,
-      tr( "Save layer properties as style file (.qml)" ),
-      myLastUsedDir,
-      tr( "QGIS Layer Style File (*.qml)" )
-    )
-  );
-  myFileDialog->setFileMode( QFileDialog::AnyFile );
-  myFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-
-  //prompt the user for a file name
-  QString myOutputFileName;
-  if ( myFileDialog->exec() == QDialog::Accepted )
+  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file (.qml)" ), myLastUsedDir, tr( "QGIS Layer Style File (*.qml)" ) );
+  if ( myOutputFileName.isNull() ) //dialog canceled
   {
-    QStringList myFiles = myFileDialog->selectedFiles();
-    if ( !myFiles.isEmpty() )
-    {
-      myOutputFileName = myFiles[0];
-    }
+    return;
   }
 
-  if ( !myOutputFileName.isEmpty() )
+  apply(); // make sure the qml to save is uptodate
+
+  //ensure the user never ommitted the extension from the file name
+  if ( !myOutputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
   {
-    if ( myFileDialog->selectedFilter() == tr( "QGIS Layer Style File (*.qml)" ) )
-    {
-      apply(); // make sure the qml to save is uptodate
-
-      //ensure the user never ommitted the extension from the file name
-      if ( !myOutputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
-      {
-        myOutputFileName += ".qml";
-      }
-
-      bool defaultLoadedFlag = false;
-      QString myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
-      //reset if the default style was loaded ok only
-      if ( defaultLoadedFlag )
-      {
-        reset();
-      }
-      else
-      {
-        //let the user know what went wrong
-        QMessageBox::information( this, tr( "Saved Style" ), myMessage );
-      }
-    }
-    else
-    {
-      QMessageBox::warning( this, tr( "QGIS" ),
-                            tr( "Unknown style format: %1" ).arg( myFileDialog->selectedFilter() ) );
-    }
-
-    myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
+    myOutputFileName += ".qml";
   }
+
+  bool defaultLoadedFlag = false;
+  QString myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
+  //reset if the default style was loaded ok only
+  if ( defaultLoadedFlag )
+  {
+    reset();
+  }
+  else
+  {
+    //let the user know what went wrong
+    QMessageBox::information( this, tr( "Saved Style" ), myMessage );
+  }
+
+  QFileInfo myFI( myOutputFileName );
+  QString myPath = myFI.path();
+  // Persist last used dir
+  myQSettings.setValue( "style/lastStyleDir", myPath );
 }
 
 void QgsVectorLayerProperties::on_tblAttributes_cellChanged( int row, int column )

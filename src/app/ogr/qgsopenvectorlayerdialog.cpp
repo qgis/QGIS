@@ -348,42 +348,28 @@ void QgsOpenVectorLayerDialog::openFilesRememberingFilter( QString const &filter
                            QVariant( QString::null ) ).toString();
 
   QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
-
-  //QString lastUsedEncoding = settings.value( "/UI/encoding" ).toString();
-
   QgsDebugMsg( "Opening file dialog with filters: " + filters );
 
-  QFileDialog* openFileDialog = new QFileDialog( 0,
-      title, lastUsedDir, filters );
-
-  // allow for selection of more than one file
-  openFileDialog->setFileMode( QFileDialog::ExistingFiles );
-
-  if ( haveLastUsedFilter )     // set the filter to the last one used
+  if ( haveLastUsedFilter )
   {
-    openFileDialog->selectFilter( lastUsedFilter );
+    selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
+  }
+  else
+  {
+    selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters );
   }
 
-  if ( openFileDialog->exec() == QDialog::Accepted )
+  if ( !selectedFiles.isEmpty() )
   {
-    selectedFiles = openFileDialog->selectedFiles();
-    //enc = openFileDialog->encoding();
-    // Fix by Tim - getting the dirPath from the dialog
-    // directly truncates the last node in the dir path.
-    // This is a workaround for that
     QString myFirstFileName = selectedFiles.first();
     QFileInfo myFI( myFirstFileName );
     QString myPath = myFI.path();
 
     QgsDebugMsg( "Writing last used dir: " + myPath );
 
-    settings.setValue( "/UI/" + filterName, openFileDialog->selectedFilter() );
+    settings.setValue( "/UI/" + filterName, lastUsedFilter );
     settings.setValue( "/UI/" + filterName + "Dir", myPath );
-    //settings.setValue( "/UI/encoding", openFileDialog->encoding() );
   }
-
-  delete openFileDialog;
-
 }   // openFilesRememberingFilter_
 
 
