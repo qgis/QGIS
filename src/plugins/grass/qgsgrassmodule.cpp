@@ -1172,9 +1172,9 @@ void QgsGrassModule::run()
 
       // Quote options with special characters so that user
       // can copy-paste-run the command
-      if (( *it ).contains( QRegExp( "[ <>\\$|;&]" ) ) )
+      if ( it->contains( QRegExp( "[ <>\\$|;&]" ) ) )
       {
-        argumentsHtml.append( "'" + *it + "'" );
+        argumentsHtml.append( "\"" + *it + "\"" );
       }
       else
       {
