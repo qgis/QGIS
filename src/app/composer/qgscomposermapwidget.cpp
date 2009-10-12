@@ -25,7 +25,6 @@
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidget(), mComposerMap( composerMap )
 {
   setupUi( this );
-  mAnnotationDirectionComboBox->setEnabled( false ); //not yet supported
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );

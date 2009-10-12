@@ -783,42 +783,102 @@ void QgsComposerMap::drawGridAnnotations( QPainter* p, const QList< QPair< doubl
   QString currentAnnotationString;
   double currentFontWidth = 0;
   double currentFontHeight = fontAscentMillimeters( mGridAnnotationFont );
+  QPointF currentAnnotationPos1, currentAnnotationPos2;
+  double rotation = 0;
 
+  //first draw annotations for vertical grid lines
+  if ( mGridAnnotationDirection != Horizontal )
+  {
+    rotation = 270;
+  }
   QList< QPair< double, QLineF > >::const_iterator vIt = vLines.constBegin();
   for ( ; vIt != vLines.constEnd(); ++vIt )
   {
     currentAnnotationString = QString::number( vIt->first );
     currentFontWidth = textWidthMillimeters( mGridAnnotationFont, currentAnnotationString );
-
-    if ( mGridAnnotationPosition == OutsideMapFrame )
+    if ( mGridAnnotationDirection == Horizontal )
     {
-      drawText( p, vIt->second.x1() - currentFontWidth / 2.0, vIt->second.y1() - mAnnotationFrameDistance, currentAnnotationString, mGridAnnotationFont );
-      drawText( p, vIt->second.x2() - currentFontWidth / 2.0, vIt->second.y2() + mAnnotationFrameDistance + currentFontHeight, currentAnnotationString, mGridAnnotationFont );
+      if ( mGridAnnotationPosition == OutsideMapFrame )
+      {
+        currentAnnotationPos1 = QPointF( vIt->second.x1() - currentFontWidth / 2.0, vIt->second.y1() - mAnnotationFrameDistance );
+        currentAnnotationPos2 = QPointF( vIt->second.x2() - currentFontWidth / 2.0, vIt->second.y2() + mAnnotationFrameDistance + currentFontHeight );
+      }
+      else
+      {
+        currentAnnotationPos1 = QPointF( vIt->second.x1() - currentFontWidth / 2.0, vIt->second.y1() + mAnnotationFrameDistance + currentFontHeight );
+        currentAnnotationPos2 = QPointF( vIt->second.x2() - currentFontWidth / 2.0, vIt->second.y2() - mAnnotationFrameDistance );
+      }
     }
-    else
+    else //vertical annotation
     {
-      drawText( p, vIt->second.x1() - currentFontWidth / 2.0, vIt->second.y1() + mAnnotationFrameDistance + currentFontHeight, currentAnnotationString, mGridAnnotationFont );
-      drawText( p, vIt->second.x2() - currentFontWidth / 2.0, vIt->second.y2() - mAnnotationFrameDistance, currentAnnotationString, mGridAnnotationFont );
+      if ( mGridAnnotationPosition == OutsideMapFrame )
+      {
+        currentAnnotationPos1 = QPointF( vIt->second.x1() + currentFontHeight / 2.0, vIt->second.y1() - mAnnotationFrameDistance );
+        currentAnnotationPos2 = QPointF( vIt->second.x2() + currentFontHeight / 2.0, vIt->second.y2() + mAnnotationFrameDistance + currentFontWidth );
+      }
+      else
+      {
+        currentAnnotationPos1 = QPointF( vIt->second.x1() + currentFontHeight / 2.0, vIt->second.y1() + currentFontWidth + mAnnotationFrameDistance );
+        currentAnnotationPos2 = QPointF( vIt->second.x1() + currentFontHeight / 2.0, vIt->second.y2() - mAnnotationFrameDistance );
+      }
     }
+    drawAnnotation( p, currentAnnotationPos1, rotation, currentAnnotationString );
+    drawAnnotation( p, currentAnnotationPos2, rotation, currentAnnotationString );
   }
 
+  //then annotations for horizontal grid lines
+  if ( mGridAnnotationDirection != Vertical )
+  {
+    rotation = 0;
+  }
+  else
+  {
+    rotation = 270;
+  }
   QList< QPair< double, QLineF > >::const_iterator hIt = hLines.constBegin();
   for ( ; hIt != hLines.constEnd(); ++hIt )
   {
     currentAnnotationString = QString::number( hIt->first );
     currentFontWidth = textWidthMillimeters( mGridAnnotationFont, currentAnnotationString );
-
-    if ( mGridAnnotationPosition == OutsideMapFrame )
+    if ( mGridAnnotationDirection == Vertical )
     {
-      drawText( p, hIt->second.x1() - ( mAnnotationFrameDistance + currentFontWidth ), hIt->second.y1() + currentFontHeight / 2.0, currentAnnotationString, mGridAnnotationFont );
-      drawText( p, hIt->second.x2() + mAnnotationFrameDistance, hIt->second.y2() + currentFontHeight / 2.0, currentAnnotationString, mGridAnnotationFont );
+      if ( mGridAnnotationPosition == OutsideMapFrame )
+      {
+        currentAnnotationPos1 = QPointF( hIt->second.x1() - mAnnotationFrameDistance, hIt->second.y1() + currentFontWidth / 2.0 );
+        currentAnnotationPos2 = QPointF( hIt->second.x2() + mAnnotationFrameDistance + currentFontHeight, hIt->second.y2() + currentFontWidth / 2.0 );
+      }
+      else
+      {
+        currentAnnotationPos1 = QPointF( hIt->second.x1() + mAnnotationFrameDistance + currentFontHeight, hIt->second.y1() + currentFontWidth / 2.0 );
+        currentAnnotationPos2 = QPointF( hIt->second.x2() - mAnnotationFrameDistance, hIt->second.y1() + currentFontWidth / 2.0 );
+      }
     }
     else
     {
-      drawText( p, hIt->second.x1() + mAnnotationFrameDistance, hIt->second.y1() + currentFontHeight / 2.0, currentAnnotationString, mGridAnnotationFont );
-      drawText( p, hIt->second.x2() - ( mAnnotationFrameDistance + currentFontWidth ), hIt->second.y2() + currentFontHeight / 2.0, currentAnnotationString, mGridAnnotationFont );
+      if ( mGridAnnotationPosition == OutsideMapFrame )
+      {
+        currentAnnotationPos1 = QPointF( hIt->second.x1() - ( mAnnotationFrameDistance + currentFontWidth ), hIt->second.y1() + currentFontHeight / 2.0 );
+        currentAnnotationPos2 = QPointF( hIt->second.x2() + mAnnotationFrameDistance, hIt->second.y2() + currentFontHeight / 2.0 );
+      }
+      else
+      {
+        currentAnnotationPos1 = QPointF( hIt->second.x1() + mAnnotationFrameDistance, hIt->second.y1() + currentFontHeight / 2.0 );
+        currentAnnotationPos2 = QPointF( hIt->second.x2() - ( mAnnotationFrameDistance + currentFontWidth ), hIt->second.y2() + currentFontHeight / 2.0 );
+      }
     }
+
+    drawAnnotation( p, currentAnnotationPos1, rotation, currentAnnotationString );
+    drawAnnotation( p, currentAnnotationPos2, rotation, currentAnnotationString );
   }
+}
+
+void QgsComposerMap::drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText )
+{
+  p->save();
+  p->translate( pos );
+  p->rotate( rotation );
+  drawText( p, 0, 0, annotationText, mGridAnnotationFont );
+  p->restore();
 }
 
 int QgsComposerMap::verticalGridLines( QList< QPair< double, QLineF > >& lines ) const
