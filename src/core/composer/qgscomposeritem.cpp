@@ -717,7 +717,7 @@ double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& 
 double QgsComposerItem::fontAscentMillimeters( const QFont& font ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
-  QFontMetrics fontMetrics( metricsFont );
+  QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
 }
 

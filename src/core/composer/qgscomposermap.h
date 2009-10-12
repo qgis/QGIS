@@ -294,6 +294,12 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     void drawGrid( QPainter* p );
     /**Annotations for composer grid*/
     void drawGridAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
+    /**Draws a single annotation
+        @param p drawing painter
+        @param pos item coordinates where to draw
+        @param rotation text rotation
+        @param the text to draw*/
+    void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText );
     /**Calculates the horizontal grid lines
         @lines list containing the map coordinates and the lines in item coordinates
         @return 0 in case of success*/
