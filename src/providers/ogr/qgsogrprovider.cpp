@@ -246,6 +246,12 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
   }
   setDataSourceUri( uri );
 
+  OGR_L_ResetReading( ogrLayer );
+
+  // getting the total number of features in the layer
+  // TODO: This can be expensive, do we really need it!
+  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE );
+
   // get the extent_ (envelope) of the layer
   QgsDebugMsg( "Starting get extent" );
 
@@ -253,10 +259,6 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
   OGR_L_GetExtent( ogrLayer, ( OGREnvelope * ) extent_, TRUE );
 
   QgsDebugMsg( "Finished get extent" );
-
-  // getting the total number of features in the layer
-  // TODO: This can be expensive, do we really need it!
-  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE );
 
   // check the validity of the layer
   QgsDebugMsg( "checking validity" );
