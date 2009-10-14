@@ -251,7 +251,8 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
     case opRegexp:
     case opLike:
     {
-      if ( !getValue( value1, mLeft, fields, attributes ) || !getValue( value2, mRight, fields, attributes ) )
+      if ( !getValue( value1, mLeft, fields, attributes ) ||
+				   !getValue( value2, mRight, fields, attributes ) )
         return false;
 
       // value1 is string to be matched
@@ -274,10 +275,10 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
       }
 
       QRegExp re( str );
-      res = re.indexIn( value1.string() );
+			res = re.exactMatch( value1.string() );
       QgsDebugMsgLevel( "REGEXP: " + str + " ~ " + value2.string(), 2 );
       QgsDebugMsgLevel( "   res: " + res, 2 );
-      return ( res != -1 );
+      return res;
     }
 
     default:
