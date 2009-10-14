@@ -252,7 +252,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
     case opLike:
     {
       if ( !getValue( value1, mLeft, fields, attributes ) ||
-				   !getValue( value2, mRight, fields, attributes ) )
+           !getValue( value2, mRight, fields, attributes ) )
         return false;
 
       // value1 is string to be matched
@@ -274,11 +274,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
         str.replace( "_", "." );
       }
 
-      QRegExp re( str );
-			res = re.exactMatch( value1.string() );
-      QgsDebugMsgLevel( "REGEXP: " + str + " ~ " + value2.string(), 2 );
-      QgsDebugMsgLevel( "   res: " + res, 2 );
-      return res;
+      return QRegExp( str ).exactMatch( value1.string() );
     }
 
     default:
