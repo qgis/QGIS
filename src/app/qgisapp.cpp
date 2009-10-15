@@ -2297,6 +2297,8 @@ static void buildSupportedVectorFileFilter_( QString & fileFilters )
   the current working directory if this is the first time invoked
   with the current filter name.
 
+  This method returns true if cancel all was clicked, otherwise false
+
 */
 
 static bool openFilesRememberingFilter_( QString const &filterName,
@@ -2317,7 +2319,34 @@ static bool openFilesRememberingFilter_( QString const &filterName,
   QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
 
   QgsDebugMsg( "Opening file dialog with filters: " + filters );
-  selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
+  if ( !cancelAll )
+  {
+    selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
+  }
+  else //we have to use non-native dialog to add cancel all button
+  {
+    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0, title, lastUsedDir, filters, QString( "" ) );
+    // allow for selection of more than one file
+    openFileDialog->setFileMode( QFileDialog::ExistingFiles );
+    if ( haveLastUsedFilter )     // set the filter to the last one used
+    {
+      openFileDialog->selectFilter( lastUsedFilter );
+    }
+    openFileDialog->addCancelAll();
+    if ( openFileDialog->exec() == QDialog::Accepted )
+    {
+      selectedFiles = openFileDialog->selectedFiles();
+    }
+    else
+    {
+      //cancel or cancel all?
+      if ( openFileDialog->cancelAll() )
+      {
+        return true;
+      }
+    }
+  }
+
   if ( !selectedFiles.isEmpty() )
   {
     // Fix by Tim - getting the dirPath from the dialog
@@ -2331,7 +2360,6 @@ static bool openFilesRememberingFilter_( QString const &filterName,
 
     settings.setValue( "/UI/" + filterName, lastUsedFilter );
     settings.setValue( "/UI/" + filterName + "Dir", myPath );
-    return true;
   }
   return false;
 }   // openFilesRememberingFilter_
