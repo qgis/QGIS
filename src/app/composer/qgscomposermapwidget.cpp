@@ -54,6 +54,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mAnnotationDirectionComboBox->insertItem( 0, tr( "Horizontal" ) );
   mAnnotationDirectionComboBox->insertItem( 1, tr( "Vertical" ) );
   mAnnotationDirectionComboBox->insertItem( 2, tr( "Horizontal and Vertical" ) );
+
+  mAnnotationTypeComboBox->insertItem( 0, tr( "Coordinate" ) );
+  mAnnotationTypeComboBox->insertItem( 1, tr( "Sector" ) );
   blockAllSignals( false );
 
   if ( composerMap )
@@ -340,6 +343,16 @@ void QgsComposerMapWidget::updateGuiElements()
       mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Horizontal and Vertical" ) ) );
     }
 
+    QgsComposerMap::GridAnnotationType type = mComposerMap->gridAnnotationType();
+    if ( type == QgsComposerMap::Sector )
+    {
+      mAnnotationTypeComboBox->setCurrentIndex( mAnnotationTypeComboBox->findText( tr( "Sector" ) ) );
+    }
+    else
+    {
+      mAnnotationTypeComboBox->setCurrentIndex( mAnnotationTypeComboBox->findText( tr( "Coordinate" ) ) );
+    }
+
 
     QPen gridPen = mComposerMap->gridPen();
     mLineWidthSpinBox->setValue( gridPen.widthF() );
@@ -397,6 +410,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAnnotationPositionComboBox->blockSignals( b );
   mDistanceToMapFrameSpinBox->blockSignals( b );
   mAnnotationDirectionComboBox->blockSignals( b );
+  mAnnotationTypeComboBox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -637,5 +651,23 @@ void QgsComposerMapWidget::on_mAnnotationDirectionComboBox_currentIndexChanged( 
     mComposerMap->setGridAnnotationDirection( QgsComposerMap::HorizontalAndVertical );
   }
   mComposerMap->updateBoundingRect();
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::on_mAnnotationTypeComboBox_currentIndexChanged( const QString& text )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  if ( text == tr( "Sector" ) )
+  {
+    mComposerMap->setGridAnnotationType( QgsComposerMap::Sector );
+  }
+  else
+  {
+    mComposerMap->setGridAnnotationType( QgsComposerMap::Coordinate );
+  }
   mComposerMap->update();
 }

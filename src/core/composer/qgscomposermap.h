@@ -73,6 +73,12 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
       HorizontalAndVertical
     };
 
+    enum GridAnnotationType
+    {
+      Coordinate = 0, //annotation at line, displays coordinates
+      Sector //annotation at sector: 1, 2, 3 for horizontal lines and A, B, C for vertical ones
+    };
+
     /** \brief Draw to paint device
     @param extent map extent
     @param size size in scene coordinates
@@ -198,6 +204,9 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
     GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
 
+    void setGridAnnotationType( GridAnnotationType t ) {mGridAnnotationType = t;}
+    GridAnnotationType gridAnnotationType() const {return mGridAnnotationType; }
+
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle*/
     QRectF boundingRect() const;
     /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle*/
@@ -287,6 +296,8 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     double mAnnotationFrameDistance;
     /**Annotation can be horizontal / vertical or different for axes*/
     GridAnnotationDirection mGridAnnotationDirection;
+    /**Coordinate values (default) or sector (1A, 1B, ...)*/
+    GridAnnotationType mGridAnnotationType;
     /**Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
     QRectF mCurrentRectangle;
 

@@ -44,7 +44,7 @@ int QgsComposerMap::mCurrentComposerId = 0;
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mShowGridAnnotation( false ), \
-    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal )
+    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), mGridAnnotationType( Coordinate )
 {
   mComposition = composition;
   mMapRenderer = mComposition->mapRenderer();
@@ -74,7 +74,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mShowGridAnnotation( false ), \
-    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal )
+    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), mGridAnnotationType( Coordinate )
 {
   //Offset
   mXOffset = 0.0;
@@ -568,6 +568,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   annotationElem.setAttribute( "frameDistance", mAnnotationFrameDistance );
   annotationElem.setAttribute( "direction", mGridAnnotationDirection );
   annotationElem.setAttribute( "font", mGridAnnotationFont.toString() );
+  annotationElem.setAttribute( "type", mGridAnnotationType);
 
   gridElem.appendChild( annotationElem );
   composerMapElem.appendChild( gridElem );
@@ -668,6 +669,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
       mAnnotationFrameDistance = annotationElem.attribute( "frameDistance", "0" ).toDouble();
       mGridAnnotationDirection = QgsComposerMap::GridAnnotationDirection( annotationElem.attribute( "direction", "0" ).toInt() );
       mGridAnnotationFont.fromString( annotationElem.attribute( "font", "" ) );
+      mGridAnnotationType = QgsComposerMap::GridAnnotationType( annotationElem.attribute( "type", "0" ).toInt() );
     }
   }
 
@@ -785,45 +787,81 @@ void QgsComposerMap::drawGridAnnotations( QPainter* p, const QList< QPair< doubl
   double currentFontHeight = fontAscentMillimeters( mGridAnnotationFont );
   QPointF currentAnnotationPos1, currentAnnotationPos2;
   double rotation = 0;
+  double xpos1, xpos2, ypos1, ypos2;
 
   //first draw annotations for vertical grid lines
   if ( mGridAnnotationDirection != Horizontal )
   {
     rotation = 270;
   }
+
+
   QList< QPair< double, QLineF > >::const_iterator vIt = vLines.constBegin();
+  int loopCounter = 0;
   for ( ; vIt != vLines.constEnd(); ++vIt )
   {
-    currentAnnotationString = QString::number( vIt->first );
+    if ( mGridAnnotationType == Sector )
+    {
+      int letterNumber = loopCounter % 26 + 66;
+      currentAnnotationString = QString( QChar( letterNumber ) );
+    }
+    else
+    {
+      currentAnnotationString = QString::number( vIt->first );
+    }
+
     currentFontWidth = textWidthMillimeters( mGridAnnotationFont, currentAnnotationString );
     if ( mGridAnnotationDirection == Horizontal )
     {
+      xpos1 = vIt->second.x1() - currentFontWidth / 2.0;
+      xpos2 = vIt->second.x2() - currentFontWidth / 2.0;
       if ( mGridAnnotationPosition == OutsideMapFrame )
       {
-        currentAnnotationPos1 = QPointF( vIt->second.x1() - currentFontWidth / 2.0, vIt->second.y1() - mAnnotationFrameDistance );
-        currentAnnotationPos2 = QPointF( vIt->second.x2() - currentFontWidth / 2.0, vIt->second.y2() + mAnnotationFrameDistance + currentFontHeight );
+        ypos1 = vIt->second.y1() - mAnnotationFrameDistance;
+        ypos2 = vIt->second.y2() + mAnnotationFrameDistance + currentFontHeight;
       }
       else
       {
-        currentAnnotationPos1 = QPointF( vIt->second.x1() - currentFontWidth / 2.0, vIt->second.y1() + mAnnotationFrameDistance + currentFontHeight );
-        currentAnnotationPos2 = QPointF( vIt->second.x2() - currentFontWidth / 2.0, vIt->second.y2() - mAnnotationFrameDistance );
+        ypos1 = vIt->second.y1() + mAnnotationFrameDistance + currentFontHeight;
+        ypos2 = vIt->second.y2() - mAnnotationFrameDistance;
       }
     }
     else //vertical annotation
     {
+      xpos1 = vIt->second.x1() + currentFontHeight / 2.0;
+      xpos2 = vIt->second.x2() + currentFontHeight / 2.0;
       if ( mGridAnnotationPosition == OutsideMapFrame )
       {
-        currentAnnotationPos1 = QPointF( vIt->second.x1() + currentFontHeight / 2.0, vIt->second.y1() - mAnnotationFrameDistance );
-        currentAnnotationPos2 = QPointF( vIt->second.x2() + currentFontHeight / 2.0, vIt->second.y2() + mAnnotationFrameDistance + currentFontWidth );
+        ypos1 = vIt->second.y1() - mAnnotationFrameDistance;
+        ypos2 = vIt->second.y2() + mAnnotationFrameDistance + currentFontWidth;
       }
       else
       {
-        currentAnnotationPos1 = QPointF( vIt->second.x1() + currentFontHeight / 2.0, vIt->second.y1() + currentFontWidth + mAnnotationFrameDistance );
-        currentAnnotationPos2 = QPointF( vIt->second.x1() + currentFontHeight / 2.0, vIt->second.y2() - mAnnotationFrameDistance );
+        ypos1 = vIt->second.y1() + currentFontWidth + mAnnotationFrameDistance;
+        ypos2 = vIt->second.y2() - mAnnotationFrameDistance;
       }
     }
-    drawAnnotation( p, currentAnnotationPos1, rotation, currentAnnotationString );
-    drawAnnotation( p, currentAnnotationPos2, rotation, currentAnnotationString );
+
+    //shift positions in case of sector annotation
+    if ( mGridAnnotationType == Sector && loopCounter < ( vLines.size() - 1 ) )
+    {
+      xpos1 += ( vLines.at( loopCounter + 1 ).second.x1() - vLines.at( loopCounter ).second.x1() ) / 2.0;
+      xpos2 += ( vLines.at( loopCounter + 1 ).second.x2() - vLines.at( loopCounter ).second.x2() ) / 2.0;
+    }
+    else if ( mGridAnnotationType == Sector && loopCounter == ( vLines.size() - 1 ) )
+    {
+      xpos1 += ( rect().width() - vLines.at( loopCounter ).second.x1() ) / 2.0;
+      xpos2 += ( rect().width() - vLines.at( loopCounter ).second.x2() ) / 2.0;
+    }
+    drawAnnotation( p, QPointF( xpos1, ypos1 ), rotation, currentAnnotationString );
+    drawAnnotation( p, QPointF( xpos1, ypos2 ), rotation, currentAnnotationString );
+
+    if ( mGridAnnotationType == Sector && loopCounter == 0 )
+    {
+      drawAnnotation( p, QPointF( vLines.at( loopCounter ).second.x1() / 2.0, ypos1 ), rotation, "A" );
+      drawAnnotation( p, QPointF( vLines.at( loopCounter ).second.x2() / 2.0, ypos2 ), rotation, "A" );
+    }
+    ++loopCounter;
   }
 
   //then annotations for horizontal grid lines
@@ -835,40 +873,72 @@ void QgsComposerMap::drawGridAnnotations( QPainter* p, const QList< QPair< doubl
   {
     rotation = 270;
   }
+
+  loopCounter = 0;
   QList< QPair< double, QLineF > >::const_iterator hIt = hLines.constBegin();
   for ( ; hIt != hLines.constEnd(); ++hIt )
   {
-    currentAnnotationString = QString::number( hIt->first );
+    if ( mGridAnnotationType == Sector )
+    {
+      currentAnnotationString = QString::number( hLines.size() - loopCounter - 1 );
+    }
+    else
+    {
+      currentAnnotationString = QString::number( hIt->first );
+    }
+
     currentFontWidth = textWidthMillimeters( mGridAnnotationFont, currentAnnotationString );
     if ( mGridAnnotationDirection == Vertical )
     {
+      ypos1 = hIt->second.y1() + currentFontWidth / 2.0;
+      ypos2 = hIt->second.y2() + currentFontWidth / 2.0;
       if ( mGridAnnotationPosition == OutsideMapFrame )
       {
-        currentAnnotationPos1 = QPointF( hIt->second.x1() - mAnnotationFrameDistance, hIt->second.y1() + currentFontWidth / 2.0 );
-        currentAnnotationPos2 = QPointF( hIt->second.x2() + mAnnotationFrameDistance + currentFontHeight, hIt->second.y2() + currentFontWidth / 2.0 );
+        xpos1 = hIt->second.x1() - mAnnotationFrameDistance;
+        xpos2 = hIt->second.x2() + mAnnotationFrameDistance + currentFontHeight;
       }
       else
       {
-        currentAnnotationPos1 = QPointF( hIt->second.x1() + mAnnotationFrameDistance + currentFontHeight, hIt->second.y1() + currentFontWidth / 2.0 );
-        currentAnnotationPos2 = QPointF( hIt->second.x2() - mAnnotationFrameDistance, hIt->second.y1() + currentFontWidth / 2.0 );
+        xpos1 = hIt->second.x1() + mAnnotationFrameDistance + currentFontHeight;
+        xpos2 = hIt->second.x2() - mAnnotationFrameDistance;
       }
     }
     else
     {
+      ypos1 = hIt->second.y1() + currentFontHeight / 2.0;
+      ypos2 = hIt->second.y2() + currentFontHeight / 2.0;
       if ( mGridAnnotationPosition == OutsideMapFrame )
       {
-        currentAnnotationPos1 = QPointF( hIt->second.x1() - ( mAnnotationFrameDistance + currentFontWidth ), hIt->second.y1() + currentFontHeight / 2.0 );
-        currentAnnotationPos2 = QPointF( hIt->second.x2() + mAnnotationFrameDistance, hIt->second.y2() + currentFontHeight / 2.0 );
+        xpos1 = hIt->second.x1() - ( mAnnotationFrameDistance + currentFontWidth );
+        xpos2 = hIt->second.x2() + mAnnotationFrameDistance;
       }
       else
       {
-        currentAnnotationPos1 = QPointF( hIt->second.x1() + mAnnotationFrameDistance, hIt->second.y1() + currentFontHeight / 2.0 );
-        currentAnnotationPos2 = QPointF( hIt->second.x2() - ( mAnnotationFrameDistance + currentFontWidth ), hIt->second.y2() + currentFontHeight / 2.0 );
+        xpos1 = hIt->second.x1() + mAnnotationFrameDistance;
+        xpos2 = hIt->second.x2() - ( mAnnotationFrameDistance + currentFontWidth );
       }
     }
 
-    drawAnnotation( p, currentAnnotationPos1, rotation, currentAnnotationString );
-    drawAnnotation( p, currentAnnotationPos2, rotation, currentAnnotationString );
+    //shift y-Positions in case of sectoral annotations
+    if ( mGridAnnotationType == Sector && loopCounter < ( hLines.size() - 1 ) )
+    {
+      ypos1 += ( hLines.at( loopCounter + 1 ).second.y1() - hLines.at( loopCounter ).second.y1() ) / 2.0;
+      ypos2 += ( hLines.at( loopCounter + 1 ).second.y2() - hLines.at( loopCounter ).second.y2() ) / 2.0;
+    }
+    else if ( mGridAnnotationType == Sector && loopCounter == ( hLines.size() - 1 ) )
+    {
+      ypos1 -= hLines.at( loopCounter ).second.y1() / 2.0;
+      ypos2 -= hLines.at( loopCounter ).second.y2() / 2.0;
+    }
+
+    drawAnnotation( p, QPointF( xpos1, ypos1 ), rotation, currentAnnotationString );
+    drawAnnotation( p, QPointF( xpos2, ypos2 ), rotation, currentAnnotationString );
+    if ( mGridAnnotationType == Sector && loopCounter == 0 )
+    {
+      drawAnnotation( p, QPointF( xpos1, ( rect().height() + hLines.at( loopCounter ).second.y1() ) / 2.0 ), rotation, QString::number( hLines.size() ) );
+      drawAnnotation( p, QPointF( xpos2, ( rect().height() + hLines.at( loopCounter ).second.y2() ) / 2.0 ), rotation, QString::number( hLines.size() ) );
+    }
+    ++loopCounter;
   }
 }
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>472</width>
-    <height>657</height>
+    <height>675</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -281,7 +281,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1" colspan="3">
+       <item row="1" column="1" colspan="2">
         <widget class="QComboBox" name="mGridTypeComboBox"/>
        </item>
        <item row="2" column="0">
@@ -291,21 +291,21 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1" colspan="3">
+       <item row="2" column="1" colspan="2">
         <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
          <property name="maximum">
           <double>999999.000000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="2" column="5">
+       <item row="2" column="3">
         <widget class="QLabel" name="mIntervalYLabel">
          <property name="text">
           <string>Interval Y:</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="6">
+       <item row="2" column="4">
         <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
          <property name="maximum">
           <double>9999999.000000000000000</double>
@@ -319,21 +319,21 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1" colspan="3">
+       <item row="3" column="1" colspan="2">
         <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
          <property name="maximum">
           <double>9999999.000000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="3" column="5">
+       <item row="3" column="3">
         <widget class="QLabel" name="mOffsetYLabel">
          <property name="text">
           <string>Offset Y:</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="6">
+       <item row="3" column="4">
         <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
          <property name="maximum">
           <double>9999999.000000000000000</double>
@@ -347,17 +347,17 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1" colspan="3">
+       <item row="4" column="1" colspan="2">
         <widget class="QDoubleSpinBox" name="mLineWidthSpinBox"/>
        </item>
-       <item row="4" column="4" colspan="2">
+       <item row="4" column="3">
         <widget class="QLabel" name="mLineColorLabel">
          <property name="text">
           <string>Line color:</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="6">
+       <item row="4" column="4">
         <widget class="QgsColorButton" name="mLineColorButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -384,10 +384,10 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="2" colspan="2">
+       <item row="6" column="2">
         <widget class="QComboBox" name="mAnnotationPositionComboBox"/>
        </item>
-       <item row="6" column="5">
+       <item row="6" column="3">
         <widget class="QLabel" name="mAnnotationDirectionLabel">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
@@ -397,20 +397,30 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="6">
+       <item row="6" column="4">
         <widget class="QComboBox" name="mAnnotationDirectionComboBox"/>
        </item>
-       <item row="7" column="0" colspan="3">
+       <item row="7" column="0" colspan="2">
         <widget class="QLabel" name="mDistanceToFrameLabel">
          <property name="text">
           <string>Distance to map frame:</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="3" colspan="2">
+       <item row="7" column="2">
         <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
        </item>
-       <item row="7" column="6">
+       <item row="7" column="3">
+        <widget class="QLabel" name="mAnnotationTypeLabel">
+         <property name="text">
+          <string>Annotation type:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="4">
+        <widget class="QComboBox" name="mAnnotationTypeComboBox"/>
+       </item>
+       <item row="8" column="0">
         <widget class="QPushButton" name="mAnnotationFontButton">
          <property name="text">
           <string>Font...</string>
