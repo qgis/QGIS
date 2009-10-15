@@ -15,8 +15,8 @@
 
 ;Version variables
 
-!define RELEASE_VERSION_NUMBER "1.3.0"
-!define RELEASE_VERSION_NAME "Mimas"
+!define RELEASE_VERSION_NUMBER "1.4.0"
+!define RELEASE_VERSION_NAME "Trunk-Test-Build"
 !define RELEASE_SVN_REVISION "11639"
 !define RELEASE_BINARY_REVISION "0"
 
@@ -27,6 +27,9 @@
 
 ; Added by Tim to get optimal compression
 SetCompressor /SOLID lzma
+; Added by Tim to allow priveledge elevation in vista
+RequestExecutionLevel admin
+
 ;----------------------------------------------------------------------------------------------------------------------------
 
 ;Don't modify the following lines

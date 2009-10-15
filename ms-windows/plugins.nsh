@@ -22,5 +22,9 @@ WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "scalebarplugin
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "spitplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "wfsplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "grassplugin" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "diagramoverlay" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "oracleplugin" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "evis" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "rasterterrainplugin" "true"
 
 ###############################  reg2nsis end  #################################
