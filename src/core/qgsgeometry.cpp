@@ -5181,13 +5181,6 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
     return 0;
   }
 
-
-  bool isRing = false;
-  if ( GEOSGeomTypeId( line ) == GEOS_LINEARRING )
-  {
-    isRing = true;
-  }
-
   //begin and end point of original line
   const GEOSCoordSequence* lineCoordSeq = GEOSGeom_getCoordSeq( line );
   if ( !lineCoordSeq )
@@ -5211,6 +5204,12 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
   GEOSCoordSeq_getY( lineCoordSeq, lineCoordSeqSize - 1, &y2 );
   GEOSGeometry* beginLineVertex = createGeosPoint( QgsPoint( x1, y1 ) );
   GEOSGeometry* endLineVertex = createGeosPoint( QgsPoint( x2, y2 ) );
+
+  bool isRing = false;
+  if ( GEOSGeomTypeId( line ) == GEOS_LINEARRING || GEOSEquals( beginLineVertex, endLineVertex ) == 1 )
+  {
+    isRing = true;
+  }
 
 //node line and reshape line
   GEOSGeometry* nodedGeometry = nodeGeometries( reshapeLineGeos, line );
