@@ -61,6 +61,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mAnnotationPositionComboBox_currentIndexChanged( const QString& text );
     void on_mDrawAnnotationCheckBox_stateChanged( int state );
     void on_mAnnotationDirectionComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationTypeComboBox_currentIndexChanged( const QString& text );
 
     /**Updates width and height without notify the composer map (to avoid infinite recursion)*/
     void updateSettingsNoSignals();
