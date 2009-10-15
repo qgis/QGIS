@@ -358,6 +358,12 @@
         <property name="value" >
          <double>1.000000000000000</double>
         </property>
+        <property name="decimals">
+         <number>5</number>
+        </property>
+	<property name="maximum">
+         <double>1000000</double>
+        </property>
        </widget>
       </item>
       <item row="3" column="4" >
