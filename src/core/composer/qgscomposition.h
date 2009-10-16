@@ -36,6 +36,7 @@ class QDomElement;
  * */
 class CORE_EXPORT QgsComposition: public QGraphicsScene
 {
+    Q_OBJECT
   public:
 
     /** \brief Plot type */
@@ -187,6 +188,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     void loadGridAppearanceSettings();
     void saveGridAppearanceSettings();
+
+  signals:
+    void paperSizeChanged();
 };
 
 #endif
