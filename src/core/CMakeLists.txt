@@ -181,6 +181,7 @@ composer/qgscomposermap.h
 composer/qgscomposerpicture.h
 composer/qgscomposerscalebar.h
 composer/qgscomposeritemgroup.h
+composer/qgscomposition.h
 composer/qgslegendmodel.h
 symbology/qgsmarkercatalogue.h
 raster/qgsrasterlayer.h

@@ -59,6 +59,7 @@ void QgsComposition::setPaperSize( double width, double height )
   if ( mPaperItem )
   {
     mPaperItem->setRect( QRectF( 0, 0, width, height ) );
+    emit paperSizeChanged();
   }
 }
 
