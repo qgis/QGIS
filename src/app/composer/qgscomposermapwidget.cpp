@@ -25,10 +25,11 @@
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidget(), mComposerMap( composerMap )
 {
   setupUi( this );
+  mGridDockWidget->setVisible( false );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
-  gridLayout_3->addWidget( itemPropertiesWidget, 8, 0, 1, 1 );
+  gridLayout_3->addWidget( itemPropertiesWidget, 7, 0, 1, 1 );
   QDoubleValidator v( 0 );
 
   mWidthLineEdit->setValidator( &v );
@@ -670,4 +671,16 @@ void QgsComposerMapWidget::on_mAnnotationTypeComboBox_currentIndexChanged( const
     mComposerMap->setGridAnnotationType( QgsComposerMap::Coordinate );
   }
   mComposerMap->update();
+}
+
+void QgsComposerMapWidget::on_mShowGridDialogCheckBox_stateChanged( int state )
+{
+  if ( state == Qt::Checked )
+  {
+    mGridDockWidget->setVisible( true );
+  }
+  else
+  {
+    mGridDockWidget->setVisible( false );
+  }
 }
