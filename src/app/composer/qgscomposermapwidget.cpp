@@ -474,46 +474,46 @@ void QgsComposerMapWidget::on_mGridCheckBox_stateChanged( int state )
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mIntervalXSpinBox_valueChanged( double d )
+void QgsComposerMapWidget::on_mIntervalXSpinBox_editingFinished()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  mComposerMap->setGridIntervalX( d );
+  mComposerMap->setGridIntervalX( mIntervalXSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mIntervalYSpinBox_valueChanged( double d )
+void QgsComposerMapWidget::on_mIntervalYSpinBox_editingFinished()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  mComposerMap->setGridIntervalY( d );
+  mComposerMap->setGridIntervalY( mIntervalYSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mOffsetXSpinBox_valueChanged( double d )
+void QgsComposerMapWidget::on_mOffsetXSpinBox_editingFinished()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  mComposerMap->setGridOffsetX( d );
+  mComposerMap->setGridOffsetX( mOffsetXSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mOffsetYSpinBox_valueChanged( double d )
+void QgsComposerMapWidget::on_mOffsetYSpinBox_editingFinished()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  mComposerMap->setGridOffsetY( d );
+  mComposerMap->setGridOffsetY( mOffsetYSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
 }
