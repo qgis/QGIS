@@ -568,7 +568,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   annotationElem.setAttribute( "frameDistance", mAnnotationFrameDistance );
   annotationElem.setAttribute( "direction", mGridAnnotationDirection );
   annotationElem.setAttribute( "font", mGridAnnotationFont.toString() );
-  annotationElem.setAttribute( "type", mGridAnnotationType);
+  annotationElem.setAttribute( "type", mGridAnnotationType );
 
   gridElem.appendChild( annotationElem );
   composerMapElem.appendChild( gridElem );
@@ -1051,7 +1051,7 @@ QgsRectangle QgsComposerMap::transformedExtent() const
 
 double QgsComposerMap::maxExtensionXDirection() const
 {
-  if ( mGridAnnotationPosition != OutsideMapFrame )
+  if ( !mGridEnabled || !mShowGridAnnotation || mGridAnnotationPosition != OutsideMapFrame )
   {
     return 0;
   }
@@ -1090,7 +1090,7 @@ double QgsComposerMap::maxExtensionXDirection() const
 
 double QgsComposerMap::maxExtensionYDirection() const
 {
-  if ( mGridAnnotationPosition != OutsideMapFrame )
+  if ( !mGridEnabled || !mShowGridAnnotation || mGridAnnotationPosition != OutsideMapFrame )
   {
     return 0;
   }
