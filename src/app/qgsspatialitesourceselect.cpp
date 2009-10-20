@@ -319,7 +319,7 @@ void QgsSpatiaLiteSourceSelect::addNewConnection()
     QString myPath = myFI.path();
     QString myName = myFI.fileName();
 
-    handle = openSpatiaLiteDb( myFI.canonicalPath() );
+    handle = openSpatiaLiteDb( myFI.canonicalFilePath() );
     if ( handle )
     {
       // OK, this one is a valid SpatiaLite DB
