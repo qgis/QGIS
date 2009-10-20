@@ -2045,57 +2045,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
         <source>Show type description</source>
-        <translation type="unfinished"></translation>
+        <translation>Tone type-omschrijving</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="81"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="84"/>
         <source>Shows brief description of selected relation type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon korte beschrijving van geselecteerde type relatie.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="135"/>
         <source>Generate tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags genereren</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="138"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="141"/>
         <source>Fills tag table with tags that are typical for relation of specified type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel vullen met tags typisch voor dit soort relaties.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="151"/>
         <source>Remove all selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder de geselecteerde tags</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="154"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="157"/>
         <source>Removes all selected tags.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijdert alle geselecteerde tags.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="205"/>
         <source>Select member on map</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer onderdeel op de kaart</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="208"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="211"/>
         <source>Starts process of selecting next relation member on map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Volgende relatie-onderdeel selectie starten.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="224"/>
         <source>Remove all selected members</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle geselecteerde onderdelen verwijderen</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="227"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="230"/>
         <source>Removes all selected members.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijdert alle geselecteerde onderdelen.</translation>
     </message>
 </context>
 <context>
@@ -2437,21 +2437,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="103"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="106"/>
         <source>Identify feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten Identificeren</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="134"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="137"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="140"/>
         <source>Move feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartobject verplaatsen</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="419"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="422"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="425"/>
         <source>Remove this feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Object verwijderen</translation>
     </message>
 </context>
 <context>
@@ -4545,17 +4545,17 @@ Gecompileerd met Qt-versie</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2059"/>
         <source>Whats new in Version 1.3.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>Wat is er nieuw in Versie 1.3.0?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2062"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.2.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series.</source>
-        <translation type="unfinished"></translation>
+        <translation>Let op: dit is een release uit onze &apos;haantje-de-voorste&apos;-releases. Daarom bevat het nieuwe features en uitbreidingen van de programmeerinterface ten opzichte van QGIS 1.0.x en QGIS 1.1.0. Als stabiliteit en langetermijn ondersteuning belangrijker is voor u dan vette nieuwe en ongeteste features, dan raden wij u aan om een kopie van QGIS uit de stabiele 1.0.x versie te gebruiken.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2071"/>
         <source>This release includes over 30 bug fixes and enhancements over the QGIS 1.2.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze release bevat meer dan 40 verbeteringen ten opzicht van de 1.2.0 versie. Verder zijn de volgende nieuwe functionaliteiten toegevoegd (engels):</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2074"/>
@@ -4581,7 +4581,7 @@ Gecompileerd met Qt-versie</translation>
   &lt;li&gt;Added ability to select the primary key for views.&lt;/li&gt;
   &lt;li&gt;Zoom to a coordinate by entering it in the status bar coordinate display.&lt;/li&gt;
 &lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5165"/>
@@ -6200,7 +6200,7 @@ Fouten:  %2
         <location filename="../src/app/qgisapp.cpp" line="744"/>
         <location filename="../src/app/qgisapp.cpp" line="746"/>
         <source>Rotate Point Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Puntsymbolen Roteren</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="774"/>
@@ -6739,7 +6739,7 @@ Deze kopie van QGIS heeft geen SpatialLite ondersteuning.</translation>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="202"/>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>Meewerkenden</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="230"/>
@@ -6870,7 +6870,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="294"/>
         <source>Qt Image Plugin Search Paths	&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt-Image Plugin zoekpaden		&lt;br&gt;</translation>
     </message>
     <message>
         <source>Qt Image Plugin Search Paths&lt;br&gt;</source>
@@ -7454,12 +7454,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="46"/>
         <source>Unselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Deselecteer alles</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="68"/>
         <source>Move selection to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Verplaats selectie naar boven</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="83"/>
@@ -7826,7 +7826,7 @@ Foutmelding: %2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="61"/>
         <source>Hidden</source>
-        <translation type="unfinished">Verborgen</translation>
+        <translation>Verborgen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="76"/>
@@ -7922,12 +7922,12 @@ Foutmelding: %2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="440"/>
         <source>An immutable attribute is read-only - the user is not able to modify the contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Een &apos;alleen-lezen&apos; attribuut - de gebruiker kan de inhoud niet aanpassen of veranderen.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="467"/>
         <source>A hidden attribute will be invisible - the user is not able to see it&apos;s contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Een verborgen attribuut is onzichtbaar - de gebruiker kan de inhoud ervan niet zien.</translation>
     </message>
     <message>
         <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
@@ -11171,44 +11171,44 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../src/app/qgsfieldcalculator.cpp" line="86"/>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="325"/>
         <source>Double</source>
-        <translation type="unfinished">Double</translation>
+        <translation>Double</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="26"/>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="90"/>
         <source>Integer</source>
-        <translation type="unfinished">Integer</translation>
+        <translation>Integer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="27"/>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="94"/>
         <source>String</source>
-        <translation type="unfinished">String</translation>
+        <translation>String</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="57"/>
         <source>Syntax error</source>
-        <translation type="unfinished"></translation>
+        <translation>Syntax fout</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="104"/>
         <source>Provider error</source>
-        <translation type="unfinished"></translation>
+        <translation>Provider fout</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="104"/>
         <source>Could not add the new field to the provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het toevoegen van een nieuw veld aan de provider is mislukt.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="168"/>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="168"/>
         <source>An error occured while evaluating the calculation string.</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is een fout opgetreden bij het evalueren van de berekenings-tekst.</translation>
     </message>
 </context>
 <context>
@@ -11216,142 +11216,142 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="13"/>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld berekening</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="19"/>
         <source>Update existing field</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestaande velden vernieuwen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="29"/>
         <source>Only update selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen de geselecteerde objecten</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="36"/>
         <source>New field</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw veld</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="42"/>
         <source>Output field name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam voor veld:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="52"/>
         <source>Output field type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type voor veld:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="62"/>
         <source>Output field width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Veldbreedte:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="72"/>
         <source>Output field precision:</source>
-        <translation type="unfinished"></translation>
+        <translation>Precisie voor veld:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="85"/>
         <source>Fields</source>
-        <translation type="unfinished">Velden</translation>
+        <translation>Velden</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="97"/>
         <source>Values</source>
-        <translation type="unfinished">Waarden</translation>
+        <translation>Waarden</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="106"/>
         <source>Sample</source>
-        <translation type="unfinished">Voorbeeld</translation>
+        <translation>Voorbeeld</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="113"/>
         <source>All</source>
-        <translation type="unfinished">Alles</translation>
+        <translation>Alles</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="123"/>
         <source>Operators</source>
-        <translation type="unfinished">Operatoren</translation>
+        <translation>Operatoren</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="129"/>
         <source>+</source>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="136"/>
         <source>*</source>
-        <translation type="unfinished">*</translation>
+        <translation>*</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="143"/>
         <source>sqrt</source>
-        <translation type="unfinished"></translation>
+        <translation>wortel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="150"/>
         <source>sin</source>
-        <translation type="unfinished"></translation>
+        <translation>sin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="157"/>
         <source>tan</source>
-        <translation type="unfinished"></translation>
+        <translation>tan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="164"/>
         <source>acos</source>
-        <translation type="unfinished"></translation>
+        <translation>acos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="171"/>
         <source>(</source>
-        <translation type="unfinished"></translation>
+        <translation>(</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="178"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="185"/>
         <source>/</source>
-        <translation type="unfinished">/</translation>
+        <translation>/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="192"/>
         <source>^</source>
-        <translation type="unfinished"></translation>
+        <translation>^</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="199"/>
         <source>cos</source>
-        <translation type="unfinished"></translation>
+        <translation>cos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="206"/>
         <source>asin</source>
-        <translation type="unfinished"></translation>
+        <translation>asin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="213"/>
         <source>atan</source>
-        <translation type="unfinished"></translation>
+        <translation>atan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="220"/>
         <source>)</source>
-        <translation type="unfinished">)</translation>
+        <translation>))</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="230"/>
         <source>Field calculator expression:</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressie voor veldberekening:</translation>
     </message>
 </context>
 <context>
@@ -15743,7 +15743,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="90"/>
         <source>Identify Results</source>
-        <translation type="unfinished">Identificatieresultaten</translation>
+        <translation>Identificatieresultaten</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="141"/>
@@ -15754,7 +15754,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsidentifyresults.cpp" line="181"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="291"/>
         <source>(Actions)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Acties)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="261"/>
@@ -15780,12 +15780,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="386"/>
         <source>Expand all</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles uitklappen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="390"/>
         <source>Collapse all</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles inklappen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="831"/>
@@ -17298,12 +17298,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="311"/>
         <source>feature id</source>
-        <translation type="unfinished"></translation>
+        <translation>Object-id</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="311"/>
         <source>new feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw kaartobject</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="338"/>
@@ -17439,27 +17439,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen puntobject</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen puntobjecten gevonden op deze positie. Klik dichterbij het object of verhoog de (zoekk)tolerantie onder: Bewerken-&gt;Opties-&gt;Digitaliseren-&gt;Zoekradius voor hoek-aanpassingen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>No rotation Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen rotatie-Attributen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>De aktieve puntlaag heeft geen rotatie-attribuut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="185"/>
         <source>Rotate symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Roteer symbool</translation>
     </message>
 </context>
 <context>
@@ -18486,22 +18486,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="31"/>
         <source>Text data</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst-data</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="32"/>
         <source>Whole number</source>
-        <translation type="unfinished"></translation>
+        <translation>Geheel getal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="33"/>
         <source>Decimal number</source>
-        <translation type="unfinished"></translation>
+        <translation>Decimaal getal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="36"/>
         <source>ESRI Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI-shape gegevens</translation>
     </message>
 </context>
 <context>
@@ -18509,82 +18509,82 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="13"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished">Nieuwe Vectorlaag</translation>
+        <translation>Nieuwe Vectorlaag</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="25"/>
         <source>File format</source>
-        <translation type="unfinished">Bestandsformaat</translation>
+        <translation>Bestandsformaat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="42"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="91"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="205"/>
         <source>Type</source>
-        <translation type="unfinished">Type</translation>
+        <translation>Type</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="48"/>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation>Punt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="55"/>
         <source>Line</source>
-        <translation type="unfinished">Lijn</translation>
+        <translation>Lijn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="62"/>
         <source>Polygon</source>
-        <translation type="unfinished">Polygoon</translation>
+        <translation>Polygoon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="72"/>
         <source>New attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw attribuut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="78"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="200"/>
         <source>Name</source>
-        <translation type="unfinished">Naam</translation>
+        <translation>Naam</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="104"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="210"/>
         <source>Width</source>
-        <translation type="unfinished">Breedte</translation>
+        <translation>Breedte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="117"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="215"/>
         <source>Precision</source>
-        <translation type="unfinished">Precisie</translation>
+        <translation>Precisie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="156"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribuut toevoegen aan lijst</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="162"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen aan attributenlijst</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="178"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributenlijst</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="242"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished">Verwijder geselecteerde attribuut</translation>
+        <translation>Verwijder geselecteerde attribuut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="245"/>
         <source>Removed selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder het geselecteerde attribuut</translation>
     </message>
 </context>
 <context>
@@ -18790,17 +18790,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="186"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geheel getal (integer)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="187"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished"></translation>
+        <translation>Decimaal getal (real)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="188"/>
         <source>Text (string)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst (string)</translation>
     </message>
 </context>
 <context>
@@ -19377,7 +19377,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="944"/>
         <source>Marker size</source>
-        <translation type="unfinished">Markergrootte</translation>
+        <translation>Markergrootte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1084"/>
@@ -19533,7 +19533,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="237"/>
         <source>Open identify results in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificeer-resulaten naar een &apos;dock-window&apos; (QGIS herstart vereist)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="251"/>
@@ -19797,12 +19797,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="791"/>
         <source>Default snapping tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard &apos;snapping&apos;-tolerantie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="821"/>
         <source>Search radius for vertex edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoekradius voor hoekpuntaanpassingen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="858"/>
@@ -21989,52 +21989,52 @@ kolom met een 16bit bloknummer heeft.
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="231"/>
         <source>Whole number (smallint - 16bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geheel getal (smallint - 16bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="232"/>
         <source>Whole number (integer 32bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geheel getal (smallint - 32bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="233"/>
         <source>Whole number (integer 64bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geheel getal (smallint - 64bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="234"/>
         <source>Decimal number (numeric)</source>
-        <translation type="unfinished"></translation>
+        <translation>Decimaal getal (numeriek)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="235"/>
         <source>Decimal number (decimal)</source>
-        <translation type="unfinished"></translation>
+        <translation>Decimaal getal (decimaal)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="238"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished"></translation>
+        <translation>Decimaal getal (real)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="239"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
+        <translation>Decimaal getal (double)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="242"/>
         <source>Text, fixed length (char)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst, vaste lengte (char)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="243"/>
         <source>Text, variable length (varchar)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst, variabele lengte (varchar)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="244"/>
         <source>Text (text)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst (text)</translation>
     </message>
 </context>
 <context>
@@ -22230,17 +22230,17 @@ Installeer PostGIS met GEOS-ondersteuning (http://geos.refractions.net)</transla
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="145"/>
         <source>absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>absoluut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="150"/>
         <source>relative</source>
-        <translation type="unfinished"></translation>
+        <translation>relatief</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="158"/>
         <source>Save paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Paden opslaan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="245"/>
@@ -25105,17 +25105,17 @@ De foutmelding was:
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="103"/>
         <source>Binary object (BLOB)</source>
-        <translation type="unfinished"></translation>
+        <translation>Binair object (BLOB)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="105"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
+        <translation>Decimaal getal (double)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="106"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geheel getal (integer)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="230"/>
@@ -25214,7 +25214,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="293"/>
         <source>@</source>
-        <translation type="unfinished"></translation>
+        <translation>@</translation>
     </message>
     <message>
         <source> @ </source>
@@ -26600,7 +26600,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="562"/>
         <source>Hidden</source>
-        <translation type="unfinished">Verborgen</translation>
+        <translation>Verborgen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="749"/>
@@ -26892,7 +26892,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="547"/>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld berekening</translation>
     </message>
 </context>
 <context>
