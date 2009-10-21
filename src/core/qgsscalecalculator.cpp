@@ -68,7 +68,17 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasW
       conversionFactor = 12.0;
       delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
-    case QGis::Degrees:
+    case QGis::DecimalDegrees:
+      // degrees require conversion to meters first
+      conversionFactor = 39.3700787;
+      delta = calculateGeographicDistance( mapExtent );
+      break;
+    case QGis::DegreesMinutesSeconds:
+      // degrees require conversion to meters first
+      conversionFactor = 39.3700787;
+      delta = calculateGeographicDistance( mapExtent );
+      break;
+    case QGis::DegreesDecimalMinutes:
       // degrees require conversion to meters first
       conversionFactor = 39.3700787;
       delta = calculateGeographicDistance( mapExtent );

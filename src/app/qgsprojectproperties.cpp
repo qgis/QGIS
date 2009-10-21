@@ -289,6 +289,10 @@ void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
   {
     radFeet->setChecked( true );
   }
+  else if ( unit == QGis::DegreesMinutesSeconds )
+  {
+    radDMS->setChecked( true );
+  }
   else
   {
     radDecimalDegrees->setChecked( true );
@@ -325,6 +329,10 @@ void QgsProjectProperties::apply()
   else if ( radFeet->isChecked() )
   {
     mapUnit = QGis::Feet;
+  }
+  else if ( radDMS->isChecked() )
+  {
+    mapUnit = QGis::DegreesMinutesSeconds;
   }
   else
   {

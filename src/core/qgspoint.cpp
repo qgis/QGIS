@@ -20,6 +20,7 @@
 #include "qgspoint.h"
 #include <cmath>
 #include <QTextStream>
+#include <QObject> // for tr()
 
 
 QgsPoint::QgsPoint( const QgsPoint& p )
@@ -41,6 +42,31 @@ QString QgsPoint::toString( int thePrecision ) const
 {
   QString rep = QString::number( m_x, 'f', thePrecision ) + QString( "," ) +
                 QString::number( m_y, 'f', thePrecision );
+  return rep;
+}
+
+QString QgsPoint::toDegreesMinutesSeconds( int thePrecision ) const
+{
+  int myDegreesX = int( std::abs( m_x ) );
+  float myFloatMinutesX = float( ( std::abs( m_x ) - myDegreesX ) * 60 );
+  int myIntMinutesX = int( myFloatMinutesX );
+  float mySecondsX = float ( myFloatMinutesX - myIntMinutesX ) * 60;
+
+  int myDegreesY = int( std::abs( m_y ) );
+  float myFloatMinutesY = float( ( std::abs( m_y ) - myDegreesY ) * 60 );
+  int myIntMinutesY = int( myFloatMinutesY );
+  float mySecondsY = float ( myFloatMinutesY - myIntMinutesY ) * 60;
+
+  QString myXHemisphere = m_x < 0 ? QObject::tr("W") : QObject::tr("E");
+  QString myYHemisphere = m_y < 0 ? QObject::tr("S") : QObject::tr("N");
+  QString rep = QString::number( myDegreesX ) + QChar(176) + 
+                QString::number( myIntMinutesX ) + QString("'") +
+                QString::number( mySecondsX, 'f', thePrecision ) + QString( "\"" ) + 
+                myXHemisphere + QString( "," ) +
+                QString::number( myDegreesY ) + QChar(176) + 
+                QString::number( myIntMinutesY ) + QString("'") +
+                QString::number( mySecondsY, 'f', thePrecision ) + QString( "\"" ) +
+                myYHemisphere;
   return rep;
 }
 
