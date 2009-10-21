@@ -4593,7 +4593,14 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
   }
   else
   {
-    mCoordsEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
+    if ( mMapCanvas->mapUnits() == QGis::DegreesMinutesSeconds )
+    {
+      mCoordsEdit->setText( p.toDegreesMinutesSeconds( mMousePrecisionDecimalPlaces ) );
+    }
+    else
+    {
+      mCoordsEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
+    }
     if ( mCoordsEdit->width() > mCoordsEdit->minimumWidth() )
     {
       mCoordsEdit->setMinimumWidth( mCoordsEdit->width() );
