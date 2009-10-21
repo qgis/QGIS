@@ -5577,8 +5577,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
 
       //merge tool needs editable layer and provider with the capability of adding and deleting features
-      if ( vlayer->isEditable() && ( dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) \
-           &&  QgsVectorDataProvider::AddFeatures )
+      if ( vlayer->isEditable() &&
+           (dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures) &&
+           (dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues) &&
+           (dprovider->capabilities() & QgsVectorDataProvider::AddFeatures) )
       {
         mActionMergeFeatures->setEnabled( layerHasSelection );
       }
