@@ -130,6 +130,8 @@ void QgsFieldCalculator::accept()
     bool onlySelected = ( mOnlyUpdateSelectedCheckBox->checkState() == Qt::Checked );
     QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
 
+    // block layerModified signals (that would trigger table update)
+    mVectorLayer->blockSignals( true );
 
     mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
     while ( mVectorLayer->nextFeature( feature ) )
@@ -156,6 +158,10 @@ void QgsFieldCalculator::accept()
       {
         mVectorLayer->changeAttributeValue( feature.id(), attributeId, value.string(), false );
       }
+
+      // stop blocking layerModified signals and make sure that one layerModified signal is emitted
+      mVectorLayer->blockSignals( true );
+      mVectorLayer->setModified( true, false );
 
     }
 

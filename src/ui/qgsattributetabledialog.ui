@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsAttributeTableDialog</class>
- <widget class="QDialog" name="QgsAttributeTableDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsAttributeTableDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,229 +10,246 @@
     <height>570</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Attribute Table</string>
   </property>
-  <layout class="QGridLayout" >
-   <property name="leftMargin" >
-    <number>0</number>
-   </property>
-   <property name="topMargin" >
-    <number>0</number>
-   </property>
-   <property name="rightMargin" >
-    <number>0</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>0</number>
-   </property>
-   <property name="horizontalSpacing" >
+  <layout class="QGridLayout">
+   <property name="horizontalSpacing">
     <number>2</number>
    </property>
-   <property name="verticalSpacing" >
+   <property name="verticalSpacing">
     <number>0</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QgsAttributeTableView" name="mView" >
-     <property name="alternatingRowColors" >
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QgsAttributeTableView" name="mView">
+     <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
+   <item row="1" column="0">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QToolButton" name="mRemoveSelectionButton" >
-       <property name="toolTip" >
+      <widget class="QToolButton" name="mRemoveSelectionButton">
+       <property name="toolTip">
         <string>Unselect all</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
-        <iconset>../../images/themes/default/mActionUnselectAttributes.png</iconset>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionUnselectAttributes.png</normaloff>../../images/themes/default/mActionUnselectAttributes.png</iconset>
        </property>
-       <property name="iconSize" >
+       <property name="iconSize">
         <size>
          <width>18</width>
          <height>18</height>
         </size>
        </property>
-       <property name="shortcut" >
+       <property name="shortcut">
         <string/>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mSelectedToTopButton" >
-       <property name="toolTip" >
+      <widget class="QToolButton" name="mSelectedToTopButton">
+       <property name="toolTip">
         <string>Move selection to top</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
-        <iconset>../../images/themes/default/mActionSelectedToTop.png</iconset>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionSelectedToTop.png</normaloff>../../images/themes/default/mActionSelectedToTop.png</iconset>
        </property>
-       <property name="iconSize" >
+       <property name="iconSize">
         <size>
          <width>18</width>
          <height>18</height>
         </size>
        </property>
-       <property name="shortcut" >
+       <property name="shortcut">
         <string>Ctrl+T</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mInvertSelectionButton" >
-       <property name="toolTip" >
+      <widget class="QToolButton" name="mInvertSelectionButton">
+       <property name="toolTip">
         <string>Invert selection</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
-        <iconset>../../images/themes/default/mActionInvertSelection.png</iconset>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionInvertSelection.png</normaloff>../../images/themes/default/mActionInvertSelection.png</iconset>
        </property>
-       <property name="iconSize" >
+       <property name="iconSize">
         <size>
          <width>18</width>
          <height>18</height>
         </size>
        </property>
-       <property name="shortcut" >
+       <property name="shortcut">
         <string>Ctrl+S</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mCopySelectedRowsButton" >
-       <property name="toolTip" >
+      <widget class="QToolButton" name="mCopySelectedRowsButton">
+       <property name="toolTip">
         <string>Copy selected rows to clipboard (Ctrl+C)</string>
        </property>
-       <property name="whatsThis" >
+       <property name="whatsThis">
         <string>Copies the selected rows to the clipboard</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
-        <iconset>../../images/themes/default/mActionEditCopy.png</iconset>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionEditCopy.png</normaloff>../../images/themes/default/mActionEditCopy.png</iconset>
        </property>
-       <property name="iconSize" >
+       <property name="iconSize">
         <size>
          <width>18</width>
          <height>18</height>
         </size>
        </property>
-       <property name="shortcut" >
+       <property name="shortcut">
         <string>Ctrl+C</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mZoomMapToSelectedRowsButton" >
-       <property name="toolTip" >
+      <widget class="QToolButton" name="mZoomMapToSelectedRowsButton">
+       <property name="toolTip">
         <string>Zoom map to the selected rows (Ctrl-J)</string>
        </property>
-       <property name="whatsThis" >
+       <property name="whatsThis">
         <string>Zoom map to the selected rows</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
-        <iconset>../../images/themes/default/mActionZoomToSelected.png</iconset>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionZoomToSelected.png</normaloff>../../images/themes/default/mActionZoomToSelected.png</iconset>
        </property>
-       <property name="iconSize" >
+       <property name="iconSize">
         <size>
          <width>18</width>
          <height>18</height>
         </size>
        </property>
-       <property name="shortcut" >
+       <property name="shortcut">
         <string>Ctrl+J</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mToggleEditingButton" >
-       <property name="toolTip" >
+      <widget class="QToolButton" name="mToggleEditingButton">
+       <property name="toolTip">
         <string>Toggle editing mode</string>
        </property>
-       <property name="whatsThis" >
+       <property name="whatsThis">
         <string>Click to toggle table editing</string>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
-        <iconset>../../images/themes/default/mActionToggleEditing.png</iconset>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionToggleEditing.png</normaloff>../../images/themes/default/mActionToggleEditing.png</iconset>
        </property>
-       <property name="iconSize" >
+       <property name="iconSize">
         <size>
          <width>18</width>
          <height>18</height>
         </size>
        </property>
-       <property name="checkable" >
+       <property name="checkable">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="searchFor" >
-       <property name="text" >
+      <widget class="QToolButton" name="mOpenFieldCalculator">
+       <property name="toolTip">
+        <string>Open field calculator</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionCalculateField.png</normaloff>../../images/themes/default/mActionCalculateField.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="searchFor">
+       <property name="text">
         <string>Look for</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="query" />
+      <widget class="QLineEdit" name="query"/>
      </item>
      <item>
-      <widget class="QLabel" name="searchIn" >
-       <property name="text" >
+      <widget class="QLabel" name="searchIn">
+       <property name="text">
         <string>in</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="columnBox" />
+      <widget class="QComboBox" name="columnBox"/>
      </item>
      <item>
-      <widget class="QPushButton" name="searchButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="searchButton">
+       <property name="text">
         <string>&amp;Search</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="2" column="0" >
-    <layout class="QHBoxLayout" >
+   <item row="2" column="0">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QCheckBox" name="cbxShowSelectedOnly" >
-       <property name="text" >
+      <widget class="QCheckBox" name="cbxShowSelectedOnly">
+       <property name="text">
         <string>Show selected records only</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="cbxSearchSelectedOnly" >
-       <property name="text" >
+      <widget class="QCheckBox" name="cbxSearchSelectedOnly">
+       <property name="text">
         <string>Search selected records only</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -240,18 +258,18 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>Advanced search</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mAdvancedSearchButton" >
-       <property name="text" >
+      <widget class="QToolButton" name="mAdvancedSearchButton">
+       <property name="text">
         <string>...</string>
        </property>
-       <property name="iconSize" >
+       <property name="iconSize">
         <size>
          <width>12</width>
          <height>12</height>
