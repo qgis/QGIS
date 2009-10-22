@@ -35,6 +35,14 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVector
 
   //disable ok button until there is text for output field and expression
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  // disable creation of new fields if not supported by data provider
+  if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
+  {
+    mUpdateExistingFieldCheckBox->setEnabled( false ); // must stay checked
+    mNewFieldGroupBox->setEnabled( false );
+    mNewFieldGroupBox->setTitle( mNewFieldGroupBox->title() + tr( " (not supported by provider)" ) );
+  }
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
