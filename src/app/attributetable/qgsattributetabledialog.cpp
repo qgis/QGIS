@@ -31,7 +31,7 @@
 #include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-
+#include "qgsfieldcalculator.h"
 
 class QgsAttributeTableDock : public QDockWidget
 {
@@ -87,9 +87,12 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mZoomMapToSelectedRowsButton->setIcon( getThemeIcon( "/mActionZoomToSelected.png" ) );
   mInvertSelectionButton->setIcon( getThemeIcon( "/mActionInvertSelection.png" ) );
   mToggleEditingButton->setIcon( getThemeIcon( "/mActionToggleEditing.png" ) );
+  mOpenFieldCalculator->setIcon( getThemeIcon( "/mActionCalculateField.png" ) );
   // toggle editing
+  bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
   mToggleEditingButton->setCheckable( true );
-  mToggleEditingButton->setEnabled( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
+  mToggleEditingButton->setEnabled( canChangeAttributes );
+  mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
 
   // info from table to application
   connect( this, SIGNAL( editingToggled( QgsMapLayer * ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer * ) ) );
@@ -522,6 +525,9 @@ void QgsAttributeTableDialog::editingToggled()
   mToggleEditingButton->setChecked( mLayer->isEditable() );
   mToggleEditingButton->blockSignals( false );
 
+  bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+  mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
+
   // (probably reload data if user stopped editing - possible revert)
   mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
 
@@ -547,4 +553,14 @@ void QgsAttributeTableDialog::revert()
   mLayer->rollBack();
   mModel->revert();
   mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+}
+
+void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
+{
+  QgsFieldCalculator calc( mLayer );
+  if ( calc.exec() )
+  {
+    // update model - a field has been added or updated
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+  }
 }
