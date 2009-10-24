@@ -149,6 +149,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   //set the state of the checkboxes
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", false ).toBool() );
+  chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
 
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
@@ -365,6 +366,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
+  settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
   settings.setValue( "qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
   settings.setValue( "qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
@@ -530,7 +532,9 @@ void QgsOptions::on_chkAntiAliasing_stateChanged()
   // used (we we can. but it then doesn't do anti-aliasing, and this
   // will confuse people).
   if ( chkAntiAliasing->isChecked() )
+  {
     chkUseQPixmap->setChecked( false );
+  }
 
 }
 
@@ -540,7 +544,9 @@ void QgsOptions::on_chkUseQPixmap_stateChanged()
   // used (we we can. but it then doesn't do anti-aliasing, and this
   // will confuse people).
   if ( chkUseQPixmap->isChecked() )
+  {
     chkAntiAliasing->setChecked( false );
+  }
 
 }
 
