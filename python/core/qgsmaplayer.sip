@@ -254,7 +254,7 @@ public:
 
     /** Get the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/
-    QImage * cacheImage() { return mpCacheImage; }
+    QImage *cacheImage();
     /** Set the QImage used for caching render operations 
      * @note This method was added in QGIS 1.4 **/
     void setCacheImage( QImage * thepImage ); 
