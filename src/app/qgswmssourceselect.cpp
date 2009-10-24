@@ -593,7 +593,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
     btnChangeSpatialRefSys->setEnabled( FALSE );
   }
 
-  m_selectedStyleIdForLayer         = newSelectedStyleIdForLayer;
+  m_selectedStyleIdForLayer = newSelectedStyleIdForLayer;
   updateLayerOrderTab( newSelectedLayers, newSelectedStylesForSelectedLayers );
 }
 
@@ -997,7 +997,7 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, c
       QTreeWidgetItem* newItem = new QTreeWidgetItem();
       newItem->setText( 0, *layerListIt );
       newItem->setText( 1, *styleListIt );
-      mLayerOrderTreeWidget->insertTopLevelItem( 0, newItem );
+      mLayerOrderTreeWidget->addTopLevelItem( newItem );
     }
 
   }
