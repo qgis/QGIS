@@ -209,7 +209,7 @@ void QgsMeasureDialog::updateUi()
       mTable->setHeaderLabels( QStringList( tr( "Segments (in feet)" ) ) );
       break;
     case QGis::DegreesMinutesSeconds:
-    case QGis::DegreesMinutesMinutes:
+    case QGis::DegreesDecimalMinutes:
     case QGis::Degrees:
       mTable->setHeaderLabels( QStringList( tr( "Segments (in degrees)" ) ) );
       break;
