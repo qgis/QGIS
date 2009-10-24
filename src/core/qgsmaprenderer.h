@@ -199,6 +199,13 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! current extent to be drawn
     QgsRectangle mExtent;
+    //
+    /** Last extent to we drew so we know if we can 
+        used layer render caching or not. Note there are no
+        accessors for this as it is intended to internal
+        use only.
+        @note added in QGIS 1.4 */
+    QgsRectangle mLastExtent;
 
     //! indicates whether it's map image for overview
     bool mOverview;

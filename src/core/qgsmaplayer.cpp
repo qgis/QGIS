@@ -75,6 +75,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mMinScale = 0;
   mMaxScale = 100000000;
   mScaleBasedVisibility = false;
+  mpCacheImage = 0;
 }
 
 
@@ -82,6 +83,10 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
 QgsMapLayer::~QgsMapLayer()
 {
   delete mCRS;
+  if ( mpCacheImage ) 
+  { 
+    delete mpCacheImage; 
+  }  
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -728,4 +733,14 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
 QUndoStack* QgsMapLayer::undoStack()
 {
   return &mUndoStack;
+}
+
+void QgsMapLayer::setCacheImage( QImage * thepImage ) 
+{ 
+  QgsDebugMsg( "cache Image set!" );
+  if ( mpCacheImage ) 
+  { 
+    delete mpCacheImage; 
+  }  
+  mpCacheImage = thepImage; 
 }

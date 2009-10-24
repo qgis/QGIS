@@ -2768,6 +2768,9 @@ int QgsVectorLayer::pendingFeatureCount()
 bool QgsVectorLayer::commitChanges()
 {
   bool success = true;
+  
+  //clear the cache image so markers dont appear anymore on next draw
+  setCacheImage( 0 );
 
   mCommitErrors.clear();
 

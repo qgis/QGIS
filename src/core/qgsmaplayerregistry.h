@@ -82,6 +82,13 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     */
     void removeAllMapLayers();
 
+    /* Clears all layer caches, resetting them to zero and 
+     * freeing up any memory they may have been using. Layer
+     * caches are used to speed up rendering in certain situations
+     * see ticket #1974 for more details.
+     * @note this method was added in QGIS 1.4
+     */
+     void clearAllLayerCaches();
   signals:
 
     /** emitted when a layer is removed from the registry

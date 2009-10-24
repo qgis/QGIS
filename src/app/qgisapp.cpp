@@ -4476,6 +4476,9 @@ void QgisApp::pasteTransformations()
 
 void QgisApp::refreshMapCanvas()
 {
+  //clear all caches first
+  QgsMapLayerRegistry::instance()->clearAllLayerCaches();
+  //then refresh
   mMapCanvas->refresh();
 }
 

@@ -13,9 +13,7 @@
    <string>Options</string>
   </property>
   <property name="windowIcon" >
-   <iconset>
-    <normaloff/>
-   </iconset>
+   <iconset/>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -195,21 +193,21 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="2" >
-           <spacer name="verticalSpacer">
-            <property name="orientation">
+           <spacer>
+            <property name="orientation" >
              <enum>Qt::Vertical</enum>
             </property>
-            <property name="sizeType">
+            <property name="sizeType" >
              <enum>QSizePolicy::Fixed</enum>
             </property>
-            <property name="sizeHint" stdset="0">
+            <property name="sizeHint" >
              <size>
               <width>20</width>
               <height>10</height>
              </size>
             </property>
            </spacer>
-          </item>          
+          </item>
           <item row="2" column="0" colspan="2" >
            <widget class="QCheckBox" name="capitaliseCheckBox" >
             <property name="text" >
@@ -321,6 +319,13 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0" colspan="2" >
+           <widget class="QCheckBox" name="chkUseRenderCaching" >
+            <property name="text" >
+             <string>Use render caching where possible to speed up redraws</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -369,8 +374,8 @@
          </property>
          <property name="sizeHint" >
           <size>
-           <width>20</width>
-           <height>40</height>
+           <width>614</width>
+           <height>111</height>
           </size>
          </property>
         </spacer>
@@ -1308,28 +1313,43 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
   <tabstop>chbAskToSaveProjectChanges</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>
   <tabstop>pbnSelectionColour</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cmbTheme</tabstop>
   <tabstop>capitaliseCheckBox</tabstop>
+  <tabstop>cbxLegendClassifiers</tabstop>
   <tabstop>cbxHideSplash</tabstop>
+  <tabstop>cbxIdentifyResultsDocked</tabstop>
+  <tabstop>cbxAttributeTableDocked</tabstop>
+  <tabstop>cbxAddPostgisDC</tabstop>
   <tabstop>chkAddedVisibility</tabstop>
   <tabstop>spinBoxUpdateThreshold</tabstop>
+  <tabstop>chkUseRenderCaching</tabstop>
   <tabstop>chkAntiAliasing</tabstop>
   <tabstop>chkUseQPixmap</tabstop>
+  <tabstop>cmbIdentifyMode</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>pbnMeasureColour</tabstop>
+  <tabstop>radMeters</tabstop>
+  <tabstop>radFeet</tabstop>
   <tabstop>cmbWheelAction</tabstop>
   <tabstop>spinZoomFactor</tabstop>
+  <tabstop>mOverlayAlgorithmComboBox</tabstop>
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mLineColourToolButton</tabstop>
   <tabstop>mDefaultSnapModeComboBox</tabstop>
   <tabstop>mDefaultSnappingToleranceSpinBox</tabstop>
   <tabstop>mSearchRadiusVertexEditSpinBox</tabstop>
+  <tabstop>mDefaultSnappingToleranceComboBox</tabstop>
+  <tabstop>mSearchRadiusVertexEditComboBox</tabstop>
+  <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
   <tabstop>mMarkerStyleComboBox</tabstop>
+  <tabstop>mMarkerSizeSpinBox</tabstop>
+  <tabstop>chkDisableAttributeValuesDlg</tabstop>
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
@@ -1337,8 +1357,16 @@
   <tabstop>pbnSelectProjection</tabstop>
   <tabstop>grpLocale</tabstop>
   <tabstop>cboLocale</tabstop>
+  <tabstop>grpProxy</tabstop>
+  <tabstop>leProxyHost</tabstop>
+  <tabstop>leProxyPort</tabstop>
+  <tabstop>leProxyUser</tabstop>
+  <tabstop>leProxyPassword</tabstop>
+  <tabstop>mProxyTypeComboBox</tabstop>
+  <tabstop>mAddUrlPushButton</tabstop>
+  <tabstop>mRemoveUrlPushButton</tabstop>
+  <tabstop>mExcludeUrlListWidget</tabstop>
   <tabstop>buttonBox</tabstop>
-  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>

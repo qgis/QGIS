@@ -252,6 +252,13 @@ public:
     /** Return pointer to layer's undo stack */
     QUndoStack* undoStack();
 
+    /** Get the QImage used for caching render operations
+     * @note This method was added in QGIS 1.4 **/
+    QImage * cacheImage() { return mpCacheImage; }
+    /** Set the QImage used for caching render operations 
+     * @note This method was added in QGIS 1.4 **/
+    void setCacheImage( QImage * thepImage ); 
+
 public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
