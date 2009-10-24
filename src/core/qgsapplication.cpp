@@ -281,7 +281,17 @@ const QString QgsApplication::srsDbFilePath()
 }
 
 /*!
-  Returns the path to the svg directory.
+  Returns the paths to the svg directories.
+*/
+const QStringList QgsApplication::svgPaths()
+{
+  return QStringList()
+	  << mPkgDataPath + QString( "/svg/" )
+	  << qgisSettingsDirPath() + QString( "svg/" );
+}
+
+/*!
+  Returns the path to the applications svg directories.
 */
 const QString QgsApplication::svgPath()
 {

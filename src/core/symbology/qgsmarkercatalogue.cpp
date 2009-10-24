@@ -69,27 +69,30 @@ void QgsMarkerCatalogue::refreshList()
   mList.append( "hard:arrow" );
 
   // SVG
-  QString svgPath = QgsApplication::svgPath();
+  QStringList svgPaths = QgsApplication::svgPaths();
 
-  // TODO recursive ?
-  QDir dir( svgPath );
-
-  QStringList dl = dir.entryList( QDir::Dirs );
-
-  for ( QStringList::iterator it = dl.begin(); it != dl.end(); ++it )
+  for(int i=0; i<svgPaths.size(); i++)
   {
-    if ( *it == "." || *it == ".." ) continue;
+    // TODO recursive ?
+    QDir dir( svgPaths[i] );
 
-    QDir dir2( svgPath + *it );
+    QStringList dl = dir.entryList( QDir::Dirs );
 
-    QStringList dl2 = dir2.entryList( QStringList( "*.svg" ), QDir::Files );
-
-    for ( QStringList::iterator it2 = dl2.begin(); it2 != dl2.end(); ++it2 )
+    for ( QStringList::iterator it = dl.begin(); it != dl.end(); ++it )
     {
-      // TODO test if it is correct SVG
-      mList.append( "svg:" + svgPath + *it + "/" + *it2 );
+      if ( *it == "." || *it == ".." ) continue;
+  
+      QDir dir2( svgPaths[i] + *it );
+
+      QStringList dl2 = dir2.entryList( QStringList( "*.svg" ), QDir::Files );
+
+      for ( QStringList::iterator it2 = dl2.begin(); it2 != dl2.end(); ++it2 )
+      {
+        // TODO test if it is correct SVG
+        mList.append( "svg:" + svgPaths[i] + *it + "/" + *it2 );
+      }
     }
-  }
+  } 
 
   emit markersRefreshed();
 }

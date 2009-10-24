@@ -104,7 +104,12 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to the srs.db file.
     static const QString srsDbFilePath();
 
-    //! Returns the path to the svg directory.
+    //! Returns the pathes to svg directories.
+    //! @note added in 1.4
+    static const QStringList svgPaths();
+
+    //! Returns the pathes to svg applications svg directory.
+    //! @note deprecated
     static const QString svgPath();
 
     //! Returns the path to the application prefix directory.
