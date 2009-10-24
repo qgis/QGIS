@@ -220,37 +220,42 @@ void QgsSymbol::setNamedPointSymbol( QString name )
       //by using the qgis svg dir from this local machine
       //one day when user specified svg are allowed we need
       //to adjust this logic probably...
-      QString svgPath = QgsApplication::svgPath();
-      QgsDebugMsg( "SvgPath: " + svgPath );
-      QFileInfo myInfo( myTempName );
-      QString myFileName = myInfo.fileName(); // foo.svg
-      QString myLowestDir = myInfo.dir().dirName();
-      QString myLocalPath = svgPath + QDir::separator() +
-                            myLowestDir + QDir::separator() +
-                            myFileName;
-      QgsDebugMsg( "Alternative svg path: " + myLocalPath );
-      if ( QFile( myLocalPath ).exists() )
+      QStringList svgPaths = QgsApplication::svgPaths();
+
+      for( int i=0; i<svgPaths.size(); i++) 
       {
-        name = "svg:" + myLocalPath;
-        QgsDebugMsg( "Svg found in alternative path" );
-      }
-      else if ( myInfo.isRelative() )
-      {
-        QFileInfo pfi( QgsProject::instance()->fileName() );
-        if ( pfi.exists() && QFile( pfi.canonicalPath() + QDir::separator() + myTempName ).exists() )
-        {
-          name = "svg:" + pfi.canonicalPath() + QDir::separator() + myTempName;
-          QgsDebugMsg( "Svg found in alternative path" );
-        }
-        else
-        {
-          QgsDebugMsg( "Svg not found in project path" );
-        }
-      }
-      else
-      {
-        //couldnt find the file, no happy ending :-(
-        QgsDebugMsg( "Computed alternate path but no svg there either" );
+	QgsDebugMsg( "SvgPath: " + svgPaths[i] );
+	QFileInfo myInfo( myTempName );
+	QString myFileName = myInfo.fileName(); // foo.svg
+	QString myLowestDir = myInfo.dir().dirName();
+	QString myLocalPath = svgPaths[i] + QDir::separator() +
+	  myLowestDir + QDir::separator() +
+	  myFileName;
+	QgsDebugMsg( "Alternative svg path: " + myLocalPath );
+	if ( QFile( myLocalPath ).exists() )
+	{
+	  name = "svg:" + myLocalPath;
+	  QgsDebugMsg( "Svg found in alternative path" );
+	}
+	else if ( myInfo.isRelative() )
+	{
+	  QFileInfo pfi( QgsProject::instance()->fileName() );
+	  if ( pfi.exists() && QFile( pfi.canonicalPath() + QDir::separator() + myTempName ).exists() )
+	  {
+	    name = "svg:" + pfi.canonicalPath() + QDir::separator() + myTempName;
+	    QgsDebugMsg( "Svg found in alternative path" );
+	    break;
+	  }
+	  else
+	  {
+	    QgsDebugMsg( "Svg not found in project path" );
+	  }
+	}
+	else
+	{
+	  //couldnt find the file, no happy ending :-(
+	  QgsDebugMsg( "Computed alternate path but no svg there either" );
+	}
       }
     }
   }
@@ -511,11 +516,17 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document, const QgsVec
     {
       name = fi.canonicalFilePath();
 
-      QString dir = QFileInfo( QgsApplication::svgPath() ).canonicalFilePath();
+      QStringList svgPaths = QgsApplication::svgPaths();
 
-      if ( !dir.isEmpty() && name.startsWith( dir ) )
+      for(int i=0; i<svgPaths.size(); i++)
       {
-        name = name.mid( dir.size() );
+        QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
+
+        if ( !dir.isEmpty() && name.startsWith( dir ) )
+        {
+          name = name.mid( dir.size() );
+	  break;
+        }
       }
     }
 
