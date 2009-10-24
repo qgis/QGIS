@@ -48,7 +48,7 @@ QgsLegendLayerFile::QgsLegendLayerFile( QTreeWidgetItem * theLegendItem, QString
     : QgsLegendItem( theLegendItem, theString ), mLyr( theLayer )
 {
   // Set the initial visibility flag for layers
-  // This user option allows the user to turn off inital drawing of
+  // This user option allows the user to turn off initial drawing of
   // layers when they are added to the map. This is useful when adding
   // many layers and the user wants to adjusty symbology, etc prior to
   // actually viewing the layer.
