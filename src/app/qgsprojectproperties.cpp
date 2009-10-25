@@ -20,6 +20,7 @@
 #include "qgsprojectproperties.h"
 
 //qgis includes
+#include "qgsavoidintersectionsdialog.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
@@ -113,14 +114,16 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mEnableTopologicalEditingCheckBox->setCheckState( Qt::Unchecked );
   }
 
-  int avoidPolygonIntersections = QgsProject::instance()->readNumEntry( "Digitizing", "/AvoidPolygonIntersections", 0 );
-  if ( avoidPolygonIntersections != 0 )
+  bool avoidIntersectionListOk;
+  mAvoidIntersectionsSettings.clear();
+  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", &avoidIntersectionListOk );
+  if ( avoidIntersectionListOk )
   {
-    mAvoidIntersectionsCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    mAvoidIntersectionsCheckBox->setCheckState( Qt::Unchecked );
+    QStringList::const_iterator avoidIt = avoidIntersectionsList.constBegin();
+    for ( ; avoidIt != avoidIntersectionsList.constEnd(); ++avoidIt )
+    {
+      mAvoidIntersectionsSettings.insert( *avoidIt );
+    }
   }
 
   bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk;
@@ -399,8 +402,16 @@ void QgsProjectProperties::apply()
   //write the digitizing settings
   int topologicalEditingEnabled = ( mEnableTopologicalEditingCheckBox->checkState() == Qt::Checked ) ? 1 : 0;
   QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", topologicalEditingEnabled );
-  int avoidPolygonIntersectionsEnabled = ( mAvoidIntersectionsCheckBox->checkState() == Qt::Checked ) ? 1 : 0;
-  QgsProject::instance()->writeEntry( "Digitizing", "/AvoidPolygonIntersections", avoidPolygonIntersectionsEnabled );
+
+  //store avoid intersection layers
+  QStringList avoidIntersectionList;
+  QSet<QString>::const_iterator avoidIt = mAvoidIntersectionsSettings.constBegin();
+  for ( ; avoidIt != mAvoidIntersectionsSettings.constEnd(); ++avoidIt )
+  {
+    avoidIntersectionList.append( *avoidIt );
+  }
+  QgsProject::instance()->writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
+
 
   QMap<QString, LayerEntry>::const_iterator layerEntryIt;
 
@@ -496,6 +507,15 @@ void QgsProjectProperties::on_buttonBox_helpRequested()
 {
   QgsDebugMsg( "running help" );
   QgsContextHelp::run( context_id );
+}
+
+void QgsProjectProperties::on_mAvoidIntersectionsPushButton_clicked()
+{
+  QgsAvoidIntersectionsDialog d( mMapCanvas, mAvoidIntersectionsSettings );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    d.enabledLayers( mAvoidIntersectionsSettings );
+  }
 }
 
 void QgsProjectProperties::on_mSnappingOptionsPushButton_clicked()
