@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>492</width>
+    <width>500</width>
     <height>557</height>
    </rect>
   </property>
@@ -18,17 +18,7 @@
   <property name="modal" >
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <item row="2" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
+  <layout class="QGridLayout" name="gridLayout_2" >
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
@@ -80,7 +70,7 @@
             <property name="sizeType" >
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -116,7 +106,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -163,7 +153,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -286,7 +276,7 @@
          <property name="title" >
           <string>Digitizing</string>
          </property>
-         <layout class="QGridLayout" >
+         <layout class="QGridLayout" name="gridLayout" >
           <item row="0" column="0" >
            <widget class="QCheckBox" name="mEnableTopologicalEditingCheckBox" >
             <property name="text" >
@@ -295,9 +285,9 @@
            </widget>
           </item>
           <item row="1" column="0" >
-           <widget class="QCheckBox" name="mAvoidIntersectionsCheckBox" >
+           <widget class="QPushButton" name="mAvoidIntersectionsPushButton" >
             <property name="text" >
-             <string>Avoid intersections of new polygons</string>
+             <string>Avoid intersections of new polygons...</string>
             </property>
            </widget>
           </item>
@@ -373,6 +363,16 @@
      </widget>
     </widget>
    </item>
+   <item row="1" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
@@ -402,7 +402,6 @@
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
   <tabstop>mEnableTopologicalEditingCheckBox</tabstop>
-  <tabstop>mAvoidIntersectionsCheckBox</tabstop>
   <tabstop>mSnappingOptionsPushButton</tabstop>
   <tabstop>buttonBox</tabstop>
   <tabstop>cbxProjectionEnabled</tabstop>
