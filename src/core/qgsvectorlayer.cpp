@@ -3094,6 +3094,9 @@ bool QgsVectorLayer::rollBack()
   emit editingStopped();
 
   setModified( FALSE );
+  // invalidate teh cache so the layer updates properly to show its original 
+  // after the rollback
+  setCacheImage( 0 );
   triggerRepaint();
 
 
