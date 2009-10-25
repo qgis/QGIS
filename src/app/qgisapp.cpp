@@ -4557,6 +4557,7 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
     }
     else //cancel
     {
+      mActionToggleEditing->setChecked( vlayer->isEditable() );
       return;
     }
   }
@@ -4566,8 +4567,12 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
   }
 
   if ( layer == mMapLegend->currentLayer() )
+  {
     activateDeactivateLayerRelatedActions( layer );
+  }
 
+  //ensure the toolbar icon state is consistent with the layer editing state
+  mActionToggleEditing->setChecked( vlayer->isEditable() );
   vlayer->triggerRepaint();
 }
 
