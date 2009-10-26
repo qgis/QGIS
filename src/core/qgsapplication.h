@@ -108,8 +108,8 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! @note added in 1.4
     static const QStringList svgPaths();
 
-    //! Returns the pathes to svg applications svg directory.
-    //! @note deprecated
+    //! Returns the paths to svg applications svg directory.
+    //! @note deprecated since 1.4
     static const QString svgPath();
 
     //! Returns the path to the application prefix directory.

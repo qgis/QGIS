@@ -88,6 +88,18 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     /**Remove an URL to exclude from Proxy*/
     void on_mRemoveUrlPushButton_clicked();
 
+    /* Let the user add a path to the list of search paths
+     * used for finding SVG files.
+     * @note added in QGIS 1.4
+     */
+    void on_mBtnAddSVGPath_clicked();
+
+    /* Let the user remove a path to the list of search paths
+     * used for finding SVG files.
+     * @note added in QGIS 1.4
+     */
+    void on_mBtnRemoveSVGPath_clicked();
+
   protected:
     //! Populates combo box with ellipsoids
     void getEllipsoidList();

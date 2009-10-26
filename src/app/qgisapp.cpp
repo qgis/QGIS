@@ -463,7 +463,10 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   show();
   qApp->processEvents();
   //finally show all the application settings as initialised above
-  QgsApplication::showSettings();
+
+  QgsDebugMsg( "\n\n\nApplication Settings:\n--------------------------\n");
+  QgsDebugMsg( QgsApplication::showSettings() );
+  QgsDebugMsg( "\n--------------------------\n\n\n");
   mMapCanvas->freeze( false );
 } // QgisApp ctor
 

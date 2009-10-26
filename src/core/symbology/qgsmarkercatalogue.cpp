@@ -70,16 +70,20 @@ void QgsMarkerCatalogue::refreshList()
 
   // SVG
   QStringList svgPaths = QgsApplication::svgPaths();
+  QgsDebugMsg( QString( "Application SVG Search paths: \n%1" ).arg( svgPaths.join( "\n" ) ) );
 
   for(int i=0; i<svgPaths.size(); i++)
   {
     // TODO recursive ?
     QDir dir( svgPaths[i] );
+    
 
     QStringList dl = dir.entryList( QDir::Dirs );
 
     for ( QStringList::iterator it = dl.begin(); it != dl.end(); ++it )
     {
+      QgsDebugMsg( QString( "Looking for svgs in %1" ).arg( svgPaths[i] + *it ) );
+
       if ( *it == "." || *it == ".." ) continue;
   
       QDir dir2( svgPaths[i] + *it );
