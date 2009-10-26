@@ -70,13 +70,8 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     {
       Horizontal = 0,
       Vertical,
-      HorizontalAndVertical
-    };
-
-    enum GridAnnotationType
-    {
-      Coordinate = 0, //annotation at line, displays coordinates
-      Sector //annotation at sector: 1, 2, 3 for horizontal lines and A, B, C for vertical ones
+      HorizontalAndVertical,
+      BoundaryDirection
     };
 
     /** \brief Draw to paint device
@@ -204,13 +199,16 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
     GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
 
-    void setGridAnnotationType( GridAnnotationType t ) {mGridAnnotationType = t;}
-    GridAnnotationType gridAnnotationType() const {return mGridAnnotationType; }
-
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle*/
     QRectF boundingRect() const;
     /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle*/
     void updateBoundingRect();
+
+    void setRotation( double r ) { mRotation = r; }
+    double rotation() const { return mRotation; }
+
+    void setCrossLength( double l ) {mCrossLength = l;}
+    double crossLength() {return mCrossLength;}
 
   public slots:
 
@@ -224,6 +222,15 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     void extentChanged();
 
   private:
+
+    /**Enum for different frame borders*/
+    enum Border
+    {
+      Left,
+      Right,
+      Bottom,
+      Top
+    };
 
     // Pointer to map renderer of the QGIS main map. Note that QgsComposerMap uses a different map renderer,
     //it just copies some properties from the main map renderer.
@@ -296,33 +303,60 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     double mAnnotationFrameDistance;
     /**Annotation can be horizontal / vertical or different for axes*/
     GridAnnotationDirection mGridAnnotationDirection;
-    /**Coordinate values (default) or sector (1A, 1B, ...)*/
-    GridAnnotationType mGridAnnotationType;
     /**Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
     QRectF mCurrentRectangle;
 
+    /**Rotation of the map. Clockwise in degrees, north direction is 0*/
+    double mRotation;
+    /**The length of the cross sides for mGridStyle Cross*/
+    double mCrossLength;
+
     /**Draws the map grid*/
     void drawGrid( QPainter* p );
-    /**Annotations for composer grid*/
-    void drawGridAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
+    /**Draw coordinates for mGridAnnotationType Coordinate
+        @param lines the coordinate lines in item coordinates*/
+    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
+    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString );
     /**Draws a single annotation
         @param p drawing painter
         @param pos item coordinates where to draw
         @param rotation text rotation
         @param the text to draw*/
     void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText );
-    /**Calculates the horizontal grid lines
-        @lines list containing the map coordinates and the lines in item coordinates
+    /**Returns the grid lines with associated coordinate value
         @return 0 in case of success*/
-    int horizontalGridLines( QList< QPair< double, QLineF > >& lines ) const;
-    /**Calculates the vertical grid lines
-        @lines list containing the map coordinates and the lines in item coordinates
+    int xGridLines( QList< QPair< double, QLineF > >& lines ) const;
+    /**Returns the grid lines for the y-coordinates. Not vertical in case of rotation
         @return 0 in case of success*/
-    int verticalGridLines( QList< QPair< double, QLineF > >& lines ) const;
+    int yGridLines( QList< QPair< double, QLineF > >& lines ) const;
     /**Returns extent that considers mOffsetX / mOffsetY (during content move)*/
     QgsRectangle transformedExtent() const;
-    double maxExtensionXDirection() const;
-    double maxExtensionYDirection() const;
+    /**Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
+    QPolygonF transformedMapPolygon() const;
+    double maxExtension() const;
+    /**Returns the polygon of the map extent. If rotation == 0, the result is the same as mExtent
+    @param poly out: the result polygon with the four corner points. The points are clockwise, starting at the top-left point
+    @return true in case of success*/
+    void mapPolygon( QPolygonF& poly ) const;
+    /**Calculates the extent to request and the yShift of the top-left point in case of rotation.*/
+    void requestedExtent( QgsRectangle& extent ) const;
+    /**Returns the conversion factor map units -> mm*/
+    double mapUnitsToMM() const;
+    /**Scales a composer map shift (in MM) and rotates it by mRotation
+        @param xShift in: shift in x direction (in item units), out: xShift in map units
+        @param yShift in: shift in y direction (in item units), out: yShift in map units*/
+    void transformShift( double& xShift, double& yShift ) const;
+    /**Transforms map coordinates to item coordinates (considering rotation and move offset)*/
+    QPointF mapToItemCoords( const QPointF& mapCoords ) const;
+    /**Returns the item border of a point (in item coordinates)*/
+    Border borderForLineCoord( const QPointF& p ) const;
+    /**Rotates a point / vector
+        @param angle rotation angle in degrees, counterclockwise
+        @param x in/out: x coordinate before / after the rotation
+        @param y in/out: y cooreinate before / after the rotation*/
+    void rotate( double angle, double& x, double& y ) const;
+    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
 };
 
 #endif

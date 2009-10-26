@@ -188,6 +188,9 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     @note: this member was added in version 1.2*/
     bool mItemPositionLocked;
 
+    /**Backup to restore item appearance if no view scale factor is available*/
+    mutable double mLastValidViewScaleFactor;
+
     //event handlers
     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
     virtual void mousePressEvent( QGraphicsSceneMouseEvent * event );
@@ -228,8 +231,8 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     @note: this function was introduced in version 1.2*/
     double lockSymbolSize() const;
 
-    /**Returns the zoom factor of the graphics view. If no
-     graphics view exists, the default 1 is returned
+    /**Returns the zoom factor of the graphics view.
+      @return the factor or -1 in case of error (e.g. graphic view does not exist)
     @note: this function was introduced in version 1.2*/
     double horizontalViewScaleFactor() const;
 };
