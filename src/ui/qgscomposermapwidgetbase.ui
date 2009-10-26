@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>482</width>
-    <height>641</height>
+    <height>677</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -411,6 +411,16 @@
          <string>Font...</string>
         </property>
        </widget>
+      </item>
+      <item row="8" column="0" colspan="2">
+       <widget class="QLabel" name="mCoordinatePrecisionLabel">
+        <property name="text">
+         <string>Coordinate precision</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
       </item>
      </layout>
     </widget>
