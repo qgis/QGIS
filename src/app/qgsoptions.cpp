@@ -715,6 +715,7 @@ void QgsOptions::on_mBtnAddSVGPath_clicked()
       QDir::toNativeSeparators( QDir::homePath() ),
       QFileDialog::ShowDirsOnly
       );
+
   if ( ! myDir.isEmpty() )
   {
     QListWidgetItem* newItem = new QListWidgetItem( mListSVGPaths );
