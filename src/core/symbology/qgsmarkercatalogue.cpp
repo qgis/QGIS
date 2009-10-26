@@ -77,9 +77,20 @@ void QgsMarkerCatalogue::refreshList()
     // TODO recursive ?
     QDir dir( svgPaths[i] );
     
+    //
+    // First check the root dir of this path for svgs
+    //
+    QStringList dl1 = dir.entryList( QStringList( "*.svg" ), QDir::Files );
+    for ( QStringList::iterator it1 = dl1.begin(); it1 != dl1.end(); ++it1 )
+    {
+      // TODO test if it is correct SVG
+      mList.append( "svg:" + dir.path() + "/" + *it1 );
+    }
 
+    //
+    // Now check in any nested dirs for svgs
+    //
     QStringList dl = dir.entryList( QDir::Dirs );
-
     for ( QStringList::iterator it = dl.begin(); it != dl.end(); ++it )
     {
       QgsDebugMsg( QString( "Looking for svgs in %1" ).arg( svgPaths[i] + *it ) );
