@@ -131,52 +131,93 @@ class QgsComposerMap : QObject, QgsComposerItem
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    /**Enables a coordinate grid that is shown on top of this composermap.
+        @note this function was added in version 1.4*/
     void setGridEnabled( bool enabled );
     bool gridEnabled() const;
 
+    /**Sets coordinate grid style to solid or cross
+        @note this function was added in version 1.4*/
     void setGridStyle( GridStyle style );
     GridStyle gridStyle() const;
 
+    /**Sets coordinate interval in x-direction for composergrid.
+        @note this function was added in version 1.4*/
     void setGridIntervalX( double interval );
     double gridIntervalX() const;
 
+    /**Sets coordinate interval in y-direction for composergrid.
+    @note this function was added in version 1.4*/
     void setGridIntervalY( double interval );
     double gridIntervalY() const;
 
+    /**Sets x-coordinate offset for composer grid
+    @note this function was added in version 1.4*/
     void setGridOffsetX( double offset );
     double gridOffsetX() const;
 
+    /**Sets y-coordinate offset for composer grid
+    @note this function was added in version 1.4*/
     void setGridOffsetY( double offset );
     double gridOffsetY() const;
 
+    /**Sets the pen to draw composer grid
+    @note this function was added in version 1.4*/
     void setGridPen( const QPen& p );
     QPen gridPen() const;
+
+     /**Sets with of grid pen
+    @note this function was added in version 1.4*/
     void setGridPenWidth( double w );
+
+    /**Sets the color of the grid pen
+    @note this function was added in version 1.4*/
     void setGridPenColor( const QColor& c );
 
+    /**Sets font for grid annotations
+    @note this function was added in version 1.4*/
     void setGridAnnotationFont( const QFont& f );
     QFont gridAnnotationFont() const;
 
+     /**Sets coordinate precision for grid annotations
+    @note this function was added in version 1.4*/
+    void setGridAnnotationPrecision( int p );
+    int gridAnnotationPrecision() const;
+
+    /**Sets flag if grid annotation should be shown
+    @note this function was added in version 1.4*/
     void setShowGridAnnotation( bool show );
     bool showGridAnnotation() const;
 
+    /**Sets position of grid annotations. Possibilities are inside or outside of the map frame
+    @note this function was added in version 1.4*/
     void setGridAnnotationPosition( GridAnnotationPosition p );
     GridAnnotationPosition gridAnnotationPosition() const;
 
+    /**Sets distance between map frame and annotations
+    @note this function was added in version 1.4*/
     void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
     double annotationFrameDistance() const {return mAnnotationFrameDistance;}
 
+    /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
+    @note this function was added in version 1.4*/
     void setGridAnnotationDirection( GridAnnotationDirection d );
     GridAnnotationDirection gridAnnotationDirection() const;
 
-    /**In case of annotations, the bounding rectangle can be larger than the map item rectangle*/
+    /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
+    @note this function was added in version 1.4*/
     QRectF boundingRect() const;
-    /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle*/
+    /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
+    @note this function was added in version 1.4*/
     void updateBoundingRect();
 
+    /**Sets the rotation of the map content
+    @note this function was added in version 1.4*/
     void setRotation(double r);
     double rotation() const;
 
+    /**Sets length of the cros segments (if grid style is cross)
+    @note this function was added in version 1.4*/
     void setCrossLength(double l);
     double crossLength();
 

@@ -161,52 +161,91 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    /**Enables a coordinate grid that is shown on top of this composermap.
+        @note this function was added in version 1.4*/
     void setGridEnabled( bool enabled ) {mGridEnabled = enabled;}
     bool gridEnabled() const { return mGridEnabled; }
 
+    /**Sets coordinate grid style to solid or cross
+        @note this function was added in version 1.4*/
     void setGridStyle( GridStyle style ) {mGridStyle = style;}
     GridStyle gridStyle() const { return mGridStyle; }
 
+    /**Sets coordinate interval in x-direction for composergrid.
+        @note this function was added in version 1.4*/
     void setGridIntervalX( double interval ) { mGridIntervalX = interval;}
     double gridIntervalX() const { return mGridIntervalX; }
 
+    /**Sets coordinate interval in y-direction for composergrid.
+    @note this function was added in version 1.4*/
     void setGridIntervalY( double interval ) { mGridIntervalY = interval;}
     double gridIntervalY() const { return mGridIntervalY; }
 
+    /**Sets x-coordinate offset for composer grid
+    @note this function was added in version 1.4*/
     void setGridOffsetX( double offset ) { mGridOffsetX = offset; }
     double gridOffsetX() const { return mGridOffsetX; }
 
+    /**Sets y-coordinate offset for composer grid
+    @note this function was added in version 1.4*/
     void setGridOffsetY( double offset ) { mGridOffsetY = offset; }
     double gridOffsetY() const { return mGridOffsetY; }
 
+    /**Sets the pen to draw composer grid
+    @note this function was added in version 1.4*/
     void setGridPen( const QPen& p ) { mGridPen = p; }
     QPen gridPen() const { return mGridPen; }
+    /**Sets with of grid pen
+    @note this function was added in version 1.4*/
     void setGridPenWidth( double w );
+    /**Sets the color of the grid pen
+    @note this function was added in version 1.4*/
     void setGridPenColor( const QColor& c );
 
+    /**Sets font for grid annotations
+    @note this function was added in version 1.4*/
     void setGridAnnotationFont( const QFont& f ) { mGridAnnotationFont = f; }
     QFont gridAnnotationFont() const { return mGridAnnotationFont; }
 
+    /**Sets coordinate precision for grid annotations
+    @note this function was added in version 1.4*/
+    void setGridAnnotationPrecision( int p ) {mGridAnnotationPrecision = p;}
+    int gridAnnotationPrecision() const {return mGridAnnotationPrecision;}
+
+    /**Sets flag if grid annotation should be shown
+    @note this function was added in version 1.4*/
     void setShowGridAnnotation( bool show ) {mShowGridAnnotation = show;}
     bool showGridAnnotation() const {return mShowGridAnnotation;}
 
+    /**Sets position of grid annotations. Possibilities are inside or outside of the map frame
+    @note this function was added in version 1.4*/
     void setGridAnnotationPosition( GridAnnotationPosition p ) {mGridAnnotationPosition = p;}
     GridAnnotationPosition gridAnnotationPosition() const {return mGridAnnotationPosition;}
 
+    /**Sets distance between map frame and annotations
+    @note this function was added in version 1.4*/
     void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
     double annotationFrameDistance() const {return mAnnotationFrameDistance;}
 
+    /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
+    @note this function was added in version 1.4*/
     void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
     GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
 
-    /**In case of annotations, the bounding rectangle can be larger than the map item rectangle*/
+    /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
+    @note this function was added in version 1.4*/
     QRectF boundingRect() const;
-    /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle*/
+    /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
+    @note this function was added in version 1.4*/
     void updateBoundingRect();
 
+    /**Sets the rotation of the map content
+    @note this function was added in version 1.4*/
     void setRotation( double r ) { mRotation = r; }
     double rotation() const { return mRotation; }
 
+    /**Sets length of the cros segments (if grid style is cross)
+    @note this function was added in version 1.4*/
     void setCrossLength( double l ) {mCrossLength = l;}
     double crossLength() {return mCrossLength;}
 
@@ -295,6 +334,8 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     QPen mGridPen;
     /**Font for grid line annotation*/
     QFont mGridAnnotationFont;
+    /**Digits after the dot*/
+    int mGridAnnotationPrecision;
     /**True if coordinate values should be drawn*/
     bool mShowGridAnnotation;
     /**Annotation position inside or outside of map frame*/

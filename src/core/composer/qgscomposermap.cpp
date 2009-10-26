@@ -43,7 +43,7 @@ int QgsComposerMap::mCurrentComposerId = 0;
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
-    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mShowGridAnnotation( false ), \
+    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), \
     mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), \
     mRotation( 0 ), mCrossLength( 3 )
 {
@@ -75,7 +75,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
-    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mShowGridAnnotation( false ), \
+    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), \
     mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), \
     mRotation( 0 ), mCrossLength( 3 )
 {
@@ -619,6 +619,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   annotationElem.setAttribute( "frameDistance", mAnnotationFrameDistance );
   annotationElem.setAttribute( "direction", mGridAnnotationDirection );
   annotationElem.setAttribute( "font", mGridAnnotationFont.toString() );
+  annotationElem.setAttribute( "precision", mGridAnnotationPrecision );
 
   gridElem.appendChild( annotationElem );
   composerMapElem.appendChild( gridElem );
@@ -723,6 +724,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
       mAnnotationFrameDistance = annotationElem.attribute( "frameDistance", "0" ).toDouble();
       mGridAnnotationDirection = QgsComposerMap::GridAnnotationDirection( annotationElem.attribute( "direction", "0" ).toInt() );
       mGridAnnotationFont.fromString( annotationElem.attribute( "font", "" ) );
+      mGridAnnotationPrecision = annotationElem.attribute( "precision", "3" ).toInt();
     }
   }
 
@@ -860,7 +862,7 @@ void QgsComposerMap::drawCoordinateAnnotations( QPainter* p, const QList< QPair<
   QList< QPair< double, QLineF > >::const_iterator it = hLines.constBegin();
   for ( ; it != hLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first );
+    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
   }
@@ -868,7 +870,7 @@ void QgsComposerMap::drawCoordinateAnnotations( QPainter* p, const QList< QPair<
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first );
+    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
   }

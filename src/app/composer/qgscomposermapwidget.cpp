@@ -365,6 +365,7 @@ void QgsComposerMapWidget::updateGuiElements()
       mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Boundary direction" ) ) );
     }
 
+    mCoordinatePrecisionSpinBox->setValue( mComposerMap->gridAnnotationPrecision() );
 
     QPen gridPen = mComposerMap->gridPen();
     mLineWidthSpinBox->setValue( gridPen.widthF() );
@@ -423,6 +424,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAnnotationPositionComboBox->blockSignals( b );
   mDistanceToMapFrameSpinBox->blockSignals( b );
   mAnnotationDirectionComboBox->blockSignals( b );
+  mCoordinatePrecisionSpinBox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -691,4 +693,14 @@ void QgsComposerMapWidget::on_mShowGridDialogCheckBox_stateChanged( int state )
   {
     mGridWidget->setVisible( false );
   }
+}
+
+void QgsComposerMapWidget::on_mCoordinatePrecisionSpinBox_valueChanged( int value )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+  mComposerMap->setGridAnnotationPrecision( value );
+  mComposerMap->update();
 }
