@@ -5,17 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>654</width>
-    <height>546</height>
+    <width>657</width>
+    <height>594</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Options</string>
   </property>
   <property name="windowIcon" >
-   <iconset>
-    <normaloff/>
-   </iconset>
+   <iconset/>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -37,7 +35,7 @@
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabGeneral" >
       <attribute name="title" >
@@ -255,27 +253,11 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType" >
-          <enum>QSizePolicy::Minimum</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>577</width>
-           <height>21</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabRendering" >
       <attribute name="title" >
-       <string>&amp;Rendering</string>
+       <string>&amp;Rendering and SVG</string>
       </attribute>
       <layout class="QGridLayout" >
        <item row="0" column="0" >
@@ -370,17 +352,50 @@
         </widget>
        </item>
        <item row="2" column="0" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Vertical</enum>
+        <widget class="QGroupBox" name="groupBox_2" >
+         <property name="title" >
+          <string>SVG paths</string>
          </property>
-         <property name="sizeHint" >
-          <size>
-           <width>614</width>
-           <height>111</height>
-          </size>
-         </property>
-        </spacer>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QLabel" name="mSVGLabel" >
+            <property name="text" >
+             <string>Path(s) to search for Scalable Vector Graphic (SVG) symbols</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>31</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="2" >
+           <widget class="QPushButton" name="mBtnAddSVGPath" >
+            <property name="text" >
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" >
+           <widget class="QPushButton" name="mBtnRemoveSVGPath" >
+            <property name="text" >
+             <string>Remove</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="4" >
+           <widget class="QListWidget" name="mListSVGPaths" />
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -650,54 +665,56 @@
       <attribute name="title" >
        <string>Overlay</string>
       </attribute>
-      <widget class="QGroupBox" name="mPositionGroupBox" >
-       <property name="geometry" >
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>801</width>
-         <height>111</height>
-        </rect>
-       </property>
-       <property name="title" >
-        <string>Position</string>
-       </property>
-       <widget class="QWidget" name="layoutWidget" >
-        <property name="geometry" >
-         <rect>
-          <x>20</x>
-          <y>40</y>
-          <width>761</width>
-          <height>42</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" >
-         <item>
-          <widget class="QLabel" name="mAlgorithmLabel" >
-           <property name="text" >
-            <string>Placement algorithm:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="mOverlayAlgorithmComboBox" />
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>221</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </widget>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QGroupBox" name="mPositionGroupBox" >
+         <property name="title" >
+          <string>Position</string>
+         </property>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QLabel" name="mAlgorithmLabel" >
+            <property name="text" >
+             <string>Placement algorithm:</string>
+            </property>
+            <property name="buddy" >
+             <cstring>mOverlayAlgorithmComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QComboBox" name="mOverlayAlgorithmComboBox" />
+          </item>
+          <item row="0" column="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>221</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabDigitizing" >
       <attribute name="title" >
@@ -767,6 +784,9 @@
             <property name="text" >
              <string>Default snap mode</string>
             </property>
+            <property name="buddy" >
+             <cstring>mDefaultSnapModeComboBox</cstring>
+            </property>
            </widget>
           </item>
           <item row="0" column="1" colspan="3" >
@@ -797,6 +817,9 @@
             <property name="text" >
              <string>Default snapping tolerance</string>
             </property>
+            <property name="buddy" >
+             <cstring>mDefaultSnappingToleranceSpinBox</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="2" colspan="2" >
@@ -826,6 +849,9 @@
            <widget class="QLabel" name="mVertexSearchRadiusVertexEditLabel" >
             <property name="text" >
              <string>Search radius for vertex edits</string>
+            </property>
+            <property name="buddy" >
+             <cstring>mSearchRadiusVertexEditSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -907,6 +933,9 @@
             <property name="text" >
              <string>Marker style</string>
             </property>
+            <property name="buddy" >
+             <cstring>mMarkerStyleComboBox</cstring>
+            </property>
            </widget>
           </item>
           <item row="1" column="1" >
@@ -949,6 +978,9 @@
            <widget class="QLabel" name="label_6" >
             <property name="text" >
              <string>Marker size</string>
+            </property>
+            <property name="buddy" >
+             <cstring>mMarkerSizeSpinBox</cstring>
             </property>
            </widget>
           </item>
