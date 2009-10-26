@@ -74,38 +74,18 @@ void QgsMarkerCatalogue::refreshList()
 
   for(int i=0; i<svgPaths.size(); i++)
   {
-    // TODO recursive ?
     QDir dir( svgPaths[i] );
-    
-    //
-    // First check the root dir of this path for svgs
-    //
-    QStringList dl1 = dir.entryList( QStringList( "*.svg" ), QDir::Files );
-    for ( QStringList::iterator it1 = dl1.begin(); it1 != dl1.end(); ++it1 )
+    foreach(QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
-      // TODO test if it is correct SVG
-      mList.append( "svg:" + dir.path() + "/" + *it1 );
+      svgPaths.insert(i+1, dir.path() + "/" + item);
     }
 
-    //
-    // Now check in any nested dirs for svgs
-    //
-    QStringList dl = dir.entryList( QDir::Dirs );
-    for ( QStringList::iterator it = dl.begin(); it != dl.end(); ++it )
+    QgsDebugMsg( QString( "Looking for svgs in %1" ).arg( dir.path() ) ); 
+    
+    foreach(QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
     {
-      QgsDebugMsg( QString( "Looking for svgs in %1" ).arg( svgPaths[i] + *it ) );
-
-      if ( *it == "." || *it == ".." ) continue;
-  
-      QDir dir2( svgPaths[i] + *it );
-
-      QStringList dl2 = dir2.entryList( QStringList( "*.svg" ), QDir::Files );
-
-      for ( QStringList::iterator it2 = dl2.begin(); it2 != dl2.end(); ++it2 )
-      {
-        // TODO test if it is correct SVG
-        mList.append( "svg:" + svgPaths[i] + *it + "/" + *it2 );
-      }
+      // TODO test if it is correct SVG
+      mList.append( "svg:" + dir.path() + "/" + item );
     }
   } 
 
