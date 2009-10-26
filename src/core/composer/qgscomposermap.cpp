@@ -146,7 +146,15 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   //force composer map scale for scale dependent visibility
   double bk_scale = theMapRenderer.scale();
   theMapRenderer.setScale( scale() );
+
+  //layer caching (as QImages) cannot be done for composer prints
+  QSettings s;
+  bool bkLayerCaching = s.value( "/qgis/enable_render_caching", false ).toBool();
+  s.setValue( "/qgis/enable_render_caching", false );
+
   theMapRenderer.render( painter );
+  s.setValue( "/qgis/enable_render_caching", bkLayerCaching );
+
   theMapRenderer.setScale( bk_scale );
 }
 
