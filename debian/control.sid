@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 5.0.51~), libgdal1-dev, libpq-dev,
  libqt4-qt3support (>=4.2.0), libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
  python-sip4-dev (>= 4.5.0), libfontconfig1-dev, libxi-dev, libxrandr-dev, libxrender-dev, libice-dev,
  libsm-dev, pyqt4-dev-tools
-Build-Conflicts: libqgis{QGIS_ABI}-dev, qgis-dev
+Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.3
 XS-Python-Version: current
 Homepage: http://qgis.org/
@@ -50,7 +50,7 @@ Description: Quantum GIS - shared libraries
  This package contains the shared core and gui library that provide an
  interface for plugins and stand-alone applications.
 
-Package: libqgis{QGIS_ABI}-dev
+Package: libqgis-dev
 Architecture: any
 Section: libdevel
 Depends: libqgis{QGIS_ABI} (= ${binary:Version}), libgdal1-dev,
@@ -59,8 +59,8 @@ Depends: libqgis{QGIS_ABI} (= ${binary:Version}), libgdal1-dev,
  libqt4-dev (>=4.2.0), libqt4-gui (>=4.2.0), libqt4-qt3support (>=4.2.0),
  libqt4-sql (>=4.2.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
  qt4-designer (>=4.2.0)
-Provides: libqgis-dev, qgis-dev
-Replaces: libqgis-dev, qgis-dev, libqgis1-dev
+Provides: qgis-dev
+Replaces: qgis-dev, libqgis1-dev, libqgis1.4.0-dev
 Description: Quantum GIS - development files
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -70,7 +70,7 @@ Description: Quantum GIS - development files
 
 Package: qgis-plugin-grass
 Architecture: any
-Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, libgdal1-1.6.0-grass, grass640-5
+Depends: qgis (= ${binary:Version}), qgis-plugin-grass-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, libgdal1-1.6.0-grass, grass{GRASS_ABI}
 Description: GRASS plugin for Quantum GIS
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
