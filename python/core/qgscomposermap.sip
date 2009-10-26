@@ -196,8 +196,8 @@ class QgsComposerMap : QObject, QgsComposerItem
 
     /**Sets distance between map frame and annotations
     @note this function was added in version 1.4*/
-    void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
-    double annotationFrameDistance() const {return mAnnotationFrameDistance;}
+    void setAnnotationFrameDistance( double d );
+    double annotationFrameDistance() const;
 
     /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
     @note this function was added in version 1.4*/
