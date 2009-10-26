@@ -18,7 +18,7 @@ QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p
 QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
-GRASS_ABI=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
+GRASS_ABI=$(subst .,,$(shell pkg-config --modversion grass|sed -e "s/\.//g" -e "s/RC/-/"))
 
 CMAKE_OPTS = \
 	-Wno-dev \
