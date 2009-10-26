@@ -39,6 +39,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mHeightLineEdit_editingFinished();
     void on_mPreviewModeComboBox_activated( int i );
     void on_mScaleLineEdit_editingFinished();
+    void on_mRotationSpinBox_valueChanged( int value );
     void on_mSetToMapCanvasExtentButton_clicked();
     void on_mUpdatePreviewButton_clicked();
     void on_mKeepLayerListCheckBox_stateChanged( int state );
@@ -56,12 +57,12 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mLineWidthSpinBox_valueChanged( double d );
     void on_mLineColorButton_clicked();
     void on_mGridTypeComboBox_currentIndexChanged( const QString& text );
+    void on_mCrossWidthSpinBox_valueChanged( double d );
     void on_mAnnotationFontButton_clicked();
     void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
     void on_mAnnotationPositionComboBox_currentIndexChanged( const QString& text );
     void on_mDrawAnnotationCheckBox_stateChanged( int state );
     void on_mAnnotationDirectionComboBox_currentIndexChanged( const QString& text );
-    void on_mAnnotationTypeComboBox_currentIndexChanged( const QString& text );
     void on_mShowGridDialogCheckBox_stateChanged( int state );
 
     /**Updates width and height without notify the composer map (to avoid infinite recursion)*/

@@ -25,11 +25,13 @@
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidget(), mComposerMap( composerMap )
 {
   setupUi( this );
-  mGridDockWidget->setVisible( false );
+  mGridWidget->setVisible( false );
+  mGridWidget->setParent( 0 ); //in order to save space, separate the grid widget
+  mGridWidget->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowTitleHint );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
-  gridLayout_3->addWidget( itemPropertiesWidget, 7, 0, 1, 1 );
+  gridLayout_3->addWidget( itemPropertiesWidget, 6, 0, 1, 1 );
   QDoubleValidator v( 0 );
 
   mWidthLineEdit->setValidator( &v );
@@ -55,9 +57,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mAnnotationDirectionComboBox->insertItem( 0, tr( "Horizontal" ) );
   mAnnotationDirectionComboBox->insertItem( 1, tr( "Vertical" ) );
   mAnnotationDirectionComboBox->insertItem( 2, tr( "Horizontal and Vertical" ) );
+  mAnnotationDirectionComboBox->insertItem( 2, tr( "Boundary direction" ) );
 
-  mAnnotationTypeComboBox->insertItem( 0, tr( "Coordinate" ) );
-  mAnnotationTypeComboBox->insertItem( 1, tr( "Sector" ) );
   blockAllSignals( false );
 
   if ( composerMap )
@@ -70,7 +71,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
 
 QgsComposerMapWidget::~QgsComposerMapWidget()
 {
-
+  delete mGridWidget;
 }
 
 void QgsComposerMapWidget::on_mWidthLineEdit_editingFinished()
@@ -158,6 +159,18 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
   }
 
   mComposerMap->setNewScale( scaleDenominator );
+}
+
+void QgsComposerMapWidget::on_mRotationSpinBox_valueChanged( int value )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setRotation( value );
+  mComposerMap->cache();
+  mComposerMap->update();
 }
 
 void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
@@ -274,6 +287,8 @@ void QgsComposerMapWidget::updateGuiElements()
     mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );
     mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
 
+    mRotationSpinBox->setValue( mComposerMap->rotation() );
+
     //keep layer list check box
     if ( mComposerMap->keepLayerSet() )
     {
@@ -309,6 +324,8 @@ void QgsComposerMapWidget::updateGuiElements()
       mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Solid" ) ) );
     }
 
+    mCrossWidthSpinBox->setValue( mComposerMap->crossLength() );
+
     QgsComposerMap::GridAnnotationPosition annotationPos = mComposerMap->gridAnnotationPosition();
     if ( annotationPos == QgsComposerMap::InsideMapFrame )
     {
@@ -339,19 +356,13 @@ void QgsComposerMapWidget::updateGuiElements()
     {
       mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Vertical" ) ) );
     }
-    else
+    else if ( dir == QgsComposerMap::HorizontalAndVertical )
     {
       mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Horizontal and Vertical" ) ) );
     }
-
-    QgsComposerMap::GridAnnotationType type = mComposerMap->gridAnnotationType();
-    if ( type == QgsComposerMap::Sector )
+    else //BoundaryDirection
     {
-      mAnnotationTypeComboBox->setCurrentIndex( mAnnotationTypeComboBox->findText( tr( "Sector" ) ) );
-    }
-    else
-    {
-      mAnnotationTypeComboBox->setCurrentIndex( mAnnotationTypeComboBox->findText( tr( "Coordinate" ) ) );
+      mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Boundary direction" ) ) );
     }
 
 
@@ -400,6 +411,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mOffsetXSpinBox->blockSignals( b );
   mOffsetYSpinBox->blockSignals( b );
   mGridTypeComboBox->blockSignals( b );
+  mCrossWidthSpinBox->blockSignals( b );
   mPreviewModeComboBox->blockSignals( b );
   mKeepLayerListCheckBox->blockSignals( b );
   mSetToMapCanvasExtentButton->blockSignals( b );
@@ -411,7 +423,6 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAnnotationPositionComboBox->blockSignals( b );
   mDistanceToMapFrameSpinBox->blockSignals( b );
   mAnnotationDirectionComboBox->blockSignals( b );
-  mAnnotationTypeComboBox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -561,6 +572,17 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
   mComposerMap->update();
 }
 
+void QgsComposerMapWidget::on_mCrossWidthSpinBox_valueChanged( double d )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setCrossLength( d );
+  mComposerMap->update();
+}
+
 void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
 {
   if ( !mComposerMap )
@@ -647,29 +669,15 @@ void QgsComposerMapWidget::on_mAnnotationDirectionComboBox_currentIndexChanged( 
   {
     mComposerMap->setGridAnnotationDirection( QgsComposerMap::Vertical );
   }
-  else
+  else if ( text == tr( "Horizontal and Vertical" ) )
   {
     mComposerMap->setGridAnnotationDirection( QgsComposerMap::HorizontalAndVertical );
   }
+  else //BoundaryDirection
+  {
+    mComposerMap->setGridAnnotationDirection( QgsComposerMap::BoundaryDirection );
+  }
   mComposerMap->updateBoundingRect();
-  mComposerMap->update();
-}
-
-void QgsComposerMapWidget::on_mAnnotationTypeComboBox_currentIndexChanged( const QString& text )
-{
-  if ( !mComposerMap )
-  {
-    return;
-  }
-
-  if ( text == tr( "Sector" ) )
-  {
-    mComposerMap->setGridAnnotationType( QgsComposerMap::Sector );
-  }
-  else
-  {
-    mComposerMap->setGridAnnotationType( QgsComposerMap::Coordinate );
-  }
   mComposerMap->update();
 }
 
@@ -677,10 +685,10 @@ void QgsComposerMapWidget::on_mShowGridDialogCheckBox_stateChanged( int state )
 {
   if ( state == Qt::Checked )
   {
-    mGridDockWidget->setVisible( true );
+    mGridWidget->setVisible( true );
   }
   else
   {
-    mGridDockWidget->setVisible( false );
+    mGridWidget->setVisible( false );
   }
 }
