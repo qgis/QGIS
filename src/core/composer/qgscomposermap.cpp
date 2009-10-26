@@ -1036,7 +1036,7 @@ int QgsComposerMap::xGridLines( QList< QPair< double, QLineF > >& lines ) const
   QRectF mapBoundingRect = mapPolygon.boundingRect();
   double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + 1.0 ) * mGridIntervalY + mGridOffsetY;
 
-  if ( !mRotation > 0.0 )
+  if ( mRotation <= 0.0 )
   {
     //no rotation. Do it 'the easy way'
 
@@ -1101,7 +1101,7 @@ int QgsComposerMap::yGridLines( QList< QPair< double, QLineF > >& lines ) const
   QRectF mapBoundingRect = mapPolygon.boundingRect();
   double currentLevel = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + 1.0 ) * mGridIntervalX + mGridOffsetX;
 
-  if ( !mRotation > 0.0 )
+  if ( mRotation <= 0.0 )
   {
     //no rotation. Do it 'the easy way'
     double xCanvasCoord;
@@ -1312,7 +1312,7 @@ void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
 double QgsComposerMap::mapUnitsToMM() const
 {
   double extentWidth = mExtent.width();
-  if ( !extentWidth > 0 )
+  if ( extentWidth <= 0 )
   {
     return 1;
   }
