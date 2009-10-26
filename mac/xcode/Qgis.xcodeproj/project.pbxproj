@@ -581,6 +581,8 @@
 		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
 		72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 72267A500F9A1D3100010C18 /* mActionZoomNext.png */; };
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
+		72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */; };
+		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
 		724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */; };
 		724C9FED1019EE3700A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
@@ -4171,7 +4173,6 @@
 		7209E6580F39E57A003DC336 /* qgssinglesymboldialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssinglesymboldialog.h; path = ../../src/app/qgssinglesymboldialog.h; sourceTree = SOURCE_ROOT; };
 		7209E6590F39E57A003DC336 /* qgssnappingdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssnappingdialog.cpp; path = ../../src/app/qgssnappingdialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209E65A0F39E57A003DC336 /* qgssnappingdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssnappingdialog.h; path = ../../src/app/qgssnappingdialog.h; sourceTree = SOURCE_ROOT; };
-		7209E65B0F39E57A003DC336 /* qgstable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstable.h; path = ../../src/app/qgstable.h; sourceTree = SOURCE_ROOT; };
 		7209E65C0F39E57A003DC336 /* qgsuniquevaluedialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsuniquevaluedialog.cpp; path = ../../src/app/qgsuniquevaluedialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209E65D0F39E57A003DC336 /* qgsuniquevaluedialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsuniquevaluedialog.h; path = ../../src/app/qgsuniquevaluedialog.h; sourceTree = SOURCE_ROOT; };
 		7209E65E0F39E57A003DC336 /* qgsvectorlayerproperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsvectorlayerproperties.cpp; path = ../../src/app/qgsvectorlayerproperties.cpp; sourceTree = SOURCE_ROOT; };
@@ -5847,6 +5848,10 @@
 		723FD05E0FBCB85D00EFA55D /* qgspalgeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspalgeometry.h; path = ../../src/core/qgspalgeometry.h; sourceTree = SOURCE_ROOT; };
 		723FD0660FBCB94600EFA55D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/scripts/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "db.connect-login.pg.py"; path = "../../src/plugins/grass/scripts/db.connect-login.pg.py"; sourceTree = SOURCE_ROOT; };
+		72442AE71095DCAF00B54796 /* testqgspoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testqgspoint.cpp; path = ../../tests/src/core/testqgspoint.cpp; sourceTree = SOURCE_ROOT; };
+		72442AE81095DCD800B54796 /* qgsavoidintersectionsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsavoidintersectionsdialogbase.ui; path = ../../src/ui/qgsavoidintersectionsdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsavoidintersectionsdialog.cpp; path = ../../src/app/qgsavoidintersectionsdialog.cpp; sourceTree = SOURCE_ROOT; };
+		72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsavoidintersectionsdialog.h; path = ../../src/app/qgsavoidintersectionsdialog.h; sourceTree = SOURCE_ROOT; };
 		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/default/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/gis/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
@@ -7807,6 +7812,8 @@
 				72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */,
 				72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */,
 				72D0A539101896AA00EE6279 /* qgsattributetypedialog.cpp */,
+				72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */,
+				72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */,
 				7209E5FB0F39E57A003DC336 /* qgsbookmarkitem.cpp */,
 				7209E5FC0F39E57A003DC336 /* qgsbookmarkitem.h */,
 				7209E5FD0F39E57A003DC336 /* qgsbookmarks.cpp */,
@@ -7913,7 +7920,6 @@
 				7209E6580F39E57A003DC336 /* qgssinglesymboldialog.h */,
 				7209E6590F39E57A003DC336 /* qgssnappingdialog.cpp */,
 				7209E65A0F39E57A003DC336 /* qgssnappingdialog.h */,
-				7209E65B0F39E57A003DC336 /* qgstable.h */,
 				7209E65C0F39E57A003DC336 /* qgsuniquevaluedialog.cpp */,
 				7209E65D0F39E57A003DC336 /* qgsuniquevaluedialog.h */,
 				7209E65E0F39E57A003DC336 /* qgsvectorlayerproperties.cpp */,
@@ -9219,6 +9225,7 @@
 				7209EC8D0F39E57B003DC336 /* qgsattributedialogbase.ui */,
 				72D0A53F1018975800EE6279 /* qgsattributetypeedit.ui */,
 				72D0A5401018975800EE6279 /* qgsattributeloadfrommap.ui */,
+				72442AE81095DCD800B54796 /* qgsavoidintersectionsdialogbase.ui */,
 				7209EC8F0F39E57B003DC336 /* qgsbookmarksbase.ui */,
 				7209EC900F39E57B003DC336 /* qgscomposerbase.ui */,
 				7209EC910F39E57B003DC336 /* qgscomposeritemwidgetbase.ui */,
@@ -9372,6 +9379,7 @@
 				7209ECEB0F39E5D8003DC336 /* testqgsgeometry.cpp */,
 				7209ECEC0F39E5D8003DC336 /* testqgsmaplayer.cpp */,
 				7209ECED0F39E5D8003DC336 /* testqgsmaprenderer.cpp */,
+				72442AE71095DCAF00B54796 /* testqgspoint.cpp */,
 				7209ECEE0F39E5D8003DC336 /* testqgsrasterlayer.cpp */,
 				7209ECEF0F39E5D8003DC336 /* testqgsrenderers.cpp */,
 				7209ECF00F39E5D8003DC336 /* testqgsvectorfilewriter.cpp */,
@@ -14592,6 +14600,8 @@
 				727E6B150FEAA14C00DF6F64 /* x_qgsspatialitesourceselect.h in Sources */,
 				72AA0BE9107394D900D00B43 /* qgsfieldcalculator.cpp in Sources */,
 				72AA0BEA107394D900D00B43 /* qgsfieldcalculator.h in Sources */,
+				72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */,
+				72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17561,7 +17571,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20091016;
+				QGIS_VERSION_BUILD = 20091026;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -17572,7 +17582,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20091016;
+				QGIS_VERSION_BUILD = 20091026;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
