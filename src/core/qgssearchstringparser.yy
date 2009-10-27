@@ -61,6 +61,8 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %token <number> NUMBER
 %token <op> COMPARISON
 %token <op> FUNCTION
+%token AREA
+%token LENGTH
 
 %token STRING
 %token COLUMN_REF
@@ -126,10 +128,12 @@ scalar_exp:
     | '(' scalar_exp ')'          { $$ = $2; }
     | '+' scalar_exp %prec UMINUS { $$ = $2; }
     | '-' scalar_exp %prec UMINUS { $$ = $2; if ($$->type() == QgsSearchTreeNode::tNumber) $$->setNumber(- $$->number()); }
+    | AREA                        { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opAREA, 0, 0); addToTmpNodes($$); }
+    | LENGTH                      { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opLENGTH, 0, 0); addToTmpNodes($$); }
     | NUMBER                      { $$ = new QgsSearchTreeNode($1);        addToTmpNodes($$); }
     | STRING                      { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 0); addToTmpNodes($$); }
     | COLUMN_REF                  { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 1); addToTmpNodes($$); }
-    ;
+;
 
 %%
 
