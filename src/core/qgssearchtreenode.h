@@ -24,6 +24,7 @@
 #include <QString>
 #include <QVariant>
 
+#include <qgsdistancearea.h>
 #include <qgsfield.h>
 #include <qgsfeature.h>
 
@@ -70,6 +71,11 @@ class CORE_EXPORT QgsSearchTreeNode
       opASIN,
       opACOS,
       opATAN,
+      opTOINT,
+      opTOREAL,
+      opTOSTRING,
+      opLENGTH,
+      opAREA,
 
       // comparison
       opEQ,   // =
@@ -126,13 +132,15 @@ class CORE_EXPORT QgsSearchTreeNode
     //! returns error message
     const QString& errorMsg() { return mError; }
 
-    //! returns scalar value of node
-    QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes );
-
-  protected:
     //! wrapper around valueAgainst()
     bool getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node,
-                   const QgsFieldMap& fields, const QgsAttributeMap& attributes );
+                   const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
+
+  protected:
+
+
+    //! returns scalar value of node
+    QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
 
     //! strips mText when node is of string type
     void stripText();
@@ -152,6 +160,9 @@ class CORE_EXPORT QgsSearchTreeNode
     //! children
     QgsSearchTreeNode* mLeft;
     QgsSearchTreeNode* mRight;
+
+    /**For length() and area() functions*/
+    QgsDistanceArea mCalc;
 };
 
 // TODO: poslat do zvlast suboru

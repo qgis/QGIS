@@ -19,9 +19,11 @@
 
 #include "qgslogger.h"
 #include "qgsfield.h"
+#include "qgsgeometry.h"
 #include "qgssearchtreenode.h"
 #include <QRegExp>
 #include <QObject>
+#include <QSettings>
 #include <iostream>
 
 #ifndef Q_OS_MACX
@@ -50,6 +52,15 @@ QgsSearchTreeNode::QgsSearchTreeNode( Operator op, QgsSearchTreeNode* left,
   mOp    = op;
   mLeft  = left;
   mRight = right;
+
+  if ( mOp == opLENGTH || mOp == opAREA )
+  {
+    //initialize QgsDistanceArea
+    mCalc.setProjectionsEnabled( false );
+    QSettings settings;
+    QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+    mCalc.setEllipsoid( ellipsoid );
+  }
 }
 
 
@@ -138,7 +149,10 @@ QString QgsSearchTreeNode::makeSearchString()
     str += "(";
     if ( mOp != opNOT )
     {
-      str += mLeft->makeSearchString();
+      if ( mLeft )
+      {
+        str += mLeft->makeSearchString();
+      }
       switch ( mOp )
       {
         case opAND: str += " AND "; break;
@@ -284,9 +298,9 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
   }
 }
 
-bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsFieldMap& fields, const QgsAttributeMap& attributes )
+bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom )
 {
-  value = node->valueAgainst( fields, attributes );
+  value = node->valueAgainst( fields, attributes, geom );
   if ( value.isError() )
   {
     switch (( int )value.number() )
@@ -316,7 +330,7 @@ bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* 
   return true;
 }
 
-QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes )
+QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom )
 {
   QgsDebugMsgLevel( "valueAgainst: " + makeSearchString(), 2 );
 
@@ -370,14 +384,55 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
       QgsSearchTreeValue value1, value2;
       if ( mLeft )
       {
-        if ( !getValue( value1, mLeft, fields, attributes ) ) return value1;
+        if ( !getValue( value1, mLeft, fields, attributes, geom ) ) return value1;
       }
       if ( mRight )
       {
-        if ( !getValue( value2, mRight, fields, attributes ) ) return value2;
+        if ( !getValue( value2, mRight, fields, attributes, geom ) ) return value2;
       }
 
-      // convert to numbers if needed
+      if ( mOp == opLENGTH || mOp == opAREA )
+      {
+        if ( !geom )
+        {
+          return QgsSearchTreeValue( 2, "Geometry is 0" );
+        }
+
+        //check that we don't use area for lines or length for polygons
+        if ( mOp == opLENGTH && geom->type() != QGis::Line )
+        {
+          return QgsSearchTreeValue( 0 );
+        }
+        if ( mOp == opAREA && geom->type() != QGis::Polygon )
+        {
+          return QgsSearchTreeValue( 0 );
+        }
+        return QgsSearchTreeValue( mCalc.measure( geom ) );
+      }
+
+      //string operations with one argument
+      if ( !mRight && !value1.isNumeric() )
+      {
+        if ( mOp == opTOINT )
+        {
+          return QgsSearchTreeValue( value1.string().toInt() );
+        }
+        else if ( mOp == opTOREAL )
+        {
+          return QgsSearchTreeValue( value1.string().toDouble() );
+        }
+      }
+
+      //don't convert to numbers in case of string concatenation
+      if ( mLeft && mRight && !value1.isNumeric() && !value2.isNumeric() )
+      {
+        if ( mOp == opPLUS )
+        {
+          return QgsSearchTreeValue( value1.string() + value2.string() );
+        }
+      }
+
+      // for other operators, convert strings to numbers if needed
       double val1, val2;
       if ( value1.isNumeric() )
         val1 = value1.number();
@@ -423,6 +478,12 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
           return QgsSearchTreeValue( acos( val1 ) );
         case opATAN:
           return QgsSearchTreeValue( atan( val1 ) );
+        case opTOINT:
+          return QgsSearchTreeValue( int( val1 ) );
+        case opTOREAL:
+          return QgsSearchTreeValue( val1 );
+        case opTOSTRING:
+          return QgsSearchTreeValue( QString::number( val1 ) );
       }
     }
 

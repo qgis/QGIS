@@ -43,6 +43,15 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVector
     mNewFieldGroupBox->setEnabled( false );
     mNewFieldGroupBox->setTitle( mNewFieldGroupBox->title() + tr( " (not supported by provider)" ) );
   }
+
+  if ( vl->geometryType() != QGis::Polygon )
+  {
+    mAreaButton->setEnabled( false );
+  }
+  if ( vl->geometryType() != QGis::Line )
+  {
+    mLengthButton->setEnabled( false );
+  }
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
@@ -133,7 +142,9 @@ void QgsFieldCalculator::accept()
     // block layerModified signals (that would trigger table update)
     mVectorLayer->blockSignals( true );
 
-    mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
+    bool useGeometry = calcString.contains( "$area" ) || calcString.contains( "$length" );
+
+    mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), useGeometry, false );
     while ( mVectorLayer->nextFeature( feature ) )
     {
       if ( onlySelected )
@@ -144,7 +155,15 @@ void QgsFieldCalculator::accept()
         }
       }
 
-      QgsSearchTreeValue value = searchTree->valueAgainst( mVectorLayer->pendingFields(), feature.attributeMap() );
+      QgsSearchTreeValue value;
+      if ( useGeometry )
+      {
+        searchTree->getValue( value, searchTree, mVectorLayer->pendingFields(), feature.attributeMap(), feature.geometry() );
+      }
+      else
+      {
+        searchTree->getValue( value, searchTree, mVectorLayer->pendingFields(), feature.attributeMap() );
+      }
       if ( value.isError() )
       {
         calculationSuccess = false;
@@ -330,6 +349,31 @@ void QgsFieldCalculator::on_mOpenBracketPushButton_clicked()
 void QgsFieldCalculator::on_mCloseBracketPushButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( " ) " );
+}
+
+void QgsFieldCalculator::on_mToRealButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " to real ( " );
+}
+
+void QgsFieldCalculator::on_mToIntButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " to int ( " );
+}
+
+void QgsFieldCalculator::on_mToStringButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " to string ( " );
+}
+
+void QgsFieldCalculator::on_mLengthButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( "$length" );
+}
+
+void QgsFieldCalculator::on_mAreaButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( "$area" );
 }
 
 void QgsFieldCalculator::on_mSamplePushButton_clicked()

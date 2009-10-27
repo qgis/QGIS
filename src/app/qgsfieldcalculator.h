@@ -48,6 +48,11 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     void on_mATanButton_clicked();
     void on_mOpenBracketPushButton_clicked();
     void on_mCloseBracketPushButton_clicked();
+    void on_mToRealButton_clicked();
+    void on_mToIntButton_clicked();
+    void on_mToStringButton_clicked();
+    void on_mLengthButton_clicked();
+    void on_mAreaButton_clicked();
     void on_mSamplePushButton_clicked();
     void on_mAllPushButton_clicked();
     void on_mOutputFieldNameLineEdit_textChanged( const QString& text );

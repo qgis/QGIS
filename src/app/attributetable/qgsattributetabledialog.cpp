@@ -558,7 +558,7 @@ void QgsAttributeTableDialog::revert()
 void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
 {
   QgsFieldCalculator calc( mLayer );
-  if ( calc.exec() )
+  if ( calc.exec() == QDialog::Accepted )
   {
     // update model - a field has been added or updated
     mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
