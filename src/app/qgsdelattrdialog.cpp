@@ -17,31 +17,32 @@
 
 #include "qgsdelattrdialog.h"
 #include "qgsfield.h"
-#include <QHeaderView>
+#include "qgsvectorlayer.h"
 
-QgsDelAttrDialog::QgsDelAttrDialog( QHeaderView* header ): QDialog()
+QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer* vl ): QDialog()
 {
   setupUi( this );
-
-  //insert attribute names into the QListView
-  if ( header )
+  if ( vl )
   {
     listBox2->clear();
-    QAbstractItemModel *model = header->model();
-    for ( int i = 1;i < header->count();++i )
+    const QgsFieldMap layerAttributes = vl->pendingFields();
+    QgsFieldMap::const_iterator attIt = layerAttributes.constBegin();
+    for ( ; attIt != layerAttributes.constEnd(); ++attIt )
     {
-      listBox2->addItem( model->headerData( i, Qt::Horizontal ).toString() );
+      QListWidgetItem* item = new QListWidgetItem( attIt.value().name(), listBox2 );
+      item->setData( Qt::UserRole, attIt.key() );
     }
   }
 }
 
-const std::list<QString>* QgsDelAttrDialog::selectedAttributes()
+QList<int> QgsDelAttrDialog::selectedAttributes()
 {
-  mSelectedItems.clear();
-  QListIterator<QListWidgetItem *> selection( listBox2->selectedItems() );
-  while ( selection.hasNext() )
+  QList<int> selectionList;
+  QList<QListWidgetItem *> selection = listBox2->selectedItems();
+  QList<QListWidgetItem *>::const_iterator itemIter = selection.constBegin();
+  for ( ; itemIter != selection.constEnd(); ++itemIter )
   {
-    mSelectedItems.push_back( selection.next()->text() );
+    selectionList.push_back(( *itemIter )->data( Qt::UserRole ).toInt() );
   }
-  return &mSelectedItems;
+  return selectionList;
 }
