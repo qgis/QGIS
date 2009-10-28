@@ -438,7 +438,7 @@ void QgsVectorLayerProperties::reset( void )
   // on the builder. If the ability to enter a query directly into the box is required,
   // a mechanism to check it must be implemented.
   txtSubsetSQL->setEnabled( false );
-  pbnQueryBuilder->setEnabled( true );
+  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() );
 
   //get field list for display field combo
   const QgsFieldMap& myFields = layer->pendingFields();

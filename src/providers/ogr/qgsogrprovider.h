@@ -95,6 +95,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Accessor for sql where clause used to limit dataset */
     virtual QString subsetString();
 
+    virtual bool supportsSubsetString() { return true; }
+
     /** mutator for sql where clause used to limit dataset size */
     virtual bool setSubsetString( QString theSQL );
 
