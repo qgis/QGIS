@@ -22,16 +22,15 @@
 #include <QDialog>
 #include <list>
 
-class QHeaderView;
+class QgsVectorLayer;
 
 class QgsDelAttrDialog: public QDialog, private Ui::QgsDelAttrDialogBase
 {
     Q_OBJECT
   public:
-    QgsDelAttrDialog( QHeaderView* header );
-    const std::list<QString>* selectedAttributes();
-  protected:
-    std::list<QString> mSelectedItems;
+    QgsDelAttrDialog( const QgsVectorLayer* vl );
+    /**Returns the selected attribute indices*/
+    QList<int> selectedAttributes();
 };
 
 #endif

@@ -34,29 +34,8 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   mLastRow = NULL;
   mLayer = theLayer;
   mFeatureCount = mLayer->pendingFeatureCount();
+  loadAttributes();
 
-  mFieldCount = 0;
-  mAttributes.clear();
-  mValueMaps.clear();
-
-  for ( QgsFieldMap::const_iterator it = theLayer->pendingFields().constBegin(); it != theLayer->pendingFields().end(); it++ )
-  {
-    switch ( mLayer->editType( it.key() ) )
-    {
-      case QgsVectorLayer::Hidden:
-        continue;
-
-      case QgsVectorLayer::ValueMap:
-        mValueMaps.insert( it.key(), &mLayer->valueMap( it.key() ) );
-        break;
-
-      default:
-        break;
-    }
-
-    mFieldCount++;
-    mAttributes << it.key();
-  }
 
   connect( mLayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
   //connect(mLayer, SIGNAL(attributeAdded(int)), this, SLOT( attributeAdded(int)));
@@ -168,9 +147,64 @@ void QgsAttributeTableModel::layerModified( bool onlyGeometry )
   if ( onlyGeometry )
     return;
 
+  loadAttributes();
   loadLayer();
   emit modelChanged();
   emit headerDataChanged( Qt::Horizontal, 0, columnCount() - 1 );
+}
+
+void QgsAttributeTableModel::loadAttributes()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  bool ins = false, rm = false;
+  int pendingFieldCount = mLayer->pendingFields().size();
+
+  if ( mFieldCount < pendingFieldCount )
+  {
+    ins = true;
+    beginInsertColumns( QModelIndex(), mFieldCount, pendingFieldCount - 1 );
+  }
+  else if ( pendingFieldCount < mFieldCount )
+  {
+    rm = true;
+    beginRemoveColumns( QModelIndex(), pendingFieldCount, mFieldCount - 1 );
+  }
+
+  mFieldCount = 0;
+  mAttributes.clear();
+  mValueMaps.clear();
+
+  for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().constBegin(); it != mLayer->pendingFields().end(); it++ )
+  {
+    switch ( mLayer->editType( it.key() ) )
+    {
+      case QgsVectorLayer::Hidden:
+        continue;
+
+      case QgsVectorLayer::ValueMap:
+        mValueMaps.insert( it.key(), &mLayer->valueMap( it.key() ) );
+        break;
+
+      default:
+        break;
+    }
+
+    mFieldCount++;
+    mAttributes << it.key();
+  }
+
+  if ( ins )
+  {
+    endInsertColumns();
+  }
+  else if ( rm )
+  {
+    endRemoveColumns();
+  }
 }
 
 void QgsAttributeTableModel::loadLayer()

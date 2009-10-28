@@ -6,23 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>623</width>
+    <width>646</width>
     <height>570</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Attribute Table</string>
   </property>
-  <layout class="QGridLayout">
-   <property name="horizontalSpacing">
-    <number>2</number>
-   </property>
-   <property name="verticalSpacing">
-    <number>0</number>
-   </property>
-   <property name="margin">
-    <number>0</number>
-   </property>
+  <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QgsAttributeTableView" name="mView">
      <property name="alternatingRowColors">
@@ -31,7 +22,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <layout class="QHBoxLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QToolButton" name="mRemoveSelectionButton">
        <property name="toolTip">
@@ -176,6 +167,46 @@
        </property>
        <property name="checkable">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mAddAttribute">
+       <property name="toolTip">
+        <string>New column</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mRemoveAttribute">
+       <property name="toolTip">
+        <string>Delete column</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
        </property>
       </widget>
      </item>
