@@ -66,6 +66,11 @@ class QgsDataProvider : QObject
       */
       virtual bool setSubsetString(QString subset);
 
+      /**
+       * provider supports setting of subset strings
+       * @note added in 1.4
+       */
+      virtual bool supportsSubsetString();
 
       /**
        * Returns the subset definition string (typically sql) currently in
