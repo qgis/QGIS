@@ -31,7 +31,6 @@ class QgsComposition;
 class QgsMapCanvas;
 
 class QGridLayout;
-class QPrinter;
 class QDomNode;
 class QDomDocument;
 class QMoveEvent;
@@ -47,7 +46,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     Q_OBJECT
 
   public:
-    QgsComposer( QgisApp *qgis );
+    QgsComposer( QgisApp *qgis, const QString& id );
     ~QgsComposer();
 
     //! Set the pixmap / icons on the toolbar buttons
@@ -74,6 +73,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Restore the window and toolbar state
     void restoreWindowState();
 
+    QAction* windowAction() {return mWindowAction;}
+
+    QString id() const {return mId;}
+
   protected:
     //! Move event
     virtual void moveEvent( QMoveEvent * );
@@ -81,12 +84,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Resize event
     virtual void resizeEvent( QResizeEvent * );
 
+    //! Close event (remove window from menu)
+    virtual void closeEvent( QCloseEvent * );
+
 #ifdef Q_WS_MAC
     //! Change event (update window menu on ActivationChange)
     virtual void changeEvent( QEvent * );
-
-    //! Close event (remove window from menu)
-    virtual void closeEvent( QCloseEvent * );
 
     //! Show event (add window to menu)
     virtual void showEvent( QShowEvent * );
@@ -218,12 +221,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Sets state from Dom document
     void readXML( const QDomDocument& doc );
+    void readXML( const QDomElement& composerElem, const QDomDocument& doc );
 
     void setSelectionTool();
-
-  protected:
-
-    void paintEvent( QPaintEvent* event );
 
   private slots:
 
@@ -234,9 +234,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     /**Establishes the signal slot connection for the class*/
     void connectSlots();
-
-    //! returns new world matrix for canvas view after zoom with factor scaleChange
-    QMatrix updateMatrix( double scaleChange );
 
     //! True if a composer map contains a WMS layer
     bool containsWMSLayer() const;
@@ -252,14 +249,15 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Writes state under DOM element
     void writeXML( QDomNode& parentNode, QDomDocument& doc );
+
+    /**Identification string*/
+    QString mId;
+
     //! Pointer to composer view
     QgsComposerView *mView;
 
     //! Current composition
     QgsComposition *mComposition;
-
-    //! Printer
-    QPrinter *mPrinter;
 
     //! Pointer to QGIS application
     QgisApp *mQgis;
@@ -281,9 +279,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Window menu action to select this window
     QAction *mWindowAction;
-
-    /**False if first paint already happened (used to create cache of composer maps for screen resolution after reading from project files)*/
-    bool mFirstPaint;
 
     //! Help context id
     static const int context_id = 985715179;

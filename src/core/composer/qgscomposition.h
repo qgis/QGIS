@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
+#include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
 
@@ -25,7 +26,6 @@ class QgsPaperItem;
 class QGraphicsRectItem;
 class QgsMapRenderer;
 
-class QDomDocument;
 class QDomElement;
 
 /** \ingroup MapComposer

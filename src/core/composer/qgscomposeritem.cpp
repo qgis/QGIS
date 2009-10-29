@@ -204,10 +204,10 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     return false;
   }
 
+  mLastValidViewScaleFactor = itemElem.attribute( "lastValidViewScaleFactor", "-1" ).toDouble();
+
   setSceneRect( QRectF( x, y, width, height ) );
   setZValue( itemElem.attribute( "zValue" ).toDouble() );
-
-  mLastValidViewScaleFactor = itemElem.attribute( "lastValidViewScaleFactor", "-1" ).toDouble();
 
   //pen
   QDomNodeList frameColorList = itemElem.elementsByTagName( "FrameColor" );
