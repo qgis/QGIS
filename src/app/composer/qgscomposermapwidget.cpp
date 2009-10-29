@@ -702,5 +702,6 @@ void QgsComposerMapWidget::on_mCoordinatePrecisionSpinBox_valueChanged( int valu
     return;
   }
   mComposerMap->setGridAnnotationPrecision( value );
+  mComposerMap->updateBoundingRect();
   mComposerMap->update();
 }
