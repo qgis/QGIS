@@ -238,7 +238,7 @@
    <item row="3" column="0">
     <widget class="QCheckBox" name="mKeepLayerListCheckBox">
      <property name="text">
-      <string>Keep layer list</string>
+      <string>Lock layers for map item</string>
      </property>
     </widget>
    </item>
