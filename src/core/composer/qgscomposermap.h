@@ -309,9 +309,6 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     /**Stored layer list (used if layer live-link mKeepLayerSet is disabled)*/
     QStringList mLayerSet;
 
-    /**For the generation of new unique ids*/
-    static int mCurrentComposerId;
-
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
 
