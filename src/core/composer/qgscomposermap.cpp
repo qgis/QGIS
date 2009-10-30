@@ -1246,7 +1246,7 @@ double QgsComposerMap::maxExtension() const
   QList< QPair< double, QLineF > >::const_iterator it = xLines.constBegin();
   for ( ; it != xLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first );
+    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
     currentExtension = std::max( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
     maxExtension = std::max( maxExtension, currentExtension );
   }
@@ -1254,7 +1254,7 @@ double QgsComposerMap::maxExtension() const
   it = yLines.constBegin();
   for ( ; it != yLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first );
+    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
     currentExtension = std::max( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
     maxExtension = std::max( maxExtension, currentExtension );
   }
