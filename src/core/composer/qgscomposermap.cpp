@@ -39,8 +39,6 @@
 #include <iostream>
 #include <cmath>
 
-int QgsComposerMap::mCurrentComposerId = 0;
-
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), \
@@ -48,8 +46,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mRotation( 0 ), mCrossLength( 3 )
 {
   mComposition = composition;
+  mId = mComposition->composerMapItems().size();
   mMapRenderer = mComposition->mapRenderer();
-  mId = mCurrentComposerId++;
   mPreviewMode = QgsComposerMap::Rectangle;
   mCurrentRectangle = rect();
 
@@ -87,7 +85,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
 
   mComposition = composition;
   mMapRenderer = mComposition->mapRenderer();
-  mId = mCurrentComposerId++;
+  mId = mComposition->composerMapItems().size();
   mPreviewMode = QgsComposerMap::Rectangle;
   mCurrentRectangle = rect();
 
@@ -560,6 +558,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   }
 
   QDomElement composerMapElem = doc.createElement( "ComposerMap" );
+  composerMapElem.setAttribute( "id", mId );
 
   //previewMode
   if ( mPreviewMode == Cache )
@@ -643,6 +642,11 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     return false;
   }
 
+  QString idRead = itemElem.attribute( "id", "not found" );
+  if ( idRead != "not found" )
+  {
+    mId = idRead.toInt();
+  }
   mPreviewMode = Rectangle;
 
   //previewMode
