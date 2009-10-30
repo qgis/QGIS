@@ -1167,6 +1167,7 @@ void QgisApp::createMenus()
   }
 
   mFileMenu->addAction( mActionNewPrintComposer );
+  mPrintComposersMenu = mFileMenu->addMenu( tr( "Print Composers" ) );
   mActionFileSeparator4 = mFileMenu->addSeparator();
 
   mFileMenu->addAction( mActionExit );
@@ -1331,10 +1332,6 @@ void QgisApp::createMenus()
   mWindowMenu->addAction( mActionWindowAllToFront );
   mActionWindowSeparator2 = mWindowMenu->addSeparator();
 #endif
-
-  //Print composers menu
-
-  mPrintComposersMenu = menuBar()->addMenu( tr( "Print Composers" ) );
 
   // Help Menu
 
