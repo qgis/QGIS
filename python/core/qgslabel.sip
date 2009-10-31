@@ -81,8 +81,17 @@ public:
     //! Available vector fields
     QMap<int, QgsField> & fields ( );
 
-    //! Pointer to default attributes
-    QgsLabelAttributes *layerAttributes ( );
+    /** Pointer to default attributes.
+     * @note this will be deprecated in version 2 as it is 
+     * badly named. Rather use attributes.
+     * @see labelAttributes method rather */
+    QgsLabelAttributes *layerAttributes( void );
+
+    /** Pointer to default attributes.
+     * @note this replaces the to-be-deprecated layerAttributes method.
+     * @note introduced in QGIS 1.4
+     */
+    QgsLabelAttributes *labelAttributes( void );
 
     //! Set label field
     void setLabelField ( int attr, int fieldId );
