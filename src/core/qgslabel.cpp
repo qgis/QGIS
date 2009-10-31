@@ -508,6 +508,11 @@ QString QgsLabel::labelField( int attr ) const
   return mField[fieldIndex].name();
 }
 
+QgsLabelAttributes *QgsLabel::labelAttributes( void )
+{
+  return mLabelAttributes;
+}
+// @note this will be deprecated use attributes rather
 QgsLabelAttributes *QgsLabel::layerAttributes( void )
 {
   return mLabelAttributes;
