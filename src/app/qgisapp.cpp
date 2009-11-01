@@ -4243,6 +4243,8 @@ bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
     composer->showMinimized();
     composer->zoomFull();
   }
+
+  return true;
 }
 
 void QgisApp::deletePrintComposers()
