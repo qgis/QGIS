@@ -20,6 +20,7 @@ which are not wrapped by PyQt:
 #if (PY_VERSION_HEX < 0x02050000)
 typedef int Py_ssize_t;
 #endif
+
 %End
 
 
@@ -29,6 +30,10 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QVector>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -105,6 +110,10 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QVector>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -259,6 +268,10 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QSet>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -309,6 +322,10 @@ template <TYPE>
 {
 %TypeHeaderCode
 #include <QSet>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -381,6 +398,10 @@ template<TYPE>
 {
 %TypeHeaderCode
 #include <QMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -498,6 +519,10 @@ template<TYPE>
 {
 %TypeHeaderCode
 #include <QMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -598,7 +623,11 @@ template<TYPE1, TYPE2>
 %MappedType QMap<TYPE1, TYPE2*>
 {
 %TypeHeaderCode
-#include <qmap.h>
+#include <QMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -706,6 +735,10 @@ template<double, TYPE2>
 {
 %TypeHeaderCode
 #include <QMultiMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
@@ -824,6 +857,10 @@ template<double, TYPE2>
 {
 %TypeHeaderCode
 #include <QMap>
+#if (SIP_VERSION >= 0x040900)
+#define sipClass_QString ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QString))
+#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
 %End
 
 %ConvertFromTypeCode
