@@ -9,11 +9,17 @@
 #include <QString>
 #include <QVariant>
 
+class QDomDocument;
+class QDomElement;
+
 class QgsSymbolV2;
 class QgsRenderContext;
 class QgsFeature;
 
 typedef QList<QgsSymbolV2*> QgsSymbolV2List;
+typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
+
+#define RENDERER_TAG_NAME   "renderer-v2"
 
 ////////
 // symbol levels
@@ -80,6 +86,12 @@ public:
 
   bool usingSymbolLevels() const { return mUsingSymbolLevels; }
   void setUsingSymbolLevels(bool usingSymbolLevels) { mUsingSymbolLevels = usingSymbolLevels; }
+
+  //! create a renderer from XML element
+  static QgsFeatureRendererV2* load(QDomElement& symbologyElem);
+
+  //! store renderer info to XML element
+  virtual QDomElement save(QDomDocument& doc);
   
 protected:
   QgsFeatureRendererV2(RendererType type);
@@ -113,6 +125,12 @@ public:
   virtual QgsFeatureRendererV2* clone();
 
   virtual QgsSymbolV2List symbols();
+
+  //! create renderer from XML element
+  static QgsFeatureRendererV2* create(QDomElement& element);
+
+  //! store renderer info to XML element
+  virtual QDomElement save(QDomDocument& doc);
 
 protected:
 	QgsSymbolV2* mSymbol;
@@ -184,6 +202,12 @@ public:
   
   int attributeIndex() const { return mAttrNum; }
   void setAttributeIndex(int attr) { mAttrNum = attr; }
+
+  //! create renderer from XML element
+  static QgsFeatureRendererV2* create(QDomElement& element);
+
+  //! store renderer info to XML element
+  virtual QDomElement save(QDomDocument& doc);
 
 protected:
   QgsCategoryList mCategories;
@@ -277,6 +301,12 @@ public:
                   Mode mode,
                   QgsSymbolV2* symbol,
                   QgsVectorColorRampV2* ramp);
+
+  //! create renderer from XML element
+  static QgsFeatureRendererV2* create(QDomElement& element);
+
+  //! store renderer info to XML element
+  virtual QDomElement save(QDomDocument& doc);
 
 protected:
   QgsRangeList mRanges;

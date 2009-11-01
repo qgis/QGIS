@@ -2,10 +2,15 @@
 #include "qgssymbollayerv2utils.h"
 
 #include "qgssymbollayerv2.h"
+#include "qgssymbollayerv2registry.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorcolorrampv2.h"
 
+#include "qgslogger.h"
+
 #include <QColor>
+#include <QDomNode>
+#include <QDomElement>
 #include <QIcon>
 #include <QPainter>
 
@@ -289,4 +294,253 @@ QPolygonF offsetLine(QPolygonF polyline, double dist)
   pt_new = offsetPoint(p2, angle + M_PI/2, dist);
   newLine.append(pt_new);
   return newLine;
+}
+
+/////
+
+
+QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol(QDomElement& element)
+{
+  QgsSymbolLayerV2List layers;
+  QDomNode layerNode = element.firstChild();
+
+  while (!layerNode.isNull())
+  {
+    QDomElement e = layerNode.toElement();
+    if (!e.isNull())
+    {
+      if (e.tagName() != "layer")
+      {
+        QgsDebugMsg("unknown tag " + e.tagName());
+      }
+      else
+      {
+        QgsSymbolLayerV2* layer = loadSymbolLayer(e);
+        if (layer != NULL)
+          layers.append(layer);
+      }
+    }
+    layerNode = layerNode.nextSibling();
+  }
+
+  if (layers.count() == 0)
+  {
+    QgsDebugMsg("no layers for symbol");
+    return NULL;
+  }
+
+  QString symbolType = element.attribute("type");
+  if (symbolType == "line")
+    return new QgsLineSymbolV2(layers);
+  else if (symbolType == "fill")
+    return new QgsFillSymbolV2(layers);
+  else if (symbolType == "marker")
+    return new QgsMarkerSymbolV2(layers);
+  else
+  {
+    QgsDebugMsg("unknown symbol type " + symbolType);
+    return NULL;
+  }
+}
+
+QgsSymbolLayerV2* QgsSymbolLayerV2Utils::loadSymbolLayer(QDomElement& element)
+{
+  QString layerClass = element.attribute("class");
+  bool locked = element.attribute("locked").toInt();
+
+  // parse properties
+  QgsStringMap props = parseProperties(element);
+
+  QgsSymbolLayerV2* layer;
+  layer = QgsSymbolLayerV2Registry::instance()->createSymbolLayer(layerClass, props);
+  if (layer)
+  {
+    layer->setLocked(locked);
+    return layer;
+  }
+  else
+  {
+    QgsDebugMsg("unknown class " + layerClass);
+    return NULL;
+  }
+}
+
+static QString _nameForSymbolType(QgsSymbolV2::SymbolType type)
+{
+  switch (type)
+  {
+    case QgsSymbolV2::Line: return "line";
+    case QgsSymbolV2::Marker: return "marker";
+    case QgsSymbolV2::Fill: return "fill";
+  }
+}
+
+QDomElement QgsSymbolLayerV2Utils::saveSymbol(QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols)
+{
+  QDomElement symEl = doc.createElement("symbol");
+  symEl.setAttribute("type", _nameForSymbolType(symbol->type()) );
+  symEl.setAttribute("name", name);
+
+  QgsDebugMsg("num layers " + QString::number(symbol->symbolLayerCount()));
+  for (int i = 0; i < symbol->symbolLayerCount(); i++)
+  {
+    QgsSymbolLayerV2* layer = symbol->symbolLayer(i);
+
+    QDomElement layerEl = doc.createElement("layer");
+    layerEl.setAttribute("class", layer->layerType());
+    layerEl.setAttribute("locked", layer->isLocked());
+
+    if (subSymbols != NULL && layer->subSymbol() != NULL)
+    {
+      QString subname = QString("@%1@%2").arg(name).arg(i);
+      subSymbols->insert(subname, layer->subSymbol());
+    }
+
+    saveProperties(layer->properties(), doc, layerEl);
+    symEl.appendChild(layerEl);
+  }
+
+  return symEl;
+}
+
+
+QgsStringMap QgsSymbolLayerV2Utils::parseProperties(QDomElement& element)
+{
+  QgsStringMap props;
+  QDomElement e = element.firstChildElement();
+  while (!e.isNull())
+  {
+    if (e.tagName() != "prop")
+    {
+      QgsDebugMsg("unknown tag " + e.tagName());
+    }
+    else
+    {
+      QString propKey = e.attribute("k");
+      QString propValue = e.attribute("v");
+      props[propKey] = propValue;
+    }
+    e = e.nextSiblingElement();
+  }
+  return props;
+}
+
+
+void QgsSymbolLayerV2Utils::saveProperties(QgsStringMap props, QDomDocument& doc, QDomElement& element)
+{
+  for (QgsStringMap::iterator it = props.begin(); it != props.end(); ++it)
+  {
+    QDomElement propEl = doc.createElement("prop");
+    propEl.setAttribute("k", it.key());
+    propEl.setAttribute("v", it.value());
+    element.appendChild(propEl);
+  }
+}
+
+QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols(QDomElement& element)
+{
+  // go through symbols one-by-one and load them
+
+  QgsSymbolV2Map symbols;
+  QDomElement e = element.firstChildElement();
+
+  while (!e.isNull())
+  {
+    if (e.tagName() == "symbol")
+    {
+      QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol(e);
+      if (symbol != NULL)
+        symbols.insert(e.attribute("name"), symbol);
+    }
+    else
+    {
+      QgsDebugMsg("unknown tag: " + e.tagName());
+    }
+    e = e.nextSiblingElement();
+  }
+
+
+  // now walk through the list of symbols and find those prefixed with @
+  // these symbols are sub-symbols of some other symbol layers
+  // e.g. symbol named "@foo@1" is sub-symbol of layer 1 in symbol "foo"
+  QStringList subsymbols;
+
+  for (QMap<QString, QgsSymbolV2*>::iterator it = symbols.begin(); it != symbols.end(); ++it)
+  {
+    if (it.key()[0] != '@')
+      continue;
+
+    // add to array (for deletion)
+    subsymbols.append(it.key());
+
+    QStringList parts = it.key().split("@");
+    if (parts.count() < 3)
+    {
+      QgsDebugMsg("found subsymbol with invalid name: "+it.key());
+      delete it.value(); // we must delete it
+      continue; // some invalid syntax
+    }
+    QString symname = parts[1];
+    int symlayer = parts[2].toInt();
+
+    if (!symbols.contains(symname))
+    {
+      QgsDebugMsg("subsymbol references invalid symbol: " + symname);
+      delete it.value(); // we must delete it
+      continue;
+    }
+
+    QgsSymbolV2* sym = symbols[symname];
+    if (symlayer < 0 || symlayer >= sym->symbolLayerCount())
+    {
+      QgsDebugMsg("subsymbol references invalid symbol layer: "+ QString::number(symlayer));
+      delete it.value(); // we must delete it
+      continue;
+    }
+
+    // set subsymbol takes ownership
+    bool res = sym->symbolLayer(symlayer)->setSubSymbol( it.value() );
+    if (!res)
+    {
+      QgsDebugMsg("symbol layer refused subsymbol: " + it.key());
+    }
+
+
+  }
+
+  // now safely remove sub-symbol entries (they have been already deleted or the ownership was taken away)
+  for (int i = 0; i < subsymbols.count(); i++)
+    symbols.take(subsymbols[i]);
+
+  return symbols;
+}
+
+QDomElement QgsSymbolLayerV2Utils::saveSymbols(QgsSymbolV2Map& symbols, QDomDocument& doc)
+{
+  QDomElement symbolsElem = doc.createElement("symbols");
+
+  QMap<QString, QgsSymbolV2*> subSymbols;
+
+  // save symbols
+  for (QMap<QString, QgsSymbolV2*>::iterator its = symbols.begin(); its != symbols.end(); ++its)
+  {
+    QDomElement symEl = saveSymbol(its.key(), its.value(), doc, &subSymbols);
+    symbolsElem.appendChild(symEl);
+  }
+
+  // add subsymbols, don't allow subsymbols for them (to keep things simple)
+  for (QMap<QString, QgsSymbolV2*>::iterator itsub = subSymbols.begin(); itsub != subSymbols.end(); ++itsub)
+  {
+    QDomElement subsymEl = saveSymbol(itsub.key(), itsub.value(), doc);
+    symbolsElem.appendChild(subsymEl);
+  }
+
+  return symbolsElem;
+}
+
+void QgsSymbolLayerV2Utils::clearSymbolMap(QgsSymbolV2Map& symbols)
+{
+  foreach (QString name, symbols.keys())
+    delete symbols.value(name);
+  symbols.clear();
 }

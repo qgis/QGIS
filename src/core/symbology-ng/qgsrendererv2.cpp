@@ -1,12 +1,16 @@
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
 
 #include "qgsrendercontext.h"
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
 #include "qgslogger.h"
 
+#include <QDomElement>
+#include <QDomDocument>
 #include <QPolygonF>
+
 
 
 static unsigned char* _getPoint(QPointF& pt, const QgsMapToPixel& mapToPixel, unsigned char* wkb)
@@ -247,6 +251,40 @@ QString QgsFeatureRendererV2::dump()
 }
 
 
+QgsFeatureRendererV2* QgsFeatureRendererV2::load(QDomElement& element)
+{
+  // <renderer-v2 type=""> ... </renderer-v2>
+
+  if (element.isNull())
+    return NULL;
+
+  // load renderer
+  QString rendererType = element.attribute("type");
+
+  // TODO: use renderer registry
+  if (rendererType == "singleSymbol")
+  {
+    return QgsSingleSymbolRendererV2::create(element);
+  }
+  else if (rendererType == "categorizedSymbol")
+  {
+    return QgsCategorizedSymbolRendererV2::create(element);
+  }
+  else if (rendererType == "graduatedSymbol")
+  {
+    return QgsGraduatedSymbolRendererV2::create(element);
+  }
+
+  // unknown renderer type
+  return NULL;
+}
+
+QDomElement QgsFeatureRendererV2::save(QDomDocument& doc)
+{
+  // create empty renderer element
+  return doc.createElement(RENDERER_TAG_NAME);
+}
+
 ///////////////////
 
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2(QgsSymbolV2* symbol)
@@ -308,6 +346,39 @@ QgsSymbolV2List QgsSingleSymbolRendererV2::symbols()
   QgsSymbolV2List lst;
   lst.append(mSymbol);
   return lst;
+}
+
+QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create(QDomElement& element)
+{
+  QDomElement symbolsElem = element.firstChildElement("symbols");
+  if (symbolsElem.isNull())
+    return NULL;
+
+  QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols(symbolsElem);
+
+  if (!symbolMap.contains("0"))
+    return NULL;
+
+  QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( symbolMap.take("0") );
+
+  // delete symbols if there are any more
+  QgsSymbolLayerV2Utils::clearSymbolMap(symbolMap);
+
+  // TODO: symbol levels
+  return r;
+}
+
+QDomElement QgsSingleSymbolRendererV2::save(QDomDocument& doc)
+{
+  QDomElement rendererElem = doc.createElement(RENDERER_TAG_NAME);
+  rendererElem.setAttribute("type", "singleSymbol");
+
+  QgsSymbolV2Map symbols;
+  symbols["0"] = mSymbol;
+  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(symbols, doc);
+  rendererElem.appendChild(symbolsElem);
+
+  return rendererElem;
 }
 
 ///////////////////
@@ -511,6 +582,81 @@ QgsSymbolV2List QgsCategorizedSymbolRendererV2::symbols()
   for (int i = 0; i < mCategories.count(); i++)
     lst.append(mCategories[i].symbol());
   return lst;
+}
+
+QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create(QDomElement& element)
+{
+  QDomElement symbolsElem = element.firstChildElement("symbols");
+  if (symbolsElem.isNull())
+    return NULL;
+
+  QDomElement catsElem = element.firstChildElement("categories");
+  if (catsElem.isNull())
+    return NULL;
+
+  QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols(symbolsElem);
+  QgsCategoryList cats;
+
+  QDomElement catElem = catsElem.firstChildElement();
+  while (!catElem.isNull())
+  {
+    if (catElem.tagName() == "category")
+    {
+      QVariant value = QVariant(catElem.attribute("value"));
+      QString symbolName = catElem.attribute("symbol");
+      QString label = catElem.attribute("label");
+      if (symbolMap.contains(symbolName))
+      {
+        QgsSymbolV2* symbol = symbolMap.take(symbolName);
+        cats.append( QgsRendererCategoryV2(value, symbol, label) );
+      }
+    }
+    catElem = catElem.nextSiblingElement();
+  }
+
+  int attrNum = element.attribute("attr").toInt();
+
+  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2(attrNum, cats);
+
+  // delete symbols if there are any more
+  QgsSymbolLayerV2Utils::clearSymbolMap(symbolMap);
+
+  // TODO: symbol levels
+  return r;
+}
+
+QDomElement QgsCategorizedSymbolRendererV2::save(QDomDocument& doc)
+{
+  QDomElement rendererElem = doc.createElement(RENDERER_TAG_NAME);
+  rendererElem.setAttribute("type", "categorizedSymbol");
+  rendererElem.setAttribute("attr", mAttrNum);
+
+  // categories
+  int i = 0;
+  QgsSymbolV2Map symbols;
+  QDomElement catsElem = doc.createElement("categories");
+  QgsCategoryList::const_iterator it = mCategories.constBegin();
+  for ( ; it != mCategories.end(); it++)
+  {
+    const QgsRendererCategoryV2& cat = *it;
+    QString symbolName = QString::number(i);
+    symbols.insert(symbolName, cat.symbol());
+
+    QDomElement catElem = doc.createElement("category");
+    catElem.setAttribute("value", cat.value().toString());
+    catElem.setAttribute("symbol", symbolName);
+    catElem.setAttribute("label", cat.label());
+    catsElem.appendChild(catElem);
+    i++;
+  }
+
+  rendererElem.appendChild(catsElem);
+
+  // save symbols
+  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(symbols, doc);
+  rendererElem.appendChild(symbolsElem);
+
+  return rendererElem;
 }
 
 /////////////////////////
@@ -777,4 +923,83 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   }
   
   return new QgsGraduatedSymbolRendererV2( attrNum, ranges );
+}
+
+
+
+QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create(QDomElement& element)
+{
+  QDomElement symbolsElem = element.firstChildElement("symbols");
+  if (symbolsElem.isNull())
+    return NULL;
+
+  QDomElement rangesElem = element.firstChildElement("ranges");
+  if (rangesElem.isNull())
+    return NULL;
+
+  QgsSymbolV2Map symbolMap = QgsSymbolLayerV2Utils::loadSymbols(symbolsElem);
+  QgsRangeList ranges;
+
+  QDomElement rangeElem = rangesElem.firstChildElement();
+  while (!rangeElem.isNull())
+  {
+    if (rangeElem.tagName() == "range")
+    {
+      double lowerValue = rangeElem.attribute("lower").toDouble();
+      double upperValue = rangeElem.attribute("upper").toDouble();
+      QString symbolName = rangeElem.attribute("symbol");
+      QString label = rangeElem.attribute("label");
+      if (symbolMap.contains(symbolName))
+      {
+        QgsSymbolV2* symbol = symbolMap.take(symbolName);
+        ranges.append( QgsRendererRangeV2(lowerValue, upperValue, symbol, label) );
+      }
+    }
+    rangeElem = rangeElem.nextSiblingElement();
+  }
+
+  int attrNum = element.attribute("attr").toInt();
+
+  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2(attrNum, ranges);
+
+  // delete symbols if there are any more
+  QgsSymbolLayerV2Utils::clearSymbolMap(symbolMap);
+
+  // TODO: symbol levels
+  return r;
+}
+
+QDomElement QgsGraduatedSymbolRendererV2::save(QDomDocument& doc)
+{
+  QDomElement rendererElem = doc.createElement(RENDERER_TAG_NAME);
+  rendererElem.setAttribute("type", "graduatedSymbol");
+  rendererElem.setAttribute("attr", mAttrNum);
+
+  // ranges
+  int i = 0;
+  QgsSymbolV2Map symbols;
+  QDomElement rangesElem = doc.createElement("ranges");
+  QgsRangeList::const_iterator it = mRanges.constBegin();
+  for ( ; it != mRanges.end(); it++)
+  {
+    const QgsRendererRangeV2& range = *it;
+    QString symbolName = QString::number(i);
+    symbols.insert(symbolName, range.symbol());
+
+    QDomElement rangeElem = doc.createElement("range");
+    rangeElem.setAttribute("lower", range.lowerValue());
+    rangeElem.setAttribute("upper", range.upperValue());
+    rangeElem.setAttribute("symbol", symbolName);
+    rangeElem.setAttribute("label", range.label());
+    rangesElem.appendChild(rangeElem);
+    i++;
+  }
+
+  rendererElem.appendChild(rangesElem);
+
+  // save symbols
+  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(symbols, doc);
+  rendererElem.appendChild(symbolsElem);
+
+  return rendererElem;
 }

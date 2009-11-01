@@ -14,7 +14,6 @@ class QgsVectorColorRampV2;
 class QDomDocument;
 class QDomElement;
 
-typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
 typedef QMap<QString, QgsVectorColorRampV2* > QgsVectorColorRampV2Map;
 
 class QgsStyleV2
@@ -79,16 +78,10 @@ public:
   
 protected:
 
-  QgsStringMap parseProperties(QDomElement& element);
-  void saveProperties(QgsStringMap props, QDomDocument& doc, QDomElement& element);
-  
-  QgsSymbolV2* loadSymbol(QDomElement& element);
-  QgsSymbolLayerV2* loadSymbolLayer(QDomElement& element);
   QgsVectorColorRampV2* loadColorRamp(QDomElement& element);
   
-  QDomElement saveSymbol(QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols = NULL);
   QDomElement saveColorRamp(QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc);
-  
+
   QgsSymbolV2Map mSymbols;
   QgsVectorColorRampV2Map mColorRamps;
   

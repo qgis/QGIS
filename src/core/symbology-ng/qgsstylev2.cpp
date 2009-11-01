@@ -190,165 +190,42 @@ bool QgsStyleV2::load(QString filename)
     mErrorString = "Unknown style file version: " + version;
     return false;
   }
-  
-  QDomNode node = docElem.firstChild();
-  QString name;
-  
-  while (!node.isNull())
+
+  // load symbols
+  QDomElement symbolsElement = docElem.firstChildElement("symbols");
+  if (!symbolsElement.isNull())
   {
-    QDomElement e = node.toElement();
-    if (!e.isNull()) // comments are null elements
-    {
-      if (e.tagName() == "symbol")
-      {
-        name = e.attribute("name");
-        QgsSymbolV2* symbol = loadSymbol(e);
-        if (symbol != NULL)
-          addSymbol(name, symbol);
-      }
-      else if (e.tagName() == "colorramp")
-      {
-        name = e.attribute("name");
-        QgsVectorColorRampV2* ramp = loadColorRamp(e);
-        if (ramp != NULL)
-          addColorRamp(name, ramp);
-      }
-      else
-      {
-        QgsDebugMsg("unknown tag: " + e.tagName());
-      }
-    } 
-    node = node.nextSibling();
+    mSymbols = QgsSymbolLayerV2Utils::loadSymbols(symbolsElement);
   }
-  
-  // now walk through the list of symbols and find those prefixed with @
-  // these symbols are sub-symbols of some other symbol layers
-  // e.g. symbol named "@foo@1" is sub-symbol of layer 1 in symbol "foo"
-  QStringList subsymbols;
-  
-  for (QMap<QString, QgsSymbolV2*>::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it)
+
+  // load color ramps
+  QDomElement rampsElement = docElem.firstChildElement("colorramps");
+  QDomElement e = rampsElement.firstChildElement();
+  while (!e.isNull())
   {
-    if (it.key()[0] != '@')
-      continue;
-    
-    // add to array (for deletion)
-    subsymbols.append(it.key());
-    
-    QStringList parts = it.key().split("@");
-    if (parts.count() < 3)
+    if (e.tagName() == "colorramp")
     {
-      QgsDebugMsg("found subsymbol with invalid name: "+it.key());
-      delete it.value(); // we must delete it
-      continue; // some invalid syntax
+      QgsVectorColorRampV2* ramp = loadColorRamp(e);
+      if (ramp != NULL)
+        addColorRamp(e.attribute("name"), ramp);
     }
-    QString symname = parts[1];
-    int symlayer = parts[2].toInt();
-    
-    if (!mSymbols.contains(symname))
+    else
     {
-      QgsDebugMsg("subsymbol references invalid symbol: " + symname);
-      delete it.value(); // we must delete it
-      continue;
+      QgsDebugMsg("unknown tag: " + e.tagName());
     }
-    
-    QgsSymbolV2* sym = mSymbols[symname];
-    if (symlayer < 0 || symlayer >= sym->symbolLayerCount())
-    {
-      QgsDebugMsg("subsymbol references invalid symbol layer: "+ QString::number(symlayer));
-      delete it.value(); // we must delete it
-      continue;
-    }
-    
-    // set subsymbol takes ownership
-    bool res = sym->symbolLayer(symlayer)->setSubSymbol( it.value() );
-    if (!res)
-    {
-      QgsDebugMsg("symbol layer refused subsymbol: " + it.key());
-    }
-    
-    
+    e = e.nextSiblingElement();
   }
-  
-  // now safely remove sub-symbol entries (they have been already deleted or the ownership was taken away)
-  for (int i = 0; i < subsymbols.count(); i++)
-    mSymbols.take(subsymbols[i]);
-  
+
   return true;
 }
 
-
-QgsSymbolV2* QgsStyleV2::loadSymbol(QDomElement& element)
-{
-  QgsSymbolLayerV2List layers;
-  QDomNode layerNode = element.firstChild();
-  
-  while (!layerNode.isNull())
-  {
-    QDomElement e = layerNode.toElement();
-    if (!e.isNull())
-    {
-      if (e.tagName() != "layer")
-      {
-        QgsDebugMsg("unknown tag " + e.tagName());
-      }
-      else
-      {
-        QgsSymbolLayerV2* layer = loadSymbolLayer(e);
-        if (layer != NULL)
-          layers.append(layer);
-      }
-    }
-    layerNode = layerNode.nextSibling();
-  }
-  
-  if (layers.count() == 0)
-  {
-    QgsDebugMsg("no layers for symbol");
-    return NULL;
-  }
-  
-  QString symbolType = element.attribute("type");
-  if (symbolType == "line")
-    return new QgsLineSymbolV2(layers);
-  else if (symbolType == "fill")
-    return new QgsFillSymbolV2(layers);
-  else if (symbolType == "marker")
-    return new QgsMarkerSymbolV2(layers);
-  else
-  {
-    QgsDebugMsg("unknown symbol type " + symbolType);
-    return NULL;
-  }  
-}
-
-QgsSymbolLayerV2* QgsStyleV2::loadSymbolLayer(QDomElement& element)
-{
-  QString layerClass = element.attribute("class");
-  bool locked = element.attribute("locked").toInt();
-  
-  // parse properties
-  QgsStringMap props = parseProperties(element);
-  
-  QgsSymbolLayerV2* layer;
-  layer = QgsSymbolLayerV2Registry::instance()->createSymbolLayer(layerClass, props);
-  if (layer)
-  {
-    layer->setLocked(locked);
-    return layer;
-  }
-  else
-  {
-    QgsDebugMsg("unknown class " + layerClass);
-    return NULL;
-  }
-}
 
 QgsVectorColorRampV2* QgsStyleV2::loadColorRamp(QDomElement& element)
 {
   QString rampType = element.attribute("type");
   
   // parse properties
-  QgsStringMap props = parseProperties(element);
+  QgsStringMap props = QgsSymbolLayerV2Utils::parseProperties(element);
   
   if (rampType == "gradient")
     return QgsVectorGradientColorRampV2::create(props);
@@ -362,42 +239,6 @@ QgsVectorColorRampV2* QgsStyleV2::loadColorRamp(QDomElement& element)
 }
 
 
-QgsStringMap QgsStyleV2::parseProperties(QDomElement& element)
-{
-  QgsStringMap props;
-  QDomNode propNode = element.firstChild();
-  while (!propNode.isNull())
-  {
-    QDomElement e = propNode.toElement();
-    if (!e.isNull())
-    {
-      if (e.tagName() != "prop")
-      {
-        QgsDebugMsg("unknown tag " + e.tagName());
-      }
-      else
-      {
-        QString propKey = e.attribute("k");
-        QString propValue = e.attribute("v");
-        props[propKey] = propValue;
-      }
-    }
-    propNode = propNode.nextSibling();
-  }
-  return props;
-}
-
-void QgsStyleV2::saveProperties(QgsStringMap props, QDomDocument& doc, QDomElement& element)
-{
-  for (QgsStringMap::iterator it = props.begin(); it != props.end(); ++it)
-  {
-    QDomElement propEl = doc.createElement("prop");
-    propEl.setAttribute("k", it.key());
-    propEl.setAttribute("v", it.value());
-    element.appendChild(propEl);
-  }
-}
-
 
 bool QgsStyleV2::save(QString filename)
 {
@@ -409,29 +250,20 @@ bool QgsStyleV2::save(QString filename)
   QDomElement root = doc.createElement("qgis_style");
   root.setAttribute("version", STYLE_CURRENT_VERSION);
   doc.appendChild(root);
-  
-  QMap<QString, QgsSymbolV2*> subSymbols;
-  
-  // save symbols
-  for (QMap<QString, QgsSymbolV2*>::iterator its = mSymbols.begin(); its != mSymbols.end(); ++its)
-  {
-    QDomElement symEl = saveSymbol(its.key(), its.value(), doc, &subSymbols);
-    root.appendChild(symEl);
-  }
-  
-  // add subsymbols, don't allow subsymbols for them (to keep things simple)
-  for (QMap<QString, QgsSymbolV2*>::iterator itsub = subSymbols.begin(); itsub != subSymbols.end(); ++itsub)
-  {
-    QDomElement subsymEl = saveSymbol(itsub.key(), itsub.value(), doc);
-    root.appendChild(subsymEl);
-  }
+
+  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(mSymbols, doc);
+
+  QDomElement rampsElem = doc.createElement("colorramps");
   
   // save color ramps
   for (QMap<QString, QgsVectorColorRampV2*>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr)
   {
     QDomElement rampEl = saveColorRamp(itr.key(), itr.value(), doc);
-    root.appendChild(rampEl);
+    rampsElem.appendChild(rampEl);
   }
+
+  root.appendChild(symbolsElem);
+  root.appendChild(rampsElem);
   
   // save
   QFile f(filename);
@@ -447,49 +279,12 @@ bool QgsStyleV2::save(QString filename)
   return true;
 }
 
-static QString _nameForSymbolType(QgsSymbolV2::SymbolType type)
-{
-  switch (type)
-  {
-    case QgsSymbolV2::Line: return "line";
-    case QgsSymbolV2::Marker: return "marker";
-    case QgsSymbolV2::Fill: return "fill";
-  }
-}
-
-QDomElement QgsStyleV2::saveSymbol(QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols)
-{
-  QDomElement symEl = doc.createElement("symbol");
-  symEl.setAttribute("type", _nameForSymbolType(symbol->type()) );
-  symEl.setAttribute("name", name);
-  
-  for (int i = 0; i < symbol->symbolLayerCount(); i++)
-  {
-    QgsSymbolLayerV2* layer = symbol->symbolLayer(i);
-    
-    QDomElement layerEl = doc.createElement("layer");
-    layerEl.setAttribute("class", layer->layerType());
-    layerEl.setAttribute("locked", layer->isLocked());
-    
-    if (subSymbols != NULL && layer->subSymbol() != NULL)
-    {
-      QString subname = QString("@%1@%2").arg(name).arg(i);
-      subSymbols->insert(subname, layer->subSymbol());
-    }
-    
-    saveProperties(layer->properties(), doc, layerEl);
-    symEl.appendChild(layerEl);
-  }
-
-  return symEl;
-}
-
 QDomElement QgsStyleV2::saveColorRamp(QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc)
 {
   QDomElement rampEl = doc.createElement("colorramp");
   rampEl.setAttribute("type", ramp->type());
   rampEl.setAttribute("name", name);
   
-  saveProperties(ramp->properties(), doc, rampEl);
+  QgsSymbolLayerV2Utils::saveProperties(ramp->properties(), doc, rampEl);
   return rampEl;
 }

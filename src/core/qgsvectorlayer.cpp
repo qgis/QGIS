@@ -2315,12 +2315,28 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
     }
   }
 
-  QString errorMsg;
-  if ( !readSymbology( layer_node, errorMsg ) )
+  QDomElement rendererElement = layer_node.firstChildElement(RENDERER_TAG_NAME);
+  if (!rendererElement.isNull())
   {
-    return false;
-  }
+    // using renderer v2
+    setUsingRendererV2(true);
 
+    QgsFeatureRendererV2* r = QgsFeatureRendererV2::load(rendererElement);
+    if (r == NULL)
+      return false;
+    setRendererV2(r);
+  }
+  else
+  {
+    // using renderer v1
+    setUsingRendererV2(false);
+
+    QString errorMsg;
+    if ( !readSymbology( layer_node, errorMsg ) )
+    {
+      return false;
+    }
+  }
 
   return mValid;               // should be true if read successfully
 
@@ -2455,13 +2471,19 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   }
 
   // renderer specific settings
-
-  QString errorMsg;
-  if ( !writeSymbology( layer_node, document, errorMsg ) )
+  if (mUsingRendererV2)
   {
-    return false;
+    QDomElement rendererElement = mRendererV2->save(document);
+    layer_node.appendChild(rendererElement);
   }
-
+  else
+  {
+    QString errorMsg;
+    if ( !writeSymbology( layer_node, document, errorMsg ) )
+    {
+      return false;
+    }
+  }
 
   return true;
 } // bool QgsVectorLayer::writeXml

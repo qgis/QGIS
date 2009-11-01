@@ -6,13 +6,16 @@
 #include <QMap>
 #include <Qt>
 
-typedef QMap<QString, QString> QgsStringMap;
-
 class QgsSymbolV2;
 class QgsSymbolLayerV2;
 class QgsVectorColorRampV2;
 
+typedef QMap<QString, QString> QgsStringMap;
+typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
+
 class QColor;
+class QDomDocument;
+class QDomElement;
 class QIcon;
 class QPixmap;
 class QPointF;
@@ -45,6 +48,18 @@ public:
   static QIcon colorRampPreviewIcon(QgsVectorColorRampV2* ramp, QSize size);
 
   static QPixmap colorRampPreviewPixmap(QgsVectorColorRampV2* ramp, QSize size);
+
+  static QgsSymbolV2* loadSymbol(QDomElement& element);
+  static QgsSymbolLayerV2* loadSymbolLayer(QDomElement& element);
+  static QDomElement saveSymbol(QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols = NULL);
+
+  static QgsStringMap parseProperties(QDomElement& element);
+  static void saveProperties(QgsStringMap props, QDomDocument& doc, QDomElement& element);
+
+  static QgsSymbolV2Map loadSymbols(QDomElement& element);
+  static QDomElement saveSymbols(QgsSymbolV2Map& symbols, QDomDocument& doc);
+
+  static void clearSymbolMap(QgsSymbolV2Map& symbols);
 };
 
 class QPolygonF;
