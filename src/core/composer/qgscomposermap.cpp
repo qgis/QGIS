@@ -252,8 +252,6 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
 
   painter->restore();
-
-  mLastScaleFactorX =  currentScaleFactorX;
 }
 
 void QgsComposerMap::updateCachedImage( void )
@@ -541,12 +539,6 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
     layerSetElem.appendChild( layerElem );
   }
   composerMapElem.appendChild( layerSetElem );
-
-#if 0
-  // why is saving the map changing anything about the cache?
-  mCacheUpdated = false;
-  mNumCachedLayers = 0;
-#endif
 
   elem.appendChild( composerMapElem );
   return _writeXML( composerMapElem, doc );

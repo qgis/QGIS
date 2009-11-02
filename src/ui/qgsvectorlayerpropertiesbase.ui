@@ -32,16 +32,7 @@
      <property name="spacing" >
       <number>3</number>
      </property>
-     <property name="leftMargin" >
-      <number>1</number>
-     </property>
-     <property name="topMargin" >
-      <number>1</number>
-     </property>
-     <property name="rightMargin" >
-      <number>1</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin" >
       <number>1</number>
      </property>
      <item>
@@ -80,7 +71,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -102,7 +93,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex" >
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab1" >
       <attribute name="title" >
@@ -167,10 +158,10 @@
           </item>
           <item row="3" column="2" >
            <widget class="QPushButton" name="pbnChangeSpatialRefSys" >
-            <property name="toolTip">
+            <property name="toolTip" >
              <string>Specify the coordinate reference system of the layer's geometry.</string>
             </property>
-            <property name="whatsThis">
+            <property name="whatsThis" >
              <string>Specify the coordinate reference system of the layer's geometry.</string>
             </property>
             <property name="text" >
@@ -190,16 +181,7 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item row="0" column="2" >
@@ -257,16 +239,7 @@
           <string>Subset</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item row="0" column="0" colspan="2" >
@@ -290,7 +263,7 @@
             <property name="sizeType" >
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>480</width>
               <height>21</height>
@@ -428,16 +401,7 @@
        <string>Metadata</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="leftMargin" >
-        <number>11</number>
-       </property>
-       <property name="topMargin" >
-        <number>11</number>
-       </property>
-       <property name="rightMargin" >
-        <number>11</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin" >
         <number>11</number>
        </property>
        <item row="0" column="0" >
@@ -518,12 +482,9 @@
       <attribute name="title" >
        <string>Attributes</string>
       </attribute>
-      <layout class="QVBoxLayout" >
-       <item>
-        <layout class="QHBoxLayout" >
-         <property name="sizeConstraint" >
-          <enum>QLayout::SetNoConstraint</enum>
-         </property>
+      <layout class="QGridLayout" name="gridLayout" >
+       <item row="0" column="0" >
+        <layout class="QHBoxLayout" name="horizontalLayout" >
          <item>
           <widget class="QToolButton" name="mAddAttributeButton" >
            <property name="sizePolicy" >
@@ -539,7 +500,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset>../xpm/new_attribute.png</iconset>
+            <iconset>
+             <normaloff>../xpm/new_attribute.png</normaloff>../xpm/new_attribute.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Ctrl+N</string>
@@ -555,7 +517,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset>../xpm/delete_attribute.png</iconset>
+            <iconset>
+             <normaloff>../xpm/delete_attribute.png</normaloff>../xpm/delete_attribute.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Ctrl+X</string>
@@ -579,21 +542,37 @@
           </widget>
          </item>
          <item>
+          <widget class="QToolButton" name="mCalculateFieldButton" >
+           <property name="toolTip" >
+            <string>Field calculator</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Click to toggle table editing</string>
+           </property>
+           <property name="text" >
+            <string/>
+           </property>
+           <property name="checkable" >
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer>
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>658</width>
+             <height>19</height>
             </size>
            </property>
           </spacer>
          </item>
         </layout>
        </item>
-       <item>
+       <item row="1" column="0" >
         <widget class="QTableWidget" name="tblAttributes" >
          <property name="sizePolicy" >
           <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >

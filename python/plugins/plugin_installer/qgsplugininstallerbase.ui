@@ -14,8 +14,7 @@
    <string>QGIS Python Plugin Installer</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="resources.qrc" >
-    <normaloff>:/plugins/installer/qgis-icon.png</normaloff>:/plugins/installer/qgis-icon.png</iconset>
+   <iconset resource="resources.qrc" >:/plugins/installer/qgis-icon.png</iconset>
   </property>
   <property name="whatsThis" >
    <string>QGIS Python Plugin Installer</string>

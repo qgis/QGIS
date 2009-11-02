@@ -196,7 +196,6 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       }
 
       QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
-      composerMap->setPreviewMode( QgsComposerMap::Rectangle );
       addComposerMap( composerMap );
       scene()->removeItem( mRubberBandItem );
       delete mRubberBandItem;
@@ -403,6 +402,9 @@ void QgsComposerView::addComposerLabel( QgsComposerLabel* label )
 void QgsComposerView::addComposerMap( QgsComposerMap* map )
 {
   scene()->addItem( map );
+  //set default preview mode to cache. Must be done here between adding composer map to scene and emiting signal
+  map->setPreviewMode( QgsComposerMap::Cache );
+  map->cache();
   emit composerMapAdded( map );
   scene()->clearSelection();
   map->setSelected( true );

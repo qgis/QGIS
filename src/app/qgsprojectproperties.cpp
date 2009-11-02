@@ -83,7 +83,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     radManual->setChecked( true );
   }
 
-  cbxAbsolutePath->setChecked( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true ) );
+  cbxAbsolutePath->setCurrentIndex( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true ) ? 0 : 1 );
 
   int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
   spinBoxDP->setValue( dp );
@@ -373,7 +373,7 @@ void QgsProjectProperties::apply()
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
-  QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->isChecked() );
+  QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex()==0 );
 
   //set the colour for selections
   QColor myColour = pbnSelectionColour->color();

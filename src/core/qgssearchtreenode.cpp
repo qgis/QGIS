@@ -24,6 +24,13 @@
 #include <QObject>
 #include <iostream>
 
+#ifndef Q_OS_MACX
+#include <cmath>
+#else
+#include <math.h>
+#endif
+
+
 
 #define EVAL_STR(x) (x.length() ? x : "(empty)")
 
@@ -154,7 +161,11 @@ QString QgsSearchTreeNode::makeSearchString()
 
         default: str += " ? ";
       }
-      str += mRight->makeSearchString();
+
+      if ( mRight )
+      {
+        str += mRight->makeSearchString();
+      }
     }
     else
     {
@@ -360,8 +371,14 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
     case tOperator:
     {
       QgsSearchTreeValue value1, value2;
-      if ( !getValue( value1, mLeft, fields, attributes ) ) return value1;
-      if ( !getValue( value2, mRight, fields, attributes ) ) return value2;
+      if ( mLeft )
+      {
+        if ( !getValue( value1, mLeft, fields, attributes ) ) return value1;
+      }
+      if ( mRight )
+      {
+        if ( !getValue( value2, mRight, fields, attributes ) ) return value2;
+      }
 
       // convert to numbers if needed
       double val1, val2;
@@ -389,6 +406,26 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
             return QgsSearchTreeValue( val1 / val2 );
         default:
           return QgsSearchTreeValue( 3, QString::number( mOp ) ); // unknown operator
+        case opPOW:
+          if (( val1 == 0 && val2 < 0 ) || ( val2 < 0 && ( val2 - floor( val2 ) ) > 0 ) )
+          {
+            return QgsSearchTreeValue( 4, "Error in power function" );
+          }
+          return QgsSearchTreeValue( pow( val1, val2 ) );
+        case opSQRT:
+          return QgsSearchTreeValue( sqrt( val1 ) );
+        case opSIN:
+          return QgsSearchTreeValue( sin( val1 ) );
+        case opCOS:
+          return QgsSearchTreeValue( cos( val1 ) );
+        case opTAN:
+          return QgsSearchTreeValue( tan( val1 ) );
+        case opASIN:
+          return QgsSearchTreeValue( asin( val1 ) );
+        case opACOS:
+          return QgsSearchTreeValue( acos( val1 ) );
+        case opATAN:
+          return QgsSearchTreeValue( atan( val1 ) );
       }
     }
 

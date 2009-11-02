@@ -65,7 +65,7 @@
 #include <QSizeGrip>
 #include "qgslogger.h"
 
-QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
+QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
 {
   setupUi( this );
   setupTheme();
@@ -298,6 +298,29 @@ void QgsComposer::open( void )
     //is that a bug?
     activate(); //bring the composer window to the front
   }
+}
+
+void QgsComposer::paintEvent( QPaintEvent* event )
+{
+  QMainWindow::paintEvent( event );
+#if 0 //MH: disabled for now as there are segfaults on some systems
+  //The cached content of the composer maps need to be recreated it is the first paint event of the composer after reading from XML file.
+  //Otherwise the resolution of the composer map is not suitable for screen
+  if ( mFirstPaint )
+  {
+    QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
+    for ( ; it != mItemWidgetMap.constEnd(); ++it )
+    {
+      QgsComposerMap* cm = dynamic_cast<QgsComposerMap*>( it.key() );
+      if ( cm )
+      {
+        mFirstPaint = false;
+        cm->cache();
+        cm->update();
+      }
+    }
+  }
+#endif //0
 }
 
 void QgsComposer::activate()
@@ -641,6 +664,12 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   QgsDebugMsg( QString( "Selected filter: %1" ).arg( myFilterString ) );
   QgsDebugMsg( QString( "Image type: %1" ).arg( myFilterMap[myFilterString] ) );
 
+  // Add the file type suffix to the fileName if required
+  if ( !myOutputFileNameQString.endsWith( myFilterMap[myFilterString] ) )
+  {
+    myOutputFileNameQString += "." + myFilterMap[myFilterString];
+  }
+
   myQSettings.setValue( "/UI/lastSaveAsImageFormat", myFilterMap[myFilterString] );
   myQSettings.setValue( "/UI/lastSaveAsImageFile", myOutputFileNameQString );
 
@@ -687,16 +716,9 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     m->setCheckBoxQSettingsLabel( myQSettingsLabel );
     m->setMessageAsHtml( tr( "<p>The SVG export function in Qgis has several "
                              "problems due to bugs and deficiencies in the " )
-#if QT_VERSION < 0x040300
-                         + tr( "Qt4 svg code. Of note, text does not "
-                               "appear in the SVG file and there are problems "
-                               "with the map bounding box clipping other items "
-                               "such as the legend or scale bar.</p>" )
-#else
                          + tr( "Qt4 svg code. In particular, there are problems "
                                "with layers not being clipped to the map "
                                "bounding box.</p>" )
-#endif
                          + tr( "If you require a vector-based output file from "
                                "Qgis it is suggested that you try printing "
                                "to PostScript if the SVG output is not "
@@ -724,30 +746,28 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   //mView->setScene(0);//don't redraw the scene on the display while we render
   mComposition->setPlotStyle( QgsComposition::Print );
 
-#if QT_VERSION < 0x040300
-  Q3Picture pic;
-  QPainter p( &pic );
-  QRectF renderArea( 0, 0, ( mComposition->paperWidth() * mComposition->scale() ), ( mComposition->paperHeight() * mComposition->scale() ) );
-#else
   QSvgGenerator generator;
+#if QT_VERSION >= 0x040500
+  generator.setTitle( QgsProject::instance()->title() );
+#endif
   generator.setFileName( myOutputFileNameQString );
-  generator.setSize( QSize(( int )mComposition->paperWidth(), ( int )mComposition->paperHeight() ) );
-  generator.setResolution( 25.4 ); //because the rendering is done in mm, convert the dpi
+  //width in pixel
+  int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
+  //height in pixel
+  int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
+  generator.setSize( QSize( width, height ) );
+  generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
 
   QPainter p( &generator );
-  QRectF renderArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-#endif
-  mComposition->render( &p, renderArea, renderArea );
+
+  QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+  QRectF targetArea( 0, 0, width, height );
+  mComposition->render( &p, targetArea, sourceArea );
+
   p.end();
 
   mComposition->setPlotStyle( QgsComposition::Preview );
   //mView->setScene(mComposition->canvas()); //now that we're done, set the view to show the scene again
-
-#if QT_VERSION < 0x040300
-  QRect br = pic.boundingRect();
-
-  pic.save( myOutputFileNameQString, "svg" );
-#endif
 }
 
 void QgsComposer::on_mActionSelectMoveItem_triggered()
@@ -1357,3 +1377,5 @@ void QgsComposer::cleanupAfterTemplateRead()
     }
   }
 }
+
+

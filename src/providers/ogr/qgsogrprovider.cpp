@@ -183,9 +183,9 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   }
 
   mNativeTypes
-  << QgsVectorDataProvider::NativeType( tr( "Integer" ), "integer", QVariant::Int, 1, 10 )
-  << QgsVectorDataProvider::NativeType( tr( "Real" ), "double", QVariant::Double, 1, 20, 0, 5 )
-  << QgsVectorDataProvider::NativeType( tr( "String" ), "string", QVariant::String, 1, 255, 0, 0 )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 5 )
+  << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255, 0, 0 )
   ;
 }
 
@@ -1383,6 +1383,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
                                        QGis::WkbType vectortype,
                                        const std::list<std::pair<QString, QString> >& attributes )
 {
+  QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ));
   OGRSFDriverH driver;
   QgsApplication::registerOgrDrivers();
   driver = OGRGetDriverByName( format.toAscii() );

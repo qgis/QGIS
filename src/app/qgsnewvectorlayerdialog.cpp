@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsgeomtypedialog.cpp  -  description
+                         qgsnewvectorlayerdialog.cpp  -  description
                              -------------------
     begin                : October 2004
     copyright            : (C) 2004 by Marco Hugentobler
@@ -16,41 +16,47 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgsgeomtypedialog.h"
+#include "qgsnewvectorlayerdialog.h"
 #include "qgsapplication.h"
 #include "qgisapp.h" // <- for theme icons
 #include "qgslogger.h"
 #include <QPushButton>
 
-QgsGeomTypeDialog::QgsGeomTypeDialog( QWidget *parent, Qt::WFlags fl )
+QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
   mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
   mRemoveAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
-  mTypeBox->addItem( tr( "String" ), "String" );
-  mTypeBox->addItem( tr( "Integer" ), "Integer" );
-  mTypeBox->addItem( tr( "Real" ), "Real" );
+  mTypeBox->addItem( tr( "Text data" ), "String" );
+  mTypeBox->addItem( tr( "Whole number" ), "Integer" );
+  mTypeBox->addItem( tr( "Decimal number" ), "Real" );
 
   mPointRadioButton->setChecked( true );
-  mFileFormatComboBox->addItem( "ESRI Shapefile" );
-  /*mFileFormatComboBox->addItem("Comma Separated Value");
-  mFileFormatComboBox->addItem("GML");
-  mFileFormatComboBox->addItem("Mapinfo File");*/
+  mFileFormatComboBox->addItem( tr( "ESRI Shapefile" ), "ESRI Shapefile" );
+  /* Disabled until provider properly supports editing the created file formats */
+  //mFileFormatComboBox->addItem( tr( "Comma Separated Value" ), "Comma Separated Value" );
+  //mFileFormatComboBox->addItem(tr( "GML"), "GML" );
+  //mFileFormatComboBox->addItem(tr( "Mapinfo File" ), "Mapinfo File" );
+  if ( mFileFormatComboBox->count() == 1 )
+  {
+    mFileFormatComboBox->setVisible( false );
+    mFileFormatLabel->setVisible( false );
+  }
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
 }
 
-QgsGeomTypeDialog::~QgsGeomTypeDialog()
+QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
 {
 }
 
-void QgsGeomTypeDialog::on_mTypeBox_currentIndexChanged( int index )
+void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )
 {
   mPrecision->setEnabled( index == 2 );  // Real
 }
 
-QGis::WkbType QgsGeomTypeDialog::selectedType() const
+QGis::WkbType QgsNewVectorLayerDialog::selectedType() const
 {
   if ( mPointRadioButton->isChecked() )
   {
@@ -67,7 +73,7 @@ QGis::WkbType QgsGeomTypeDialog::selectedType() const
   return QGis::WKBUnknown;
 }
 
-void QgsGeomTypeDialog::on_mAddAttributeButton_clicked()
+void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
 {
   QString myName = mNameEdit->text();
   QString myWidth = mWidth->text();
@@ -82,7 +88,7 @@ void QgsGeomTypeDialog::on_mAddAttributeButton_clicked()
   mNameEdit->clear();
 }
 
-void QgsGeomTypeDialog::on_mRemoveAttributeButton_clicked()
+void QgsNewVectorLayerDialog::on_mRemoveAttributeButton_clicked()
 {
   delete( mAttributeView->currentItem() );
   if ( mAttributeView->topLevelItemCount() == 0 )
@@ -91,12 +97,12 @@ void QgsGeomTypeDialog::on_mRemoveAttributeButton_clicked()
   }
 }
 
-void QgsGeomTypeDialog::on_buttonBox_helpRequested()
+void QgsNewVectorLayerDialog::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run( context_id );
 }
 
-void QgsGeomTypeDialog::attributes( std::list<std::pair<QString, QString> >& at ) const
+void QgsNewVectorLayerDialog::attributes( std::list<std::pair<QString, QString> >& at ) const
 {
   QTreeWidgetItemIterator it( mAttributeView );
   while ( *it )
@@ -109,7 +115,9 @@ void QgsGeomTypeDialog::attributes( std::list<std::pair<QString, QString> >& at 
   }
 }
 
-QString QgsGeomTypeDialog::selectedFileFormat() const
+QString QgsNewVectorLayerDialog::selectedFileFormat() const
 {
-  return mFileFormatComboBox->currentText();
+  //use userrole to avoid translated type string
+  QString myType = mFileFormatComboBox->itemData( mFileFormatComboBox->currentIndex(), Qt::UserRole ).toString();
+  return myType;
 }

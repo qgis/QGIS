@@ -20,7 +20,8 @@ SET(QGIS_APP_SRCS
   qgsspatialitefilterproxymodel.cpp
   qgsspatialitetablemodel.cpp
   qgsdelattrdialog.cpp
-  qgsgeomtypedialog.cpp
+  qgsfieldcalculator.cpp
+  qgsnewvectorlayerdialog.cpp
   qgsgraduatedsymboldialog.cpp
   qgshelpviewer.cpp
   qgsidentifyresults.cpp
@@ -122,7 +123,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsconfigureshortcutsdialog.h
   qgscustomprojectiondialog.h
   qgsdelattrdialog.h
-  qgsgeomtypedialog.h
+  qgsfieldcalculator.h
+  qgsnewvectorlayerdialog.h
   qgsgraduatedsymboldialog.h
   qgshelpviewer.h
   qgsidentifyresults.h

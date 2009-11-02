@@ -102,7 +102,7 @@
 #include "qgsogrsublayersdialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
-#include "qgsgeomtypedialog.h"
+#include "qgsnewvectorlayerdialog.h"
 #include "qgshelpviewer.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslegend.h"
@@ -239,7 +239,7 @@ static void setTitleBarText_( QWidget & qgisApp )
     else
     {
       QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption += projectFileInfo.baseName();
+      caption += " " + projectFileInfo.baseName();
     }
   }
   else
@@ -510,21 +510,21 @@ void QgisApp::dropEvent( QDropEvent *event )
   QList<QUrl>urls = event->mimeData()->urls();
   for ( i = urls.begin(); i != urls.end(); i++ )
   {
-    QUrl mUrl = *i;
+    QString fileName = i->toLocalFile();
     // seems that some drag and drop operations include an empty url
     // so we test for length to make sure we have something
-    if ( mUrl.path().length() > 0 )
+    if ( !fileName.isEmpty() )
     {
       // check to see if we are opening a project file
-      QFileInfo fi( mUrl.path() );
+      QFileInfo fi( fileName );
       if ( fi.completeSuffix() == "qgs" )
       {
-        QgsDebugMsg( "Opening project " + mUrl.path() );
+        QgsDebugMsg( "Opening project " + fileName );
       }
       else
       {
-        QgsDebugMsg( "Adding " + mUrl.path() + " to the map canvas" );
-        openLayer( mUrl.path() );
+        QgsDebugMsg( "Adding " + fileName + " to the map canvas" );
+        openLayer( fileName );
       }
     }
   }
@@ -3154,6 +3154,9 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
 
 void QgisApp::newVectorLayer()
 {
+  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
+  QgsDebugMsg( "newVectorLayer called" );
+  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
 
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
@@ -3163,13 +3166,14 @@ void QgisApp::newVectorLayer()
   QGis::WkbType geometrytype;
   QString fileformat;
 
-  QgsGeomTypeDialog geomDialog( this );
+  QgsNewVectorLayerDialog geomDialog( this );
   if ( geomDialog.exec() == QDialog::Rejected )
   {
     return;
   }
   geometrytype = geomDialog.selectedType();
   fileformat = geomDialog.selectedFileFormat();
+  QgsDebugMsg ( QString( "New file format will be: %1" ).arg( fileformat ) );
 
   std::list<std::pair<QString, QString> > attributes;
   geomDialog.attributes( attributes );
@@ -3275,6 +3279,9 @@ void QgisApp::newVectorLayer()
   fileNames.append( fileName );
   //todo: the last parameter will change accordingly to layer type
   addVectorLayers( fileNames, enc, "file" );
+  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
+  QgsDebugMsg( "newVectorLayer done!" );
+  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
 }
 
 void QgisApp::fileOpen()
@@ -4788,32 +4795,37 @@ void QgisApp::loadPythonSupport()
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );
 #endif
-  QLibrary pythonlib( pythonlibName );
+  QString version = QString("%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
+  QgsDebugMsg( QString("load library %1 (%2)").arg( pythonlibName ).arg( version ) );
+  QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
   pythonlib.setLoadHints( QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint );
-  if ( pythonlib.load() )
-  {
-    //QgsDebugMsg("Python support library loaded successfully.");
-    typedef QgsPythonUtils*( *inst )();
-    inst pythonlib_inst = ( inst ) cast_to_fptr( pythonlib.resolve( "instance" ) );
-    if ( pythonlib_inst )
-    {
-      //QgsDebugMsg("Python support library's instance() symbol resolved.");
-      mPythonUtils = pythonlib_inst();
-      mPythonUtils->initPython( mQgisInterface );
-    }
-    else
-    {
-      //using stderr on purpose because we want end users to see this [TS]
-      QgsDebugMsg( "Couldn't resolve python support library's instance() symbol." );
-    }
-  }
-  else
+  if ( !pythonlib.load() )
   {
     //using stderr on purpose because we want end users to see this [TS]
     QgsDebugMsg( "Couldn't load Python support library: " + pythonlib.errorString() );
+    pythonlib.setFileName( pythonlibName );
+    if ( !pythonlib.load() )
+    {
+      qWarning( "Couldn't load Python support library: %s", pythonlib.errorString().toUtf8().data() );
+      return;
+    }
   }
+
+  //QgsDebugMsg("Python support library loaded successfully.");
+  typedef QgsPythonUtils*( *inst )();
+  inst pythonlib_inst = ( inst ) cast_to_fptr( pythonlib.resolve( "instance" ) );
+  if ( !pythonlib_inst )
+  {
+    //using stderr on purpose because we want end users to see this [TS]
+    QgsDebugMsg( "Couldn't resolve python support library's instance() symbol." );
+    return;
+  }
+
+  //QgsDebugMsg("Python support library's instance() symbol resolved.");
+  mPythonUtils = pythonlib_inst();
+  mPythonUtils->initPython( mQgisInterface );
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
@@ -4826,7 +4838,6 @@ void QgisApp::loadPythonSupport()
     mActionPluginSeparator2 = mPluginMenu->addSeparator();
     mPluginMenu->addAction( mActionShowPythonDialog );
     std::cout << "Python support ENABLED :-) " << std::endl; // OK
-
   }
 }
 

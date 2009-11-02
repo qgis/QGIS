@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsgeomtypedialog.h  -  description
+                         qgsnewvectorlayerdialog.h  -  description
                              -------------------
     begin                : October 2004
     copyright            : (C) 2004 by Marco Hugentobler
@@ -15,21 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#ifndef QGSGEOMTYPEDIALOG_H
-#define QGSGEOMTYPEDIALOG_H
+#ifndef qgsnewvectorlayerdialog_H
+#define qgsnewvectorlayerdialog_H
 
-#include "ui_qgsgeomtypedialogbase.h"
+#include "ui_qgsnewvectorlayerdialogbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
 #include "qgis.h"
 
-class QgsGeomTypeDialog: public QDialog, private Ui::QgsGeomTypeDialogBase
+class QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDialogBase
 {
     Q_OBJECT
   public:
-    QgsGeomTypeDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsGeomTypeDialog();
+    QgsNewVectorLayerDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    ~QgsNewVectorLayerDialog();
     /**Returns the selected geometry type*/
     QGis::WkbType selectedType() const;
     /**Appends the chosen attribute names and types to at*/
@@ -49,4 +49,4 @@ class QgsGeomTypeDialog: public QDialog, private Ui::QgsGeomTypeDialogBase
 
 };
 
-#endif //QGSGEOMTYPEDIALOG_H
+#endif //qgsnewvectorlayerdialog_H

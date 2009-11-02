@@ -26,6 +26,7 @@
 #include "qgscontexthelp.h"
 #include "qgscontinuouscolordialog.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfieldcalculator.h"
 #include "qgsgraduatedsymboldialog.h"
 #include "qgslabeldialog.h"
 #include "qgslabel.h"
@@ -95,6 +96,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
   mDeleteAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mToggleEditingButton->setIcon( QgisApp::getThemeIcon( "/mActionToggleEditing.png" ) );
+  mCalculateFieldButton->setIcon( QgisApp::getThemeIcon( "/mActionCalculateField.png" ) );
 
 
   // Create the Label dialog tab
@@ -153,16 +155,16 @@ void QgsVectorLayerProperties::loadRows()
 
   tblAttributes->clear();
 
-  tblAttributes->setColumnCount( 8 );
+  tblAttributes->setColumnCount( attrColCount );
   tblAttributes->setRowCount( fields.size() );
-  tblAttributes->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "id" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "name" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "type" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr( "length" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 4, new QTableWidgetItem( tr( "precision" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 5, new QTableWidgetItem( tr( "comment" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 6, new QTableWidgetItem( tr( "edit widget" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 7, new QTableWidgetItem( tr( "alias" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrIdCol, new QTableWidgetItem( tr( "id" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrNameCol, new QTableWidgetItem( tr( "name" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrTypeCol, new QTableWidgetItem( tr( "type" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrLengthCol, new QTableWidgetItem( tr( "length" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "precision" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "comment" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "edit widget" ) ) );
+  tblAttributes->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "alias" ) ) );
 
   tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
   tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
@@ -176,23 +178,23 @@ void QgsVectorLayerProperties::loadRows()
 
 void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
 {
-  tblAttributes->setItem( row, 0, new QTableWidgetItem( QString::number( idx ) ) );
-  tblAttributes->setItem( row, 1, new QTableWidgetItem( field.name() ) );
-  tblAttributes->setItem( row, 2, new QTableWidgetItem( field.typeName() ) );
-  tblAttributes->setItem( row, 3, new QTableWidgetItem( QString::number( field.length() ) ) );
-  tblAttributes->setItem( row, 4, new QTableWidgetItem( QString::number( field.precision() ) ) );
-  tblAttributes->setItem( row, 5, new QTableWidgetItem( field.comment() ) );
+  tblAttributes->setItem( row, attrIdCol, new QTableWidgetItem( QString::number( idx ) ) );
+  tblAttributes->setItem( row, attrNameCol, new QTableWidgetItem( field.name() ) );
+  tblAttributes->setItem( row, attrTypeCol, new QTableWidgetItem( field.typeName() ) );
+  tblAttributes->setItem( row, attrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
+  tblAttributes->setItem( row, attrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
+  tblAttributes->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
 
-  for ( int i = 0; i < 6; i++ )
+  for ( int i = 0; i < attrEditTypeCol; i++ )
     tblAttributes->item( row, i )->setFlags( tblAttributes->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
-  QPushButton * pb = new QPushButton( editTypeButtonText( layer->editType( idx ) ) );
-  tblAttributes->setCellWidget( row, 6, pb );
+  QPushButton *pb = new QPushButton( editTypeButtonText( layer->editType( idx ) ) );
+  tblAttributes->setCellWidget( row, attrEditTypeCol, pb );
   connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
   mButtonMap.insert( idx, pb );
 
   //set the alias for the attribute
-  tblAttributes->setItem( row, 7, new QTableWidgetItem( layer->attributeAlias( idx ) ) );
+  tblAttributes->setItem( row, attrAliasCol, new QTableWidgetItem( layer->attributeAlias( idx ) ) );
 
 }
 
@@ -203,15 +205,13 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
 
 void QgsVectorLayerProperties::attributeTypeDialog( )
 {
-  int index = -1;
-  QMap<int, QPushButton*>::iterator it = mButtonMap.begin();
-  for ( ; it != mButtonMap.end() ; it++ )
-  {
-    if ( it.value()->isDown() )
-    {
-      index = it.key();
-    }
-  }
+  QPushButton *pb = dynamic_cast<QPushButton *>( sender() );
+  if ( !pb )
+    return;
+
+  int index = mButtonMap.key( pb, -1 );
+  if ( index == -1 )
+    return;
 
   QgsAttributeTypeDialog attributeTypeDialog( layer );
 
@@ -246,6 +246,7 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
     return;
 
   QgsVectorLayer::EditType editType = attributeTypeDialog.editType();
+
   mEditTypeMap.insert( index, editType );
 
   QString buttonText;
@@ -261,9 +262,8 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
     default:
       break;
   }
-  QPushButton *pb = dynamic_cast<QPushButton*>( tblAttributes->cellWidget( index, 6 ) );
-  pb->setText( editTypeButtonText( editType ) );
 
+  pb->setText( editTypeButtonText( editType ) );
 }
 
 
@@ -361,6 +361,7 @@ void QgsVectorLayerProperties::updateButtons()
     int cap = layer->dataProvider()->capabilities();
     mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
     mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
+    mCalculateFieldButton->setEnabled(( cap &  QgsVectorDataProvider::AddAttributes ) && ( cap & QgsVectorDataProvider::ChangeAttributeValues ) );
     mToggleEditingButton->setChecked( true );
   }
   else
@@ -368,6 +369,7 @@ void QgsVectorLayerProperties::updateButtons()
     mAddAttributeButton->setEnabled( false );
     mDeleteAttributeButton->setEnabled( false );
     mToggleEditingButton->setChecked( false );
+    mCalculateFieldButton->setEnabled( false );
   }
 }
 
@@ -625,9 +627,9 @@ void QgsVectorLayerProperties::apply()
 
   for ( int i = 0; i < tblAttributes->rowCount(); i++ )
   {
-    int idx = tblAttributes->item( i, 0 )->text().toInt();
+    int idx = tblAttributes->item( i, attrIdCol )->text().toInt();
 
-    QPushButton *pb = dynamic_cast<QPushButton*>( tblAttributes->cellWidget( i, 6 ) );
+    QPushButton *pb = dynamic_cast<QPushButton*>( tblAttributes->cellWidget( i, attrEditTypeCol ) );
     if ( !pb )
       continue;
 
@@ -1128,23 +1130,34 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
 
 void QgsVectorLayerProperties::on_tblAttributes_cellChanged( int row, int column )
 {
-  if ( column == 8 && layer ) //only consider attribute aliases in this function
+  if ( column == attrAliasCol && layer ) //only consider attribute aliases in this function
   {
+    int idx = tblAttributes->item( row, attrIdCol )->text().toInt();
+
     const QgsFieldMap &fields = layer->pendingFields();
-    if ( row >= fields.size() )
+
+    if ( !fields.contains( idx ) )
     {
-      return; //index must be wrong
+      return; // index must be wrong
     }
 
-    QgsFieldMap::const_iterator f_it = fields.constBegin();
-    f_it += row;
-    int index = f_it.key();
-    QTableWidgetItem* aliasItem = tblAttributes->item( row, column );
+    QTableWidgetItem *aliasItem = tblAttributes->item( row, column );
     if ( aliasItem )
     {
-      layer->addAttributeAlias( index, aliasItem->text() );
+      layer->addAttributeAlias( idx, aliasItem->text() );
     }
   }
+}
+
+void QgsVectorLayerProperties::on_mCalculateFieldButton_clicked()
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  QgsFieldCalculator calc( layer );
+  calc.exec();
 }
 
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const

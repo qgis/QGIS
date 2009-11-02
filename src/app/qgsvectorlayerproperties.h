@@ -101,6 +101,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_pbnLoadStyle_clicked();
     void on_pbnSaveStyleAs_clicked();
     void on_tblAttributes_cellChanged( int row, int column );
+    void on_mCalculateFieldButton_clicked();
 
     void addAttribute();
     void deleteAttribute();
@@ -116,6 +117,19 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void toggleEditing( QgsMapLayer * );
 
   protected:
+    enum attrColumns
+    {
+      attrIdCol = 0,
+      attrNameCol,
+      attrTypeCol,
+      attrLengthCol,
+      attrPrecCol,
+      attrCommentCol,
+      attrEditTypeCol,
+      attrAliasCol,
+      attrColCount,
+    };
+
     QgsVectorLayer *layer;
     /**Renderer dialog which is shown*/
     QDialog* mRendererDialog;

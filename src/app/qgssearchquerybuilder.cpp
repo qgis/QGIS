@@ -60,7 +60,7 @@ QgsSearchQueryBuilder::~QgsSearchQueryBuilder()
 void QgsSearchQueryBuilder::populateFields()
 {
   QgsDebugMsg( "entering." );
-  const QgsFieldMap& fields = mLayer->dataProvider()->fields();
+  const QgsFieldMap& fields = mLayer->pendingFields();
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
   {
     QString fieldName = it->name();
@@ -91,15 +91,17 @@ void QgsSearchQueryBuilder::setupListViews()
 
 void QgsSearchQueryBuilder::getFieldValues( int limit )
 {
+  if ( !mLayer )
+  {
+    return;
+  }
   // clear the values list
   mModelValues->clear();
-
-  QgsVectorDataProvider* provider = mLayer->dataProvider();
 
   // determine the field type
   QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
   int fieldIndex = mFieldMap[fieldName];
-  QgsField field = provider->fields()[fieldIndex];
+  QgsField field = mLayer->pendingFields()[fieldIndex];//provider->fields()[fieldIndex];
   bool numeric = ( field.type() == QVariant::Int || field.type() == QVariant::Double );
 
   QgsFeature feat;
@@ -108,14 +110,17 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   QgsAttributeList attrs;
   attrs.append( fieldIndex );
 
-  provider->select( attrs, QgsRectangle(), false );
+  mLayer->select( attrs, QgsRectangle(), false );
 
   lstValues->setCursor( Qt::WaitCursor );
   // Block for better performance
   mModelValues->blockSignals( true );
   lstValues->setUpdatesEnabled( false );
 
-  while ( provider->nextFeature( feat ) &&
+  /**MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
+  QSet<QString> insertedValues;
+
+  while ( mLayer->nextFeature( feat ) &&
           ( limit == 0 || mModelValues->rowCount() != limit ) )
   {
     const QgsAttributeMap& attributes = feat.attributeMap();
@@ -128,12 +133,12 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
     }
 
     // add item only if it's not there already
-    QList<QStandardItem *> items = mModelValues->findItems( value );
-    if ( items.isEmpty() )
+    if ( !insertedValues.contains( value ) )
     {
       QStandardItem *myItem = new QStandardItem( value );
       myItem->setEditable( false );
       mModelValues->insertRow( mModelValues->rowCount(), myItem );
+      insertedValues.insert( value );
     }
   }
   // Unblock for normal use

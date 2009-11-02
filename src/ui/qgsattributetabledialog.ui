@@ -43,7 +43,7 @@
      <item>
       <widget class="QToolButton" name="mRemoveSelectionButton" >
        <property name="toolTip" >
-        <string>Remove selection</string>
+        <string>Unselect all</string>
        </property>
        <property name="text" >
         <string/>
@@ -65,7 +65,7 @@
      <item>
       <widget class="QToolButton" name="mSelectedToTopButton" >
        <property name="toolTip" >
-        <string>Move selected to top</string>
+        <string>Move selection to top</string>
        </property>
        <property name="text" >
         <string/>

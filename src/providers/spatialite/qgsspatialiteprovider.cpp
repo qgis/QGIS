@@ -44,21 +44,13 @@ QMap < QString, QgsSpatiaLiteProvider::SqliteHandles * >QgsSpatiaLiteProvider::S
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri ): QgsVectorDataProvider( uri ),
     geomType( QGis::WKBUnknown ), sqliteHandle( NULL ), sqliteStatement( NULL ), mSrid( -1 ), spatialIndexRTree( false ), spatialIndexMbrCache( false )
 {
-  QgsDataSourceURI mUri = QgsDataSourceURI( uri );
+  QgsDataSourceURI anUri = QgsDataSourceURI( uri );
 
   // parsing members from the uri structure
-  mTableName = mUri.table();
-  geometryColumn = mUri.geometryColumn();
-
-  // extracting the DB path
-  int idx = uri.indexOf( "dbname='" );
-  if ( idx >= 0 )
-    mSqlitePath = uri.mid( idx + 8 );
-  else
-    mSqlitePath = uri;
-  idx = mSqlitePath.indexOf( "' table=" );
-  if ( idx > 0 )
-    mSqlitePath.truncate( idx );
+  mTableName = anUri.table();
+  geometryColumn = anUri.geometryColumn();
+  mSqlitePath = anUri.database();
+  mSubsetString = anUri.sql();
 
   // trying to open the SQLite DB
   spatialite_init( 0 );
@@ -108,10 +100,10 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri ): QgsVectorDat
   }
   //fill type names into sets
   mNativeTypes
-  << QgsVectorDataProvider::NativeType( tr( "BLOB" ), "SQLITE_BLOB", QVariant::ByteArray )
+  << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), "SQLITE_BLOB", QVariant::ByteArray )
   << QgsVectorDataProvider::NativeType( tr( "Text" ), "SQLITE_TEXT", QVariant::String )
-  << QgsVectorDataProvider::NativeType( tr( "Double" ), "SQLITE_FLOAT", QVariant::Double, 0, 20, 0, 20 )
-  << QgsVectorDataProvider::NativeType( tr( "Integer" ), "SQLITE_INTEGER", QVariant::LongLong, 0, 20 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "SQLITE_FLOAT", QVariant::Double, 0, 20, 0, 20 )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "SQLITE_INTEGER", QVariant::LongLong, 0, 20 )
   ;
 }
 
@@ -130,6 +122,7 @@ void QgsSpatiaLiteProvider::loadFields()
   char *errMsg = NULL;
   QString pkName;
   int pkCount = 0;
+  int fldNo = 0;
   char xSql[1024];
 
   attributeFields.clear();
@@ -177,7 +170,7 @@ void QgsSpatiaLiteProvider::loadFields()
           fieldType = QVariant::Double;
         }
 
-        attributeFields.insert( i - 1, QgsField( name, fieldType, type, 0, 0, "" ) );
+        attributeFields.insert( fldNo++, QgsField( name, fieldType, type, 0, 0, "" ) );
       }
     }
   }
@@ -472,6 +465,24 @@ bool QgsSpatiaLiteProvider::nextFeature( QgsFeature & feature )
   return true;
 }
 
+QString QgsSpatiaLiteProvider::subsetString()
+{
+  return mSubsetString;
+}
+
+void QgsSpatiaLiteProvider::setSubsetString( QString theSQL )
+{
+  mSubsetString = theSQL;
+
+  // update URI
+  QgsDataSourceURI uri = QgsDataSourceURI(dataSourceUri());
+  uri.setSql( theSQL );
+  setDataSourceUri( uri.uri() );
+
+  // update feature count and extents
+  getTableSummary();
+}
+
 void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect, bool fetchGeometry, bool useIntersect )
 {
 // preparing the SQL statement
@@ -552,6 +563,19 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
 
   if ( !whereClause.isEmpty() )
     sql += whereClause;
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    if ( !whereClause.isEmpty() )
+    {
+      sql += " AND ";
+    }
+    else
+    {
+      sql += " WHERE ";
+    }
+    sql += "( " + mSubsetString + ")";
+  }
 
   mFetchGeom = fetchGeometry;
   mAttributesToFetch = fetchAttributes;
@@ -662,6 +686,11 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
 
   QString sql = QString( "SELECT Min(%1) FROM %2" ).arg( fld.name() ).arg( quotedValue( mTableName ) );
 
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += " WHERE ( " + mSubsetString + ")";
+  }
+
   strcpy( xSql, sql.toUtf8().constData() );
   ret = sqlite3_get_table( sqliteHandle, xSql, &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -717,6 +746,11 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
 
   QString sql = QString( "SELECT Max(%1) FROM %2" ).arg( fld.name() ).arg( quotedValue( mTableName ) );
 
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += " WHERE ( " + mSubsetString + ")";
+  }
+
   strcpy( xSql, sql.toUtf8().constData() );
   ret = sqlite3_get_table( sqliteHandle, xSql, &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -770,6 +804,11 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   const QgsField & fld = field( index );
 
   sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" ).arg( fld.name() ).arg( quotedValue( mTableName ) );
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += " WHERE ( " + mSubsetString + ")";
+  }
 
   // SQLite prepared statement
   strcpy( xSql, sql.toUtf8().constData() );
@@ -1549,6 +1588,11 @@ bool QgsSpatiaLiteProvider::getTableSummary()
 
   QString sql = QString( "SELECT Min(MbrMinX(%1)), Min(MbrMinY(%1)), "
                          "Max(MbrMaxX(%1)), Max(MbrMaxY(%1)), Count(*) " "FROM %2" ).arg( geometryColumn ).arg( quotedValue( mTableName ) );
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    sql += " WHERE ( " + mSubsetString + ")";
+  }
 
   strcpy( xSql, sql.toUtf8().constData() );
   ret = sqlite3_get_table( sqliteHandle, xSql, &results, &rows, &columns, &errMsg );

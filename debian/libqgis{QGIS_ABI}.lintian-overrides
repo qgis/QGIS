@@ -1,0 +1,2 @@
+libqgis{QGIS_ABI}: shlib-calls-exit
+libqgis{QGIS_ABI}: package-name-doesnt-match-sonames

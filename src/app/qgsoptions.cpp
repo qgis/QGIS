@@ -50,9 +50,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
-  cmbIdentifyMode->addItem( tr( "current layer" ), 0 );
-  cmbIdentifyMode->addItem( tr( "top down, stop at first" ), 1 );
-  cmbIdentifyMode->addItem( tr( "top down" ), 2 );
+  cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
+  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
+  cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
 
   // read the current browser and set it
   QSettings settings;
@@ -212,9 +212,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mLineColourToolButton->setColor( QColor( myRed, myGreen, myBlue ) );
 
   //default snap mode
-  mDefaultSnapModeComboBox->insertItem( 0, tr( "to vertex" ), "to vertex" );
-  mDefaultSnapModeComboBox->insertItem( 1, tr( "to segment" ), "to segment" );
-  mDefaultSnapModeComboBox->insertItem( 2, tr( "to vertex and segment" ), "to vertex and segment" );
+  mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), "to vertex" );
+  mDefaultSnapModeComboBox->insertItem( 1, tr( "To segment" ), "to segment" );
+  mDefaultSnapModeComboBox->insertItem( 2, tr( "To vertex and segment" ), "to vertex and segment" );
   QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", "to vertex" ).toString();
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapString ) );
   mDefaultSnappingToleranceSpinBox->setValue( settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble() );
