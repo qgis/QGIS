@@ -162,7 +162,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 
       if ( fi.exists() )
       {
-        mDataSource = fi.canonicalPath();
+        mDataSource = fi.canonicalFilePath();
       }
     }
   }

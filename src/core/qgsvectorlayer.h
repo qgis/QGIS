@@ -573,41 +573,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool setDataProvider( QString const & provider );
 
     /** Draws features. May cause projections exceptions to be generated
-     *  (i.e., code that calls this function needs to catch them)
-     */
-    void drawFeature( QPainter* p,
+     *  (i.e., code that calls this function needs to catch them) */
+    void drawFeature( QgsRenderContext &renderContext,
                       QgsFeature& fet,
-                      const QgsMapToPixel* cXf,
-                      const QgsCoordinateTransform* ct,
-                      QImage* marker,
-                      double widthScale,
-                      double markerScaleFactor,
-                      bool drawingToEditingCanvas );
+                      QImage* marker );
 
     /** Convenience function to transform the given point */
     void transformPoint( double& x, double& y,
                          const QgsMapToPixel* mtp, const QgsCoordinateTransform* ct );
 
-    void transformPoints( std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
-                          const QgsMapToPixel* mtp, const QgsCoordinateTransform* ct );
+    void transformPoints( std::vector<double>& x, std::vector<double>& y, std::vector<double>& z, QgsRenderContext &renderContext );
 
     /** Draw the linestring as given in the WKB format. Returns a pointer
      * to the byte after the end of the line string binary data stream (WKB).
      */
-    unsigned char *drawLineString( unsigned char *WKBlinestring,
-                                   QPainter *p,
-                                   const QgsMapToPixel *mtp,
-                                   const QgsCoordinateTransform *ct,
-                                   bool drawingToEditingCanvas );
+    unsigned char *drawLineString( unsigned char *WKBlinestring, QgsRenderContext &renderContext );
 
     /** Draw the polygon as given in the WKB format. Returns a pointer to
      *  the byte after the end of the polygon binary data stream (WKB).
      */
-    unsigned char *drawPolygon( unsigned char *WKBpolygon,
-                                QPainter *p,
-                                const QgsMapToPixel *mtp,
-                                const QgsCoordinateTransform *ct,
-                                bool drawingToEditingCanvas );
+    unsigned char *drawPolygon( unsigned char *WKBpolygon, QgsRenderContext &renderContext );
 
     /** Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature) */
     int findFreeId();

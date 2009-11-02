@@ -40,7 +40,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(): QDialog(), mVectorLayer( 0 )
   QgsDebugMsg( "entered." );
 }
 
-QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disabled ): QDialog(), mVectorLayer( layer )
+QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disabled ): QDialog(), mVectorLayer( layer ), mDisabled( disabled )
 {
   setupUi( this );
   QgsDebugMsg( "entered." );
@@ -59,6 +59,43 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   // loops can be removed now with changes I have made to use combo
   // boxes for line style and fill style...test and remove if poss.
 
+  QAction *refreshAction = new QAction( tr( "Refresh markers" ), lstSymbols );
+  lstSymbols->addAction( refreshAction );
+  connect( refreshAction, SIGNAL( triggered() ), QgsMarkerCatalogue::instance(), SLOT( refreshList() ) );
+  connect( QgsMarkerCatalogue::instance(), SIGNAL( markersRefreshed() ), this, SLOT( refreshMarkers() ) );
+  lstSymbols->setContextMenuPolicy( Qt::ActionsContextMenu );
+
+  //do the signal/slot connections
+  connect( btnOutlineColor, SIGNAL( clicked() ), this, SLOT( selectOutlineColor() ) );
+  connect( btnFillColor, SIGNAL( clicked() ), this, SLOT( selectFillColor() ) );
+  connect( outlinewidthspinbox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
+  connect( mLabelEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( resendSettingsChanged() ) );
+  connect( lstSymbols, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
+           this, SLOT( symbolChanged( QListWidgetItem *, QListWidgetItem * ) ) );
+  connect( mPointSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
+  connect( mPointSizeUnitsCheckBox, SIGNAL( toggled() ), this, SLOT( resendSettingsChanged() ) );
+  connect( mRotationClassificationComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
+           this, SLOT( resendSettingsChanged() ) );
+  connect( mScaleClassificationComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
+           this, SLOT( resendSettingsChanged() ) );
+  connect( mSymbolComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
+           this, SLOT( resendSettingsChanged() ) );
+  connect( cboOutlineStyle, SIGNAL(
+             currentIndexChanged( const QString & ) ), this, SLOT( resendSettingsChanged() ) );
+  connect( cboFillStyle, SIGNAL(
+             currentIndexChanged( const QString & ) ), this, SLOT( resendSettingsChanged() ) );
+  //need this to deal with when texture fill is selected or deselected
+  connect( cboFillStyle, SIGNAL(
+             currentIndexChanged( int ) ), this, SLOT( fillStyleChanged( int ) ) );
+  connect( toolSelectTexture, SIGNAL( clicked() ), this, SLOT( selectTextureImage() ) );
+
+  refreshMarkers();
+}
+
+void QgsSingleSymbolDialog::refreshMarkers()
+{
+  lstSymbols->blockSignals( true );
+  lstSymbols->clear();
 
   QPen pen( QColor( 0, 0, 255 ) );
   QBrush brush( QColor( 220, 220, 220 ), Qt::SolidPattern );
@@ -73,17 +110,18 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
     myIcon.addPixmap( myPixmap );
     mypItem->setIcon( myIcon );
     mypItem->setText( "" );
+    mypItem->setToolTip( *it );
     //store the symbol offset in the UserData role for later retrieval
     mypItem->setData( Qt::UserRole, *it );
     mypItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-    if ( layer->geometryType() != QGis::Point )
+    if ( mVectorLayer && mVectorLayer->geometryType() != QGis::Point )
     {
       break;
     }
     ++myCounter;
   }
 
-  // Find out the numerical fields of mVectorLayer, and populate the ComboBox
+  // Find out the numerical fields of mVectorLayer, and populate the ComboBoxes
   QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
   if ( provider )
   {
@@ -92,6 +130,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
 
     mRotationClassificationComboBox->addItem( DO_NOT_USE_STR, -1 );
     mScaleClassificationComboBox->addItem( DO_NOT_USE_STR, -1 );
+    mSymbolComboBox->addItem( DO_NOT_USE_STR, -1 );
     for ( QgsFieldMap::const_iterator it = fields.begin();
           it != fields.end();
           ++it )
@@ -101,6 +140,10 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
       {
         mRotationClassificationComboBox->addItem( it->name(), it.key() );
         mScaleClassificationComboBox->addItem( it->name(), it.key() );
+      }
+      else if ( type == QVariant::String )
+      {
+        mSymbolComboBox->addItem( it->name(), it.key() );
       }
     }
   }
@@ -139,13 +182,13 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "NoBrush" ) ), tr( "No Brush" ), "NoBrush" );
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "TexturePattern" ) ), tr( "Texture" ), "TexturePattern" );
 
-  if ( mVectorLayer && layer->geometryType() != QGis::Point )
+  if ( mVectorLayer && mVectorLayer->geometryType() != QGis::Point )
   {
     mGroupPoint->setVisible( false );
     mGroupPoint->setEnabled( false );
   }
 
-  if ( disabled )
+  if ( mDisabled )
   {
     unset();
   }
@@ -173,27 +216,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
     }
   }
 
-  //do the signal/slot connections
-  connect( btnOutlineColor, SIGNAL( clicked() ), this, SLOT( selectOutlineColor() ) );
-  connect( btnFillColor, SIGNAL( clicked() ), this, SLOT( selectFillColor() ) );
-  connect( outlinewidthspinbox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
-  connect( mLabelEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( resendSettingsChanged() ) );
-  connect( lstSymbols, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
-           this, SLOT( symbolChanged( QListWidgetItem *, QListWidgetItem * ) ) );
-  connect( mPointSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
-  connect( mRotationClassificationComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
-           this, SLOT( resendSettingsChanged() ) );
-  connect( mScaleClassificationComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
-           this, SLOT( resendSettingsChanged() ) );
-  connect( cboOutlineStyle, SIGNAL(
-             currentIndexChanged( const QString & ) ), this, SLOT( resendSettingsChanged() ) );
-  connect( cboFillStyle, SIGNAL(
-             currentIndexChanged( const QString & ) ), this, SLOT( resendSettingsChanged() ) );
-  //need this to deal with when texture fill is selected or deselected
-  connect( cboFillStyle, SIGNAL(
-             currentIndexChanged( int ) ), this, SLOT( fillStyleChanged( int ) ) );
-  connect( toolSelectTexture, SIGNAL( clicked() ), this, SLOT( selectTextureImage() ) );
-
+  lstSymbols->blockSignals( false );
 }
 
 QgsSingleSymbolDialog::~QgsSingleSymbolDialog()
@@ -264,6 +287,8 @@ void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
   if ( mPointSizeSpinBox->isEnabled() )
     sy->setPointSize( mPointSizeSpinBox->value() );
 
+  if ( mPointSizeUnitsCheckBox->isEnabled() )
+    sy->setPointSizeUnits( mPointSizeUnitsCheckBox->isChecked() );
 
   std::map<QString, int>::iterator iter;
   if ( mRotationClassificationComboBox->isEnabled() )
@@ -274,6 +299,11 @@ void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
   if ( mScaleClassificationComboBox->isEnabled() )
   {
     sy->setScaleClassificationField( mScaleClassificationComboBox->itemData( mScaleClassificationComboBox->currentIndex() ).toInt() );
+  }
+
+  if ( mSymbolComboBox->isEnabled() )
+  {
+    sy->setSymbolField( mSymbolComboBox->itemData( mSymbolComboBox->currentIndex() ).toInt() );
   }
 
   //
@@ -323,8 +353,10 @@ void QgsSingleSymbolDialog::unset()
   mLabelEdit->setEnabled( false );
   lstSymbols->setEnabled( false );
   mPointSizeSpinBox->setEnabled( false );
+  mPointSizeUnitsCheckBox->setEnabled( false );
   mRotationClassificationComboBox->setEnabled( false );
   mScaleClassificationComboBox->setEnabled( false );
+  mSymbolComboBox->setEnabled( false );
   outlinewidthspinbox->setEnabled( false );
   btnOutlineColor->setEnabled( false );
   cboOutlineStyle->setEnabled( false );
@@ -350,6 +382,7 @@ void QgsSingleSymbolDialog::set( const QgsSymbol *sy )
     }
   }
   mPointSizeSpinBox->setValue( sy->pointSize() );
+  mPointSizeUnitsCheckBox->setChecked( sy->pointSizeUnits() );
 
   int index;
 
@@ -358,6 +391,9 @@ void QgsSingleSymbolDialog::set( const QgsSymbol *sy )
 
   index = mScaleClassificationComboBox->findData( sy->scaleClassificationField() );
   mScaleClassificationComboBox->setCurrentIndex( index < 0 ? 0 : index );
+
+  index = mSymbolComboBox->findData( sy->symbolField() );
+  mSymbolComboBox->setCurrentIndex( index < 0 ? 0 : index );
 
   outlinewidthspinbox->setValue( sy->pen().widthF() );
 
@@ -418,8 +454,10 @@ void QgsSingleSymbolDialog::set( const QgsSymbol *sy )
   mLabelEdit->setEnabled( true );
   lstSymbols->setEnabled( true );
   mPointSizeSpinBox->setEnabled( true );
+  mPointSizeUnitsCheckBox->setEnabled( true );
   mRotationClassificationComboBox->setEnabled( true );
   mScaleClassificationComboBox->setEnabled( true );
+  mSymbolComboBox->setEnabled( true );
   outlinewidthspinbox->setEnabled( true );
   btnOutlineColor->setEnabled( true );
   cboOutlineStyle->setEnabled( true );
@@ -442,6 +480,9 @@ void QgsSingleSymbolDialog::updateSet( const QgsSymbol *sy )
   if ( mPointSizeSpinBox->isEnabled() && mPointSizeSpinBox->value() != sy->pointSize() )
     mPointSizeSpinBox->setEnabled( false );
 
+  if ( mPointSizeUnitsCheckBox->isEnabled() && mPointSizeUnitsCheckBox->isChecked() != sy->pointSizeUnits() )
+    mPointSizeUnitsCheckBox->setEnabled( false );
+
   if ( mRotationClassificationComboBox->isEnabled() &&
        mRotationClassificationComboBox->itemData( mRotationClassificationComboBox->currentIndex() ).toInt() != sy->rotationClassificationField() )
     mRotationClassificationComboBox->setEnabled( false );
@@ -449,6 +490,10 @@ void QgsSingleSymbolDialog::updateSet( const QgsSymbol *sy )
   if ( mScaleClassificationComboBox->isEnabled() &&
        mScaleClassificationComboBox->itemData( mScaleClassificationComboBox->currentIndex() ).toInt() != sy->scaleClassificationField() )
     mScaleClassificationComboBox->setEnabled( false );
+
+  if ( mSymbolComboBox->isEnabled() &&
+       mSymbolComboBox->itemData( mSymbolComboBox->currentIndex() ).toInt() != sy->symbolField() )
+    mSymbolComboBox->setEnabled( false );
 
   if ( outlinewidthspinbox->isEnabled() && outlinewidthspinbox->value() != sy->pen().widthF() )
     outlinewidthspinbox->setEnabled( false );

@@ -34,6 +34,8 @@
 #include <QTranslator>
 #include <QImageReader>
 
+#include "qgspluginregistry.h"
+
 #include <cstdio>
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,7 +77,6 @@ typedef SInt32 SRefCon;
 
 static const char * const ident_ = "$Id$";
 
-#ifndef WIN32
 /** print usage text
  */
 void usage( std::string const & appName )
@@ -87,9 +88,12 @@ void usage( std::string const & appName )
             << "Usage: " << appName <<  " [options] [FILES]\n"
             << "  options:\n"
             << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
+            << "\t[--width width]\twidth of snapshot to emit\n"
+            << "\t[--height height]\theight of snapshot to emit\n"
             << "\t[--lang language]\tuse language for interface text\n"
             << "\t[--project projectfile]\tload the given QGIS project\n"
             << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
+            << "\t[--nologo]\thide splash screen\n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
             << "    Files specified on the command line can include rasters,\n"
@@ -102,7 +106,6 @@ void usage( std::string const & appName )
 
 
 } // usage()
-#endif
 
 
 /////////////////////////////////////////////////////////////////
@@ -257,6 +260,10 @@ int main( int argc, char *argv[] )
   // This behaviour is used to load the app, snapshot the map,
   // save the image to disk and then exit
   QString mySnapshotFileName = "";
+  int mySnapshotWidth = 800;
+  int mySnapshotHeight = 600;
+
+  bool myHideSplash = false;
 
   // This behaviour will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
@@ -284,10 +291,13 @@ int main( int argc, char *argv[] )
       static struct option long_options[] =
       {
         /* These options set a flag. */
-        {"help", no_argument, 0, 'h'},
+        {"help", no_argument, 0, '?'},
+        {"nologo", no_argument, 0, 'n'},
         /* These options don't set a flag.
          *  We distinguish them by their indices. */
         {"snapshot", required_argument, 0, 's'},
+        {"width",    required_argument, 0, 'w'},
+        {"height",   required_argument, 0, 'h'},
         {"lang",     required_argument, 0, 'l'},
         {"project",  required_argument, 0, 'p'},
         {"extent",   required_argument, 0, 'e'},
@@ -297,7 +307,7 @@ int main( int argc, char *argv[] )
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      optionChar = getopt_long( argc, argv, "slpe",
+      optionChar = getopt_long( argc, argv, "swhlpe",
                                 long_options, &option_index );
 
       /* Detect the end of the options. */
@@ -320,6 +330,18 @@ int main( int argc, char *argv[] )
           mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
           break;
 
+        case 'w':
+          mySnapshotWidth = QString( optarg ).toInt();
+          break;
+
+        case 'h':
+          mySnapshotHeight = QString( optarg ).toInt();
+          break;
+
+        case 'n':
+          myHideSplash = true;
+          break;
+
         case 'l':
           myTranslationCode = optarg;
           break;
@@ -332,7 +354,6 @@ int main( int argc, char *argv[] )
           myInitialExtent = optarg;
           break;
 
-        case 'h':
         case '?':
           usage( argv[0] );
           return 2;   // XXX need standard exit codes
@@ -362,10 +383,45 @@ int main( int argc, char *argv[] )
 #else
   for ( int i = 1; i < argc; i++ )
   {
-#ifdef QGISDEBUG
-    QgsDebugMsg( QString( "%1: %2" ).arg( i ).arg( argv[i] ) );
-#endif
-    myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
+    QString arg = argv[i];
+
+    if ( arg == "--help" || arg == "-?" )
+    {
+      usage( argv[0] );
+      return 2;
+    }
+    else if ( arg == "-nologo" || arg == "-n" )
+    {
+      myHideSplash = true;
+    }
+    else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
+    {
+      mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+    }
+    else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
+    {
+      mySnapshotWidth = QString( argv[++i] ).toInt();
+    }
+    else if ( i + 1 < argc && ( arg == "--height" || arg == "-h" ) )
+    {
+      mySnapshotHeight = QString( argv[++i] ).toInt();
+    }
+    else if ( i + 1 < argc && ( arg == "--lang" || arg == "-l" ) )
+    {
+      myTranslationCode = argv[++i];
+    }
+    else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
+    {
+      myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+    }
+    else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
+    {
+      myInitialExtent = argv[++i];
+    }
+    else
+    {
+      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
+    }
   }
 #endif //WIN32
 
@@ -495,7 +551,7 @@ int main( int argc, char *argv[] )
   QString mySplashPath( QgsApplication::splashPath() );
   QPixmap myPixmap( mySplashPath + QString( "splash.png" ) );
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap );
-  if ( mySettings.value( "/qgis/hideSplash" ).toBool() )
+  if ( mySettings.value( "/qgis/hideSplash" ).toBool() || myHideSplash )
   {
     //splash screen hidden
   }
@@ -673,16 +729,19 @@ int main( int argc, char *argv[] )
       It looks like you don't run the event loop in non-interactive mode, so the
       event is never occuring.
 
-      To achieve this without runing the event loop: show the window, then call
+      To achieve this without running the event loop: show the window, then call
       qApp->processEvents(), grab the pixmap, save it, hide the window and exit.
       */
     //qgis->show();
     myApp.processEvents();
-    QPixmap * myQPixmap = new QPixmap( 800, 600 );
+    QPixmap * myQPixmap = new QPixmap( mySnapshotWidth, mySnapshotHeight );
     myQPixmap->fill();
     qgis->saveMapAsImage( mySnapshotFileName, myQPixmap );
     myApp.processEvents();
     qgis->hide();
+
+    QgsPluginRegistry::instance()->unloadAll();
+
     return 1;
   }
 
@@ -696,5 +755,4 @@ int main( int argc, char *argv[] )
   mypSplash->finish( qgis );
   delete mypSplash;
   return myApp.exec();
-
 }

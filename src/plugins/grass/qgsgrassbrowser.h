@@ -77,6 +77,10 @@ class QgsGrassBrowser: public QMainWindow
     // Double click
     void doubleClicked( const QModelIndex & index );
 
+  private slots:
+    // Context menu
+    void showContextMenu( const QPoint &position );
+
   signals:
     // emited when something in GRASS Tools changed region
     void regionChanged();

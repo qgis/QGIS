@@ -20,6 +20,7 @@
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsrendercontext.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
 #include "qgslogger.h"
@@ -104,8 +105,9 @@ bool QgsUniqueValueRenderer::willRenderFeature( QgsFeature *f )
   return ( symbolForFeature( f ) != 0 );
 }
 
-void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale, double rasterScaleFactor )
+void QgsUniqueValueRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected )
 {
+  QPainter *p = renderContext.painter();
   QgsSymbol* symbol = symbolForFeature( &f );
   if ( !symbol ) //no matching symbol
   {
@@ -138,8 +140,23 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
       const QgsAttributeMap& attrs = f.attributeMap();
       rotation = attrs[symbol->rotationClassificationField()].toDouble();
     }
-    *img = symbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
-                                          fieldScale, rotation, rasterScaleFactor );
+
+    QString oldName;
+
+    if ( symbol->symbolField() >= 0 )
+    {
+      const QgsAttributeMap& attrs = f.attributeMap();
+      QString name = attrs[symbol->symbolField()].toString();
+      oldName = symbol->pointSymbolName();
+      symbol->setNamedPointSymbol( name );
+    }
+
+    *img = symbol->getPointSymbolAsImage( renderContext.scaleFactor(), selected, mSelectionColor,
+                                          fieldScale, rotation, renderContext.rasterScaleFactor() );
+    if ( !oldName.isNull() )
+    {
+      symbol->setNamedPointSymbol( oldName );
+    }
   }
   // Line, polygon
   else if ( mGeometryType != QGis::Point )
@@ -147,23 +164,23 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
     if ( !selected )
     {
       QPen pen = symbol->pen();
-      pen.setWidthF( widthScale * pen.widthF() );
+      pen.setWidthF( renderContext.scaleFactor() * pen.widthF() );
       p->setPen( pen );
       if ( mGeometryType == QGis::Polygon )
       {
         QBrush brush = symbol->brush();
-        scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
+        scaleBrush( brush, renderContext.rasterScaleFactor() ); //scale brush content for printout
         p->setBrush( brush );
       }
     }
     else
     {
       QPen pen = symbol->pen();
-      pen.setWidthF( widthScale * pen.widthF() );
+      pen.setWidthF( renderContext.scaleFactor() * pen.widthF() );
       if ( mGeometryType == QGis::Polygon )
       {
         QBrush brush = symbol->brush();
-        scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
+        scaleBrush( brush, renderContext.rasterScaleFactor() ); //scale brush content for printout
         brush.setColor( mSelectionColor );
         p->setBrush( brush );
       }
@@ -258,6 +275,11 @@ void QgsUniqueValueRenderer::updateSymbolAttributes()
     if ( scaleField >= 0 && !( mSymbolAttributes.contains( scaleField ) ) )
     {
       mSymbolAttributes.append( scaleField );
+    }
+    int symbolField = ( *it )->symbolField();
+    if ( symbolField >= 0 && !mSymbolAttributes.contains( symbolField ) )
+    {
+      mSymbolAttributes.append( symbolField );
     }
   }
 }

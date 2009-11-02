@@ -242,6 +242,9 @@ void QgsMapOverviewCanvas::paintEvent( QPaintEvent * pe )
 
 void QgsMapOverviewCanvas::refresh()
 {
+  if ( mPixmap.isNull() )
+    return;
+
   mPixmap.fill( mBgColor ); //palette().color(backgroundRole());
 
   QPainter painter;

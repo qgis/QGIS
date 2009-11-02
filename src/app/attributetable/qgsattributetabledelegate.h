@@ -19,6 +19,8 @@
 #include <QItemDelegate>
 #include "qgsvectorlayer.h"
 class QPainter;
+class QgsVectorLayer;
+
 /** \ingroup app
  * A delegate item class for QgsAttributeTable (see Qt documentation for
  * QItemDelegate).
@@ -27,6 +29,9 @@ class QPainter;
 class QgsAttributeTableDelegate : public QItemDelegate
 {
     Q_OBJECT;
+
+    QgsVectorLayer *layer( const QAbstractItemModel *model ) const;
+
   public:
     /** Constructor
      * @param parent parent object
@@ -39,6 +44,7 @@ class QgsAttributeTableDelegate : public QItemDelegate
       QWidget *parent,
       const QStyleOptionViewItem &option,
       const QModelIndex &index ) const;
+
     /** Overloads the paint method form the QItemDelegate bas class */
     void paint(
       QPainter * painter,
@@ -46,19 +52,12 @@ class QgsAttributeTableDelegate : public QItemDelegate
       const QModelIndex & index ) const;
 
     /**
-     * Sets data to editor widget. Overloads default metod
-     * @param editor editor which was created by create editor function in this class
-     * @param index index of field which is to be modified
-     */
-    void setEditorData(QWidget *editor, const QModelIndex &index) const;
-
-    /**
      * Sets data from editor backk to model. Overloads default metod
      * @param editor editor which was created by create editor function in this class
      * @param model model where data should be updated
      * @param index index of field which is to be modified
      */
-    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
 
 };
 

@@ -35,9 +35,6 @@
          <property name="wordWrap">
           <bool>true</bool>
          </property>
-         <property name="headerHidden">
-          <bool>true</bool>
-         </property>
          <column>
           <property name="text">
            <string>1</string>

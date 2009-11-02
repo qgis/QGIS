@@ -285,7 +285,7 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
   }
   else
   {
-    text = tr( "Attribute has no integer or real type, threfore range is not usable.");
+    text = tr( "Attribute has no integer or real type, therefore range is not usable.");
   }
   valuesLabel->setText(text);
 

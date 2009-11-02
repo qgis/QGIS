@@ -195,10 +195,11 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QDomElement qDocElem = qDoc.documentElement();
 
   // Read GRASS module description
-  QString xName = qDocElem.attribute( "manual" );
-  if ( xName.isEmpty() )
+  QString xName = qDocElem.attribute( "module" );
+  QString xDocName = qDocElem.attribute( "manual" );
+  if ( xDocName.isEmpty() )
   {
-      xName = qDocElem.attribute( "module" );
+    xDocName = xName;
   }
 
   // Binary modules on windows has .exe extension
@@ -251,7 +252,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
 
   // Create manual if available
   QString gisBase = getenv( "GISBASE" );
-  QString manPath = gisBase + "/docs/html/" + xName + ".html";
+  QString manPath = gisBase + "/docs/html/" + xDocName + ".html";
   QFile manFile( manPath );
   if ( manFile.exists() )
   {
@@ -1365,7 +1366,7 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
       mSuccess = true;
       mViewButton->setEnabled( true );
       mOptions->thawOutput();
-      mCanvas->refresh(); 
+      mCanvas->refresh();
     }
     else
     {
@@ -1898,7 +1899,6 @@ QString QgsGrassModuleOption::value()
   }
   else if ( mControlType == CheckBoxes )
   {
-    int cnt = 0;
     QStringList values;
     for ( unsigned int i = 0; i < mCheckBoxes.size(); ++i )
     {
@@ -1907,7 +1907,7 @@ QString QgsGrassModuleOption::value()
         values.append( mValues[i] );
       }
     }
-    value = values.join(",");
+    value = values.join( "," );
   }
   return value;
 }
@@ -3027,10 +3027,10 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   {
     mType = Multiple;
   }
-  
-  if ( qdesc.attribute( "type" ).toLower() == "directory")
+
+  if ( qdesc.attribute( "type" ).toLower() == "directory" )
   {
-    mType = Directory; 
+    mType = Directory;
   }
 
   if ( !qdesc.attribute( "filters" ).isNull() )

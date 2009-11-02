@@ -23,6 +23,7 @@
 class QgsGrassTools;
 class QgsGrassNewMapset;
 class QgsGrassRegion;
+class QgsGrassEdit;
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -118,6 +119,10 @@ class QgsGrassPlugin: public QObject, public QgisPlugin
     void saveMapset();
     //! Set edit action
     void setEditAction();
+    //! Close the edit if layer is removed
+    void closeEdit(QString layerId);
+    //! Cleanup the Grass Edit
+    void cleanUp();
     //! update plugin icons when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
   private:
@@ -148,6 +153,7 @@ class QgsGrassPlugin: public QObject, public QgisPlugin
     QgsGrassTools *mTools;
     //! Pointer to QgsGrassNewMapset
     QgsGrassNewMapset *mNewMapset;
+    QgsGrassEdit *mEdit;
 
     // Actions
     QAction *mOpenMapsetAction;

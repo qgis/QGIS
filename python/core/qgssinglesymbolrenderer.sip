@@ -9,12 +9,15 @@ class QgsSingleSymbolRenderer : QgsRenderer
     QgsSingleSymbolRenderer(QGis::GeometryType type);
     QgsSingleSymbolRenderer(const QgsSingleSymbolRenderer& other);
     virtual ~QgsSingleSymbolRenderer();
+
     /**Replaces the current mSymbol by sy*/
     void addSymbol(QgsSymbol* sy /Transfer/);
     /*Returns a pointer to mSymbol*/
     const QgsSymbol* symbol() const;
-    /**Renders an OGRFeature*/
-    void renderFeature(QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0);
+
+    /**Renders a feature added in 1.2 */
+    void renderFeature(QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected);
+
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read 
      @param vl the vector layer which will be associated with the renderer*/

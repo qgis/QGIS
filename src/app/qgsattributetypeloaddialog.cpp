@@ -65,14 +65,12 @@ void QgsAttributeTypeLoadDialog::setVectorLayer( QgsVectorLayer *layer )
 
 void QgsAttributeTypeLoadDialog::previewButtonPushed()
 {
-  createPreview( valueComboBox->currentIndex(), true);
+  createPreview( valueComboBox->currentIndex(), true );
 }
 
 void QgsAttributeTypeLoadDialog::fillLayerList()
 {
   layerComboBox->clear();
-  int i = 0;
-  QgsMapLayer* dataLayer;
   QMap<QString, QgsMapLayer*>::iterator layer_it = QgsMapLayerRegistry::instance()->mapLayers().begin();
   for ( ; layer_it != QgsMapLayerRegistry::instance()->mapLayers().end(); layer_it++ )
   {
@@ -86,47 +84,47 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
   keyComboBox->clear();
   valueComboBox->clear();
 
-  if (layerIndex < 0)
+  if ( layerIndex < 0 )
   {
     return;
   }
 
   QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentText() );
   QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer *>( dataLayer );
-  if (vLayer == NULL)
+  if ( vLayer == NULL )
   {
-      return;
+    return;
   }
   QMap<QString, int> fieldMap = vLayer->dataProvider()->fieldNameMap();
   QMap<QString, int>::iterator it = fieldMap.begin();
-  for (; it != fieldMap.end(); it++)
+  for ( ; it != fieldMap.end(); it++ )
   {
-    keyComboBox->addItem(it.key(), it.value());
-    valueComboBox->addItem(it.key(), it.value());
+    keyComboBox->addItem( it.key(), it.value() );
+    valueComboBox->addItem( it.key(), it.value() );
   }
 
 }
 
-void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full)
+void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
 {
   previewTableWidget->clearContents();
 
-  for (int i = previewTableWidget->rowCount() -1; i > 0; i--)
+  for ( int i = previewTableWidget->rowCount() - 1; i > 0; i-- )
   {
-    previewTableWidget->removeRow(i);
+    previewTableWidget->removeRow( i );
   }
-  if (layerComboBox->currentIndex() < 0 || fieldIndex < 0 )
+  if ( layerComboBox->currentIndex() < 0 || fieldIndex < 0 )
   {
     //when nothing is selected there is no reason for preview
     return;
   }
-  int idx = keyComboBox->itemData(keyComboBox->currentIndex()).toInt();
-  int idx2 = valueComboBox->itemData(valueComboBox->currentIndex()).toInt();
+  int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
+  int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
   QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentText() );
   QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer *>( dataLayer );
-  if (vLayer == NULL)
+  if ( vLayer == NULL )
   {
-      return;
+    return;
   }
 
   QgsVectorDataProvider* dataProvider = vLayer->dataProvider();
@@ -144,12 +142,12 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full)
     QVariant val1 = f.attributeMap()[idx];
     QVariant val2 = f.attributeMap()[idx2];
     if ( val1.isValid() && !val1.isNull() && !val1.toString().isEmpty()
-      && val2.isValid() && !val2.isNull() && !val2.toString().isEmpty() )
+         && val2.isValid() && !val2.isNull() && !val2.toString().isEmpty() )
     {
-      valueMap.insert(val1.toString(), val2.toString() );
+      valueMap.insert( val1.toString(), val2.toString() );
     }
-    if (!full && valueMap.size() > 8)
-        break; //just first entries all on button
+    if ( !full && valueMap.size() > 8 )
+      break; //just first entries all on button
   }
   int row = 0;
   for ( QMap<QString, QVariant>::iterator mit = valueMap.begin(); mit != valueMap.end(); mit++, row++ )
@@ -170,13 +168,13 @@ QMap<QString, QVariant> &QgsAttributeTypeLoadDialog::valueMap()
 void QgsAttributeTypeLoadDialog::loadDataToValueMap()
 {
   mValueMap.clear();
-  int idx = keyComboBox->itemData(keyComboBox->currentIndex()).toInt();
-  int idx2 = valueComboBox->itemData(valueComboBox->currentIndex()).toInt();
+  int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
+  int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
   QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentText() );
   QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer *>( dataLayer );
-  if (vLayer == NULL)
+  if ( vLayer == NULL )
   {
-      return;
+    return;
   }
 
   QgsVectorDataProvider* dataProvider = vLayer->dataProvider();
@@ -193,7 +191,7 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
     QVariant val = f.attributeMap()[idx];
     if ( val.isValid() && !val.isNull() && !val.toString().isEmpty() )
     {
-      mValueMap.insert(f.attributeMap()[idx2].toString(), val );
+      mValueMap.insert( f.attributeMap()[idx2].toString(), val );
     }
   }
   dataProvider->enableGeometrylessFeatures( false );

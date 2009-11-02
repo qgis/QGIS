@@ -614,6 +614,7 @@ QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
     }
     catch ( QgsCsException &cse )
     {
+      Q_UNUSED( cse );
       QgsDebugMsg( QString( "Transform error caught: " ).arg( cse.what() ) );
     }
   }

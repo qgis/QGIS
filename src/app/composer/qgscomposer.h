@@ -119,6 +119,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Print as SVG
     void on_mActionExportAsSVG_triggered();
 
+    //! Print as PDF
+    void on_mActionExportAsPDF_triggered();
+
     //! Select item
     void on_mActionSelectMoveItem_triggered();
 
@@ -242,6 +245,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Changes elements that are not suitable for this project
     void cleanupAfterTemplateRead();
+
+    //! Print to a printer object
+    void print( QPrinter &printer );
 
     //! Writes state under DOM element
     void writeXML( QDomNode& parentNode, QDomDocument& doc );

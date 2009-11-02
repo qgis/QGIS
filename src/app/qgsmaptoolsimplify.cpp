@@ -52,7 +52,7 @@ void QgsSimplifyDialog::setRange( int minValue, int maxValue )
   // let's have 20 page steps
   horizontalSlider->setPageStep(( maxValue - minValue ) / 20 );
 
-  horizontalSlider->setMinimum( (minValue - 1 < 0 ? 0: minValue - 1 ) );// -1 for count with minimum tolerance end caused by double imprecision
+  horizontalSlider->setMinimum(( minValue - 1 < 0 ? 0 : minValue - 1 ) );// -1 for count with minimum tolerance end caused by double imprecision
   horizontalSlider->setMaximum( maxValue );
 
 }
@@ -146,7 +146,7 @@ int QgsMapToolSimplify::calculateDivider( double minimum, double maximum )
 
 bool QgsMapToolSimplify::calculateSliderBoudaries()
 {
-  double minTolerance, maxTolerance;
+  double minTolerance = -1, maxTolerance = -1;
 
   double tol = 0.000001;
   bool found = false;
@@ -372,7 +372,7 @@ bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature,  double to
 QVector<QgsPoint> QgsSimplifyFeature::simplifyPoints( const QVector<QgsPoint>& pts, double tolerance )
 {
   //just safety precaution
-  if (tolerance < 0)
+  if ( tolerance < 0 )
     return pts;
   // Douglas-Peucker simplification algorithm
 

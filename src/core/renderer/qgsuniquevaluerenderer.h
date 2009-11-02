@@ -31,7 +31,11 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     /** Determines if a feature will be rendered or not
     @param f a pointer to the feature to determine if rendering will happen*/
     virtual bool willRenderFeature( QgsFeature *f );
-    void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 );
+
+    /** Render feature
+     * added in 1.2 */
+    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected );
+
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
      @param vl the vector layer which will be associated with the renderer

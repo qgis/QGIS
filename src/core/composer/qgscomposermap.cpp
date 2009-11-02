@@ -103,13 +103,6 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
     return;
   }
 
-  if ( mDrawing )
-  {
-    return;
-  }
-
-  mDrawing = true;
-
   QgsMapRenderer theMapRenderer;
   theMapRenderer.setExtent( extent );
   theMapRenderer.setOutputSize( size, dpi );
@@ -145,8 +138,6 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   theMapRenderer.setScale( scale() );
   theMapRenderer.render( painter );
   theMapRenderer.setScale( bk_scale );
-
-  mDrawing = false;
 }
 
 void QgsComposerMap::cache( void )
@@ -155,6 +146,13 @@ void QgsComposerMap::cache( void )
   {
     return;
   }
+
+  if ( mDrawing )
+  {
+    return;
+  }
+
+  mDrawing = true;
 
   int w = rect().width() * horizontalViewScaleFactor();
   int h = rect().height() * horizontalViewScaleFactor();
@@ -181,6 +179,8 @@ void QgsComposerMap::cache( void )
   draw( &p, mExtent, QSize( w, h ), mCacheImage.logicalDpiX() );
   p.end();
   mCacheUpdated = true;
+
+  mDrawing = false;
 }
 
 void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
@@ -224,6 +224,12 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
   {
+    if ( mDrawing )
+    {
+      return;
+    }
+
+    mDrawing = true;
     QPaintDevice* thePaintDevice = painter->device();
     if ( !thePaintDevice )
     {
@@ -233,6 +239,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     QRectF bRect = boundingRect();
     QSize theSize( bRect.width(), bRect.height() );
     draw( painter, mExtent, theSize, 25.4 ); //scene coordinates seem to be in mm
+    mDrawing = false;
   }
 
   drawFrame( painter );
@@ -307,6 +314,11 @@ void QgsComposerMap::moveContent( double dx, double dy )
 
 void QgsComposerMap::zoomContent( int delta, double x, double y )
 {
+  if ( mDrawing )
+  {
+    return;
+  }
+
   QSettings settings;
 
   //read zoom mode

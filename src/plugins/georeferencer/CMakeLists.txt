@@ -2,7 +2,7 @@
 # Files
 
 SET (GEOREF_SRCS
-     plugin.cpp
+     qgsgeorefplugin.cpp
      qgsgeorefdatapoint.cpp
      qgsimagewarper.cpp
      qgsleastsquares.cpp
@@ -20,7 +20,7 @@ SET (GEOREF_UIS
 )
 
 SET (GEOREF_MOC_HDRS
-     plugin.h
+     qgsgeorefplugin.h
      qgspointdialog.h
      mapcoordsdialog.h
      qgsgeorefwarpoptionsdialog.h

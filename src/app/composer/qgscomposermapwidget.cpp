@@ -26,7 +26,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
-  gridLayout->addWidget( itemPropertiesWidget, 9, 0, 1, 4 );
+  gridLayout->addWidget( itemPropertiesWidget, 9, 0, 1, 5 );
 
   mWidthLineEdit->setValidator( new QDoubleValidator( 0 ) );
   mHeightLineEdit->setValidator( new QDoubleValidator( 0 ) );

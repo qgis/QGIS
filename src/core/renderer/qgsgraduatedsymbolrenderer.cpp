@@ -24,6 +24,7 @@
 #include "qgssymbologyutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsrendercontext.h"
 #include <math.h>
 #include <QDomNode>
 #include <QDomElement>
@@ -115,8 +116,9 @@ bool QgsGraduatedSymbolRenderer::willRenderFeature( QgsFeature *f )
   return ( symbolForFeature( f ) != 0 );
 }
 
-void QgsGraduatedSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImage* img, bool selected, double widthScale, double rasterScaleFactor )
+void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature & f, QImage* img, bool selected )
 {
+  QPainter *p = renderContext.painter();
   QgsSymbol* theSymbol = symbolForFeature( &f );
   if ( !theSymbol )
   {
@@ -144,15 +146,31 @@ void QgsGraduatedSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
       fieldScale = sqrt( fabs( attrs[theSymbol->scaleClassificationField()].toDouble() ) );
-      QgsDebugMsg( QString( "Feature has field scale factor %1" ).arg( fieldScale ) );
+      QgsDebugMsgLevel( QString( "Feature has field scale factor %1" ).arg( fieldScale ), 3 );
     }
     if ( theSymbol->rotationClassificationField() >= 0 )
     {
       const QgsAttributeMap& attrs = f.attributeMap();
       rotation = attrs[theSymbol->rotationClassificationField()].toDouble();
-      QgsDebugMsg( QString( "Feature has rotation factor %1" ).arg( rotation ) );
+      QgsDebugMsgLevel( QString( "Feature has rotation factor %1" ).arg( rotation ), 3 );
     }
-    *img = theSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor, fieldScale, rotation, rasterScaleFactor );
+
+    QString oldName;
+
+    if ( theSymbol->symbolField() >= 0 )
+    {
+      const QgsAttributeMap& attrs = f.attributeMap();
+      QString name = attrs[theSymbol->symbolField()].toString();
+      QgsDebugMsgLevel( QString( "Feature has name %1" ).arg( name ), 3 );
+      oldName = theSymbol->pointSymbolName();
+      theSymbol->setNamedPointSymbol( name );
+    }
+    *img = theSymbol->getPointSymbolAsImage( renderContext.scaleFactor(), selected, mSelectionColor, fieldScale, rotation, renderContext.rasterScaleFactor() );
+
+    if ( !oldName.isNull() )
+    {
+      theSymbol->setNamedPointSymbol( oldName );
+    }
   }
 
   // Line, polygon
@@ -161,25 +179,25 @@ void QgsGraduatedSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
     if ( !selected )
     {
       QPen pen = theSymbol->pen();
-      pen.setWidthF( widthScale * pen.widthF() );
+      pen.setWidthF( renderContext.scaleFactor() * pen.widthF() );
       p->setPen( pen );
 
       if ( mGeometryType == QGis::Polygon )
       {
         QBrush brush = theSymbol->brush();
-        scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
+        scaleBrush( brush, renderContext.rasterScaleFactor() ); //scale brush content for printout
         p->setBrush( brush );
       }
     }
     else
     {
       QPen pen = theSymbol->pen();
-      pen.setWidthF( widthScale * pen.widthF() );
+      pen.setWidthF( renderContext.scaleFactor() * pen.widthF() );
 
       if ( mGeometryType == QGis::Polygon )
       {
         QBrush brush = theSymbol->brush();
-        scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
+        scaleBrush( brush, renderContext.rasterScaleFactor() ); //scale brush content for printout
         brush.setColor( mSelectionColor );
         p->setBrush( brush );
       }
@@ -283,14 +301,19 @@ void QgsGraduatedSymbolRenderer::updateSymbolAttributes()
   for ( it = mSymbols.begin(); it != mSymbols.end(); ++it )
   {
     int rotationField = ( *it )->rotationClassificationField();
-    if ( rotationField >= 0 && !( mSymbolAttributes.contains( rotationField ) ) )
+    if ( rotationField >= 0 && !mSymbolAttributes.contains( rotationField ) )
     {
       mSymbolAttributes.append( rotationField );
     }
     int scaleField = ( *it )->scaleClassificationField();
-    if ( scaleField >= 0 && !( mSymbolAttributes.contains( scaleField ) ) )
+    if ( scaleField >= 0 && !mSymbolAttributes.contains( scaleField ) )
     {
       mSymbolAttributes.append( scaleField );
+    }
+    int symbolField = ( *it )->symbolField();
+    if ( symbolField >= 0 && !mSymbolAttributes.contains( symbolField ) )
+    {
+      mSymbolAttributes.append( symbolField );
     }
   }
 }

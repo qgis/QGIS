@@ -2315,12 +2315,10 @@ static void openFilesRememberingFilter_( QString const &filterName,
 
   QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
 
-  QString lastUsedEncoding = settings.value( "/UI/encoding" ).toString();
-
   QgsDebugMsg( "Opening file dialog with filters: " + filters );
 
   QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0,
-      title, lastUsedDir, filters, lastUsedEncoding );
+  title, lastUsedDir, filters, QString ("" ) );
 
   // allow for selection of more than one file
   openFileDialog->setFileMode( QFileDialog::ExistingFiles );
@@ -2345,7 +2343,6 @@ static void openFilesRememberingFilter_( QString const &filterName,
 
     settings.setValue( "/UI/" + filterName, openFileDialog->selectedFilter() );
     settings.setValue( "/UI/" + filterName + "Dir", myPath );
-    settings.setValue( "/UI/encoding", openFileDialog->encoding() );
   }
 
   delete openFileDialog;
@@ -3168,12 +3165,10 @@ void QgisApp::newVectorLayer()
   QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir",
                                         "." ).toString();
 
-  QString lastUsedEncoding = settings.value( "/UI/encoding" ).toString();
-
   QgsDebugMsg( "Saving vector file dialog without filters: " );
 
   QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( this,
-      tr( "Save As" ), lastUsedDir, "", lastUsedEncoding );
+  tr( "Save As" ), lastUsedDir, "", QString( "" ) );
 
   // allow for selection of more than one file
   openFileDialog->setFileMode( QFileDialog::AnyFile );
@@ -3203,7 +3198,6 @@ void QgisApp::newVectorLayer()
   settings.setValue( "/UI/lastVectorFileFilter", openFileDialog->selectedFilter() );
 
   settings.setValue( "/UI/lastVectorFileFilterDir", openFileDialog->directory().absolutePath() );
-  settings.setValue( "/UI/encoding", openFileDialog->encoding() );
 
   delete openFileDialog;
 

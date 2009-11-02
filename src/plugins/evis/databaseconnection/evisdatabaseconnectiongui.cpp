@@ -108,7 +108,7 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( QString layerName, QString x
     //fileName is only available if the file is open
     //the last file in the list is always the newest
     mTempOutputFileList->last( )->open( );
-    QString uri = QString( "%1?delimiter = %2&xField = %3&yField = %4" )
+    QString uri = QString( "%1?delimiter=%2&xField=%3&yField=%4" )
                   .arg( mTempOutputFileList->last( )->fileName( ) )
                   .arg( "\t" )
                   .arg( xCoordinate )

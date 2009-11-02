@@ -68,7 +68,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
   QWidget * parent,
   Qt::WFlags fl
-  )
+)
     : QDialog( parent, fl ),
     layer( lyr ),
     mRendererDialog( 0 )
@@ -185,7 +185,7 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
     tblAttributes->item( row, i )->setFlags( tblAttributes->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
   QString buttonText;
-  switch (layer->editType( idx ))
+  switch ( layer->editType( idx ) )
   {
     case QgsVectorLayer::LineEdit:
       buttonText = "Line Edit";
@@ -218,13 +218,13 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
       buttonText =  tr( "Immutable" );
       break;
   }
-  QPushButton * pb = new QPushButton(buttonText);
+  QPushButton * pb = new QPushButton( buttonText );
   tblAttributes->setCellWidget( row, 6, pb );
   connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
   mButtonMap.insert( idx, pb );
 
   //set the alias for the attribute
-  tblAttributes->setItem( row, 7, new QTableWidgetItem(layer->attributeAlias(idx)));
+  tblAttributes->setItem( row, 7, new QTableWidgetItem( layer->attributeAlias( idx ) ) );
 
 }
 
@@ -237,35 +237,35 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
 {
   int index = -1;
   QMap<int, QPushButton*>::iterator it = mButtonMap.begin();
-  for (; it != mButtonMap.end() ;it++)
+  for ( ; it != mButtonMap.end() ;it++ )
   {
-     if (it.value()->isDown())
-     {
-       index = it.key();
-     }
+    if ( it.value()->isDown() )
+    {
+      index = it.key();
+    }
   }
 
   QgsAttributeTypeDialog attributeTypeDialog( layer );
 
-  if (mValueMaps.contains(index))
+  if ( mValueMaps.contains( index ) )
   {
-    attributeTypeDialog.setValueMap(mValueMaps[index]);
+    attributeTypeDialog.setValueMap( mValueMaps[index] );
   }
   else
   {
     attributeTypeDialog.setValueMap( QMap<QString, QVariant>() );
   }
 
-  if (mRanges.contains(index))
+  if ( mRanges.contains( index ) )
   {
     attributeTypeDialog.setRange( mRanges[index] );
   }
   else
   {
-    attributeTypeDialog.setRange( QgsVectorLayer::RangeData(0, 5, 1));
+    attributeTypeDialog.setRange( QgsVectorLayer::RangeData( 0, 5, 1 ) );
   }
 
-  if (mEditTypeMap.contains(index))
+  if ( mEditTypeMap.contains( index ) )
   {
     attributeTypeDialog.setIndex( index, mEditTypeMap[index] );
   }
@@ -274,11 +274,11 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
     attributeTypeDialog.setIndex( index );
   }
 
-  if (!attributeTypeDialog.exec())
+  if ( !attributeTypeDialog.exec() )
     return;
 
   QgsVectorLayer::EditType editType = attributeTypeDialog.editType();
-  mEditTypeMap.insert(index, editType);
+  mEditTypeMap.insert( index, editType );
   QString buttonText;
   switch ( editType )
   {
@@ -296,15 +296,15 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
       break;
     case QgsVectorLayer::ValueMap:
       buttonText = "Value Map";
-      mValueMaps.insert(index, attributeTypeDialog.valueMap() );
+      mValueMaps.insert( index, attributeTypeDialog.valueMap() );
       break;
     case QgsVectorLayer::EditRange:
       buttonText = "Edit Range";
-      mRanges.insert(index, attributeTypeDialog.rangeData());
+      mRanges.insert( index, attributeTypeDialog.rangeData() );
       break;
     case QgsVectorLayer::SliderRange:
       buttonText = "Slider Range";
-      mRanges.insert(index, attributeTypeDialog.rangeData());
+      mRanges.insert( index, attributeTypeDialog.rangeData() );
       break;
     case QgsVectorLayer::FileName:
       buttonText = "File Name";
@@ -354,7 +354,7 @@ void QgsVectorLayerProperties::addAttribute()
   QgsAddAttrDialog dialog( layer->dataProvider(), this );
   if ( dialog.exec() == QDialog::Accepted )
   {
-    layer->beginEditCommand("Attribute added");
+    layer->beginEditCommand( "Attribute added" );
     if ( !addAttribute( dialog.field() ) )
     {
       layer->destroyEditCommand();
@@ -614,45 +614,45 @@ void QgsVectorLayerProperties::on_buttonBox_helpRequested()
 }
 
 
-QgsVectorLayer::EditType QgsVectorLayerProperties::getEditType(QString text)
+QgsVectorLayer::EditType QgsVectorLayerProperties::getEditType( QString text )
 {
-  if (text == "Line Edit")
+  if ( text == "Line Edit" )
   {
     return QgsVectorLayer::LineEdit;
   }
-  else if (text == "Unique Values")
+  else if ( text == "Unique Values" )
   {
     return QgsVectorLayer::UniqueValues;
   }
-  else if (text == "Unique Values Editable")
+  else if ( text == "Unique Values Editable" )
   {
     return QgsVectorLayer::UniqueValuesEditable;
   }
-  else if (text == "Classification")
+  else if ( text == "Classification" )
   {
     return QgsVectorLayer::Classification;
   }
-  else if (text == "Value Map")
+  else if ( text == "Value Map" )
   {
     return QgsVectorLayer::ValueMap;
   }
-  else if (text == "Edit Range")
+  else if ( text == "Edit Range" )
   {
     return QgsVectorLayer::EditRange;
   }
-  else if (text == "Slider Range")
+  else if ( text == "Slider Range" )
   {
     return QgsVectorLayer::SliderRange;
   }
-  else if (text == "File Name")
+  else if ( text == "File Name" )
   {
     return QgsVectorLayer::FileName;
   }
-  else if (text == "Enumeration")
+  else if ( text == "Enumeration" )
   {
     return QgsVectorLayer::Enumeration;
   }
-  else if (text == "Immutable")
+  else if ( text == "Immutable" )
   {
     return QgsVectorLayer::Immutable;
   }
@@ -698,18 +698,17 @@ void QgsVectorLayerProperties::apply()
   for ( int i = 0; i < tblAttributes->rowCount(); i++ )
   {
     int idx = tblAttributes->item( i, 0 )->text().toInt();
-    const QgsField &field = layer->pendingFields()[idx];
 
     QPushButton *pb = dynamic_cast<QPushButton*>( tblAttributes->cellWidget( i, 6 ) );
     if ( !pb )
       continue;
 
-    QgsVectorLayer::EditType editType = getEditType( pb->text());
+    QgsVectorLayer::EditType editType = getEditType( pb->text() );
     layer->setEditType( idx, editType );
 
     if ( editType == QgsVectorLayer::ValueMap )
     {
-      if (mValueMaps.contains( idx ))
+      if ( mValueMaps.contains( idx ) )
       {
         QMap<QString, QVariant> &map = layer->valueMap( idx );
         map.clear();
@@ -719,7 +718,7 @@ void QgsVectorLayerProperties::apply()
     else if ( editType == QgsVectorLayer::EditRange ||
               editType == QgsVectorLayer::SliderRange )
     {
-      if (mRanges.contains( idx ) )
+      if ( mRanges.contains( idx ) )
       {
         layer->range( idx ) = mRanges[idx];
       }

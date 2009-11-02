@@ -547,7 +547,8 @@
 		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
 		72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 72267A500F9A1D3100010C18 /* mActionZoomNext.png */; };
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
-		723FD06B0FBCBA3500EFA55D /* db.connect-login.pg.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */; };
+		724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */; };
+		724C9FED1019EE3700A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
 		7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */; };
 		7256F2FB0F4148FC0022BE1F /* Christoph_Spoerri.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE010F39E5D9003DC336 /* Christoph_Spoerri.jpg */; };
@@ -1162,7 +1163,7 @@
 		729288320F71F2AD006D9489 /* qgsnewhttpconnection.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E63C0F39E57A003DC336 /* qgsnewhttpconnection.h */; };
 		7292883C0F71F430006D9489 /* georeferencer.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7FC0F39E57B003DC336 /* georeferencer.qrc */; };
 		7292883D0F71F430006D9489 /* mapcoordsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7FF0F39E57B003DC336 /* mapcoordsdialog.h */; };
-		7292883E0F71F430006D9489 /* plugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8030F39E57B003DC336 /* plugin.h */; };
+		7292883E0F71F430006D9489 /* qgsgeorefplugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8030F39E57B003DC336 /* qgsgeorefplugin.h */; };
 		7292883F0F71F430006D9489 /* qgsgeorefwarpoptionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E80D0F39E57B003DC336 /* qgsgeorefwarpoptionsdialog.h */; };
 		729288400F71F430006D9489 /* qgspointdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8140F39E57B003DC336 /* qgspointdialog.h */; };
 		729288450F71F54F006D9489 /* qgsgrass_plugin.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB230F39E57B003DC336 /* qgsgrass_plugin.qrc */; };
@@ -1364,7 +1365,7 @@
 		72A56CF40F3CB8BD00BA32A1 /* qgswfsplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC400F39E57B003DC336 /* qgswfsplugin.cpp */; };
 		72A56CF50F3CB8BF00BA32A1 /* qgswfssourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC420F39E57B003DC336 /* qgswfssourceselect.cpp */; };
 		72A56CF60F3CB8CE00BA32A1 /* qgsnewhttpconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E63B0F39E57A003DC336 /* qgsnewhttpconnection.cpp */; };
-		72A56D160F3CBDA700BA32A1 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8020F39E57B003DC336 /* plugin.cpp */; };
+		72A56D160F3CBDA700BA32A1 /* qgsgeorefplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8020F39E57B003DC336 /* qgsgeorefplugin.cpp */; };
 		72A56D170F3CBDAC00BA32A1 /* qgsgeorefdatapoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8070F39E57B003DC336 /* qgsgeorefdatapoint.cpp */; };
 		72A56D190F3CBDB200BA32A1 /* qgsimagewarper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E80F0F39E57B003DC336 /* qgsimagewarper.cpp */; };
 		72A56D1A0F3CBDB600BA32A1 /* qgsleastsquares.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E8110F39E57B003DC336 /* qgsleastsquares.cpp */; };
@@ -1399,12 +1400,17 @@
 		72A56DEC0F3CFEA400BA32A1 /* getInsertions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7E00F39E57B003DC336 /* getInsertions.cpp */; };
 		72A56DED0F3CFEAC00BA32A1 /* dl_dxf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7D80F39E57B003DC336 /* dl_dxf.cpp */; };
 		72A56DEE0F3CFEAE00BA32A1 /* dl_writer_ascii.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7DE0F39E57B003DC336 /* dl_writer_ascii.cpp */; };
-		72A6A45A1005992500855EA6 /* r.external.all.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 72A6A4591005990500855EA6 /* r.external.all.py */; };
 		72A892CC0FAF7B8500108152 /* qgsconfigureshortcutsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CA0FAF7B6100108152 /* qgsconfigureshortcutsdialog.cpp */; };
 		72A892CD0FAF7B8500108152 /* qgsshortcutsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */; };
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
+		72D0A53A1018971A00EE6279 /* qgsattributetypedialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A539101896AA00EE6279 /* qgsattributetypedialog.cpp */; };
+		72D0A53B1018971A00EE6279 /* qgsattributetypedialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */; };
+		72D0A53C1018971A00EE6279 /* qgsattributetypeloaddialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */; };
+		72D0A53D1018971A00EE6279 /* qgsattributetypeloaddialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A536101896AA00EE6279 /* qgsattributetypeloaddialog.h */; };
+		72D0A5431018980500EE6279 /* qgsmarkercatalogue.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7380F39E57A003DC336 /* qgsmarkercatalogue.h */; };
+		72D0A5471018990100EE6279 /* qgsattributeeditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */; };
+		72D0A5481018990100EE6279 /* qgsattributeeditor.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5441018989600EE6279 /* qgsattributeeditor.h */; };
 		72DBAB500FFD744400E587DC /* DONORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 72FDF1640FB4720400580178 /* DONORS */; };
-		72E4DF0D0FE00FB600D3505D /* v.out.ogr.pg.py in Copy - scripts */ = {isa = PBXBuildFile; fileRef = 72E4DF0C0FE00FAD00D3505D /* v.out.ogr.pg.py */; };
 		72E707040F42691B00142011 /* __init__.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 7209ED860F39E5D9003DC336 /* __init__.py */; };
 		72E7070A0F426A5C00142011 /* __init__.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD30F39E5D9003DC336 /* __init__.py */; };
 		72E7070B0F426A5C00142011 /* mapserver_export.png in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD50F39E5D9003DC336 /* mapserver_export.png */; };
@@ -2628,19 +2634,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		723FD0700FBCBA3D00EFA55D /* Copy - scripts */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/scripts";
-			dstSubfolderSpec = 0;
-			files = (
-				723FD06B0FBCBA3500EFA55D /* db.connect-login.pg.py in Copy - scripts */,
-				72A6A45A1005992500855EA6 /* r.external.all.py in Copy - scripts */,
-				72E4DF0D0FE00FB600D3505D /* v.out.ogr.pg.py in Copy - scripts */,
-			);
-			name = "Copy - scripts";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7256F2D60F4146A70022BE1F /* Copy - doc-images */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2924,6 +2917,7 @@
 				7256F3CF0F41C3E20022BE1F /* mActionRemove.png in Copy - theme-classic */,
 				7256F3D00F41C3E20022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-classic */,
 				7256F3D10F41C3E20022BE1F /* mActionRemoveLayer.png in Copy - theme-classic */,
+				724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-classic */,
 				7256F3D20F41C3E20022BE1F /* mActionSaveAsSVG.png in Copy - theme-classic */,
 				7256F3D30F41C3E20022BE1F /* mActionSaveMapAsImage.png in Copy - theme-classic */,
 				7256F3D40F41C3E20022BE1F /* mActionScaleBar.png in Copy - theme-classic */,
@@ -3150,6 +3144,7 @@
 				7256F4E60F41C5510022BE1F /* mActionOpenTable.png in Copy - theme-gis */,
 				7256F4E70F41C5510022BE1F /* mActionPan.png in Copy - theme-gis */,
 				7256F4E80F41C5510022BE1F /* mActionRemoveLayer.png in Copy - theme-gis */,
+				724C9FED1019EE3700A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-gis */,
 				7256F4E90F41C5510022BE1F /* mActionSelect.png in Copy - theme-gis */,
 				7256F4EA0F41C5510022BE1F /* mActionShowAllLayers.png in Copy - theme-gis */,
 				7256F4EB0F41C5510022BE1F /* mActionShowBookmarks.png in Copy - theme-gis */,
@@ -4470,8 +4465,8 @@
 		7209E7FF0F39E57B003DC336 /* mapcoordsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mapcoordsdialog.h; path = ../../src/plugins/georeferencer/mapcoordsdialog.h; sourceTree = SOURCE_ROOT; };
 		7209E8000F39E57B003DC336 /* mapcoordsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = mapcoordsdialogbase.ui; path = ../../src/plugins/georeferencer/mapcoordsdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209E8010F39E57B003DC336 /* pencil.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pencil.png; path = ../../src/plugins/georeferencer/pencil.png; sourceTree = SOURCE_ROOT; };
-		7209E8020F39E57B003DC336 /* plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = plugin.cpp; path = ../../src/plugins/georeferencer/plugin.cpp; sourceTree = SOURCE_ROOT; };
-		7209E8030F39E57B003DC336 /* plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = plugin.h; path = ../../src/plugins/georeferencer/plugin.h; sourceTree = SOURCE_ROOT; };
+		7209E8020F39E57B003DC336 /* qgsgeorefplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeorefplugin.cpp; path = ../../src/plugins/georeferencer/qgsgeorefplugin.cpp; sourceTree = SOURCE_ROOT; };
+		7209E8030F39E57B003DC336 /* qgsgeorefplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeorefplugin.h; path = ../../src/plugins/georeferencer/qgsgeorefplugin.h; sourceTree = SOURCE_ROOT; };
 		7209E8070F39E57B003DC336 /* qgsgeorefdatapoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeorefdatapoint.cpp; path = ../../src/plugins/georeferencer/qgsgeorefdatapoint.cpp; sourceTree = SOURCE_ROOT; };
 		7209E8080F39E57B003DC336 /* qgsgeorefdatapoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeorefdatapoint.h; path = ../../src/plugins/georeferencer/qgsgeorefdatapoint.h; sourceTree = SOURCE_ROOT; };
 		7209E8090F39E57B003DC336 /* qgsgeorefdescriptiondialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeorefdescriptiondialog.cpp; path = ../../src/plugins/georeferencer/qgsgeorefdescriptiondialog.cpp; sourceTree = SOURCE_ROOT; };
@@ -5754,6 +5749,8 @@
 		723FD0660FBCB94600EFA55D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/scripts/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "db.connect-login.pg.py"; path = "../../src/plugins/grass/scripts/db.connect-login.pg.py"; sourceTree = SOURCE_ROOT; };
 		7249E1C2100E0E8700104B74 /* qgis_icon_new.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_icon_new.svg; path = ../../images/icons/qgis_icon_new.svg; sourceTree = SOURCE_ROOT; };
+		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/classic/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
+		724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/gis/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
 		7256F2DD0F4147890022BE1F /* SPONSORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SPONSORS; path = ../../SPONSORS; sourceTree = SOURCE_ROOT; };
 		7256F2DE0F4147890022BE1F /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../README; sourceTree = SOURCE_ROOT; };
@@ -6766,6 +6763,14 @@
 		72B4DDC80F9F4C0D009351FE /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ChangeLog; path = ../../ChangeLog; sourceTree = SOURCE_ROOT; };
 		72B602A80FA0CB4100E00BC9 /* ts2cpp.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = ts2cpp.pl; path = ../../scripts/ts2cpp.pl; sourceTree = SOURCE_ROOT; };
 		72B957270F45C24200E3FF98 /* ReadMe.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = SOURCE_ROOT; };
+		72D0A536101896AA00EE6279 /* qgsattributetypeloaddialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetypeloaddialog.h; path = ../../src/app/qgsattributetypeloaddialog.h; sourceTree = SOURCE_ROOT; };
+		72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetypeloaddialog.cpp; path = ../../src/app/qgsattributetypeloaddialog.cpp; sourceTree = SOURCE_ROOT; };
+		72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetypedialog.h; path = ../../src/app/qgsattributetypedialog.h; sourceTree = SOURCE_ROOT; };
+		72D0A539101896AA00EE6279 /* qgsattributetypedialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetypedialog.cpp; path = ../../src/app/qgsattributetypedialog.cpp; sourceTree = SOURCE_ROOT; };
+		72D0A53F1018975800EE6279 /* qgsattributetypeedit.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsattributetypeedit.ui; path = ../../src/ui/qgsattributetypeedit.ui; sourceTree = SOURCE_ROOT; };
+		72D0A5401018975800EE6279 /* qgsattributeloadfrommap.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsattributeloadfrommap.ui; path = ../../src/ui/qgsattributeloadfrommap.ui; sourceTree = SOURCE_ROOT; };
+		72D0A5441018989600EE6279 /* qgsattributeeditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributeeditor.h; path = ../../src/app/qgsattributeeditor.h; sourceTree = SOURCE_ROOT; };
+		72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributeeditor.cpp; path = ../../src/app/qgsattributeeditor.cpp; sourceTree = SOURCE_ROOT; };
 		72D232D30F4A206E000B9039 /* qgis_user-template.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "qgis_user-template.xcconfig"; sourceTree = SOURCE_ROOT; };
 		72E4DF0C0FE00FAD00D3505D /* v.out.ogr.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = v.out.ogr.pg.py; path = ../../src/plugins/grass/scripts/v.out.ogr.pg.py; sourceTree = SOURCE_ROOT; };
 		72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = qgscomposerview.sip; sourceTree = "<group>"; };
@@ -7566,6 +7571,12 @@
 				7209E5F40F39E57A003DC336 /* qgsattributeactiondialog.h */,
 				7209E5F50F39E57A003DC336 /* qgsattributedialog.cpp */,
 				7209E5F60F39E57A003DC336 /* qgsattributedialog.h */,
+				72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */,
+				72D0A5441018989600EE6279 /* qgsattributeeditor.h */,
+				72D0A536101896AA00EE6279 /* qgsattributetypeloaddialog.h */,
+				72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */,
+				72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */,
+				72D0A539101896AA00EE6279 /* qgsattributetypedialog.cpp */,
 				7209E5FB0F39E57A003DC336 /* qgsbookmarkitem.cpp */,
 				7209E5FC0F39E57A003DC336 /* qgsbookmarkitem.h */,
 				7209E5FD0F39E57A003DC336 /* qgsbookmarks.cpp */,
@@ -8411,8 +8422,8 @@
 				7209E7FF0F39E57B003DC336 /* mapcoordsdialog.h */,
 				7209E8000F39E57B003DC336 /* mapcoordsdialogbase.ui */,
 				7209E8010F39E57B003DC336 /* pencil.png */,
-				7209E8020F39E57B003DC336 /* plugin.cpp */,
-				7209E8030F39E57B003DC336 /* plugin.h */,
+				7209E8020F39E57B003DC336 /* qgsgeorefplugin.cpp */,
+				7209E8030F39E57B003DC336 /* qgsgeorefplugin.h */,
 				7209E8070F39E57B003DC336 /* qgsgeorefdatapoint.cpp */,
 				7209E8080F39E57B003DC336 /* qgsgeorefdatapoint.h */,
 				7209E8090F39E57B003DC336 /* qgsgeorefdescriptiondialog.cpp */,
@@ -8995,6 +9006,8 @@
 				7209EC8B0F39E57B003DC336 /* qgsaddattrdialogbase.ui */,
 				7209EC8C0F39E57B003DC336 /* qgsattributeactiondialogbase.ui */,
 				7209EC8D0F39E57B003DC336 /* qgsattributedialogbase.ui */,
+				72D0A53F1018975800EE6279 /* qgsattributetypeedit.ui */,
+				72D0A5401018975800EE6279 /* qgsattributeloadfrommap.ui */,
 				7209EC8F0F39E57B003DC336 /* qgsbookmarksbase.ui */,
 				7209EC900F39E57B003DC336 /* qgscomposerbase.ui */,
 				7209EC910F39E57B003DC336 /* qgscomposeritemwidgetbase.ui */,
@@ -9832,6 +9845,7 @@
 				7209EEBE0F39E5D9003DC336 /* mActionRemove.png */,
 				7209EEBF0F39E5D9003DC336 /* mActionRemoveAllFromOverview.png */,
 				7209EEC00F39E5D9003DC336 /* mActionRemoveLayer.png */,
+				724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */,
 				7209EEC10F39E5D9003DC336 /* mActionSaveAsSVG.png */,
 				7209EEC20F39E5D9003DC336 /* mActionSaveMapAsImage.png */,
 				7209EEC30F39E5D9003DC336 /* mActionScaleBar.png */,
@@ -10070,6 +10084,7 @@
 				7209EF880F39E5D9003DC336 /* mActionOpenTable.png */,
 				7209EF890F39E5D9003DC336 /* mActionPan.png */,
 				7209EF8A0F39E5D9003DC336 /* mActionRemoveLayer.png */,
+				724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */,
 				7209EF8B0F39E5D9003DC336 /* mActionSelect.png */,
 				7209EF8C0F39E5D9003DC336 /* mActionShowAllLayers.png */,
 				7209EF8D0F39E5D9003DC336 /* mActionShowBookmarks.png */,
@@ -12273,7 +12288,6 @@
 				72E70A4E0F426D3B00142011 /* Copy - theme-classic */,
 				72E70A810F426DF300142011 /* Copy - theme-gis */,
 				72EBC9800F49D7F60016BA3C /* Copy - theme-default */,
-				723FD0700FBCBA3D00EFA55D /* Copy - scripts */,
 				72993C820FE303FA00244D1A /* Script - copy modules & config */,
 			);
 			buildRules = (
@@ -12858,7 +12872,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# copy modules with script for conditional stuff\n\nMODDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nmkdir -p \"$MODDIR\"\nCONFDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/config\"\nmkdir -p \"$CONFDIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\nMODS=`ls *.png *.qgm *.svg`\nfor m in $MODS\ndo\n\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\tcp -f $m \"$MODDIR\"\n\tfi\ndone\n\nif [ -d ../modules-$GRASS_VERSION ] ; then\n\tcd ../modules-$GRASS_VERSION\n\tMODS=`ls *.png *.qgm *.svg`\n\tfor m in $MODS\n\tdo\n\t\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\t\tcp -f $m \"$MODDIR\"\n\t\tfi\n\tdone\n\tif [ ! -f \"$CONFDIR/default.qgc\" ] || [ default.qgc -nt \"$CONFDIR/default.qgc\" ] ; then\n\t\techo \"cp -f default.qgc \\\"$CONFDIR\\\"\"\n\t\tcp -f default.qgc \"$CONFDIR\"\n\tfi\n\nfi\n";
+			shellScript = "# copy modules with script for conditional stuff\n\nMODDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nmkdir -p \"$MODDIR\"\nCONFDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/config\"\nmkdir -p \"$CONFDIR\"\nSCRIPTSDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/scripts\"\nmkdir \"$SCRIPTSDIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\nMODS=`ls *.png *.qgm *.svg`\nfor m in $MODS\ndo\n\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\tcp -fp $m \"$MODDIR\"\n\tfi\ndone\n\ncd ..\nif [ ! \"$GRASS_VERSION\" = \"10.3\" ] ; then\n\techo \"cp -fp scripts/*.py \\\"$SCRIPTSDIR\\\"\"\n\tcp -fp scripts/*.py \"$SCRIPTSDIR\"\nfi\n\nif [ -d ../modules-$GRASS_VERSION ] ; then\n\tcd ../modules-$GRASS_VERSION\n\tMODS=`ls *.png *.qgm *.svg`\n\tfor m in $MODS\n\tdo\n\t\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\t\tcp -fp $m \"$MODDIR\"\n\t\tfi\n\tdone\n\tif [ ! -f \"$CONFDIR/default.qgc\" ] || [ default.qgc -nt \"$CONFDIR/default.qgc\" ] ; then\n\t\techo \"cp -f default.qgc \\\"$CONFDIR\\\"\"\n\t\tcp -fp default.qgc \"$CONFDIR\"\n\tfi\n\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		729BBF0E0F407818001BCB63 /* Script - ui */ = {
@@ -13276,6 +13290,7 @@
 				7292874E0F71C2CB006D9489 /* qgsmaplayer.h in Sources */,
 				7292874F0F71C2CB006D9489 /* qgsmaplayerregistry.h in Sources */,
 				729287500F71C2CB006D9489 /* qgsmaprenderer.h in Sources */,
+				72D0A5431018980500EE6279 /* qgsmarkercatalogue.h in Sources */,
 				729287510F71C2CB006D9489 /* qgsmessageoutput.h in Sources */,
 				729287520F71C2CB006D9489 /* qgsproject.h in Sources */,
 				729287530F71C2CB006D9489 /* qgsrasterdataprovider.h in Sources */,
@@ -13514,7 +13529,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				72A56D160F3CBDA700BA32A1 /* plugin.cpp in Sources */,
+				72A56D160F3CBDA700BA32A1 /* qgsgeorefplugin.cpp in Sources */,
 				72A56D170F3CBDAC00BA32A1 /* qgsgeorefdatapoint.cpp in Sources */,
 				72A56D190F3CBDB200BA32A1 /* qgsimagewarper.cpp in Sources */,
 				72A56D1A0F3CBDB600BA32A1 /* qgsleastsquares.cpp in Sources */,
@@ -13523,7 +13538,7 @@
 				72A56D1D0F3CBDC000BA32A1 /* qgsgeorefwarpoptionsdialog.cpp in Sources */,
 				72A56D1E0F3CBDC400BA32A1 /* mapcoordsdialog.cpp in Sources */,
 				7292883D0F71F430006D9489 /* mapcoordsdialog.h in Sources */,
-				7292883E0F71F430006D9489 /* plugin.h in Sources */,
+				7292883E0F71F430006D9489 /* qgsgeorefplugin.h in Sources */,
 				7292883F0F71F430006D9489 /* qgsgeorefwarpoptionsdialog.h in Sources */,
 				729288400F71F430006D9489 /* qgspointdialog.h in Sources */,
 				7292883C0F71F430006D9489 /* georeferencer.qrc in Sources */,
@@ -13792,6 +13807,7 @@
 				7209F42B0F3A468C003DC336 /* qgsaddattrdialog.cpp in Sources */,
 				7209F42C0F3A468C003DC336 /* qgsattributeactiondialog.cpp in Sources */,
 				7209F42D0F3A468C003DC336 /* qgsattributedialog.cpp in Sources */,
+				72D0A5471018990100EE6279 /* qgsattributeeditor.cpp in Sources */,
 				7209F4300F3A468C003DC336 /* qgsbookmarkitem.cpp in Sources */,
 				7209F4310F3A468C003DC336 /* qgsbookmarks.cpp in Sources */,
 				7209F4320F3A468C003DC336 /* qgsclipboard.cpp in Sources */,
@@ -13874,6 +13890,7 @@
 				7292887E0F71FE65006D9489 /* qgsaddattrdialog.h in Sources */,
 				7292887F0F71FE65006D9489 /* qgsattributeactiondialog.h in Sources */,
 				729288800F71FE65006D9489 /* qgsattributedialog.h in Sources */,
+				72D0A5481018990100EE6279 /* qgsattributeeditor.h in Sources */,
 				729288830F71FE65006D9489 /* qgsbookmarks.h in Sources */,
 				729288840F71FE65006D9489 /* qgscomposer.h in Sources */,
 				729288850F71FE65006D9489 /* qgscomposeritemwidget.h in Sources */,
@@ -13946,6 +13963,10 @@
 				72FB54CC0FAF3ADB00AB2F8D /* qgsattributetablememorymodel.cpp in Sources */,
 				72FB54CE0FAF3B5E00AB2F8D /* qgsattributetabledelegate.h in Sources */,
 				72FB54CF0FAF3B5E00AB2F8D /* qgsattributetablememorymodel.h in Sources */,
+				72D0A53A1018971A00EE6279 /* qgsattributetypedialog.cpp in Sources */,
+				72D0A53C1018971A00EE6279 /* qgsattributetypeloaddialog.cpp in Sources */,
+				72D0A53B1018971A00EE6279 /* qgsattributetypedialog.h in Sources */,
+				72D0A53D1018971A00EE6279 /* qgsattributetypeloaddialog.h in Sources */,
 				72A892CC0FAF7B8500108152 /* qgsconfigureshortcutsdialog.cpp in Sources */,
 				72A892CD0FAF7B8500108152 /* qgsshortcutsmanager.cpp in Sources */,
 				72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */,

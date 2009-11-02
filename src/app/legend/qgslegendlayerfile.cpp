@@ -247,7 +247,7 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
       tr( "Save layer as..." ),
       dirName,
       filter,
-      QString( "UTF-8" ) );
+      QString( "" ) );
   openFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
   // allow for selection of more than one file

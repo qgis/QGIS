@@ -407,6 +407,7 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
     QPainter painter;
     painter.begin( theQPixmap );
     mMapRenderer->render( &painter );
+    emit renderComplete( &painter );
     painter.end();
 
     theQPixmap->save( theFileName, theFormat.toLocal8Bit().data() );

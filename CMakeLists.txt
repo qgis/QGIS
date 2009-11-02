@@ -201,9 +201,10 @@ IF (PEDANTIC)
   ENDIF (MSVC)
 ENDIF (PEDANTIC)
 
-IF (CMAKE_BUILD_TYPE MATCHES Debug)
+IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_CONFIGURATION_TYPE MATCHES RelWithDebInfo)
+  MESSAGE ("-- Debug output enabled")
   ADD_DEFINITIONS(-DQGISDEBUG=1)
-ENDIF (CMAKE_BUILD_TYPE MATCHES Debug)
+ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_CONFIGURATION_TYPE MATCHES RelWithDebInfo)
 
 #############################################################
 # platform specific stuff
@@ -215,18 +216,10 @@ IF (WIN32)
   SET (DEFAULT_INCLUDE_SUBDIR include)
   
   IF (MSVC)
-    # Python parts need to be build with nmake not vcexpress
-    # if you dont add this clause, extra blank msvc projects
-    # will pop up mid way through the build process and block
-    # the build, plus the python bindings wont build correctly
-    SET (CMAKE_MAKE_PROGRAM nmake)
     SET (DEFAULT_BIN_SUBDIR bin)
     # put all the build products into a single directory
     # under build (doesnt affect install target) to make for
     # easier debugging.
-    # SET(OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-    # SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_DIR})
-    # SET(LIBRARY_OUTPUT_PATH ${OUTPUT_DIR})
     #tell msvc compiler to use main instead of winmain as the
     #application entry point
     #SET(QT_USE_QTMAIN TRUE) 
@@ -236,18 +229,17 @@ IF (WIN32)
     # Turn off deprecation warnings
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
-    # Some file access stuff not defined in native win32
-    # environment
-    ADD_DEFINITIONS(-DF_OK=0)
-    ADD_DEFINITIONS(-DX_OK=1)
-    ADD_DEFINITIONS(-DW_OK=2)
-    ADD_DEFINITIONS(-DR_OK=4)
     
-    ADD_DEFINITIONS(-DQGISDEBUG=1)
+    IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_CONFIGURATION_TYPE MATCHES RelWithDebInfo)
+      MESSAGE ("-- Generating browse files")
+      ADD_DEFINITIONS( /FR )
+    ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_CONFIGURATION_TYPE MATCHES RelWithDebInfo)
 
-    INSTALL(DIRECTORY ${CMAKE_SOURCE_DIR}/win_build/vcdeps/. DESTINATION .)
+    IF (INSTALL_DEPS)
+      INSTALL(DIRECTORY ${INSTALL_DEPS} DESTINATION .)
+    ENDIF (INSTALL_DEPS)
   ELSE(MSVC)
-    SET (DEFAULT_BIN_SUBDIR     .)
+    SET (DEFAULT_BIN_SUBDIR .)
   ENDIF(MSVC)
 ELSE (WIN32)
 

@@ -40,7 +40,19 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
   radioSrcFile->setChecked( true );
   mDataSourceType = "file";
   //set encoding
-  cmbEncodings->setItemText( cmbEncodings->currentIndex(), QString( QTextCodec::codecForLocale()->name() ) );
+  // cmbEncodings->setItemText( cmbEncodings->currentIndex(), QString( QTextCodec::codecForLocale()->name() ) );
+  QSettings settings;
+  QString enc = settings.value( "/UI/encoding", QString("System") ).toString();
+  
+  // The specified decoding is added if not existing alread, and then set current.
+  // This should select it.
+  int encindex = cmbEncodings->findText( enc );
+  if ( encindex < 0 )
+  {
+    cmbEncodings->insertItem( 0, enc );
+    encindex = 0;
+  }
+  cmbEncodings->setCurrentIndex( encindex );
 
   //add database drivers
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
@@ -379,11 +391,11 @@ void QgsOpenVectorLayerDialog::openFilesRememberingFilter( QString const &filter
 //********************auto connected slots *****************/
 void QgsOpenVectorLayerDialog::on_buttonBox_accepted()
 {
+  QSettings settings;
   QgsDebugMsg( "dialog button accepted" );
   if ( radioSrcDatabase->isChecked() )
   {
     mDataSources.clear();
-    QSettings settings;
     QString baseKey = "/" + cmbDatabaseTypes->currentText() + "/connections/";
     baseKey += cmbConnections->currentText();
     QString host = settings.value( baseKey + "/host" ).toString();
@@ -414,6 +426,9 @@ void QgsOpenVectorLayerDialog::on_buttonBox_accepted()
                            protocolURI->text()
                          ) );
   }
+  // Save the used encoding
+  settings.setValue( "/UI/encoding", encoding() );
+
   accept();
 }
 

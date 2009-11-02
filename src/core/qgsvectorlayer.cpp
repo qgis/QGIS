@@ -339,7 +339,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
         if ( mRenderer->willRenderFeature( &fet ) )
         {
           bool sel = mSelectedFeatureIds.contains( fet.id() );
-          mLabel->renderLabel( rendererContext.painter(), rendererContext.extent(), rendererContext.coordinateTransform(), &( rendererContext.mapToPixel() ), fet, sel, 0, rendererContext.scaleFactor(), rendererContext.rasterScaleFactor() );
+          mLabel->renderLabel( rendererContext, fet, sel, 0 );
         }
         featureCount++;
       }
@@ -362,13 +362,9 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 }
 
 
-unsigned char* QgsVectorLayer::drawLineString(
-  unsigned char *feature,
-  QPainter* p,
-  const QgsMapToPixel* mtp,
-  const QgsCoordinateTransform* ct,
-  bool drawingToEditingCanvas )
+unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRenderContext &renderContext )
 {
+  QPainter *p = renderContext.painter();
   unsigned char *ptr = feature + 5;
   unsigned int wkbType = *(( int* )( feature + 1 ) );
   unsigned int nPoints = *(( int* )ptr );
@@ -395,7 +391,7 @@ unsigned char* QgsVectorLayer::drawLineString(
   // Transform the points into map coordinates (and reproject if
   // necessary)
 
-  transformPoints( x, y, z, mtp, ct );
+  transformPoints( x, y, z, renderContext );
 
 #if defined(Q_WS_X11)
   // Work around a +/- 32768 limitation on coordinates in X11
@@ -454,7 +450,7 @@ unsigned char* QgsVectorLayer::drawLineString(
   p->drawPolyline( pa );
 
   // draw vertex markers if in editing mode, but only to the main canvas
-  if ( mEditable && drawingToEditingCanvas )
+  if ( mEditable && renderContext.drawEditingInformation() )
   {
 
     std::vector<double>::const_iterator xIt;
@@ -471,13 +467,9 @@ unsigned char* QgsVectorLayer::drawLineString(
   return ptr;
 }
 
-unsigned char *QgsVectorLayer::drawPolygon(
-  unsigned char *feature,
-  QPainter *p,
-  const QgsMapToPixel *mtp,
-  const QgsCoordinateTransform *ct,
-  bool drawingToEditingCanvas )
+unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderContext &renderContext )
 {
+  QPainter *p = renderContext.painter();
   typedef std::pair<std::vector<double>, std::vector<double> > ringType;
   typedef ringType* ringTypePtr;
   typedef std::vector<ringTypePtr> ringsType;
@@ -531,7 +523,7 @@ unsigned char *QgsVectorLayer::drawPolygon(
       continue;
     }
 
-    transformPoints( ring->first, ring->second, zVector, mtp, ct );
+    transformPoints( ring->first, ring->second, zVector, renderContext );
 
 #if defined(Q_WS_X11)
     // Work around a +/- 32768 limitation on coordinates in X11
@@ -656,7 +648,7 @@ unsigned char *QgsVectorLayer::drawPolygon(
 
 
     // draw vertex markers if in editing mode, but only to the main canvas
-    if ( mEditable && drawingToEditingCanvas )
+    if ( mEditable && renderContext.drawEditingInformation() )
     {
       for ( int i = 0; i < path.elementCount(); ++i )
       {
@@ -812,7 +804,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     /*Pointer to a marker image*/
     QImage marker;
     //vertex marker type for selection
-    QgsVectorLayer::VertexMarkerType vertexMarker;
+    QgsVectorLayer::VertexMarkerType vertexMarker = QgsVectorLayer::NoMarker;
 
     if ( mEditable )
     {
@@ -889,26 +881,13 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
         //QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
         // markerScalerFactore reflects the wanted scaling of the marker
-        mRenderer->renderFeature(
-          rendererContext.painter(),
-          fet,
-          &marker,
-          sel,
-          rendererContext.scaleFactor(),
-          rendererContext.rasterScaleFactor() );
+        mRenderer->renderFeature( rendererContext, fet, &marker, sel );
+
         // markerScalerFactore now reflects the actual scaling of the marker that the render performed.
         //QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));
 
         //double scale = rendererContext.scaleFactor() /  markerScaleFactor;
-        drawFeature(
-          rendererContext.painter(),
-          fet,
-          &rendererContext.mapToPixel(),
-          rendererContext.coordinateTransform(),
-          &marker,
-          rendererContext.scaleFactor(),
-          rendererContext.rasterScaleFactor(),
-          rendererContext.drawEditingInformation() );
+        drawFeature( rendererContext, fet, &marker );
 
         if (labeling && mLabelingEngine)
         {
@@ -1705,7 +1684,7 @@ bool QgsVectorLayer::deleteVertex( int atFeatureId, int atVertex )
       geometry = mChangedGeometries[atFeatureId];
     }
 
-    if (!geometry.deleteVertex( atVertex ))
+    if ( !geometry.deleteVertex( atVertex ) )
     {
       return false;
     }
@@ -3665,15 +3644,11 @@ QgsVectorLayer::VertexMarkerType QgsVectorLayer::currentVertexMarkerType()
   }
 }
 
-void QgsVectorLayer::drawFeature( QPainter* p,
+void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
                                   QgsFeature& fet,
-                                  const QgsMapToPixel* theMapToPixelTransform,
-                                  const QgsCoordinateTransform* ct,
-                                  QImage * marker,
-                                  double widthScale,
-                                  double rasterScaleFactor,
-                                  bool drawingToEditingCanvas )
+                                  QImage * marker )
 {
+  QPainter *p = renderContext.painter();
   // Only have variables, etc outside the switch() statement that are
   // used in all cases of the statement (otherwise they may get
   // executed, but never used, in a bit of code where performance is
@@ -3696,13 +3671,14 @@ void QgsVectorLayer::drawFeature( QPainter* p,
       double x = *(( double * )( feature + 5 ) );
       double y = *(( double * )( feature + 5 + sizeof( double ) ) );
 
-      transformPoint( x, y, theMapToPixelTransform, ct );
+      transformPoint( x, y, &renderContext.mapToPixel(), renderContext.coordinateTransform() );
       //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
-      QPointF pt( x*rasterScaleFactor - ( marker->width() / 2 ),  y*rasterScaleFactor - ( marker->height() / 2 ) );
+      QPointF pt( x*renderContext.rasterScaleFactor() - ( marker->width() / 2 ),
+                  y*renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
 
       p->save();
       //p->scale(markerScaleFactor,markerScaleFactor);
-      p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
+      p->scale( 1.0 / renderContext.rasterScaleFactor(), 1.0 / renderContext.rasterScaleFactor() );
       p->drawImage( pt, *marker );
       p->restore();
 
@@ -3717,7 +3693,7 @@ void QgsVectorLayer::drawFeature( QPainter* p,
 
       p->save();
       //p->scale(markerScaleFactor, markerScaleFactor);
-      p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
+      p->scale( 1.0 / renderContext.rasterScaleFactor(), 1.0 / renderContext.rasterScaleFactor() );
 
       for ( register unsigned int i = 0; i < nPoints; ++i )
       {
@@ -3730,10 +3706,11 @@ void QgsVectorLayer::drawFeature( QPainter* p,
         if ( wkbType == QGis::WKBMultiPoint25D ) // ignore Z value
           ptr += sizeof( double );
 
-        transformPoint( x, y, theMapToPixelTransform, ct );
+        transformPoint( x, y, &renderContext.mapToPixel(), renderContext.coordinateTransform() );
         //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
         //QPointF pt(x/markerScaleFactor - (marker->width()/2),  y/markerScaleFactor - (marker->height()/2));
-        QPointF pt( x*rasterScaleFactor - ( marker->width() / 2 ),  y*rasterScaleFactor - ( marker->height() / 2 ) );
+        QPointF pt( x*renderContext.rasterScaleFactor() - ( marker->width() / 2 ),
+                    y*renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
         //QPointF pt( x, y );
 
 #if defined(Q_WS_X11)
@@ -3752,11 +3729,7 @@ void QgsVectorLayer::drawFeature( QPainter* p,
     case QGis::WKBLineString:
     case QGis::WKBLineString25D:
     {
-      drawLineString( feature,
-                      p,
-                      theMapToPixelTransform,
-                      ct,
-                      drawingToEditingCanvas );
+      drawLineString( feature, renderContext );
       break;
     }
     case QGis::WKBMultiLineString:
@@ -3768,22 +3741,14 @@ void QgsVectorLayer::drawFeature( QPainter* p,
 
       for ( register unsigned int jdx = 0; jdx < numLineStrings; jdx++ )
       {
-        ptr = drawLineString( ptr,
-                              p,
-                              theMapToPixelTransform,
-                              ct,
-                              drawingToEditingCanvas );
+        ptr = drawLineString( ptr, renderContext );
       }
       break;
     }
     case QGis::WKBPolygon:
     case QGis::WKBPolygon25D:
     {
-      drawPolygon( feature,
-                   p,
-                   theMapToPixelTransform,
-                   ct,
-                   drawingToEditingCanvas );
+      drawPolygon( feature, renderContext );
       break;
     }
     case QGis::WKBMultiPolygon:
@@ -3793,11 +3758,7 @@ void QgsVectorLayer::drawFeature( QPainter* p,
       unsigned int numPolygons = *(( int* )ptr );
       ptr = feature + 9;
       for ( register unsigned int kdx = 0; kdx < numPolygons; kdx++ )
-        ptr = drawPolygon( ptr,
-                           p,
-                           theMapToPixelTransform,
-                           ct,
-                           drawingToEditingCanvas );
+        ptr = drawPolygon( ptr, renderContext );
       break;
     }
     default:
@@ -3850,15 +3811,15 @@ inline void QgsVectorLayer::transformPoint(
 
 inline void QgsVectorLayer::transformPoints(
   std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
-  const QgsMapToPixel* mtp, const QgsCoordinateTransform* ct )
+  QgsRenderContext &renderContext )
 {
   // transform the point
-  if ( ct )
-    ct->transformInPlace( x, y, z );
+  if ( renderContext.coordinateTransform() )
+    renderContext.coordinateTransform()->transformInPlace( x, y, z );
 
   // transform from projected coordinate system to pixel
   // position on map canvas
-  mtp->transformInPlace( x, y );
+  renderContext.mapToPixel().transformInPlace( x, y );
 }
 
 

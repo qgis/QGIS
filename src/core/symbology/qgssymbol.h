@@ -34,7 +34,6 @@ class QgsVectorLayer;
   (lower value, upper value)*/
 class CORE_EXPORT QgsSymbol
 {
-
   public:
     /**Constructor*/
     QgsSymbol( QGis::GeometryType t, QString lvalue = "", QString uvalue = "", QString label = "" );
@@ -86,10 +85,17 @@ class CORE_EXPORT QgsSymbol
     virtual void setNamedPointSymbol( QString name );
     /**Get point symbol*/
     virtual QString pointSymbolName() const;
-    /**Set size*/
+
+    /**Set point size*/
     virtual void setPointSize( double s );
     /**Get size*/
     virtual double pointSize() const;
+
+    /**Set point size units*/
+    virtual void setPointSizeUnits( bool sizeInMapUnits );
+    /**get point size units*/
+    virtual bool pointSizeUnits() const;
+
     //! Destructor
     virtual ~QgsSymbol();
 
@@ -135,6 +141,12 @@ class CORE_EXPORT QgsSymbol
     \param field the number of the field to classify for scale*/
     void setScaleClassificationField( int field );
 
+    /**Returns the number of the symbol field*/
+    int symbolField() const;
+    /**Sets the number of the symbol field
+    \param field the number of the field to select the symbol*/
+    void setSymbolField( int field );
+
   protected:
 
     /**Lower value for classification*/
@@ -150,8 +162,11 @@ class CORE_EXPORT QgsSymbol
     QString mTextureFilePath;
     /* Point symbol name */
     QString mPointSymbolName;
-    /* Point size */
-    double mPointSize;
+    /* size */
+    double mSize;
+    /* units of size */
+    bool mSizeInMapUnits;
+
 
     /* TODO Because for printing we always need a symbol without oversampling but with line width scale,
      *      we keep also separate picture with line width scale */
@@ -197,6 +212,7 @@ class CORE_EXPORT QgsSymbol
     /**Index of the classification fields (it must be a numerical field index)*/
     int mRotationClassificationField;
     int mScaleClassificationField;
+    int mSymbolField;
 
   private:
     int readFieldName( QDomNode &synode, QString name, const QgsVectorLayer &vl );

@@ -35,11 +35,10 @@ class QPaintDevice;
 class QgsFeature;
 class QgsField;
 class QgsLabelAttributes;
-class QgsRectangle;
-class QgsMapToPixel;
-class QgsCoordinateTransform;
 
 #include "qgsfield.h"
+#include "qgsrectangle.h"
+#include "qgsrendercontext.h"
 
 typedef QList<int> QgsAttributeList;
 
@@ -93,11 +92,28 @@ class CORE_EXPORT QgsLabel
 
     /** \brief render label
      *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
+     *  \note deprecated
      */
     void renderLabel( QPainter* painter, const QgsRectangle& viewExtent,
-                      const QgsCoordinateTransform* coordinateTransform,
+                      QgsCoordinateTransform* coordinateTransform,
                       const QgsMapToPixel *transform,
-                      QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0, double sizeScale = 1., double rasterScaleFactor = 1.0 );
+                      QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0, double sizeScale = 1., double rasterScaleFactor = 1.0 )
+    {
+      QgsRenderContext r;
+      r.setExtent( viewExtent );
+      r.setCoordinateTransform( new QgsCoordinateTransform( coordinateTransform->sourceCrs(), coordinateTransform->destCRS() ) );
+      r.setMapToPixel( *transform );
+      r.setPainter( painter );
+      r.setScaleFactor( sizeScale );
+      r.setRasterScaleFactor( rasterScaleFactor );
+      renderLabel( r, feature, selected, classAttributes );
+    }
+
+    /** \brief render label
+     *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
+     *  \note added in 1.2
+     */
+    void renderLabel( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0 );
 
     /** Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
@@ -151,14 +167,12 @@ class CORE_EXPORT QgsLabel
     /** Does the actual rendering of a label at the given point
      *
      */
-    void renderLabel( QPainter* painter, QgsPoint point,
-                      const QgsCoordinateTransform* coordinateTransform,
-                      const QgsMapToPixel* transform,
+    void renderLabel( QgsRenderContext &renderContext, QgsPoint point,
                       QString text, QFont font, QPen pen,
                       int dx, int dy,
                       double xoffset, double yoffset,
                       double ang,
-                      int width, int height, int alignment, double sizeScale = 1.0, double rasterScaleFactor = 1.0 );
+                      int width, int height, int alignment );
 
     bool readLabelField( QDomElement &el, int attr, QString prefix );
 
