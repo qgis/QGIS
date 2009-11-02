@@ -29,8 +29,9 @@
 #include <QPixmap>
 #include <QSettings>
 #include <QMenu>
+#include <QClipboard>
 
-#include <iostream>
+#include "qgslogger.h"
 
 QgsIdentifyResults::QgsIdentifyResults( const QgsAttributeAction& actions,
                                         QWidget *parent, Qt::WFlags f )
@@ -100,34 +101,48 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   if ( item == NULL )
     return;
 
-  // The assumption is made that an instance of QgsIdentifyResults is
-  // created for each new Identify Results dialog box, and that the
-  // contents of the popup menu doesn't change during the time that
-  // such a dialog box is around.
   if ( mActionPopup == 0 )
   {
     mActionPopup = new QMenu();
-    QAction* a = mActionPopup->addAction( tr( "Run action" ) );
-    a->setEnabled( false );
-    mActionPopup->addSeparator();
 
-    QgsAttributeAction::aIter iter = mActions.begin();
-    for ( int j = 0; iter != mActions.end(); ++iter, ++j )
+    QAction *a;
+    a = mActionPopup->addAction( tr( "Copy attribute value" ) );
+    a->setEnabled( true );
+    a->setData( QVariant::fromValue( -2 ) );
+
+    a = mActionPopup->addAction( tr( "Copy feature attributes" ) );
+    a->setEnabled( true );
+    a->setData( QVariant::fromValue( -1 ) );
+
+    if ( mActions.size() > 0 )
     {
-      QAction* a = mActionPopup->addAction( iter->name() );
-      // The menu action stores an integer that is used later on to
-      // associate an menu action with an actual qgis action.
-      a->setData( QVariant::fromValue( j ) );
+      // The assumption is made that an instance of QgsIdentifyResults is
+      // created for each new Identify Results dialog box, and that the
+      // contents of the popup menu doesn't change during the time that
+      // such a dialog box is around.
+      a = mActionPopup->addAction( tr( "Run action" ) );
+      a->setEnabled( false );
+      mActionPopup->addSeparator();
+
+      QgsAttributeAction::aIter iter = mActions.begin();
+      for ( int j = 0; iter != mActions.end(); ++iter, ++j )
+      {
+        QAction* a = mActionPopup->addAction( iter->name() );
+        // The menu action stores an integer that is used later on to
+        // associate an menu action with an actual qgis action.
+        a->setData( QVariant::fromValue( j ) );
+      }
     }
+
     connect( mActionPopup, SIGNAL( triggered( QAction* ) ),
              this, SLOT( popupItemSelected( QAction* ) ) );
   }
+
   // Save the attribute values as these are needed for substituting into
   // the action.
   extractAllItemData( item );
 
-  if ( mActions.size() > 0 )
-    mActionPopup->popup( event->globalPos() );
+  mActionPopup->popup( event->globalPos() );
 }
 
 // Restore last window position/size and show the window
@@ -224,7 +239,31 @@ void QgsIdentifyResults::setColumnText( int column, const QString & label )
 void QgsIdentifyResults::popupItemSelected( QAction* menuAction )
 {
   int id = menuAction->data().toInt();
-  mActions.doAction( id, mValues, mClickedOnValue );
+
+  if ( id < 0 )
+  {
+    QClipboard *clipboard = QApplication::clipboard();
+    QString text;
+
+    if ( id == -2 )
+    {
+      text = mValues[ mClickedOnValue ].second;
+    }
+    else
+    {
+      for ( std::vector< std::pair<QString, QString> >::const_iterator it = mValues.begin(); it != mValues.end(); it++ )
+      {
+        text += QString( "%1: %2\n" ).arg( it->first ).arg( it->second );
+      }
+    }
+
+    QgsDebugMsg( QString( "set clipboard: %1" ).arg( text ) );
+    clipboard->setText( text );
+  }
+  else
+  {
+    mActions.doAction( id, mValues, mClickedOnValue );
+  }
 }
 
 /** Expand all the identified features (show their attributes). */

@@ -122,6 +122,7 @@ makefile_gui = sipconfig.ModuleMakefile(
 
 # common settings for both core and gui libs
 for mk in [ makefile_core, makefile_gui ]:
+  mk.extra_lflags.extend( "@CMAKE_MODULE_LINKER_FLAGS@".strip(' ').split(' ') )
   mk.extra_libs = ["qgis_core"]
   mk.extra_lib_dirs = [build_path+"/src/core"+intdir]
   mk.extra_include_dirs = [src_path+"/src/core", src_path+"/src/core/composer", 

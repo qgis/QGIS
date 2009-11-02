@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" >
  <class>OsmDockWidget</class>
- <widget class="QDockWidget" name="OsmDockWidget">
-  <property name="windowModality">
+ <widget class="QDockWidget" name="OsmDockWidget" >
+  <property name="windowModality" >
    <enum>Qt::NonModal</enum>
   </property>
-  <property name="enabled">
+  <property name="enabled" >
    <bool>true</bool>
   </property>
-  <property name="geometry">
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
@@ -16,295 +15,295 @@
     <height>776</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="minimumSize">
+  <property name="minimumSize" >
    <size>
     <width>261</width>
     <height>357</height>
    </size>
   </property>
-  <property name="maximumSize">
+  <property name="maximumSize" >
    <size>
-    <width>524287</width>
-    <height>524287</height>
+    <width>16777215</width>
+    <height>16777215</height>
    </size>
   </property>
-  <property name="windowTitle">
+  <property name="windowTitle" >
    <string>OSM Feature</string>
   </property>
-  <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QVBoxLayout">
+  <widget class="QWidget" name="dockWidgetContents" >
+   <layout class="QVBoxLayout" >
     <item>
-     <layout class="QHBoxLayout">
-      <property name="spacing">
+     <layout class="QHBoxLayout" >
+      <property name="spacing" >
        <number>1</number>
       </property>
-      <property name="rightMargin">
+      <property name="rightMargin" >
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="dummyButton">
-        <property name="minimumSize">
+       <widget class="QToolButton" name="dummyButton" >
+        <property name="minimumSize" >
          <size>
           <width>1</width>
           <height>25</height>
          </size>
         </property>
-        <property name="maximumSize">
+        <property name="maximumSize" >
          <size>
           <width>1</width>
           <height>27</height>
          </size>
         </property>
-        <property name="focusPolicy">
+        <property name="focusPolicy" >
          <enum>Qt::NoFocus</enum>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
-        <property name="checkable">
+        <property name="checkable" >
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="identifyButton">
-        <property name="minimumSize">
+       <widget class="QToolButton" name="identifyButton" >
+        <property name="minimumSize" >
          <size>
           <width>26</width>
           <height>25</height>
          </size>
         </property>
-        <property name="maximumSize">
+        <property name="maximumSize" >
          <size>
           <width>25</width>
           <height>26</height>
          </size>
         </property>
-        <property name="focusPolicy">
+        <property name="focusPolicy" >
          <enum>Qt::NoFocus</enum>
         </property>
-        <property name="toolTip">
+        <property name="toolTip" >
          <string>Identify object</string>
         </property>
-        <property name="statusTip">
+        <property name="statusTip" >
          <string>Identify object</string>
         </property>
-        <property name="whatsThis">
+        <property name="whatsThis" >
          <string>Identify object</string>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
-        <property name="checkable">
+        <property name="checkable" >
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="moveButton">
-        <property name="minimumSize">
+       <widget class="QToolButton" name="moveButton" >
+        <property name="minimumSize" >
          <size>
           <width>26</width>
           <height>25</height>
          </size>
         </property>
-        <property name="maximumSize">
+        <property name="maximumSize" >
          <size>
           <width>25</width>
           <height>26</height>
          </size>
         </property>
-        <property name="focusPolicy">
+        <property name="focusPolicy" >
          <enum>Qt::NoFocus</enum>
         </property>
-        <property name="toolTip">
+        <property name="toolTip" >
          <string>Move object</string>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
-        <property name="checkable">
+        <property name="checkable" >
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="createPointButton">
-        <property name="minimumSize">
+       <widget class="QToolButton" name="createPointButton" >
+        <property name="minimumSize" >
          <size>
           <width>26</width>
           <height>25</height>
          </size>
         </property>
-        <property name="maximumSize">
+        <property name="maximumSize" >
          <size>
           <width>25</width>
           <height>26</height>
          </size>
         </property>
-        <property name="focusPolicy">
+        <property name="focusPolicy" >
          <enum>Qt::NoFocus</enum>
         </property>
-        <property name="toolTip">
+        <property name="toolTip" >
          <string>Create point</string>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
-        <property name="checkable">
+        <property name="checkable" >
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="createLineButton">
-        <property name="minimumSize">
+       <widget class="QToolButton" name="createLineButton" >
+        <property name="minimumSize" >
          <size>
           <width>26</width>
           <height>25</height>
          </size>
         </property>
-        <property name="focusPolicy">
+        <property name="focusPolicy" >
          <enum>Qt::NoFocus</enum>
         </property>
-        <property name="toolTip">
+        <property name="toolTip" >
          <string>Create line</string>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
-        <property name="checkable">
+        <property name="checkable" >
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="createPolygonButton">
-        <property name="minimumSize">
+       <widget class="QToolButton" name="createPolygonButton" >
+        <property name="minimumSize" >
          <size>
           <width>26</width>
           <height>25</height>
          </size>
         </property>
-        <property name="maximumSize">
+        <property name="maximumSize" >
          <size>
           <width>25</width>
           <height>26</height>
          </size>
         </property>
-        <property name="focusPolicy">
+        <property name="focusPolicy" >
          <enum>Qt::NoFocus</enum>
         </property>
-        <property name="toolTip">
+        <property name="toolTip" >
          <string>Create polygon</string>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
-        <property name="checkable">
+        <property name="checkable" >
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="createRelationButton">
-        <property name="minimumSize">
+       <widget class="QToolButton" name="createRelationButton" >
+        <property name="minimumSize" >
          <size>
           <width>26</width>
           <height>25</height>
          </size>
         </property>
-        <property name="maximumSize">
+        <property name="maximumSize" >
          <size>
           <width>25</width>
           <height>26</height>
          </size>
         </property>
-        <property name="focusPolicy">
+        <property name="focusPolicy" >
          <enum>Qt::NoFocus</enum>
         </property>
-        <property name="toolTip">
+        <property name="toolTip" >
          <string>Create relation</string>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
-        <property name="checkable">
+        <property name="checkable" >
          <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="undoButton">
-        <property name="maximumSize">
+       <widget class="QToolButton" name="undoButton" >
+        <property name="maximumSize" >
          <size>
           <width>25</width>
           <height>26</height>
          </size>
         </property>
-        <property name="toolTip">
+        <property name="toolTip" >
          <string>Undo</string>
         </property>
-        <property name="statusTip">
+        <property name="statusTip" >
          <string>Undo</string>
         </property>
-        <property name="whatsThis">
+        <property name="whatsThis" >
          <string>Undo</string>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="redoButton">
-        <property name="maximumSize">
+       <widget class="QToolButton" name="redoButton" >
+        <property name="maximumSize" >
          <size>
           <width>25</width>
           <height>26</height>
          </size>
         </property>
-        <property name="toolTip">
+        <property name="toolTip" >
          <string>Redo</string>
         </property>
-        <property name="statusTip">
+        <property name="statusTip" >
          <string>Redo</string>
         </property>
-        <property name="whatsThis">
+        <property name="whatsThis" >
          <string>Redo</string>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QToolButton" name="urDetailsButton">
-        <property name="maximumSize">
+       <widget class="QToolButton" name="urDetailsButton" >
+        <property name="maximumSize" >
          <size>
           <width>25</width>
           <height>26</height>
          </size>
         </property>
-        <property name="toolTip">
+        <property name="toolTip" >
          <string>Show/Hide OSM Edit History</string>
         </property>
-        <property name="statusTip">
+        <property name="statusTip" >
          <string>Show/Hide OSM Edit History</string>
         </property>
-        <property name="whatsThis">
+        <property name="whatsThis" >
          <string>Show/Hide OSM Edit History</string>
         </property>
-        <property name="text">
+        <property name="text" >
          <string>...</string>
         </property>
-        <property name="checkable">
+        <property name="checkable" >
          <bool>true</bool>
         </property>
        </widget>
@@ -312,97 +311,100 @@
      </layout>
     </item>
     <item>
-     <widget class="QGroupBox" name="featInfoBox">
-      <property name="enabled">
+     <widget class="QGroupBox" name="featInfoBox" >
+      <property name="enabled" >
        <bool>true</bool>
       </property>
-      <property name="minimumSize">
+      <property name="minimumSize" >
        <size>
         <width>0</width>
         <height>95</height>
        </size>
       </property>
-      <property name="maximumSize">
+      <property name="maximumSize" >
        <size>
         <width>16777215</width>
         <height>95</height>
        </size>
       </property>
-      <property name="title">
+      <property name="title" >
        <string>Feature:</string>
       </property>
-      <layout class="QVBoxLayout">
-       <property name="spacing">
+      <layout class="QVBoxLayout" >
+       <property name="spacing" >
         <number>0</number>
        </property>
-       <property name="leftMargin">
+       <property name="leftMargin" >
         <number>18</number>
        </property>
-       <property name="topMargin">
+       <property name="topMargin" >
         <number>4</number>
        </property>
-       <property name="rightMargin">
+       <property name="rightMargin" >
         <number>3</number>
        </property>
-       <property name="bottomMargin">
+       <property name="bottomMargin" >
         <number>6</number>
        </property>
        <item>
-        <layout class="QGridLayout">
-         <property name="spacing">
+        <layout class="QGridLayout" >
+         <property name="horizontalSpacing" >
           <number>0</number>
          </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
+         <property name="verticalSpacing" >
+          <number>0</number>
+         </property>
+         <item row="0" column="0" >
+          <widget class="QLabel" name="label" >
+           <property name="text" >
             <string>TYPE, ID:</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
+         <item row="1" column="0" >
+          <widget class="QLabel" name="label_4" >
+           <property name="text" >
             <string>CREATED:</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
+         <item row="2" column="0" >
+          <widget class="QLabel" name="label_5" >
+           <property name="text" >
             <string>USER:</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="typeIdLabel">
-           <property name="text">
+         <item row="0" column="1" >
+          <widget class="QLabel" name="typeIdLabel" >
+           <property name="text" >
             <string>unknown</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="createdLabel">
-           <property name="text">
+         <item row="1" column="1" >
+          <widget class="QLabel" name="createdLabel" >
+           <property name="text" >
             <string>unknown</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QLabel" name="userLabel">
-           <property name="text">
+         <item row="2" column="1" >
+          <widget class="QLabel" name="userLabel" >
+           <property name="text" >
             <string>unknown</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
-          <widget class="QToolButton" name="removeButton">
-           <property name="maximumSize">
+         <item row="2" column="2" >
+          <widget class="QToolButton" name="removeButton" >
+           <property name="maximumSize" >
             <size>
              <width>25</width>
              <height>25</height>
             </size>
            </property>
-           <property name="text">
+           <property name="text" >
             <string>...</string>
            </property>
           </widget>
@@ -413,66 +415,66 @@
      </widget>
     </item>
     <item>
-     <widget class="QTabWidget" name="propRelBox">
-      <property name="minimumSize">
+     <widget class="QTabWidget" name="propRelBox" >
+      <property name="minimumSize" >
        <size>
         <width>0</width>
         <height>175</height>
        </size>
       </property>
-      <property name="maximumSize">
+      <property name="maximumSize" >
        <size>
         <width>16777215</width>
         <height>16777215</height>
        </size>
       </property>
-      <property name="tabPosition">
+      <property name="tabPosition" >
        <enum>QTabWidget::North</enum>
       </property>
-      <property name="tabShape">
+      <property name="tabShape" >
        <enum>QTabWidget::Rounded</enum>
       </property>
-      <property name="currentIndex">
-       <number>0</number>
+      <property name="currentIndex" >
+       <number>1</number>
       </property>
-      <widget class="QWidget" name="Properties">
-       <attribute name="title">
+      <widget class="QWidget" name="Properties" >
+       <attribute name="title" >
         <string>Properties</string>
        </attribute>
-       <layout class="QVBoxLayout">
+       <layout class="QVBoxLayout" >
         <item>
-         <widget class="QTableWidget" name="tagsTableWidget">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <widget class="QTableWidget" name="tagTable" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="minimumSize">
+          <property name="minimumSize" >
            <size>
             <width>205</width>
             <height>100</height>
            </size>
           </property>
-          <property name="maximumSize">
+          <property name="maximumSize" >
            <size>
             <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
-          <property name="frameShape">
+          <property name="frameShape" >
            <enum>QFrame::Box</enum>
           </property>
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout">
+         <layout class="QHBoxLayout" >
           <item>
            <spacer>
-            <property name="orientation">
+            <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0">
+            <property name="sizeHint" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -481,8 +483,8 @@
            </spacer>
           </item>
           <item>
-           <widget class="QToolButton" name="deleteTagsButton">
-            <property name="text">
+           <widget class="QToolButton" name="deleteTagsButton" >
+            <property name="text" >
              <string>...</string>
             </property>
            </widget>
@@ -491,139 +493,139 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="Relations">
-       <attribute name="title">
+      <widget class="QWidget" name="Relations" >
+       <attribute name="title" >
         <string>Relations</string>
        </attribute>
-       <layout class="QVBoxLayout">
+       <layout class="QVBoxLayout" >
         <item>
-         <layout class="QHBoxLayout">
+         <layout class="QHBoxLayout" >
           <item>
-           <widget class="QListWidget" name="relListWidget">
-            <property name="enabled">
+           <widget class="QListWidget" name="relListWidget" >
+            <property name="enabled" >
              <bool>false</bool>
             </property>
-            <property name="minimumSize">
+            <property name="minimumSize" >
              <size>
               <width>0</width>
               <height>60</height>
              </size>
             </property>
-            <property name="maximumSize">
+            <property name="maximumSize" >
              <size>
               <width>16777215</width>
               <height>104</height>
              </size>
             </property>
-            <property name="frameShape">
+            <property name="frameShape" >
              <enum>QFrame::Box</enum>
             </property>
            </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout">
+           <layout class="QVBoxLayout" >
             <item>
-             <widget class="QPushButton" name="addRelationButton">
-              <property name="enabled">
+             <widget class="QPushButton" name="addRelationButton" >
+              <property name="enabled" >
                <bool>false</bool>
               </property>
-              <property name="minimumSize">
+              <property name="minimumSize" >
                <size>
                 <width>26</width>
                 <height>25</height>
                </size>
               </property>
-              <property name="maximumSize">
+              <property name="maximumSize" >
                <size>
                 <width>26</width>
                 <height>25</height>
                </size>
               </property>
-              <property name="toolTip">
+              <property name="toolTip" >
                <string>Add new relation</string>
               </property>
-              <property name="statusTip">
+              <property name="statusTip" >
                <string>Add new relation</string>
               </property>
-              <property name="whatsThis">
+              <property name="whatsThis" >
                <string>Add new relation</string>
               </property>
-              <property name="text">
+              <property name="text" >
                <string>A</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="editRelationButton">
-              <property name="enabled">
+             <widget class="QPushButton" name="editRelationButton" >
+              <property name="enabled" >
                <bool>false</bool>
               </property>
-              <property name="minimumSize">
+              <property name="minimumSize" >
                <size>
                 <width>26</width>
                 <height>25</height>
                </size>
               </property>
-              <property name="maximumSize">
+              <property name="maximumSize" >
                <size>
                 <width>26</width>
                 <height>25</height>
                </size>
               </property>
-              <property name="toolTip">
+              <property name="toolTip" >
                <string>Edit selected relation</string>
               </property>
-              <property name="statusTip">
+              <property name="statusTip" >
                <string>Edit selected relation</string>
               </property>
-              <property name="whatsThis">
+              <property name="whatsThis" >
                <string>Edit selected relation</string>
               </property>
-              <property name="text">
+              <property name="text" >
                <string>E</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="removeRelationButton">
-              <property name="enabled">
+             <widget class="QPushButton" name="removeRelationButton" >
+              <property name="enabled" >
                <bool>false</bool>
               </property>
-              <property name="minimumSize">
+              <property name="minimumSize" >
                <size>
                 <width>26</width>
                 <height>25</height>
                </size>
               </property>
-              <property name="maximumSize">
+              <property name="maximumSize" >
                <size>
                 <width>26</width>
                 <height>25</height>
                </size>
               </property>
-              <property name="toolTip">
+              <property name="toolTip" >
                <string>Remove selected relation</string>
               </property>
-              <property name="statusTip">
+              <property name="statusTip" >
                <string>Remove selected relation</string>
               </property>
-              <property name="whatsThis">
+              <property name="whatsThis" >
                <string>Remove selected relation</string>
               </property>
-              <property name="text">
+              <property name="text" >
                <string>R</string>
               </property>
              </widget>
             </item>
             <item>
              <spacer>
-              <property name="orientation">
+              <property name="orientation" >
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeType">
+              <property name="sizeType" >
                <enum>QSizePolicy::Minimum</enum>
               </property>
-              <property name="sizeHint" stdset="0">
+              <property name="sizeHint" >
                <size>
                 <width>26</width>
                 <height>0</height>
@@ -636,85 +638,85 @@
          </layout>
         </item>
         <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
+         <widget class="QLabel" name="label_2" >
+          <property name="text" >
            <string>Relation tags:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QTreeWidget" name="relTagsTreeWidget">
-          <property name="enabled">
+         <widget class="QTreeWidget" name="relTagsTree" >
+          <property name="enabled" >
            <bool>false</bool>
           </property>
-          <property name="minimumSize">
+          <property name="minimumSize" >
            <size>
             <width>0</width>
             <height>115</height>
            </size>
           </property>
-          <property name="maximumSize">
+          <property name="maximumSize" >
            <size>
             <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
-          <property name="cursor" stdset="0">
+          <property name="cursor" stdset="0" >
            <cursorShape>ForbiddenCursor</cursorShape>
           </property>
-          <property name="contextMenuPolicy">
+          <property name="contextMenuPolicy" >
            <enum>Qt::NoContextMenu</enum>
           </property>
-          <property name="frameShape">
+          <property name="frameShape" >
            <enum>QFrame::Box</enum>
           </property>
-          <property name="frameShadow">
+          <property name="frameShadow" >
            <enum>QFrame::Sunken</enum>
           </property>
-          <property name="indentation">
+          <property name="indentation" >
            <number>0</number>
           </property>
-          <property name="rootIsDecorated">
+          <property name="rootIsDecorated" >
            <bool>false</bool>
           </property>
-          <property name="itemsExpandable">
+          <property name="itemsExpandable" >
            <bool>false</bool>
           </property>
-          <property name="columnCount">
+          <property name="columnCount" >
            <number>1</number>
           </property>
           <column>
-           <property name="text">
+           <property name="text" >
             <string>1</string>
            </property>
           </column>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
+         <widget class="QLabel" name="label_3" >
+          <property name="text" >
            <string>Relation members:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="relMembersList">
-          <property name="enabled">
+         <widget class="QListWidget" name="relMembersList" >
+          <property name="enabled" >
            <bool>false</bool>
           </property>
-          <property name="minimumSize">
+          <property name="minimumSize" >
            <size>
             <width>0</width>
             <height>115</height>
            </size>
           </property>
-          <property name="maximumSize">
+          <property name="maximumSize" >
            <size>
             <width>16777215</width>
             <height>16777215</height>
            </size>
           </property>
-          <property name="frameShape">
+          <property name="frameShape" >
            <enum>QFrame::Box</enum>
           </property>
          </widget>

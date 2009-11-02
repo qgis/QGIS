@@ -275,7 +275,12 @@ void QgsLabelDialog::changeFont( void )
 
   qreal fontSize = mFont.pointSizeF();
   bool resultFlag;
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__)
+  // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug)
+  mFont = QFontDialog::getFont( &resultFlag, mFont, this, QString(), QFontDialog::DontUseNativeDialog );
+#else
   mFont = QFontDialog::getFont( &resultFlag, mFont, this );
+#endif
   if ( resultFlag )
   {
     if ( mFont.pointSizeF() != fontSize )

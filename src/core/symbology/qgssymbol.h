@@ -108,7 +108,9 @@ class CORE_EXPORT QgsSymbol
     /** Get QImage representation of point symbol with current settings
     */
     virtual QImage getCachedPointSymbolAsImage( double widthScale = 1.0,
-        bool selected = false, QColor selectionColor = Qt::yellow );
+                                                bool selected = false,
+                                                QColor selectionColor = Qt::yellow,
+                                                double opacity = 1.0);
 
     /** Get QImage representation of point symbol with current settings
      * and scaled (can be slow when scale != 1.0)
@@ -118,7 +120,8 @@ class CORE_EXPORT QgsSymbol
                                           QColor selectionColor = Qt::yellow,
                                           double scale = 1.0,
                                           double rotation = 0.0,
-                                          double rasterScaleFactor = 1.0 );
+                                          double rasterScaleFactor = 1.0,
+                                          double opacity = 1.0);
 
     /**Writes the contents of the symbol to a configuration file
       @ return true in case of success*/
@@ -193,11 +196,14 @@ class CORE_EXPORT QgsSymbol
     QImage mPointSymbolImage2;
     QImage mPointSymbolImageSelected2;
 
+    /* The alpha channel of the symbol */
+    double mOpacity;
+
     /* Create point symbol mPointSymbolImage/mPointSymbolImage cache */
     void cache( QColor selectionColor );
 
     /* Create point symbol mPointSymbolImage2 cache */
-    void cache2( double widthScale, QColor selectionColor );
+    void cache2( double widthScale, QColor selectionColor, double opacity);
 
     /* mPointSymbolImage/mPointSymbolImage cache updated */
     bool mCacheUpToDate;

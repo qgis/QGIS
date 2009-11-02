@@ -46,6 +46,9 @@ class QgsUniqueValueDialog: public QDialog, private Ui::QgsUniqueValueDialogBase
     QMap<QString, QgsSymbol*> mValues;
     QgsSingleSymbolDialog sydialog;
 
+    // Reimplements dialog keyPress event so we can ignore it
+    void keyPressEvent( QKeyEvent * event );
+
   protected slots:
     /**Set new attribut for classification*/
     void changeClassificationAttribute();

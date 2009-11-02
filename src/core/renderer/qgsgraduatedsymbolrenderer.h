@@ -71,7 +71,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
      \param f a pointer to a feature to render
      \param t the transform object containing the information how to transform the map coordinates to screen coordinates
      \note added in 1.2 */
-    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected );
+    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected, double opacity = 1.0 );
 
     /**Sets the classicifation field by index
     \param field the number of the field to classify*/

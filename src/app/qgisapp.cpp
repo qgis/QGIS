@@ -3041,6 +3041,7 @@ void QgisApp::fileExit()
 
   if ( saveDirty() )
   {
+    mMapCanvas->freeze( true );
     removeAllLayers();
     qApp->exit( 0 );
   }
@@ -3066,6 +3067,9 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   {
     if ( !saveDirty() )
     {
+      mMapCanvas->freeze( true );
+      removeAllLayers();
+      mMapCanvas->freeze( false );
       return;
     }
   }
@@ -3073,7 +3077,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   //QgsDebugMsg("erasing project");
 
   mMapCanvas->freeze( true );
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  removeAllLayers();
   mMapCanvas->clear();
 
   delete mComposer;
@@ -4255,6 +4259,7 @@ void QgisApp::mergeSelectedFeatures()
   QgsMergeAttributesDialog d( featureList, vl, mapCanvas() );
   if ( d.exec() == QDialog::Rejected )
   {
+    delete unionGeom;
     return;
   }
 
@@ -4302,7 +4307,7 @@ void QgisApp::mergeSelectedFeatures()
 
   vl->addFeature( newFeature, false );
 
-  vl->endEditCommand();;
+  vl->endEditCommand();
 
   if ( mapCanvas() )
   {
@@ -4667,10 +4672,6 @@ void QgisApp::isInOverview()
 void QgisApp::removeLayer()
 {
   QgsLegendLayerFile* currentLayerFile = mMapLegend->currentLayerFile();
-  if ( currentLayerFile && currentLayerFile->isEditing() )
-  {
-    toggleEditing( dynamic_cast<QgsVectorLayer *>( currentLayerFile->layer() ) );
-  }
   mMapLegend->legendLayerRemove();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
@@ -4679,7 +4680,22 @@ void QgisApp::removeLayer()
 
 void QgisApp::removeAllLayers()
 {
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  //iterate through all the layers in order to ask if uncommited changes should be saved
+  if ( mMapLegend )
+  {
+    QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+    QMap<QString, QgsMapLayer*>::iterator layer_it = layers.begin();
+    for ( ; layer_it != layers.end(); ++layer_it )
+    {
+      mMapLegend->removeLayer( layer_it.value(), false );
+    }
+    mMapLegend->removeAll();
+  }
+  else //no legend? Remove all the layers from the registry directly in this case
+  {
+    QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  }
+
   mMapCanvas->refresh();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );

@@ -5869,7 +5869,6 @@
 		723FD05E0FBCB85D00EFA55D /* qgspalgeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspalgeometry.h; path = ../../src/core/qgspalgeometry.h; sourceTree = SOURCE_ROOT; };
 		723FD0660FBCB94600EFA55D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/scripts/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "db.connect-login.pg.py"; path = "../../src/plugins/grass/scripts/db.connect-login.pg.py"; sourceTree = SOURCE_ROOT; };
-		7249E1C2100E0E8700104B74 /* qgis_icon_new.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_icon_new.svg; path = ../../images/icons/qgis_icon_new.svg; sourceTree = SOURCE_ROOT; };
 		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/classic/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/gis/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
@@ -9796,7 +9795,6 @@
 				7209EE1B0F39E5D9003DC336 /* qgis-icon.png */,
 				7209EE1C0F39E5D9003DC336 /* qgis-mime-icon.png */,
 				7209EE1D0F39E5D9003DC336 /* qgis_icon.svg */,
-				7249E1C2100E0E8700104B74 /* qgis_icon_new.svg */,
 			);
 			name = icons;
 			path = ../../images/icons;
@@ -13058,7 +13056,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# generate and run configure.py\n\nif [ ! -f \"$TARGET_TEMP_DIR/python/python/configure.py\" ] || [ ../../python/configure.py.in -nt \"$TARGET_TEMP_DIR/python/python/configure.py\" ] ; then\n\nif [ \"$ARCHS\" = \"ppc i386\" ] || [ \"$ARCHS\" = \"i386 ppc\" ] ; then\n\tARCHS_P=\"ppc;i386\"\nelse\n\tARCHS_P=\"$ARCHS\"\nfi\n\nif [ \"$GDAL_FORM\" = \"fw\" ] ; then\n\tGDALPATH=\"$GDAL_PREFIX/unix/lib\"\nelse\n\tGDALPATH=\"$GDAL_PREFIX/lib\"\nfi\n\nif [ \"$GEOS_FORM\" = \"fw\" ] ; then\n\tGEOSPATH=\"$GEOS_PREFIX/unix/lib\"\nelse\n\tGEOSPATH=\"$GEOS_PREFIX/lib\"\nfi\n\nsed -e \"s,@CMAKE_SOURCE_DIR@,$PROJECT_DIR/../..,\" \\\n\t-e \"s,@CMAKE_BINARY_DIR@,$TARGET_TEMP_DIR/python,\" \\\n\t-e \"s,@GDAL_INCLUDE_DIR@,$GDAL_INC,\" \\\n\t-e \"s,@GEOS_INCLUDE_DIR@,$GEOS_INC,\" \\\n\t-e \"s,@GEOS_LIB_NAME@,geos,\" \\\n\t-e \"s,@GEOS_LIB_PATH@,$GEOSPATH,\" \\\n\t-e \"s,@GDAL_LIB_NAME@,gdal,\" \\\n\t-e \"s,@GDAL_LIB_PATH@,$GDALPATH,\" \\\n\t-e \"s,@CMAKE_OSX_ARCHITECTURES@,$ARCHS_P,\" \\\n\t-e \"s,@CMAKE_OSX_SYSROOT@,$SDKROOT,\" \\\n\t../../python/configure.py.in > \"$TARGET_TEMP_DIR/python/python/configure.py\"\n\nfi\n\ncd \"$TARGET_TEMP_DIR/python/python\"\nif [ ! -f core/Makefile ] || [ ! -f gui/Makefile ] || [ configure.py -nt core/Makefile ] || [ configure.py -nt gui/Makefile ] ; then\n\t$PYTHON configure.py .\nfi\n\nif [ -f core/Makefile ] && [ -f gui/Makefile ] ; then\n\texit 0\nelse\n\texit 1\nfi\n";
+			shellScript = "# generate and run configure.py\n\nif [ ! -f \"$TARGET_TEMP_DIR/python/python/configure.py\" ] || [ ../../python/configure.py.in -nt \"$TARGET_TEMP_DIR/python/python/configure.py\" ] ; then\n\nif [ \"$ARCHS\" = \"ppc i386\" ] || [ \"$ARCHS\" = \"i386 ppc\" ] ; then\n\tARCHS_P=\"ppc;i386\"\nelse\n\tARCHS_P=\"$ARCHS\"\nfi\n\nif [ \"$GDAL_FORM\" = \"fw\" ] ; then\n\tGDALPATH=\"$GDAL_PREFIX/unix/lib\"\nelse\n\tGDALPATH=\"$GDAL_PREFIX/lib\"\nfi\n\nif [ \"$GEOS_FORM\" = \"fw\" ] ; then\n\tGEOSPATH=\"$GEOS_PREFIX/unix/lib\"\nelse\n\tGEOSPATH=\"$GEOS_PREFIX/lib\"\nfi\n\nsed -e \"s,@CMAKE_SOURCE_DIR@,$PROJECT_DIR/../..,\" \\\n\t-e \"s,@CMAKE_BINARY_DIR@,$TARGET_TEMP_DIR/python,\" \\\n\t-e \"s,@GDAL_INCLUDE_DIR@,$GDAL_INC,\" \\\n\t-e \"s,@GEOS_INCLUDE_DIR@,$GEOS_INC,\" \\\n\t-e \"s,@GEOS_LIB_NAME@,geos,\" \\\n\t-e \"s,@GEOS_LIB_PATH@,$GEOSPATH,\" \\\n\t-e \"s,@GDAL_LIB_NAME@,gdal,\" \\\n\t-e \"s,@GDAL_LIB_PATH@,$GDALPATH,\" \\\n\t-e \"s,@CMAKE_OSX_ARCHITECTURES@,$ARCHS_P,\" \\\n\t-e \"s,@CMAKE_OSX_SYSROOT@,$SDKROOT,\" \\\n\t-e \"s,@CMAKE_MODULE_LINKER_FLAGS@,,\" \\\n\t../../python/configure.py.in > \"$TARGET_TEMP_DIR/python/python/configure.py\"\n\nfi\n\ncd \"$TARGET_TEMP_DIR/python/python\"\nif [ ! -f core/Makefile ] || [ ! -f gui/Makefile ] || [ configure.py -nt core/Makefile ] || [ configure.py -nt gui/Makefile ] ; then\n\t$PYTHON configure.py .\nfi\n\nif [ -f core/Makefile ] && [ -f gui/Makefile ] ; then\n\texit 0\nelse\n\texit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		7256F23F0F41370A0022BE1F /* setup */ = {

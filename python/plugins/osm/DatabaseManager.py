@@ -43,7 +43,6 @@ class DatabaseManager:
 
         self.plugin=plugin
         self.canvas=plugin.canvas
-        self.pluginName="QGIS OSM v0.4"
 
         self.dbConns={}    # map dbFileName->sqlite3ConnectionObject
         self.pointLayers={}
@@ -420,7 +419,6 @@ class DatabaseManager:
             c=self.getConnection().cursor()
             c.execute("insert into node (id,lat,lon,usage,status) values (:nodeId,:lat,:lon,0,'A')"
                     ,{"nodeId":str(nodeId),"lat":str(mapPoint.y()),"lon":str(mapPoint.x())})
-            self.insertTag(nodeId,"Point","created_by",self.pluginName,False)
             c.close()
 
             if doCommit:
@@ -469,9 +467,6 @@ class DatabaseManager:
             self.changeLineStatus(snapFeat.id(),"N","U")
         elif snapFeatType=='Polygon':
             self.changePolygonStatus(snapFeat.id(),"N","U")
-
-        # insert created_by tag of the new point
-        self.insertTag(nodeId,"Point","created_by",self.pluginName,False)
 
         # finishing
         c.close()
@@ -541,7 +536,6 @@ class DatabaseManager:
                 c.execute("insert into node (id,lat,lon,usage,status) values (:nodeId,:lat,:lon,1,'A')"
                         ,{ "nodeId":str(nodeId),"lat":str(lat),"lon":str(lon) })
 
-                self.insertTag(nodeId,"Point","created_by",self.pluginName, False)
                 affected.add((nodeId,'Point'))
 
             # insert record into table of way members
@@ -555,8 +549,6 @@ class DatabaseManager:
         # create half-empty database record for new line
         c.execute("insert into way (id,wkb,membercnt,closed,min_lat,min_lon,max_lat,max_lon,status) values (?,?,?,0,?,?,?,?,'A')"
                 ,(str(lineId),sqlite3.Binary(""),str(cnt),str(minLat),str(minLon),str(maxLat),str(maxLon)))
-
-        self.insertTag(lineId,"Line","created_by",self.pluginName, False)
 
         # finishing...
         c.close()
@@ -623,7 +615,6 @@ class DatabaseManager:
                 c.execute("insert into node (id,lat,lon,usage,status) values (:nodeId,:lat,:lon,1,'A')"
                         ,{ "nodeId":str(nodeId),"lat":str(lat),"lon":str(lon) })
 
-                self.insertTag(nodeId,"Point","created_by",self.pluginName, False)
                 affected.add((nodeId,'Point'))
 
             # insert record into table of way members
@@ -637,8 +628,6 @@ class DatabaseManager:
         # create half-empty database record for new polygon
         c.execute("insert into way (id,wkb,membercnt,closed,min_lat,min_lon,max_lat,max_lon,status) values (?,?,?,1,?,?,?,?,'A')"
                 ,(str(polygonId),sqlite3.Binary(""),str(cnt),str(minLat),str(minLon),str(maxLat),str(maxLon)))
-
-        self.insertTag(polygonId,"Polygon","created_by",self.pluginName, False)
 
         # finish
         c.close()

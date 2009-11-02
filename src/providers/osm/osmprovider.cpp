@@ -56,7 +56,7 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
   mDatabase = NULL;
   mInitObserver = NULL;
   mFeatureType = PointType; // default
-  mTagsRetrieval = false;
+
   // set default boundaries
   xMin = -DEFAULT_EXTENT;
   xMax = DEFAULT_EXTENT;
@@ -101,10 +101,6 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
       ulong observerAddr = propValue.toULong();
       mInitObserver = ( QObject* ) observerAddr;
       mInitObserver->setProperty( "osm_state", QVariant( 1 ) );
-    }
-    if ( propName == "tags" )
-    {
-      mTagsRetrieval = ( propValue == "yes" );
     }
     if ( propName == "tag" )
     {
@@ -265,7 +261,7 @@ bool QgsOSMDataProvider::isDatabaseCompatibleWithInput( QString mFileName )
 {
   QFile osmFile( mFileName );
   QFileInfo osmFileInfo( osmFile );
-  mOsmFileLastModif = osmFileInfo.lastModified();
+  QDateTime mOsmFileLastModif = osmFileInfo.lastModified();
 
   QString cmd = QString( "SELECT val FROM meta WHERE key='osm-file-last-modified';" );
   QByteArray cmd_bytes = cmd.toAscii();
@@ -522,7 +518,7 @@ bool QgsOSMDataProvider::fetchNode( QgsFeature& feature, sqlite3_stmt* stmt, boo
     geo[geo[0] == QgsApplication::NDR ? 1 : 4] = QGis::WKBPoint;
     std::memcpy( geo + 5, &selLon, sizeof( double ) );
     std::memcpy( geo + 13, &selLat, sizeof( double ) );
-    feature.setGeometryAndOwnership(( unsigned char * )geo, sizeof( wkbPoint ) );
+    feature.setGeometryAndOwnership(( unsigned char * )geo, 24 );    // 24 is size of wkb point structure!
   }
 
   // fetch attributes
@@ -536,10 +532,7 @@ bool QgsOSMDataProvider::fetchNode( QgsFeature& feature, sqlite3_stmt* stmt, boo
       case UserAttr:
         feature.addAttribute( UserAttr, QString::fromUtf8( selUser ) ); break;
       case TagAttr:
-        if ( mTagsRetrieval )
-          feature.addAttribute( TagAttr, tagsForObject( "node", selId ) );
-        else
-          feature.addAttribute( TagAttr, QString() );
+        feature.addAttribute(TagAttr, tagsForObject("node",selId));
         break;
 
       default: // suppose it's a custom tag
@@ -652,10 +645,7 @@ bool QgsOSMDataProvider::fetchWay( QgsFeature& feature, sqlite3_stmt* stmt, bool
         feature.addAttribute( UserAttr, QString::fromUtf8( selUser ) );
         break;
       case TagAttr:
-        if ( mTagsRetrieval )
-          feature.addAttribute( TagAttr, tagsForObject( "way", selId ) );
-        else
-          feature.addAttribute( TagAttr, QString() );
+        feature.addAttribute(TagAttr, tagsForObject("way",selId));
         break;
       default: // suppose it's a custom tag
         if ( *iter >= CustomTagAttr && *iter < CustomTagAttr + mCustomTagsList.count() )
@@ -669,32 +659,6 @@ bool QgsOSMDataProvider::fetchWay( QgsFeature& feature, sqlite3_stmt* stmt, bool
   return true;
 }
 
-
-int QgsOSMDataProvider::relationMemberCount( int relId )
-{
-  const char *zSql = "select count(*) from relation_member rm, way_member wm, node n where rm.relation_id=? and rm.member_type='way' and rm.member_id=wm.way_id and wm.node_id=n.id and wm.u=1 and n.u=1 and rm.u=1;";
-  sqlite3_stmt *pStmt;
-  int rc = sqlite3_prepare_v2( mDatabase, zSql, -1, &pStmt, 0 );
-
-  if ( rc != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Failed (1)." ) );
-    return 0;
-  }
-
-  sqlite3_bind_int( pStmt, 1, relId );
-
-  rc = sqlite3_step( pStmt );
-  if ( rc != SQLITE_ROW )
-  {
-    QgsDebugMsg( QString( "Failed (2)." ) );
-    return 0;
-  }
-
-  int memberCnt = sqlite3_column_int( pStmt, 0 );
-  sqlite3_finalize( pStmt );
-  return memberCnt;
-}
 
 
 QString QgsOSMDataProvider::tagForObject( const char* type, int id, QString tagKey )
@@ -940,54 +904,6 @@ bool QgsOSMDataProvider::changeAttributeValues( const QgsChangedAttributesMap & 
     QgsVectorLayer* layer = ( QgsVectorLayer* ) x.value( 0 ).toUInt();
     QgsDebugMsg( "SETTING CUSTOM RENDERER!" );
     layer->setRenderer( new OsmRenderer( layer->geometryType(), mStyleFileName ) );
-  }
-  return true;
-}
-
-
-bool QgsOSMDataProvider::changeGeometryValue( const int & featid, QgsGeometry & geom )
-{
-  if ( mFeatureType == PointType )
-  {
-    QgsDebugMsg( QString( "Changing geometry of point with id=%1." ).arg( featid ) );
-    QgsPoint point = geom.asPoint();
-
-    const char *zSql = "UPDATE node SET lat=?, lon=?, status='U' WHERE id=? AND u=1";
-    sqlite3_stmt *pStmt;
-    int rc;
-
-    rc = sqlite3_prepare_v2( mDatabase, zSql, -1, &pStmt, 0 );
-    if ( rc != SQLITE_OK )
-      return rc;
-
-    sqlite3_bind_double( pStmt, 1, point.y() );
-    sqlite3_bind_double( pStmt, 2, point.x() );
-    sqlite3_bind_int( pStmt, 3, featid );
-
-    rc = sqlite3_step( pStmt );
-    rc = sqlite3_finalize( pStmt );
-  }
-  else if ( mFeatureType == LineType )
-  {
-    QgsDebugMsg( QString( "Changing geometry of way with id=%1." ).arg( featid ) );
-    QgsPolyline way = geom.asPolyline();
-    unsigned char *wkb = geom.asWkb();
-
-    const char *zSql = "UPDATE way SET wkb=?, membercnt=?, status='U' WHERE id=? AND u=1";
-    sqlite3_stmt *pStmt;
-    int rc;
-
-    rc = sqlite3_prepare_v2( mDatabase, zSql, -1, &pStmt, 0 );
-    if ( rc != SQLITE_OK )
-      return rc;
-
-    sqlite3_bind_blob( pStmt, 1, wkb, 9 + 16 * way.size(), SQLITE_STATIC );
-    sqlite3_bind_int( pStmt, 2, way.size() );
-    sqlite3_bind_int( pStmt, 3, featid );
-
-    rc = sqlite3_step( pStmt );
-    rc = sqlite3_finalize( pStmt );
-
   }
   return true;
 }

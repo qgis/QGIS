@@ -113,7 +113,7 @@ QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
   return QgsMarkerCatalogue::mMarkerCatalogue;
 }
 
-QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen, QBrush brush, bool qtBug )
+QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen, QBrush brush, double opacity )
 {
 
   //
@@ -149,6 +149,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
   QPainter myPainter;
   myPainter.begin( &myImage );
   myPainter.setRenderHint( QPainter::Antialiasing );
+  myPainter.setOpacity( opacity );
 
   //
   // Now pass the paintdevice along to have the marker rendered on it
@@ -182,7 +183,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
 
   if ( fullName.startsWith( "hard:" ) )
   {
-    hardMarker( &myPainter, imageSize, fullName.mid( 5 ), size, pen, brush, qtBug );
+    hardMarker( &myPainter, imageSize, fullName.mid( 5 ), size, pen, brush);
 #ifdef IMAGEDEBUG
     QgsDebugMsg( "*** Saving hard marker to hardMarker.png ***" );
 #ifdef QGISDEBUG
@@ -195,7 +196,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
   return QImage(); // empty
 }
 
-QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen pen, QBrush brush, bool qtBug )
+QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen pen, QBrush brush, double opacity)
 {
 
   //
@@ -218,6 +219,7 @@ QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen 
 
   QPainter myPainter( &myPicture );
   myPainter.setRenderHint( QPainter::Antialiasing );
+  myPainter.setOpacity( opacity );
 
   //
   // Now pass the paintdevice along to have the marker rndered on it
@@ -233,7 +235,7 @@ QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen 
 
   if ( fullName.left( 5 ) == "hard:" )
   {
-    hardMarker( &myPainter, ( int ) size, fullName.mid( 5 ), size, pen, brush, qtBug );
+    hardMarker( &myPainter, ( int ) size, fullName.mid( 5 ), size, pen, brush );
     return myPicture;
   }
 
@@ -285,7 +287,7 @@ bool QgsMarkerCatalogue::svgMarker( QPainter * thepPainter, QString fileName, do
   return true;
 }
 
-void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, int imageSize, QString name, double s, QPen pen, QBrush brush, bool qtBug )
+void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, int imageSize, QString name, double s, QPen pen, QBrush brush )
 {
   // Size of polygon symbols is calculated so that the boundingbox is circumscribed
   // around a circle with diameter mPointSize

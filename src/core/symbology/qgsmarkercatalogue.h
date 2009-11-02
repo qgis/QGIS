@@ -43,12 +43,12 @@ class CORE_EXPORT QgsMarkerCatalogue : public QObject
     /** Returns pixmap of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
      */
-    QImage imageMarker( QString fullName, double size, QPen pen, QBrush brush, bool qtBug = true );
+    QImage imageMarker( QString fullName, double size, QPen pen, QBrush brush, double opacity = 1.0);
 
     /** Returns qpicture of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
      */
-    QPicture pictureMarker( QString fullName, double size, QPen pen, QBrush brush, bool qtBug = true );
+    QPicture pictureMarker( QString fullName, double size, QPen pen, QBrush brush, double opacity = 1.0 );
 
     /** Returns a pixmap given a file name of a svg marker
      *  NOTE: this method needs to be public static for QgsMarkerDialog::visualizeMarkers */
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsMarkerCatalogue : public QObject
     QStringList mList;
 
     /** Hard coded */
-    void hardMarker( QPainter * thepPainter, int imageSize, QString name, double size, QPen pen, QBrush brush, bool qtBug = true );
+    void hardMarker( QPainter * thepPainter, int imageSize, QString name, double size, QPen pen, QBrush brush );
 
     bool fontMarker( QPainter * thepPainter, QString name, double size );
 

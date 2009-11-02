@@ -84,6 +84,7 @@ authorRepos  = [("Carson Farmer's Repository", "http://www.ftools.ca/cfarmerQgis
                 ("Martin Dobias' Sandbox",     "http://mapserver.sk/~wonder/qgis/plugins-sandbox.xml", ""),
                 ("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com", ""),
                 ("Barry Rowlingson's Repository", "http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml", ""),
+                ("Volkan Kepoglu's Repository","http://ggit.metu.edu.tr/~volkan/plugins.xml", ""),
                 ("GIS-Lab Repository",         "http://gis-lab.info/programs/qgis/qgis-repo.xml", "")]
 
 
@@ -414,9 +415,11 @@ class Repositories(QObject):
       pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
       if pluginNodes.size():
         for i in range(pluginNodes.size()):
-          fileName = QFileInfo(pluginNodes.item(i).firstChildElement("download_url").text().trimmed()).fileName()
+          fileName = pluginNodes.item(i).firstChildElement("file_name").text().simplified()
+          if not fileName:
+              fileName = QFileInfo(pluginNodes.item(i).firstChildElement("download_url").text().trimmed().split("?")[0]).fileName()
           name = fileName.section(".", 0, 0)
-          name = str(name)
+          name = unicode(name)
           experimental = False
           if pluginNodes.item(i).firstChildElement("experimental").text().simplified().toUpper() in ["TRUE","YES"]:
             experimental = True

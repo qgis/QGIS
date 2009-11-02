@@ -29,7 +29,9 @@ class QgsRenderer
       @param selected the feature is to be shown selected
       
       added in 1.2 */
-    virtual void renderFeature(QgsRenderContext &renderContext, QgsFeature& f,QImage* pic, bool selected)=0;
+    void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected );
+
+    virtual void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity ) = 0;
 
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read 

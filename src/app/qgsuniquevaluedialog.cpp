@@ -27,6 +27,7 @@
 #include "qgslogger.h"
 
 #include <QMessageBox>
+#include <QKeyEvent>
 
 QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVectorLayer( vl ), sydialog( vl, true )
 {
@@ -456,5 +457,14 @@ void QgsUniqueValueDialog::updateEntryIcon( QgsSymbol * thepSymbol,
     default: //unknown
       QgsDebugMsg( "Vector layer type unknown" );
       //do nothing
+  }
+}
+
+void QgsUniqueValueDialog::keyPressEvent( QKeyEvent * e )
+{
+  // Ignore the ESC key to avoid close the dialog without the properties window
+  if ( e->key() == Qt::Key_Escape )
+  {
+    e->ignore();
   }
 }

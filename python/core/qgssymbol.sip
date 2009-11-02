@@ -77,7 +77,8 @@ class QgsSymbol
                                           QColor selectionColor = Qt::yellow,
                                           double scale = 1.0,
                                           double rotation = 0.0,
-                                          double rasterScaleFactor = 1.0 );
+                                          double rasterScaleFactor = 1.0,
+                                          double opacity = 1.0 );
 
     /**Writes the contents of the symbol to a configuration file
      @ return true in case of success*/

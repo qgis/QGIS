@@ -76,12 +76,12 @@ QgsLegend::QgsLegend( QWidget * parent, const char *name )
            this, SLOT( writeProject( QDomDocument & ) ) );
 
   // Initialise the line indicator widget.
-  mInsertionLine = new QWidget(viewport());
+  mInsertionLine = new QWidget( viewport() );
   hideLine();
-  mInsertionLine->setAutoFillBackground(true);
+  mInsertionLine->setAutoFillBackground( true );
   QPalette pal = mInsertionLine->palette();
-  pal.setColor(mInsertionLine->backgroundRole(), Qt::blue);
-  mInsertionLine->setPalette(pal);
+  pal.setColor( mInsertionLine->backgroundRole(), Qt::blue );
+  mInsertionLine->setPalette( pal );
 
   setSortingEnabled( false );
   setDragEnabled( false );
@@ -129,6 +129,7 @@ void QgsLegend::removeAll()
   mPixmapHeightValues.clear();
   updateMapCanvasLayerSet();
   setIconSize( mMinimumIconSize );
+  mItemBeingMoved = 0;
 }
 
 void QgsLegend::selectAll( bool select )
@@ -137,6 +138,10 @@ void QgsLegend::selectAll( bool select )
   {
     return;
   }
+
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  mMapCanvas->setRenderFlag( false );
 
   QTreeWidgetItem* theItem = firstItem();
 
@@ -150,6 +155,8 @@ void QgsLegend::selectAll( bool select )
     }
     theItem = nextItem( theItem );
   }
+  // Turn on rendering (if it was on previously)
+  mMapCanvas->setRenderFlag( renderFlagState );
 }
 
 void QgsLegend::removeLayer( QString layer_key )
@@ -250,7 +257,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
 
     hideLine();
     updateLineWidget();
-    scrollToItem (item );
+    scrollToItem( item );
 
     QgsLegendItem* origin = dynamic_cast<QgsLegendItem*>( mItemBeingMoved );
     QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>( item );
@@ -263,14 +270,14 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
       {
         if ( yCoordAboveCenter( dest, e->y() ) ) //over center of item
         {
-          int line_y    = visualItemRect(item).top() + 1;
-          int line_left = visualItemRect(item).left();
+          int line_y    = visualItemRect( item ).top() + 1;
+          int line_left = visualItemRect( item ).left();
 
           if ( action == QgsLegendItem::REORDER ||  action == QgsLegendItem::INSERT )
           {
             QgsDebugMsg( "mouseMoveEvent::INSERT or REORDER" );
             mDropAction = BEFORE;
-            showLine( line_y, line_left);
+            showLine( line_y, line_left );
             setCursor( QCursor( Qt::SizeVerCursor ) );
           }
           else //no action
@@ -282,21 +289,21 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
         }
         else // below center of item
         {
-          int line_y    = visualItemRect(item).bottom() - 2;
-          int line_left = visualItemRect(item).left();
+          int line_y    = visualItemRect( item ).bottom() - 2;
+          int line_left = visualItemRect( item ).left();
 
           if ( action == QgsLegendItem::REORDER )
           {
             QgsDebugMsg( "mouseMoveEvent::REORDER bottom half" );
             mDropAction = AFTER;
-            showLine( line_y, line_left);
+            showLine( line_y, line_left );
             setCursor( QCursor( Qt::SizeVerCursor ) );
           }
           else if ( action == QgsLegendItem::INSERT )
           {
             QgsDebugMsg( "mouseMoveEvent::INSERT" );
             mDropAction = INTO_GROUP;
-            showLine( line_y, line_left);
+            showLine( line_y, line_left );
             setCursor( QCursor( Qt::SizeVerCursor ) );
           }
           else//no action
@@ -312,7 +319,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
         setCursor( QCursor( Qt::ForbiddenCursor ) );
       }
     }
-    else if (!item && e->pos().y() >= 0 && e->pos().y() < viewport()->height() &&  e->pos().x() >= 0 && e->pos().x() < viewport()->width() )
+    else if ( !item && e->pos().y() >= 0 && e->pos().y() < viewport()->height() &&  e->pos().x() >= 0 && e->pos().x() < viewport()->width() )
     {
       // Outside the listed items, but check if we are in the empty area
       // of the viewport, so we can drop after the last top level item.
@@ -324,7 +331,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
       {
         QgsDebugMsg( "mouseMoveEvent::INSERT or REORDER" );
         mDropAction = AFTER;
-        showLine(visualItemRect( lastVisibleItem() ).bottom() + 1, 0);      
+        showLine( visualItemRect( lastVisibleItem() ).bottom() + 1, 0 );
         setCursor( QCursor( Qt::SizeVerCursor ) );
       }
       else //no action
@@ -332,7 +339,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
         QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
         mDropAction = NO_ACTION;
         setCursor( QCursor( Qt::ForbiddenCursor ) );
-      } 
+      }
     }
 
     else
@@ -364,7 +371,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
   QgsLegendItem* dest = dynamic_cast<QgsLegendItem*>( destItem );
 
   // no change?
-  if ( !dest || !origin || (dest == origin) )
+  if ( !dest || !origin || ( dest == origin ) )
   {
     checkLayerOrderUpdate();
     return;
@@ -432,7 +439,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
   {
     // Do the actual move here.
     QgsDebugMsg( "Other type of drag'n'drop happened!" );
-    if ( mDropAction == AFTER) //over center of item
+    if ( mDropAction == AFTER ) //over center of item
     {
       QgsDebugMsg( "Drop AFTER" );
       if ( dest->nextSibling() != origin )
@@ -696,9 +703,7 @@ void QgsLegend::legendLayerRemove()
       //remove the layer
       if ( *it )
       {
-        //the map layer registry emits a signal and this will remove the legend layer file
-        //from the legend and from memory by calling QgsLegend::removeLayer(QString layer key)
-        QgsMapLayerRegistry::instance()->removeMapLayer(( *it )->getLayerID() );
+        removeLayer( *it, true );
       }
     }
 
@@ -727,6 +732,59 @@ void QgsLegend::legendLayerRemove()
     }
   }
   return;
+}
+
+bool QgsLegend::removeLayer( QgsMapLayer* ml, bool askCancelOnEditable )
+{
+  if ( !ml )
+  {
+    return false;
+  }
+
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
+  if ( vl )
+  {
+    //is layer editable and changed?
+    if ( vl->isEditable() && vl->isModified() )
+    {
+      QMessageBox::StandardButton commit;
+      if ( askCancelOnEditable )
+      {
+        commit = QMessageBox::information( this,
+                                           tr( "Stop editing" ),
+                                           tr( "Do you want to save the changes to layer %1?" ).arg( vl->name() ),
+                                           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
+        if ( commit == QMessageBox::Cancel )
+        {
+          return false;
+        }
+      }
+      else
+      {
+        commit = QMessageBox::information( this,
+                                           tr( "Stop editing" ),
+                                           tr( "Do you want to save the changes to layer %1?" ).arg( vl->name() ),
+                                           QMessageBox::Save | QMessageBox::Discard );
+      }
+
+      if ( commit == QMessageBox::Save )
+      {
+        if ( !vl->commitChanges() )
+        {
+          return false;
+        }
+      }
+      else if ( commit == QMessageBox::Discard )
+      {
+        if ( !vl->rollBack() )
+        {
+          return false;
+        }
+      }
+    }
+  }
+  QgsMapLayerRegistry::instance()->removeMapLayer( ml->getLayerID() );
+  return true;
 }
 
 
@@ -1986,12 +2044,12 @@ bool QgsLegend::checkLayerOrderUpdate()
 
 void QgsLegend::hideLine()
 {
-  mInsertionLine->setGeometry(0, -100, 1, 1);
+  mInsertionLine->setGeometry( 0, -100, 1, 1 );
 }
 
-void QgsLegend::showLine(int y, int left)
+void QgsLegend::showLine( int y, int left )
 {
-  mInsertionLine->setGeometry(left, y, viewport()->width(), 2);
+  mInsertionLine->setGeometry( left, y, viewport()->width(), 2 );
 }
 
 void QgsLegend::updateLineWidget()
@@ -2004,9 +2062,9 @@ QTreeWidgetItem * QgsLegend::lastVisibleItem()
 {
   QTreeWidgetItem *current;
   QTreeWidgetItem *next;
-  
+
   current = topLevelItem( topLevelItemCount() - 1 );
-  while ( ( next = itemBelow( current ) ) )
+  while (( next = itemBelow( current ) ) )
   {
     current = next;
   }

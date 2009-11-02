@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="443"/>
         <source>&amp;Geoprocessing</source>
-        <translation type="unfinished">&amp;Geoprocessing</translation>
+        <translation>&amp;Geobehandling</translation>
     </message>
 </context>
 <context>
@@ -229,7 +229,7 @@
     </message>
     <message>
         <source>Connection refused - server may be down</source>
-        <translation type="obsolete">Uppkoppling nekad - servern kanske är nere</translation>
+        <translation type="obsolete">Anslutning nekad - servern kanske är nere</translation>
     </message>
     <message>
         <source>QGIS server was not found</source>
@@ -486,12 +486,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="140"/>
         <source>Start capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Börja skapa koordinat</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
         <source>Click to enable coordinate capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicka för att skapa koordinat</translation>
     </message>
 </context>
 <context>
@@ -535,7 +535,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="24"/>
         <source>Coordinate Capture Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>insticksprogram för att skapa koordinat</translation>
     </message>
 </context>
 <context>
@@ -624,7 +624,7 @@
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="115"/>
         <source>Connect</source>
-        <translation>Koppla upp</translation>
+        <translation>Anslut</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="126"/>
@@ -654,7 +654,7 @@
     </message>
     <message>
         <source>Could not establish connection to: &apos;</source>
-        <translation type="obsolete">Kunde inte koppla upp till: &apos;</translation>
+        <translation type="obsolete">Kunde inte ansluta till: &apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="216"/>
@@ -707,7 +707,7 @@
     </message>
     <message>
         <source>Successfully connected to: &apos;</source>
-        <translation type="obsolete">Lyckades koppla upp till: &apos;</translation>
+        <translation type="obsolete">Lyckades ansluta till: &apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="433"/>
@@ -718,37 +718,37 @@
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="193"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="421"/>
         <source>Could not establish connection to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte ansluta till &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="298"/>
         <source>Successfully translated layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Lyckades konvertera lager &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="303"/>
         <source>Failed to translate layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte konvertera lager &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="417"/>
         <source>Successfully connected to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Lyckades ansluta till: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="13"/>
         <source>fTools About</source>
-        <translation type="unfinished"></translation>
+        <translation>Om fTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="36"/>
         <source>fTools</source>
-        <translation type="unfinished"></translation>
+        <translation>fTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="46"/>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished"></translation>
+        <translation>Version x.x-xxxxxx</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="102"/>
@@ -756,22 +756,25 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="125"/>
         <source>Help</source>
-        <translation type="unfinished">Hjälp</translation>
+        <translation>Hjälp</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="132"/>
         <source>Web</source>
-        <translation type="unfinished"></translation>
+        <translation>Web</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="139"/>
         <source>Close</source>
-        <translation type="unfinished">Stäng</translation>
+        <translation>Stäng</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
@@ -2264,52 +2267,52 @@ Y:</translation>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="13"/>
         <source>Create Oracle Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa Oracle-anslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="39"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="55"/>
         <source>Cancel</source>
-        <translation type="unfinished">Avbryt</translation>
+        <translation>Avbryt</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="93"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Uppkopplingsinformation</translation>
+        <translation>Anslutningsinformation</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="121"/>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="131"/>
         <source>Database instance</source>
-        <translation type="unfinished"></translation>
+        <translation>Databasinstans</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="141"/>
         <source>Username</source>
-        <translation type="unfinished">Användarnamn</translation>
+        <translation>Användarnamn</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="151"/>
         <source>Password</source>
-        <translation type="unfinished">Lösenord</translation>
+        <translation>Lösenord</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="171"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Namn för den nya uppkopplingen</translation>
+        <translation>Namn på den nya anslutningen</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="203"/>
         <source>Save Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara lösenord</translation>
     </message>
 </context>
 <context>
@@ -3880,7 +3883,7 @@ Python support will be disabled.</source>
     </message>
     <message>
         <source>Closing down connection</source>
-        <translation type="obsolete">Stänger uppkoppling</translation>
+        <translation type="obsolete">Stänger anslutning</translation>
     </message>
     <message>
         <source>Unable to open </source>
@@ -4117,37 +4120,37 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="375"/>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Region&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="381"/>
         <source>Cannot open region header</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte öppna regionhuvud</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="389"/>
         <source>XY</source>
-        <translation type="unfinished"></translation>
+        <translation>XY</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="392"/>
         <source>UTM</source>
-        <translation type="unfinished"></translation>
+        <translation>UTM</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="395"/>
         <source>SP</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="398"/>
         <source>LL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="401"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Annat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="403"/>
@@ -4456,7 +4459,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="290"/>
         <source>Error Loading Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid läsning av insticksprogram</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="291"/>
@@ -4829,7 +4832,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4853"/>
         <source>Connection refused - server may be down</source>
-        <translation>Uppkoppling nekad - servern kanske är nere</translation>
+        <translation>Anslutning nekad - servern kanske är nere</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4856"/>
@@ -5450,7 +5453,7 @@ Python support will be disabled.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1015"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation>Kontrollera om din QGIS version är aktuell (kräver internetuppkoppling)</translation>
+        <translation>Kontrollera om din QGIS version är aktuell (kräver internetanslutning)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="821"/>
@@ -7881,7 +7884,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="225"/>
         <source>Donors</source>
-        <translation type="unfinished"></translation>
+        <translation>Donatorer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="276"/>
@@ -8082,13 +8085,13 @@ Du kan ändra detta alternativ senare genom att välja Alternativ från menyn In
         <location filename="../src/app/qgsabout.cpp" line="121"/>
         <location filename="../src/app/qgsabout.cpp" line="170"/>
         <source>Name</source>
-        <translation type="unfinished">Namn</translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="122"/>
         <location filename="../src/app/qgsabout.cpp" line="171"/>
         <source>Website</source>
-        <translation type="unfinished">Nätplats</translation>
+        <translation>Nätplats</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -8115,27 +8118,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="117"/>
         <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;QGIS sponsoprogram: bidrag till utvecklingen av QGIS&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="166"/>
         <source>&lt;p&gt;The following individuals and institutions have contributed money to fund QGIS development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Nedanstående har sponsrat QGIS genom att bidra med pengar och andra utvecklingkostnader&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="273"/>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished">Tillgängliga QGIS insticksprogram för datakällor</translation>
+        <translation>Tillgängliga QGIS insticksprogram för datakällor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="276"/>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished">Tillgängliga insticksprogram förQt Database</translation>
+        <translation>Tillgängliga insticksprogram förQt Database</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="282"/>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished">Tillgängliga insticksprogram förQt Image</translation>
+        <translation>Tillgängliga insticksprogram förQt Image</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="51"/>
@@ -8153,22 +8156,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="215"/>
         <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Följande personer har sponsrat QGIS genom att översätta användargränssnitt eller dokumentation&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="219"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Språk</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="220"/>
         <source>Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="245"/>
         <source>Translators</source>
-        <translation type="unfinished"></translation>
+        <translation>Översättare</translation>
     </message>
 </context>
 <context>
@@ -8181,17 +8184,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="36"/>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommentarer:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
         <source>Width</source>
-        <translation type="unfinished">Bredd</translation>
+        <translation>Bredd</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="85"/>
         <source>Precision</source>
-        <translation type="unfinished">Precision</translation>
+        <translation>Precision</translation>
     </message>
     <message>
         <source>OK</source>
@@ -8299,12 +8302,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="187"/>
         <source>Missing Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Saknad information</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="188"/>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
-        <translation type="unfinished"></translation>
+        <translation>För att skapa ett attributkommando, måste du ange både namn och kommando som skall utföras.</translation>
     </message>
 </context>
 <context>
@@ -8555,12 +8558,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributeeditor.cpp" line="47"/>
         <source>Select a file</source>
-        <translation type="unfinished">Välj en fil</translation>
+        <translation>Välj en fil</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeeditor.cpp" line="254"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -8568,34 +8571,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="14"/>
         <source>Load values from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Läs in värden från lager</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="45"/>
         <source>Layer</source>
-        <translation type="unfinished">Lager</translation>
+        <translation>Lager</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="52"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="68"/>
         <source>Description</source>
-        <translation type="unfinished">Beskrivning</translation>
+        <translation>Beskrivning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="63"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="83"/>
         <source>Value</source>
-        <translation type="unfinished">Värde</translation>
+        <translation>Värde</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="76"/>
         <source>Select data from attributes in selected layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj data från attribut i valt lager.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="93"/>
         <source>View All</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa alla</translation>
     </message>
 </context>
 <context>
@@ -8762,146 +8765,146 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="76"/>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="82"/>
         <source>Attribute table - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributtabell - %1</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="417"/>
         <source>Search string parsing error</source>
-        <translation type="unfinished">Tolkningsfel i söksträngen</translation>
+        <translation>Tolkningsfel i söksträngen</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="424"/>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="481"/>
         <source>Search results</source>
-        <translation type="unfinished">Sökresultat</translation>
+        <translation>Sökresultat</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="424"/>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="unfinished">Du har angett en tom söksträng.</translation>
+        <translation>Du har angett en tom söksträng.</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="464"/>
         <source>Error during search</source>
-        <translation type="unfinished">Fel vid sökning</translation>
+        <translation>Fel vid sökning</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="477"/>
         <source>Found %d matching features.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Hittade %n matchande objekt.</numerusform>
+            <numerusform>Hittade %n matchande objekt.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="479"/>
         <source>No matching features found.</source>
-        <translation type="unfinished">Inga överensstämmande objekt hittade.</translation>
+        <translation>Inga överensstämmande objekt hittade.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="13"/>
         <source>Attribute Table</source>
-        <translation type="unfinished">Attributtabell</translation>
+        <translation>Attributtabell</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="46"/>
         <source>Remove selection</source>
-        <translation type="unfinished">Ta bort valt</translation>
+        <translation>Ta bort valt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="68"/>
         <source>Move selected to top</source>
-        <translation type="unfinished">Flytta valt högst upp</translation>
+        <translation>Flytta valt högst upp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="83"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="90"/>
         <source>Invert selection</source>
-        <translation type="unfinished">Invertera valt</translation>
+        <translation>Invertera valt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="105"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="112"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">Kopiera valda rader till klippbordet (Ctrl+C)</translation>
+        <translation>Kopiera valda rader till klippbordet (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="115"/>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">Kopierar valda rader till klippbordet</translation>
+        <translation>Kopierar valda rader till klippbordet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="130"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="137"/>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished">Zooma kartan til valda rader (Ctrl-J)</translation>
+        <translation>Zooma kartan till valda rader (Ctrl-J)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="140"/>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">Zooma kartan til valda rader</translation>
+        <translation>Zooma kartan till valda rader</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="155"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="162"/>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">Toggla redigeringsläge</translation>
+        <translation>Toggla redigeringsläge</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="165"/>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">Klicka för att toggla tabelleditering</translation>
+        <translation>Klicka för att toggla tabelleditering</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="187"/>
         <source>Look for</source>
-        <translation type="unfinished"></translation>
+        <translation>Leta efter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="197"/>
         <source>in</source>
-        <translation type="unfinished">i</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="207"/>
         <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sök</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="218"/>
         <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa endast valda rader</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="245"/>
         <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancerad sökning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="252"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="225"/>
         <source>Search selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>Sök endast valda rader</translation>
     </message>
 </context>
 <context>
@@ -9078,7 +9081,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetablememorymodel.cpp" line="125"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut ändrats</translation>
     </message>
 </context>
 <context>
@@ -9086,7 +9089,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="403"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut ändrats</translation>
     </message>
 </context>
 <context>
@@ -9286,7 +9289,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="58"/>
         <source>&amp;Delete</source>
-        <translation>Radera</translation>
+        <translation>Ra&amp;dera</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="59"/>
@@ -9296,13 +9299,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="159"/>
         <source>Are you sure you want to delete the %1 bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker du vill ta bort bokmärket %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="176"/>
         <source>Failed to delete the %1 bookmark from the database. The database said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte ta bort bokmärket %1 från databasen. Databasen svarade:
+%2</translation>
     </message>
 </context>
 <context>
@@ -9613,7 +9617,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="439"/>
         <source>PDF Format</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-format</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="609"/>
@@ -9623,7 +9627,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="684"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation type="unfinished">&lt;p&gt;Exportera SVG har många problem, beroende på fel och brister i </translation>
+        <translation>&lt;p&gt;Exportera SVG har många problem, beroende på fel och brister i </translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="438"/>
@@ -9644,7 +9648,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="585"/>
         <source>%1 format (*.%2 *.%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1-format (*.%2 *.%3)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="687"/>
@@ -9659,7 +9663,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
-        <translation type="unfinished"></translation>
+        <translation>För att skapa bild %1 x %2 behövs ca %3 MB minne</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="696"/>
@@ -10041,7 +10045,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
         <source>Position...</source>
-        <translation type="unfinished"></translation>
+        <translation>Position..</translation>
     </message>
 </context>
 <context>
@@ -10082,7 +10086,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/composer/qgscomposerlegend.cpp" line="28"/>
         <source>Legend</source>
-        <translation type="unfinished">Teckenförklaring</translation>
+        <translation>Teckenförklaring</translation>
     </message>
 </context>
 <context>
@@ -10207,7 +10211,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/core/composer/qgscomposermap.cpp" line="68"/>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="84"/>
         <source>Map %1</source>
-        <translation type="unfinished">Karta %1</translation>
+        <translation>Karta %1</translation>
     </message>
     <message>
         <source>Extent (calculate scale)</source>
@@ -10409,7 +10413,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="225"/>
         <source>Keep layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Behåll lagerlista</translation>
     </message>
 </context>
 <context>
@@ -10606,7 +10610,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="67"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="154"/>
         <source>Map %1</source>
-        <translation type="unfinished">Karta %1</translation>
+        <translation>Karta %1</translation>
     </message>
 </context>
 <context>
@@ -10619,12 +10623,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="25"/>
         <source>Segment size (map units):</source>
-        <translation>Segmentstorlek (kartenheter)</translation>
+        <translation>Segmentstorlek (kartenheter):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="45"/>
         <source>Map units per bar unit:</source>
-        <translation>Kartenheter per skalenhet</translation>
+        <translation>Kartenheter per skalenhet:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="62"/>
@@ -11051,19 +11055,19 @@ A5 (148x210 mm)</translation>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="82"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="457"/>
         <source>Solid</source>
-        <translation type="unfinished">Solid</translation>
+        <translation>Solid</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="83"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="461"/>
         <source>Dots</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkter</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="84"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="465"/>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>Kors</translation>
     </message>
 </context>
 <context>
@@ -11111,47 +11115,47 @@ A5 (148x210 mm)</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="177"/>
         <source>Snapping</source>
-        <translation type="unfinished">Fästning</translation>
+        <translation>Fästning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="183"/>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Fäst till rutnät</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="190"/>
         <source>Grid resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Upplösning rutnät:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="200"/>
         <source>Offset x:</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset x:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="210"/>
         <source>Offset y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset y:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="220"/>
         <source>Pen width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pennbredd:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="230"/>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rutnätsfärg:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="250"/>
         <source>Grid style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rutnätsstil:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="282"/>
         <source>Print as raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv ut som raster</translation>
     </message>
 </context>
 <context>
@@ -11159,69 +11163,69 @@ A5 (148x210 mm)</translation>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="110"/>
         <source>None</source>
-        <translation type="unfinished">Ingen</translation>
+        <translation>Ingen</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="111"/>
         <source>Set default (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara standard (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="205"/>
         <source>Input: </source>
-        <translation type="unfinished"></translation>
+        <translation>Indata:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="216"/>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <source>Change</source>
-        <translation type="unfinished">Ändra</translation>
+        <translation>Ändra</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="236"/>
         <source>Shortcut conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Genvägskonflikt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="237"/>
         <source>This shortcut is already assigned to action %1. Reassign?</source>
-        <translation type="unfinished"></translation>
+        <translation>Den här genvägen är redan tilldelad kommandot %1. Ändra tilldelning?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="14"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurera genvägar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="27"/>
         <source>Action</source>
-        <translation type="unfinished">Kommando</translation>
+        <translation>Kommando</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="32"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Genväg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="55"/>
         <source>Set none</source>
-        <translation type="unfinished"></translation>
+        <translation>Sätt ingen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="62"/>
         <source>Set default</source>
-        <translation type="unfinished"></translation>
+        <translation>Sätt standardvärde</translation>
     </message>
 </context>
 <context>
     <name>QgsConnectionDialog</name>
     <message>
         <source>Test connection</source>
-        <translation type="obsolete">Testa uppkoppling</translation>
+        <translation type="obsolete">Testa anslutning</translation>
     </message>
     <message>
         <source>Connection to </source>
-        <translation type="obsolete"> Uppkoppling till</translation>
+        <translation type="obsolete"> Anslutning till</translation>
     </message>
     <message>
         <source> was successfull</source>
@@ -11229,7 +11233,7 @@ A5 (148x210 mm)</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again </source>
-        <translation type="obsolete">Uppkopplingen misslyckades - Kontrollera inställningarna och försök igen</translation>
+        <translation type="obsolete">Anslutningen misslyckades - Kontrollera inställningarna och försök igen</translation>
     </message>
     <message>
         <source>General Interface Help:
@@ -11244,11 +11248,11 @@ A5 (148x210 mm)</translation>
     <name>QgsConnectionDialogBase</name>
     <message>
         <source>Connection Properties</source>
-        <translation type="obsolete">Uppkopplingsegenskaper</translation>
+        <translation type="obsolete">Anslutningsegenskaper</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="obsolete">Uppkopplingsinformation</translation>
+        <translation type="obsolete">Anslutningsinformation</translation>
     </message>
     <message>
         <source>Host</source>
@@ -11268,7 +11272,7 @@ A5 (148x210 mm)</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation type="obsolete">Namn för den nya uppkopplingen</translation>
+        <translation type="obsolete">Namn för den nya anslutningen</translation>
     </message>
     <message>
         <source>Password</source>
@@ -11276,7 +11280,7 @@ A5 (148x210 mm)</translation>
     </message>
     <message>
         <source>Test Connect</source>
-        <translation type="obsolete">Testa Uppkoppling</translation>
+        <translation type="obsolete">Testa Anslutning</translation>
     </message>
     <message>
         <source>Save Password</source>
@@ -11300,7 +11304,7 @@ A5 (148x210 mm)</translation>
     </message>
     <message>
         <source>Create a New PostGIS connection</source>
-        <translation type="obsolete">Skapa en ny PostGIS-uppkoppling</translation>
+        <translation type="obsolete">Skapa en ny PostGIS-anslutning</translation>
     </message>
     <message>
         <source>Port</source>
@@ -11450,7 +11454,7 @@ A5 (148x210 mm)</translation>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinaterna kan inte projiceras. CRS är: %1</translation>
     </message>
 </context>
 <context>
@@ -11664,7 +11668,10 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -11747,28 +11754,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="721"/>
         <source> Please give the projection a name before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ange ett namn på projektionen innan du spara.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="728"/>
         <source> Please add the parameters before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till parametrarna före du sparar.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="744"/>
         <source> Please add a proj= clause before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till en &apos;proj=&apos;- före du sparar.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="760"/>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished">Denna proj4-projektionsdefinition är ej giltig. Vänligen lägg till en &apos;ellips=&apos;-del innan du sparar.</translation>
+        <translation>Denna proj4-projektionsdefinition är ej giltig. Vänligen lägg till en &apos;ellips=&apos;-del innan du sparar.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="777"/>
         <source> Please correct before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rätta till innan du sparar.</translation>
     </message>
 </context>
 <context>
@@ -11967,7 +11974,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> connection and all associated settings?</source>
-        <translation type="obsolete">uppkopplingen och alla tillhörande inställningar?</translation>
+        <translation type="obsolete">anslutningen och alla tillhörande inställningar?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="263"/>
@@ -12004,7 +12011,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="487"/>
         <source>Connection failed</source>
-        <translation>Uppkopplingen avbröts</translation>
+        <translation>Anslutningen avbröts</translation>
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.</source>
@@ -12012,7 +12019,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
-        <translation type="obsolete">Uppkopplingen till %1 på %2 misslyckades. Antingen är databasen nere eller så är dina inställningar felaktiga. %3Kontrollera ditt användarnamn och lösenord och försök igen. %4%5</translation>
+        <translation type="obsolete">Anslutningen till %1 på %2 misslyckades. Antingen är databasen nere eller så är dina inställningar felaktiga. %3Kontrollera ditt användarnamn och lösenord och försök igen. %4%5</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="58"/>
@@ -12072,7 +12079,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
-        <translation type="obsolete">Uppkoppling %1 till %2 misslyckades. Antingen är databasen nere, eller så är dina inställnnigar fel.%3Kolla användarnamn och lösenord och försök igen.%4Databasen sa:%5%6</translation>
+        <translation type="obsolete">Anslutning %1 till %2 misslyckades. Antingen är databasen nere, eller så är dina inställnnigar fel.%3Kolla användarnamn och lösenord och försök igen.%4Databasen sa:%5%6</translation>
     </message>
     <message>
         <source>Access to relation </source>
@@ -12146,7 +12153,7 @@ har misslyckats. Databasen sa:
 The error message from the database was:
 %1
 </source>
-        <translation>Databasuppkopplingen lyckades, men åtkomliga tabeller kunde inte bestämmas.
+        <translation>Databasanslutningen lyckades, men åtkomliga tabeller kunde inte bestämmas.
 
 Felet från databasen var:
 %1
@@ -12163,19 +12170,19 @@ Felet från databasen var:
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
 geometry.</source>
-        <translation>Databasuppkopplingen lyckades, men åtkomliga tabeller kunde hittas.
+        <translation>Databasanslutningen lyckades, men åtkomliga tabeller kunde hittas.
 
 Kontrollera att du har rättigheter för att göra SELECT på en tabell med PostGIS-geometrier.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="261"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker att du vill ta bort anslutningen %1 och alla tillhörande inställningar?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="371"/>
         <source>You must select a table in order to add a layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste välja en tabell för att lägga till ett lager.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="488"/>
@@ -12185,7 +12192,12 @@ Check your username and password and try again.
 
 The database said:
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Anslutningen till %1 på %2 misslyckades. Antingen är databasen nere eller så är dina inställningar felaktiga.
+
+Kontrollera ditt användarnamn och lösenord och försök igen.
+
+Databasen svarade:
+%3</translation>
     </message>
 </context>
 <context>
@@ -12220,12 +12232,12 @@ The database said:
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="obsolete">Uppkopplingsinformation</translation>
+        <translation type="obsolete">Anslutningsinformation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="77"/>
         <source>Connect</source>
-        <translation>Koppla upp</translation>
+        <translation>Anslut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="70"/>
@@ -12250,7 +12262,7 @@ The database said:
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="44"/>
         <source>PostgreSQL Connections</source>
-        <translation>PostgreSQL-uppkopplingar</translation>
+        <translation>PostgreSQL-anslutningar</translation>
     </message>
     <message>
         <source>Where Clause:</source>
@@ -12294,7 +12306,7 @@ The database said:
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="209"/>
         <source>Build query</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa fråga</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="216"/>
@@ -12409,7 +12421,7 @@ The database said:
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="103"/>
         <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till en separerad text-fil som ett lager. Filen måste ha ett radhuvud med fältnamn. Fälten X och Y är nödvändiga och måste innehålla koordinater i decimalformat.</translation>
     </message>
 </context>
 <context>
@@ -12820,21 +12832,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="121"/>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="279"/>
         <source>Pie chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Pajdiagram</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="36"/>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="125"/>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="284"/>
         <source>Bar chart</source>
-        <translation type="unfinished">Stapeldiagram</translation>
+        <translation>Stapeldiagram</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="37"/>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="129"/>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="292"/>
         <source>Proportional SVG symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Proportionella SVG-symboler</translation>
     </message>
 </context>
 <context>
@@ -12842,27 +12854,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="13"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialog</translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="19"/>
         <source>Display diagrams</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa diagram</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="43"/>
         <source>Diagram type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagramtyp:</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="90"/>
         <source>Classification attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klassificeringsattribut:</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="100"/>
         <source>Classification type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klassifikationstyp:</translation>
     </message>
 </context>
 <context>
@@ -12980,7 +12992,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The source of the data (path name or database connection information)</source>
-        <translation type="obsolete">Källan för datan (information om sökväg eller databasuppkoppling)</translation>
+        <translation type="obsolete">Källan för datan (information om sökväg eller databasanslutning)</translation>
     </message>
     <message>
         <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
@@ -13650,23 +13662,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="362"/>
         <source>Error converting data</source>
-        <translation>Fle vid konvertering av data</translation>
+        <translation>Fel vid konvertering av data</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="218"/>
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte läsa vald fil. Välj en annan giltig fil.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="416"/>
         <source>This device does not support downloading of %1.</source>
-        <translation type="unfinished"></translation>
+        <translation> Denna enhet stödjer inte hämtning av %1.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="509"/>
         <source>This device does not support uploading of %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Denna enhet stödjer ej att skicka %1.</translation>
     </message>
 </context>
 <context>
@@ -15738,7 +15750,7 @@ Pattern</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="101"/>
         <source>Add connection</source>
-        <translation>Lägg till uppkoppling</translation>
+        <translation>Lägg till anslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="108"/>
@@ -17495,7 +17507,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="172"/>
         <source>Cannot read current region: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte läsa nuvarande region: %1</translation>
     </message>
 </context>
 <context>
@@ -17700,24 +17712,24 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="36"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="37"/>
         <source>Ctrl+Shift+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="51"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="71"/>
         <source>Warning</source>
-        <translation type="unfinished">Varning</translation>
+        <translation>Varning</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="51"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="71"/>
         <source>Cannot rename the lock file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte döpa om låsfilen %1</translation>
     </message>
 </context>
 <context>
@@ -18089,18 +18101,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="138"/>
         <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="unfinished"></translation>
+        <translation>Hjälpfilen finns inte för ditt språk::&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;Om du vill skapa en översättning, kontakta QGIS utvecklingsteam</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="184"/>
         <source>Quantum GIS Help - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS Hjälp - %1</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="190"/>
         <source>Failed to get the help text from the database:
   %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte hämta hjälptext från databasen:
+%1</translation>
     </message>
 </context>
 <context>
@@ -18184,58 +18197,58 @@ Detta kan vara ett problem med din nätverksanslutning eller WMS-servern.
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="310"/>
         <source>Received %1 of %2 bytes</source>
-        <translation type="unfinished">Tog emot %1 av %2 bytes</translation>
+        <translation>Tog emot %1 av %2 bytes</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="314"/>
         <source>Received %1 bytes (total unknown)</source>
-        <translation type="unfinished">Tog emot %1 bytes (okänd totalsumma)</translation>
+        <translation>Tog emot %1 bytes (okänd totalsumma)</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="423"/>
         <source>Not connected</source>
-        <translation type="unfinished">Ej uppkopplad</translation>
+        <translation>Ej ansluten</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="429"/>
         <source>Looking up &apos;%1&apos;</source>
-        <translation type="unfinished">Slår upp %1</translation>
+        <translation>Slår upp &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="435"/>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation type="unfinished">Kopplar upp till %1</translation>
+        <translation>Ansluter till &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="441"/>
         <source>Sending request &apos;%1&apos;</source>
-        <translation type="unfinished">Skickar förfrågan %1</translation>
+        <translation>Skickar förfrågan &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="447"/>
         <source>Receiving reply</source>
-        <translation type="unfinished">Tar emot svar</translation>
+        <translation>Tar emot svar</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="453"/>
         <source>Response is complete</source>
-        <translation type="unfinished">Svaret är komplett</translation>
+        <translation>Svaret är komplett</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="459"/>
         <source>Closing down connection</source>
-        <translation type="unfinished">Stänger uppkoppling</translation>
+        <translation>Stänger anslutning</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgshttptransaction.cpp" line="469"/>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Nätverket fick timeout efter %n sekunds inaktivitet.
+Detta kan vara ett problem med din nätverksanslutning eller WMS-servern.</numerusform>
+            <numerusform>Nätverket fick timeout efter %n sekunders inaktivitet.
+Detta kan vara ett problem med din nätverksanslutning eller WMS-servern.</numerusform>
         </translation>
     </message>
 </context>
@@ -18253,7 +18266,11 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Inverse Distance Weighting&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;The only parameter for the IDW interpolation method is the coefficient that describes the decrease of weights with distance.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>Den enda parametern för IDW interpoelring är koefficienten som beskriver hur vikten minskar med avståndet.</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Inverse Distance Weighting&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;The only parameter for the IDW interpolation method is the coefficient that describes the decrease of weights with distance.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui" line="32"/>
@@ -18294,7 +18311,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="214"/>
         <source>Identify Results - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultat av identifieringen - %1</translation>
     </message>
 </context>
 <context>
@@ -18569,7 +18586,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgslabeldialog.cpp" line="214"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto</translation>
     </message>
 </context>
 <context>
@@ -18917,7 +18934,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="184"/>
         <source>Font size</source>
-        <translation type="unfinished"></translation>
+        <translation>Typsnittsstorlek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="561"/>
@@ -18974,42 +18991,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="85"/>
         <source>General</source>
-        <translation type="unfinished">Allmänt</translation>
+        <translation>Allmänt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="362"/>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished">Använd skalberoende rendering</translation>
+        <translation>Använd skalberoende rendering</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="374"/>
         <source>Maximum</source>
-        <translation type="unfinished">Maximum</translation>
+        <translation>Maximum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="384"/>
         <source>Minimum</source>
-        <translation type="unfinished">Minimum</translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="394"/>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="unfinished"></translation>
+        <translation>Minsta skala vid vilken detta lager kommer att visas.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="407"/>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="unfinished"></translation>
+        <translation>Största skala vid vilken detta lager kommer att visas.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="233"/>
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="831"/>
         <source>&amp;Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Färg</translation>
     </message>
 </context>
 <context>
@@ -20820,7 +20837,7 @@ Installera PostGIS med GEOS-stöd (http://geos.refractions.net)</translation>
         <location filename="../src/app/qgsnewconnection.cpp" line="127"/>
         <location filename="../src/app/qgsnewconnection.cpp" line="131"/>
         <source>Test connection</source>
-        <translation>Testa uppkoppling</translation>
+        <translation>Testa anslutning</translation>
     </message>
     <message>
         <source>Connection to %1 was successfull</source>
@@ -20828,14 +20845,14 @@ Installera PostGIS med GEOS-stöd (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again </source>
-        <translation type="obsolete">Uppkopplingen misslyckades - Kontrollera inställningarna och försök igen</translation>
+        <translation type="obsolete">Anslutningen misslyckades - Kontrollera inställningarna och försök igen</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again.
 
 Extended error information:
 </source>
-        <translation type="obsolete">Uppkopplingen misslyckades - Kontrollera inställningarna och försök igen.
+        <translation type="obsolete">Anslutningen misslyckades - Kontrollera inställningarna och försök igen.
 
 Detaljerad felinformation:</translation>
     </message>
@@ -20878,7 +20895,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="19"/>
         <source>Create a New PostGIS connection</source>
-        <translation>Skapa en ny PostGIS-uppkoppling</translation>
+        <translation>Skapa en ny PostGIS-anslutning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="260"/>
@@ -20898,7 +20915,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="37"/>
         <source>Connection Information</source>
-        <translation>Uppkopplingsinformation</translation>
+        <translation>Anslutningsinformation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="145"/>
@@ -20923,7 +20940,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="212"/>
         <source>Name of the new connection</source>
-        <translation>Namn för den nya uppkopplingen</translation>
+        <translation>Namn för den nya anslutningen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="185"/>
@@ -20933,7 +20950,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="110"/>
         <source>Test Connect</source>
-        <translation>Testa Uppkoppling</translation>
+        <translation>Testa Anslutning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="103"/>
@@ -21011,11 +21028,11 @@ Extended error information:
     <name>QgsNewHttpConnectionBase</name>
     <message>
         <source>Create a New WMS connection</source>
-        <translation type="obsolete">Skapa en ny WMS-uppkoppling</translation>
+        <translation type="obsolete">Skapa en ny WMS-anslutning</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="obsolete">Uppkopplingsinformation</translation>
+        <translation type="obsolete">Anslutningsinformation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="31"/>
@@ -21054,7 +21071,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="50"/>
         <source>Name of the new connection</source>
-        <translation>Namn för den nya uppkopplingen</translation>
+        <translation>Namn för den nya anslutningen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="73"/>
@@ -21088,12 +21105,12 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="13"/>
         <source>Create a new WMS connection</source>
-        <translation>Skapa en ny WMS-uppkoppling</translation>
+        <translation>Skapa en ny WMS-anslutning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="25"/>
         <source>Connection details</source>
-        <translation>Uppkopplingsdetaljer</translation>
+        <translation>Anslutningsdetaljer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="80"/>
@@ -21117,7 +21134,7 @@ Extended error information:
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="87"/>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="91"/>
         <source>Test connection</source>
-        <translation type="unfinished">Testa uppkoppling</translation>
+        <translation type="unfinished">Testa anslutning</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="87"/>
@@ -21143,7 +21160,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="37"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Uppkopplingsinformation</translation>
+        <translation type="unfinished">Anslutningsinformation</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="77"/>
@@ -21153,7 +21170,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="84"/>
         <source>Test Connect</source>
-        <translation type="unfinished">Testa Uppkoppling</translation>
+        <translation type="unfinished">Testa Anslutning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="109"/>
@@ -21197,7 +21214,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="193"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Namn för den nya uppkopplingen</translation>
+        <translation type="unfinished">Namn för den nya anslutningen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="238"/>
@@ -22831,7 +22848,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="363"/>
         <source>Error connecting to the database</source>
-        <translation>Fel vid uppkoppling mot databas</translation>
+        <translation>Fel vid anslutning mot databas</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="76"/>
@@ -22950,11 +22967,11 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     <message>
         <location filename="../src/app/qgspgquerybuilder.cpp" line="68"/>
         <source>Connection Failed</source>
-        <translation>Uppkopplingen Misslyckades</translation>
+        <translation>Anslutningen Misslyckades</translation>
     </message>
     <message>
         <source>Connection to the database failed:</source>
-        <translation type="obsolete">Uppkopplingen till databasen misslyckades:</translation>
+        <translation type="obsolete">Anslutningen till databasen misslyckades:</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgquerybuilder.cpp" line="206"/>
@@ -23805,7 +23822,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Kopplar upp...</translation>
+        <translation type="unfinished">Ansluter...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
@@ -23868,7 +23885,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Kopplar upp...</translation>
+        <translation type="unfinished">Ansluter...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
@@ -23914,7 +23931,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
         <source>Connecting...</source>
-        <translation>Kopplar upp...</translation>
+        <translation>Ansluter...</translation>
     </message>
 </context>
 <context>
@@ -23929,7 +23946,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="20"/>
         <source>Error loading plugin</source>
-        <translation>Fle vid inläsning av insticksprogram</translation>
+        <translation>Fel vid läsning av insticksprogram</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="35"/>
@@ -24781,7 +24798,7 @@ eller har en PostgreSQL oid-kolumn.
     </message>
     <message>
         <source>An error occured contacting the PostgreSQL databse</source>
-        <translation type="obsolete">Ett fel inträffade vid uppkopplingen til PostgreSQL databas</translation>
+        <translation type="obsolete">Ett fel inträffade vid anslutningen til PostgreSQL databas</translation>
     </message>
     <message>
         <source>The PostgreSQL databse returned: </source>
@@ -24797,7 +24814,7 @@ eller har en PostgreSQL oid-kolumn.
     </message>
     <message>
         <source>An error occured contacting the PostgreSQL database</source>
-        <translation type="obsolete">Ett fel inträffade vid uppkopplingen til PostgreSQL databas</translation>
+        <translation type="obsolete">Ett fel inträffade vid anslutningen til PostgreSQL databas</translation>
     </message>
     <message>
         <source>The PostgreSQL database returned: </source>
@@ -25001,32 +25018,32 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="757"/>
         <source>Unable to open %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte öppna %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="771"/>
         <source>Project file read error: %1 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel vid läsning av projektfil %1 på rad %2, kolumn %3</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="778"/>
         <source>%1 for file %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 för fil %2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="932"/>
         <source>Unable to save to file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ej spara till fil %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="940"/>
         <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 är inte skrivbar. Justera rättigheter (om möjligt) och försök igen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="1025"/>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte spara till fil %1. Ditt projekt kan vara felaktigt sparat. Försök frigöra disk-utrymme och kontrollera filrättigheter innan du försöker igen.</translation>
     </message>
 </context>
 <context>
@@ -25236,7 +25253,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="275"/>
         <source>save absolute paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara absoluta sökvägar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="283"/>
@@ -27851,11 +27868,9 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="165"/>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Hittade %n matchande objekt.</numerusform>
+            <numerusform>Hittade %n matchande objekt.</numerusform>
         </translation>
     </message>
 </context>
@@ -27867,7 +27882,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> connection and all associated settings?</source>
-        <translation type="obsolete"> uppkopplingen och alla tillhörande inställningar?</translation>
+        <translation type="obsolete"> anslutningen och alla tillhörande inställningar?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="195"/>
@@ -27939,22 +27954,20 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="769"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation>Många WMS-servrar lades till listand. Om du kopplar upp dig till internet via proxy, måste du ställa in det i alternativen.</translation>
+        <translation>Många WMS-servrar lades till listand. Om du ansluter dig till internet via proxy, måste du ställa in det i alternativen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="193"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker att du vill ta bort anslutningen %1 och alla tillhörande inställningar?</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgsserversourceselect.cpp" line="546"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Koordinatreferenssystem (%n tillgängligt)</numerusform>
+            <numerusform>Koordinatreferenssystem (%n tillgängliga)</numerusform>
         </translation>
     </message>
     <message>
@@ -27962,33 +27975,35 @@ p, li { white-space: pre-wrap; }
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>Could not understand the response.  The %1 provider said:
+%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="718"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Could not understand the response.  The %1 provider said:
+%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="434"/>
         <source>You must select at least one leaf layer first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Du måste först välja minst ett lager.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="914"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Anlustningen %1 finns redan. Vill du skriva över den?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="915"/>
         <source>Confirm Overwrite</source>
-        <translation type="unfinished"></translation>
+        <translation>Bekräfta överskrivning</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="388"/>
         <source>WMS Password for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS-lösenord för %1</translation>
     </message>
 </context>
 <context>
@@ -28051,17 +28066,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="146"/>
         <source>Layer Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagerordning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="183"/>
         <source>Layer</source>
-        <translation type="unfinished">Lager</translation>
+        <translation>Lager</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="188"/>
         <source>Style</source>
-        <translation type="unfinished">Stil</translation>
+        <translation>Stil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="355"/>
@@ -28075,7 +28090,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Server Connections</source>
-        <translation type="obsolete">Serveruppkoppling</translation>
+        <translation type="obsolete">Serveranslutning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="53"/>
@@ -28125,32 +28140,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="34"/>
         <source>Servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Servrar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="201"/>
         <source>Server Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Sök efter servrar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="210"/>
         <source>Search</source>
-        <translation type="unfinished">Sök</translation>
+        <translation>Sök</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="235"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="240"/>
         <source>Description</source>
-        <translation type="unfinished">Beskrivning</translation>
+        <translation>Beskrivning</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsserversourceselectbase.ui" line="248"/>
         <source>Add selected row to WMS list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till vald rad till WMS-listan</translation>
     </message>
 </context>
 <context>
@@ -28857,7 +28872,7 @@ SQL: %2</source>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="80"/>
         <source>Connect</source>
-        <translation type="unfinished">Koppla upp</translation>
+        <translation type="unfinished">Anslut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="104"/>
@@ -28981,7 +28996,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>] connection and all associated settings?</source>
-        <translation type="obsolete">] uppkopplingen och alla tillhörande inställningar?</translation>
+        <translation type="obsolete">] anslutningen och alla tillhörande inställningar?</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="145"/>
@@ -29027,17 +29042,17 @@ SQL: %2</source>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="351"/>
         <source>PostgreSQL Connections:</source>
-        <translation>PostgreSQL uppkopplingar:</translation>
+        <translation>PostgreSQL anslutningar:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="353"/>
         <source>[New ...] - create a new connection</source>
-        <translation>[Ny ...] - skapa en ny uppkoppling</translation>
+        <translation>[Ny ...] - skapa en ny anslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="354"/>
         <source>[Edit ...] - edit the currently selected connection</source>
-        <translation>[Redigera ...] - redigera vald uppkoppling</translation>
+        <translation>[Redigera ...] - redigera vald anslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="355"/>
@@ -29047,12 +29062,12 @@ SQL: %2</source>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="356"/>
         <source>-you need to select a connection that works (connects properly) in order to import files</source>
-        <translation>- du måste välja en fungerande uppkoppling för att importera filer</translation>
+        <translation>- du måste välja en fungerande anslutning för att importera filer</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="357"/>
         <source>-when changing connections Global Schema also changes accordingly</source>
-        <translation>- när du byter uppkoppling ändra sig också globalt schema</translation>
+        <translation>- när du byter anslutning ändrar sig också globalt schema</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="358"/>
@@ -29141,12 +29156,12 @@ SQL: %2</source>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="389"/>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="829"/>
         <source>You need to specify a Connection first</source>
-        <translation>Du måste specificera en uppkoppling först</translation>
+        <translation>Du måste specificera en anslutning först</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="424"/>
         <source>Connection failed - Check settings and try again</source>
-        <translation>Uppkopplingen misslyckades - Kontrollera inställningarna och försök igen</translation>
+        <translation>Anslutningen misslyckades - Kontrollera inställningarna och försök igen</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="510"/>
@@ -29228,7 +29243,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>New Connection</source>
-        <translation type="obsolete">Ny uppkoppling</translation>
+        <translation type="obsolete">Ny anslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="168"/>
@@ -29353,7 +29368,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="54"/>
         <source>PostgreSQL Connections</source>
-        <translation>PostgreSQL-uppkopplingar</translation>
+        <translation>PostgreSQL-anslutningar</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="108"/>
@@ -29371,7 +29386,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Connection</source>
-        <translation type="obsolete">Uppkoppling</translation>
+        <translation type="obsolete">Anslutning</translation>
     </message>
     <message>
         <source>Import</source>
@@ -29499,18 +29514,18 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="115"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="118"/>
         <source>Create a new PostGIS connection</source>
-        <translation>Skapa en PostGIS-uppkoppling</translation>
+        <translation>Skapa en PostGIS-anslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="102"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="105"/>
         <source>Remove the current PostGIS connection</source>
-        <translation>Ta bort nuvarande PostGIS-uppkoppling</translation>
+        <translation>Ta bort nuvarande PostGIS-anslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="134"/>
         <source>Connect</source>
-        <translation>Koppla upp</translation>
+        <translation>Anslut</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="95"/>
@@ -29521,13 +29536,13 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="89"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="92"/>
         <source>Edit the current PostGIS connection</source>
-        <translation>Ändra den nuvarande PostGIS-uppkopplingen</translation>
+        <translation>Ändra den nuvarande PostGIS-anslutningen</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="128"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="131"/>
         <source>Connect to PostGIS</source>
-        <translation>Koppla up till PostGIS</translation>
+        <translation>Anslut till PostGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="144"/>
@@ -30205,138 +30220,114 @@ Skall existerande klasser tas bort före klassificering?</translation>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2793"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>RÄTT: %n attribut togs bort.</numerusform>
+            <numerusform>RÄTT: %n attribut togs bort.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="2799"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>FEL: %n attribut togs inte bort.</numerusform>
+            <numerusform>FEL: %n attribut togs inte bort.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="2815"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>RÄTT: %n attribut lades till.</numerusform>
+            <numerusform>RÄTT: %n attribut lades till.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="2821"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>FEL: %n nytt attribut lades inte till</numerusform>
+            <numerusform>FEL: %n nya attribut lades inte till</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="2928"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>RÄTT: %n attributvärde ändrades.</numerusform>
+            <numerusform>RÄTT: %n attributvärden ändrades.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="2933"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>FEL: %n attributförändring kunde inte genomföras.</numerusform>
+            <numerusform>FEL: %n attributförändringar kunde inte genomföras.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="2965"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>RÄTT: %n objekt lades till.</numerusform>
+            <numerusform>RÄTT: %n objekt lades till.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="2970"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>FEL: %n objekt lades inte till.</numerusform>
+            <numerusform>FEL: %n objekt lades inte till.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="2983"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>RÄTT: %n geometri ändrades.</numerusform>
+            <numerusform>RÄTT: %n geometrier ändrades.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="2988"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>FEL: %n geometri ändrades inte.</numerusform>
+            <numerusform>FEL: %n geometrier ändrades inte.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="3000"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>RÄTT: %n objekt togs bort.</numerusform>
+            <numerusform>RÄTT: %n objekt togs bort.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="3010"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>FEL: %n objekt togs inte bort.</numerusform>
+            <numerusform>FEL: %n objekt togs inte bort.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2406"/>
         <source>Unknown renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Okänd renderare</translation>
     </message>
 </context>
 <context>
@@ -31038,7 +31029,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     </message>
     <message>
         <source> connection and all associated settings?</source>
-        <translation type="obsolete">uppkopplingen och alla tillhörande inställningar?</translation>
+        <translation type="obsolete">anslutningen och alla tillhörande inställningar?</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="258"/>
@@ -31068,7 +31059,7 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="95"/>
         <source>Server Connections</source>
-        <translation>Serveruppkoppling</translation>
+        <translation>Serveranslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="107"/>
@@ -31539,7 +31530,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/quick_print/quickprintgui.cpp" line="156"/>
         <source>Unknown format: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Okänt format: %1</translation>
     </message>
 </context>
 <context>
@@ -31619,7 +31610,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="79"/>
         <source>Provides a way to quickly produce a map with minimal user input.</source>
-        <translation>En sätt att snabbt få en karta med minimal användarhantering</translation>
+        <translation>En sätt att snabbt få en karta med minimal användarhantering.</translation>
     </message>
 </context>
 <context>
@@ -31646,82 +31637,82 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="13"/>
         <source>Select Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="35"/>
         <source>Server Connections</source>
-        <translation type="unfinished">Serveruppkoppling</translation>
+        <translation>Serveranslutning</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="69"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished">K&amp;oppla upp</translation>
+        <translation>Anslut</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="79"/>
         <source>Edit</source>
-        <translation type="unfinished">Redigera</translation>
+        <translation>Redigera</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="89"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Radera</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="96"/>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Ny</translation>
+        <translation>&amp;Ny</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="106"/>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Markering</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="131"/>
         <source>Update</source>
-        <translation type="unfinished">Uppdatera</translation>
+        <translation>Uppdatera</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="147"/>
         <source>Ready</source>
-        <translation type="unfinished">Klar</translation>
+        <translation>Klar</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="160"/>
         <source>&amp;Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="163"/>
         <source>Alt+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="188"/>
         <source>Subdatasets</source>
-        <translation type="unfinished"></translation>
+        <translation>Subdataset</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="229"/>
         <source>Help</source>
-        <translation type="unfinished">Hjälp</translation>
+        <translation>Hjälp</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="232"/>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="242"/>
         <source>C&amp;lose</source>
-        <translation type="unfinished">S&amp;täng</translation>
+        <translation>S&amp;täng</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="245"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -31730,14 +31721,15 @@ Tried URL: %1</source>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="963"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1034"/>
         <source>Node tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodverktyg</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="964"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1035"/>
         <source>Result geometry is invalid. Reverting last changes.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrin blev ogiltig. Tar tillbaka senast ändringar.
+</translation>
     </message>
 </context>
 <context>
@@ -31745,17 +31737,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="14"/>
         <source>Simplify line tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerans för att förenkla linje</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="20"/>
         <source>Set tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Sätt tolerans</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="34"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -31770,17 +31762,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="159"/>
         <source>Undo/Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Ångra/Gör om</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="160"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Ångra</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="161"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Gör om</translation>
     </message>
 </context>
 <context>
@@ -32312,7 +32304,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
         <source>Connect</source>
-        <translation type="unfinished">Koppla upp</translation>
+        <translation type="unfinished">Anslut</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="262"/>

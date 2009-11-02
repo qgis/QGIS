@@ -159,7 +159,7 @@ class InstallerPlugin():
     # display an error message for every unavailable reposioty, except the case if all repositories are unavailable!
     if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
       for key in repositories.allUnavailable():
-        QMessageBox.warning(parent, QCoreApplication.translate("QgsPluginInstaller","QGIS Python Plugin Installer"), QCoreApplication.translate("QgsPluginInstaller","Error reading repository:") + u' %s\n%s' % (key,repositories.all()[key]["error"]))
+        QMessageBox.warning(parent, QCoreApplication.translate("QgsPluginInstaller","QGIS Python Plugin Installer"), QCoreApplication.translate("QgsPluginInstaller","Error reading repository:") + QString(' %s\n%s' % (key,repositories.all()[key]["error"])))
 
     flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMaximizeButtonHint 
     self.guiDlg = QgsPluginInstallerDialog(parent,flags)

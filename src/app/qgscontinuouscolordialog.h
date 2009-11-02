@@ -45,6 +45,9 @@ class QgsContinuousColorDialog: public QDialog, private Ui::QgsContinuousColorDi
   protected:
     QgsVectorLayer* mVectorLayer;
 
+    // Reimplements dialog keyPress event so we can ignore it
+    void keyPressEvent( QKeyEvent * event );
+
   private:
     /** Default constructor is private, do not use this */
     QgsContinuousColorDialog();

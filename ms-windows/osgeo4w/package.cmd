@@ -108,8 +108,15 @@ copy postinstall.bat %OSGEO4W_ROOT%\etc\postinstall\qgis-dev.bat
 copy preremove.bat %OSGEO4W_ROOT%\etc\preremove\qgis-dev.bat
 copy qgis-dev.bat.tmpl %OSGEO4W_ROOT%\bin\qgis-dev.bat.tmpl
 
+sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %OSGEO4W_ROOT%\apps\qgis-dev\python\qgis\qgisconfig.py >%OSGEO4W_ROOT%\apps\qgis-dev\python\qgis\qgisconfig.py.tmpl
+if errorlevel 1 goto error
+
+del %OSGEO4W_ROOT%\apps\qgis-dev\python\qgis\qgisconfig.py
+
+touch exclude
+
 tar -C %OSGEO4W_ROOT% -cjf qgis-dev-%VERSION%-%PACKAGE%.tar.bz2 ^
-	--exclude "apps/qgis-dev/plugins/EDBSQuery.dll" ^
+	--exclude-from exclude ^
 	apps/qgis-dev ^
 	bin/qgis-dev.bat.tmpl ^
 	etc/postinstall/qgis-dev.bat ^

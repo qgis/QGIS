@@ -19,12 +19,12 @@ public:
     /** Returns pixmap of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
      */
-    QImage imageMarker (QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
+    QImage imageMarker (QString fullName, int size, QPen pen, QBrush brush, double opacity );
 
     /** Returns qpicture of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
      */
-    QPicture pictureMarker (QString fullName, int size, QPen pen, QBrush brush, bool qtBug = true );
+    QPicture pictureMarker (QString fullName, int size, QPen pen, QBrush brush, double opacity );
     
     /** Returns a pixmap given a file name of a svg marker
      *  NOTE: this method needs to be public static for QgsMarkerDialog::visualizeMarkers */

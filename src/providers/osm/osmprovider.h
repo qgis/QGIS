@@ -16,24 +16,97 @@
 
 #include <sqlite3.h>
 #include <QFile>
-#include <QDateTime>
-
-
-
-
-typedef QMap<int, QgsFeature> QgsFeatureMap;
 
 
 
 class QgsOSMDataProvider: public QgsVectorDataProvider
 {
-  Q_OBJECT
+
+  private:
+
+    //! provider can manage features with one of three geometry types; variable determines feature type of this provider
+    enum { PointType, LineType, PolygonType } mFeatureType;
+
+    //! supported feature attributes
+    enum Attribute { TimestampAttr=0, UserAttr=1, TagAttr, CustomTagAttr };
+
+    //! supported feature attributes
+    static const char* attr[];
+
+    //! constant that helps to set default map extent
+    const static int DEFAULT_EXTENT=100;
+
+    //! absolute name of input OSM file
+    QString mFileName;
+
+    //! determines if this provider is in valid state (initialized correctly, etc.)
+    bool mValid;
+
+    //! holds information on error that occured in provider execution
+    char *mError;
+
+    //! object that receives notifications from init
+    QObject* mInitObserver;
+
+    //! boundary of all OSM data that provider manages
+    double xMin, xMax, yMin, yMax;
+
+    //! list of feature tags for which feature attributes are created
+    QStringList mCustomTagsList;
+
+    //! name of file with renderer style information
+    QString mStyleFileName;
+
+    //! determines style for rendering: one of "medium", "big", "small"
+    QString mStyle;
+
+    // sqlite3 database stuff:
+
+    //! absolute name of local database file with OSM data
+    QString mDatabaseFileName;
+
+    //! pointer to sqlite3 database that keeps OSM data
+    sqlite3 *mDatabase;
+
+    //! pointer to main sqlite3 database statement object; this statement serves to select OSM data
+    sqlite3_stmt *mDatabaseStmt;
+
+    //! sqlite3 database statement ready to select all feature tags
+    sqlite3_stmt *mTagsStmt;
+
+    //! sqlite3 database statement ready to select concrete feature tag
+    sqlite3_stmt *mCustomTagsStmt;
+
+    //! sqlite3 database statement for exact way selection
+    sqlite3_stmt *mWayStmt;
+
+    //! sqlite3 database statement for exact node selection
+    sqlite3_stmt *mNodeStmt;
+
+    // variables used to select OSM data; used mainly in select(), nextFeature() functions:
+
+    //! list of supported attribute fields
+    QgsFieldMap mAttributeFields;
+
+    //! which attributes should be fetched after calling of select() function
+    QgsAttributeList mAttributesToFetch;
+
+    //! features from which area should be fetched after calling of select() function?
+    QgsRectangle mSelectionRectangle;
+
+    //! geometry object of area from which features should be fetched after calling of select() function
+    QgsGeometry* mSelectionRectangleGeom;
+
+    //! determines if intersect should be used while selecting OSM data
+    bool mSelectUseIntersect;
+
+
 
   public:
 
     /**
-     * Constructor of the vector provider.
-     * @param uri  uniform resource locator (URI) for a dataset
+     * Constructor of vector provider.
+     * @param uri uniform resource locator (URI) for a dataset
      */
     QgsOSMDataProvider( QString uri );
 
@@ -43,7 +116,7 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
     virtual ~QgsOSMDataProvider();
 
 
-    // Implementation of functions from QgsVectorDataProvider
+    // Implementation of QgsVectorDataProvider functions
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -126,7 +199,7 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
     virtual int capabilities() const;
 
 
-    // Implementation of functions from QgsDataProvider
+    // Implementation of QgsDataProvider functions
 
     /**
      * Returns a provider name.
@@ -155,88 +228,56 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
 
 
   private:
-    enum { PointType, LineType, PolygonType } mFeatureType;
-    enum Attribute { TimestampAttr = 0, UserAttr = 1, TagAttr, CustomTagAttr };
-    const static int DEFAULT_EXTENT = 100;
+    /**
+     * Finds out if database (provider is connected to) belongs to (was created from) specified input file.
+     * @param mFileName name of input OSM file
+     * @return answer to that question
+     */
+    bool isDatabaseCompatibleWithInput(QString mFileName);
 
-    static const char* attr[];
-
-    QString mFileName;
-    QString mDatabaseFileName;
-    QDateTime mOsmFileLastModif;
-    bool mValid;
-
-    sqlite3 *mDatabase;
-    sqlite3_stmt *mDatabaseStmt;
-
-    char *mError;
-
-    //! object that receives notifications from init
-    QObject* mInitObserver;
-
-    double xMin, xMax, yMin, yMax;   // boundary
-
-    // selection
-    QgsAttributeList mAttributesToFetch;
-    QgsFieldMap mAttributeFields;
-    QgsRectangle mSelectionRectangle;
-    QgsGeometry* mSelectionRectangleGeom;
-
-    // flags
-    bool mSelectUseIntersect;
-
-    // private methods
-    sqlite3_stmt *mTagsStmt;
-    bool mTagsRetrieval;
-    QString tagsForObject( const char* type, int id );
-
-    sqlite3_stmt *mCustomTagsStmt;
-    QStringList mCustomTagsList;
-    QString tagForObject( const char* type, int id, QString tagKey );
-
-    sqlite3_stmt *mWayStmt;
-    sqlite3_stmt *mNodeStmt;
-
-    QString mStyleFileName;
-    QString mStyle;
-
-    // manipulation with sqlite database
-
-    bool isDatabaseCompatibleWithInput( QString mFileName );
+    /**
+     * Finds out if database and provider versions are compatible.
+     * @return answer to that question
+     */
     bool isDatabaseCompatibleWithPlugin();
 
     /**
-     * Create Open Street Map database schema, using c++ library for attempt to sqlite database.
+     * Creates Open Street Map database schema, using c++ library for attempt to sqlite database.
      * @return true in case of success and false in case of failure
      */
     bool createDatabaseSchema();
 
     /**
-     * Create indexes for OSM database schema, using c++ library for attempt to sqlite database.
+     * Creates indexes for OSM database schema, using c++ library for attempt to sqlite database.
      * @return true in case of success and false in case of failure
      */
     bool createIndexes();
+
+    /**
+     * Creates triggers for OSM database schema, using c++ library for attempt to sqlite database.
+     * @return true in case of success and false in case of failure
+     */
     bool createTriggers();
 
     /**
-     * Drop the whole OSM database schema, using c++ library for attempt to sqlite database.
+     * Drops the whole OSM database schema, using c++ library for attempt to sqlite database.
      * @return true in case of success and false in case of failure
      */
     bool dropDatabaseSchema();
 
     /**
-     * Open sqlite3 database.
+     * Opens sqlite3 database.
      * @return true in case of success and false in case of failure
      */
     bool openDatabase();
 
     /**
-     * Close opened sqlite3 database.
+     * Closes opened sqlite3 database.
      */
     bool closeDatabase();
 
     /**
-     * Process Open Street Map file, parse it and store data in sqlite database.
+     * Processes Open Street Map file, parse it and store data in sqlite database.
      * Function doesn't require much memory: uses simple SAX XML parser
      * and stores data directly to database while processing OSM file.
      * @param osm_filename name of file with OSM data to parse into sqlite3 database
@@ -244,8 +285,25 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
      */
     bool loadOsmFile( QString osm_filename );
 
+    /**
+     * Function computes WKB (well-known-binary) information on geometry of specified way
+     * and store it into database. Later this enables faster displaying of features.
+     * @param wayId way identifier
+     * @param isClosed is this way closed? closed=polygon X notClosed=line
+     * @param geo output; way geometry in wkb format
+     * @param geolen output; len of wkb geometry
+     */
     bool updateWayWKB( int wayId, int isClosed, char **geo, int *geolen );
+
+    /**
+     * Function performs all necessary postparsing manipulations with node records.
+     */
     bool updateNodes();
+
+    /**
+     * Function removes all ways that are not correct. This is called after parsing input file is completed.
+     * The main purpose is removing ways that contain nodes that are not included in loaded data.
+     */
     bool removeIncorrectWays();
 
 
@@ -261,9 +319,12 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
     bool splitNodes();
 
     /**
-     * This function is postprocess after osm file parsing. Parsing stored all information into database, but
-     * such database schema is not optimal e.g. for way selection, that is called very often. It should be better
-     * to have way members (with their coordinates) store directly in way table - in WKB (well known binary) format
+     * This function performs postprocessing after OSM file parsing.
+     *
+     * Parsing has stored all information into database, but such database schema is not optimal e.g. for way selection,
+     * that must be done very often. It should be better to have way members (with their coordinates) stored directly
+     * in way table - in WKB (well known binary) format. Also some other redundant/cached information can be useful.
+     *
      * @return true in case of success and false in case of failure
      */
     bool postparsing();
@@ -276,30 +337,47 @@ class QgsOSMDataProvider: public QgsVectorDataProvider
     int freeFeatureId();
 
     /**
-     * Get number of members of specified way.
+     * Gets number of members of specified way.
      * @param wayId way identifier
      * @return number of way members
      */
     int wayMemberCount( int wayId );
 
-    int relationMemberCount( int relId );
-
-    // fetch node from current statement
+    /**
+     * Function fetches one node from current sqlite3 statement.
+     * @param feature output; feature representing fetched node
+     * @param stmt database statement to fetch node from
+     * @param fetchGeometry determines if node geometry should be fetched also
+     * @param fetchAttrs list of attributes to be fetched with node
+     * @return success of failure flag (true/false)
+     */
     bool fetchNode( QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs );
 
-    // fetch way from current statement
+    /**
+     * Function fetches one way from current sqlite3 statement.
+     * @param feature output; feature representing fetched way
+     * @param stmt database statement to fetch way from
+     * @param fetchGeometry determines if way geometry should be fetched also
+     * @param fetchAttrs list of attributes to be fetched with way
+     * @return success of failure flag (true/false)
+     */
     bool fetchWay( QgsFeature& feature, sqlite3_stmt* stmt, bool fetchGeometry, QgsAttributeList& fetchAttrs );
 
-    // Change geometry of one feature (used by changeGeometryValues())
-    bool changeGeometryValue( const int & featid, QgsGeometry & geom );
+    /**
+     * Function returns string of concatenated tags of specified feature.
+     * @param type type of feature (one of "node","way","relation")
+     * @param id feature identifier
+     * @return string of tags concatenation
+     */
+    QString tagsForObject(const char* type, int id);
 
-    struct wkbPoint
-    {
-      char byteOrder;
-      unsigned wkbType;
-      double x;
-      double y;
-    };
-    wkbPoint mWKBpt;
+    /**
+     * Function returns one tag value of specified feature and specified key.
+     * @param type type of feature (one of "node","way","relation")
+     * @param id feature identifier
+     * @param tagKey tag key
+     * @return tag value
+     */
+    QString tagForObject(const char* type, int id, QString tagKey);
 };
 

@@ -16,7 +16,7 @@ class QgsSingleSymbolRenderer : QgsRenderer
     const QgsSymbol* symbol() const;
 
     /**Renders a feature added in 1.2 */
-    void renderFeature(QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected);
+    void renderFeature(QgsRenderContext &renderContext, QgsFeature& f, QImage* img, bool selected, double opacity = 1.0 );
 
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read 

@@ -70,6 +70,9 @@ class QgsGraduatedSymbolDialog: public QDialog, private Ui::QgsGraduatedSymbolDi
     /**Gets the color value along a specified ramp**/
     QColor getColorFromRamp( QString ramp, int step, int totalSteps );
 
+    // Reimplements dialog keyPress event so we can ignore it
+    void keyPressEvent( QKeyEvent * event );
+
   protected slots:
     /**Removes a class from the classification*/
     void deleteCurrentClass();

@@ -1,4 +1,3 @@
 libqgis1: shlib-calls-exit
-libqgis1: no-symbols-control-file usr/lib/libqgis_gui.so.1.1
-libqgis1: no-symbols-control-file usr/lib/libqgis_core.so.1.1
-libqgis1: package-name-doesnt-match-sonames libqgis-core1.1 libqgis-gui1.1
+libqgis1: no-symbols-control-file usr/lib/libqgis_gui.so.1.2.0
+libqgis1: no-symbols-control-file usr/lib/libqgis_core.so.1.2.0
