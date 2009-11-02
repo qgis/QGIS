@@ -3,24 +3,10 @@
 
 SET (INTERPOLATION_SRCS
      qgsinterpolationplugin.cpp
-     qgsgridfilewriter.cpp
-     qgsidwinterpolator.cpp
      qgsidwinterpolatordialog.cpp
      qgsinterpolationdialog.cpp
-     qgsinterpolator.cpp
      qgsinterpolatordialog.cpp
-     qgstininterpolator.cpp
      qgstininterpolatordialog.cpp
-     DualEdgeTriangulation.cc
-     HalfEdge.cc
-     Line3D.cc
-     LinTriangleInterpolator.cc
-     MathUtils.cc
-     Node.cc
-     Point3D.cc
-     TriangleInterpolator.cc
-     Triangulation.cc
-     Vector3D.cc
 )
 
 SET (INTERPOLATION_UIS 
@@ -55,6 +41,7 @@ ADD_LIBRARY (interpolationplugin MODULE
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ${GEOS_INCLUDE_DIR}
+     ../../analysis/interpolation
      ../../core 
      ../../core/raster 
      ../../core/renderer 
@@ -65,6 +52,7 @@ INCLUDE_DIRECTORIES(
 )
 
 TARGET_LINK_LIBRARIES(interpolationplugin
+  qgis_analysis
   qgis_core
   qgis_gui
 )

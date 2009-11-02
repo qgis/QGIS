@@ -27,7 +27,7 @@ class QProgressDialog;
 the cell value and the eight neighbour cells. Common examples are slope and aspect calculation in DEMs. Subclasses only implement \
 the method that calculates the new value from the nine values. Everything else (reading file, writing file) is done by this subclass*/
 
-class QgsNineCellFilter
+class ANALYSIS_EXPORT QgsNineCellFilter
 {
   public:
     /**Constructor that takes input file, output file and output format (GDAL string)*/

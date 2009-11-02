@@ -1,79 +1,87 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsProjectPropertiesBase</class>
- <widget class="QDialog" name="QgsProjectPropertiesBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsProjectPropertiesBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>536</width>
-    <height>713</height>
+    <width>451</width>
+    <height>515</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Project Properties</string>
   </property>
-  <property name="windowIcon" >
-   <iconset/>
-  </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <property name="modal" >
+  <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QTabWidget" name="tabWidget" >
-     <property name="currentIndex" >
+  <layout class="QGridLayout">
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab1" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tab1">
+      <attribute name="title">
        <string>General</string>
       </attribute>
-      <layout class="QGridLayout" >
-       <item row="0" column="0" >
-        <widget class="QGroupBox" name="titleBox" >
-         <property name="title" >
-          <string>Title and colors</string>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="titleBox">
+         <property name="title">
+          <string>General settings</string>
          </property>
-         <layout class="QGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label_2" >
-            <property name="text" >
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
              <string>Project title</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" colspan="3" >
-           <widget class="QLineEdit" name="titleEdit" >
-            <property name="toolTip" >
+          <item row="0" column="1" colspan="3">
+           <widget class="QLineEdit" name="titleEdit">
+            <property name="toolTip">
              <string>Descriptive project name</string>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Default project title</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QLabel" name="textLabel1" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QLabel" name="textLabel1">
+            <property name="text">
              <string>Selection color</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>pbnSelectionColour</cstring>
             </property>
            </widget>
           </item>
-          <item row="1" column="2" >
+          <item row="1" column="2">
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeType" >
+            <property name="sizeType">
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>40</width>
               <height>20</height>
@@ -81,35 +89,35 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="3" >
-           <widget class="QgsColorButton" name="pbnSelectionColour" >
-            <property name="minimumSize" >
+          <item row="1" column="3">
+           <widget class="QgsColorButton" name="pbnSelectionColour">
+            <property name="minimumSize">
              <size>
               <width>100</width>
               <height>0</height>
              </size>
             </property>
-            <property name="text" >
+            <property name="text">
              <string/>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2" >
-           <widget class="QLabel" name="label" >
-            <property name="text" >
+          <item row="2" column="0" colspan="2">
+           <widget class="QLabel" name="label">
+            <property name="text">
              <string>Background color</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>pbnCanvasColor</cstring>
             </property>
            </widget>
           </item>
-          <item row="2" column="2" >
+          <item row="2" column="2">
            <spacer>
-            <property name="orientation" >
+            <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0">
              <size>
               <width>40</width>
               <height>20</height>
@@ -117,60 +125,58 @@
             </property>
            </spacer>
           </item>
-          <item row="2" column="3" >
-           <widget class="QgsColorButton" name="pbnCanvasColor" >
-            <property name="minimumSize" >
+          <item row="2" column="3">
+           <widget class="QgsColorButton" name="pbnCanvasColor">
+            <property name="minimumSize">
              <size>
               <width>100</width>
               <height>0</height>
              </size>
             </property>
-            <property name="text" >
+            <property name="text">
              <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="4">
+           <widget class="QCheckBox" name="cbxAbsolutePath">
+            <property name="text">
+             <string>Save absolute paths</string>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QGroupBox" name="btnGrpMapUnits" >
-         <property name="title" >
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="btnGrpMapUnits">
+         <property name="title">
           <string>Layer units (only used when CRS transformation is disabled)</string>
          </property>
-         <layout class="QHBoxLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+         <layout class="QHBoxLayout">
+          <property name="margin">
            <number>11</number>
           </property>
           <item>
-           <widget class="QRadioButton" name="radMeters" >
-            <property name="text" >
+           <widget class="QRadioButton" name="radMeters">
+            <property name="text">
              <string>Meters</string>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radFeet" >
-            <property name="text" >
+           <widget class="QRadioButton" name="radFeet">
+            <property name="text">
              <string>Feet</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radDecimalDegrees" >
-            <property name="text" >
+           <widget class="QRadioButton" name="radDecimalDegrees">
+            <property name="text">
              <string>Decimal degrees</string>
             </property>
            </widget>
@@ -178,60 +184,60 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QGroupBox" name="btnGrpPrecision" >
-         <property name="title" >
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="btnGrpPrecision">
+         <property name="title">
           <string>Precision</string>
          </property>
-         <layout class="QGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QRadioButton" name="radAutomatic" >
-            <property name="toolTip" >
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="radAutomatic">
+            <property name="toolTip">
              <string>Automatically sets the number of decimal places in the mouse position display</string>
             </property>
-            <property name="whatsThis" >
+            <property name="whatsThis">
              <string>The number of decimal places that are used when displaying the mouse position is automatically set to be enough so that moving the mouse by one pixel gives a change in the position display</string>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Automatic</string>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QRadioButton" name="radManual" >
-            <property name="toolTip" >
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="radManual">
+            <property name="toolTip">
              <string>Sets the number of decimal places to use for the mouse position display</string>
             </property>
-            <property name="whatsThis" >
+            <property name="whatsThis">
              <string>Sets the number of decimal places to use for the mouse position display</string>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Manual</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="2" >
-           <widget class="QSpinBox" name="spinBoxDP" >
-            <property name="toolTip" >
+          <item row="0" column="2">
+           <widget class="QSpinBox" name="spinBoxDP">
+            <property name="toolTip">
              <string>The number of decimal places for the manual option</string>
             </property>
-            <property name="whatsThis" >
+            <property name="whatsThis">
              <string>The number of decimal places for the manual option</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="3" >
-           <widget class="QLabel" name="textLabel3" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+          <item row="0" column="3">
+           <widget class="QLabel" name="textLabel3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>decimal places</string>
             </property>
            </widget>
@@ -239,35 +245,35 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <widget class="QGroupBox" name="grpDigitizing" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+       <item row="3" column="0">
+        <widget class="QGroupBox" name="grpDigitizing">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="title" >
+         <property name="title">
           <string>Digitizing</string>
          </property>
-         <layout class="QGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="mEnableTopologicalEditingCheckBox" >
-            <property name="text" >
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="mEnableTopologicalEditingCheckBox">
+            <property name="text">
              <string>Enable topological editing</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="mAvoidIntersectionsCheckBox" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="mAvoidIntersectionsCheckBox">
+            <property name="text">
              <string>Avoid intersections of new polygons</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" >
-           <widget class="QPushButton" name="mSnappingOptionsPushButton" >
-            <property name="text" >
+          <item row="2" column="0">
+           <widget class="QPushButton" name="mSnappingOptionsPushButton">
+            <property name="text">
              <string>Snapping options...</string>
             </property>
            </widget>
@@ -275,59 +281,86 @@
          </layout>
         </widget>
        </item>
-       <item row="4" column="0" >
-        <widget class="QCheckBox" name="cbxAbsolutePath" >
-         <property name="text" >
-          <string>Save absolute paths</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab2" >
-      <attribute name="title" >
+     <widget class="QWidget" name="tab2">
+      <attribute name="title">
        <string>Coordinate Reference System (CRS)</string>
       </attribute>
-      <layout class="QGridLayout" >
-       <property name="leftMargin" >
+      <layout class="QGridLayout">
+       <property name="leftMargin">
         <number>3</number>
        </property>
-       <property name="topMargin" >
+       <property name="topMargin">
         <number>11</number>
        </property>
-       <property name="rightMargin" >
+       <property name="rightMargin">
         <number>3</number>
        </property>
-       <property name="bottomMargin" >
+       <property name="bottomMargin">
         <number>11</number>
        </property>
-       <item row="0" column="0" >
-        <widget class="QCheckBox" name="cbxProjectionEnabled" >
-         <property name="text" >
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="cbxProjectionEnabled">
+         <property name="text">
           <string>Enable 'on the fly' CRS transformation</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QgsProjectionSelector" native="1" name="projectionSelector" />
+       <item row="1" column="0">
+        <widget class="QgsProjectionSelector" name="projectionSelector" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab3">
+      <attribute name="title">
+       <string>Identifiable layers</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QTableWidget" name="twIdentifyLayers">
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <attribute name="horizontalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Layer</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Identifiable</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+          </property>
+         </column>
+        </widget>
        </item>
       </layout>
      </widget>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
@@ -366,11 +399,11 @@
    <receiver>spinBoxDP</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>229</x>
      <y>280</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>416</x>
      <y>286</y>
     </hint>
@@ -382,11 +415,11 @@
    <receiver>textLabel3</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>240</x>
      <y>281</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>583</x>
      <y>290</y>
     </hint>
@@ -398,11 +431,11 @@
    <receiver>spinBoxDP</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>100</x>
      <y>290</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>395</x>
      <y>285</y>
     </hint>
@@ -414,11 +447,11 @@
    <receiver>textLabel3</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>87</x>
      <y>284</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>589</x>
      <y>285</y>
     </hint>

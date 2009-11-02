@@ -1030,6 +1030,32 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Points in polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output Shapefile:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector layer is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output matrix:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum line lengths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>creating new selection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1063,32 +1089,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Distance matrix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Created output matrix:
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Points in polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Created output Shapefile:
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Vector layer is not valid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sum line lengths</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1793,54 +1793,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
 <context>
     <name>OsmDownloadDlg</name>
     <message>
-        <source>OSM Download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Download Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Getting data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Download OSM data</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1895,6 +1847,54 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <source>Cancel</source>
         <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <source>OSM Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waiting for OpenStreetMap server ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Download Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download failed: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Getting data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both extents are too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latitude extent is too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude extent is too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK! Area is probably acceptable to server.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2077,34 +2077,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
 <context>
     <name>OsmSaveDlg</name>
     <message>
-        <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Initializing...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save OSM</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2138,6 +2110,34 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save OSM to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving nodes...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving lines...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving polygons...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving relations...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2226,12 +2226,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OSM Upload</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Uploading data...</source>
         <translation type="unfinished">上传数据...</translation>
+    </message>
+    <message>
+        <source>OSM Upload</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3231,10 +3231,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished">放弃</translation>
     </message>
     <message>
-        <source>Uncatched fatal GRASS error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Couldn&apos;t load SIP module.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3504,6 +3500,14 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Terrain Analysis plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A plugin for raster based terrain analysis</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4862,10 +4866,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5284,10 +5284,6 @@ Errors: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Extents: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5533,7 +5529,7 @@ Symbology enhancements:
 - add support for data defined symbol(name)s
 - add support for font symbol markers (only data defined - no gui yet)
 - add symbol size in map units (ie. symbols that keep the size in mapunits
-  independant of the mapscale)
+  independent of the mapscale)
 
 Command line arguments:
 
@@ -5638,6 +5634,30 @@ updates.</source>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reshape Features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current map coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current map coordinate (formatted as x,y)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extents:</source>
+        <translation type="unfinished">范围:</translation>
     </message>
 </context>
 <context>
@@ -6490,6 +6510,10 @@ p, li { white-space: pre-wrap; }
         <source>Donors</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Qt Image Plugin Search Paths&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAddAttrDialogBase</name>
@@ -7269,6 +7293,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">错误</translation>
+    </message>
+    <message>
+        <source>Could not open file %1
+Error was:%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Data from CSV file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9615,6 +9656,10 @@ The database said:
 %3</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Primary key column</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDbSourceSelectBase</name>
@@ -9743,6 +9788,10 @@ The database said:
     </message>
     <message>
         <source>Multipolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Primary key column</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13309,6 +13358,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGrassProvider</name>
+    <message>
+        <source>GRASS vector map %1 does not have topology. Build topology?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassRegion</name>
     <message>
         <source>Warning</source>
@@ -13995,15 +14051,27 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Identify Results - %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Copy attribute value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Copy feature attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">图层</translation>
+    </message>
+    <message>
+        <source>Edit feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute changed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14142,6 +14210,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Type</source>
         <translation type="unfinished">类型</translation>
+    </message>
+    <message>
+        <source>Cellsize X:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cellsize Y:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set to current extent</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15332,12 +15428,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Band</source>
-        <translation type="unfinished">波段</translation>
-    </message>
-    <message>
-        <source>WMS identify result for %1:
-%2</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">波段</translation>
     </message>
     <message>
         <source>Length</source>
@@ -15349,39 +15440,20 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>action</source>
-        <translation type="unfinished">命令</translation>
-    </message>
-    <message>
-        <source>No features found</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">命令</translation>
     </message>
     <message>
         <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="unfinished">在当前激活图层的鼠标点击位置上未发现要素</translation>
+        <translation type="obsolete">在当前激活图层的鼠标点击位置上未发现要素</translation>
     </message>
     <message numerus="yes">
         <source>%1 - %n feature(s) found</source>
         <comment>Identify results window title</comment>
-        <translation type="unfinished">
+        <translation type="obsolete">
             <numerusform>
         
         </numerusform>
         </translation>
-    </message>
-    <message>
-        <source>Could not draw %1 because:
-%2</source>
-        <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not identify objects on %1 because:
-%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>firstX</source>
@@ -15399,6 +15471,34 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>lastY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifying on %1...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifying done.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identify results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No features at this position found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15437,6 +15537,37 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Inserted vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolReshape</name>
+    <message>
+        <source>Not a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The current layer is not a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation type="unfinished">图层不可编辑</translation>
+    </message>
+    <message>
+        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate transform error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot transform the point to the layers coordinate system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reshape</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16781,6 +16912,18 @@ p, li { white-space: pre-wrap; }
         <source>Popmusic chain (very slow)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>current layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>top down, stop at first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>top down</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -17013,7 +17156,7 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     </message>
     <message>
         <source>Search radius</source>
-        <translation>搜索半径</translation>
+        <translation type="obsolete">搜索半径</translation>
     </message>
     <message>
         <source>Pro&amp;jection</source>
@@ -17268,10 +17411,6 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>When layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Prompt for CRS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17346,6 +17485,18 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     <message>
         <source>Feet</source>
         <translation type="unfinished">英尺</translation>
+    </message>
+    <message>
+        <source>Identify</source>
+        <translation type="unfinished">识别要素</translation>
+    </message>
+    <message>
+        <source>Mode</source>
+        <translation type="unfinished">模式</translation>
+    </message>
+    <message>
+        <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17777,14 +17928,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Fetch Python Plugins...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17818,6 +17961,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error reading repository:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t parse output from the repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open the local plugin directory</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19115,6 +19266,33 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
 </context>
 <context>
+    <name>QgsProjectProperties</name>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">图层</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">类型</translation>
+    </message>
+    <message>
+        <source>Identifiable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsProjectPropertiesBase</name>
     <message>
         <source>Project Properties</source>
@@ -19265,10 +19443,6 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Title and colors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Project title</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19293,11 +19467,31 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>save absolute paths</source>
+        <source>Layer units (only used when CRS transformation is disabled)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Layer units (only used when CRS transformation is disabled)</source>
+        <source>General settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save absolute paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identifiable layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">图层</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">类型</translation>
+    </message>
+    <message>
+        <source>Identifiable</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19768,7 +19962,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Retrieving using %1</source>
+        <source>Retrieving %1 using %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 retrieved using %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20784,6 +20982,91 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsRasterTerrainAnalysisDialog</name>
+    <message>
+        <source>Slope</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aspect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ruggedness index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total curvature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter result file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterTerrainAnalysisDialogBase</name>
+    <message>
+        <source>Raster based terrain analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Analysis:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Output format:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add result to project</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterTerrainAnalysisPlugin</name>
+    <message>
+        <source>&amp;Raster based terrain analysis...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aspect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ruggedness index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total curvature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculating </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsRunProcess</name>
     <message>
         <source>Unable to run command</source>
@@ -21425,6 +21708,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Style</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">选项</translation>
+    </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="unfinished">图层名称</translation>
     </message>
 </context>
 <context>
@@ -23365,6 +23656,14 @@ Should the existing classes be deleted before classification?</source>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Create a new WFS connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify WFS connection</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsWFSSourceSelectBase</name>
@@ -24502,22 +24801,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Save?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute Containing Path to File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path Is Relative</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -24537,19 +24821,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Display Compass Bearing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compass Offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -24667,6 +24943,46 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute containing path to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path is relative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remember this</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compass bearing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute containing compass bearing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display compass bearing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compass offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relative paths</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

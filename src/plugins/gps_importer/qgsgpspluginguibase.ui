@@ -13,7 +13,9 @@
    <string>GPS Tools</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <layout class="QGridLayout" >
    <property name="leftMargin" >

@@ -399,6 +399,8 @@ class QgisApp : public QMainWindow
     void showScale( double theScale );
     //! Slot to handle user scale input;
     void userScale();
+    //! Slot to handle user center input;
+    void userCenter();
     //! Remove a layer from the map and legend
     void removeLayer();
     //! zoom to extent of layer
@@ -877,8 +879,12 @@ class QgisApp : public QMainWindow
     QLineEdit * mScaleEdit;
     //! The validator for the mScaleEdit
     QValidator * mScaleEditValidator;
-    //! Widget that will live in the statusbar to display coords
+    //! Widget that will live on the statusbar to display "Coordinate / Extent"
     QLabel * mCoordsLabel;
+    //! Widget that will live in the statusbar to display and edit coords
+    QLineEdit * mCoordsEdit;
+    //! The validator for the mCoordsEdit
+    QValidator * mCoordsEditValidator;
     //! Widget that will live in the statusbar to show progress of operations
     QProgressBar * mProgressBar;
     //! Widget used to suppress rendering

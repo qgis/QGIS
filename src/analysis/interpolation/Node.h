@@ -21,7 +21,7 @@
 #include <iostream>
 
 /**Node is a class used by Line3D. It represents a node in the single directed linked list. Associated Point3D objects are deleted when the node is deleted.*/
-class Node
+class ANALYSIS_EXPORT Node
 {
   protected:
     /**Pointer to the Point3D object associated with the node*/

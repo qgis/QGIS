@@ -26,6 +26,8 @@
 #include <QSettings>
 #include <QTextStream>
 
+#include <QTextCodec>
+
 extern "C"
 {
 #ifndef _MSC_VER
@@ -37,11 +39,20 @@ extern "C"
 
 #if defined(WIN32)
 #include <windows.h>
-static QString getShortPath( const QString &path )
+QString GRASS_EXPORT QgsGrass::shortPath( const QString &path )
 {
   TCHAR buf[MAX_PATH];
-  GetShortPathName( path.toAscii(), buf, MAX_PATH );
-  return buf;
+  int len = GetShortPathName( path.toUtf8().constData(), buf, MAX_PATH );
+
+  if ( len == 0 || len > MAX_PATH )
+  {
+    QgsDebugMsg( QString( "GetShortPathName('%1') failed with %2: %3" )
+                 .arg( path ).arg( len ).arg( GetLastError() ) );
+    return path;
+  }
+
+  QString res = QString::fromUtf8( buf );
+  return res;
 }
 #endif
 
@@ -54,7 +65,8 @@ void GRASS_EXPORT QgsGrass::init( void )
   // Set error function
   G_set_error_routine( &error_routine );
 
-  if ( initialized ) return;
+  if ( initialized )
+    return;
 
   QSettings settings;
 
@@ -91,7 +103,7 @@ void GRASS_EXPORT QgsGrass::init( void )
   // This value should always take precedence.
 #if WIN32
   QString gisBase = getenv( "WINGISBASE" ) ? getenv( "WINGISBASE" ) : getenv( "GISBASE" );
-  gisBase = getShortPath( gisBase );
+  gisBase = shortPath( gisBase );
 #else
   QString gisBase = getenv( "GISBASE" );
 #endif
@@ -110,7 +122,7 @@ void GRASS_EXPORT QgsGrass::init( void )
 
 #ifdef WIN32
     // Use the applicationDirPath()/grass
-    gisBase = getShortPath( QCoreApplication::applicationDirPath() + "/grass" );
+    gisBase = shortPath( QCoreApplication::applicationDirPath() + "/grass" );
     QgsDebugMsg( QString( "GRASS gisBase = %1" ).arg( gisBase ) );
 #else
     // Use the location specified --with-grass during configure
@@ -150,7 +162,7 @@ void GRASS_EXPORT QgsGrass::init( void )
       break;
     }
 #if defined(WIN32)
-    gisBase = getShortPath( gisBase );
+    gisBase = shortPath( gisBase );
 #endif
   }
 
@@ -169,8 +181,8 @@ void GRASS_EXPORT QgsGrass::init( void )
   QgsDebugMsg( QString( "Valid GRASS gisBase is: %1" ).arg( gisBase ) );
   QString gisBaseEnv = "GISBASE=" + gisBase;
   /* _Correct_ putenv() implementation is not making copy! */
-  char *gisBaseEnvChar = new char[gisBaseEnv.length()+1];
-  strcpy( gisBaseEnvChar, gisBaseEnv.toAscii().constData() );
+  char *gisBaseEnvChar = new char[gisBaseEnv.toUtf8().length()+1];
+  strcpy( gisBaseEnvChar, gisBaseEnv.toUtf8().constData() );
   putenv( gisBaseEnvChar );
 
   // Add path to GRASS modules
@@ -190,19 +202,20 @@ void GRASS_EXPORT QgsGrass::init( void )
 #ifdef WIN32
   // It seems that QgsApplication::prefixPath()
   // is not initialized at this point
-  path.append( sep + getShortPath( QCoreApplication::applicationDirPath() ) );
+  path.append( sep + shortPath( QCoreApplication::applicationDirPath() ) );
 
   // Add path to MSYS bin
   // Warning: MSYS sh.exe will translate this path to '/bin'
-  path.append( sep + getShortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" ) );
+  if ( QFileInfo( QCoreApplication::applicationDirPath() + "/msys/bin/" ).isDir() )
+    path.append( sep + shortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" ) );
 #endif
 
   QString p = getenv( "PATH" );
   path.append( sep + p );
 
   QgsDebugMsg( QString( "set PATH: %1" ).arg( path ) );
-  char *pathEnvChar = new char[path.length()+1];
-  strcpy( pathEnvChar, path.toAscii().constData() );
+  char *pathEnvChar = new char[path.toUtf8().length()+1];
+  strcpy( pathEnvChar, path.toUtf8().constData() );
   putenv( pathEnvChar );
 
   // Set PYTHONPATH
@@ -210,8 +223,8 @@ void GRASS_EXPORT QgsGrass::init( void )
   QString pp = getenv( "PATH" );
   pythonpath.append( sep + pp );
   QgsDebugMsg( QString( "set PYTHONPATH: %1" ).arg( pythonpath ) );
-  char *pythonpathEnvChar = new char[pythonpath.length()+1];
-  strcpy( pythonpathEnvChar, pythonpath.toAscii().constData() );
+  char *pythonpathEnvChar = new char[pythonpath.toUtf8().length()+1];
+  strcpy( pythonpathEnvChar, pythonpath.toUtf8().constData() );
   putenv( pythonpathEnvChar );
 
   // Set GRASS_PAGER if not set, it is necessary for some
@@ -253,7 +266,7 @@ void GRASS_EXPORT QgsGrass::init( void )
     {
       pager.prepend( "GRASS_PAGER=" );
       char *pagerEnvChar = new char[pager.length()+1];
-      strcpy( pagerEnvChar, pager.toAscii().constData() );
+      strcpy( pagerEnvChar, pager.toUtf8().constData() );
       putenv( pagerEnvChar );
     }
   }
@@ -278,7 +291,7 @@ bool QgsGrass::isValidGrassBaseDir( QString const gisBase )
   /*
   if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
   {
-  if ( G_is_gisbase( gisBase.toLocal8Bit().constData() ) ) return TRUE;
+  if ( G_is_gisbase( gisBase.toUtf8().constData() ) ) return TRUE;
   }
   else
   {
@@ -319,12 +332,12 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
   init();
 
   // Set principal GRASS variables (in memory)
-#if defined(WIN32)
-  G__setenv(( char * ) "GISDBASE", getShortPath( gisdbase ).toAscii().data() );
-#else
-  G__setenv(( char * ) "GISDBASE", gisdbase.toAscii().data() );
-#endif
-  G__setenv(( char * ) "LOCATION_NAME", location.toAscii().data() );
+// #if defined(WIN32)
+//  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
+//#else
+  G__setenv(( char * ) "GISDBASE", gisdbase.toAscii().constData() );
+//#endif
+  G__setenv(( char * ) "LOCATION_NAME", location.toAscii().constData() );
   G__setenv(( char * ) "MAPSET", ( char * ) "PERMANENT" ); // PERMANENT must always exist
 
   // Add all available mapsets to search path
@@ -338,13 +351,13 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
   init();
 
   // Set principal GRASS variables (in memory)
-#if defined(WIN32)
-  G__setenv(( char * ) "GISDBASE", getShortPath( gisdbase ).toAscii().data() );
-#else
-  G__setenv(( char * ) "GISDBASE", gisdbase.toAscii().data() );
-#endif
-  G__setenv(( char * ) "LOCATION_NAME", location.toAscii().data() );
-  G__setenv(( char * ) "MAPSET", mapset.toAscii().data() );
+// #if defined(WIN32)
+//  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toUtf8().data() );
+// #else
+  G__setenv(( char * ) "GISDBASE", gisdbase.toUtf8().data() );
+// #endif
+  G__setenv(( char * ) "LOCATION_NAME", location.toUtf8().data() );
+  G__setenv(( char * ) "MAPSET", mapset.toUtf8().data() );
 
   // Add all available mapsets to search path
   char **ms = G_available_mapsets();
@@ -355,7 +368,7 @@ int QgsGrass::initialized = 0;
 
 bool QgsGrass::active = 0;
 
-QgsGrass::GERROR QgsGrass::error = QgsGrass::OK;
+QgsGrass::GERROR QgsGrass::lastError = QgsGrass::OK;
 
 QString QgsGrass::error_message;
 
@@ -366,9 +379,6 @@ QString QgsGrass::defaultMapset;
 QString QgsGrass::mMapsetLock;
 QString QgsGrass::mGisrc;
 QString QgsGrass::mTmp;
-
-jmp_buf QgsGrass::mFatalErrorEnv;
-bool QgsGrass::mFatalErrorEnvActive = false;
 
 int QgsGrass::error_routine( char *msg, int fatal )
 {
@@ -383,57 +393,35 @@ int QgsGrass::error_routine( const char *msg, int fatal )
 
   if ( fatal )
   {
-    error = FATAL;
     // we have to do a long jump here, otherwise GRASS >= 6.3 will kill our process
-    if ( mFatalErrorEnvActive )
-      longjmp( mFatalErrorEnv, 1 );
-    else
-    {
-      QMessageBox::warning( 0, QObject::tr( "Uncatched fatal GRASS error" ), msg );
-      abort();
-    }
+    throw QgsGrass::Exception( msg );
   }
   else
-    error = WARNING;
+    lastError = WARNING;
 
   return 1;
 }
 
 void GRASS_EXPORT QgsGrass::resetError( void )
 {
-  error = OK;
+  lastError = OK;
 }
 
-int GRASS_EXPORT QgsGrass::getError( void )
+int GRASS_EXPORT QgsGrass::error( void )
 {
-  return error;
+  return lastError;
 }
 
-QString GRASS_EXPORT QgsGrass::getErrorMessage( void )
+QString GRASS_EXPORT QgsGrass::errorMessage( void )
 {
   return error_message;
 }
 
-jmp_buf GRASS_EXPORT &QgsGrass::fatalErrorEnv()
-{
-  if ( mFatalErrorEnvActive )
-    QgsDebugMsg( "fatal error environment already active." );
-  mFatalErrorEnvActive = true;
-  return mFatalErrorEnv;
-}
-
-void GRASS_EXPORT QgsGrass::clearErrorEnv()
-{
-  if ( !mFatalErrorEnvActive )
-    QgsDebugMsg( "fatal error environment already deactive." );
-  mFatalErrorEnvActive = false;
-}
-
 QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, QString mapset )
 {
-  QgsDebugMsg( QString( "gisdbase = %1" ).arg( gisdbase.toLocal8Bit().constData() ) );
-  QgsDebugMsg( QString( "location = %1" ).arg( location.toLocal8Bit().constData() ) );
-  QgsDebugMsg( QString( "mapset = %1" ).arg( mapset.toLocal8Bit().constData() ) );
+  QgsDebugMsg( QString( "gisdbase = %1" ).arg( gisdbase.toUtf8().constData() ) );
+  QgsDebugMsg( QString( "location = %1" ).arg( location.toUtf8().constData() ) );
+  QgsDebugMsg( QString( "mapset = %1" ).arg( mapset.toUtf8().constData() ) );
 
   QString mapsetPath = gisdbase + "/" + location + "/" + mapset;
 
@@ -460,7 +448,7 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
 #else
   int pid = GetCurrentProcessId();
 #endif
-  lockFile.write( QString( "%1" ).arg( pid ).toLocal8Bit() );
+  lockFile.write( QString( "%1" ).arg( pid ).toUtf8() );
   lockFile.close();
 #else
   QProcess *process = new QProcess();
@@ -516,8 +504,8 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   QString globalGisrc =  QDir::home().path() + "/.grassrc6";
   mGisrc = mTmp + "/gisrc";
 
-  QgsDebugMsg( QString( "globalGisrc = %1" ).arg( globalGisrc.toLocal8Bit().constData() ) );
-  QgsDebugMsg( QString( "mGisrc = %1" ).arg( mGisrc.toLocal8Bit().constData() ) );
+  QgsDebugMsg( QString( "globalGisrc = %1" ).arg( globalGisrc ) );
+  QgsDebugMsg( QString( "mGisrc = %1" ).arg( mGisrc ) );
 
   QFile out( mGisrc );
   if ( !out.open( QIODevice::WriteOnly ) )
@@ -558,19 +546,19 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
 
   /* _Correct_ putenv() implementation is not making copy! */
   QString gisrcEnv = "GISRC=" + mGisrc;
-  char *gisrcEnvChar = new char[gisrcEnv.length()+1];
-  strcpy( gisrcEnvChar, gisrcEnv.toAscii().constData() );
+  char *gisrcEnvChar = new char[gisrcEnv.toUtf8().length()+1];
+  strcpy( gisrcEnvChar, gisrcEnv.toLocal8Bit().constData() );
   putenv( gisrcEnvChar );
 
   // Reinitialize GRASS
-  G__setenv(( char * ) "GISRC", gisrcEnv.toAscii().data() );
+  G__setenv(( char * ) "GISRC", gisrcEnv.toUtf8().data() );
 #if defined(WIN32)
-  G__setenv(( char * ) "GISDBASE", getShortPath( gisdbase ).toAscii().data() );
+  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
 #else
-  G__setenv(( char * ) "GISDBASE", gisdbase.toAscii().data() );
+  G__setenv(( char * ) "GISDBASE", gisdbase.toUtf8().data() );
 #endif
-  G__setenv(( char * ) "LOCATION_NAME", location.toAscii().data() );
-  G__setenv(( char * ) "MAPSET", mapset.toAscii().data() );
+  G__setenv(( char * ) "LOCATION_NAME", location.toLocal8Bit().data() );
+  G__setenv(( char * ) "MAPSET", mapset.toLocal8Bit().data() );
   defaultGisdbase = gisdbase;
   defaultLocation = location;
   defaultMapset = mapset;
@@ -627,13 +615,13 @@ QString QgsGrass::closeMapset( )
         dir.remove( dir[i] );
         if ( dir.remove( dir[i] ) )
         {
-          QgsDebugMsg( QString( "Cannot remove temporary file %1" ).arg( dir[i].toLocal8Bit().constData() ) );
+          QgsDebugMsg( QString( "Cannot remove temporary file %1" ).arg( dir[i] ) );
         }
       }
 
       if ( !dir.rmdir( mTmp ) )
       {
-        QgsDebugMsg( QString( "Cannot remove temporary directory %1" ).arg( mTmp.toLocal8Bit().constData() ) );
+        QgsDebugMsg( QString( "Cannot remove temporary directory %1" ).arg( mTmp ) );
       }
     }
   }
@@ -710,9 +698,9 @@ QStringList GRASS_EXPORT QgsGrass::vectors( QString gisbase, QString locationNam
   QStringList list;
 
   char **glist = G_list( G_ELEMENT_VECTOR,
-  gisbase.toLocal8Bit().constData(),
-  locationName.toLocal8Bit().constData(),
-  mapsetName.toLocal8Bit().constData() );
+  gisbase.toUtf8().constData(),
+  locationName.toUtf8().constData(),
+  mapsetName.toUtf8().constData() );
 
   int i = 0;
 
@@ -772,9 +760,9 @@ QStringList GRASS_EXPORT QgsGrass::rasters( QString gisbase, QString locationNam
   QStringList list;
 
   char **glist = G_list( G_ELEMENT_RASTER,
-  gisbase.toLocal8Bit().constData(),
-  locationName.toLocal8Bit().constData(),
-  mapsetName.toLocal8Bit().constData() );
+  gisbase.toUtf8().constData(),
+  locationName.toUtf8().constData(),
+  mapsetName.toUtf8().constData() );
 
   int i = 0;
 
@@ -882,7 +870,7 @@ bool GRASS_EXPORT QgsGrass::region( QString gisbase,
 {
   QgsGrass::setLocation( gisbase, location );
 
-  if ( G__get_window( window, ( char * ) "", ( char * ) "WIND", mapset.toLocal8Bit().data() ) )
+  if ( G__get_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() ) )
   {
     return false;
   }
@@ -963,8 +951,8 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   if ( type == Raster )
   {
 
-    if ( G_get_cellhd( map.toLocal8Bit().data(),
-                       mapset.toLocal8Bit().data(), window ) < 0 )
+    if ( G_get_cellhd( map.toUtf8().data(),
+                       mapset.toUtf8().data(), window ) < 0 )
     {
       QMessageBox::warning( 0, QObject::tr( "Warning" ),
                             QObject::tr( "Cannot read raster map region" ) );
@@ -979,7 +967,7 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
     struct Map_info Map;
 
     int level = Vect_open_old_head( &Map,
-                                    map.toLocal8Bit().data(), mapset.toLocal8Bit().data() );
+                                    map.toUtf8().data(), mapset.toUtf8().data() );
 
     if ( level < 2 )
     {
@@ -1016,8 +1004,8 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   else if ( type == Region )
   {
     if ( G__get_window( window, ( char * ) "windows",
-                        map.toLocal8Bit().data(),
-                        mapset.toLocal8Bit().data() ) != NULL )
+                        map.toUtf8().data(),
+                        mapset.toUtf8().data() ) != NULL )
     {
       QMessageBox::warning( 0, QObject::tr( "Warning" ),
                             QObject::tr( "Cannot read region" ) );
@@ -1070,7 +1058,7 @@ bool GRASS_EXPORT QgsGrass::isMapset( QString path )
   /*
   if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
   {
-  if ( G_is_mapset( path.toLocal8Bit().constData() ) ) return true;
+  if ( G_is_mapset( path.toUtf8().constData() ) ) return true;
   }
   else
   {

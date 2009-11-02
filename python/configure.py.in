@@ -15,8 +15,7 @@ if sys.platform == 'darwin':
   qt_libs.append("QtSql")
   # possibility of universal build of bindings, if more than 1 arch
   osx_archs = '@CMAKE_OSX_ARCHITECTURES@'
-  if osx_archs [-1] == ';' :
-    osx_archs = osx_archs [:-1]
+  osx_archs = osx_archs.strip(';')
   if osx_archs.count(';') > 0:
     osx_universal = '@CMAKE_OSX_SYSROOT@'
   else:

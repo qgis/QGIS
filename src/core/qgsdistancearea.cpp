@@ -586,7 +586,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points )
   double Qbar1, Qbar2;
   double area;
 
-  QgsDebugMsg( "Ellipsoid: " + mEllipsoid );
+  QgsDebugMsgLevel( "Ellipsoid: " + mEllipsoid, 3 );
   if (( ! mProjectionsEnabled ) || ( mEllipsoid == "NONE" ) )
   {
     return computePolygonFlatArea( points );

@@ -575,7 +575,7 @@ int main( int argc, char *argv[] )
   // application bundle...
 #ifdef Q_WS_WIN
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
-                                    + QDir::separator() + "plugins" );
+                                    + QDir::separator() + "qtplugins" );
 #endif
 #ifdef Q_OS_MACX
   //qDebug("Adding qt image plugins to plugin search path...");

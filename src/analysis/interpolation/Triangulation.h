@@ -25,7 +25,7 @@
 #include <TriangleInterpolator.h>
 
 /**Interface for Triangulation classes*/
-class Triangulation
+class ANALYSIS_EXPORT Triangulation
 {
   public:
     /**Enumeration describing the behaviour, if two forced lines cross. SnappingType_VERTICE means, that the second inserted forced line is snapped to the closest vertice of the first inserted forced line. DELETE_FIRST means, that the status of the first inserted forced line is reset to that of a normal edge (so that the second inserted forced line remain and the first not*/

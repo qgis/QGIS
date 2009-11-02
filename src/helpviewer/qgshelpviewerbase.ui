@@ -13,7 +13,9 @@
    <string>QGIS Help</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>

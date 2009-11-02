@@ -26,11 +26,12 @@
 #include "qgsmessageviewer.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsrasterlayer.h"
-#include "qgsrubberband.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsattributedialog.h"
+#include "qgsproject.h"
+#include "qgsmaplayerregistry.h"
+#include "qgisapp.h"
 
 #include <QSettings>
 #include <QMessageBox>
@@ -39,14 +40,13 @@
 #include <QPixmap>
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas ),
-    mResults( 0 ),
-    mRubberBand( 0 ),
-    mLayer( 0 )
+    : QgsMapTool( canvas )
 {
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
+
+  mResults = new QgsIdentifyResults( canvas, mCanvas->window() );
 }
 
 QgsMapToolIdentify::~QgsMapToolIdentify()
@@ -55,8 +55,6 @@ QgsMapToolIdentify::~QgsMapToolIdentify()
   {
     mResults->done( 0 );
   }
-
-  delete mRubberBand;
 }
 
 void QgsMapToolIdentify::canvasMoveEvent( QMouseEvent * e )
@@ -74,164 +72,118 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
 
-  // delete rubber band if there was any
-  delete mRubberBand;
-  mRubberBand = 0;
+  mResults->clear();
 
-  mLayer = mCanvas->currentLayer();
+  QSettings settings;
+  int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
 
-  if ( !mLayer )
+  bool res = false;
+
+  if ( identifyMode == 0 )
   {
-    QMessageBox::warning( mCanvas,
-                          tr( "No active layer" ),
-                          tr( "To identify features, you must choose an active layer by clicking on its name in the legend" ) );
-    return;
-  }
+    QgsMapLayer *layer = mCanvas->currentLayer();
 
-  // cleanup, when layer is removed
-  connect( mLayer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+    if ( !layer )
+    {
+      QMessageBox::warning( mCanvas,
+                            tr( "No active layer" ),
+                            tr( "To identify features, you must choose an active layer by clicking on its name in the legend" ) );
+      return;
+    }
 
-  // call identify method for selected layer
+    QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  // In the special case of the WMS provider,
-  // coordinates are sent back to the server as pixel coordinates
-  // not the layer's native CRS.  So identify on screen coordinates!
-  if ( mLayer->type() == QgsMapLayer::RasterLayer &&
-       dynamic_cast<QgsRasterLayer*>( mLayer )->providerKey() == "wms" )
-  {
-    identifyRasterWmsLayer( QgsPoint( e->x(), e->y() ) );
+    res = identifyLayer( layer, e->x(), e->y() );
+
+    QApplication::restoreOverrideCursor();
   }
   else
   {
-    // convert screen coordinates to map coordinates
-    QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+    connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+    connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
-    if ( mLayer->type() == QgsMapLayer::VectorLayer )
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
+
+    for ( int i = 0; i < mCanvas->layerCount(); i++ )
     {
-      identifyVectorLayer( idPoint );
+      QgsMapLayer *layer = mCanvas->layer( i );
+
+      emit identifyProgress( i, mCanvas->layerCount() );
+      emit identifyMessage( tr("Identifying on %1...").arg( layer->name() ) );
+
+      if ( noIdentifyLayerIdList.contains( layer->getLayerID() ) )
+        continue;
+
+      if ( identifyLayer( layer, e->x(), e->y() ) )
+      {
+        res = true;
+        if ( identifyMode == 1 )
+          break;
+      }
     }
-    else if ( mLayer->type() == QgsMapLayer::RasterLayer )
-    {
-      identifyRasterLayer( idPoint );
-    }
-    else
-    {
-      QgsDebugMsg( "unknown layer type!" );
-    }
-  }
-}
 
+    emit identifyProgress( mCanvas->layerCount(), mCanvas->layerCount() );
+    emit identifyMessage( tr("Identifying done.") );
 
-void QgsMapToolIdentify::identifyRasterLayer( const QgsPoint& point )
-{
-  QgsRasterLayer *layer = dynamic_cast<QgsRasterLayer*>( mLayer );
-  if ( !layer )
-  {
-    return;
+    disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
+    disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
+
+    QApplication::restoreOverrideCursor();
   }
 
-  QMap<QString, QString> attributes;
-  layer->identify( point, attributes );
-
-  if ( !mResults )
+  if ( res )
   {
-    QgsAttributeAction aa;
-    mResults = new QgsIdentifyResults( aa, mCanvas->window() );
-    mResults->setAttribute( Qt::WA_DeleteOnClose );
-    // Be informed when the dialog box is closed so that we can stop using it.
-    connect( mResults, SIGNAL( accepted() ), this, SLOT( resultsDialogGone() ) );
-    connect( mResults, SIGNAL( rejected() ), this, SLOT( resultsDialogGone() ) );
-    mResults->restorePosition();
-  }
-  else
-  {
+    mResults->show();
     mResults->raise();
-    mResults->clear();
-  }
-
-  mResults->setTitle( layer->name() );
-  mResults->setColumnText( 0, tr( "Band" ) );
-
-  QMap<QString, QString>::iterator it;
-  for ( it = attributes.begin(); it != attributes.end(); it++ )
-  {
-    mResults->addAttribute( it.key(), it.value() );
-  }
-
-  mResults->addAttribute( tr( "(clicked coordinate)" ), point.toString() );
-
-  mResults->showAllAttributes();
-  mResults->show();
-}
-
-
-void QgsMapToolIdentify::identifyRasterWmsLayer( const QgsPoint& point )
-{
-  QgsRasterLayer *layer = dynamic_cast<QgsRasterLayer*>( mLayer );
-  if ( !layer )
-  {
-    return;
-  }
-
-  //if WMS layer does not cover the view origin,
-  //we need to map the view pixel coordinates
-  //to WMS layer pixel coordinates
-  QgsRectangle viewExtent = mCanvas->extent();
-  double mapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
-  if ( mapUnitsPerPixel == 0 )
-  {
-    return;
-  }
-  double xMinView = viewExtent.xMinimum();
-  double yMaxView = viewExtent.yMaximum();
-
-  QgsRectangle layerExtent = layer->extent();
-  double xMinLayer = layerExtent.xMinimum();
-  double yMaxLayer = layerExtent.yMaximum();
-
-  double i, j;
-
-  if ( xMinView < xMinLayer )
-  {
-    i = ( int )( point.x() - ( xMinLayer - xMinView ) / mapUnitsPerPixel );
   }
   else
   {
-    i = point.x();
+    mResults->hide();
+    QMessageBox::information( 0, tr( "Identify results" ), tr( "No features at this position found." ) );
   }
+}
 
-  if ( yMaxView > yMaxLayer )
+void QgsMapToolIdentify::activate()
+{
+  mResults->activate();
+  QgsMapTool::activate();
+}
+
+void QgsMapToolIdentify::deactivate()
+{
+  mResults->deactivate();
+  QgsMapTool::deactivate();
+}
+
+bool QgsMapToolIdentify::identifyLayer( QgsMapLayer *layer, int x, int y )
+{
+  bool res = false;
+
+  if ( layer->type() == QgsMapLayer::RasterLayer )
   {
-    j = ( int )( point.y() - ( yMaxView - yMaxLayer ) / mapUnitsPerPixel );
+    res = identifyRasterLayer( dynamic_cast<QgsRasterLayer *>( layer ), x, y );
   }
   else
   {
-    j = point.y();
+    res = identifyVectorLayer( dynamic_cast<QgsVectorLayer *>( layer ), x, y );
   }
 
-
-  QString text = layer->identifyAsText( QgsPoint( i, j ) );
-
-  if ( text.isEmpty() )
-  {
-    showError();
-    return;
-  }
-
-  QgsMessageViewer* viewer = new QgsMessageViewer();
-  viewer->setWindowTitle( layer->name() );
-  viewer->setMessageAsPlainText( tr( "WMS identify result for %1:\n%2" ).arg( point.toString() ).arg( text ) );
-
-  viewer->showMessage(); // deletes itself on close
+  return res;
 }
 
-void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
+
+bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int y )
 {
-  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer*>( mLayer );
   if ( !layer )
-  {
-    return;
-  }
+    return false;
+
+  QMap< QString, QString > attributes, derivedAttributes;
+
+  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
+
+  derivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );
 
   // load identify radius from settings
   QSettings settings;
@@ -239,8 +191,6 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
   QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
 
   int featureCount = 0;
-  QgsAttributeAction& actions = *layer->actions();
-  QString fieldIndex = layer->displayField();
   const QgsFieldMap& fields = layer->pendingFields();
 
   // init distance/area calculator
@@ -249,8 +199,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
   calc.setEllipsoid( ellipsoid );
   calc.setSourceCrs( layer->srs().srsid() );
 
-  mFeatureList.clear();
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+  QgsFeatureList featureList;
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
   // For example, if you project a world map onto a globe using EPSG 2163
@@ -271,7 +220,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
     layer->select( layer->pendingAllAttributesList(), r, true, true );
     QgsFeature f;
     while ( layer->nextFeature( f ) )
-      mFeatureList << QgsFeature( f );
+      featureList << QgsFeature( f );
   }
   catch ( QgsCsException & cse )
   {
@@ -280,64 +229,29 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
     QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
-  QApplication::restoreOverrideCursor();
+  QgsFeatureList::iterator f_it = featureList.begin();
 
-  if ( layer->isEditable() && mFeatureList.size() == 1 )
-  {
-    editFeature( mFeatureList[0] );
-    return;
-  }
-
-  // display features falling within the search radius
-  if ( !mResults )
-  {
-    mResults = new QgsIdentifyResults( actions, mCanvas->window() );
-    mResults->setAttribute( Qt::WA_DeleteOnClose );
-    // Be informed when the dialog box is closed so that we can stop using it.
-    connect( mResults, SIGNAL( accepted() ), this, SLOT( resultsDialogGone() ) );
-    connect( mResults, SIGNAL( rejected() ), this, SLOT( resultsDialogGone() ) );
-    connect( mResults, SIGNAL( selectedFeatureChanged( int ) ), this, SLOT( highlightFeature( int ) ) );
-    connect( mResults, SIGNAL( editFeature( int ) ), this, SLOT( editFeature( int ) ) );
-
-    // restore the identify window position and show it
-    mResults->restorePosition();
-  }
-  else
-  {
-    mResults->raise();
-    mResults->clear();
-    mResults->setActions( actions );
-  }
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  int lastFeatureId = 0;
-  QgsFeatureList::iterator f_it = mFeatureList.begin();
-
-  for ( ; f_it != mFeatureList.end(); ++f_it )
+  for ( ; f_it != featureList.end(); ++f_it )
   {
     featureCount++;
 
-    QTreeWidgetItem* featureNode = mResults->addNode( "foo" );
-    featureNode->setData( 0, Qt::UserRole, QVariant( f_it->id() ) ); // save feature id
-    lastFeatureId = f_it->id();
-    featureNode->setText( 0, fieldIndex );
-
-    if ( layer->isEditable() )
-      mResults->addEdit( featureNode, f_it->id() );
+    int fid = f_it->id();
+    QString displayField, displayValue;
+    QMap<QString, QString> attributes, derivedAttributes;
 
     const QgsAttributeMap& attr = f_it->attributeMap();
 
     for ( QgsAttributeMap::const_iterator it = attr.begin(); it != attr.end(); ++it )
     {
-      //QgsDebugMsg(it->fieldName() + " == " + fieldIndex);
-
-      if ( fields[it.key()].name() == fieldIndex )
-      {
-        featureNode->setText( 1, it->toString() );
-      }
       QString attributeName = layer->attributeDisplayName( it.key() );
-      mResults->addAttribute( featureNode, attributeName, it->isNull() ? "NULL" : it->toString() );
+
+      if ( fields[it.key()].name() == layer->displayField() )
+      {
+        displayField = attributeName;
+        displayValue = it->toString();
+      }
+
+      attributes.insert( attributeName, it->isNull() ? "NULL" : it->toString() );
     }
 
     // Calculate derived attributes and insert:
@@ -348,18 +262,18 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
       QGis::UnitType myDisplayUnits;
       convertMeasurement( calc, dist, myDisplayUnits, false );
       QString str = calc.textUnit( dist, 3, myDisplayUnits, false );  // dist and myDisplayUnits are out params
-      mResults->addDerivedAttribute( featureNode, tr( "Length" ), str );
+      derivedAttributes.insert( tr( "Length" ), str );
       if ( f_it->geometry()->wkbType() == QGis::WKBLineString )
       {
         // Add the start and end points in as derived attributes
         str = QLocale::system().toString( f_it->geometry()->asPolyline().first().x(), 'g', 10 );
-        mResults->addDerivedAttribute( featureNode, tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
+        derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
         str = QLocale::system().toString( f_it->geometry()->asPolyline().first().y(), 'g', 10 );
-        mResults->addDerivedAttribute( featureNode, tr( "firstY" ), str );
+        derivedAttributes.insert( tr( "firstY" ), str );
         str = QLocale::system().toString( f_it->geometry()->asPolyline().last().x(), 'g', 10 );
-        mResults->addDerivedAttribute( featureNode, tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
+        derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
         str = QLocale::system().toString( f_it->geometry()->asPolyline().last().y(), 'g', 10 );
-        mResults->addDerivedAttribute( featureNode, tr( "lastY" ), str );
+        derivedAttributes.insert( tr( "lastY" ), str );
       }
     }
     else if ( layer->geometryType() == QGis::Polygon )
@@ -368,179 +282,89 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
       QGis::UnitType myDisplayUnits;
       convertMeasurement( calc, area, myDisplayUnits, true );  // area and myDisplayUnits are out params
       QString str = calc.textUnit( area, 3, myDisplayUnits, true );
-      mResults->addDerivedAttribute( featureNode, tr( "Area" ), str );
+      derivedAttributes.insert( tr( "Area" ), str );
     }
     else if ( layer->geometryType() == QGis::Point )
     {
       // Include the x and y coordinates of the point as a derived attribute
       QString str;
       str = QLocale::system().toString( f_it->geometry()->asPoint().x(), 'g', 10 );
-      mResults->addDerivedAttribute( featureNode, "X", str );
+      derivedAttributes.insert( "X", str );
       str = QLocale::system().toString( f_it->geometry()->asPoint().y(), 'g', 10 );
-      mResults->addDerivedAttribute( featureNode, "Y", str );
+      derivedAttributes.insert( "Y", str );
     }
 
-    // Add actions
-    QgsAttributeAction::aIter iter = actions.begin();
-    for ( register int i = 0; iter != actions.end(); ++iter, ++i )
-    {
-      mResults->addAction( featureNode, i, tr( "action" ), iter->name() );
-    }
+    mResults->addFeature( layer, fid, displayField, displayValue, attributes, derivedAttributes );
   }
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
 
-  //also test the not commited features //todo: eliminate copy past code
-
-  if ( featureCount == 1 )
-  {
-    mResults->showAllAttributes();
-    highlightFeature( lastFeatureId );
-  }
-  else if ( featureCount == 0 )
-  {
-    mResults->setMessage( tr( "No features found" ), tr( "No features were found in the active layer at the point you clicked" ) );
-  }
-
-  mResults->setTitle( tr( "%1 - %n feature(s) found", "Identify results window title", featureCount ).arg( layer->name() ) );
-
-  QApplication::restoreOverrideCursor();
-
-  mResults->show();
+  return featureCount > 0;
 }
 
-void QgsMapToolIdentify::showError()
+bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int y )
 {
-#if 0
-  QMessageBox::warning(
-    this,
-    mapLayer->lastErrorTitle(),
-    tr( "Could not draw %1 because:\n%2", "COMMENTED OUT" ).arg( mapLayer->name() ).arg( mapLayer->lastError() )
-  );
-#endif
+  bool res = true;
 
-  QgsMessageViewer * mv = new QgsMessageViewer();
+  if ( !layer )
+    return false;
 
-  if ( mLayer )
+  QgsRasterDataProvider *dprovider = layer->dataProvider();
+  if ( dprovider && ( dprovider->capabilities() & QgsRasterDataProvider::Identify ) == 0 )
+    return false;
+
+  QMap< QString, QString > attributes, derivedAttributes;
+  QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
+  QString type;
+
+  if ( layer->providerKey() == "wms" )
   {
-    mv->setWindowTitle( mLayer->lastErrorTitle() );
-    mv->setMessageAsPlainText( tr( "Could not identify objects on %1 because:\n%2" )
-                               .arg( mLayer->name() ).arg( mLayer->lastError() ) );
+    type = tr( "WMS layer" );
+
+    //if WMS layer does not cover the view origin,
+    //we need to map the view pixel coordinates
+    //to WMS layer pixel coordinates
+    QgsRectangle viewExtent = mCanvas->extent();
+    QgsRectangle layerExtent = layer->extent();
+    double mapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
+    if ( mapUnitsPerPixel > 0 && viewExtent.intersects( layerExtent ) )
+    {
+      double xMinView = viewExtent.xMinimum();
+      double yMaxView = viewExtent.yMaximum();
+      double xMinLayer = layerExtent.xMinimum();
+      double yMaxLayer = layerExtent.yMaximum();
+
+      idPoint.set(
+        xMinView < xMinLayer ? floor( x - ( xMinLayer - xMinView ) / mapUnitsPerPixel ) : x,
+        yMaxView > yMaxLayer ? floor( y - ( yMaxView - yMaxLayer ) / mapUnitsPerPixel ) : y
+      );
+
+      attributes.insert( tr( "Feature info" ), layer->identifyAsText( idPoint ) );
+    }
+    else
+    {
+      res = false;
+    }
   }
   else
   {
-    mv->setWindowTitle( tr( "Layer was removed" ) );
-    mv->setMessageAsPlainText( tr( "Layer to identify objects on was removed" ) );
+    type = tr( "Raster" );
+    res = layer->extent().contains( idPoint ) && layer->identify( idPoint, attributes );
   }
 
-  mv->exec(); // deletes itself on close
+  if ( res )
+  {
+    derivedAttributes.insert( tr( "(clicked coordinate)" ), idPoint.toString() );
+    mResults->addFeature( layer, -1, type, "", attributes, derivedAttributes );
+  }
+
+  return res;
 }
+
 
 void QgsMapToolIdentify::resultsDialogGone()
 {
   mResults = 0;
-
-  delete mRubberBand;
-  mRubberBand = 0;
-}
-
-void QgsMapToolIdentify::deactivate()
-{
-  if ( mResults )
-    mResults->done( 0 ); // close the window
-  QgsMapTool::deactivate();
-}
-
-void QgsMapToolIdentify::highlightFeature( int featureId )
-{
-  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
-  if ( !layer )
-    return;
-
-  delete mRubberBand;
-  mRubberBand = 0;
-
-  QgsFeature feat;
-  if ( ! layer->featureAtId( featureId, feat, true, false ) )
-  {
-    return;
-  }
-
-  if ( !feat.geometry() )
-  {
-    return;
-  }
-
-  mRubberBand = new QgsRubberBand( mCanvas, feat.geometry()->type() == QGis::Polygon );
-
-  if ( mRubberBand )
-  {
-    mRubberBand->setToGeometry( feat.geometry(), layer );
-    mRubberBand->setWidth( 2 );
-    mRubberBand->setColor( Qt::red );
-    mRubberBand->show();
-  }
-}
-
-void QgsMapToolIdentify::editFeature( int featureId )
-{
-  for ( QgsFeatureList::iterator it = mFeatureList.begin(); it != mFeatureList.end(); it++ )
-  {
-    if ( it->id() == featureId )
-    {
-      editFeature( *it );
-      break;
-    }
-  }
-}
-
-void QgsMapToolIdentify::editFeature( QgsFeature &f )
-{
-  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
-  if ( !layer || !layer->isEditable() )
-  {
-    return;
-  }
-
-  QgsAttributeMap src = f.attributeMap();
-
-  layer->beginEditCommand( tr( "Attribute changed" ) );
-  QgsAttributeDialog *ad = new QgsAttributeDialog( layer, &f );
-  if ( ad->exec() )
-  {
-    const QgsAttributeMap &dst = f.attributeMap();
-    for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
-    {
-      if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
-      {
-        layer->changeAttributeValue( f.id(), it.key(), it.value() );
-      }
-    }
-    layer->endEditCommand();
-  }
-  else
-  {
-    layer->destroyEditCommand();
-  }
-
-  delete ad;
-  mCanvas->refresh();
-}
-
-void QgsMapToolIdentify::layerDestroyed()
-{
-  mLayer = 0;
-
-  if ( mResults )
-  {
-    mResults->clear();
-  }
-
-  if ( mRubberBand )
-  {
-    delete mRubberBand;
-    mRubberBand = 0;
-  }
 }
 
 void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea )

@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsidwinterpolator.h
+                              qgsgridfilewriter.h
                               --------------------
   begin                : March 10, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -15,34 +15,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSIDWINTERPOLATOR_H
-#define QGSIDWINTERPOLATOR_H
+#ifndef QGSGRIDFILEWRITER_H
+#define QGSGRIDFILEWRITER_H
 
-#include "qgsinterpolator.h"
+#include "qgsrectangle.h"
+#include <QString>
+#include <QTextStream>
 
-class QgsIDWInterpolator: public QgsInterpolator
+class QgsInterpolator;
+
+/**A class that does interpolation to a grid and writes the results to an ascii grid*/
+//todo: extend such that writing to other file types is possible
+class ANALYSIS_EXPORT QgsGridFileWriter
 {
   public:
-    QgsIDWInterpolator( const QList<LayerData>& layerData );
-    ~QgsIDWInterpolator();
+    QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
+    ~QgsGridFileWriter();
 
-    /**Calculates interpolation value for map coordinates x, y
-       @param x x-coordinate (in map units)
-       @param y y-coordinate (in map units)
-       @param result out: interpolation result
-       @return 0 in case of success*/
-    int interpolatePoint( double x, double y, double& result );
+    /**Writes the grid file.
+     @param showProgressDialog shows a dialog with the possibility to cancel
+    @return 0 in case of success*/
 
-    void setDistanceCoefficient( double p ) {mDistanceCoefficient = p;}
+    int writeFile( bool showProgressDialog = false );
 
   private:
 
-    QgsIDWInterpolator(); //forbidden
+    QgsGridFileWriter(); //forbidden
+    int writeHeader( QTextStream& outStream );
 
-    /**The parameter that sets how the values are weighted with distance.
-       Smaller values mean sharper peaks at the data points. The default is a
-       value of 2*/
-    double mDistanceCoefficient;
+    QgsInterpolator* mInterpolator;
+    QString mOutputFilePath;
+    QgsRectangle mInterpolationExtent;
+    int mNumColumns;
+    int mNumRows;
+
+    double mCellSizeX;
+    double mCellSizeY;
 };
 
 #endif

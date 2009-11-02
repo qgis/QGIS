@@ -325,7 +325,7 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         if self.finished:
             return
 
-        prefix=QString("/tmp/")
+        prefix=QDir.tempPath() + "/"
         if self.dbm.currentKey:
             key=QString(self.dbm.currentKey)
             p=key.lastIndexOf("/")

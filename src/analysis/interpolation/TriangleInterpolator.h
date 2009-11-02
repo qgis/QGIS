@@ -21,7 +21,7 @@
 #include <Vector3D.h>
 
 /**This is an interface for interpolator classes for triangulations*/
-class TriangleInterpolator
+class ANALYSIS_EXPORT TriangleInterpolator
 {
   public:
     virtual ~TriangleInterpolator() {}

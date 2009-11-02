@@ -21,7 +21,7 @@
 #include "DualEdgeTriangulation.h"
 
 /**LinTriangleInterpolator is a class which interpolates linearly on a triangulation*/
-class LinTriangleInterpolator : public TriangleInterpolator
+class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 {
   public:
     /**Default constructor*/

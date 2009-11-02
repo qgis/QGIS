@@ -21,7 +21,7 @@
 #include "Node.h"
 
 /**This class represents a line. It is implemented as a single directed linked list of nodes (with related Point3D objects). Attention: the points inserted in a line are not deleted from Line3D*/
-class Line3D
+class ANALYSIS_EXPORT Line3D
 {
   private:
     /**copy constructor, declared privat to not use it*/

@@ -46,7 +46,8 @@ class TestQgsGeometry: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
-
+    
+    void simplifyCheck1();
     void intersectionCheck1();
     void intersectionCheck2();
     void unionCheck1();
@@ -63,6 +64,8 @@ class TestQgsGeometry: public QObject
     void dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon );
     /** A helper method to dump to qdebug the geometry of a polygon */
     void dumpPolygon( QgsPolygon &thePolygon );
+    /** A helper method to dump to qdebug the geometry of a polyline */
+    void dumpPolyline( QgsPolyline &thePolyline );
     QgsPoint mPoint1;
     QgsPoint mPoint2;
     QgsPoint mPoint3;
@@ -78,13 +81,14 @@ class TestQgsGeometry: public QObject
     QgsPolyline mPolylineA;
     QgsPolyline mPolylineB;
     QgsPolyline mPolylineC;
+    QgsGeometry * mpPolylineGeometryD;
     QgsPolygon mPolygonA;
     QgsPolygon mPolygonB;
     QgsPolygon mPolygonC;
     QgsGeometry * mpPolygonGeometryA;
     QgsGeometry * mpPolygonGeometryB;
     QgsGeometry * mpPolygonGeometryC;
-
+    QString mWktLine;
     QString mTestDataDir;
     QImage mImage;
     QPainter * mpPainter;
@@ -111,6 +115,8 @@ void TestQgsGeometry::init()
   mPointX = QgsPoint( 240.0, 200.0 );
   mPointY = QgsPoint( 240.0, 240.0 );
   mPointZ = QgsPoint( 200.0, 240.0 );
+  
+  mWktLine = QString( "LINESTRING(117.623198 35.198654, 117.581274 35.198654, 117.078178 35.324427, 116.868555 35.534051, 116.617007 35.869448, 116.491233 35.953297, 116.155836 36.288694, 116.071987 36.372544, 115.443117 36.749865, 114.814247 37.043338, 114.311152 37.169112, 113.388810 37.378735, 113.095337 37.378735, 112.592241 37.378735, 111.753748 37.294886, 111.502201 37.252961, 111.082954 37.127187, 110.747557 37.127187, 110.160612 36.917564, 110.034838 36.833715, 109.741366 36.749865, 109.573667 36.666016, 109.238270 36.498317, 109.070571 36.414468, 108.819023 36.288694, 108.693250 36.246770, 108.483626 36.162920, 107.645134 35.911372, 106.597017 35.869448, 106.051997 35.701749, 105.800449 35.617900, 105.590826 35.575975, 105.297354 35.575975, 104.961956 35.575975, 104.710409 35.534051, 104.458861 35.492126, 103.871916 35.492126, 103.788066 35.492126, 103.326895 35.408277, 102.949574 35.408277, 102.488402 35.450201, 102.069156 35.450201, 101.482211 35.450201, 100.937191 35.659825, 100.308321 35.869448, 100.056773 36.037146, 99.050582 36.079071, 97.667069 35.743674, 97.163973 35.617900, 96.115857 35.534051, 95.612761 35.534051, 94.396947 35.911372, 93.684228 36.288694, 92.929584 36.833715, 92.258790 37.169112, 91.629920 37.504509, 90.414105 37.881831, 90.414105 37.881831, 90.246407 37.923755, 89.491763 37.839906, 89.156366 37.672207, 88.485572 37.504509, 87.814778 37.252961, 87.563230 37.169112, 87.143983 37.043338, 85.970093 36.875639, 85.802395 36.875639, 84.083484 36.959489, 84.041560 37.043338, 82.951519 37.546433, 82.699971 37.630283)" );
 
   mPolygonA.clear();
   mPolygonB.clear();
@@ -126,6 +132,8 @@ void TestQgsGeometry::init()
   // Polygon C should intersect no other polys
   mPolylineC << mPointW << mPointX << mPointY << mPointZ << mPointW;
   mPolygonC << mPolylineC;
+  
+  mpPolylineGeometryD = QgsGeometry::fromWkt( mWktLine );
 
   //polygon: first item of the list is outer ring,
   // inner rings (if any) start from second item
@@ -204,8 +212,19 @@ void TestQgsGeometry::cleanupTestCase()
 
 }
 
-
-
+void TestQgsGeometry::simplifyCheck1()
+{
+  QVERIFY( mpPolylineGeometryD->simplify( 0.5 ) );
+  // should be a single polygon as A intersect B
+  QgsGeometry * mypSimplifyGeometry  =  mpPolylineGeometryD->simplify( 0.5 );
+  qDebug( "Geometry Type: %s", wkbTypeAsString( mypSimplifyGeometry->wkbType() ).toLocal8Bit().constData() );
+  QVERIFY( mypSimplifyGeometry->wkbType() == QGis::WKBLineString );
+  QgsPolyline myLine = mypSimplifyGeometry->asPolyline();
+  QVERIFY( myLine.size() > 0 ); //check that the union created a feature
+  dumpPolyline( myLine );
+  delete mypSimplifyGeometry;
+  QVERIFY( renderCheck( "geometry_simplifyCheck1", "Checking simplify of line" ) );
+}
 void TestQgsGeometry::intersectionCheck1()
 {
   QVERIFY( mpPolygonGeometryA->intersects( mpPolygonGeometryB ) );
@@ -331,6 +350,27 @@ void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
     }
   }
   mpPainter->drawPolygon( myPoints );
+}
+
+void TestQgsGeometry::dumpPolyline( QgsPolyline &thePolyline )
+{
+  QVector<QPointF> myPoints;
+//  QgsPolyline myPolyline = thePolyline.at( j ); //rings of polygon
+  for ( int j = 0; j < thePolyline.size(); j++ )
+  {
+    QgsPoint myPoint = thePolyline.at( j );
+//    QgsPolyline myPolyline = thePolygon.at( j ); //rings of polygon
+    myPoints << QPointF( myPoint.x(), myPoint.y() );
+    qDebug( "\t\tPoint in line: %d", j );
+
+//    for ( int k = 0; k < myPolyline.size(); k++ )
+//    {
+//      QgsPoint myPoint = myPolyline.at( k );
+//      qDebug( "\t\t\tPoint in ring %d : %s", k, myPoint.toString().toLocal8Bit().constData() );
+//      myPoints << QPointF( myPoint.x(), myPoint.y() );
+//    }
+   }
+  mpPainter->drawPolyline( myPoints );
 }
 
 QString TestQgsGeometry::wkbTypeAsString( QGis::WkbType theType )

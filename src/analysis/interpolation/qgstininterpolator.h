@@ -26,7 +26,7 @@ class TriangleInterpolator;
 class QgsFeature;
 
 /**Interpolation in a triangular irregular network*/
-class QgsTINInterpolator: public QgsInterpolator
+class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 {
   public:
     QgsTINInterpolator( const QList<LayerData>& inputData, bool showProgressDialog = false );

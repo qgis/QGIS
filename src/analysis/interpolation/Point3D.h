@@ -25,7 +25,7 @@
 #include <iostream>
 
 /**Point3D is a class to represent a three dimensional point*/
-class Point3D
+class ANALYSIS_EXPORT Point3D
 {
   protected:
     /**X-coordinate*/

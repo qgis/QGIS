@@ -976,7 +976,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( QString const & theBand
  * This will speed up performance at the expense of hard drive space.
  * Also, write access to the file is required for creating internal pyramids,
  * and to the directory in which the files exists if external
- * pyramids (.ovr) are to be created. If no paramter is passed in
+ * pyramids (.ovr) are to be created. If no parameter is passed in
  * it will default to nearest neighbor resampling.
  *
  * @param theTryInternalFlag - Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
@@ -1507,7 +1507,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   {
     QgsDebugMsg( "Wanting a '" + mProviderKey + "' provider to draw this." );
 
-    emit statusChanged( tr( "Retrieving using %1" ).arg( mProviderKey ) );
+    emit statusChanged( tr( "Retrieving %1 using %2" ).arg( name() ).arg( mProviderKey ) );
 
     mDataProvider->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
 
@@ -1594,6 +1594,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
       delete image;
     }
 
+    emit statusChanged( tr( "%1 retrieved using %2" ).arg( name() ).arg( mProviderKey ) );
   }
   else
   {
@@ -1846,12 +1847,9 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
     return false;
   }
 
-  double x = thePoint.x();
-  double y = thePoint.y();
+  QgsDebugMsg( thePoint.toString() );
 
-  QgsDebugMsg( QString::number( x ) + ", " + QString::number( y ) );
-
-  if ( x < mLayerExtent.xMinimum() || x > mLayerExtent.xMaximum() || y < mLayerExtent.yMinimum() || y > mLayerExtent.yMaximum() )
+  if ( !mLayerExtent.contains( thePoint ) )
   {
     // Outside the raster
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
@@ -1861,6 +1859,9 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
   }
   else
   {
+    double x = thePoint.x();
+    double y = thePoint.y();
+
     /* Calculate the row / column where the point falls */
     double xres = ( mLayerExtent.xMaximum() - mLayerExtent.xMinimum() ) / mWidth;
     double yres = ( mLayerExtent.yMaximum() - mLayerExtent.yMinimum() ) / mHeight;
@@ -2990,7 +2991,7 @@ bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader
   //Invalid band number, segfault prevention
   if ( 0 >= theBandNumber || 0 == theList )
   {
-    QgsDebugMsg( "Invalid paramter" );
+    QgsDebugMsg( "Invalid parameter" );
     return false;
   }
 

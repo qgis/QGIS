@@ -1,6 +1,6 @@
 /***************************************************************************
-                          qgsslopefilter.h  -  description
-                          --------------------------------
+                          qgsaspectfilter.h  -  description
+                          ---------------------------------
     begin                : August 7th, 2009
     copyright            : (C) 2009 by Marco Hugentobler
     email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -15,18 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSLOPEFILTER_H
-#define QGSSLOPEFILTER_H
+#ifndef QGSASPECTFILTER_H
+#define QGSASPECTFILTER_H
 
 #include "qgsderivativefilter.h"
 
-/**Calculates slope values in a window of 3x3 cells based on first order derivatives in x- and y- directions*/
-class QgsSlopeFilter: public QgsDerivativeFilter
+/**Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions. Direction is clockwise starting from north*/
+class ANALYSIS_EXPORT QgsAspectFilter: public QgsDerivativeFilter
 {
   public:
-    QgsSlopeFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
-    ~QgsSlopeFilter();
+    QgsAspectFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
+    ~QgsAspectFilter();
 
+  protected:
   protected:
     /**Calculates output value from nine input values. The input values and the output value can be equal to the \
       nodata value if not present or outside of the border. Must be implemented by subclasses*/
@@ -34,4 +35,4 @@ class QgsSlopeFilter: public QgsDerivativeFilter
                                  float* x12, float* x22, float* x32, float* x13, float* x23, float* x33 );
 };
 
-#endif // QGSSLOPEFILTER_H
+#endif // QGSASPECTFILTER_H

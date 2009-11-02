@@ -47,23 +47,8 @@ extern "C"
 
 #include <gdal.h>         // to collect version information
 
-#if defined(WIN32)
-#include <windows.h>
-static QString getShortPath( const QString &path )
-{
-  TCHAR buf[MAX_PATH];
-  GetShortPathName( path.toAscii().data(), buf, MAX_PATH );
-  return buf;
-}
-#endif
-
 bool QgsGrassModule::mExecPathInited = 0;
 QStringList QgsGrassModule::mExecPath;
-
-
-
-
-
 
 QString QgsGrassModule::findExec( QString file )
 {
@@ -78,7 +63,7 @@ QString QgsGrassModule::findExec( QString file )
 
 #ifdef WIN32
     mExecPath = path.split( ";" );
-    mExecPath.prepend( getShortPath( QgsApplication::applicationDirPath() ) );
+    mExecPath.prepend( QgsGrass::shortPath( QgsApplication::applicationDirPath() ) );
 #else
     mExecPath = path.split( ":" );
     mExecPath.prepend( QgsApplication::applicationDirPath() );
@@ -1392,7 +1377,7 @@ void QgsGrassModule::readStdout()
   {
     //line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromLocal8Bit( QString( ba ).toAscii() );
+    line = QString::fromUtf8( ba );
 
     // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
     // normaly it should be printed to stderr
@@ -1426,7 +1411,7 @@ void QgsGrassModule::readStderr()
   {
     //line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromLocal8Bit( QString( ba ).toAscii() );
+    line = QString::fromUtf8( ba );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     if ( rxpercent.indexIn( line ) != -1 )

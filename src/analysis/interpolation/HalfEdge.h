@@ -17,7 +17,7 @@
 #ifndef HALFEDGE_H
 #define HALFEDGE_H
 
-class HalfEdge
+class ANALYSIS_EXPORT HalfEdge
 {
   protected:
     /**Number of the dual HalfEdge*/

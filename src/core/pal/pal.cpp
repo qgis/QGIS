@@ -131,7 +131,6 @@ namespace pal
 
     lyrsMutex->unlock();
     throw new PalException::UnknownLayer();
-    return NULL;
   }
 
 

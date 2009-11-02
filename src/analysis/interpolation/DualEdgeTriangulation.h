@@ -37,7 +37,7 @@
 #include <set>
 
 /**DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure*/
-class DualEdgeTriangulation: public Triangulation
+class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
 {
   public:
     DualEdgeTriangulation();

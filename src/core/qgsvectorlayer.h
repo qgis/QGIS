@@ -601,7 +601,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void deleteCachedGeometries();
 
     /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.) */
-    void drawVertexMarker( int x, int y, QPainter& p, QgsVectorLayer::VertexMarkerType type );
+    void drawVertexMarker( int x, int y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
     /**Snaps to a geometry and adds the result to the multimap if it is within the snapping result
      @param startPoint start point of the snap
@@ -619,6 +619,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**Reads vertex marker type from settings*/
     QgsVectorLayer::VertexMarkerType currentVertexMarkerType();
+
+    /**Reads vertex marker size from settings*/
+    int currentVertexMarkerSize();
 
     /**Update feature with uncommited attribute updates*/
     void updateFeatureAttributes( QgsFeature &f );
@@ -731,6 +734,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**The current type of editing marker*/
     QgsVectorLayer::VertexMarkerType mCurrentVertexMarkerType;
+
+    /** The current size of editing marker */
+    int mCurrentVertexMarkerSize;
 
     /**Flag if the vertex markers should be drawn only for selection (true) or for all features (false)*/
     bool mVertexMarkerOnlyForSelection;

@@ -346,7 +346,7 @@ void QgsGrassSelect::setLayers()
 
   QStringList layers = vectorLayers( egisdbase->text(),
                                      elocation->currentText(), emapset->currentText(),
-                                     emap->currentText().toAscii() );
+                                     emap->currentText().toUtf8() );
 
   int idx = 0;
   int sel = -1;
@@ -410,15 +410,15 @@ QStringList QgsGrassSelect::vectorLayers( QString gisdbase,
   // Call to setjmp() returns 0 first time. In case of fatal error,
   // our error routine uses longjmp() to come back to this context,
   // this time setjmp() will return non-zero value and we can continue...
-  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
-  {
-    level = Vect_open_old_head( &map, ( char * ) mapName.toAscii().data(), ( char * ) mapset.toAscii().data() );
-  }
-  QgsGrass::clearErrorEnv();
 
-  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  try
   {
-    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    level = Vect_open_old_head( &map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
     return list;
   }
 

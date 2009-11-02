@@ -1,4 +1,5 @@
 IF (ENABLE_TESTS)
   SUBDIRS(core)
   SUBDIRS(gui)
+  SUBDIRS(analysis)
 ENDIF (ENABLE_TESTS)

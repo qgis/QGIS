@@ -25,7 +25,9 @@
    <string>OGR Layer Converter</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >
