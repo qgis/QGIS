@@ -139,7 +139,7 @@
        <item row="1" column="0">
         <widget class="QGroupBox" name="btnGrpMapUnits">
          <property name="title">
-          <string>Map units</string>
+          <string>Layer units (only used when CRS transformation is disabled)</string>
          </property>
          <layout class="QHBoxLayout">
           <property name="margin">

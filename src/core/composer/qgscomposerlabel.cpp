@@ -47,8 +47,9 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   double penWidth = pen().widthF();
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin,
                       rect().height() - 2 * penWidth - 2 * mMargin );
-  //painter->drawText( painterRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, mText );
-  drawText( painter, painterRect, mText, mFont );
+
+
+  drawText( painter, painterRect, displayText(), mFont );
 
   drawFrame( painter );
   if ( isSelected() )
@@ -59,6 +60,9 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
 void QgsComposerLabel::setText( const QString& text )
 {
+  mText = text;
+
+#if 0
   //replace '$CURRENT_DATE<(FORMAT)>' with the current date
   //e.g. $CURRENT_DATE(d 'June' yyyy)
   mText = text;
@@ -79,6 +83,35 @@ void QgsComposerLabel::setText( const QString& text )
       mText.replace( "$CURRENT_DATE", QDate::currentDate().toString() );
     }
   }
+#endif //0
+}
+
+QString QgsComposerLabel::displayText() const
+{
+  QString displayText = mText;
+  replaceDateText(displayText);
+  return displayText;
+}
+
+void QgsComposerLabel::replaceDateText(QString& text) const
+{
+  int currentDatePos = text.indexOf( "$CURRENT_DATE" );
+  if ( currentDatePos != -1 )
+  {
+    //check if there is a bracket just after $CURRENT_DATE
+    QString formatText;
+    int openingBracketPos = text.indexOf( "(", currentDatePos );
+    int closingBracketPos = text.indexOf( ")", openingBracketPos + 1 );
+    if ( openingBracketPos != -1 && closingBracketPos != -1 && ( closingBracketPos - openingBracketPos ) > 1 )
+    {
+      formatText = text.mid( openingBracketPos + 1, closingBracketPos - openingBracketPos - 1 );
+      text.replace( currentDatePos, closingBracketPos - currentDatePos + 1, QDate::currentDate().toString( formatText ) );
+    }
+    else //no bracket
+    {
+      text.replace( "$CURRENT_DATE", QDate::currentDate().toString() );
+    }
+  }
 }
 
 void QgsComposerLabel::setFont( const QFont& f )
@@ -88,7 +121,7 @@ void QgsComposerLabel::setFont( const QFont& f )
 
 void QgsComposerLabel::adjustSizeToText()
 {
-  double textWidth = textWidthMillimeters( mFont, mText );
+  double textWidth = textWidthMillimeters( mFont, displayText() );
   double fontAscent = fontAscentMillimeters( mFont );
 
   setSceneRect( QRectF( transform().dx(), transform().dy(), textWidth + 2 * mMargin + 2 * pen().widthF() + 1, \

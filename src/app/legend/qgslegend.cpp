@@ -130,6 +130,7 @@ void QgsLegend::removeAll()
   updateMapCanvasLayerSet();
   setIconSize( mMinimumIconSize );
   mItemBeingMoved = 0;
+  mDropTarget = 0;
 }
 
 void QgsLegend::selectAll( bool select )

@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsgrassattributes.h"
-#include "qgsgrassedit.h"
 #include "qgsgrassprovider.h"
 
 #include "qgslogger.h"
@@ -351,4 +350,13 @@ void QgsGrassAttributes::columnSizeChanged( int section, int oldSize, int newSiz
                  + QString::number( section );
   QgsDebugMsg( QString( "path = %1 newSize = %2" ).arg( path ).arg( newSize ) );
   settings.setValue( path, newSize );
+}
+
+void QgsGrassAttributes::setCategoryMode(QgsGrassEdit::CatMode mode, const QString &cat)
+{
+    if (mode == QgsGrassEdit::CAT_MODE_NOCAT || (mode == QgsGrassEdit::CAT_MODE_MANUAL && cat.isEmpty())){
+        newButton->setEnabled(false);
+    } else {
+        newButton->setEnabled(true);
+    }
 }

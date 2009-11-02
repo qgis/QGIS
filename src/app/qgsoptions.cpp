@@ -113,6 +113,17 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   getEllipsoidList();
   QString myEllipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
   cmbEllipsoid->setItemText( cmbEllipsoid->currentIndex(), getEllipsoidName( myEllipsoidId ) );
+
+  // Set the units for measuring
+  QString myUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters").toString();
+  if ( myUnitsTxt == "feet" )
+  {
+    radFeet->setChecked( true );
+  } else {
+    radMeters->setChecked( true );
+  }
+  
+
   // add the themes to the combo box on the option dialog
   QDir myThemeDir( QgsApplication::pkgDataPath() + "/themes/" );
   myThemeDir.setFilter( QDir::Dirs );
@@ -405,6 +416,15 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
 
+  if ( radFeet->isChecked() )
+  {
+    settings.setValue( "/qgis/measure/displayunits", "feet" );
+  }
+  else
+  {
+    settings.setValue( "/qgis/measure/displayunits", "meters" );
+  }
+  settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
   //set the colour for selections
   QColor myColor = pbnSelectionColour->color();
   settings.setValue( "/qgis/default_selection_color_red", myColor.red() );

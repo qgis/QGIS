@@ -1992,7 +1992,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
     mModuleStandardOptions( options ),
     mGeometryTypeOption( 0 ), mVectorLayerOption( 0 ),
-    mRegionButton( 0 ), mUpdate( false )
+    mRegionButton( 0 ), mUpdate( false ), mRequired( false )
 {
   QgsDebugMsg( "called." );
   mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
@@ -2002,6 +2002,9 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     mTitle = tr( "Input" );
   }
   adjustTitle();
+
+  // Check if this parameter is required
+  mRequired = gnode.toElement().attribute( "required" ) == "yes";
 
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
@@ -2211,6 +2214,16 @@ void QgsGrassModuleInput::updateQgisLayers()
   mVectorLayerNames.resize( 0 );
   mMapLayers.resize( 0 );
   mVectorFields.resize( 0 );
+
+  // If not required, add an empty item to combobox and a padding item into
+  // layer containers.
+  if ( !mRequired )
+  {
+    mMaps.push_back( QString( "" ) );
+    mVectorLayerNames.push_back( QString( "" ) );
+    mMapLayers.push_back( NULL );
+    mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
+  }
 
   QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
 
@@ -2423,15 +2436,17 @@ std::vector<QgsField> QgsGrassModuleInput::currentFields()
 {
   QgsDebugMsg( "called." );
 
+  unsigned int limit = 0;
+  if ( !mRequired )
+    limit = 1;
+
   std::vector<QgsField> fields;
 
-  int c = mLayerComboBox->currentIndex();
-  if ( c < 0 )
+  unsigned int current = mLayerComboBox->currentIndex();
+  if ( current < limit )
     return fields;
 
-  unsigned current = c;
-
-  if ( current >= 0 && current <  mVectorFields.size() )
+  if ( current >= limit && current <  mVectorFields.size() )
   {
     fields = mVectorFields[current];
   }
@@ -2443,13 +2458,15 @@ QgsMapLayer * QgsGrassModuleInput::currentLayer()
 {
   QgsDebugMsg( "called." );
 
-  int c = mLayerComboBox->currentIndex();
-  if ( c < 0 )
+  unsigned int limit = 0;
+  if ( !mRequired )
+    limit = 1;
+
+  unsigned int current = mLayerComboBox->currentIndex();
+  if ( current < limit )
     return 0;
 
-  unsigned int current = c;
-
-  if ( current >= 0 && current <  mMapLayers.size() )
+  if ( current >= limit && current <  mMapLayers.size() )
   {
     return mMapLayers[current];
   }
@@ -2461,13 +2478,15 @@ QString QgsGrassModuleInput::currentMap()
 {
   QgsDebugMsg( "called." );
 
-  int c = mLayerComboBox->currentIndex();
-  if ( c < 0 )
+  unsigned int limit = 0;
+  if ( !mRequired )
+    limit = 1;
+
+  unsigned int current = mLayerComboBox->currentIndex();
+  if ( current < limit )
     return QString();
 
-  unsigned int current = c;
-
-  if ( current >= 0 && current <  mMaps.size() )
+  if ( current >= limit && current <  mMaps.size() )
   {
     return mMaps[current];
   }
@@ -2617,6 +2636,9 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   }
   adjustTitle();
 
+  // Check if this parameter is required
+  mRequired = gnode.toElement().attribute( "required" ) == "yes";
+
   QDomNode promptNode = gnode.namedItem( "gisprompt" );
   QDomElement promptElem = promptNode.toElement();
   QString element = promptElem.attribute( "element" );
@@ -2683,6 +2705,15 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   mLayerComboBox->clear();
   mUri.resize( 0 );
   mOgrLayers.resize( 0 );
+
+  // If not required, add an empty item to combobox and a padding item into
+  // layer containers.
+  if ( !mRequired )
+  {
+    mUri.push_back( QString() );
+    mOgrLayers.push_back( QString() );
+    mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
+  }
 
   QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
 

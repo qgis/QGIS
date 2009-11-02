@@ -93,6 +93,9 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      */
     void on_mSnappingOptionsPushButton_clicked();
 
+    void on_cbxProjectionEnabled_stateChanged(int state);
+
+
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();

@@ -18,6 +18,11 @@ class QgsComposerLabel: QgsComposerItem
 
     QString text();
     void setText( const QString& text );
+
+     /**Returns the text as it appears on screen (with replaced data field)
+      @note this function was added in version 1.2*/
+    QString displayText() const;
+
     QFont font() const;
     void setFont( const QFont& f );
     double margin();
