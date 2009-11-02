@@ -17,6 +17,7 @@
 
 #include "qgscomposerpicturewidget.h"
 #include "qgsapplication.h"
+#include "qgscomposermap.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposeritemwidget.h"
 #include <QDoubleValidator>
@@ -34,18 +35,16 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
-  gridLayout->addWidget( itemPropertiesWidget, 6, 0, 1, 4 );
+  gridLayout->addWidget( itemPropertiesWidget, 8, 0, 1, 4 );
 
   mWidthLineEdit->setValidator( new QDoubleValidator( this ) );
   mHeightLineEdit->setValidator( new QDoubleValidator( this ) );
-
   setGuiElementValues();
 
   mPreviewListWidget->setIconSize( QSize( 30, 30 ) );
 
   //add preview icons
   addStandardDirectoriesToPreview();
-
   connect( mPicture, SIGNAL( settingsChanged() ), this, SLOT( setGuiElementValues() ) );
 }
 
@@ -198,6 +197,118 @@ void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
   }
 }
 
+void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged( int state )
+{
+  if ( !mPicture )
+  {
+    return;
+  }
+
+  if ( state == Qt::Unchecked )
+  {
+    mPicture->setRotationMap( -1 );
+    mRotationSpinBox->setEnabled( true );
+    mComposerMapComboBox->setEnabled( false );
+  }
+  else
+  {
+    int currentItemIndex = mComposerMapComboBox->currentIndex();
+    if ( currentItemIndex == -1 )
+    {
+      return;
+    }
+    int composerId = mComposerMapComboBox->itemData( currentItemIndex, Qt::UserRole ).toInt();
+    mPicture->setRotationMap( composerId );
+    mRotationSpinBox->setEnabled( false );
+    mComposerMapComboBox->setEnabled( true );
+  }
+}
+
+void QgsComposerPictureWidget::showEvent( QShowEvent * event )
+{
+  refreshMapComboBox();
+  QWidget::showEvent( event );
+}
+
+void QgsComposerPictureWidget::on_mComposerMapComboBox_activated( const QString & text )
+{
+  if ( !mPicture || text.isEmpty() || !mPicture->useRotationMap() )
+  {
+    return;
+  }
+
+  //get composition
+  const QgsComposition* composition = mPicture->composition();
+  if ( !composition )
+  {
+    return;
+  }
+
+  //extract id
+  int id;
+  bool conversionOk;
+  QStringList textSplit = text.split( " " );
+  if ( textSplit.size() < 1 )
+  {
+    return;
+  }
+
+  QString idString = textSplit.at( textSplit.size() - 1 );
+  id = idString.toInt( &conversionOk );
+
+  if ( !conversionOk )
+  {
+    return;
+  }
+
+  const QgsComposerMap* composerMap = composition->getComposerMapById( id );
+  if ( !composerMap )
+  {
+    return;
+  }
+  mPicture->setRotationMap( id );
+  mPicture->update();
+}
+
+void QgsComposerPictureWidget::refreshMapComboBox()
+{
+  mComposerMapComboBox->blockSignals( true );
+  //save the current entry in case it is still present after refresh
+  QString saveCurrentComboText = mComposerMapComboBox->currentText();
+
+  mComposerMapComboBox->clear();
+
+  if ( mPicture )
+  {
+    //insert available maps into mMapComboBox
+    const QgsComposition* composition = mPicture->composition();
+    if ( composition )
+    {
+      QList<const QgsComposerMap*> availableMaps = composition->composerMapItems();
+      QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
+      for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
+      {
+        mComposerMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
+      }
+    }
+  }
+
+  if ( !saveCurrentComboText.isEmpty() )
+  {
+    if ( mComposerMapComboBox->findText( saveCurrentComboText ) == -1 )
+    {
+      //the former entry is no longer present. Inform the scalebar about the changed composer map
+      on_mComposerMapComboBox_activated( mComposerMapComboBox->currentText() );
+    }
+    else
+    {
+      //the former entry is still present. Make it the current entry again
+      mComposerMapComboBox->setCurrentIndex( mComposerMapComboBox->findText( saveCurrentComboText ) );
+    }
+  }
+  mComposerMapComboBox->blockSignals( false );
+}
+
 void QgsComposerPictureWidget::setGuiElementValues()
 {
   //set initial gui values
@@ -207,6 +318,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mHeightLineEdit->blockSignals( true );
     mRotationSpinBox->blockSignals( true );
     mPictureLineEdit->blockSignals( true );
+    mComposerMapComboBox->blockSignals( true );
+    mRotationFromComposerMapCheckBox->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->pictureFile() );
     QRectF pictureRect = mPicture->rect();
@@ -214,10 +327,34 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mHeightLineEdit->setText( QString::number( pictureRect.height() ) );
     mRotationSpinBox->setValue( mPicture->rotation() );
 
+    refreshMapComboBox();
+
+    if ( mPicture->useRotationMap() )
+    {
+      mRotationFromComposerMapCheckBox->setCheckState( Qt::Checked );
+      mRotationSpinBox->setEnabled( false );
+      mComposerMapComboBox->setEnabled( true );
+      QString mapText = tr( "Map %1" ).arg( mPicture->rotationMap() );
+      int itemId = mComposerMapComboBox->findText( mapText );
+      if ( itemId >= 0 )
+      {
+        mComposerMapComboBox->setCurrentIndex( itemId );
+      }
+    }
+    else
+    {
+      mRotationFromComposerMapCheckBox->setCheckState( Qt::Unchecked );
+      mRotationSpinBox->setEnabled( true );
+      mComposerMapComboBox->setEnabled( false );
+    }
+
+
+    mRotationFromComposerMapCheckBox->blockSignals( false );
     mWidthLineEdit->blockSignals( false );
     mHeightLineEdit->blockSignals( false );
     mRotationSpinBox->blockSignals( false );
     mPictureLineEdit->blockSignals( false );
+    mComposerMapComboBox->blockSignals( false );
   }
 }
 
@@ -302,7 +439,8 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
 {
   //list all directories in $prefix/share/qgis/svg
   QStringList svgPaths = QgsApplication::svgPaths();
-  for(int i=0; i<svgPaths.size(); i++) {
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
     QDir svgDirectory( svgPaths[i] );
     if ( !svgDirectory.exists() || !svgDirectory.isReadable() )
     {
@@ -315,7 +453,7 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
     {
       if ( addDirectoryToPreview( dirIt->absoluteFilePath() ) == 0 )
       {
-	mSearchDirectoriesComboBox->addItem( dirIt->absoluteFilePath() );
+        mSearchDirectoriesComboBox->addItem( dirIt->absoluteFilePath() );
       }
     }
   }

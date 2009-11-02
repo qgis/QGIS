@@ -505,6 +505,12 @@ void QgsComposerMap::setOffset( double xOffset, double yOffset )
   mYOffset = yOffset;
 }
 
+void QgsComposerMap::setRotation( double r )
+{
+  mRotation = r;
+  emit rotationChanged( r );
+}
+
 bool QgsComposerMap::containsWMSLayer() const
 {
   if ( !mMapRenderer )
