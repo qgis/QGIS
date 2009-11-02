@@ -252,6 +252,11 @@ class CORE_EXPORT QgsGeometry
                        bool topological,
                        QList<QgsPoint>& topologyTestPoints );
 
+    /**Replaces a part of this geometry with another line
+      @return 0 in case of success
+      @note: this function was added in version 1.3*/
+    int reshapeGeometry( const QList<QgsPoint>& reshapeWithLine );
+
     /**Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect
        @return 0 in case of success*/
@@ -439,9 +444,33 @@ class CORE_EXPORT QgsGeometry
      @return 0 in case of success*/
     int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPoint>& testPoints ) const;
 
+    /**Creates a new line from an original line and a reshape line. The part of the input line from the first to the last intersection with the \
+        reshape line will be replaced. The calling function takes ownership of the result.
+    @param origLine the original line
+    @param reshapeLineGeos the reshape line
+    @return the reshaped line or 0 in case of error*/
+    static GEOSGeometry* reshapeLine( const GEOSGeometry* origLine, const GEOSGeometry* reshapeLineGeos );
+
+    /**Creates a new polygon replacing the part from the first to the second intersection with the reshape line. As a polygon ring is always closed,
+        the method keeps the longer part of the existing boundary
+    @param polygon geometry to reshape
+    @param reshapeLineGeos the reshape line
+    @return the reshaped polygon or 0 in case of error*/
+    static GEOSGeometry* reshapePolygon( const GEOSGeometry* polygon, const GEOSGeometry* reshapeLineGeos );
+
     /**Nodes together a split line and a (multi-) polygon geometry in a multilinestring
      @return the noded multiline geometry or 0 in case of error. The calling function takes ownership of the node geometry*/
-    GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, GEOSGeometry *poly ) const;
+    static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *poly );
+
+    /**Tests if line1 is completely contained in line2. This method works with a very small buffer around line2 and therefore is less prone
+        to numerical errors as the corresponding geos method*/
+    static int lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry* line2 );
+
+    /**Tests if a point is on a line. This method works with a very small buffer and is thus less prone to numerical problems as the direct geos functions.
+      @param point the point to test
+      @param line line to test
+      @return 0 not contained, 1 if contained, <0 in case of error*/
+    static int pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry* line );
 
     /**Returns number of single geometry in a geos geometry. Is save for geos 2 and 3*/
     int numberOfGeometries( GEOSGeometry* g ) const;

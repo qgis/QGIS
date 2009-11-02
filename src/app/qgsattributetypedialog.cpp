@@ -24,6 +24,9 @@
 #include "qgslogger.h"
 
 #include <QTableWidgetItem>
+#include <QFile>
+#include <QMessageBox>
+#include <QFileDialog>
 
 #include <climits>
 #include <cfloat>
@@ -37,6 +40,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   connect( selectionComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setStackPage( int ) ) );
   connect( removeSelectedButton, SIGNAL( pressed( ) ), this, SLOT( removeSelectedButtonPushed( ) ) );
   connect( loadFromLayerButton, SIGNAL( pressed( ) ), this, SLOT( loadFromLayerButtonPushed( ) ) );
+  connect( loadFromCSVButton, SIGNAL( pressed( ) ), this, SLOT( loadFromCSVButtonPushed( ) ) );
   connect( tableWidget,  SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
 }
 
@@ -101,14 +105,78 @@ void QgsAttributeTypeDialog::loadFromLayerButtonPushed()
   if ( !layerDialog.exec() )
     return;
 
+  updateMap( layerDialog.valueMap() );
+}
+
+void QgsAttributeTypeDialog::loadFromCSVButtonPushed()
+{
+  QString fileName = QFileDialog::getOpenFileName( 0 , tr( "Select a file" ) );
+  if ( fileName.isNull() )
+    return;
+
+  QFile f( fileName );
+
+  if ( !f.open( QIODevice::ReadOnly ) )
+  {
+    QMessageBox::information( NULL,
+                              tr( "Error" ),
+                              tr( "Could not open file %1\nError was:%2" ).arg( fileName ).arg( f.errorString() ), QMessageBox::Cancel );
+    return;
+  }
+
+  QRegExp re0( "^([^;]*);(.*)$" );
+  re0.setMinimal( true );
+  QRegExp re1( "^([^,]*),(.*)$" );
+  re1.setMinimal( true );
+  QMap<QString, QVariant> map;
+
+  f.readLine();
+
+  while ( !f.atEnd() )
+  {
+    QString l = f.readLine().trimmed();
+
+    QString key, val;
+    if ( re0.indexIn( l ) >= 0 && re0.numCaptures() == 2 )
+    {
+      key = re0.cap( 1 ).trimmed();
+      val = re0.cap( 2 ).trimmed();
+    }
+    else if ( re1.indexIn( l ) >= 0 && re1.numCaptures() == 2 )
+    {
+      key = re1.cap( 1 ).trimmed();
+      val = re1.cap( 2 ).trimmed();
+    }
+    else
+      continue;
+
+    if (( key.startsWith( "\"" ) && key.endsWith( "\"" ) ) ||
+        ( key.startsWith( "'" ) && key.endsWith( "'" ) ) )
+    {
+      key = key.mid( 1, key.length() - 2 );
+    }
+
+    if (( val.startsWith( "\"" ) && val.endsWith( "\"" ) ) ||
+        ( val.startsWith( "'" ) && val.endsWith( "'" ) ) )
+    {
+      val = val.mid( 1, val.length() - 2 );
+    }
+
+    map[ key ] = val;
+  }
+
+  updateMap( map );
+}
+
+void QgsAttributeTypeDialog::updateMap( const QMap<QString, QVariant> &map )
+{
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
   {
     tableWidget->removeRow( i );
   }
   int row = 0;
-  QMap<QString, QVariant> &map = layerDialog.valueMap();
-  for ( QMap<QString, QVariant>::iterator mit = map.begin(); mit != map.end(); mit++, row++ )
+  for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); mit++, row++ )
   {
     tableWidget->insertRow( row );
     if ( mit.value().isNull() )
@@ -121,7 +189,6 @@ void QgsAttributeTypeDialog::loadFromLayerButtonPushed()
       tableWidget->setItem( row, 1, new QTableWidgetItem( mit.value().toString() ) );
     }
   }
-
 }
 
 

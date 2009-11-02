@@ -1,0 +1,6 @@
+<h3>Narzędzia pomiaru</h3>
+Są dwa narzędzia do pomiaru; jedno do odległości, a drugie do powierzchni. Za pomocą tych narzędzi można w oknie mapy zmierzyć odległości i powierzchnie. Narzędzia te podają wartości w jednostkach metrycznych. Pojedyncze kliknięcie prawym klawiszem myszy kończy pomiar.
+<h4>Pomiar odległości</h4>
+Wybierz to narzędzie aby zmierzyć odległość i klikaj wzdłuż linii, którą chcesz pomierzyć. Wyświetlana jest długość kolejnych segmentów oraz łączną długość całej linii. Aby zakończyć pomiar, kliknij prawym przyciskiem myszy.
+<h4>Pomiar powierzchni</h4>
+Aby pomierzyć powierzchnię, wybierz to narzędzie i kliknij, aby utworzyć obszar. Łączna powierzchnia jest wyświetlana na bieżąco w  miarę przesuwania myszy, już po utworzeniu drugiego punktu. Aby zakończyć rysowanie, kliknij prawym przyciskiem myszy.

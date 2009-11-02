@@ -1458,9 +1458,9 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
     OGRFieldDefnH field;
     if ( fields[0] == "Real" )
     {
-      if ( width == -1 )
+      if ( width < 0 )
         width = 32;
-      if ( precision == -1 )
+      if ( precision < 0 )
         precision = 3;
 
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).data(), OFTReal );
@@ -1469,7 +1469,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
     }
     else if ( fields[0] == "Integer" )
     {
-      if ( width == -1 || width > 10 )
+      if ( width < 0 || width > 10 )
         width = 10;
 
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).data(), OFTInteger );
@@ -1478,8 +1478,8 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
     }
     else if ( fields[0] == "String" )
     {
-      if ( width == -1 )
-        width = 80;
+      if ( width < 0 || width > 255 )
+        width = 255;
 
       field = OGR_Fld_Create( codec->fromUnicode( it->first ).data(), OFTString );
       OGR_Fld_SetWidth( field, width );

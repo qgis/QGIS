@@ -1365,7 +1365,6 @@ void QgsSpatiaLiteProvider::closeDb()
 
 QgsSpatiaLiteProvider::SqliteHandles * QgsSpatiaLiteProvider::SqliteHandles::openDb( const QString & dbPath )
 {
-  char path[1024];
   sqlite3 *sqlite_handle;
 
   QMap < QString, QgsSpatiaLiteProvider::SqliteHandles * >&handles = QgsSpatiaLiteProvider::SqliteHandles::handles;
@@ -1378,8 +1377,7 @@ QgsSpatiaLiteProvider::SqliteHandles * QgsSpatiaLiteProvider::SqliteHandles::ope
   }
 
   QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
-  strcpy( path, dbPath.toUtf8().constData() );
-  if ( sqlite3_open_v2( path, &sqlite_handle, SQLITE_OPEN_READWRITE, NULL ) )
+  if ( sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE, NULL ) )
   {
     // failure
 

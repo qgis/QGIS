@@ -36,11 +36,43 @@ extern "C"
 #include <QMap>
 #include <QPair>
 #include <QIcon>
+#include <QItemDelegate>
 
 class QStringList;
-class QTableWidgetItem;
 class QgsGeomColumnTypeThread;
 class QgisApp;
+
+class QgsDbSourceSelectDelegate : public QItemDelegate
+{
+    Q_OBJECT;
+
+  public:
+    QgsDbSourceSelectDelegate( QObject *parent = NULL ) : QItemDelegate( parent )
+    {
+    }
+
+    /** Used to create an editor for when the user tries to
+     * change the contents of a cell */
+    QWidget *createEditor(
+      QWidget *parent,
+      const QStyleOptionViewItem &option,
+      const QModelIndex &index ) const
+    {
+      QComboBox *cb = new QComboBox( parent );
+      cb->addItems( index.data( Qt::UserRole + 1 ).toStringList() );
+      return cb;
+    }
+
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+    {
+      QComboBox *cb = dynamic_cast<QComboBox *>( editor );
+      if ( !cb )
+        return;
+      model->setData( index, cb->currentText() );
+    }
+};
+
+
 /*! \class QgsDbSourceSelect
  * \brief Dialog to create connections and add tables from PostgresQL.
  *
@@ -73,9 +105,6 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QString connectionInfo();
     // Store the selected database
     void dbChanged();
-    // Utility function to construct the query for finding out the
-    // geometry type of a column
-    static QString makeGeomQuery( QString schema, QString table, QString column );
 
   public slots:
     /*! Connects to the database using the stored connection parameters.
@@ -102,14 +131,6 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setSearchExpression( const QString& regexp );
 
   private:
-    enum columns
-    {
-      dbssType = 0,
-      dbssDetail,
-      dbssSql,
-      dbssColumns
-    };
-
     typedef std::pair<QString, QString> geomPair;
     typedef std::list<geomPair > geomCol;
 
@@ -120,6 +141,9 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     /**Inserts information about the spatial tables into mTableModel*/
     bool getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly );
+
+    /** get primary key candidates (all int4 columns) */
+    QStringList pkCandidates( PGconn *pg, QString schemaName, QString tableName );
 
     // queue another query for the thread
     void addSearchGeometryColumn( const QString &schema, const QString &table, const QString &column );

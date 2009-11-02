@@ -92,7 +92,7 @@
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation type="obsolete">沒有選中圖層</translation>
+        <translation type="obsolete">未選取圖層</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
@@ -100,7 +100,7 @@
     </message>
     <message>
         <source>No Vector Layer Selected</source>
-        <translation type="obsolete">未選中向量圖層</translation>
+        <translation type="obsolete">未選取向量圖層</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
@@ -148,7 +148,7 @@
     </message>
     <message>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation type="obsolete">在../plugins中未發現任何附加元件。要測試附加元件，請從src目錄啟動qgis</translation>
+        <translation type="obsolete">在../plugins中未發現任何附加元件。要測試附加元件，請從src資料夾啟動qgis</translation>
     </message>
     <message>
         <source>Name</source>
@@ -160,7 +160,7 @@
     </message>
     <message>
         <source>Plugin Information</source>
-        <translation type="obsolete">附加元件信息</translation>
+        <translation type="obsolete">附加元件資訊</translation>
     </message>
     <message>
         <source>QGis loaded the following plugin:</source>
@@ -301,7 +301,7 @@
     <name>BeataDialog</name>
     <message>
         <source>Move selected to top</source>
-        <translation type="obsolete">將選中的記錄移動到頂端</translation>
+        <translation type="obsolete">將選取的記錄移動到頂端</translation>
     </message>
     <message>
         <source>Invert selection</source>
@@ -329,9 +329,7 @@
     </message>
     <message>
         <source>Found %d matching features.</source>
-        <translation type="obsolete">
-        
-        </translation>
+        <translation type="obsolete">找到%d筆符合的圖徵。</translation>
     </message>
     <message>
         <source>No matching features found.</source>
@@ -358,7 +356,7 @@
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation type="obsolete">將選中的記錄移動到頂端</translation>
+        <translation type="obsolete">將選取的記錄移動到頂端</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
@@ -374,11 +372,11 @@
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="obsolete">將選中的列複製到剪貼簿 (Ctrl+C)</translation>
+        <translation type="obsolete">將選取的列複製到剪貼簿 (Ctrl+C)</translation>
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">將選中的列複製到剪貼簿</translation>
+        <translation type="obsolete">將選取的列複製到剪貼簿</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
@@ -401,23 +399,23 @@
     <name>CoordinateCapture</name>
     <message>
         <source>Coordinate Capture</source>
-        <translation type="unfinished">擷取座標</translation>
+        <translation>擷取座標</translation>
     </message>
     <message>
         <source>Click on the map to view coordinates and capture to clipboard.</source>
-        <translation type="unfinished">按一下地圖來檢視座標與複製至剪貼簿</translation>
+        <translation>按一下地圖來檢視座標與複製至剪貼簿。</translation>
     </message>
     <message>
         <source>&amp;Coordinate Capture</source>
-        <translation type="unfinished">擷取座標(&amp;C)</translation>
+        <translation>擷取座標(&amp;C)</translation>
     </message>
     <message>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation type="unfinished"></translation>
+        <translation>點擊選取的CRS且套用目前顯示的座標</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>您選擇座標參考系統的座標值</translation>
     </message>
     <message>
         <source>Coordinate in map canvas coordinate reference system</source>
@@ -425,7 +423,7 @@
     </message>
     <message>
         <source>Copy to clipboard</source>
-        <translation type="unfinished">複製至剪貼簿中</translation>
+        <translation>複製至剪貼簿中</translation>
     </message>
     <message>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
@@ -433,18 +431,18 @@
     </message>
     <message>
         <source>Start capture</source>
-        <translation type="unfinished"></translation>
+        <translation>開始擷取</translation>
     </message>
     <message>
         <source>Click to enable coordinate capture</source>
-        <translation type="unfinished"></translation>
+        <translation>單擊啟動座標擷取</translation>
     </message>
 </context>
 <context>
     <name>CoordinateCaptureGui</name>
     <message>
         <source>Coordinate Capture Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>座標擷取附加元件</translation>
     </message>
 </context>
 <context>
@@ -498,15 +496,15 @@
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished">連接</translation>
+        <translation>連接</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">瀏覽</translation>
+        <translation>瀏覽</translation>
     </message>
     <message>
         <source>OGR Converter</source>
-        <translation type="unfinished">OGR轉換</translation>
+        <translation>OGR轉換</translation>
     </message>
     <message>
         <source>Could not establish connection to: &apos;</source>
@@ -514,67 +512,67 @@
     </message>
     <message>
         <source>Open OGR file</source>
-        <translation type="unfinished">開啟OGR檔案</translation>
+        <translation>開啟OGR檔案</translation>
     </message>
     <message>
         <source>OGR File Data Source (*.*)</source>
-        <translation type="unfinished">OGR檔案資料來源(*.*)</translation>
+        <translation>OGR檔案資料來源(*.*)</translation>
     </message>
     <message>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟資料夾</translation>
     </message>
     <message>
         <source>Input OGR dataset is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入的OGR資料集遺失!</translation>
     </message>
     <message>
         <source>Input OGR layer name is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入的OGR圖層遺失!</translation>
     </message>
     <message>
         <source>Target OGR format not selected!</source>
-        <translation type="unfinished"></translation>
+        <translation>目標OGR格式未選取!</translation>
     </message>
     <message>
         <source>Output OGR dataset is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>輸出的OGR資料集遺失!</translation>
     </message>
     <message>
         <source>Output OGR layer name is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>輸出的OGR圖層遺失!</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished">選擇檔案名儲存至</translation>
+        <translation>選擇檔案名儲存至</translation>
     </message>
     <message>
         <source>Could not establish connection to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>無法建立與&apos;%1&apos;的連線</translation>
     </message>
     <message>
         <source>Successfully translated layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>轉換&apos;%1&apos;圖層成功</translation>
     </message>
     <message>
         <source>Failed to translate layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>轉換&apos;%1&apos;圖層失敗</translation>
     </message>
     <message>
         <source>Successfully connected to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>連接至&apos;%1&apos;成功</translation>
     </message>
     <message>
         <source>fTools About</source>
-        <translation type="unfinished"></translation>
+        <translation>關於fTools</translation>
     </message>
     <message>
         <source>fTools</source>
-        <translation type="unfinished"></translation>
+        <translation>fTools</translation>
     </message>
     <message>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished"></translation>
+        <translation>版本 x.x-xxxxxx</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -1106,66 +1104,66 @@ p, li { white-space: pre-wrap; }
     <name>DlgAddRelation</name>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM 資訊</translation>
     </message>
     <message>
         <source>Create OSM relation</source>
-        <translation type="unfinished"></translation>
+        <translation>建立OSM關連</translation>
     </message>
     <message>
         <source>Relation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>關連種類:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished">屬性</translation>
+        <translation>屬性</translation>
     </message>
     <message>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>成員</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation type="unfinished">建立</translation>
+        <translation>建立</translation>
     </message>
     <message>
         <source>Storno</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">取消</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
     <name>DlgDownloadOSM</name>
     <message>
         <source>Download OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>下載OSM資料</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation type="unfinished">範圍</translation>
+        <translation>範圍</translation>
     </message>
     <message>
         <source>Latitude:</source>
-        <translation type="unfinished">緯度:</translation>
+        <translation>緯度:</translation>
     </message>
     <message>
         <source>   From</source>
-        <translation type="unfinished"></translation>
+        <translation>   從</translation>
     </message>
     <message>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>至</translation>
     </message>
     <message>
         <source>Longitude:</source>
-        <translation type="unfinished">經度:</translation>
+        <translation>經度:</translation>
     </message>
     <message>
         <source>&lt;nothing&gt;</source>
@@ -1177,199 +1175,199 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Download to:</source>
-        <translation type="unfinished"></translation>
+        <translation>下載到:</translation>
     </message>
     <message>
         <source>Open data automatically after download</source>
-        <translation type="unfinished"></translation>
+        <translation>下載完畢後自動開啟資料</translation>
     </message>
     <message>
         <source>Replace current data (current layer will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation>取代現有的資料(目前的圖前將會移除)</translation>
     </message>
     <message>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>使用自訂繪圖</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation type="unfinished"></translation>
+        <translation>下載</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM下載</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法儲存檔案 %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished"></translation>
+        <translation>等待OpenStreetMap(OSM)伺服器中...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation>下載過程失敗。OpenStreetMap伺服器回應%1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM下載錯誤</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>下載失敗:%1。</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished"></translation>
+        <translation>取得資料中</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
+        <translation>您從OpenStreetMap伺服器(~ api.openstreetmap.org)下載的有固定限制的大小，在 &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;中提到經度或緯度的可下載範圍不能超過0.25度。注意 Quantum GIS 允許您指定您任何範圍，但是 OpenStreetMap 伺服器會依據下載的限制拒絕您的下載。</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>緯度與經度範圍過大!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>緯度範圍過大!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>經度範圍過大!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
+        <translation>OK!面積大小伺服器可以接受。</translation>
     </message>
 </context>
 <context>
     <name>DlgImport</name>
     <message>
         <source>Import data to OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>匯入資料至OSM</translation>
     </message>
     <message>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="unfinished"></translation>
+        <translation>在這對話方塊，您可以匯入QGIS中的圖層至作用中的OSM資料</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">圖層</translation>
+        <translation>圖層</translation>
     </message>
     <message>
         <source>Import only current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>僅匯入目前選取</translation>
     </message>
 </context>
 <context>
     <name>DlgLoadOSM</name>
     <message>
         <source>Load OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>載入OSM</translation>
     </message>
     <message>
         <source>OpenStreetMap file to load:</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap檔案載入:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Add columns for tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>為標籤新增欄位:</translation>
     </message>
     <message>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>使用自訂的繪圖</translation>
     </message>
     <message>
         <source>Replace current data (current layers will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation>取代目前的資料(目前的圖層將會被移除)</translation>
     </message>
 </context>
 <context>
     <name>DlgSaveOSM</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存OSM為檔案</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法儲存檔案 %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished"></translation>
+        <translation>初始化...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存結點中...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存線中...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存多邊形中...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存關連中...</translation>
     </message>
     <message>
         <source>Save OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存OSM</translation>
     </message>
     <message>
         <source>Where to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存至:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Features to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存圖徵:</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>點</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation type="unfinished">線</translation>
+        <translation>線</translation>
     </message>
     <message>
         <source>Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>多邊形</translation>
     </message>
     <message>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>關連</translation>
     </message>
     <message>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>標籤</translation>
     </message>
 </context>
 <context>
     <name>DlgUploadOSM</name>
     <message>
         <source>Upload OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>上傳OSM資料</translation>
     </message>
     <message>
         <source>Ready for upload</source>
-        <translation type="unfinished"></translation>
+        <translation>準備好上傳</translation>
     </message>
     <message>
         <source>1</source>
@@ -1393,73 +1391,73 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Comment on your changes:</source>
-        <translation type="unfinished"></translation>
+        <translation>為您的更新加上註解:</translation>
     </message>
     <message>
         <source>OSM account</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM帳號</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>使用者名稱:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>密碼:</translation>
     </message>
     <message>
         <source>Show password</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示密碼</translation>
     </message>
     <message>
         <source>Save password</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存密碼</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM上傳</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">上傳數據...</translation>
+        <translation>上傳資料...</translation>
     </message>
 </context>
 <context>
     <name>DockWidget</name>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM附加元件</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>因為OSM資料庫異動，所以&apos;建立OSM關連&apos;對話方塊將會自動關閉。</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OSM 圖徵停駐工具</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished"></translation>
+        <translation>請先選取OSM圖徵。</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished"></translation>
+        <translation>請先選取關連來編輯。</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation type="unfinished"></translation>
+        <translation>屬性&apos;%1&apos;不能重覆新增</translation>
     </message>
 </context>
 <context>
     <name>GeometryDialog</name>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">輸入向量圖層</translation>
+        <translation>輸入向量圖層</translation>
     </message>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished"></translation>
+        <translation>合併所有</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
@@ -1827,11 +1825,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Enter X and Y coordinates which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入您在影像上選取點的X與Y座標。或者按下[從地圖上取得座標]按鈕，從QGIS的地圖上點選取得該點的座標。</translation>
     </message>
     <message>
         <source> from map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>從地圖上取得座標</translation>
     </message>
 </context>
 <context>
@@ -1912,7 +1910,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Source</source>
-        <translation type="unfinished">來源(目錄、檔名不能有中文)</translation>
+        <translation type="unfinished">來源(資料夾、檔名不能有中文)</translation>
     </message>
     <message>
         <source>Format</source>
@@ -1924,7 +1922,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished">目錄</translation>
+        <translation type="unfinished">資料夾</translation>
     </message>
     <message>
         <source>Remote source</source>
@@ -1944,14 +1942,14 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Target</source>
-        <translation type="unfinished">目標(目錄、檔名不能有中文)</translation>
+        <translation type="unfinished">目標(資料夾、檔名不能有中文)</translation>
     </message>
 </context>
 <context>
     <name>OgrPlugin</name>
     <message>
         <source>Run OGR Layer Converter</source>
-        <translation type="unfinished">執行OGR檔案轉換工具</translation>
+        <translation>執行OGR檔案轉換工具</translation>
     </message>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
@@ -1959,11 +1957,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OG&amp;R Converter</source>
-        <translation type="unfinished">OGR檔案轉換工具</translation>
+        <translation>OG&amp;R檔案轉換工具</translation>
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished">OGR LIB支援向量圖層的格式轉換</translation>
+        <translation>OGR LIB支援向量圖層的格式轉換</translation>
     </message>
 </context>
 <context>
@@ -1994,7 +1992,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Username</source>
-        <translation type="unfinished">用戶名</translation>
+        <translation type="unfinished">使用者名稱</translation>
     </message>
     <message>
         <source>Password</source>
@@ -2013,51 +2011,51 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>OsmDockWidget</name>
     <message>
         <source>OSM Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM 圖徵</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Identify object</source>
-        <translation type="unfinished"></translation>
+        <translation>識別物件</translation>
     </message>
     <message>
         <source>Move object</source>
-        <translation type="unfinished"></translation>
+        <translation>移動物件</translation>
     </message>
     <message>
         <source>Create point</source>
-        <translation type="unfinished"></translation>
+        <translation>建立點</translation>
     </message>
     <message>
         <source>Create line</source>
-        <translation type="unfinished"></translation>
+        <translation>建立線</translation>
     </message>
     <message>
         <source>Create polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>建立多邊形</translation>
     </message>
     <message>
         <source>Create relation</source>
-        <translation type="unfinished"></translation>
+        <translation>建立關連</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>復原</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>取消復原</translation>
     </message>
     <message>
         <source>Show/Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示/隱藏OSM編輯歷程</translation>
     </message>
     <message>
         <source>Feature:</source>
-        <translation type="unfinished"></translation>
+        <translation>圖徵:</translation>
     </message>
     <message>
         <source>TYPE, ID:</source>
@@ -2073,15 +2071,15 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>未知</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished">屬性</translation>
+        <translation>屬性</translation>
     </message>
     <message>
         <source>Add new relation</source>
-        <translation type="unfinished"></translation>
+        <translation>新增關連</translation>
     </message>
     <message>
         <source>A</source>
@@ -2089,7 +2087,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Edit selected relation</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯選取的關連</translation>
     </message>
     <message>
         <source>E</source>
@@ -2097,7 +2095,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Remove selected relation</source>
-        <translation type="unfinished"></translation>
+        <translation>移除選取的關連</translation>
     </message>
     <message>
         <source>R</source>
@@ -2105,7 +2103,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Relation tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>關連標籤:</translation>
     </message>
     <message>
         <source>1</source>
@@ -2113,34 +2111,34 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Relation members:</source>
-        <translation type="unfinished"></translation>
+        <translation>關連成員:</translation>
     </message>
     <message>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>關連</translation>
     </message>
 </context>
 <context>
     <name>OsmUndoRedoDockWidget</name>
     <message>
         <source>OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM編輯歷程</translation>
     </message>
     <message>
         <source>Clear all</source>
-        <translation type="unfinished"></translation>
+        <translation>全部清除</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>復原</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>取消復原</translation>
     </message>
 </context>
 <context>
@@ -2475,11 +2473,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Load layer properties from style file (.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>載從樣式檔案入圖層屬性</translation>
     </message>
     <message>
         <source>Save layer properties as style file (.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存圖層屬性為樣式檔 (qml)</translation>
     </message>
 </context>
 <context>
@@ -2700,11 +2698,11 @@ support this.</source>
     </message>
     <message>
         <source>Release selected</source>
-        <translation type="obsolete">取消選中的</translation>
+        <translation type="obsolete">取消選取的</translation>
     </message>
     <message>
         <source>Delete selected / select next</source>
-        <translation type="obsolete">刪除選中的/選擇下一個</translation>
+        <translation type="obsolete">刪除選取的/選擇下一個</translation>
     </message>
     <message>
         <source>Select position on line</source>
@@ -2724,7 +2722,7 @@ support this.</source>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">標籤</translation>
+        <translation>標籤</translation>
     </message>
     <message>
         <source>Length</source>
@@ -2865,7 +2863,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Shapefile to PostgreSQL/PostGIS Import Tool</source>
-        <translation type="unfinished">Shapefile匯出至PostGIS</translation>
+        <translation type="unfinished">Shape檔匯出至PostGIS</translation>
     </message>
     <message>
         <source>WFS plugin</source>
@@ -3246,7 +3244,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Temporary directory </source>
-        <translation type="obsolete">暫存目錄</translation>
+        <translation type="obsolete">暫存資料夾</translation>
     </message>
     <message>
         <source> exist but is not writable</source>
@@ -3254,7 +3252,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Cannot create temporary directory </source>
-        <translation type="obsolete">無法建立暫存目錄</translation>
+        <translation type="obsolete">無法建立暫存資料夾</translation>
     </message>
     <message>
         <source>Cannot create </source>
@@ -3613,7 +3611,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">圖層</translation>
+        <translation>圖層</translation>
     </message>
     <message>
         <source>Quantum GIS - </source>
@@ -3649,7 +3647,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>No OGR data provider was found in the QGIS lib directory</source>
-        <translation type="obsolete">在QGIS lib目錄下未發現OGR資料供應者</translation>
+        <translation type="obsolete">在QGIS lib資料夾下未發現OGR資料供應者</translation>
     </message>
     <message>
         <source>is not a valid or recognized data source</source>
@@ -3657,15 +3655,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Invalid Data Source</source>
-        <translation type="unfinished">無效的資料來源</translation>
+        <translation>無效的資料來源</translation>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation type="unfinished">無效的圖層</translation>
+        <translation>無效的圖層</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="unfinished">%1是一個無效的圖層，無法載入。</translation>
+        <translation>%1是一個無效的圖層，無法載入。</translation>
     </message>
     <message>
         <source>No PostgreSQL Provider</source>
@@ -3673,7 +3671,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>No PostgreSQL data provider was found in the QGIS lib directory</source>
-        <translation type="obsolete">在QGIS lib目錄下未發現PostgreSQL資料供應者</translation>
+        <translation type="obsolete">在QGIS lib資料夾下未發現PostgreSQL資料供應者</translation>
     </message>
     <message>
         <source>Saved map to:</source>
@@ -3689,7 +3687,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation type="unfinished">沒有選中圖層</translation>
+        <translation>沒有選取的圖層</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a layer in the legend</source>
@@ -3717,7 +3715,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation type="obsolete">在../plugins中未發現任何附加元件。要測試附加元件，請從src目錄啟動qgis</translation>
+        <translation type="obsolete">在../plugins中未發現任何附加元件。要測試附加元件，請從src資料夾啟動qgis</translation>
     </message>
     <message>
         <source>Name</source>
@@ -3729,7 +3727,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Plugin Information</source>
-        <translation type="obsolete">附加元件信息</translation>
+        <translation type="obsolete">附加元件資訊</translation>
     </message>
     <message>
         <source>QGis loaded the following plugin:</source>
@@ -3757,23 +3755,23 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>There is a new version of QGIS available</source>
-        <translation type="unfinished">QGIS有新版本</translation>
+        <translation>QGIS有新版本</translation>
     </message>
     <message>
         <source>You are running a development version of QGIS</source>
-        <translation type="unfinished">您正在使用QGIS的開發版本</translation>
+        <translation>您正在使用QGIS的開發版本</translation>
     </message>
     <message>
         <source>You are running the current version of QGIS</source>
-        <translation type="unfinished">您正在使用QGIS的目前版本</translation>
+        <translation>您正在使用QGIS的目前版本</translation>
     </message>
     <message>
         <source>Would you like more information?</source>
-        <translation type="unfinished">您想瞭解更多的資訊嗎?</translation>
+        <translation>您想瞭解更多的資訊嗎?</translation>
     </message>
     <message>
         <source>QGIS Version Information</source>
-        <translation type="unfinished">QGIS版本資訊</translation>
+        <translation>QGIS版本資訊</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -3789,15 +3787,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
-        <translation type="unfinished">無法從伺服器得到目前版本的資訊</translation>
+        <translation>無法從伺服器得到目前版本的資訊</translation>
     </message>
     <message>
         <source>Connection refused - server may be down</source>
-        <translation type="unfinished">連接被拒絕 - 伺服器可能出現故障</translation>
+        <translation>連接被拒絕 - 伺服器可能出現故障</translation>
     </message>
     <message>
         <source>QGIS server was not found</source>
-        <translation type="unfinished">未找到QGIS伺服器</translation>
+        <translation>未找到QGIS伺服器</translation>
     </message>
     <message>
         <source>Error reading from server</source>
@@ -3813,23 +3811,23 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Problem deleting features</source>
-        <translation type="unfinished">刪除圖徵出錯</translation>
+        <translation>刪除圖徵出錯</translation>
     </message>
     <message>
         <source>A problem occured during deletion of features</source>
-        <translation type="unfinished">刪除圖徵時發生錯誤</translation>
+        <translation>刪除圖徵時發生錯誤</translation>
     </message>
     <message>
         <source>No Vector Layer Selected</source>
-        <translation type="unfinished">未選中向量圖層</translation>
+        <translation>未選取向量圖層</translation>
     </message>
     <message>
         <source>Deleting features only works on vector layers</source>
-        <translation type="unfinished">刪除圖徵只對向量圖層有效</translation>
+        <translation>刪除圖徵只對向量圖層有效</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation type="unfinished">要刪除圖徵，必須在圖例中選擇向量圖層</translation>
+        <translation>要刪除圖徵，必須在圖例中選擇向量圖層</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
@@ -3849,7 +3847,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation type="unfinished">地圖顯示區。這是影像和向量圖層顯示的地方</translation>
+        <translation>地圖顯示區。這是影像和向量圖層顯示的地方</translation>
     </message>
     <message>
         <source>&amp;Plugins</source>
@@ -3873,7 +3871,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
-        <translation>當選中這一選項時，地圖圖層會在地圖移動或其它一些事件中被繪圖。不選中它，則不會進行繪圖。這可以讓您在繪圖以前新增大量的圖層並對它們進行符號化.</translation>
+        <translation>當選取這一選項時，地圖圖層會在地圖移動或其它一些事件中被繪圖。不選取它，則不會進行繪圖。這可以讓您在繪圖以前新增大量的圖層並對它們進行符號化.</translation>
     </message>
     <message>
         <source>Setting theme...</source>
@@ -3881,7 +3879,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>QGIS Ready</source>
-        <translation type="obsolete">QGIS就緒</translation>
+        <translation type="obsolete">QGIS準備好了</translation>
     </message>
     <message>
         <source>PostGIS editing support in provider</source>
@@ -3889,7 +3887,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Create new vector layer (shapefile) for editing</source>
-        <translation type="obsolete">新增向量圖層(shapefile)且編輯</translation>
+        <translation type="obsolete">新增向量圖層(Shape檔)且編輯</translation>
     </message>
     <message>
         <source>Windows installer</source>
@@ -3913,7 +3911,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Save delimited text as shapefile</source>
-        <translation type="obsolete">將分隔文本儲存為shapefile</translation>
+        <translation type="obsolete">將分隔文本儲存為Shape檔</translation>
     </message>
     <message>
         <source>PostgreSQL query builder</source>
@@ -3921,15 +3919,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
-        <translation type="unfinished">QGis文件(*.qgs)</translation>
+        <translation>QGis文件(*.qgs)</translation>
     </message>
     <message>
         <source>Choose a QGIS project file</source>
-        <translation type="unfinished">選擇QGIS專案檔案</translation>
+        <translation>選擇QGIS專案檔案</translation>
     </message>
     <message>
         <source>Unable to save project</source>
-        <translation type="unfinished">無法儲存專案</translation>
+        <translation>無法儲存專案</translation>
     </message>
     <message>
         <source>Unable to save project to </source>
@@ -3977,7 +3975,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>User preferences provides customizable settings for the digitizing line width, color, and selection color</source>
-        <translation type="obsolete">用戶偏好設定提供了可定制的設定，包括數化的線寬、顏色和選中的顏色等</translation>
+        <translation type="obsolete">用戶偏好設定提供了可定制的設定，包括數化的線寬、顏色和選取的顏色等</translation>
     </message>
     <message>
         <source>New symbols for use with point layers are available from the layer properties dialog</source>
@@ -4013,7 +4011,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>QGIS Project Read Error</source>
-        <translation type="unfinished">QGIS專案讀取錯誤</translation>
+        <translation>QGIS專案讀取錯誤</translation>
     </message>
     <message>
         <source>Try to find missing layers?</source>
@@ -4021,15 +4019,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
-        <translation type="unfinished">開啟GDAL支持的影像資料來源</translation>
+        <translation>開啟GDAL支持的影像資料來源</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished">另存為</translation>
+        <translation>另存為</translation>
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
-        <translation type="unfinished">選擇QGIS專案檔案並開啟</translation>
+        <translation>選擇QGIS專案檔案並開啟</translation>
     </message>
     <message>
         <source>Project file exists.</source>
@@ -4087,7 +4085,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>QGIS Ready!</source>
-        <translation>QGIS就緒!</translation>
+        <translation>QGIS準備好了!</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
@@ -4323,7 +4321,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Help Contents</source>
-        <translation type="unfinished">內容</translation>
+        <translation>內容</translation>
     </message>
     <message>
         <source>F1</source>
@@ -4331,7 +4329,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Help Documentation</source>
-        <translation type="unfinished">說明文檔</translation>
+        <translation>說明文件</translation>
     </message>
     <message>
         <source>Qgis Home Page</source>
@@ -4415,7 +4413,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Zoom To Selection</source>
-        <translation type="obsolete">縮放到選中的記錄</translation>
+        <translation type="obsolete">縮放到選取的記錄</translation>
     </message>
     <message>
         <source>F</source>
@@ -4423,7 +4421,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Zoom to selection</source>
-        <translation type="obsolete">縮放到選中的記錄</translation>
+        <translation type="obsolete">縮放到選取的記錄</translation>
     </message>
     <message>
         <source>Pan Map</source>
@@ -4459,7 +4457,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Select Features</source>
-        <translation type="unfinished">選取圖徵</translation>
+        <translation>選取圖徵</translation>
     </message>
     <message>
         <source>Open Table</source>
@@ -4511,7 +4509,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Add WMS Layer...</source>
-        <translation type="unfinished">加入WMS圖層...</translation>
+        <translation>加入WMS圖層...</translation>
     </message>
     <message>
         <source>Add Web Mapping Server Layer</source>
@@ -4535,7 +4533,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Capture Point</source>
-        <translation type="unfinished">新增點</translation>
+        <translation>新增點</translation>
     </message>
     <message>
         <source>.</source>
@@ -4543,11 +4541,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Capture Points</source>
-        <translation type="unfinished">新增點</translation>
+        <translation>新增點</translation>
     </message>
     <message>
         <source>Capture Line</source>
-        <translation type="unfinished">新增線</translation>
+        <translation>新增線</translation>
     </message>
     <message>
         <source>/</source>
@@ -4555,11 +4553,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Capture Lines</source>
-        <translation type="unfinished">新增線</translation>
+        <translation>新增線</translation>
     </message>
     <message>
         <source>Capture Polygon</source>
-        <translation type="unfinished">新增多邊形</translation>
+        <translation>新增多邊形</translation>
     </message>
     <message>
         <source>Ctrl+/</source>
@@ -4567,15 +4565,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Capture Polygons</source>
-        <translation type="unfinished">新增多邊形</translation>
+        <translation>新增多邊形</translation>
     </message>
     <message>
         <source>Delete Seleced</source>
-        <translation type="obsolete">刪除選中的記錄</translation>
+        <translation type="obsolete">刪除選取的記錄</translation>
     </message>
     <message>
         <source>Delete Selected</source>
-        <translation>刪除選中的記錄</translation>
+        <translation>刪除選取的記錄</translation>
     </message>
     <message>
         <source>Add Vertex</source>
@@ -4591,7 +4589,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished">檔案(&amp;F)</translation>
+        <translation>檔案(&amp;F)</translation>
     </message>
     <message>
         <source>&amp;Open Recent Projects</source>
@@ -4607,15 +4605,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation type="unfinished">設定(&amp;S)</translation>
+        <translation>設定(&amp;S)</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished">說明(&amp;H)</translation>
+        <translation>說明(&amp;H)</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">檔案</translation>
+        <translation>檔案</translation>
     </message>
     <message>
         <source>Manage Layers</source>
@@ -4623,11 +4621,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">說明</translation>
+        <translation>說明</translation>
     </message>
     <message>
         <source>Digitizing</source>
-        <translation type="unfinished">數化</translation>
+        <translation>數化</translation>
     </message>
     <message>
         <source>Map Navigation</source>
@@ -4643,7 +4641,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Ready</source>
-        <translation>就緒</translation>
+        <translation>我準備好了</translation>
     </message>
     <message>
         <source>New features</source>
@@ -4651,7 +4649,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Unable to open project</source>
-        <translation type="unfinished">無法開啟專案</translation>
+        <translation>無法開啟專案</translation>
     </message>
     <message>
         <source>Unable to save project </source>
@@ -4663,7 +4661,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>QGIS: Unable to load project</source>
-        <translation type="unfinished">QGIS: 無法載入專案</translation>
+        <translation>QGIS: 無法載入專案</translation>
     </message>
     <message>
         <source>Unable to load project </source>
@@ -4683,19 +4681,19 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Layer is not valid</source>
-        <translation type="unfinished">圖層無效</translation>
+        <translation>圖層無效</translation>
     </message>
     <message>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation type="unfinished">該圖層不是一個有效的圖層，無法新增到地圖中</translation>
+        <translation>該圖層不是一個有效的圖層，無法新增到地圖中</translation>
     </message>
     <message>
         <source>Save?</source>
-        <translation type="unfinished">是否儲存?</translation>
+        <translation>是否儲存?</translation>
     </message>
     <message>
         <source>Do you want to save the current project?</source>
-        <translation type="unfinished">您是否要儲存目前的專案?</translation>
+        <translation>您是否要儲存目前的專案?</translation>
     </message>
     <message>
         <source>Clipboard contents set to: </source>
@@ -4711,38 +4709,38 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Unsupported Data Source</source>
-        <translation type="unfinished">不支持的資料來源</translation>
+        <translation>不支持的資料來源</translation>
     </message>
     <message>
         <source>Enter a name for the new bookmark:</source>
-        <translation type="unfinished">新書籤的名稱:</translation>
+        <translation>新書籤的名稱:</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">錯誤</translation>
+        <translation>錯誤</translation>
     </message>
     <message>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation type="unfinished">無法建立書籤。您的使用者資料庫丟失或損壞</translation>
+        <translation>無法建立書籤。您的使用者資料庫丟失或損壞</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
-        <translation type="unfinished">Ctrl+O</translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Save Project</source>
-        <translation type="unfinished">儲存專案</translation>
+        <translation>儲存專案</translation>
     </message>
     <message>
         <source>Ctrl+A</source>
@@ -4762,92 +4760,92 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
-        <translation type="unfinished">Ctrl+Q</translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <source>V</source>
         <comment>Add a Vector Layer</comment>
-        <translation type="unfinished">V</translation>
+        <translation>V</translation>
     </message>
     <message>
         <source>R</source>
         <comment>Add a Raster Layer</comment>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
     <message>
         <source>D</source>
         <comment>Add a PostGIS Layer</comment>
-        <translation type="unfinished">D</translation>
+        <translation>D</translation>
     </message>
     <message>
         <source>N</source>
         <comment>Create a New Vector Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
-        <translation type="unfinished">Ctrl+D</translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <source>+</source>
         <comment>Show all layers in the overview map</comment>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
         <comment>Remove all layers from overview map</comment>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>S</source>
         <comment>Show all layers</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>H</source>
         <comment>Hide all layers</comment>
-        <translation type="unfinished">H</translation>
+        <translation>H</translation>
     </message>
     <message>
         <source>P</source>
         <comment>Set project properties</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>F1</source>
         <comment>Help Documentation</comment>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
-        <translation type="unfinished">Ctrl+H</translation>
+        <translation>Ctrl+H</translation>
     </message>
     <message>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
-        <translation type="unfinished">Ctrl+R</translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>F</source>
         <comment>Zoom to Full Extents</comment>
-        <translation type="unfinished">F</translation>
+        <translation>F</translation>
     </message>
     <message>
         <source>I</source>
         <comment>Click on features to identify them</comment>
-        <translation type="unfinished">I</translation>
+        <translation>I</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
@@ -4857,12 +4855,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>B</source>
         <comment>Show Bookmarks</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
-        <translation type="unfinished">Ctrl+B</translation>
+        <translation>Ctrl+B</translation>
     </message>
     <message>
         <source>W</source>
@@ -4872,27 +4870,27 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>O</source>
         <comment>Add current layer to overview map</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>.</source>
         <comment>Capture Points</comment>
-        <translation type="unfinished">.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>/</source>
         <comment>Capture Lines</comment>
-        <translation type="unfinished">/</translation>
+        <translation>/</translation>
     </message>
     <message>
         <source>Ctrl+/</source>
         <comment>Capture Polygons</comment>
-        <translation type="unfinished">Ctrl+/</translation>
+        <translation>Ctrl+/</translation>
     </message>
     <message>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>H</source>
@@ -4901,27 +4899,27 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Cut Features</source>
-        <translation type="unfinished">剪下圖徵</translation>
+        <translation>剪下圖徵</translation>
     </message>
     <message>
         <source>Cut selected features</source>
-        <translation type="unfinished">剪下選取圖徵</translation>
+        <translation>剪下選取圖徵</translation>
     </message>
     <message>
         <source>Copy Features</source>
-        <translation type="unfinished">複製圖徵</translation>
+        <translation>複製圖徵</translation>
     </message>
     <message>
         <source>Copy selected features</source>
-        <translation type="unfinished">複製選取圖徵</translation>
+        <translation>複製選取圖徵</translation>
     </message>
     <message>
         <source>Paste Features</source>
-        <translation type="unfinished">貼上圖徵</translation>
+        <translation>貼上圖徵</translation>
     </message>
     <message>
         <source>Paste selected features</source>
-        <translation type="unfinished">貼上取選圖徵</translation>
+        <translation>貼上取選圖徵</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
@@ -4930,11 +4928,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Checking provider plugins</source>
-        <translation type="unfinished">檢查提供的附加元件</translation>
+        <translation>檢查提供的附加元件</translation>
     </message>
     <message>
         <source>Starting Python</source>
-        <translation type="unfinished">啟動Python中</translation>
+        <translation>啟動Python中</translation>
     </message>
     <message>
         <source>Python error</source>
@@ -4946,67 +4944,67 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished">供應者不支持刪除</translation>
+        <translation>提供者不支持刪除</translation>
     </message>
     <message>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished">資料供應者不支援刪除圖徵</translation>
+        <translation>資料提供者不支援刪除圖徵</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">圖層不可編輯</translation>
+        <translation>圖層不可編輯</translation>
     </message>
     <message>
         <source>Toggle editing</source>
-        <translation type="unfinished">切換編輯狀態</translation>
+        <translation>切換編輯狀態</translation>
     </message>
     <message>
         <source>Toggles the editing state of the current layer</source>
-        <translation type="unfinished">切換目前圖層的編輯狀態</translation>
+        <translation>切換目前圖層的編輯狀態</translation>
     </message>
     <message>
         <source>Add Ring</source>
-        <translation type="unfinished">新增環形(Ring)</translation>
+        <translation>新增環形(Ring)</translation>
     </message>
     <message>
         <source>Add Island</source>
-        <translation type="unfinished">新增島形(Island)</translation>
+        <translation>新增島形(Island)</translation>
     </message>
     <message>
         <source>Add Island to multipolygon</source>
-        <translation type="unfinished">新增島形至多邊形中</translation>
+        <translation>新增島形至多邊形中</translation>
     </message>
     <message>
         <source>Scale </source>
-        <translation type="unfinished">比例</translation>
+        <translation>比例</translation>
     </message>
     <message>
         <source>Current map scale (formatted as x:y)</source>
-        <translation type="unfinished">目前的地圖比例(使用x:y表示)</translation>
+        <translation>目前的地圖比例(使用x:y表示)</translation>
     </message>
     <message>
         <source>Map coordinates at mouse cursor position</source>
-        <translation type="unfinished">在滑鼠的位置顯示地圖座標</translation>
+        <translation>在滑鼠的位置顯示地圖座標</translation>
     </message>
     <message>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
-        <translation type="unfinished">在目前的滑鼠位置顯示地圖座標，而且會隨著滑鼠移動持續更新。</translation>
+        <translation>在目前的滑鼠位置顯示地圖座標，而且會隨著滑鼠移動持續更新。</translation>
     </message>
     <message>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="unfinished">目前的圖層是無法編輯的，請在[數化工具列]中 選擇&apos;開始編輯&apos;。</translation>
+        <translation>目前的圖層是無法編輯的，請在[數化工具列]中 選擇&apos;開始編輯&apos;。</translation>
     </message>
     <message>
         <source>Invalid scale</source>
-        <translation type="unfinished">無效的比例</translation>
+        <translation>無效的比例</translation>
     </message>
     <message>
         <source>Network error while communicating with server</source>
-        <translation type="unfinished">當與伺服器溝通時發生錯誤</translation>
+        <translation>當與伺服器溝通時發生錯誤</translation>
     </message>
     <message>
         <source>Unknown network socket error</source>
-        <translation type="unfinished">未知的網路封包錯誤</translation>
+        <translation>未知的網路封包錯誤</translation>
     </message>
     <message>
         <source>Unable to communicate with QGIS Version server</source>
@@ -5014,27 +5012,27 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Move Feature</source>
-        <translation type="unfinished">移動圖徵</translation>
+        <translation>移動圖徵</translation>
     </message>
     <message>
         <source>Split Features</source>
-        <translation type="unfinished">分割圖徵</translation>
+        <translation>分割圖徵</translation>
     </message>
     <message>
         <source>Map Tips</source>
-        <translation type="unfinished">地圖提示工具</translation>
+        <translation>地圖提示工具</translation>
     </message>
     <message>
         <source>Show information about a feature when the mouse is hovered over it</source>
-        <translation type="unfinished">當滑鼠移動至圖徵上時顯示其資訊</translation>
+        <translation>當滑鼠移動至圖徵上時顯示其資訊</translation>
     </message>
     <message>
         <source>Current map scale</source>
-        <translation type="unfinished">目前地圖比例</translation>
+        <translation>目前地圖比例</translation>
     </message>
     <message>
         <source>Project file is older</source>
-        <translation type="unfinished">專案檔是舊版</translation>
+        <translation>專案檔是舊版</translation>
     </message>
     <message>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
@@ -5043,30 +5041,33 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟舊版QGIS檔案時提醒我</translation>
     </message>
     <message>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
-        <translation type="unfinished">切換至全螢幕</translation>
+        <translatorcomment>切換至全螢幕</translatorcomment>
+        <translation>Ctrl-F</translation>
     </message>
     <message>
         <source>Toggle fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>切換至全螢幕</translation>
     </message>
     <message>
         <source>Resource Location Error</source>
-        <translation type="unfinished">資源位置發生錯誤</translation>
+        <translation>資源位置發生錯誤</translation>
     </message>
     <message>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
-        <translation type="unfinished"></translation>
+        <translation>讀取圖示資源錯誤: 
+ %1
+ 離開中...</translation>
     </message>
     <message>
         <source>Overview</source>
-        <translation type="unfinished">全覽圖</translation>
+        <translation>全覽圖</translation>
     </message>
     <message>
         <source>Legend</source>
@@ -5074,227 +5075,226 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>You are using QGIS version %1 built against code revision %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>您正在使用由%2源碼建立的QGIS%1版。</translation>
     </message>
     <message>
         <source> This copy of QGIS has been built with PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation>此版QGIS支援PostGIS。</translation>
     </message>
     <message>
         <source> This copy of QGIS has been built without PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation>此版QGIS不支援PostGIS。</translation>
     </message>
     <message>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation type="unfinished"></translation>
+        <translation>
+QGIS由Qt %1版編譯而成，而您目前使用Qt %2執行QGIS</translation>
     </message>
     <message>
         <source>Stop map rendering</source>
-        <translation type="unfinished">停止地圖繪圖</translation>
+        <translation>停止地圖繪圖</translation>
     </message>
     <message>
         <source>Multiple Instances of QgisApp</source>
-        <translation type="unfinished"></translation>
+        <translation>執行多個QGIS</translation>
     </message>
     <message>
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>發現執行多個QGIS，請通知開發人員。</translation>
     </message>
     <message>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&amp;Print Composer</source>
-        <translation type="unfinished">列印管理(&amp;P)</translation>
+        <translation>出圖設計(&amp;P)</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
         <comment>Print Composer</comment>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Print Composer</source>
-        <translation type="unfinished">列印管理</translation>
+        <translation>出圖設計</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished">復原(&amp;U)</translation>
+        <translation>復原(&amp;U)</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Undo the last operation</source>
-        <translation type="unfinished">恢復至最後的一次操作</translation>
+        <translation>恢復至最後的一次操作</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">剪下(u&amp;)</translation>
+        <translation>剪下(u&amp;)</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished">剪下目前選擇的內容至剪貼簿</translation>
+        <translation>剪下目前選擇的內容至剪貼簿</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished">複製(&amp;C)</translation>
+        <translation>複製(&amp;C)</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished">複製目前選擇的內容至剪貼簿</translation>
+        <translation>複製目前選擇的內容至剪貼簿</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished">貼上(&amp;P)</translation>
+        <translation>貼上(&amp;P)</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation type="unfinished">貼上目前選擇的內容至剪貼簿</translation>
+        <translation>貼上目前選擇的內容至剪貼簿</translation>
     </message>
     <message>
         <source>M</source>
         <comment>Measure a Line</comment>
-        <translation type="unfinished">M</translation>
+        <translation>M</translation>
     </message>
     <message>
         <source>J</source>
         <comment>Measure an Area</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
-        <translation type="unfinished">縮放至選取的大小</translation>
+        <translation>縮放至選取的大小</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Zoom Actual Size</source>
-        <translation type="unfinished">縮放到實際大小</translation>
+        <translation>實際大小縮放</translation>
     </message>
     <message>
         <source>Zoom to Actual Size</source>
-        <translation type="unfinished">縮放到實際大小</translation>
+        <translation>縮放到實際大小</translation>
     </message>
     <message>
         <source>Add Vector Layer...</source>
-        <translation type="unfinished">加入向量圖層...</translation>
+        <translation>加入向量圖層...</translation>
     </message>
     <message>
         <source>Add Raster Layer...</source>
-        <translation type="unfinished">加入影像圖層...</translation>
+        <translation>加入影像圖層...</translation>
     </message>
     <message>
         <source>Add PostGIS Layer...</source>
-        <translation type="unfinished">加入PostGIS圖層...</translation>
+        <translation>加入PostGIS圖層...</translation>
     </message>
     <message>
         <source>W</source>
         <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="unfinished">W</translation>
+        <translation>W</translation>
     </message>
     <message>
         <source>Add a Web Mapping Server Layer</source>
-        <translation type="unfinished">新增Web Mapping Server圖層</translation>
+        <translation>新增Web Mapping Server圖層</translation>
     </message>
     <message>
         <source>Open Attribute Table</source>
-        <translation type="unfinished">開啟屬性工作表(&amp;O)</translation>
+        <translation>開啟屬性工作表</translation>
     </message>
     <message>
         <source>Save as Shapefile...</source>
-        <translation type="unfinished">儲存為shapefile...</translation>
+        <translation>儲存為Shape檔...</translation>
     </message>
     <message>
         <source>Save the current layer as a shapefile</source>
-        <translation type="unfinished">儲存目前的圖層為Shapefile</translation>
+        <translation>儲存目前的圖層為Shape檔</translation>
     </message>
     <message>
         <source>Save Selection as Shapefile...</source>
-        <translation type="unfinished">儲存選取部分為Shapefile...</translation>
+        <translation>儲存選取部分為Shape檔...</translation>
     </message>
     <message>
         <source>Save the selection as a shapefile</source>
-        <translation type="unfinished">儲存選取部分為Shapefile</translation>
+        <translation>儲存選取部分為Shape檔</translation>
     </message>
     <message>
         <source>Properties...</source>
-        <translation type="unfinished">屬性</translation>
+        <translation>屬性...</translation>
     </message>
     <message>
         <source>Set properties of the current layer</source>
-        <translation type="unfinished">設定目前圖層的屬性
-</translation>
+        <translation>設定目前圖層的屬性</translation>
     </message>
     <message>
         <source>Add to Overview</source>
-        <translation type="unfinished">新增到全覽圖</translation>
+        <translation>新增到全覽圖</translation>
     </message>
     <message>
         <source>Add All to Overview</source>
-        <translation type="unfinished">全部圖層加入全覽圖</translation>
+        <translation>全部圖層加入全覽圖</translation>
     </message>
     <message>
         <source>Manage Plugins...</source>
-        <translation type="unfinished">附加元件管理…</translation>
+        <translation>附加元件管理…</translation>
     </message>
     <message>
         <source>Toggle Full Screen Mode</source>
-        <translation type="unfinished">切換至全螢幕模式</translation>
+        <translation>切換至全螢幕模式</translation>
     </message>
     <message>
         <source>Custom CRS...</source>
-        <translation type="unfinished">自訂 座標參考系統(CRS)...</translation>
+        <translation>自訂座標參考系統(CRS)...</translation>
     </message>
     <message>
         <source>Manage custom coordinate reference systems</source>
-        <translation type="unfinished">管理自訂的座標參考系統(CRS)</translation>
+        <translation>管理自訂的座標參考系統(CRS)</translation>
     </message>
     <message>
         <source>Minimize</source>
-        <translation type="unfinished">最小化
-</translation>
+        <translation>最小化</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
-        <translation type="unfinished">Ctrl+M</translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <source>Minimizes the active window to the dock</source>
-        <translation type="unfinished">將目前的視窗縮小化至停駐位置</translation>
+        <translation>將目前的視窗縮小化至停駐位置</translation>
     </message>
     <message>
         <source>Zoom</source>
-        <translation type="unfinished">縮放</translation>
+        <translation>縮放</translation>
     </message>
     <message>
         <source>Toggles between a predefined size and the window size set by the user</source>
-        <translation type="unfinished"></translation>
+        <translation>在預設大小與視窗大小中切換</translation>
     </message>
     <message>
         <source>Bring All to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>移置最上層</translation>
     </message>
     <message>
         <source>Bring forward all open windows</source>
@@ -5302,23 +5302,23 @@ Please contact the developers.
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished">編輯(&amp;E)</translation>
+        <translation>編輯(&amp;E)</translation>
     </message>
     <message>
         <source>Panels</source>
-        <translation type="unfinished"></translation>
+        <translation>版面配置</translation>
     </message>
     <message>
         <source>Toolbars</source>
-        <translation type="unfinished">工具列</translation>
+        <translation>工具列</translation>
     </message>
     <message>
         <source>&amp;Window</source>
-        <translation type="unfinished">視窗(&amp;W)</translation>
+        <translation>視窗(&amp;W)</translation>
     </message>
     <message>
         <source>Toggle extents and mouse position display</source>
-        <translation type="unfinished"></translation>
+        <translation>切換地圖範圍或滑鼠位置資訊</translation>
     </message>
     <message>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
@@ -5326,51 +5326,51 @@ Please contact the developers.
     </message>
     <message>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>CRD狀況 - 按一下開啟座標參考系統對話方塊</translation>
     </message>
     <message>
         <source>Choose a file name to save the QGIS project file as</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇欲儲存的QGIS專案檔案名稱為</translation>
     </message>
     <message>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished">請選擇地圖影像的檔名為</translation>
+        <translation>請選擇地圖影像的檔名為</translation>
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">開始編輯失敗</translation>
+        <translation>開始編輯失敗</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">資料來源不能以可寫方式開啟</translation>
+        <translation>資料來源不能以編輯模式開啟</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">結束編輯</translation>
+        <translation>結束編輯</translation>
     </message>
     <message>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished">您想將改變的內容儲存至圖層 %1?</translation>
+        <translation>您想將改變的內容儲存至圖層 %1?</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">資料復原時發生問題</translation>
+        <translation>資料復原時發生問題</translation>
     </message>
     <message>
         <source>Python Console</source>
-        <translation type="unfinished">Python主控台</translation>
+        <translation>Python主控台</translation>
     </message>
     <message>
         <source>Map coordinates for the current view extents</source>
-        <translation type="unfinished"></translation>
+        <translation>目前檢視範圍的地圖座標</translation>
     </message>
     <message>
         <source>Maptips require an active layer</source>
-        <translation type="unfinished"></translation>
+        <translation>地圖提示需要一個作用中的圖層</translation>
     </message>
     <message>
         <source>Quantum GIS - %1 </source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS - %1 </translation>
     </message>
     <message>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
@@ -5378,39 +5378,42 @@ Please contact the developers.
     </message>
     <message>
         <source>%1 is not a valid or recognized data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 不是一個有效或支援的資料來源</translation>
     </message>
     <message>
         <source>%1
 Try to find missing layers?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+試著找出遺失的圖層?</translation>
     </message>
     <message>
         <source>Saved project to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存專案至: %1</translation>
     </message>
     <message>
         <source>Unable to save project to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法儲存專案至: %1</translation>
     </message>
     <message>
         <source>Unable to save project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法儲存專案: %1</translation>
     </message>
     <message>
         <source>Unable to load project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法載入專案至: %1</translation>
     </message>
     <message>
         <source>Saved map image to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存地圖影像至 %1</translation>
     </message>
     <message>
         <source>Could not commit changes to layer %1
 
 Errors: %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>無法套用變更至圖層 %1
+
+錯誤: %2</translation>
     </message>
     <message>
         <source>QGIS - Changes in SVN since last release</source>
@@ -5419,19 +5422,20 @@ Errors: %2
     <message>
         <source>Unable to communicate with QGIS Version server
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法與QGIS版本伺服器溝通
+%1</translation>
     </message>
     <message>
         <source>Extents: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>範圍: %1</translation>
     </message>
     <message>
         <source>%1 is not a valid or recognized raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 不是一個有效或支援的影像資料來源</translation>
     </message>
     <message>
         <source>%1 is not a supported raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 不是一個支援的影像資料來源</translation>
     </message>
     <message>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
@@ -5439,127 +5443,125 @@ Errors: %2
     </message>
     <message>
         <source>Delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>刪除圖徵</translation>
     </message>
     <message numerus="yes">
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>確定要刪除 %n 圖徵?</numerusform>
         </translation>
     </message>
     <message>
         <source>Add SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>新增SpatiaLite圖層...</translation>
     </message>
     <message>
         <source>L</source>
         <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Add a SpatiaLite Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>加入SpatiaLite圖層</translation>
     </message>
     <message>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>此版QGIS支援SpatiaLite。</translation>
     </message>
     <message>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>此版QGIS不支援SpatiaLite。</translation>
     </message>
     <message>
         <source>Zoom Next</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">縮放至下一步</translation>
     </message>
     <message>
         <source>Zoom to Forward Extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">縮放至下一個範圍</translation>
     </message>
     <message>
         <source>Simplify Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>簡化圖徵</translation>
     </message>
     <message>
         <source>Delete Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>刪除環形(Ring)</translation>
     </message>
     <message>
         <source>Delete Part</source>
-        <translation type="unfinished"></translation>
+        <translation>刪除部分(Part)</translation>
     </message>
     <message>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>設定快速鍵...</translation>
     </message>
     <message>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>設定快速鍵</translation>
     </message>
     <message>
         <source>Advanced Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>進階數化</translation>
     </message>
     <message>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>取消回復(&amp;R)</translation>
     </message>
     <message>
         <source>Ctrl+Shift+Z</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Redo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>重作最後一個動作</translation>
     </message>
     <message>
         <source>Merge selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>合併選取圖徵</translation>
     </message>
     <message>
         <source>Node Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>節點工具</translation>
     </message>
     <message>
         <source>Features deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>圖徵已刪除</translation>
     </message>
     <message>
         <source>Merging features...</source>
-        <translation type="unfinished"></translation>
+        <translation>合併圖徵...</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">放棄</translation>
+        <translation>放棄</translation>
     </message>
     <message>
         <source>No active layer</source>
-        <translation type="unfinished">沒有啟動的圖層</translation>
+        <translation>沒有作用中的圖層</translation>
     </message>
     <message>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>沒有發現作用中的圖層。請在圖層清單中選擇任一圖層</translation>
     </message>
     <message>
         <source>Active layer is not vector</source>
-        <translation type="unfinished"></translation>
+        <translation>作用中的圖層不是向量圖層</translation>
     </message>
     <message>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>合併圖徵工具僅適用於向量圖層。請在圖層清單中選擇向量圖層</translation>
     </message>
     <message>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>合併圖徵僅號在圖層編輯模式中使用。要使用合併工具，請先至[圖層]-&gt;[切換編輯模式]</translation>
     </message>
     <message>
         <source>The merge tool requires at least two selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>合併工具至少需要兩個圖徵</translation>
     </message>
     <message>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
@@ -5567,19 +5569,19 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Merged features</source>
-        <translation type="unfinished"></translation>
+        <translation>合併圖徵</translation>
     </message>
     <message>
         <source>Features cut</source>
-        <translation type="unfinished"></translation>
+        <translation>圖徵已剪下</translation>
     </message>
     <message>
         <source>Features pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>圖徵已貼上</translation>
     </message>
     <message>
         <source>Whats new in Version 1.2.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>在1.2.0新版中有那些功能?</translation>
     </message>
     <message>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
@@ -5725,7 +5727,7 @@ updates.</source>
     </message>
     <message>
         <source>Data Toolbar</source>
-        <translation type="obsolete">數據工具列</translation>
+        <translation type="obsolete">資料工具列</translation>
     </message>
     <message>
         <source>Map Navigation Toolbar</source>
@@ -5845,19 +5847,19 @@ updates.</source>
     </message>
     <message>
         <source>Zoom to selected features</source>
-        <translation type="obsolete">放大至選中的圖徵</translation>
+        <translation type="obsolete">放大至選取的圖徵</translation>
     </message>
     <message>
         <source>&amp;Zoom to selected features</source>
-        <translation type="obsolete">放大至選中的圖徵(&amp;Z)</translation>
+        <translation type="obsolete">放大至選取的圖徵(&amp;Z)</translation>
     </message>
     <message>
         <source>Zoom to selected features in active layer</source>
-        <translation type="obsolete">縮放到啟動圖層的選中圖徵上</translation>
+        <translation type="obsolete">縮放到啟動圖層的選取圖徵上</translation>
     </message>
     <message>
         <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
-        <translation type="obsolete">在啟動圖層上，縮放到選中圖徵的範圍。檢視會被縮放，以至於所有選中的圖徵都能夠被看到。如果沒有選中的圖徵，那麼檢視不會改變.</translation>
+        <translation type="obsolete">在啟動圖層上，縮放到選取圖徵的範圍。檢視會被縮放，以至於所有選取的圖徵都能夠被看到。如果沒有選取的圖徵，那麼檢視不會改變.</translation>
     </message>
     <message>
         <source>Identify</source>
@@ -5881,7 +5883,7 @@ updates.</source>
     </message>
     <message>
         <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
-        <translation type="obsolete">在啟動圖層上，用滑鼠在感興趣的圖徵周圍拖一個矩形框來選取圖徵。當滑鼠釋放後，這些圖徵被選中，並且以不同的顏色(預設是黃色)繪製</translation>
+        <translation type="obsolete">在啟動圖層上，用滑鼠在感興趣的圖徵周圍拖一個矩形框來選取圖徵。當滑鼠釋放後，這些圖徵被選取，並且以不同的顏色(預設是黃色)繪製</translation>
     </message>
     <message>
         <source>&amp;About Quantum GIS</source>
@@ -5905,7 +5907,7 @@ updates.</source>
     </message>
     <message>
         <source>Add a vector layer (e.g. Shapefile)</source>
-        <translation type="obsolete">加入向量圖層(如：Shapefile)</translation>
+        <translation type="obsolete">加入向量圖層(如：Shape檔)</translation>
     </message>
     <message>
         <source>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</source>
@@ -5921,11 +5923,11 @@ updates.</source>
     </message>
     <message>
         <source>Open the attribute table for the selected layer</source>
-        <translation type="obsolete">開啟選中圖層的屬性工作表</translation>
+        <translation type="obsolete">開啟選取圖層的屬性工作表</translation>
     </message>
     <message>
         <source>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</source>
-        <translation type="obsolete">開啟選中的向量圖層的屬性工作表。在首列點擊行名，會將所有的記錄進行排序.</translation>
+        <translation type="obsolete">開啟選取的向量圖層的屬性工作表。在首列點擊行名，會將所有的記錄進行排序.</translation>
     </message>
     <message>
         <source>Previous</source>
@@ -6149,7 +6151,7 @@ updates.</source>
     </message>
     <message>
         <source>Properties for the selected layer</source>
-        <translation type="obsolete">選中圖層的屬性</translation>
+        <translation type="obsolete">選取圖層的屬性</translation>
     </message>
     <message>
         <source>Zoom to layer</source>
@@ -6301,7 +6303,7 @@ updates.</source>
     </message>
     <message>
         <source>Properties for the selected layer, including rendering and projection settings.</source>
-        <translation type="obsolete">選中圖層的屬性，包括繪圖和專案設定.</translation>
+        <translation type="obsolete">選取圖層的屬性，包括繪圖和專案設定.</translation>
     </message>
     <message>
         <source>Zoom to the extent of the active layer</source>
@@ -6337,7 +6339,7 @@ updates.</source>
     </message>
     <message>
         <source>Create a new vector layer (shapefile) for editing.</source>
-        <translation type="obsolete">建立新的向量圖層(shapefile)且編輯。</translation>
+        <translation type="obsolete">建立新的向量圖層(Shape檔)且編輯。</translation>
     </message>
     <message>
         <source>DebugHook</source>
@@ -6474,22 +6476,25 @@ updates.</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">名稱</translation>
+        <translation>名稱</translation>
     </message>
     <message>
         <source>Sponsors</source>
-        <translation type="unfinished">贊助名單</translation>
+        <translation>贊助者</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation type="unfinished">Quantum GIS is licensed under the GNU General Public License</translation>
+        <translation>Quantum GIS 使用GNU通用公共授權</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS 正體中文版 (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>http://www.gnu.org/licenses</source>
@@ -6497,7 +6502,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join our user mailing list</source>
-        <translation type="unfinished">加入使用者郵件清單</translation>
+        <translation>加入使用者郵件清單</translation>
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
@@ -6505,47 +6510,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Website</source>
-        <translation type="unfinished">網站</translation>
+        <translation>網站</translation>
     </message>
     <message>
         <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;以下人員貢獻時間、精神提供QGIS各種語系的程式使用介面或文件&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>語系</translation>
     </message>
     <message>
         <source>Names</source>
-        <translation type="unfinished"></translation>
+        <translation>姓名</translation>
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>可用的QGIS資料提供元件</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>可用的Qt資料庫元件</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>可用的Qt圖像元件</translation>
     </message>
     <message>
         <source>Translators</source>
-        <translation type="unfinished"></translation>
+        <translation>翻譯人員</translation>
     </message>
     <message>
         <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;QGIS贊助計畫：貢獻至QGIS開發&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;The following individuals and institutions have contributed money to fund QGIS development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;以下是個人或組織貢獻金錢來贊助QGIS與其它專案開發&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Donors</source>
-        <translation type="unfinished"></translation>
+        <translation>捐助者</translation>
     </message>
 </context>
 <context>
@@ -6572,22 +6577,22 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>註解:</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">寬度</translation>
+        <translation>寬度</translation>
     </message>
     <message>
         <source>Precision</source>
-        <translation type="unfinished">精確度</translation>
+        <translation>精確度</translation>
     </message>
 </context>
 <context>
     <name>QgsApplication</name>
     <message>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">意外</translation>
     </message>
 </context>
 <context>
@@ -6611,7 +6616,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Missing Information</source>
-        <translation type="unfinished"></translation>
+        <translation>遺失資訊</translation>
     </message>
     <message>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
@@ -6642,7 +6647,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move the selected action up</source>
-        <translation>將選中的動作上移</translation>
+        <translation>將選取的動作上移</translation>
     </message>
     <message>
         <source>Move down</source>
@@ -6650,7 +6655,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move the selected action down</source>
-        <translation>將選中的動作下移</translation>
+        <translation>將選取的動作下移</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -6658,7 +6663,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Remove the selected action</source>
-        <translation>移除選中的動作</translation>
+        <translation>移除選取的動作</translation>
     </message>
     <message>
         <source>Name:</source>
@@ -6678,7 +6683,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
-        <translation type="obsolete">在這裡輸入動作。它可以是任何的程式、腳本或是系統中可用的動作。當動作調用的時候，任何以a%開頭並且包含一個欄位名稱的字串都會用這個欄位的值來替換。特殊字元%%會用選中欄位的值來替換。雙引號包圍的一組文本會作為程式、腳本或動作的一個參數。雙引號前如果有反斜線，則它會被忽略</translation>
+        <translation type="obsolete">在這裡輸入動作。它可以是任何的程式、腳本或是系統中可用的動作。當動作調用的時候，任何以a%開頭並且包含一個欄位名稱的字串都會用這個欄位的值來替換。特殊字元%%會用選取欄位的值來替換。雙引號包圍的一組文本會作為程式、腳本或動作的一個參數。雙引號前如果有反斜線，則它會被忽略</translation>
     </message>
     <message>
         <source>Enter the action command here</source>
@@ -6706,7 +6711,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Update the selected action</source>
-        <translation>更新選中的動作</translation>
+        <translation>更新選取的動作</translation>
     </message>
     <message>
         <source>Insert field</source>
@@ -6714,7 +6719,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Inserts the selected field into the action, prepended with a %</source>
-        <translation>將選中的欄位插入動作，並在前面加上a%</translation>
+        <translation>將選取的欄位插入動作，並在前面加上a%</translation>
     </message>
     <message>
         <source>The valid attribute names for this layer</source>
@@ -6920,7 +6925,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation type="obsolete">將選中的記錄移動到頂端</translation>
+        <translation type="obsolete">將選取的記錄移動到頂端</translation>
     </message>
     <message>
         <source>Remove selection</source>
@@ -6928,11 +6933,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="obsolete">將選中的列複製到剪貼簿 (Ctrl+C)</translation>
+        <translation type="obsolete">將選取的列複製到剪貼簿 (Ctrl+C)</translation>
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">將選中的列複製到剪貼簿</translation>
+        <translation type="obsolete">將選取的列複製到剪貼簿</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
@@ -6995,119 +7000,117 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTableDialog</name>
     <message>
         <source>Attribute table - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>屬性工作表 - %1</translation>
     </message>
     <message>
         <source>Search string parsing error</source>
-        <translation type="unfinished">尋找字串解析錯誤</translation>
+        <translation>尋找字串解析錯誤</translation>
     </message>
     <message>
         <source>Search results</source>
-        <translation type="unfinished">尋找結果</translation>
+        <translation>尋找結果</translation>
     </message>
     <message>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="unfinished">您輸入空的尋找字串。</translation>
+        <translation>您輸入空的尋找字串。</translation>
     </message>
     <message>
         <source>Error during search</source>
-        <translation type="unfinished">尋找時發生錯誤</translation>
+        <translation>尋找時發生錯誤</translation>
     </message>
     <message numerus="yes">
         <source>Found %d matching features.</source>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>找到%n個符合的圖徵。</numerusform>
         </translation>
     </message>
     <message>
         <source>No matching features found.</source>
-        <translation type="unfinished">未找到符合的圖徵。</translation>
+        <translation>未找到符合的圖徵。</translation>
     </message>
     <message>
         <source>Attribute Table</source>
-        <translation type="unfinished">屬性工作表</translation>
+        <translation>屬性工作表</translation>
     </message>
     <message>
         <source>Remove selection</source>
-        <translation type="unfinished">取消選擇</translation>
+        <translation>取消選擇</translation>
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation type="unfinished">將選中的記錄移動到頂端</translation>
+        <translation>將選取的記錄移動到頂端</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="unfinished">反向選擇</translation>
+        <translation>反向選擇</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">將選中的列複製到剪貼簿 (Ctrl+C)</translation>
+        <translation>將選取的列複製到剪貼簿 (Ctrl+C)</translation>
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">將選中的列複製到剪貼簿</translation>
+        <translation>將選取的列複製到剪貼簿</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished">縮放地圖至選取的列</translation>
+        <translation>依據選取的列縮放地圖 (Ctrl-J)</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">縮放地圖至選取的列</translation>
+        <translation>依據選取的列縮放地圖</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">切換編輯模式</translation>
+        <translation>切換編輯模式</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
+        <translation>單擊切換工作表編輯狀況</translation>
     </message>
     <message>
         <source>Look for</source>
-        <translation type="unfinished"></translation>
+        <translation>尋找</translation>
     </message>
     <message>
         <source>in</source>
-        <translation type="unfinished">在欄位</translation>
+        <translation>在欄位</translation>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
+        <translation>搜尋(&amp;S)</translation>
     </message>
     <message>
         <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>僅顯示選取記錄</translation>
     </message>
     <message>
         <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation>進階搜尋</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Search selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>僅搜尋選取記錄</translation>
     </message>
 </context>
 <context>
@@ -7240,7 +7243,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTableMemoryModel</name>
     <message>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>屬性已更改</translation>
     </message>
 </context>
 <context>
@@ -7266,43 +7269,43 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Attribute Edit Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>屬性編緝對話方塊</translation>
     </message>
     <message>
         <source>Line edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線-編輯</translation>
     </message>
     <message>
         <source>Classification</source>
-        <translation type="unfinished"></translation>
+        <translation>分類</translation>
     </message>
     <message>
         <source>Range</source>
-        <translation type="unfinished">範圍</translation>
+        <translation>範圍</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>唯一值</translation>
     </message>
     <message>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案名稱</translation>
     </message>
     <message>
         <source>Value map</source>
-        <translation type="unfinished"></translation>
+        <translation>值地圖(Value map)</translation>
     </message>
     <message>
         <source>Enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation>列舉(Enumeration)</translation>
     </message>
     <message>
         <source>Immutable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">不可改變的(Immutable)</translation>
     </message>
     <message>
         <source>Simple edit box. This is the default editation widget.</source>
-        <translation type="unfinished"></translation>
+        <translation>這是預設的編輯工具。</translation>
     </message>
     <message>
         <source>Displays combo box containing values of attribute used for classification.</source>
@@ -7314,11 +7317,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished">最小值</translation>
+        <translation>最小值</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished">最大值</translation>
+        <translation>最大值</translation>
     </message>
     <message>
         <source>Step</source>
@@ -7330,7 +7333,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Editable</source>
-        <translation type="unfinished"></translation>
+        <translation>可編輯</translation>
     </message>
     <message>
         <source>Local minimum/maximum = 0/0</source>
@@ -7350,19 +7353,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Load Data from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>從圖層載入資料</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">值</translation>
+        <translation>值</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">描述</translation>
+        <translation>說明</translation>
     </message>
     <message>
         <source>Remove Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>移除選取</translation>
     </message>
     <message>
         <source>Combo box with values that can be used within the column&apos;s type. Must be supported by the provider.</source>
@@ -7401,7 +7404,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>刪除(&amp;D)</translation>
     </message>
     <message>
         <source>&amp;Zoom to</source>
@@ -7409,7 +7412,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Are you sure you want to delete the %1 bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation>您確定要刪除 %1 書籤?</translation>
     </message>
     <message>
         <source>Failed to delete the %1 bookmark from the database. The database said:
@@ -7567,11 +7570,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS - print composer</source>
-        <translation type="unfinished">QGIS - 列印管理</translation>
+        <translation>QGIS - 出圖設計</translation>
     </message>
     <message>
         <source>Map 1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">地圖 1</translation>
     </message>
     <message>
         <source>format</source>
@@ -7579,7 +7582,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>SVG warning</source>
-        <translation type="unfinished">SVG警告</translation>
+        <translation>SVG警告</translation>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
@@ -7587,7 +7590,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>SVG Format</source>
-        <translation type="unfinished">SVG格式</translation>
+        <translation>SVG格式</translation>
     </message>
     <message>
         <source>Move Content</source>
@@ -7647,11 +7650,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">檔案</translation>
+        <translation>檔案</translation>
     </message>
     <message>
         <source>Close</source>
@@ -7667,7 +7670,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished">復原(&amp;U)</translation>
+        <translation>復原(&amp;U)</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
@@ -7691,7 +7694,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished">貼上(&amp;P)</translation>
+        <translation>貼上(&amp;P)</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
@@ -7703,11 +7706,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished">檢視</translation>
+        <translation>檢視</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation type="unfinished">排版</translation>
+        <translation>版面配置</translation>
     </message>
     <message>
         <source>Choose a file name to save the map image as</source>
@@ -7719,11 +7722,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Project contains WMS layers</source>
-        <translation type="unfinished">專案中包含WMS圖層</translation>
+        <translation>專案中包含WMS圖層</translation>
     </message>
     <message>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation type="unfinished">一些WMS伺服器(例如UMN Mapserver)有限制高度與寬度的參數。當您在列印這些圖層時不能超過這限制。所以這些WMS圖層並不一定可以列印。</translation>
+        <translation>一些WMS伺服器(例如UMN Mapserver)有限制高度與寬度的參數。當您在列印這些圖層時不能超過這限制。所以這些WMS圖層並不一定可以列印</translation>
     </message>
     <message>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
@@ -7755,7 +7758,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save error</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存錯誤</translation>
     </message>
     <message>
         <source>Error, could not save file</source>
@@ -7767,7 +7770,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Read error</source>
-        <translation type="unfinished"></translation>
+        <translation>讀取錯誤</translation>
     </message>
     <message>
         <source>Error, could not read file</source>
@@ -7779,7 +7782,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>PDF Format</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF格式</translation>
     </message>
 </context>
 <context>
@@ -7790,7 +7793,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">一般</translation>
+        <translation>一般</translation>
     </message>
     <message>
         <source>Composition</source>
@@ -7894,7 +7897,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>MainWindow</source>
-        <translation>主窗口</translation>
+        <translation>主要視窗</translation>
     </message>
     <message>
         <source>Zoom All</source>
@@ -7914,198 +7917,198 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">關閉</translation>
+        <translation>關閉</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">說明</translation>
+        <translation>說明</translation>
     </message>
     <message>
         <source>Zoom Full</source>
-        <translation type="unfinished">全圖顯示</translation>
+        <translation>全圖顯示</translation>
     </message>
     <message>
         <source>Add Map</source>
-        <translation type="unfinished">新增地圖</translation>
+        <translation>新增地圖</translation>
     </message>
     <message>
         <source>Add Label</source>
-        <translation type="unfinished">新增標籤</translation>
+        <translation>新增標籤</translation>
     </message>
     <message>
         <source>Add Vector Legend</source>
-        <translation type="unfinished">新增向量圖例</translation>
+        <translation>新增向量圖例</translation>
     </message>
     <message>
         <source>Move Item</source>
-        <translation type="unfinished">移動項目</translation>
+        <translation>移動項目</translation>
     </message>
     <message>
         <source>Export as Image...</source>
-        <translation type="unfinished">輸出成影像...</translation>
+        <translation>輸出成影像...</translation>
     </message>
     <message>
         <source>Export as SVG...</source>
-        <translation type="unfinished">輸出成SVG...</translation>
+        <translation>輸出成SVG...</translation>
     </message>
     <message>
         <source>Add Scalebar</source>
-        <translation type="unfinished">新增比例尺</translation>
+        <translation>新增比例尺</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="unfinished">重新整理</translation>
+        <translation>重新整理</translation>
     </message>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished">移動項目</translation>
+        <translation>移動內容</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation type="unfinished">移動項目內容</translation>
+        <translation>移動項目內容</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">組</translation>
+        <translation>群組</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished">群組項目</translation>
+        <translation>群組項目</translation>
     </message>
     <message>
         <source>Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>取消群組</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished">取消項目群組(&amp;U)</translation>
+        <translation>取消群組項目</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished">上移一層</translation>
+        <translation>上移一層</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished">取選項目上移一層</translation>
+        <translation>取選項目上移一層</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished"></translation>
+        <translation>下移一層</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished">取選項目下移一層</translation>
+        <translation>取選項目下移一層</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished">移至最上層</translation>
+        <translation>移至最上層</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished">選取項目移至最上層</translation>
+        <translation>選取項目移至最上層</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished">移至最下層</translation>
+        <translation>移至最下層</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished">選取項目移至最下層</translation>
+        <translation>選取項目移至最下層</translation>
     </message>
     <message>
         <source>Load From template</source>
-        <translation type="unfinished"></translation>
+        <translation>從範本載入</translation>
     </message>
     <message>
         <source>Save as template</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存為範本</translation>
     </message>
     <message>
         <source>Align left</source>
-        <translation type="unfinished"></translation>
+        <translation>靠左對齊</translation>
     </message>
     <message>
         <source>Align selected items left</source>
-        <translation type="unfinished"></translation>
+        <translation>選取項目向左對齊</translation>
     </message>
     <message>
         <source>Align center</source>
-        <translation type="unfinished"></translation>
+        <translation>置中</translation>
     </message>
     <message>
         <source>Align center horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>水平置中</translation>
     </message>
     <message>
         <source>Align right</source>
-        <translation type="unfinished"></translation>
+        <translation>靠右對齊</translation>
     </message>
     <message>
         <source>Align selected items right</source>
-        <translation type="unfinished"></translation>
+        <translation>選取項目向右對齊</translation>
     </message>
     <message>
         <source>Align top</source>
-        <translation type="unfinished"></translation>
+        <translation>向上對齊</translation>
     </message>
     <message>
         <source>Align selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>選取項目向上對齊</translation>
     </message>
     <message>
         <source>Align center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直置中</translation>
     </message>
     <message>
         <source>Align bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>向下對齊</translation>
     </message>
     <message>
         <source>Align selected items bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>選取項目向下對齊</translation>
     </message>
     <message>
         <source>Export as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>輸出成PDF...</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerItemWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>表單</translation>
     </message>
     <message>
         <source>Composer item properties</source>
-        <translation type="unfinished">項目屬性設計</translation>
+        <translation>項目屬性設計</translation>
     </message>
     <message>
         <source>Color:</source>
-        <translation type="unfinished">顏色:</translation>
+        <translation>顏色:</translation>
     </message>
     <message>
         <source>Frame...</source>
-        <translation type="unfinished">框線顏色</translation>
+        <translation>框線顏色...</translation>
     </message>
     <message>
         <source>Background...</source>
-        <translation type="unfinished">背景</translation>
+        <translation>背景...</translation>
     </message>
     <message>
         <source>Opacity:</source>
-        <translation type="unfinished">透明度:</translation>
+        <translation>透明度:</translation>
     </message>
     <message>
         <source>Outline width: </source>
-        <translation type="unfinished">框線寬度:</translation>
+        <translation>框線寬度:</translation>
     </message>
     <message>
         <source>Frame</source>
-        <translation type="unfinished">顯示框線</translation>
+        <translation>顯示框線</translation>
     </message>
     <message>
         <source>Position...</source>
-        <translation type="unfinished"></translation>
+        <translation>位置...</translation>
     </message>
 </context>
 <context>
@@ -8127,116 +8130,116 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerLabelWidgetBase</name>
     <message>
         <source>Label Options</source>
-        <translation type="unfinished">標籤選項</translation>
+        <translation>標籤選項</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished">字體</translation>
+        <translation>字體</translation>
     </message>
     <message>
         <source>Margin (mm):</source>
-        <translation type="unfinished"></translation>
+        <translation>邊界間隙(公釐):</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerLegend</name>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">圖例</translation>
+        <translation>圖例</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerLegendItemDialogBase</name>
     <message>
         <source>Legend item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>圖例項目屬性</translation>
     </message>
     <message>
         <source>Item text:</source>
-        <translation type="unfinished"></translation>
+        <translation>項目文字:</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerLegendWidgetBase</name>
     <message>
         <source>Barscale Options</source>
-        <translation type="unfinished">比例尺選項</translation>
+        <translation>比例尺選項</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">一般</translation>
+        <translation>一般</translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>標題:</translation>
     </message>
     <message>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>字體:</translation>
     </message>
     <message>
         <source>Title...</source>
-        <translation type="unfinished"></translation>
+        <translation>標題...</translation>
     </message>
     <message>
         <source>Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>圖層...</translation>
     </message>
     <message>
         <source>Item...</source>
-        <translation type="unfinished"></translation>
+        <translation>項目...</translation>
     </message>
     <message>
         <source>Symbol width: </source>
-        <translation type="unfinished"></translation>
+        <translation>符號寬度:</translation>
     </message>
     <message>
         <source>Symbol height:</source>
-        <translation type="unfinished"></translation>
+        <translation>符號高度:</translation>
     </message>
     <message>
         <source>Layer space: </source>
-        <translation type="unfinished"></translation>
+        <translation>圖層間距: </translation>
     </message>
     <message>
         <source>Symbol space:</source>
-        <translation type="unfinished"></translation>
+        <translation>符號間距:</translation>
     </message>
     <message>
         <source>Icon label space:</source>
-        <translation type="unfinished"></translation>
+        <translation>圖示標籤間距::</translation>
     </message>
     <message>
         <source>Box space:</source>
-        <translation type="unfinished"></translation>
+        <translation>矩形間距:</translation>
     </message>
     <message>
         <source>Legend items</source>
-        <translation type="unfinished"></translation>
+        <translation>圖例項目</translation>
     </message>
     <message>
         <source>down</source>
-        <translation type="unfinished"></translation>
+        <translation>下移</translation>
     </message>
     <message>
         <source>up</source>
-        <translation type="unfinished"></translation>
+        <translation>上移</translation>
     </message>
     <message>
         <source>remove</source>
-        <translation type="unfinished"></translation>
+        <translation>移除</translation>
     </message>
     <message>
         <source>edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯...</translation>
     </message>
     <message>
         <source>update</source>
-        <translation type="unfinished"></translation>
+        <translation>更新</translation>
     </message>
     <message>
         <source>update all</source>
-        <translation type="unfinished"></translation>
+        <translation>全更新</translation>
     </message>
 </context>
 <context>
@@ -8255,7 +8258,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished">地圖 %1</translation>
+        <translation>地圖 %1</translation>
     </message>
     <message>
         <source>Render</source>
@@ -8267,7 +8270,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map will be printed here</source>
-        <translation type="unfinished"></translation>
+        <translation>地圖會在此處印出</translation>
     </message>
 </context>
 <context>
@@ -8337,78 +8340,78 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerMapWidget</name>
     <message>
         <source>Cache</source>
-        <translation type="unfinished">快取</translation>
+        <translation>快取</translation>
     </message>
     <message>
         <source>Rectangle</source>
-        <translation type="unfinished">矩形</translation>
+        <translation>矩形</translation>
     </message>
     <message>
         <source>Render</source>
-        <translation type="unfinished">繪圖</translation>
+        <translation>繪圖</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerMapWidgetBase</name>
     <message>
         <source>Map options</source>
-        <translation type="unfinished">地圖選項</translation>
+        <translation>地圖選項</translation>
     </message>
     <message>
         <source>&lt;b&gt;Map&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;地圖&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;地圖&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">寬度</translation>
+        <translation>寬度</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">高度</translation>
+        <translation>高度</translation>
     </message>
     <message>
         <source>Scale:</source>
-        <translation type="unfinished">比例:</translation>
+        <translation>比例:</translation>
     </message>
     <message>
         <source>1:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Map extent</source>
-        <translation type="unfinished"></translation>
+        <translation>地圖範圍</translation>
     </message>
     <message>
         <source>X min:</source>
-        <translation type="unfinished"></translation>
+        <translation>X最小:</translation>
     </message>
     <message>
         <source>Y min:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y最小:</translation>
     </message>
     <message>
         <source>X max:</source>
-        <translation type="unfinished"></translation>
+        <translation>X最大:</translation>
     </message>
     <message>
         <source>Y max:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y最大:</translation>
     </message>
     <message>
         <source>set to map canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation>設定為地圖範圍</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished">預覽</translation>
+        <translation>預覽</translation>
     </message>
     <message>
         <source>Update preview</source>
-        <translation type="unfinished"></translation>
+        <translation>更新預覽</translation>
     </message>
     <message>
         <source>Keep layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>保留圖層清單</translation>
     </message>
 </context>
 <context>
@@ -8457,54 +8460,54 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerPictureWidget</name>
     <message>
         <source>Select svg or image file</source>
-        <translation type="unfinished"></translation>
+        <translation>選取SVG或影像檔案</translation>
     </message>
     <message>
         <source>Select new preview directory</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇新的預覽資料夾</translation>
     </message>
     <message>
         <source>Creating icon for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>建立檔案圖示%1</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerPictureWidgetBase</name>
     <message>
         <source>Picture Options</source>
-        <translation type="unfinished">圖片選項</translation>
+        <translation>圖片選項</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">瀏覽...</translation>
+        <translation>瀏覽...</translation>
     </message>
     <message>
         <source>Width:</source>
-        <translation type="unfinished">寬度:</translation>
+        <translation>寬度:</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation type="unfinished">高度:</translation>
+        <translation>高度:</translation>
     </message>
     <message>
         <source>Rotation:</source>
-        <translation type="unfinished">旋轉:</translation>
+        <translation>旋轉:</translation>
     </message>
     <message>
         <source>Search directories</source>
-        <translation type="unfinished"></translation>
+        <translation>搜尋資料夾</translation>
     </message>
     <message>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>新增...</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">移除</translation>
+        <translation>移除</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished">預覽</translation>
+        <translation>預覽</translation>
     </message>
 </context>
 <context>
@@ -8535,66 +8538,66 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished">地圖 %1</translation>
+        <translation>地圖 %1</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
     <message>
         <source>Barscale Options</source>
-        <translation type="unfinished">比例尺選項</translation>
+        <translation>比例尺選項</translation>
     </message>
     <message>
         <source>Segment size (map units):</source>
-        <translation type="unfinished"></translation>
+        <translation>分段大小(地圖單位):</translation>
     </message>
     <message>
         <source>Map units per bar unit:</source>
-        <translation type="unfinished"></translation>
+        <translation>地圖/比例尺單位:</translation>
     </message>
     <message>
         <source>Number of segments:</source>
-        <translation type="unfinished"></translation>
+        <translation>線段數目:</translation>
     </message>
     <message>
         <source>Segments left:</source>
-        <translation type="unfinished"></translation>
+        <translation>左邊分段數:</translation>
     </message>
     <message>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>樣式:</translation>
     </message>
     <message>
         <source>Map:</source>
-        <translation type="unfinished"></translation>
+        <translation>地圖:</translation>
     </message>
     <message>
         <source>Height (mm):</source>
-        <translation type="unfinished"></translation>
+        <translation>高(mm):</translation>
     </message>
     <message>
         <source>Line width:</source>
-        <translation type="unfinished"></translation>
+        <translation>線寬:</translation>
     </message>
     <message>
         <source>Label space:</source>
-        <translation type="unfinished"></translation>
+        <translation>標籤間距::</translation>
     </message>
     <message>
         <source>Box space:</source>
-        <translation type="unfinished"></translation>
+        <translation>矩形間距:</translation>
     </message>
     <message>
         <source>Unit label:</source>
-        <translation type="unfinished"></translation>
+        <translation>單位標籤:</translation>
     </message>
     <message>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>字體...</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>顏色...</translation>
     </message>
 </context>
 <context>
@@ -8687,15 +8690,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">圖層</translation>
+        <translation>圖層</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">組</translation>
+        <translation>群組</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>識別碼(ID)</translation>
     </message>
 </context>
 <context>
@@ -8951,118 +8954,118 @@ p, li { white-space: pre-wrap; }
     <name>QgsCompositionWidgetBase</name>
     <message>
         <source>Composition</source>
-        <translation type="unfinished">組成</translation>
+        <translation>組成</translation>
     </message>
     <message>
         <source>Paper</source>
-        <translation type="unfinished">紙張</translation>
+        <translation>紙張</translation>
     </message>
     <message>
         <source>Orientation</source>
-        <translation type="unfinished">紙張方向</translation>
+        <translation>紙張方向</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">高度</translation>
+        <translation>高度</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">寬度</translation>
+        <translation>寬度</translation>
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished">單位</translation>
+        <translation>單位</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">大小</translation>
+        <translation>大小</translation>
     </message>
     <message>
         <source>Print quality (dpi)</source>
-        <translation type="unfinished">列印品質(dpi)</translation>
+        <translation>列印品質(dpi)</translation>
     </message>
     <message>
         <source>Snapping</source>
-        <translation type="unfinished">自動接合(Snapping)</translation>
+        <translation>自動貼齊</translation>
     </message>
     <message>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>貼齊格線</translation>
     </message>
     <message>
         <source>Grid resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>格線解析度:</translation>
     </message>
     <message>
         <source>Offset x:</source>
-        <translation type="unfinished"></translation>
+        <translation>x偏移量:</translation>
     </message>
     <message>
         <source>Offset y:</source>
-        <translation type="unfinished"></translation>
+        <translation>y偏移量:</translation>
     </message>
     <message>
         <source>Pen width:</source>
-        <translation type="unfinished"></translation>
+        <translation>筆寬:</translation>
     </message>
     <message>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>格線顏色:</translation>
     </message>
     <message>
         <source>Grid style:</source>
-        <translation type="unfinished"></translation>
+        <translation>格線樣式:</translation>
     </message>
     <message>
         <source>Print as raster</source>
-        <translation type="unfinished"></translation>
+        <translation>以影像列印</translation>
     </message>
 </context>
 <context>
     <name>QgsConfigureShortcutsDialog</name>
     <message>
         <source>None</source>
-        <translation type="unfinished">不透明</translation>
+        <translation>無</translation>
     </message>
     <message>
         <source>Set default (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>設成預設(%1)</translation>
     </message>
     <message>
         <source>Input: </source>
-        <translation type="unfinished"></translation>
+        <translation>輸入:</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation type="unfinished">改變</translation>
+        <translation>改變</translation>
     </message>
     <message>
         <source>Shortcut conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>快速鍵衝突</translation>
     </message>
     <message>
         <source>This shortcut is already assigned to action %1. Reassign?</source>
-        <translation type="unfinished"></translation>
+        <translation>這個快速鍵已經被%1使用，重新設定?</translation>
     </message>
     <message>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>設定快速鍵</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">動作</translation>
+        <translation>動作</translation>
     </message>
     <message>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>快速鍵</translation>
     </message>
     <message>
         <source>Set none</source>
-        <translation type="unfinished"></translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Set default</source>
-        <translation type="unfinished"></translation>
+        <translation>設成預設</translation>
     </message>
 </context>
 <context>
@@ -9118,7 +9121,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Username</source>
-        <translation type="obsolete">用戶名</translation>
+        <translation type="obsolete">使用者名稱</translation>
     </message>
     <message>
         <source>Password</source>
@@ -9212,7 +9215,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Draw polygon outline</source>
-        <translation type="unfinished"></translation>
+        <translation>繪出多邊形的外框</translation>
     </message>
 </context>
 <context>
@@ -9363,7 +9366,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">顏色</translation>
+        <translation>顏色</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -9375,7 +9378,15 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;說明&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;在底部顯示您的版權標籤。該附加元件支援基本的html標記來格式化標籤。例如：&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; 粗體 &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; 斜體 &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(注意: &amp;amp;copy; 是一個版權符號)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message utf8="true">
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -9607,7 +9618,13 @@ Parameters:</source>
     </message>
     <message>
         <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</source>
-        <translation type="unfinished">您可以在這裡自訂您個人的座標參考系統(CRS)，但必須使用proj4的格式來定義。</translation>
+        <translation type="unfinished">您可以在這裡自訂您個人的座標參考系統(CRS)，但必須使用proj4的格式來定義。以下提供臺灣常用座標定義：
+TWD97-TM2
++proj=tmerc +lat_0=0 +lon_0=121 +k=0.9999 +x_0=250000 +y_0=0 +ellps=GRS80 +units=m +no_defs
+TWD67-TM2
++proj=tmerc +ellps=GRS67 +towgs84=-752,-358,-179,-.0000011698,.0000018398,.0000009822,.00002329 +lon_0=121 +x_0=250000 +k=0.9999 +to +proj=tmerc +datum=WGS84 +lon_0=121 +x_0=250000 +k=0.9999
+Google 900913
++proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs</translation>
     </message>
     <message>
         <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
@@ -9662,7 +9679,7 @@ Parameters:</source>
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
-        <translation type="obsolete">連接到%1在%2上失敗。可能是資料庫當機，也可能是您的設定不正確。%3檢查您的用戶名和密碼，然後重試。%4%5</translation>
+        <translation type="obsolete">連接到%1在%2上失敗。可能是資料庫當機，也可能是您的設定不正確。%3檢查您的使用者名稱和密碼，然後重試。%4%5</translation>
     </message>
     <message>
         <source> using sql;
@@ -9777,11 +9794,11 @@ The database said:
     <name>QgsDbSourceSelectBase</name>
     <message>
         <source>Add PostGIS Table(s)</source>
-        <translation type="unfinished">新增PostGIS表格</translation>
+        <translation>新增PostGIS表格</translation>
     </message>
     <message>
         <source>PostgreSQL Connections</source>
-        <translation>PostgreSQL連接</translation>
+        <translation>PostgreSQL連線</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -9837,70 +9854,70 @@ The database said:
     </message>
     <message>
         <source>Search:</source>
-        <translation type="unfinished">尋找:</translation>
+        <translation>尋找:</translation>
     </message>
     <message>
         <source>Search mode:</source>
-        <translation type="unfinished">尋找模式:</translation>
+        <translation>尋找模式:</translation>
     </message>
     <message>
         <source>Search in columns:</source>
-        <translation type="unfinished">在欄位中尋找:</translation>
+        <translation>在欄位中尋找:</translation>
     </message>
     <message>
         <source>Search options...</source>
-        <translation type="unfinished">尋找選項...</translation>
+        <translation>尋找選項...</translation>
     </message>
     <message>
         <source>Build query</source>
-        <translation type="unfinished"></translation>
+        <translation>建立查詢</translation>
     </message>
 </context>
 <context>
     <name>QgsDbTableModel</name>
     <message>
         <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">表格</translation>
+        <translation>表格</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">類型</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished">幾合欄位</translation>
+        <translation>幾合欄位</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished">Sql</translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">點</translation>
+        <translation>點</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation type="unfinished"></translation>
+        <translation>多點</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">線</translation>
+        <translation>線</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation type="unfinished">多行</translation>
+        <translation>多行</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">多邊形</translation>
+        <translation>多邊形</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>多個多邊形</translation>
     </message>
 </context>
 <context>
@@ -9926,11 +9943,11 @@ The database said:
     <name>QgsDelimitedTextPlugin</name>
     <message>
         <source>&amp;Delimited text</source>
-        <translation type="unfinished">匯入CSV純文字(&amp;D)</translation>
+        <translation>匯入CSV純文字(&amp;D)</translation>
     </message>
     <message>
         <source>&amp;Add Delimited Text Layer</source>
-        <translation type="unfinished">新增CSV純文字檔圖層(&amp;A)</translation>
+        <translation>新增CSV純文字檔圖層(&amp;A)</translation>
     </message>
     <message>
         <source>Add a delimited text file as a map layer. </source>
@@ -9946,7 +9963,7 @@ The database said:
     </message>
     <message>
         <source>DelimitedTextLayer</source>
-        <translation type="unfinished">CSV純文字圖層</translation>
+        <translation>CSV純文字圖層</translation>
     </message>
     <message>
         <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.</source>
@@ -9973,23 +9990,23 @@ The database said:
     </message>
     <message>
         <source>Choose a delimited text file to open</source>
-        <translation type="unfinished">選擇CSV純文字檔開啟</translation>
+        <translation>選擇CSV純文字檔開啟</translation>
     </message>
     <message>
         <source>Parse</source>
-        <translation type="unfinished">分析</translation>
+        <translation>解析</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">描述</translation>
+        <translation>說明</translation>
     </message>
     <message>
         <source>Select a delimited text file containing a header row and one or more rows of x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</source>
-        <translation type="unfinished">請選擇包含分隔符號的純文字檔(CSV)。第一列須為欄位名稱且有X與Y座標的點資料，此附加元件會協助您把資料加入點圖層！</translation>
+        <translation>請選擇包含分隔符號的純文字檔(CSV)。第一列須為欄位名稱且有X與Y座標的點資料，此附加元件會協助您把資料加入點圖層!</translation>
     </message>
     <message>
         <source>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>使用圖層名稱文字方塊可以設定新圖層的圖例名稱。使用分隔符號文字方塊來指定您純文字檔案中的分隔符號(例如：空白、逗號、Tab或者是Perl的正規化表示式)。當您指定分隔符號後請按下分析按鈕，之後選擇包含圖層X,Y值的欄位。</translation>
     </message>
 </context>
 <context>
@@ -10140,7 +10157,7 @@ The database said:
     </message>
     <message>
         <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
-        <translation type="unfinished">使用這個按鈕來瀏覽CSV純文字檔的位置。這個按鈕只有在&lt;i&gt;分隔符號&lt;/i&gt;框中輸入了分隔符號後才可用。一旦選擇了一個檔，X和Y欄位的下拉清單會用文字檔中的欄位來填充.</translation>
+        <translation>使用這個按鈕來瀏覽CSV純文字檔的位置。這個按鈕只有在&lt;i&gt;分隔符號&lt;/i&gt;框中輸入了分隔符號後才可用。一旦選擇了一個檔，X和Y欄位的下拉清單會用文字檔中的欄位來填充.</translation>
     </message>
     <message>
         <source>Sample text</source>
@@ -10223,45 +10240,45 @@ p, li { white-space: pre-wrap; }
     <name>QgsDiagramDialog</name>
     <message>
         <source>Pie chart</source>
-        <translation type="unfinished"></translation>
+        <translation>圓形圖</translation>
     </message>
     <message>
         <source>Bar chart</source>
-        <translation type="unfinished">長條圖</translation>
+        <translation>直條圖</translation>
     </message>
     <message>
         <source>Proportional SVG symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>比例式SVG符號</translation>
     </message>
 </context>
 <context>
     <name>QgsDiagramDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>對話方塊</translation>
     </message>
     <message>
         <source>Display diagrams</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示圖表</translation>
     </message>
     <message>
         <source>Diagram type:</source>
-        <translation type="unfinished"></translation>
+        <translation>圖表類型:</translation>
     </message>
     <message>
         <source>Classification attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>分類屬性:</translation>
     </message>
     <message>
         <source>Classification type:</source>
-        <translation type="unfinished"></translation>
+        <translation>分類方式:</translation>
     </message>
 </context>
 <context>
     <name>QgsDlgPgBufferBase</name>
     <message>
         <source>Buffer features</source>
-        <translation type="unfinished">對圖徵作環域分析</translation>
+        <translation>對圖徵作環域分析</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -10309,7 +10326,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unique field to use as feature id:</source>
-        <translation type="unfinished">用作圖徵ID的唯一值欄位:</translation>
+        <translation>用作圖徵ID的唯一值欄位:</translation>
     </message>
     <message>
         <source>Schema:</source>
@@ -10618,7 +10635,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
-        <translation type="obsolete">這個shapefile包含保留字。這可能會影響PostgreSQL的匯入。編輯欄位名稱，使其沒有任何保留字。您可以改變任何一個欄位的名稱，如果您想這麼做的話.</translation>
+        <translation type="obsolete">這個Shape檔包含保留字。這可能會影響PostgreSQL的匯入。編輯欄位名稱，使其沒有任何保留字。您可以改變任何一個欄位的名稱，如果您想這麼做的話.</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -10843,7 +10860,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>directory.</source>
-        <translation>目錄。</translation>
+        <translation>資料夾。</translation>
     </message>
     <message>
         <source>GPX Loader</source>
@@ -10852,7 +10869,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Unable to read the selected file.
 </source>
-        <translation type="obsolete">無法讀取選中的文件。</translation>
+        <translation type="obsolete">無法讀取選取的文件。</translation>
     </message>
     <message>
         <source>Please reselect a valid file.</source>
@@ -10868,7 +10885,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Importing data...</source>
-        <translation>匯入數據...</translation>
+        <translation>匯入資料...</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -10896,7 +10913,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation>下載數據...</translation>
+        <translation>下載資料...</translation>
     </message>
     <message>
         <source>Could not download data from GPS!
@@ -10916,7 +10933,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation>上傳數據...</translation>
+        <translation>上傳資料...</translation>
     </message>
     <message>
         <source>Error while uploading data to GPS!
@@ -10974,79 +10991,79 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Waypoints</source>
-        <translation type="unfinished">路線點</translation>
+        <translation>路線點</translation>
     </message>
     <message>
         <source>Routes</source>
-        <translation type="unfinished">路徑</translation>
+        <translation>路徑</translation>
     </message>
     <message>
         <source>Tracks</source>
-        <translation type="unfinished">軌跡</translation>
+        <translation>軌跡</translation>
     </message>
     <message>
         <source>QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS使用GPSBabel (%1)工具轉換各種GPX內容。</translation>
     </message>
     <message>
         <source>This requires that you have GPSBabel installed where QGIS can find it.</source>
-        <translation type="unfinished"></translation>
+        <translation>這需要您有安裝GPSBabel軟體，您在QGIS中目錄可以找得到。</translation>
     </message>
     <message>
         <source>GPX is the %1, which is used to store information about waypoints, routes, and tracks.</source>
-        <translation type="unfinished"></translation>
+        <translation>GPX原文為%1，它可以用來儲存路線點、路徑及軌跡的資訊。</translation>
     </message>
     <message>
         <source>GPS eXchange file format</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS交換檔案格式</translation>
     </message>
     <message>
         <source>Select a GPX file and then select the feature types that you want to load.</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇一個GPX檔案，然後再選擇您要載入圖徵的型態。</translation>
     </message>
     <message>
         <source>This tool will help you download data from a GPS device.</source>
-        <translation type="unfinished"></translation>
+        <translation>這個工具會幫助您從GPS裝置下載資料。</translation>
     </message>
     <message>
         <source>Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data.</source>
-        <translation type="unfinished"></translation>
+        <translation>請選擇您的GPS設備、連接埠、欲下載的圖徵型態、新圖新的名稱及輸出的GPX檔案。</translation>
     </message>
     <message>
         <source>If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.</source>
-        <translation type="unfinished"></translation>
+        <translation>如果未列出您的GPS設備或者您想改變設定，您可以自己編輯設備。</translation>
     </message>
     <message>
         <source>This tool uses the program GPSBabel (%1) to transfer the data.</source>
-        <translation type="unfinished"></translation>
+        <translation>這個工具使用GPSBabel (%1)來轉換資料。</translation>
     </message>
     <message>
         <source>This tool will help you upload data from a GPX layer to a GPS device.</source>
-        <translation type="unfinished"></translation>
+        <translation>此工具會協助您上傳GPX圖層資料至GPS裝置。</translation>
     </message>
     <message>
         <source>Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to.</source>
-        <translation type="unfinished"></translation>
+        <translation>請選擇您要上傳的圖層、GPS設備及連接埠號。</translation>
     </message>
     <message>
         <source>QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS可以載入GPX，但是許多其它格式的檔案都可以使用 GPSBabel (%1)轉換成GPX。</translation>
     </message>
     <message>
         <source>All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>不是所有的檔案格式都可以儲存成路線點、路徑及軌跡。</translation>
     </message>
     <message>
         <source>Choose a file name to save under</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇檔名存成</translation>
     </message>
     <message>
         <source>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX file name that you want to save the converted file as, and a name for the new layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇您想匯入的GPS檔案格式、檔案、圖徵型態、GPX檔案名稱與圖層名稱。</translation>
     </message>
     <message>
         <source>Select a GPX input file name, the type of conversion you want to perform, a GPX file name that you want to save the converted file as, and a name for the new layer created from the result.</source>
-        <translation type="unfinished"></translation>
+        <translation>選取輸入GPX的檔名、欲轉換的類型、GPX的檔名稱及建立新圖層名稱。</translation>
     </message>
 </context>
 <context>
@@ -11131,7 +11148,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Output file:</source>
-        <translation type="unfinished">輸出檔案:</translation>
+        <translation>輸出檔案:</translation>
     </message>
     <message>
         <source>Port:</source>
@@ -11167,42 +11184,42 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">瀏覽...</translation>
+        <translation>瀏覽...</translation>
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished">存檔為...</translation>
+        <translation>存檔為...</translation>
     </message>
     <message>
         <source>(Note: Selecting correct file type in browser dialog important!)</source>
-        <translation type="unfinished"></translation>
+        <translation>(注意：在瀏覽對話方塊中選取正確的檔案型態是非常重要的。)</translation>
     </message>
     <message>
         <source>GPX Conversions</source>
-        <translation type="unfinished"></translation>
+        <translation>GPX轉換</translation>
     </message>
     <message>
         <source>Conversion:</source>
-        <translation type="unfinished"></translation>
+        <translation>轉換:</translation>
     </message>
     <message>
         <source>GPX input file:</source>
-        <translation type="unfinished"></translation>
+        <translation>GPX輸入檔案:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Edit devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯裝置...</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="unfinished">重新整理</translation>
+        <translation>重新整理</translation>
     </message>
 </context>
 <context>
@@ -11213,11 +11230,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GPS eXchange file</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS 交換檔案</translation>
     </message>
     <message>
         <source>Digitized in QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>在QGIS中數化</translation>
     </message>
 </context>
 <context>
@@ -11228,15 +11245,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This layer appears to have no projection specification.</source>
-        <translation type="unfinished">這個圖層沒有指定投影方式。</translation>
+        <translation>這個圖層沒有指定投影方式。</translation>
     </message>
     <message>
         <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
-        <translation type="unfinished">預設會選擇使用專案設定的投影方式，但是您也可以在下面的座標參考系統中選取新的方式。</translation>
+        <translation>預設會選擇使用專案設定的投影方式，但是您也可以在下面的座標參考系統中選取新的方式。</translation>
     </message>
     <message>
         <source>Define this layer&apos;s coordinate reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation>定義此圖層的座標參考系統(CRS):</translation>
     </message>
 </context>
 <context>
@@ -11247,7 +11264,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇座標參考系統</translation>
     </message>
 </context>
 <context>
@@ -11262,15 +11279,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Real</source>
-        <translation type="unfinished">實數</translation>
+        <translation>實數</translation>
     </message>
     <message>
         <source>Integer</source>
-        <translation type="unfinished">整數</translation>
+        <translation>整數</translation>
     </message>
     <message>
         <source>String</source>
-        <translation type="unfinished">字串</translation>
+        <translation>字串</translation>
     </message>
 </context>
 <context>
@@ -11368,14 +11385,14 @@ p, li { white-space: pre-wrap; }
     <name>QgsGeorefDescriptionDialogBase</name>
     <message>
         <source>Description georeferencer</source>
-        <translation type="unfinished">幾何校正(Georeferencer)描述</translation>
+        <translation>幾何校正(Georeferencer)描述</translation>
     </message>
 </context>
 <context>
     <name>QgsGeorefPlugin</name>
     <message>
         <source>&amp;Georeferencer</source>
-        <translation type="unfinished">幾何校正(&amp;Georeferencer)</translation>
+        <translation>幾何校正(&amp;Georeferencer)</translation>
     </message>
     <message>
         <source>&lt;b&gt;Georeferencer GDAL&lt;/b&gt;</source>
@@ -11387,7 +11404,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;開發者:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>    Lars Luthman (original Georeferencer)</source>
@@ -11395,7 +11412,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Links:&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;連結:&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
@@ -11711,7 +11728,7 @@ Factor</source>
     </message>
     <message>
         <source>Delete selected category</source>
-        <translation>刪除選中的類別</translation>
+        <translation>刪除選取的類別</translation>
     </message>
 </context>
 <context>
@@ -11722,23 +11739,23 @@ Factor</source>
     </message>
     <message>
         <source>Add selected map to canvas</source>
-        <translation>將選中的地圖新增到檢視中</translation>
+        <translation>將選取的地圖新增到檢視中</translation>
     </message>
     <message>
         <source>Copy selected map</source>
-        <translation>複製選中的地圖</translation>
+        <translation>複製選取的地圖</translation>
     </message>
     <message>
         <source>Rename selected map</source>
-        <translation>重新命名選中的地圖</translation>
+        <translation>重新命名選取的地圖</translation>
     </message>
     <message>
         <source>Delete selected map</source>
-        <translation>刪除選中的地圖</translation>
+        <translation>刪除選取的地圖</translation>
     </message>
     <message>
         <source>Set current region to selected map</source>
-        <translation>設定目前區域為選中的地圖</translation>
+        <translation>設定目前區域為選取的地圖</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -11828,11 +11845,11 @@ Factor</source>
     </message>
     <message>
         <source>Delete selected / select next</source>
-        <translation type="obsolete">刪除選中的/選擇下一個</translation>
+        <translation type="obsolete">刪除選取的/選擇下一個</translation>
     </message>
     <message>
         <source>Release selected</source>
-        <translation type="obsolete">釋放選中的</translation>
+        <translation type="obsolete">釋放選取的</translation>
     </message>
     <message>
         <source>New location</source>
@@ -12279,7 +12296,7 @@ Factor</source>
     </message>
     <message>
         <source>Delete selected / select next</source>
-        <translation type="unfinished">刪除選中的/選擇下一個</translation>
+        <translation type="unfinished">刪除選取的/選擇下一個</translation>
     </message>
     <message>
         <source>Release selected</source>
@@ -12431,7 +12448,7 @@ Factor</source>
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation>刪除選中的項目</translation>
+        <translation>刪除選取的項目</translation>
     </message>
     <message>
         <source>Open</source>
@@ -13190,7 +13207,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Example directory tree:</source>
-        <translation>範例 目錄樹:</translation>
+        <translation>範例 樹狀資料夾:</translation>
     </message>
     <message>
         <source>Database Error</source>
@@ -13206,7 +13223,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Select existing directory or create a new one:</source>
-        <translation>選擇已有的目錄或建立新目錄:</translation>
+        <translation>選擇已有的資料夾或建立新資料夾:</translation>
     </message>
     <message>
         <source>Location</source>
@@ -13369,155 +13386,156 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Open mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟地圖集</translation>
     </message>
     <message>
         <source>New mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>新增地圖集</translation>
     </message>
     <message>
         <source>Close mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉地圖集</translation>
     </message>
     <message>
         <source>Add GRASS vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>新增GRASS向量圖層</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>新增GRASS 影像圖層</translation>
     </message>
     <message>
         <source>Open GRASS tools</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟GRASS工具</translation>
     </message>
     <message>
         <source>Display Current Grass Region</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示目前Grass區域</translation>
     </message>
     <message>
         <source>Edit Current Grass Region</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯目前Grass區域</translation>
     </message>
     <message>
         <source>Edit Grass Vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯Grass向量圖層</translation>
     </message>
     <message>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>新增GRASS向量圖層至地圖上</translation>
     </message>
     <message>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>新增GRASS影像圖層至地圖上</translation>
     </message>
     <message>
         <source>Displays the current GRASS region as a rectangle on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>在目前地圖上顯示目前的GRASS區域為矩形</translation>
     </message>
     <message>
         <source>Edit the current GRASS region</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯目前的GRASS區域</translation>
     </message>
     <message>
         <source>Edit the currently selected GRASS vector layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯目前選取的GRASS向量圖層。</translation>
     </message>
     <message>
         <source>GrassVector</source>
-        <translation type="unfinished"></translation>
+        <translation>Gass向量</translation>
     </message>
     <message>
         <source>0.1</source>
-        <translation type="unfinished">0.1</translation>
+        <translation>0.1</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation type="unfinished">GRASS圖層</translation>
+        <translation>GRASS圖層</translation>
     </message>
     <message>
         <source>Create new Grass Vector</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">建立新的Grass向量</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>GRASS Edit is already running.</source>
-        <translation type="unfinished"></translation>
+        <translation>GRAss編輯已經執行中。</translation>
     </message>
     <message>
         <source>New vector name</source>
-        <translation type="unfinished"></translation>
+        <translation>新的向量名稱</translation>
     </message>
     <message>
         <source>New vector created but cannot be opened by data provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>新的向量已建立，但是無法由資料提供者開啟。</translation>
     </message>
     <message>
         <source>Cannot start editing.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法開啟編輯。</translation>
     </message>
     <message>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation type="unfinished"></translation>
+        <translation>GISDBASE, LOCATION_NAME or 地圖集未設定，所以無法在目前區域顯示。</translation>
     </message>
     <message>
         <source>Cannot open GRASS vector:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法開啟GRASS向量:
+ %1</translation>
     </message>
     <message>
         <source>Cannot create new vector: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法建立新向量:%1</translation>
     </message>
     <message>
         <source>Cannot open vector for update.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法開啟向量且更新。</translation>
     </message>
     <message>
         <source>Cannot read current region: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法讀取目前區域:%1</translation>
     </message>
     <message>
         <source>Cannot open the mapset. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法開啟地圖集。%1</translation>
     </message>
     <message>
         <source>Cannot close mapset. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法關閉地圖集。%1</translation>
     </message>
     <message>
         <source>Cannot close current mapset. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法關閉目前地圖集。%1</translation>
     </message>
     <message>
         <source>Cannot open GRASS mapset. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法開啟GRASS地圖集。%1</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassRegion</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation type="unfinished"></translation>
+        <translation>GISDBASE, LOCATION_NAME or 地圖集未設定，所以無法在目前區域顯示。</translation>
     </message>
     <message>
         <source>Cannot write region</source>
-        <translation type="unfinished"></translation>
+        <translation>無法寫入區域</translation>
     </message>
     <message>
         <source>Cannot read current region: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法讀取目前區域:%1</translation>
     </message>
 </context>
 <context>
@@ -13579,55 +13597,55 @@ p, li { white-space: pre-wrap; }
     <name>QgsGrassSelect</name>
     <message>
         <source>Select GRASS Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>選取GASS向量圖層</translation>
     </message>
     <message>
         <source>Select GRASS Raster Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>選取GASS影像圖層</translation>
     </message>
     <message>
         <source>Select GRASS mapcalc schema</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選取GASS向量mapcalc架構(schema)</translation>
     </message>
     <message>
         <source>Select GRASS Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>選取GASS地圖集</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>Cannot open vector on level 2 (topology not available).</source>
-        <translation type="unfinished"></translation>
+        <translation>無法在第二層(level 2)開啟向量，因為拓撲(topology)無法取得。</translation>
     </message>
     <message>
         <source>Choose existing GISDBASE</source>
-        <translation type="unfinished"></translation>
+        <translation>選取存在的GISDBASE</translation>
     </message>
     <message>
         <source>Wrong GISDBASE, no locations available.</source>
-        <translation type="unfinished"></translation>
+        <translation>GISDBASE錯誤, &apos;無&apos;位置可用。</translation>
     </message>
     <message>
         <source>Wrong GISDBASE</source>
-        <translation type="unfinished"></translation>
+        <translation>GISDBASE錯誤</translation>
     </message>
     <message>
         <source>Select a map.</source>
-        <translation type="unfinished"></translation>
+        <translation>選取地圖。</translation>
     </message>
     <message>
         <source>No map</source>
-        <translation type="unfinished"></translation>
+        <translation>無地圖</translation>
     </message>
     <message>
         <source>No layer</source>
-        <translation type="unfinished"></translation>
+        <translation>無圖層</translation>
     </message>
     <message>
         <source>No layers available in this map</source>
-        <translation type="unfinished"></translation>
+        <translation>在地圖中無圖層可用</translation>
     </message>
 </context>
 <context>
@@ -13689,11 +13707,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>Cannot rename the lock file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>無法更名鎖定的檔案 %1</translation>
     </message>
 </context>
 <context>
@@ -13715,19 +13733,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>瀏覽</translation>
     </message>
     <message>
         <source>GRASS Tools</source>
-        <translation type="unfinished">GRASS工具</translation>
+        <translation>GRASS工具</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>GRASS Shell is not compiled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Grass Shell無法編譯。</translation>
     </message>
     <message>
         <source> column </source>
@@ -13735,29 +13753,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GRASS Tools: %1/%2</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS工具: %1/%2</translation>
     </message>
     <message>
         <source>The config file (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>找不到設定檔(%1)。</translation>
     </message>
     <message>
         <source>Cannot open config file (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>無法開啟設定檔(%1)。</translation>
     </message>
     <message>
         <source>Cannot read config file (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>無法讀取設定檔(%1):</translation>
     </message>
     <message>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1
+在行 %2 列 %3</translation>
     </message>
     <message>
         <source>Cannot start command shell (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>無法開啟命令列環境(%1)</translation>
     </message>
 </context>
 <context>
@@ -13804,11 +13824,11 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Grass Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Grass工具</translation>
     </message>
     <message>
         <source>Modules Tree</source>
-        <translation type="unfinished"></translation>
+        <translation>樹狀模組</translation>
     </message>
     <message>
         <source>1</source>
@@ -13816,7 +13836,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Modules List</source>
-        <translation type="unfinished"></translation>
+        <translation>模組清單</translation>
     </message>
 </context>
 <context>
@@ -13831,7 +13851,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Creates a graticule (grid) and stores the result as a shapefile</source>
-        <translation type="obsolete">建立格網標線並儲存為shapefile</translation>
+        <translation type="obsolete">建立格網標線並儲存為Shape檔</translation>
     </message>
     <message>
         <source>Graticule Creator</source>
@@ -13882,7 +13902,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>ESRI Shapefile (*.shp)</source>
-        <translation type="obsolete">ESRI Shapefile (*.shp)</translation>
+        <translation type="obsolete">ESRI Shape檔 (*.shp)</translation>
     </message>
 </context>
 <context>
@@ -13920,7 +13940,7 @@ at line %2 column %3</source>
 </source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
 &lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;該附加元件能夠幫助您構建格網標線shapefile，您可以將它作為套疊圖層在地圖中使用。&lt;/p&gt;
+&lt;p&gt;該附加元件能夠幫助您構建格網標線Shape檔，您可以將它作為套疊圖層在地圖中使用。&lt;/p&gt;
 &lt;p&gt;所有的輸入都以十進位度為單位&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
@@ -14038,7 +14058,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Quantum GIS Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS 說明</translation>
     </message>
     <message>
         <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
@@ -14046,12 +14066,13 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Quantum GIS Help - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS 說明 - %1</translation>
     </message>
     <message>
         <source>Failed to get the help text from the database:
   %1</source>
-        <translation type="unfinished"></translation>
+        <translation>從資料庫取得說明文件失敗:
+  %1</translation>
     </message>
 </context>
 <context>
@@ -14062,7 +14083,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>&amp;Home</source>
-        <translation>家目錄(&amp;H)</translation>
+        <translation>首頁(&amp;H)</translation>
     </message>
     <message>
         <source>Alt+H</source>
@@ -14070,7 +14091,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>&amp;Forward</source>
-        <translation>前進(&amp;F)</translation>
+        <translation>下一頁(&amp;F)</translation>
     </message>
     <message>
         <source>Alt+F</source>
@@ -14078,7 +14099,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>&amp;Back</source>
-        <translation>後退(&amp;B)</translation>
+        <translation>上一頁(&amp;B)</translation>
     </message>
     <message>
         <source>Alt+B</source>
@@ -14097,11 +14118,11 @@ at line %2 column %3</source>
     <name>QgsHttpTransaction</name>
     <message>
         <source>WMS Server responded unexpectedly with HTTP Status Code %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS伺服器錯誤回應，HTTP狀態碼為 %1 (%2)</translation>
     </message>
     <message>
         <source>HTTP response completed, however there was an error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP回應完成，不過仍有錯誤: %1</translation>
     </message>
     <message>
         <source>Network timed out after %1 seconds of inactivity.
@@ -14112,52 +14133,50 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>HTTP transaction completed, however there was an error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP處理完成，不過仍有錯誤: %1</translation>
     </message>
     <message>
         <source>Received %1 of %2 bytes</source>
-        <translation type="unfinished">接收到 %1 bytes(共 %2 bytes)</translation>
+        <translation>接收到 %1 bytes(共 %2 bytes)</translation>
     </message>
     <message>
         <source>Received %1 bytes (total unknown)</source>
-        <translation type="unfinished">接收到 %1 bytes(大小未知)</translation>
+        <translation>接收到 %1 bytes(大小未知)</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished">無連線</translation>
+        <translation>無連線</translation>
     </message>
     <message>
         <source>Looking up &apos;%1&apos;</source>
-        <translation type="unfinished">尋找 &apos;%1&apos;</translation>
+        <translation>尋找 &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation type="unfinished">連線至 &apos;%1&apos;</translation>
+        <translation>連線至 &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Sending request &apos;%1&apos;</source>
-        <translation type="unfinished">傳送請求指命 &apos;%1&apos;</translation>
+        <translation>傳送請求指命 &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Receiving reply</source>
-        <translation type="unfinished">接收回應資料</translation>
+        <translation>接收回應資料</translation>
     </message>
     <message>
         <source>Response is complete</source>
-        <translation type="unfinished">回應資料傳完</translation>
+        <translation>回應資料傳完</translation>
     </message>
     <message>
         <source>Closing down connection</source>
-        <translation type="unfinished">關閉連線</translation>
+        <translation>關閉連線</translation>
     </message>
     <message numerus="yes">
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
         <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -14165,7 +14184,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsIDWInterpolatorDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">對話方塊</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -14192,15 +14211,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Feature</source>
-        <translation type="unfinished">圖徵</translation>
+        <translation>圖徵</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">值</translation>
+        <translation>值</translation>
     </message>
     <message>
         <source>Run action</source>
-        <translation type="unfinished"></translation>
+        <translation>執行動作</translation>
     </message>
     <message>
         <source>(Derived)</source>
@@ -14293,7 +14312,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsInterpolationDialogBase</name>
     <message>
         <source>Output</source>
-        <translation type="unfinished">輸出</translation>
+        <translation>輸出</translation>
     </message>
     <message>
         <source>...</source>
@@ -14301,11 +14320,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Interpolation plugin</source>
-        <translation type="unfinished">內插工具</translation>
+        <translation>內插工具</translation>
     </message>
     <message>
         <source>Input</source>
-        <translation type="unfinished">輸入</translation>
+        <translation>輸入</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -14313,7 +14332,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Use z-Coordinate for interpolation</source>
-        <translation type="unfinished">使用z-Coordinate內插</translation>
+        <translation>使用z-Coordinate內插</translation>
     </message>
     <message>
         <source>Interpolation attribute </source>
@@ -14321,54 +14340,54 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Interpolation method</source>
-        <translation type="unfinished">內插方法</translation>
+        <translation>內插方法</translation>
     </message>
     <message>
         <source>Number of columns</source>
-        <translation type="unfinished">行數</translation>
+        <translation>行數</translation>
     </message>
     <message>
         <source>Number of rows</source>
-        <translation type="unfinished">列數</translation>
+        <translation>列數</translation>
     </message>
     <message>
         <source>Output file </source>
-        <translation type="unfinished">輸出檔案</translation>
+        <translation>輸出檔案</translation>
     </message>
     <message>
         <source>Vector layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>向量圖層:</translation>
     </message>
     <message>
         <source>Interpolation attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>內插屬性:</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">新增</translation>
+        <translation>新增</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">移除</translation>
+        <translation>移除</translation>
     </message>
     <message>
         <source>Vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>向量圖層</translation>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished">屬性</translation>
+        <translation>屬性</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">類型</translation>
+        <translation>類型</translation>
     </message>
 </context>
 <context>
     <name>QgsInterpolationPlugin</name>
     <message>
         <source>&amp;Interpolation</source>
-        <translation type="unfinished">內插工具(&amp;I)</translation>
+        <translation>內插工具(&amp;I)</translation>
     </message>
 </context>
 <context>
@@ -14456,11 +14475,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Preview:</source>
-        <translation type="unfinished">字體預覽:</translation>
+        <translation>字體預覽:</translation>
     </message>
     <message>
         <source>QGIS Rocks!</source>
-        <translation type="unfinished">QGIS 真酷!</translation>
+        <translation>搖滾吧 QGIS!</translation>
     </message>
     <message>
         <source>Font Style</source>
@@ -14676,27 +14695,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Field containing label</source>
-        <translation type="unfinished">包含標籤的欄位</translation>
+        <translation>包含標籤的欄位</translation>
     </message>
     <message>
         <source>Default label</source>
-        <translation type="unfinished">預設標籤</translation>
+        <translation>預設標籤</translation>
     </message>
     <message>
         <source>Data defined style</source>
-        <translation type="unfinished">選擇定義樣式的欄位</translation>
+        <translation>選擇定義樣式的欄位</translation>
     </message>
     <message>
         <source>Data defined alignment</source>
-        <translation type="unfinished">選擇定義對齊方式的欄位</translation>
+        <translation>選擇定義對齊方式的欄位</translation>
     </message>
     <message>
         <source>Data defined buffer</source>
-        <translation type="unfinished">選擇定義字體輪廓的欄位</translation>
+        <translation>選擇定義字體輪廓的欄位</translation>
     </message>
     <message>
         <source>Data defined position</source>
-        <translation type="unfinished">選擇定義位置的欄位</translation>
+        <translation>選擇定義位置的欄位</translation>
     </message>
     <message>
         <source>Font transparency</source>
@@ -14704,91 +14723,91 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">顏色</translation>
+        <translation>顏色</translation>
     </message>
     <message>
         <source>Angle (deg)</source>
-        <translation type="unfinished">角度(度)</translation>
+        <translation>角度(度)</translation>
     </message>
     <message>
         <source>Buffer labels?</source>
-        <translation type="unfinished">是否使用字體輪廓？</translation>
+        <translation>是否使用字體輪廓?</translation>
     </message>
     <message>
         <source>Buffer size</source>
-        <translation type="unfinished">字體輪廓大小</translation>
+        <translation>字體輪廓大小</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished">透明度</translation>
+        <translation>透明度</translation>
     </message>
     <message>
         <source>X Offset (pts)</source>
-        <translation type="unfinished">X方向偏移(pts)</translation>
+        <translation>X方向偏移(pts)</translation>
     </message>
     <message>
         <source>Y Offset (pts)</source>
-        <translation type="unfinished">Y方向偏移(pts)</translation>
+        <translation>Y方向偏移(pts)</translation>
     </message>
     <message>
         <source>&amp;Font family</source>
-        <translation type="unfinished">字體(&amp;F)</translation>
+        <translation>字體(&amp;F)</translation>
     </message>
     <message>
         <source>&amp;Bold</source>
-        <translation type="unfinished">粗體(&amp;B)</translation>
+        <translation>粗體(&amp;B)</translation>
     </message>
     <message>
         <source>&amp;Italic</source>
-        <translation type="unfinished">斜體(&amp;I)</translation>
+        <translation>斜體(&amp;I)</translation>
     </message>
     <message>
         <source>&amp;Underline</source>
-        <translation type="unfinished">底線(&amp;U)</translation>
+        <translation>底線(&amp;U)</translation>
     </message>
     <message>
         <source>&amp;Size</source>
-        <translation type="unfinished">大小(&amp;S)</translation>
+        <translation>大小(&amp;S)</translation>
     </message>
     <message>
         <source>Size units</source>
-        <translation type="unfinished">大小單位</translation>
+        <translation>大小單位</translation>
     </message>
     <message>
         <source>X Coordinate</source>
-        <translation type="unfinished">X座標</translation>
+        <translation>X座標</translation>
     </message>
     <message>
         <source>Y Coordinate</source>
-        <translation type="unfinished">Y座標</translation>
+        <translation>Y座標</translation>
     </message>
     <message>
         <source>Multiline labels?</source>
-        <translation type="unfinished">使用多行標籤</translation>
+        <translation>使用多行標籤?</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">一般</translation>
+        <translation>一般</translation>
     </message>
     <message>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished">依比例繪圖</translation>
+        <translation>依比例繪圖</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished">最大值</translation>
+        <translation>最大值</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished">最小值</translation>
+        <translation>最小值</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="unfinished"></translation>
+        <translation>圖層呈現的最小比例。</translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="unfinished"></translation>
+        <translation>圖層呈現的最大比例。</translation>
     </message>
     <message utf8="true">
         <source>°</source>
@@ -14796,11 +14815,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Color</source>
-        <translation type="unfinished"></translation>
+        <translation>顏色(&amp;C)</translation>
     </message>
     <message>
         <source>Font size</source>
-        <translation type="unfinished"></translation>
+        <translation>字體大小</translation>
     </message>
 </context>
 <context>
@@ -14886,7 +14905,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save as shapefile...</source>
-        <translation type="obsolete">儲存為shapefile...</translation>
+        <translation type="obsolete">儲存為Shape檔...</translation>
     </message>
     <message>
         <source>&amp;Convert to...</source>
@@ -14894,7 +14913,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation type="unfinished">沒有選中圖層</translation>
+        <translation type="unfinished">沒有選取圖層</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
@@ -14948,7 +14967,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save as shapefile...</source>
-        <translation type="unfinished">儲存為shapefile...</translation>
+        <translation type="unfinished">儲存為Shape檔...</translation>
     </message>
     <message>
         <source>Save selection as shapefile...</source>
@@ -14975,7 +14994,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save layer as...</source>
-        <translation type="unfinished">圖層另存為...</translation>
+        <translation>圖層另存為...</translation>
     </message>
     <message>
         <source>Start editing failed</source>
@@ -15003,7 +15022,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">錯誤</translation>
+        <translation>錯誤</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
@@ -15015,71 +15034,71 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Saving done</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存完成</translation>
     </message>
     <message>
         <source>Export to Shapefile has been completed</source>
-        <translation type="unfinished"></translation>
+        <translation>匯出Shape檔已完成</translation>
     </message>
     <message>
         <source>Driver not found</source>
-        <translation type="unfinished"></translation>
+        <translation>找不到磁碟機</translation>
     </message>
     <message>
         <source>ESRI Shapefile driver is not available</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI Shape檔找不到</translation>
     </message>
     <message>
         <source>Error creating shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>建立shape檔錯誤</translation>
     </message>
     <message>
         <source>Layer creation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>圖層建立失敗</translation>
     </message>
     <message>
         <source>&amp;Zoom to layer extent</source>
-        <translation type="unfinished">縮放到圖層的範圍 (&amp;Z)</translation>
+        <translation>縮放到圖層的範圍 (&amp;Z)</translation>
     </message>
     <message>
         <source>&amp;Show in overview</source>
-        <translation type="unfinished">在全覽圖中顯示</translation>
+        <translation>在全覽圖中顯示(&amp;S)</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished">移除(&amp;R)</translation>
+        <translation>移除(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
-        <translation type="unfinished">開啟屬性工作表(&amp;O)</translation>
+        <translation>開啟屬性工作表(&amp;O)</translation>
     </message>
     <message>
         <source>Save as shapefile...</source>
-        <translation type="unfinished">儲存為shapefile...</translation>
+        <translation>儲存為Shape檔...</translation>
     </message>
     <message>
         <source>Save selection as shapefile...</source>
-        <translation type="unfinished">儲存選取部分為Shapefile...</translation>
+        <translation>儲存選取部分為Shape檔...</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation type="unfinished">屬性(&amp;P)</translation>
+        <translation>屬性(&amp;P)</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>圖層屬性工作表包含未支援的資料型態</translation>
     </message>
     <message>
         <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
+        <translation>為儲存的Shape檔選取座標參考系統。這些點資料將會由圖層座標系統轉換。</translation>
     </message>
     <message>
         <source>The shapefile could not be created (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape檔無法建立(%1)</translation>
     </message>
     <message>
         <source>Creation of an attribute failed</source>
-        <translation type="unfinished"></translation>
+        <translation>建立屬性失敗</translation>
     </message>
 </context>
 <context>
@@ -15132,34 +15151,34 @@ p, li { white-space: pre-wrap; }
     <name>QgsLinearlyScalingDialog</name>
     <message>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>公釐</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished">地圖單位</translation>
+        <translation>地圖單位</translation>
     </message>
 </context>
 <context>
     <name>QgsLinearlyScalingDialogBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>表單</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value/ diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation>線性比例介於0與(以下的資性質/圖表大小):</translation>
     </message>
     <message>
         <source>find maximum Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>尋找最大值:</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="unfinished">大小:</translation>
+        <translation>大小:</translation>
     </message>
     <message>
         <source>Size unit: </source>
-        <translation type="unfinished"></translation>
+        <translation>單位:</translation>
     </message>
 </context>
 <context>
@@ -15238,19 +15257,21 @@ p, li { white-space: pre-wrap; }
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>不能繪圖 %1 因為:
+%2</translation>
     </message>
     <message>
         <source>Could not draw %1 because:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>不能繪圖 %1 因為:
+%2</translation>
     </message>
 </context>
 <context>
     <name>QgsMapLayer</name>
     <message>
         <source>&amp;Zoom to extent of selected layer</source>
-        <translation type="obsolete">縮放至選中的圖層(&amp;Z)</translation>
+        <translation type="obsolete">縮放至選取的圖層(&amp;Z)</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
@@ -15547,64 +15568,65 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No active layer</source>
-        <translation type="unfinished">沒有啟動的圖層</translation>
+        <translation>沒有作用中的圖層</translation>
     </message>
     <message>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>識別圖徵，您必須在圖例中選取一個作用中的圖層</translation>
     </message>
     <message>
         <source>Band</source>
-        <translation type="unfinished">波段</translation>
+        <translation>波段</translation>
     </message>
     <message>
         <source>WMS identify result for %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS識別結果是%1:
+%2</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">長度</translation>
+        <translation>長度</translation>
     </message>
     <message>
         <source>Area</source>
-        <translation type="unfinished">面積</translation>
+        <translation>面積</translation>
     </message>
     <message>
         <source>action</source>
-        <translation type="unfinished">動作</translation>
+        <translation>動作</translation>
     </message>
     <message>
         <source>No features found</source>
-        <translation type="unfinished"></translation>
+        <translation>沒有找到圖徵</translation>
     </message>
     <message>
         <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="unfinished">在目前啟動圖層的滑鼠點擊位置上未發現圖徵</translation>
+        <translation>在目前啟動圖層的滑鼠點擊位置上未發現圖徵</translation>
     </message>
     <message numerus="yes">
         <source>%1 - %n feature(s) found</source>
         <comment>Identify results window title</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>%1 - %n 圖徵找到</numerusform>
         </translation>
     </message>
     <message>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>無法繪圖 %1 因為:
+%2</translation>
     </message>
     <message>
         <source>Could not identify objects on %1 because:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>無法在 %1 識別物件，因為:
+%2</translation>
     </message>
     <message>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>屬性已更改</translation>
     </message>
     <message>
         <source>firstX</source>
@@ -15629,38 +15651,38 @@ p, li { white-space: pre-wrap; }
     <name>QgsMapToolMoveFeature</name>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">圖層不可編輯</translation>
+        <translation>圖層不可編輯</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">無法編輯向量圖層。請確定它是可以編輯。在圖層的檔案項中，選取為&apos;允許編輯&apos;。</translation>
+        <translation>無法編輯向量圖層。請確定它是可以編輯。在圖層的檔案項中，選取為&apos;允許編輯&apos;。</translation>
     </message>
     <message>
         <source>Feature moved</source>
-        <translation type="unfinished"></translation>
+        <translation>圖徵已移動</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolMoveVertex</name>
     <message>
         <source>Vertex moved</source>
-        <translation type="unfinished"></translation>
+        <translation>轉折點移動</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolNodeTool</name>
     <message>
         <source>Node tool</source>
-        <translation type="unfinished"></translation>
+        <translation>節點工具</translation>
     </message>
     <message>
         <source>Feature was deleted on background.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>圖徵已在背景中刪除。</translation>
     </message>
     <message>
         <source>Inserted vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>插入轉折點</translation>
     </message>
 </context>
 <context>
@@ -15791,7 +15813,7 @@ Do you want to overwrite it?</source>
     <name>QgsMapserverExportBase</name>
     <message>
         <source>Export to Mapserver</source>
-        <translation>輸出到Mapserver</translation>
+        <translation>匯出到Mapserver</translation>
     </message>
     <message>
         <source>Map file</source>
@@ -15799,7 +15821,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Export LAYER information only</source>
-        <translation>只匯出圖層信息  </translation>
+        <translation>只匯出圖層資訊</translation>
     </message>
     <message>
         <source>Map</source>
@@ -15887,7 +15909,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile. It should be kept short.</source>
-        <translation>用地圖檔(MapFile)建立的地圖、比例尺和圖例GIF檔案名的首碼。要盡可能的短.</translation>
+        <translation type="unfinished">用地圖檔(MapFile)建立的地圖、比例尺和圖例GIF檔案名的首碼。要盡可能的短。</translation>
     </message>
     <message>
         <source>Web Interface Definition</source>
@@ -15939,7 +15961,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>If checked, only the layer information will be processed</source>
-        <translation>如果選中，只有圖層資訊會處理</translation>
+        <translation>如果選取，只有圖層資訊會處理</translation>
     </message>
     <message>
         <source>Path to the MapServer template file</source>
@@ -15947,7 +15969,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
-        <translation type="unfinished"></translation>
+        <translation>用地圖檔(MapFile)建立的地圖、比例尺和圖例GIF檔案名的首碼</translation>
     </message>
     <message>
         <source>Full path to the QGIS project file to export to MapServer map format</source>
@@ -15955,11 +15977,11 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>QGIS project file</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS專案檔案</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">瀏覽...</translation>
+        <translation>瀏覽...</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -15974,7 +15996,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="obsolete">目錄</translation>
+        <translation type="obsolete">資料夾</translation>
     </message>
     <message>
         <source>...</source>
@@ -16252,7 +16274,7 @@ Extended error information:
     </message>
     <message>
         <source>Username</source>
-        <translation>用戶名</translation>
+        <translation>使用者名稱</translation>
     </message>
     <message>
         <source>Password</source>
@@ -16339,7 +16361,7 @@ Extended error information:
     </message>
     <message>
         <source>Your user name for the HTTP proxy (optional)</source>
-        <translation type="obsolete">HTTP代理的用戶名 (可選的)</translation>
+        <translation type="obsolete">HTTP代理的使用者名稱 (可選的)</translation>
     </message>
     <message>
         <source>Password for your HTTP proxy (optional)</source>
@@ -16460,7 +16482,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Username</source>
-        <translation type="unfinished">用戶名</translation>
+        <translation type="unfinished">使用者名稱</translation>
     </message>
     <message>
         <source>Password</source>
@@ -16707,35 +16729,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsOpenVectorLayerDialogBase</name>
     <message>
         <source>Add vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>加入向量圖層</translation>
     </message>
     <message>
         <source>Source type</source>
-        <translation type="unfinished"></translation>
+        <translation>來源種類</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished">目錄</translation>
+        <translation>資料夾</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished">資料庫</translation>
+        <translation>資料庫</translation>
     </message>
     <message>
         <source>Protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>通訊協定</translation>
     </message>
     <message>
         <source>Encoding :</source>
-        <translation type="unfinished"></translation>
+        <translation>編碼:</translation>
     </message>
     <message>
         <source>BIG5</source>
-        <translation type="unfinished"></translation>
+        <translation>BIG5(大五碼)</translation>
     </message>
     <message>
         <source>BIG5-HKSCS</source>
@@ -16911,7 +16933,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">類型</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <source>URI</source>
@@ -16919,31 +16941,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">來源</translation>
     </message>
     <message>
         <source>Dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>資料集</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">瀏覽</translation>
+        <translation>瀏覽</translation>
     </message>
     <message>
         <source>Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>連線</translation>
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished">新增</translation>
+        <translation>新增</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">編輯</translation>
+        <translation>編輯</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">刪除</translation>
+        <translation>刪除</translation>
     </message>
 </context>
 <context>
@@ -16954,19 +16976,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>to vertex</source>
-        <translation type="unfinished">自動接合 轉折點</translation>
+        <translation>自動接合 轉折點</translation>
     </message>
     <message>
         <source>to segment</source>
-        <translation type="unfinished">自動接合 線段</translation>
+        <translation>自動接合 線段</translation>
     </message>
     <message>
         <source>to vertex and segment</source>
-        <translation type="unfinished">自動接合 轉折點與線段</translation>
+        <translation>自動接合 轉折點與線段</translation>
     </message>
     <message>
         <source>Semi transparent circle</source>
-        <translation type="unfinished">半透明圓圈</translation>
+        <translation>半透明圓圈</translation>
     </message>
     <message>
         <source>Cross</source>
@@ -16974,23 +16996,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Detected active locale on your system: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>偵測目前您的系統使用的語言區域值為:%1</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">不透明</translation>
+        <translation>不透明</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation>地圖單位</translation>
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>像素</translation>
     </message>
     <message>
         <source>Central point (fastest)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">中心點法(最快)</translation>
     </message>
     <message>
         <source>Chain (fast)</source>
@@ -17053,7 +17075,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Rendering</source>
-        <translation type="unfinished">繪圖與效能(&amp;R)</translation>
+        <translation>繪圖與效能(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Update During Drawing</source>
@@ -17280,15 +17302,15 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Panning and zooming</source>
-        <translation type="unfinished">移動與縮放地圖</translation>
+        <translation>移動與縮放地圖</translation>
     </message>
     <message>
         <source>Zoom</source>
-        <translation type="unfinished">縮放</translation>
+        <translation>縮放</translation>
     </message>
     <message>
         <source>Zoom and recenter</source>
-        <translation type="unfinished">縮放且置中</translation>
+        <translation>縮放且置中</translation>
     </message>
     <message>
         <source>Nothing</source>
@@ -17308,7 +17330,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Additional Info</source>
-        <translation type="unfinished">參考資訊</translation>
+        <translation>參考資訊</translation>
     </message>
     <message>
         <source>Detected active locale on your system:</source>
@@ -17324,7 +17346,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Rubberband</source>
-        <translation type="unfinished">數化線(Rubberband)</translation>
+        <translation>數化線(Rubberband)</translation>
     </message>
     <message>
         <source>Line Width:</source>
@@ -17340,23 +17362,23 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Snapping</source>
-        <translation type="unfinished">自動接合(Snapping)</translation>
+        <translation>自動接合(Snapping)</translation>
     </message>
     <message>
         <source>Zoom to mouse cursor</source>
-        <translation type="unfinished">縮放至滑鼠指標</translation>
+        <translation>縮放至滑鼠指標</translation>
     </message>
     <message>
         <source>Project files</source>
-        <translation type="unfinished">專案檔案</translation>
+        <translation>專案檔案</translation>
     </message>
     <message>
         <source>Prompt to save project changes when required</source>
-        <translation type="unfinished">當專案檔案有變更時提醒存檔</translation>
+        <translation>當專案檔案有變更時提醒存檔</translation>
     </message>
     <message>
         <source>Warn when opening a project file saved with an older version of QGIS</source>
-        <translation type="unfinished">當開啟專案檔存成舊版的QGIS時提出警告</translation>
+        <translation>當開啟專案檔存成舊版的QGIS時提出警告</translation>
     </message>
     <message>
         <source>Default Map Appearance (overridden by project properties)</source>
@@ -17364,15 +17386,15 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Selection color</source>
-        <translation type="unfinished">選取的顏色</translation>
+        <translation>選取的顏色</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished">背景顏色</translation>
+        <translation>背景顏色</translation>
     </message>
     <message>
         <source>&amp;Application</source>
-        <translation type="unfinished">程式設定(&amp;A)</translation>
+        <translation>程式設定(&amp;A)</translation>
     </message>
     <message>
         <source>Icon theme</source>
@@ -17388,7 +17410,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Rendering behavior</source>
-        <translation type="unfinished">繪圖行為設定</translation>
+        <translation>繪圖行為設定</translation>
     </message>
     <message>
         <source>Number of features to draw before updating the display</source>
@@ -17400,11 +17422,11 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Rendering quality</source>
-        <translation type="unfinished">繪圖品質</translation>
+        <translation>繪圖品質</translation>
     </message>
     <message>
         <source>Zoom factor</source>
-        <translation type="unfinished">縮放係數</translation>
+        <translation>縮放係數</translation>
     </message>
     <message>
         <source>Mouse wheel action</source>
@@ -17412,7 +17434,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Rubberband color</source>
-        <translation type="unfinished">測量線的顏色</translation>
+        <translation>測量線的顏色</translation>
     </message>
     <message>
         <source>Ellipsoid for distance calculations</source>
@@ -17424,7 +17446,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Search radius for identifying features and displaying map tips</source>
-        <translation type="unfinished">識別圖徵且顯示地圖提示的搜尋半徑</translation>
+        <translation>識別圖徵且顯示地圖提示的搜尋半徑</translation>
     </message>
     <message>
         <source>Line width</source>
@@ -17444,11 +17466,11 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Search radius for vertex edits in layer units</source>
-        <translation type="unfinished">搜尋預編輯轉折點半徑值(圖層單位)</translation>
+        <translation>搜尋預編輯轉折點半徑值(圖層單位)</translation>
     </message>
     <message>
         <source>Vertex markers</source>
-        <translation type="unfinished">轉折點標誌</translation>
+        <translation>轉折點標誌</translation>
     </message>
     <message>
         <source>Marker style</source>
@@ -17456,7 +17478,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Override system locale</source>
-        <translation type="unfinished">取代Windows系統的語言區域設定</translation>
+        <translation>取代Windows系統的語言區域設定</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
@@ -17464,11 +17486,11 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Proxy</source>
-        <translation type="unfinished">Proxy 伺服器</translation>
+        <translation>Proxy 伺服器</translation>
     </message>
     <message>
         <source>Use proxy for web access</source>
-        <translation type="unfinished">存取網頁使用Proxy伺服器</translation>
+        <translation>存取網頁使用Proxy伺服器</translation>
     </message>
     <message>
         <source>Host</source>
@@ -17476,11 +17498,11 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished">連接埠</translation>
+        <translation>連接埠號</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="unfinished">使用者帳號</translation>
+        <translation>使用者帳號</translation>
     </message>
     <message>
         <source>Leave this blank if no proxy username / password are required</source>
@@ -17488,11 +17510,11 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished">密碼</translation>
+        <translation>密碼</translation>
     </message>
     <message>
         <source>Open attribute table in a dock window</source>
-        <translation type="unfinished">在停駐視窗中開啟屬性表</translation>
+        <translation>在停駐視窗中開啟屬性表</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -17500,15 +17522,15 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>When layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation type="unfinished">當圖層載入後沒有座標參考系統(CRS)</translation>
+        <translation>當圖層載入後沒有座標參考系統(CRS)</translation>
     </message>
     <message>
         <source>Prompt for CRS</source>
-        <translation type="unfinished">沒有設定CRS時，出現CRS選取對話方塊</translation>
+        <translation>沒有設定CRS時，出現CRS選取對話方塊</translation>
     </message>
     <message>
         <source>Project wide default CRS will be used</source>
-        <translation type="unfinished">以專案用的CRS為預設值</translation>
+        <translation>以專案用的CRS為預設值</translation>
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
@@ -17520,35 +17542,35 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Suppress attributes pop-up windows after each created feature</source>
-        <translation type="unfinished"></translation>
+        <translation>建立圖徵後取消跳出屬性視窗</translation>
     </message>
     <message>
         <source>Proxy type</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy類別</translation>
     </message>
     <message>
         <source>Exclude URLs:</source>
-        <translation type="unfinished"></translation>
+        <translation>排除的網址:</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">新增</translation>
+        <translation>新增</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">移除</translation>
+        <translation>移除</translation>
     </message>
     <message>
         <source>Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>套疊</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished">位置</translation>
+        <translation>位置</translation>
     </message>
     <message>
         <source>Placement algorithm:</source>
-        <translation type="unfinished"></translation>
+        <translation>套疊位置演算法:</translation>
     </message>
     <message>
         <source>map units</source>
@@ -17556,19 +17578,19 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>像素</translation>
     </message>
     <message>
         <source>Show markers only for selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>僅在選取圖徵時顯示圖示</translation>
     </message>
     <message>
         <source>Add PostGIS layers with double click and select in extended mode</source>
-        <translation type="unfinished"></translation>
+        <translation>使用雙擊與選取範圍模式中新增PostGIS圖層</translation>
     </message>
     <message>
         <source>Preferred measurements units</source>
-        <translation type="unfinished"></translation>
+        <translation>偏好測量的單位</translation>
     </message>
     <message>
         <source>Meters</source>
@@ -17576,22 +17598,22 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Feet</source>
-        <translation type="unfinished">英呎</translation>
+        <translation>英呎</translation>
     </message>
 </context>
 <context>
     <name>QgsOraclePlugin</name>
     <message>
         <source>Select GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇GeoRaster</translation>
     </message>
     <message>
         <source>Open a Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟Oracle空間GeoRaster</translation>
     </message>
     <message>
         <source>&amp;Oracle Spatial</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Oracle空間資料庫</translation>
     </message>
 </context>
 <context>
@@ -17748,28 +17770,29 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>&amp;Buffer features</source>
-        <translation type="unfinished">對圖徵作環域分析</translation>
+        <translation>對圖徵作環域分析(&amp;B)</translation>
     </message>
     <message>
         <source>Not a PostgreSQL/PostGIS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>不是PostgreSQL/PosGIS圖層</translation>
     </message>
     <message>
         <source>Create a buffer for a PostgreSQL layer. A new layer is created in the database with the buffered features.</source>
-        <translation type="unfinished"></translation>
+        <translation>在PostgreSQL圖層上建立環域。在資料庫中建立新的環域圖徵圖層。</translation>
     </message>
     <message>
         <source>Unable to add geometry column to the output table %1-%2</source>
-        <translation type="unfinished"></translation>
+        <translation>無法為輸出表新增幾何屬性欄位%1-%2</translation>
     </message>
     <message>
         <source>Failed to create the output table %1</source>
-        <translation type="unfinished"></translation>
+        <translation>建立%1輸出表格失敗</translation>
     </message>
     <message>
         <source>%1 is not a PostgreSQL/PostGIS layer.
 Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 不是PostgreSQL/PostGIS圖層。
+地理空間運算(Geoprocessing)功能僅適用於PostgreSQL/PostGIS圖層</translation>
     </message>
 </context>
 <context>
@@ -17824,45 +17847,45 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     </message>
     <message>
         <source>No Query</source>
-        <translation type="unfinished"></translation>
+        <translation>無查詢</translation>
     </message>
     <message>
         <source>You must create a query before you can test it</source>
-        <translation type="unfinished"></translation>
+        <translation>在您測試前必須建立一個查詢</translation>
     </message>
     <message>
         <source>Error in Query</source>
-        <translation type="unfinished"></translation>
+        <translation>查詢錯誤</translation>
     </message>
     <message>
         <source>Connection to the database failed:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>連接到資料庫失敗:
+%1</translation>
     </message>
     <message>
         <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Error message was: %2&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;使用SQL取得欄位值失敗:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;錯誤訊息是: %2&lt;/p&gt;</translation>
     </message>
     <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>where 子句傳回 %n 筆記錄。</numerusform>
         </translation>
     </message>
     <message>
         <source>An error occurred when executing the query:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>執行查詢時發生錯誤:
+%1</translation>
     </message>
 </context>
 <context>
     <name>QgsPgQueryBuilderBase</name>
     <message>
         <source>PostgreSQL Query Builder</source>
-        <translation type="unfinished">PostgreSQL查詢工具</translation>
+        <translation>PostgreSQL查詢工具</translation>
     </message>
     <message>
         <source>Clear</source>
@@ -17890,7 +17913,7 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     </message>
     <message>
         <source>Sample</source>
-        <translation type="unfinished">查詢欄位取樣值</translation>
+        <translation>查詢欄位取樣值</translation>
     </message>
     <message>
         <source>Fields</source>
@@ -17902,7 +17925,7 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     </message>
     <message>
         <source>Operators</source>
-        <translation type="unfinished">運算符號</translation>
+        <translation>運算符號</translation>
     </message>
     <message>
         <source>=</source>
@@ -17962,7 +17985,7 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     </message>
     <message>
         <source>SQL where clause</source>
-        <translation type="unfinished">SQL where 子句</translation>
+        <translation>SQL where 子句</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -17994,7 +18017,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Datasource</source>
-        <translation type="unfinished">資料來源</translation>
+        <translation>資料來源</translation>
     </message>
 </context>
 <context>
@@ -18021,7 +18044,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Python附加元件...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
@@ -18029,11 +18052,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>尋找新的附加元件...</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS附加元件衝突:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
@@ -18049,7 +18072,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Python附加元件安裝</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -18092,7 +18115,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Python 附加元件安裝</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -18100,11 +18123,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>所有附加元件主機</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished"></translation>
+        <translation>已連線</translation>
     </message>
     <message>
         <source>This repository is connected</source>
@@ -18120,7 +18143,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>停用</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
@@ -18136,31 +18159,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>any status</source>
-        <translation type="unfinished"></translation>
+        <translation>任何狀態</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>未安裝</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="unfinished"></translation>
+        <translation>已安裝</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="unfinished"></translation>
+        <translation>可升級與新版</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>這附加元件未安裝</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="unfinished"></translation>
+        <translation>這附加元件已安裝</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished"></translation>
+        <translation>這附加元件已安裝，且有新版本可以安裝</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
@@ -18191,7 +18214,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="unfinished"></translation>
+        <translation>可升級</translation>
     </message>
     <message>
         <source>new!</source>
@@ -18243,23 +18266,23 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>安裝附加元件</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>重新安裝附加元件</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>升級附加元件</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>安裝/升級附加元件</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>降級附加元件</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
@@ -18267,7 +18290,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>附加元件安裝失敗</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
@@ -18345,167 +18368,167 @@ You need to restart Quantum GIS in order to reload it.</source>
     <name>QgsPluginInstallerDialogBase</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Python附加元件安裝</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished">附加元件</translation>
+        <translation>附加元件</translation>
     </message>
     <message>
         <source>List of available and installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>列出可用與已安裝的附加元件</translation>
     </message>
     <message>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>過濾條件:</translation>
     </message>
     <message>
         <source>Display only plugins containing this word in their metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>僅顯示詮釋資料包含此關鍵字的附加元件</translation>
     </message>
     <message>
         <source>Display only plugins from given repository</source>
-        <translation type="unfinished"></translation>
+        <translation>從自訂主機中顯示附加元件</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>所有元件主機</translation>
     </message>
     <message>
         <source>Display only plugins with matching status</source>
-        <translation type="unfinished"></translation>
+        <translation>僅顯示符合狀態的附加元件</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation type="unfinished">狀態</translation>
+        <translation>狀態</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">名稱</translation>
+        <translation>名稱</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished">版本</translation>
+        <translation>版本</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">描述</translation>
+        <translation>說明</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation type="unfinished"></translation>
+        <translation>作者</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation type="unfinished"></translation>
+        <translation>附加元件主機</translation>
     </message>
     <message>
         <source>Install, reinstall or upgrade the selected plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>安裝，重新安裝或升級選取的附加元件</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>安裝/升級附加元件</translation>
     </message>
     <message>
         <source>Uninstall the selected plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>移除選取的附加元件</translation>
     </message>
     <message>
         <source>Uninstall plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>移除附加元件</translation>
     </message>
     <message>
         <source>Repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>附加元件主機</translation>
     </message>
     <message>
         <source>List of plugin repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>列出附加元件主機</translation>
     </message>
     <message>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>網址</translation>
     </message>
     <message>
         <source>Check for updates on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>啟動時檢查更新</translation>
     </message>
     <message>
         <source>Add third party plugin repositories to the list</source>
-        <translation type="unfinished"></translation>
+        <translation>增加非官方的元件主機至清單中</translation>
     </message>
     <message>
         <source>Add 3rd party repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>新增非官方主機</translation>
     </message>
     <message>
         <source>Add a new plugin repository</source>
-        <translation type="unfinished"></translation>
+        <translation>新增附加元件主機</translation>
     </message>
     <message>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>新增...</translation>
     </message>
     <message>
         <source>Edit the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯選取中的主機</translation>
     </message>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯...</translation>
     </message>
     <message>
         <source>Remove the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>移除選取主機</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">刪除</translation>
+        <translation>刪除</translation>
     </message>
     <message>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>附加元件將會安裝在 ~/.qgis/python/plugins</translation>
     </message>
     <message>
         <source>Close the Installer window</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉安裝視窗</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">關閉</translation>
+        <translation>關閉</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">選項</translation>
+        <translation>選項</translation>
     </message>
     <message>
         <source>Configuration of the plugin installer</source>
-        <translation type="unfinished"></translation>
+        <translation>設定附加元件安裝</translation>
     </message>
     <message>
         <source>every time QGIS starts</source>
-        <translation type="unfinished"></translation>
+        <translation>每次QGIS啟動時</translation>
     </message>
     <message>
         <source>once a day</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">每天一次</translation>
     </message>
     <message>
         <source>every 3 days</source>
-        <translation type="unfinished"></translation>
+        <translation>每三天</translation>
     </message>
     <message>
         <source>every week</source>
-        <translation type="unfinished"></translation>
+        <translation>每週</translation>
     </message>
     <message>
         <source>every 2 weeks</source>
-        <translation type="unfinished"></translation>
+        <translation>每兩週</translation>
     </message>
     <message>
         <source>every month</source>
-        <translation type="unfinished"></translation>
+        <translation>每月</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -18513,23 +18536,27 @@ You need to restart Quantum GIS in order to reload it.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;注意:&lt;/span&gt;如果啟用這功能，當有新的或新版的附加元件時，QGIS會自動提醒您。這也代表QGIS會在您開啟附加元件安裝視窗時自動執行。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Allowed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>已允許的附加元件</translation>
     </message>
     <message>
         <source>Only show plugins from the official repository</source>
-        <translation type="unfinished"></translation>
+        <translation>只顯示來自官方主機的附加元件</translation>
     </message>
     <message>
         <source>Show all plugins except those marked as experimental</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示所有的附加元件，除了實驗性質的附加元件</translation>
     </message>
     <message>
         <source>Show all plugins, even those marked as experimental</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示所有的附加元件，包括實驗性質的附加元件</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -18537,137 +18564,141 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Experimental plugins are generally unsuitable for production use. These plugins are in early stages of development, and should be considered &apos;incomplete&apos; or &apos;proof of concept&apos; tools. QGIS does not recommend installing these plugins unless you intend to use them for testing purposes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;注意:&lt;/span&gt;實驗的附加元件通常是不穩定的，不合適用在正式的作業環境中。這種附加元件通常是開發過程的早期部分。QGIS不建議您安裝&apos;不相容&apos;與&apos;驗證概念&apos;的附加元件，除非您真的有意想要測試它們。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">下載數據...</translation>
+        <translation>下載資料...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">錯誤</translation>
+        <translation>錯誤</translation>
     </message>
     <message>
         <source>Success</source>
-        <translation type="unfinished"></translation>
+        <translation>成功</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>解析主機名稱...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>連線中...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>主機已連線。傳送需求中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>閒置</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉連線中...</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerFetchingDialogBase</name>
     <message>
         <source>Fetching repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>取得主機資料</translation>
     </message>
     <message>
         <source>Overall progress:</source>
-        <translation type="unfinished"></translation>
+        <translation>整體進度:</translation>
     </message>
     <message>
         <source>Abort fetching</source>
-        <translation type="unfinished"></translation>
+        <translation>放棄擷取主機資料</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation type="unfinished"></translation>
+        <translation>元件主機</translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>狀態</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">下載數據...</translation>
+        <translation>下載資料...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">錯誤</translation>
+        <translation>錯誤</translation>
     </message>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished"></translation>
+        <translation>安裝中...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>解析主機名稱...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>連接中...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>主機已連線。傳送請求中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>閒置</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>關閉連線中...</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>附加元件解壓縮失敗。可能是從主機下載失敗。您要先確定您的附加元件資料夾有寫入的權限:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
+        <translation>使用者已放棄</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerInstallingDialogBase</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Python附加元件安裝</translation>
     </message>
     <message>
         <source>Installing plugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>安裝附加元件:</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>連線...</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished"></translation>
+        <translation>無接收到錯誤訊息</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerPluginErrorDialogBase</name>
     <message>
         <source>Error loading plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>載入附加元件錯誤</translation>
     </message>
     <message>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
@@ -18675,7 +18706,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
-        <translation type="unfinished"></translation>
+        <translation>您現在要移除這附加元件。如果您不確定，可能您就是想這麼作。</translation>
     </message>
 </context>
 <context>
@@ -18689,38 +18720,38 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerRepositoryDetailsDialogBase</name>
     <message>
         <source>Repository details</source>
-        <translation type="unfinished"></translation>
+        <translation>附加元件主機詳細資訊</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished">名稱:</translation>
+        <translation>名稱:</translation>
     </message>
     <message>
         <source>Enter a name for the repository</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入附加元件主機名稱</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>網址:</translation>
     </message>
     <message>
         <source>Enter the repository URL, beginning with &quot;http://&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入附加元件主機網址，由&quot;http://&quot;開頭</translation>
     </message>
     <message>
         <source>Enable or disable the repository (disabled repositories will be omitted)</source>
-        <translation type="unfinished"></translation>
+        <translation>啟用或停用附加元件主機(停用附加元件主機將會被忽略)</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>啟用</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginManager</name>
     <message>
         <source>Choose a directory</source>
-        <translation type="obsolete">選擇目錄</translation>
+        <translation type="obsolete">選擇資料夾</translation>
     </message>
     <message>
         <source>No Plugins</source>
@@ -18744,27 +18775,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Select All</source>
-        <translation type="unfinished">全選(&amp;S)</translation>
+        <translation>全選(&amp;S)</translation>
     </message>
     <message>
         <source>&amp;Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>全部清除(&amp;C)</translation>
     </message>
     <message>
         <source>[ incompatible ]</source>
-        <translation type="unfinished"></translation>
+        <translation>[ 不相容 ]</translation>
     </message>
     <message>
         <source>No QGIS plugins found in %1</source>
-        <translation type="unfinished"></translation>
+        <translation>未在%1發現QGIS附加元件</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">錯誤</translation>
+        <translation>錯誤</translation>
     </message>
     <message>
         <source>Failed to open plugin installer!</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟附加元件安裝失敗!</translation>
     </message>
 </context>
 <context>
@@ -18775,7 +18806,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Plugin Directory</source>
-        <translation type="obsolete">附加元件目錄</translation>
+        <translation type="obsolete">附加元件資料夾</translation>
     </message>
     <message>
         <source>...</source>
@@ -18835,27 +18866,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS Plugin Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS附加元件管理器</translation>
     </message>
     <message>
         <source>To enable / disable a plugin, click its checkbox or description</source>
-        <translation type="unfinished"></translation>
+        <translation>啟用/停用 附加元件，按此核取方塊或其描述</translation>
     </message>
     <message>
         <source>&amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>過濾條件(&amp;F)</translation>
     </message>
     <message>
         <source>Plugin Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>附加元件資料夾:</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished">目錄</translation>
+        <translation>資料夾</translation>
     </message>
     <message>
         <source>Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>附加元件安裝</translation>
     </message>
 </context>
 <context>
@@ -18910,7 +18941,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Delete Selected</source>
-        <translation>刪除選中的記錄</translation>
+        <translation>刪除選取的記錄</translation>
     </message>
     <message>
         <source>Linear</source>
@@ -19114,7 +19145,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">瀏覽...</translation>
+        <translation>瀏覽...</translation>
     </message>
     <message>
         <source>Modified raster:</source>
@@ -19122,31 +19153,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Reference points</source>
-        <translation type="unfinished">設定參考點</translation>
+        <translation>設定參考點</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation type="unfinished">建立</translation>
+        <translation>建立</translation>
     </message>
     <message>
         <source>Create and load layer</source>
-        <translation type="unfinished">建立與載入圖層</translation>
+        <translation>建立與載入圖層</translation>
     </message>
     <message>
         <source>Raster file:</source>
-        <translation type="unfinished">影像影像檔案:</translation>
+        <translation>影像檔案:</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">關閉</translation>
+        <translation>關閉</translation>
     </message>
     <message>
         <source>Save GCPs</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存GCPs</translation>
     </message>
     <message>
         <source>Load GCPs</source>
-        <translation type="unfinished"></translation>
+        <translation>載入GCPs</translation>
     </message>
 </context>
 <context>
@@ -19544,7 +19575,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Snapping options...</source>
-        <translation type="unfinished">自動接合(Snapping)選項...</translation>
+        <translation>自動接合(Snapping)選項...</translation>
     </message>
     <message>
         <source>Avoid intersections of new polygons</source>
@@ -19552,15 +19583,15 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Title and colors</source>
-        <translation type="unfinished">主題與顏色</translation>
+        <translation>主題與顏色</translation>
     </message>
     <message>
         <source>Project title</source>
-        <translation type="unfinished">專案主題</translation>
+        <translation>專案主題</translation>
     </message>
     <message>
         <source>Selection color</source>
-        <translation type="unfinished">選擇顏色</translation>
+        <translation>選擇顏色</translation>
     </message>
     <message>
         <source>Background color</source>
@@ -19576,15 +19607,15 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
-        <translation type="unfinished">開啟即時CRS轉換</translation>
+        <translation>開啟即時CRS轉換</translation>
     </message>
     <message>
         <source>save absolute paths</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存絕對路徑</translation>
     </message>
     <message>
         <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>圖層單位(僅在CRS轉換停用時啟用)</translation>
     </message>
 </context>
 <context>
@@ -19599,25 +19630,27 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>User Defined Coordinate Systems</source>
-        <translation type="unfinished">使用者定義座標系統</translation>
+        <translation>使用者定義座標系統</translation>
     </message>
     <message>
         <source>Geographic Coordinate Systems</source>
-        <translation type="unfinished">地理座標系統</translation>
+        <translation>地理座標系統</translation>
     </message>
     <message>
         <source>Projected Coordinate Systems</source>
-        <translation type="unfinished">投影座標系統</translation>
+        <translation>投影座標系統</translation>
     </message>
     <message>
         <source>Resource Location Error</source>
-        <translation type="unfinished">資源位置錯誤</translation>
+        <translation>資源位置錯誤</translation>
     </message>
     <message>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
-        <translation type="unfinished"></translation>
+        <translation>讀取資料庫檔案錯誤: 
+ %1
+因為座標投影無法執行...</translation>
     </message>
 </context>
 <context>
@@ -19672,11 +19705,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇座標參考系統</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">座標參考系統</translation>
+        <translation>座標參考系統</translation>
     </message>
     <message>
         <source>EPSG</source>
@@ -19698,7 +19731,7 @@ Because of this the projection selector will not work...</source>
     <name>QgsPythonDialog</name>
     <message>
         <source>Python console</source>
-        <translation type="unfinished">Python主控台</translation>
+        <translation>Python主控台</translation>
     </message>
     <message>
         <source>&gt;&gt;&gt;</source>
@@ -19706,19 +19739,19 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
-        <translation type="unfinished"></translation>
+        <translation>使用QGIS環境中python主控台存取物件，是使用全域的QgisInterface類別實體&lt;br&gt;使用範例: iface.zoomFull()</translation>
     </message>
     <message>
         <source>&amp;Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>執行(&amp;E)</translation>
     </message>
     <message>
         <source>&amp;Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>上一指令(&amp;P)</translation>
     </message>
     <message>
         <source>&amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>下一指令(&amp;N)</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -20628,7 +20661,7 @@ p, li { white-space: pre-wrap; }
 </source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
 &lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;高解析度的影像圖層在QGIS會降低瀏覽速度。建立低解析度的資料複製(快取顯示檔-Pyramid)，執行效率會有顯著提高，因為QGIS會根據縮放的級別來選擇最合適的解析度。要建立快取顯示檔(Pyramid)，您必須對原始資料的儲存目錄有寫許可權。&lt;/p&gt;
+&lt;p&gt;高解析度的影像圖層在QGIS會降低瀏覽速度。建立低解析度的資料複製(快取顯示檔-Pyramid)，執行效率會有顯著提高，因為QGIS會根據縮放的級別來選擇最合適的解析度。要建立快取顯示檔(Pyramid)，您必須對原始資料的儲存資料夾有寫許可權。&lt;/p&gt;
 &lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;請注意，建快取顯示檔(Pyramid)也許會修改原始資料檔案，而且它們一經建立就無法刪除。&lt;/span&gt;&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
 </translation>
@@ -20701,7 +20734,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>DebugInfo</source>
-        <translation type="obsolete">調試信息</translation>
+        <translation type="obsolete">除錯資訊</translation>
     </message>
     <message>
         <source>Scale Dependent Visibility</source>
@@ -20773,7 +20806,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Blue band</source>
-        <translation type="unfinished">藍波段</translation>
+        <translation>藍波段</translation>
     </message>
     <message>
         <source>Custom min / max values</source>
@@ -20801,7 +20834,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Blue max</source>
-        <translation type="unfinished">藍 最大值</translation>
+        <translation>藍 最大值</translation>
     </message>
     <message>
         <source>Single band properties</source>
@@ -20969,7 +21002,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Bar chart</source>
-        <translation type="unfinished">長條圖</translation>
+        <translation>直條圖</translation>
     </message>
     <message>
         <source>Column count</source>
@@ -21445,15 +21478,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search query builder</source>
-        <translation type="unfinished">搜尋語法工具</translation>
+        <translation>查詢語法輔助工具</translation>
     </message>
     <message numerus="yes">
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>找到%n符合的圖徵。</numerusform>
         </translation>
     </message>
 </context>
@@ -21493,7 +21524,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not open the WMS Provider</source>
-        <translation type="unfinished">無法開啟WMS來源</translation>
+        <translation>無法開啟WMS來源</translation>
     </message>
     <message>
         <source>Select Layer</source>
@@ -21523,7 +21554,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">座標參考系統</translation>
+        <translation>座標參考系統</translation>
     </message>
     <message>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
@@ -21535,15 +21566,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>您確定要移除%1連線與所有的設定嗎？</translation>
     </message>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>座標參考系統 (%n可用)</numerusform>
         </translation>
     </message>
     <message>
@@ -21567,7 +21596,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Confirm Overwrite</source>
-        <translation type="unfinished"></translation>
+        <translation>確認覆蓋</translation>
     </message>
     <message>
         <source>WMS Password for %1</source>
@@ -21598,7 +21627,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Image encoding</source>
-        <translation type="unfinished">影像編碼格式</translation>
+        <translation>影像編碼格式</translation>
     </message>
     <message>
         <source>Layers</source>
@@ -21646,11 +21675,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>C&amp;onnect</source>
-        <translation type="unfinished">連線(&amp;o)</translation>
+        <translation>連線(&amp;o)</translation>
     </message>
     <message>
         <source>Ready</source>
-        <translation>就緒</translation>
+        <translation>我準備好了</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
@@ -21662,47 +21691,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Adds a few example WMS servers</source>
-        <translation type="unfinished">新增幾個範例WMS伺服器</translation>
+        <translation>新增幾個範例WMS伺服器</translation>
     </message>
     <message>
         <source>Add default servers</source>
-        <translation type="unfinished">新增預設伺服器</translation>
+        <translation>新增預設伺服器</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation type="unfinished"></translation>
+        <translation>伺服器</translation>
     </message>
     <message>
         <source>Server Search</source>
-        <translation type="unfinished"></translation>
+        <translation>搜尋伺服器</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished">尋找</translation>
+        <translation>尋找</translation>
     </message>
     <message>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>網址</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">描述</translation>
+        <translation>說明</translation>
     </message>
     <message>
         <source>Add selected row to WMS list</source>
-        <translation type="unfinished"></translation>
+        <translation>新增選取的列至WMS清單</translation>
     </message>
     <message>
         <source>Layer Order</source>
-        <translation type="unfinished"></translation>
+        <translation>圖層順序</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">圖層</translation>
+        <translation>圖層</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>樣式</translation>
     </message>
 </context>
 <context>
@@ -21718,7 +21747,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scanning </source>
-        <translation type="unfinished"></translation>
+        <translation>掃描中</translation>
     </message>
     <message>
         <source>The database gave an error while executing this SQL:
@@ -21743,7 +21772,7 @@ The error was:
     </message>
     <message>
         <source>Directory</source>
-        <translation type="obsolete">目錄</translation>
+        <translation type="obsolete">資料夾</translation>
     </message>
     <message>
         <source>...</source>
@@ -22166,11 +22195,11 @@ SQL: %2</source>
     <name>QgsSpatiaLiteSourceSelectBase</name>
     <message>
         <source>Add SpatiaLite Table(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>新增 SpatiaLite 表格</translation>
     </message>
     <message>
         <source>SpatiaLite DBs</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatiaLite資料庫</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -22221,7 +22250,7 @@ SQL: %2</source>
     <name>QgsSpatiaLiteTableModel</name>
     <message>
         <source>Table</source>
-        <translation type="unfinished">表格</translation>
+        <translation>表格</translation>
     </message>
     <message>
         <source>Type</source>
@@ -22286,7 +22315,7 @@ SQL: %2</source>
         <source>The following Shapefile(s) could not be loaded:
 
 </source>
-        <translation>以下Shapefile(s)無法載入:
+        <translation>以下Shape檔無法載入:
 
 </translation>
     </message>
@@ -22296,11 +22325,11 @@ SQL: %2</source>
     </message>
     <message>
         <source>REASON: One or both of the Shapefile files (*.dbf, *.shx) missing</source>
-        <translation>原因: 缺少Shapefile (*.dbf, *.shx)文件</translation>
+        <translation>原因: 缺少Shape檔 (*.dbf, *.shx)文件</translation>
     </message>
     <message>
         <source>General Interface Help:</source>
-        <translation type="unfinished">通用介面説明:</translation>
+        <translation>通用介面説明:</translation>
     </message>
     <message>
         <source>PostgreSQL Connections:</source>
@@ -22312,11 +22341,11 @@ SQL: %2</source>
     </message>
     <message>
         <source>[Edit ...] - edit the currently selected connection</source>
-        <translation>[編輯...] - 編輯目前選中的連接</translation>
+        <translation>[編輯...] - 編輯目前選取的連接</translation>
     </message>
     <message>
         <source>[Remove] - remove the currently selected connection</source>
-        <translation>[移除] - 移除目前選中的連接</translation>
+        <translation>[移除] - 移除目前選取的連接</translation>
     </message>
     <message>
         <source>-you need to select a connection that works (connects properly) in order to import files</source>
@@ -22328,7 +22357,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>Shapefile List:</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape檔清單:</translation>
     </message>
     <message>
         <source>[Add ...] - open a File dialog and browse to the desired file(s) to import</source>
@@ -22373,23 +22402,23 @@ SQL: %2</source>
     </message>
     <message>
         <source>Import Shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>匯入Shape檔</translation>
     </message>
     <message>
         <source>You need to specify a Connection first</source>
-        <translation type="unfinished"></translation>
+        <translation>您需要先指定一個資料庫連線</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>連線失敗 - 檢查設定後再試</translation>
     </message>
     <message>
         <source>You need to add shapefiles to the list first</source>
-        <translation type="unfinished"></translation>
+        <translation>您需要先新增Shape檔至清單中</translation>
     </message>
     <message>
         <source>Importing files</source>
-        <translation>匯入文件</translation>
+        <translation>匯入檔案</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -22397,7 +22426,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>程序</translation>
     </message>
     <message>
         <source>Problem inserting features from file:</source>
@@ -22405,7 +22434,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>Import Shapefiles - Relation Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>匯入Shape檔 - 關連存在</translation>
     </message>
     <message>
         <source>File Name</source>
@@ -22421,7 +22450,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>DB Relation Name</source>
-        <translation type="unfinished"></translation>
+        <translation>資料庫關連名稱</translation>
     </message>
     <message>
         <source>Schema</source>
@@ -22433,11 +22462,11 @@ SQL: %2</source>
     </message>
     <message>
         <source>Shapefiles (*.shp);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape檔 (*.shp);;所有檔案 (*.*)</translation>
     </message>
     <message>
         <source>PostGIS not available</source>
-        <translation type="unfinished"></translation>
+        <translation>無PostGIS</translation>
     </message>
     <message>
         <source>&lt;p&gt;The chosen database does not have PostGIS installed, but this is required for storage of spatial data.&lt;/p&gt;</source>
@@ -22453,7 +22482,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>Please enter your password:</source>
-        <translation type="unfinished">請輸入您的密碼:</translation>
+        <translation>請輸入您的密碼:</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the [%1] connection and all associated settings?</source>
@@ -22486,7 +22515,8 @@ The following fields are duplicates:
     <message>
         <source>Importing files
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>匯入檔案
+%1</translation>
     </message>
     <message>
         <source>%1
@@ -22509,11 +22539,11 @@ Do you want to overwrite the [%2] relation?</source>
     <name>QgsSpitBase</name>
     <message>
         <source>SPIT - Shapefile to PostGIS Import Tool</source>
-        <translation>SPIT - Shapefile to PostGIS的匯入工具</translation>
+        <translation>SPIT - Shape檔匯入PostGIS的工具</translation>
     </message>
     <message>
         <source>Shapefile to PostGIS Import Tool</source>
-        <translation type="obsolete">Shapefile to PostGIS的匯入工具</translation>
+        <translation type="obsolete">Shape檔匯入PostGIS的工具</translation>
     </message>
     <message>
         <source>Help</source>
@@ -22525,7 +22555,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Import the defined shapefiles to PostGIS</source>
-        <translation type="obsolete">將選定的shapefile匯入到PostGIS中</translation>
+        <translation type="obsolete">將選定的Shape檔匯入到PostGIS中</translation>
     </message>
     <message>
         <source>Close</source>
@@ -22533,7 +22563,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Shapefile List</source>
-        <translation type="obsolete">Shapefile文件列清單</translation>
+        <translation type="obsolete">Shape檔文件列清單</translation>
     </message>
     <message>
         <source>Add</source>
@@ -22541,7 +22571,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Add a shapefile to the list of files to be imported</source>
-        <translation>向將要匯入的檔列表中新增shapefile</translation>
+        <translation>向將要匯入的檔列表中新增Shape檔</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -22549,7 +22579,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Remove the selected shapefile from the import list</source>
-        <translation>從匯入列表中移除選定的shapefile</translation>
+        <translation>從匯入列表中移除選定的Shape檔</translation>
     </message>
     <message>
         <source>Remove All</source>
@@ -22557,7 +22587,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Remove all the shapefiles from the import list</source>
-        <translation>移除匯入列表中所有的shapefile</translation>
+        <translation>移除匯入列表中所有的Shape檔</translation>
     </message>
     <message>
         <source>File Name</source>
@@ -22573,11 +22603,11 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Global Schema</source>
-        <translation type="unfinished">全域Schema</translation>
+        <translation>全域Schema</translation>
     </message>
     <message>
         <source>Set the SRID to the default value</source>
-        <translation type="unfinished">設定SRID為預設值</translation>
+        <translation>設定SRID為預設值</translation>
     </message>
     <message>
         <source>Use Default Geometry Column Name</source>
@@ -22609,7 +22639,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished">連接</translation>
+        <translation>連接</translation>
     </message>
     <message>
         <source>Edit</source>
@@ -22621,49 +22651,49 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Import options and shapefile list</source>
-        <translation type="unfinished">匯入選項與shapefile清單</translation>
+        <translation>匯入選項與Shape檔清單</translation>
     </message>
     <message>
         <source>Use Default SRID or specify here</source>
-        <translation type="unfinished">使用預設的SRID或指定為</translation>
+        <translation>使用預設的SRID或指定為</translation>
     </message>
     <message>
         <source>Use Default Geometry Column Name or specify here</source>
-        <translation type="unfinished">使用預設的[幾何欄位]或指定為</translation>
+        <translation>使用預設的[幾何欄位]或指定為</translation>
     </message>
     <message>
         <source>Primary Key Column Name</source>
-        <translation type="unfinished">主鍵(PK)欄位名稱</translation>
+        <translation>主鍵(PK)欄位名稱</translation>
     </message>
     <message>
         <source>Connect to PostGIS</source>
-        <translation type="unfinished">連連至PostGIS</translation>
+        <translation>連連至PostGIS</translation>
     </message>
 </context>
 <context>
     <name>QgsSpitPlugin</name>
     <message>
         <source>&amp;Import Shapefiles to PostgreSQL</source>
-        <translation type="unfinished">Shapefiles匯出至PostGIS(&amp;I)</translation>
+        <translation>Shape檔匯出至PostGIS(&amp;I)</translation>
     </message>
     <message>
         <source>Import shapefiles into a PostGIS-enabled PostgreSQL database. The schema and field names can be customized on import</source>
-        <translation type="unfinished">把shapefiles匯出至PostGIS資料庫中。在匯入時可自訂Schema與欄位名稱</translation>
+        <translation>把Shape檔匯出至PostGIS資料庫中。在匯入時可自訂Schema與欄位名稱</translation>
     </message>
     <message>
         <source>&amp;Spit</source>
-        <translation type="unfinished">shp匯出至PostGIS工具</translation>
+        <translation>Shape檔匯出至Po&amp;stGIS</translation>
     </message>
 </context>
 <context>
     <name>QgsTINInterpolatorDialog</name>
     <message>
         <source>Linear interpolation</source>
-        <translation type="unfinished">線性內插</translation>
+        <translation>線性內插</translation>
     </message>
     <message>
         <source>Save triangulation to file</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存三角測量至檔案</translation>
     </message>
 </context>
 <context>
@@ -22814,7 +22844,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Save as shapefile...</source>
-        <translation type="obsolete">儲存為shapefile...</translation>
+        <translation type="obsolete">儲存為Shape檔...</translation>
     </message>
     <message>
         <source>Provider does not support deletion</source>
@@ -22850,7 +22880,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Invert Selection...</source>
-        <translation type="obsolete">反轉選中的記錄...</translation>
+        <translation type="obsolete">反轉選取的記錄...</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -22910,23 +22940,23 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>ERROR: no provider</source>
-        <translation type="unfinished"></translation>
+        <translation>錯誤: 無資料提供者</translation>
     </message>
     <message>
         <source>ERROR: layer not editable</source>
-        <translation type="unfinished"></translation>
+        <translation>錯誤: 圖層不可編輯</translation>
     </message>
     <message>
         <source>SUCCESS: attribute %1 was added.</source>
-        <translation type="unfinished"></translation>
+        <translation>成功: 屬性%1已新增。</translation>
     </message>
     <message>
         <source>ERROR: attribute %1 not added</source>
-        <translation type="unfinished"></translation>
+        <translation>錯誤: 屬性%1 未新增</translation>
     </message>
     <message>
         <source>No renderer object</source>
-        <translation type="unfinished"></translation>
+        <translation>無可物件可繪圖</translation>
     </message>
     <message>
         <source>Classification field not found</source>
@@ -22935,114 +22965,90 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>成功: %n 屬性已刪除。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>錯誤: %n 屬性未刪除。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>成功: %n 屬性已新增。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>錯誤: %n 新屬性未新增</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>成功: %n 屬性值已更改。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>錯誤: %n 屬性質更改未成功。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>成功: %n 圖徵已新增。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>錯誤: %n 圖徵未新增。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>成功: %n 幾何已更改。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>錯誤: %n 幾何未更改。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>成功: %n 圖徵已刪除。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>錯誤: %n 圖徵未刪除。</numerusform>
         </translation>
     </message>
     <message>
         <source>Unknown renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>未知的繪圖</translation>
     </message>
 </context>
 <context>
@@ -23093,7 +23099,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>General:</source>
-        <translation type="unfinished">一般:</translation>
+        <translation>一般:</translation>
     </message>
     <message>
         <source>Storage type of this layer : </source>
@@ -23137,7 +23143,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Project (Output) Spatial Reference System:</source>
-        <translation type="unfinished">專案的(輸出的)空間參考系統:</translation>
+        <translation>專案的(輸出的)空間參考系統:</translation>
     </message>
     <message>
         <source>Attribute field info:</source>
@@ -23169,19 +23175,19 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished">註解</translation>
+        <translation>註解</translation>
     </message>
     <message>
         <source>Default Style</source>
-        <translation type="unfinished">預設樣式</translation>
+        <translation>預設樣式</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
-        <translation type="unfinished">QGIS圖層樣式檔(*.qml)</translation>
+        <translation>QGIS圖層樣式檔(*.qml)</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>Unknown style format: </source>
@@ -23189,7 +23195,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>id</source>
-        <translation type="unfinished">唯一值(ID)</translation>
+        <translation>識別碼(ID)</translation>
     </message>
     <message>
         <source>name</source>
@@ -23197,23 +23203,23 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>type</source>
-        <translation type="unfinished">資料型態</translation>
+        <translation>資料型態</translation>
     </message>
     <message>
         <source>length</source>
-        <translation type="unfinished">長度</translation>
+        <translation>長度</translation>
     </message>
     <message>
         <source>precision</source>
-        <translation type="unfinished">精確度</translation>
+        <translation>精確度</translation>
     </message>
     <message>
         <source>comment</source>
-        <translation type="unfinished">註解</translation>
+        <translation>註解</translation>
     </message>
     <message>
         <source>edit widget</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">編輯工具</translation>
     </message>
     <message>
         <source>values</source>
@@ -23237,7 +23243,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Name conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>名稱衝突</translation>
     </message>
     <message>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
@@ -23245,39 +23251,39 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Creation of spatial index successful</source>
-        <translation type="unfinished"></translation>
+        <translation>建立空間索引成功</translation>
     </message>
     <message>
         <source>Saved Style</source>
-        <translation type="unfinished">儲存樣式</translation>
+        <translation>儲存樣式</translation>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation type="unfinished"></translation>
+        <translation>透明度:%1%</translation>
     </message>
     <message>
         <source>Layer comment: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>圖層註解: %1</translation>
     </message>
     <message>
         <source>Storage type of this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>該圖層的儲存類型:%1</translation>
     </message>
     <message>
         <source>Source for this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>此圖層的來源:%1</translation>
     </message>
     <message>
         <source>Geometry type of the features in this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>該圖層的圖徵的幾何類型:%1</translation>
     </message>
     <message>
         <source>The number of features in this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>這個圖層的圖徵數目:%1</translation>
     </message>
     <message>
         <source>Editing capabilities of this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>該圖層的編輯能力: %1</translation>
     </message>
     <message>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
@@ -23285,7 +23291,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>(Invalid transformation of layer extents)</source>
-        <translation type="unfinished"></translation>
+        <translation>(圖層範圍的無效轉換)</translation>
     </message>
     <message>
         <source>Load layer properties from style file (.qml)</source>
@@ -23293,31 +23299,31 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Unknown style format: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>未知的樣式格式:%1</translation>
     </message>
     <message>
         <source>Save layer properties as style file (.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存圖層屬性為樣式檔案(.qml)</translation>
     </message>
     <message>
         <source>alias</source>
-        <translation type="unfinished"></translation>
+        <translation>別名</translation>
     </message>
     <message>
         <source>Added attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>新增的屬性</translation>
     </message>
     <message>
         <source>Deleted attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>刪除屬性</translation>
     </message>
     <message>
         <source>Enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation>列舉(Enumeration)</translation>
     </message>
     <message>
         <source>Immutable</source>
-        <translation type="unfinished"></translation>
+        <translation>不可變的(Immutable)</translation>
     </message>
     <message>
         <source>Line edit</source>
@@ -23325,15 +23331,15 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>唯一值</translation>
     </message>
     <message>
         <source>Unique values editable</source>
-        <translation type="unfinished"></translation>
+        <translation>唯一值(可編輯)</translation>
     </message>
     <message>
         <source>Classification</source>
-        <translation type="unfinished"></translation>
+        <translation>分類</translation>
     </message>
     <message>
         <source>Value map</source>
@@ -23341,7 +23347,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Edit range</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯範圍</translation>
     </message>
     <message>
         <source>Slider range</source>
@@ -23349,7 +23355,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案名稱</translation>
     </message>
 </context>
 <context>
@@ -23392,7 +23398,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Symbology</source>
-        <translation type="unfinished">符號設計</translation>
+        <translation>符號設計</translation>
     </message>
     <message>
         <source>Transparency:</source>
@@ -23514,7 +23520,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished">透明度</translation>
+        <translation>透明度</translation>
     </message>
     <message>
         <source>Options</source>
@@ -23554,7 +23560,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">切換編輯模式</translation>
+        <translation>切換編輯模式</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
@@ -23566,7 +23572,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Specify CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>指定座標參考系統(CRS)</translation>
     </message>
 </context>
 <context>
@@ -23620,29 +23626,29 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsWFSData</name>
     <message>
         <source>Loading WFS data</source>
-        <translation type="unfinished"></translation>
+        <translation>載入WFS資料</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">放棄</translation>
+        <translation>放棄</translation>
     </message>
 </context>
 <context>
     <name>QgsWFSPlugin</name>
     <message>
         <source>&amp;Add WFS layer</source>
-        <translation type="unfinished">新增WFS圖層(&amp;A)</translation>
+        <translation>新增WFS圖層(&amp;A)</translation>
     </message>
 </context>
 <context>
     <name>QgsWFSProvider</name>
     <message>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>未知</translation>
     </message>
     <message>
         <source>received %1 bytes from %2</source>
-        <translation type="unfinished"></translation>
+        <translation>從%2接收到%1 bytes</translation>
     </message>
 </context>
 <context>
@@ -23657,7 +23663,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">確認刪除</translation>
+        <translation>確認刪除</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -23676,23 +23682,23 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsWFSSourceSelectBase</name>
     <message>
         <source>Title</source>
-        <translation type="unfinished">標題</translation>
+        <translation>標題</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">名稱</translation>
+        <translation>名稱</translation>
     </message>
     <message>
         <source>Abstract</source>
-        <translation type="unfinished">摘要</translation>
+        <translation>摘要</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">座標參考系統</translation>
+        <translation>座標參考系統</translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation type="unfinished">改變...</translation>
+        <translation>變更...</translation>
     </message>
     <message>
         <source>Help</source>
@@ -23720,38 +23726,38 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Server Connections</source>
-        <translation type="unfinished">伺服器連接</translation>
+        <translation>伺服器連接</translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished">新增(&amp;N)</translation>
+        <translation>新增(&amp;N)</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">刪除</translation>
+        <translation>刪除</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">編輯</translation>
+        <translation>編輯</translation>
     </message>
     <message>
         <source>C&amp;onnect</source>
-        <translation type="unfinished">連接 (&amp;o)</translation>
+        <translation>連接 (&amp;o)</translation>
     </message>
     <message>
         <source>Add WFS Layer from a Server</source>
-        <translation type="unfinished">從伺服器上新增WFS圖層(&amp;A)</translation>
+        <translation>從伺服器上新增WFS圖層</translation>
     </message>
 </context>
 <context>
     <name>QgsWKNDiagramFactoryWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>表單</translation>
     </message>
     <message>
         <source>Attributes:</source>
-        <translation type="unfinished">屬性:</translation>
+        <translation>屬性:</translation>
     </message>
     <message>
         <source>1</source>
@@ -23759,11 +23765,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>移除屬性</translation>
     </message>
     <message>
         <source>Add attribute</source>
-        <translation type="unfinished">新增屬性</translation>
+        <translation>新增屬性</translation>
     </message>
 </context>
 <context>
@@ -23906,7 +23912,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Selected</source>
-        <translation>選中的</translation>
+        <translation>選取</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -23970,7 +23976,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Layer cannot be queried.</source>
-        <translation type="unfinished">無法查詢該圖層</translation>
+        <translation type="unfinished">無法查詢該圖層。</translation>
     </message>
     <message>
         <source>Dom Exception</source>
@@ -24078,27 +24084,27 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>QGIS Quick Print Plugin</source>
-        <translation type="unfinished">QGIS PDF列印附加元件</translation>
+        <translation>QGIS PDF列印附加元件</translation>
     </message>
     <message>
         <source>Quick Print</source>
-        <translation type="unfinished">PDF列印</translation>
+        <translation>PDF列印</translation>
     </message>
     <message>
         <source>Map Title e.g. ACME inc.</source>
-        <translation type="unfinished">地圖主題</translation>
+        <translation>地圖主題 例如 ACME inc.</translation>
     </message>
     <message>
         <source>Map Name e.g. Water Features</source>
-        <translation type="unfinished">地圖名稱</translation>
+        <translation>地圖名稱 例如 水文圖徵</translation>
     </message>
     <message>
         <source>Copyright</source>
-        <translation type="unfinished">版權</translation>
+        <translation>版權</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished">輸出</translation>
+        <translation>輸出</translation>
     </message>
     <message>
         <source>Use last filename but incremented.</source>
@@ -24110,15 +24116,15 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Prompt for file name</source>
-        <translation type="unfinished">檔案名稱提示</translation>
+        <translation>檔案名稱提示</translation>
     </message>
     <message>
         <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>注意：如果您想要設定更多地圖的排版樣式，請使用QGIS的出輸設計。</translation>
     </message>
     <message>
         <source>Page Size</source>
-        <translation type="unfinished">紙張大小</translation>
+        <translation>紙張大小</translation>
     </message>
 </context>
 <context>
@@ -24183,7 +24189,7 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Ready</source>
-        <translation type="unfinished">就緒</translation>
+        <translation type="unfinished">我準備好了</translation>
     </message>
     <message>
         <source>&amp;Select</source>
@@ -24256,15 +24262,15 @@ Tried URL: %1</source>
     <name>UndoWidget</name>
     <message>
         <source>Undo/Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>復原/取消復原</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>復原</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>取消復原</translation>
     </message>
 </context>
 <context>
@@ -24376,7 +24382,7 @@ Tried URL: %1</source>
     <name>dxf2shpConverter</name>
     <message>
         <source>Converts DXF files in Shapefile format</source>
-        <translation type="unfinished">Dxf轉成shapefile檔案格式</translation>
+        <translation type="unfinished">Dxf轉成Shape檔檔案格式</translation>
     </message>
     <message>
         <source>&amp;Dxf2Shp</source>
@@ -24391,11 +24397,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">多邊形</translation>
+        <translation>多邊形</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">點</translation>
+        <translation>點</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -24407,11 +24413,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Dxf Importer</source>
-        <translation type="unfinished">Dxf 匯入工具</translation>
+        <translation>Dxf 匯入工具</translation>
     </message>
     <message>
         <source>Input Dxf file</source>
-        <translation type="unfinished">輸入Dxf檔案</translation>
+        <translation>輸入Dxf檔案</translation>
     </message>
     <message>
         <source>...</source>
@@ -24422,27 +24428,30 @@ Tried URL: %1</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Output file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;輸出檔案&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Output file type</source>
-        <translation type="unfinished">輸出檔案</translation>
+        <translation>輸出檔案種類</translation>
     </message>
     <message>
         <source>Polyline</source>
-        <translation type="unfinished">線</translation>
+        <translation>線</translation>
     </message>
     <message>
         <source>Export text labels</source>
-        <translation type="unfinished">匯出文字標籤</translation>
+        <translation>匯出文字標籤</translation>
     </message>
     <message>
         <source>Choose a DXF file to open</source>
-        <translation type="unfinished">開啟選取DXF檔案</translation>
+        <translation>開啟選取DXF檔案</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished">輸入儲存檔案名稱</translation>
+        <translation>輸入儲存檔案名稱</translation>
     </message>
     <message>
         <source>Fields description:
@@ -24463,46 +24472,46 @@ For support send a mail to scala@itc.cnr.it
     <name>eVis</name>
     <message>
         <source>eVis Database Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>eVis資料庫連線</translation>
     </message>
     <message>
         <source>eVis Event Id Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>eVis事件ID工具</translation>
     </message>
     <message>
         <source>eVis Event Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>eVis事件瀏覽器</translation>
     </message>
     <message>
         <source>Create layer from a database query</source>
-        <translation type="unfinished"></translation>
+        <translation>從資料查詢中建立圖層</translation>
     </message>
     <message>
         <source>Open an Event Browers and display the selected feature</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟事件瀏覽器與顯示選取的圖徵</translation>
     </message>
     <message>
         <source>Open an Event Browser to explore the current layer&apos;s features</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟事件瀏覽器與探索目前圖層的圖徵</translation>
     </message>
 </context>
 <context>
     <name>eVisDatabaseConnectionGui</name>
     <message>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>未定義</translation>
     </message>
     <message>
         <source>No predefined queries loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>沒有載入預設的查詢</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>開啟檔案</translation>
     </message>
     <message>
         <source>New Database connection requested...</source>
-        <translation type="unfinished"></translation>
+        <translation>新的資料庫連線需求...</translation>
     </message>
     <message>
         <source>Error: You must select a database type</source>
@@ -24518,11 +24527,11 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished"></translation>
+        <translation>已連線</translation>
     </message>
     <message>
         <source>Tables</source>
-        <translation type="unfinished"></translation>
+        <translation>表格</translation>
     </message>
     <message>
         <source>Error: Parse error at line %1, column %2: %3</source>
@@ -24557,7 +24566,7 @@ For support send a mail to scala@itc.cnr.it
     <name>eVisDatabaseConnectionGuiBase</name>
     <message>
         <source>Username</source>
-        <translation type="unfinished">用戶名</translation>
+        <translation type="unfinished">使用者名稱</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -25007,7 +25016,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>&amp;Tools</source>
-        <translation type="unfinished">工具(&amp;T)</translation>
+        <translation>工具(&amp;T)</translation>
     </message>
     <message>
         <source>Quantum GIS version detected: </source>
@@ -25020,7 +25029,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>分析工具(&amp;A)</translation>
     </message>
     <message>
         <source>Distance matrix</source>
@@ -25056,7 +25065,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>研究工具(&amp;R)</translation>
     </message>
     <message>
         <source>Random selection</source>
@@ -25088,7 +25097,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>地理空間運算工具(&amp;G)</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
@@ -25124,7 +25133,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>幾何工具(G&amp;)</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
@@ -25164,7 +25173,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>資料管理工具(&amp;D)</translation>
     </message>
     <message>
         <source>Export to new projection</source>
@@ -25188,7 +25197,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">fTools 資訊</translation>
     </message>
 </context>
 <context>

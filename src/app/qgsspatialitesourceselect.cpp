@@ -179,9 +179,9 @@ sqlite3 *QgsSpatiaLiteSourceSelect::openSpatiaLiteDb( const char *path )
   QString errCause;
 
   // trying to open the SQLite DB
-  mSqlitePath = path;
+  mSqlitePath = QString::fromUtf8( path );
 
-  ret = sqlite3_open_v2( path, &handle, SQLITE_OPEN_READWRITE, NULL );
+  ret = sqlite3_open_v2( mSqlitePath.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
   if ( ret )
   {
     // failure

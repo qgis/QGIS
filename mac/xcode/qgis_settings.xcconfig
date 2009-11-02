@@ -14,12 +14,12 @@ ARCHS = $(NATIVE_ARCH)
 //////////////////////////////////////////////////////////////////////
 
 // major-minor-patch must be integers for Mac OS X
-QGIS_RELEASE_NAME = Daphnis
+QGIS_RELEASE_NAME = Unstable
 QGIS_VERSION_MAJOR = 1
-QGIS_VERSION_MINOR = 2
+QGIS_VERSION_MINOR = 3
 QGIS_VERSION_PATCH = 0
 QGIS_VERSION_FULL = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR).$(QGIS_VERSION_PATCH)-$(QGIS_RELEASE_NAME)
-QGIS_VERSION_INT = 10200
+QGIS_VERSION_INT = 10300
 
 //////////////////////////////////////////////////////////////////////
 // Qt and other support

@@ -31,12 +31,8 @@ email                : sherman at mrcc.com
 #include <QMessageBox>
 #include <QSettings>
 #include <QTextStream>
-#include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QStringList>
-
-#include <cassert>
-#include <iostream>
 
 #ifdef HAVE_PGCONFIG
 #include <pg_config.h>
@@ -57,6 +53,7 @@ QgsDbSourceSelect::QgsDbSourceSelect( QWidget *parent, Qt::WFlags fl )
   mSearchColumnComboBox->addItem( tr( "Table" ) );
   mSearchColumnComboBox->addItem( tr( "Type" ) );
   mSearchColumnComboBox->addItem( tr( "Geometry column" ) );
+  mSearchColumnComboBox->addItem( tr( "Primary key column" ) );
   mSearchColumnComboBox->addItem( tr( "Sql" ) );
 
   mProxyModel.setParent( this );
@@ -66,6 +63,10 @@ QgsDbSourceSelect::QgsDbSourceSelect( QWidget *parent, Qt::WFlags fl )
   mProxyModel.setSourceModel( &mTableModel );
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
+
+  mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
+
+  mTablesTreeView->setItemDelegateForColumn( QgsDbTableModel::dbtmPkCol, new QgsDbSourceSelectDelegate( this ) );
 
   QSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "/qgis/addPostgisDC", false ).toBool() ?
@@ -169,23 +170,27 @@ void QgsDbSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
   }
   else if ( text == tr( "Schema" ) )
   {
-    mProxyModel.setFilterKeyColumn( 0 );
+    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmSchema );
   }
   else if ( text == tr( "Table" ) )
   {
-    mProxyModel.setFilterKeyColumn( 1 );
+    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmTable );
   }
   else if ( text == tr( "Type" ) )
   {
-    mProxyModel.setFilterKeyColumn( 2 );
+    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmType );
   }
   else if ( text == tr( "Geometry column" ) )
   {
-    mProxyModel.setFilterKeyColumn( 3 );
+    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmGeomCol );
+  }
+  else if ( text == tr( "Primary key column" ) )
+  {
+    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmPkCol );
   }
   else if ( text == tr( "Sql" ) )
   {
-    mProxyModel.setFilterKeyColumn( 4 );
+    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmSql );
   }
 }
 
@@ -199,26 +204,15 @@ void QgsDbSourceSelect::setLayerType( QString schema,
                                       QString type )
 {
   mTableModel.setGeometryTypesForTable( schema, table, column, type );
-  mTablesTreeView->sortByColumn( 1, Qt::AscendingOrder );
-  mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
-}
-
-QString QgsDbSourceSelect::makeGeomQuery( QString schema,
-    QString table, QString column )
-{
-  return QString( "select distinct "
-                  "case"
-                  " when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
-                  " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
-                  " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
-                  " end "
-                  "from \"%2\".\"%3\"" ).arg( "\"" + column + "\"" ).arg( schema ).arg( table );
+  mTablesTreeView->sortByColumn( QgsDbTableModel::dbtmTable, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsDbTableModel::dbtmSchema, Qt::AscendingOrder );
 }
 
 QgsDbSourceSelect::~QgsDbSourceSelect()
 {
   PQfinish( pd );
 }
+
 void QgsDbSourceSelect::populateConnectionList()
 {
   QSettings settings;
@@ -234,6 +228,7 @@ void QgsDbSourceSelect::populateConnectionList()
   settings.endGroup();
   setConnectionListPosition();
 }
+
 void QgsDbSourceSelect::addNewConnection()
 {
   QgsNewConnection *nc = new QgsNewConnection( this );
@@ -243,6 +238,7 @@ void QgsDbSourceSelect::addNewConnection()
     populateConnectionList();
   }
 }
+
 void QgsDbSourceSelect::editConnection()
 {
   QgsNewConnection *nc = new QgsNewConnection( this, cmbConnections->currentText() );
@@ -278,6 +274,7 @@ void QgsDbSourceSelect::deleteConnection()
     setConnectionListPosition();
   }
 }
+
 void QgsDbSourceSelect::addTables()
 {
   m_selectedTables.clear();
@@ -310,16 +307,13 @@ void QgsDbSourceSelect::addTables()
 
     if ( dbInfo[currentSchemaName][currentRow].size() == 0 )
     {
-      dbInfo[currentSchemaName][currentRow].resize( 5 );
+      dbInfo[currentSchemaName][currentRow].resize( QgsDbTableModel::dbtmColumns );
     }
 
     dbInfo[currentSchemaName][currentRow][currentColumn] = currentItem->text();
   }
 
   //now traverse all the schemas and table infos
-  QString schemaName, tableName, geomColumnName, sql;
-  QString query;
-
   QMap<QString, schemaInfo>::const_iterator schema_it = dbInfo.constBegin();
   for ( ; schema_it != dbInfo.constEnd(); ++schema_it )
   {
@@ -327,16 +321,17 @@ void QgsDbSourceSelect::addTables()
     schemaInfo::const_iterator entry_it = scheme.constBegin();
     for ( ; entry_it != scheme.constEnd(); ++entry_it )
     {
-      schemaName = entry_it->at( 0 );
-      tableName = entry_it->at( 1 );
-      geomColumnName = entry_it->at( 3 );
-      sql = entry_it->at( 4 );
+      QString schemaName = entry_it->at( QgsDbTableModel::dbtmSchema );
+      QString tableName = entry_it->at( QgsDbTableModel::dbtmTable );
+      QString geomColumnName = entry_it->at( QgsDbTableModel::dbtmGeomCol );
+      QString pkColumnName = entry_it->at( QgsDbTableModel::dbtmPkCol );
+      QString sql = entry_it->at( QgsDbTableModel::dbtmSql );
 
       if ( geomColumnName.contains( " AS " ) )
       {
         int a = geomColumnName.indexOf( " AS " );
         QString typeName = geomColumnName.mid( a + 4 ); //only the type name
-        geomColumnName = geomColumnName.mid( 0, a ); //only the geom column name
+        geomColumnName = geomColumnName.left( a ); //only the geom column name
 
         if ( !sql.isEmpty() )
         {
@@ -360,7 +355,16 @@ void QgsDbSourceSelect::addTables()
         }
       }
 
-      query = "\"" + schemaName + "\".\"" + tableName + "\" " + "(" + geomColumnName + ") sql=" + sql;
+      QString query;
+      if ( !pkColumnName.isEmpty() )
+      {
+        query += QString( "key=\"%1\" " ).arg( pkColumnName );
+      }
+
+      query += QString( "table=\"%1\".\"%2\" (%3) sql=%4" )
+               .arg( schemaName ).arg( tableName )
+               .arg( geomColumnName )
+               .arg( sql );
 
       m_selectedTables.push_back( query );
     }
@@ -493,8 +497,8 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
                           .arg( QString::fromUtf8( PQerrorMessage( pd ) ) ) );
   }
 
-  mTablesTreeView->sortByColumn( 1, Qt::AscendingOrder );
-  mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsDbTableModel::dbtmTable, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsDbTableModel::dbtmSchema, Qt::AscendingOrder );
 
   //if we have only one schema item, expand it by default
   int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
@@ -532,8 +536,8 @@ void QgsDbSourceSelect::setSql( const QModelIndex& index )
   }
 
   //create "Schema"."Table" and find out existing sql string
-  QModelIndex schemaSibling = index.sibling( index.row(), 0 );
-  QModelIndex tableSibling = index.sibling( index.row(), 1 );
+  QModelIndex schemaSibling = index.sibling( index.row(), QgsDbTableModel::dbtmSchema );
+  QModelIndex tableSibling = index.sibling( index.row(), QgsDbTableModel::dbtmTable );
   if ( !schemaSibling.isValid() || !tableSibling.isValid() )
   {
     return;
@@ -545,7 +549,7 @@ void QgsDbSourceSelect::setSql( const QModelIndex& index )
   QgsDebugMsg( tableString );
 
   QString currentSql;
-  QModelIndex sqlSibling = index.sibling( index.row(), 4 );
+  QModelIndex sqlSibling = index.sibling( index.row(), QgsDbTableModel::dbtmSql );
   if ( sqlSibling.isValid() )
   {
     currentSql = mTableModel.itemFromIndex( mProxyModel.mapToSource( sqlSibling ) )->text();
@@ -576,6 +580,33 @@ void QgsDbSourceSelect::addSearchGeometryColumn( const QString &schema, const QS
   mColumnTypeThread->addGeometryColumn( schema, table, column );
 }
 
+QStringList QgsDbSourceSelect::pkCandidates( PGconn *pg, QString schemaName, QString tableName )
+{
+  QStringList cols;
+  cols << QString::null;
+
+  QString sql = QString( "select attname from pg_attribute join pg_type on atttypid=pg_type.oid WHERE pg_type.typname='int4' AND attrelid=regclass('\"%1\".\"%2\"')" ).arg( schemaName ).arg( tableName );
+  QgsDebugMsg( sql );
+  PGresult *colRes = PQexec( pg, sql.toUtf8() );
+
+  if ( PQresultStatus( colRes ) == PGRES_TUPLES_OK )
+  {
+    for ( int i = 0; i < PQntuples( colRes ); i++ )
+    {
+      QgsDebugMsg( PQgetvalue( colRes, i, 0 ) );
+      cols << QString::fromUtf8( PQgetvalue( colRes, i, 0 ) );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( QString( "SQL:%1\nresult:%2\nerror:%3\n" ).arg( sql ).arg( PQresultStatus( colRes ) ).arg( PQerrorMessage( pg ) ) );
+  }
+
+  PQclear( colRes );
+
+  return cols;
+}
+
 bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly )
 {
   int n = 0;
@@ -583,12 +614,23 @@ bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
 
   // The following query returns only tables that exist and the user has SELECT privilege on.
   // Can't use regclass here because table must exist, else error occurs.
-  QString sql = "select * from geometry_columns,pg_class,pg_namespace "
-                "where relname=f_table_name and f_table_schema=nspname "
-                "and pg_namespace.oid = pg_class.relnamespace "
-                "and has_schema_privilege(pg_namespace.nspname,'usage') "
-                "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select') " // user has select privilege
-                "order by f_table_schema,f_table_name,f_geometry_column";
+  QString sql = "select "
+                "f_table_name,"
+                "f_table_schema,"
+                "f_geometry_column,"
+                "type"
+                " from "
+                "geometry_columns,"
+                "pg_class,"
+                "pg_namespace"
+                " where "
+                "relname=f_table_name"
+                " and f_table_schema=nspname"
+                " and pg_namespace.oid=pg_class.relnamespace"
+                " and has_schema_privilege(pg_namespace.nspname,'usage')"
+                " and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')" // user has select privilege
+                " order by "
+                "f_table_schema,f_table_name,f_geometry_column";
 
   PGresult *result = PQexec( pg, sql.toUtf8() );
   if ( result )
@@ -606,11 +648,10 @@ bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
     {
       for ( int idx = 0; idx < PQntuples( result ); idx++ )
       {
-        QString tableName = QString::fromUtf8( PQgetvalue( result, idx, PQfnumber( result, QString( "f_table_name" ).toUtf8() ) ) );
-        QString schemaName = QString::fromUtf8( PQgetvalue( result, idx, PQfnumber( result, QString( "f_table_schema" ).toUtf8() ) ) );
-
-        QString column = QString::fromUtf8( PQgetvalue( result, idx, PQfnumber( result, QString( "f_geometry_column" ).toUtf8() ) ) );
-        QString type = QString::fromUtf8( PQgetvalue( result, idx, PQfnumber( result, QString( "type" ).toUtf8() ) ) );
+        QString tableName = QString::fromUtf8( PQgetvalue( result, idx, 0 ) );
+        QString schemaName = QString::fromUtf8( PQgetvalue( result, idx, 1 ) );
+        QString column = QString::fromUtf8( PQgetvalue( result, idx, 2 ) );
+        QString type = QString::fromUtf8( PQgetvalue( result, idx, 3 ) );
 
         QString as = "";
         if ( type == "GEOMETRY" && !searchGeometryColumnsOnly )
@@ -619,7 +660,7 @@ bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
           as = type = "WAITING";
         }
 
-        mTableModel.addTableEntry( type, schemaName, tableName, column, "" );
+        mTableModel.addTableEntry( type, schemaName, tableName, column, pkCandidates( pg, schemaName, tableName ), "" );
         n++;
       }
     }
@@ -636,31 +677,38 @@ bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
     // geometry_columns table. This code is specific to postgresql,
     // but an equivalent query should be possible in other
     // databases.
-    sql = "select pg_class.relname,pg_namespace.nspname,pg_attribute.attname,pg_class.relkind "
-          "from pg_attribute, pg_class, pg_namespace "
-          "where pg_namespace.oid = pg_class.relnamespace "
-          "and pg_attribute.attrelid = pg_class.oid "
-          "and ("
+    sql = "select "
+          "pg_class.relname,"
+          "pg_namespace.nspname,"
+          "pg_attribute.attname,"
+          "pg_class.relkind"
+          " from "
+          "pg_attribute,"
+          "pg_class,"
+          "pg_namespace"
+          " where "
+          "pg_namespace.oid = pg_class.relnamespace"
+          " and pg_attribute.attrelid = pg_class.oid "
+          " and ("
           "pg_attribute.atttypid = regtype('geometry')"
-          " or "
-          "pg_attribute.atttypid IN (select oid FROM pg_type WHERE typbasetype=regtype('geometry'))"
-          ") "
-          "and has_schema_privilege(pg_namespace.nspname,'usage') "
-          "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select') ";
+          " or pg_attribute.atttypid IN (select oid FROM pg_type WHERE typbasetype=regtype('geometry'))"
+          ")"
+          " and has_schema_privilege(pg_namespace.nspname,'usage')"
+          " and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')";
     // user has select privilege
     if ( searchPublicOnly )
-      sql += "and pg_namespace.nspname = 'public' ";
+      sql += " and pg_namespace.nspname = 'public'";
 
     if ( n > 0 )
     {
-      sql += "and not exists (select * from geometry_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name) ";
+      sql += " and not exists (select * from geometry_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name)";
     }
     else
     {
       n = 0;
     }
 
-    sql += "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
+    sql += " and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
 
     result = PQexec( pg, sql.toUtf8() );
 
@@ -692,7 +740,7 @@ bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
 
         addSearchGeometryColumn( schema, table, column );
         //details.push_back(geomPair(fullDescription(schema, table, column, "WAITING"), "WAITING"));
-        mTableModel.addTableEntry( "Waiting", schema, table, column, "" );
+        mTableModel.addTableEntry( "Waiting", schema, table, column, pkCandidates( pg, schema, table ), "" );
         n++;
       }
     }
@@ -798,9 +846,14 @@ void QgsGeomColumnTypeThread::getLayerTypes()
 
     for ( uint i = 0; i < schemas.size(); i++ )
     {
-      QString query = QgsDbSourceSelect::makeGeomQuery( schemas[i],
-                      tables[i],
-                      columns[i] );
+      QString query = QString( "select distinct "
+                               "case"
+                               " when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
+                               " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
+                               " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
+                               " end "
+                               "from "
+                               "\"%2\".\"%3\"" ).arg( "\"" + columns[i] + "\"" ).arg( schemas[i] ).arg( tables[i] );
       PGresult* gresult = PQexec( pd, query.toUtf8() );
       QString type;
       if ( PQresultStatus( gresult ) == PGRES_TUPLES_OK )

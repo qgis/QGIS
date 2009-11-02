@@ -514,17 +514,20 @@ QgsAttributeMap QgsMergeAttributesDialog::mergedAttributesMap() const
   }
 
   resultMap = mFeatureList[0].attributeMap();
-  //go through all the items and replace the values in the attribute map
-  for ( int i = 0; i < resultMap.size(); ++i )
+  int index = 0;
+  QgsAttributeMap::iterator it = resultMap.begin();
+
+  for ( ; it != resultMap.end(); ++it )
   {
-    QTableWidgetItem* currentItem = mTableWidget->item( mFeatureList.size() + 1, i );
+    QTableWidgetItem* currentItem = mTableWidget->item( mFeatureList.size() + 1, index );
     if ( !currentItem )
     {
       continue;
     }
     QString mergedString = currentItem->text();
     QVariant newValue( mergedString );
-    resultMap.insert( i, newValue );
+    resultMap.insert( it.key(), newValue );
+    ++index;
   }
 
   return resultMap;

@@ -20,6 +20,8 @@
 #include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
+#include "qgstolerance.h"
 
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
@@ -133,12 +135,18 @@ void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
   }
 }
 
-
 void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
 {
   if ( !mRightMouseClicked )
   {
+    QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
     QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->pos().x(), e->pos().y() );
+
+    if ( vl )
+    {
+      vl->snapPoint( point, QgsTolerance::defaultTolerance( vl, mCanvas->mapRenderer() ) );
+    }
+
     mRubberBand->movePoint( point );
     mDialog->mouseMove( point );
   }
@@ -147,7 +155,13 @@ void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
 
 void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
 {
-  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+  QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->pos().x(), e->pos().y() );
+
+  if ( vl )
+  {
+    vl->snapPoint( point, QgsTolerance::defaultTolerance( vl, mCanvas->mapRenderer() ) );
+  }
 
   if ( e->button() == Qt::RightButton && ( e->buttons() & Qt::LeftButton ) == 0 ) // restart
   {

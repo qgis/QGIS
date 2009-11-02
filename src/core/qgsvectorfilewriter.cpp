@@ -129,17 +129,19 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     {
       case QVariant::LongLong:
         ogrType = OFTString;
-        ogrWidth = ogrWidth <= 21 ? ogrWidth : 21;
+        ogrWidth = ogrWidth > 0 && ogrWidth <= 21 ? ogrWidth : 21;
         ogrPrecision = -1;
         break;
 
       case QVariant::String:
         ogrType = OFTString;
+        if ( ogrWidth < 0 || ogrWidth > 255 )
+          ogrWidth = 255;
         break;
 
       case QVariant::Int:
         ogrType = OFTInteger;
-        ogrWidth = ogrWidth <= 10 ? ogrWidth : 10;
+        ogrWidth = ogrWidth > 0 && ogrWidth <= 10 ? ogrWidth : 10;
         ogrPrecision = 0;
         break;
 
@@ -388,11 +390,11 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   // The 'CT-params' (e.g. +towgs84) does not get stripped in this way
   QRegExp regExp( ".shp$" );
   QString prjName = shapefileName;
-  prjName.replace( regExp, QString( "" ));
+  prjName.replace( regExp, QString( "" ) );
   prjName.append( QString( ".prj" ) );
   QFile prjFile( prjName );
 
-  if( !prjFile.open( QIODevice::WriteOnly ) )
+  if ( !prjFile.open( QIODevice::WriteOnly ) )
   {
     QgsDebugMsg( "Couldn't open file " + prjName );
     return NoError; // For now

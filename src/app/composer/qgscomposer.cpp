@@ -241,7 +241,7 @@ void QgsComposer::setupTheme()
   //missing from active theme
   mActionLoadFromTemplate->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
   mActionSaveAsTemplate->setIcon( QgisApp::getThemeIcon( "/mActionFileSaveAs.png" ) );
-  mActionExportAsImage->setIcon( QgisApp::getThemeIcon( "/mActionExportMapServer.png" ) );
+  mActionExportAsImage->setIcon( QgisApp::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
   mActionExportAsSVG->setIcon( QgisApp::getThemeIcon( "/mActionSaveAsSVG.png" ) );
   mActionExportAsPDF->setIcon( QgisApp::getThemeIcon( "/mActionSaveAsPDF.png" ) );
   mActionPrint->setIcon( QgisApp::getThemeIcon( "/mActionFilePrint.png" ) );
@@ -249,8 +249,8 @@ void QgsComposer::setupTheme()
   mActionZoomIn->setIcon( QgisApp::getThemeIcon( "/mActionZoomIn.png" ) );
   mActionZoomOut->setIcon( QgisApp::getThemeIcon( "/mActionZoomOut.png" ) );
   mActionRefreshView->setIcon( QgisApp::getThemeIcon( "/mActionDraw.png" ) );
-  mActionAddImage->setIcon( QgisApp::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
-  mActionAddNewMap->setIcon( QgisApp::getThemeIcon( "/mActionAddRasterLayer.png" ) );
+  mActionAddImage->setIcon( QgisApp::getThemeIcon( "/mActionAddImage.png" ) );
+  mActionAddNewMap->setIcon( QgisApp::getThemeIcon( "/mActionAddMap.png" ) );
   mActionAddNewLabel->setIcon( QgisApp::getThemeIcon( "/mActionLabel.png" ) );
   mActionAddNewLegend->setIcon( QgisApp::getThemeIcon( "/mActionAddLegend.png" ) );
   mActionAddNewScalebar->setIcon( QgisApp::getThemeIcon( "/mActionScaleBar.png" ) );

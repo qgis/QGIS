@@ -96,9 +96,14 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void removeSelectedButtonPushed( );
 
     /**
-     * Slot to handle load from button pushed to display dialo to load data
+     * Slot to handle load from layer button pushed to display dialog to load data
      */
     void loadFromLayerButtonPushed( );
+
+    /**
+     * Slot to handle load from CSV button pushed to display dialog to load data
+     */
+    void loadFromCSVButtonPushed( );
 
     /**
      * Slot to handle change of cell to have always empty row at end
@@ -122,6 +127,12 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * @param editType edit type to set page
      */
     void setPageForEditType( QgsVectorLayer::EditType editType );
+
+    /**
+     * Function to update the value map
+     * @param map new map
+     */
+    void updateMap( const QMap<QString, QVariant> &map );
 
 
     QMap<QString, QVariant> mValueMap;

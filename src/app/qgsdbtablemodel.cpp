@@ -26,6 +26,7 @@ QgsDbTableModel::QgsDbTableModel(): QStandardItemModel(), mTableCount( 0 )
   headerLabels << tr( "Table" );
   headerLabels << tr( "Type" );
   headerLabels << tr( "Geometry column" );
+  headerLabels << tr( "Primary key column" );
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
 }
@@ -35,7 +36,7 @@ QgsDbTableModel::~QgsDbTableModel()
 
 }
 
-void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString tableName, QString geometryColName, QString sql )
+void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString tableName, QString geometryColName, const QStringList &pkCols, QString sql )
 {
   //is there already a root item with the given scheme Name?
   QStandardItem* schemaItem;
@@ -68,6 +69,9 @@ void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString t
   tableItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   QStandardItem* geomItem = new QStandardItem( geometryColName );
   geomItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  QStandardItem* pkItem = new QStandardItem( "" );
+  pkItem->setData( pkCols );
+  pkItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   QStandardItem* sqlItem = new QStandardItem( sql );
   sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
@@ -76,13 +80,14 @@ void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString t
   childItemList.push_back( tableItem );
   childItemList.push_back( typeItem );
   childItemList.push_back( geomItem );
+  childItemList.push_back( pkItem );
   childItemList.push_back( sqlItem );
 
   schemaItem->appendRow( childItemList );
   ++mTableCount;
 }
 
-void QgsDbTableModel::setSql( const QModelIndex& index, const QString& sql )
+void QgsDbTableModel::setSql( const QModelIndex& index, const QString &sql )
 {
   if ( !index.isValid() || !index.parent().isValid() )
   {
@@ -138,7 +143,7 @@ void QgsDbTableModel::setSql( const QModelIndex& index, const QString& sql )
     if ( itemFromIndex( currentTableIndex )->text() == tableName &&
          itemFromIndex( currentGeomIndex )->text() == geomName )
     {
-      QModelIndex sqlIndex = currentChildIndex.sibling( i, 4 );
+      QModelIndex sqlIndex = currentChildIndex.sibling( i, dbtmSql );
       if ( sqlIndex.isValid() )
       {
         itemFromIndex( sqlIndex )->setText( sql );
@@ -168,6 +173,7 @@ void QgsDbTableModel::setGeometryTypesForTable( const QString& schema, const QSt
   QModelIndex currentTableIndex;
   QModelIndex currentTypeIndex;
   QModelIndex currentGeomColumnIndex;
+  QModelIndex currentPkColumnIndex;
 
   for ( int i = 0; i < numChildren; ++i )
   {
@@ -176,10 +182,12 @@ void QgsDbTableModel::setGeometryTypesForTable( const QString& schema, const QSt
     {
       continue;
     }
-    currentTableIndex = currentChildIndex.sibling( i, 1 );
-    currentTypeIndex = currentChildIndex.sibling( i, 2 );
-    currentGeomColumnIndex = currentChildIndex.sibling( i, 3 );
+    currentTableIndex = currentChildIndex.sibling( i, dbtmTable );
+    currentTypeIndex = currentChildIndex.sibling( i, dbtmType );
+    currentGeomColumnIndex = currentChildIndex.sibling( i, dbtmGeomCol );
+    currentPkColumnIndex = currentChildIndex.sibling( i, dbtmPkCol );
     QString geomColText = itemFromIndex( currentGeomColumnIndex )->text();
+    QStringList pkCols = itemFromIndex( currentPkColumnIndex )->data().toStringList();
 
     if ( !currentTypeIndex.isValid() || !currentTableIndex.isValid() || !currentGeomColumnIndex.isValid() )
     {
@@ -207,7 +215,7 @@ void QgsDbTableModel::setGeometryTypesForTable( const QString& schema, const QSt
       for ( int j = 1; j < typeList.size(); ++j )
       {
         //todo: add correct type
-        addTableEntry( typeList.at( j ), schema, table, geomColText + " AS " + typeList.at( j ), "" );
+        addTableEntry( typeList.at( j ), schema, table, geomColText + " AS " + typeList.at( j ), pkCols, "" );
       }
     }
   }

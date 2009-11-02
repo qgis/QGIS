@@ -204,6 +204,11 @@ not disjoint with existing polygons of the feature*/
     @return 0 in case of success, 1 if geometry has not been split, error else*/
     int splitGeometry(const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint>& topologyTestPoints);
 
+/**Replaces a part of this geometry with another line
+      @return 0 in case of success
+      @note: this function was added in version 1.3*/
+    int reshapeGeometry( const QList<QgsPoint>& reshapeWithLine );
+
  /**Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect
        @return 0 in case of success*/

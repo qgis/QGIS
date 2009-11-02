@@ -1,12 +1,12 @@
 SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "2")
+SET(CPACK_PACKAGE_VERSION_MINOR "3")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-SET(RELEASE_NAME "Daphnis")
+SET(RELEASE_NAME "Unstable")
 SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
-SET(QGIS_VERSION_INT 10200)
+SET(QGIS_VERSION_INT 10300)
 
 # TODO:
 # - install includes for libs
@@ -340,20 +340,33 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 
 FIND_FILE(SVN_MARKER entries PATHS ${CMAKE_SOURCE_DIR}/.svn)
 
-IF (NOT SVN_MARKER)
-  SET (SVN_MARKER ${CMAKE_SOURCE_DIR}/CMakeLists.txt)  # Dummy file
-ENDIF (NOT SVN_MARKER)
-  # Add a custom command to drive the svn script whenever the svn entries
-  # file changes.
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/cmake_templates/svnscript.cmake.in_cmake
-                ${CMAKE_CURRENT_BINARY_DIR}/svnscript.cmake
-                @ONLY)
+IF (SVN_MARKER)
+  # See if we have svn installed
+  FIND_PROGRAM(SVNVERSION svnversion PATHS c:/cygwin/bin)
 
-  ADD_CUSTOM_COMMAND (
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-    DEPENDS ${SVN_MARKER}
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/svnscript.cmake
-)
+  IF(SVNVERSION)
+    IF(MSVC)
+	ADD_CUSTOM_COMMAND(
+		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+		COMMAND for /f usebackq %%a in "(`\"${SVNVERSION}\"`)" do echo \#define QGSSVNVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+		MAIN_DEPENDENCY ${SVN_MARKER}
+		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	)
+    ELSE(MSVC)
+	ADD_CUSTOM_COMMAND(
+		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+		COMMAND echo \\\#define QGSSVNVERSION \\\"`${SVNVERSION}`\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+		MAIN_DEPENDENCY ${SVN_MARKER}
+		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	)
+    ENDIF(MSVC)
+  ELSE(SVNVERSION)
+    MESSAGE(STATUS "svnversion not found - version will be unknown")
+    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h "#define QGSSVNVERSION \"unknown\"")
+  ENDIF (SVNVERSION)
+ELSE (SVN_MARKER)
+  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h "#define QGSSVNVERSION \"exported\"")
+ENDIF (SVN_MARKER)
 
 ADD_CUSTOM_TARGET(svnversion ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h)
 

@@ -43,7 +43,7 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     */
     int readXML( const QDomNode& rnode, QgsVectorLayer& vl );
     /**Writes the contents of the renderer to a configuration file
-     @ return true in case of success*/
+     @return true in case of success*/
     virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
     bool needsAttributes() const;

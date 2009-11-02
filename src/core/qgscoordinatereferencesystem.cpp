@@ -91,7 +91,7 @@ void QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theTy
       break;
     default:
       //THIS IS BAD...THIS PART OF CODE SHOULD NEVER BE REACHED...
-      QgsLogger::critical( "Unexpected case reached in " + QString( __FILE__ ) + " : " + QString( __LINE__ ) );
+      QgsDebugMsg( "Unexpected case reached!" );
   };
 }
 
@@ -253,7 +253,6 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
   if ( theWkt.isEmpty() )
   {
     QgsDebugMsg( "theWkt is uninitialised, operation failed" );
-    QgsLogger::critical( "QgsCoordinateReferenceSystem::createFromWkt -- theWkt is uninitialised, operation failed" );
     return mIsValidFlag;
   }
   QgsDebugMsg( "QgsCoordinateReferenceSystem::createFromWkt(QString theWkt) using: " + theWkt );
@@ -338,8 +337,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   myStart = myAxisRegExp.indexIn( theProj4String, myStart );
   if ( myStart == -1 && mEllipsoidAcronym.isNull() )
   {
-    QgsLogger::warning( "QgsCoordinateReferenceSystem::createFromProj4 error"
-                        " proj string supplied has no +ellps or +a argument" );
+    QgsDebugMsg( "proj string supplied has no +ellps or +a argument" );
     return mIsValidFlag;
   }
 
@@ -531,7 +529,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists( ) )
     {
-      QgsLogger::warning( "QgsCoordinateReferenceSystem::getRecord failed :  users qgis.db not found" );
+      QgsDebugMsg( "users qgis.db not found" );
       return myMap;
     }
 
@@ -557,7 +555,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     }
     else
     {
-      QgsLogger::warning( "QgsCoordinateReferenceSystem::getRecord failed :  " + theSql );
+      QgsDebugMsg( "failed :  " + theSql );
 
     }
   }
@@ -743,7 +741,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
       mMapUnits = QGis::Feet;
     else
     {
-      QgsLogger::warning( "Unsupported map units of " + unit );
+      QgsDebugMsg( "Unsupported map units of " + unit );
       mMapUnits = QGis::UnknownUnit;
     }
   }
@@ -755,7 +753,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
       mMapUnits = QGis::Degrees;
     else
     {
-      QgsLogger::warning( "Unsupported map units of " + unit );
+      QgsDebugMsg( "Unsupported map units of " + unit );
       mMapUnits = QGis::UnknownUnit;
     }
     QgsDebugMsg( "Projection has angular units of " + unit );
@@ -822,8 +820,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
       }
     }
   }
-  QgsLogger::warning( "QgsCoordinateReferenceSystem::findMatchingProj ------->"
-                      "\n no match found in srs.db, trying user db now!" );
+  QgsDebugMsg( "no match found in srs.db, trying user db now!" );
   // close the sqlite3 statement
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
@@ -862,7 +859,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
       }
     }
   }
-  QgsLogger::warning( "QgsCoordinateReferenceSystem::findMatchingProj -------> no match found in user db" );
+  QgsDebugMsg( "no match found in user db" );
 
   // close the sqlite3 statement
   sqlite3_finalize( myPreparedStatement );
@@ -1078,7 +1075,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists( ) ) //its unlikely that this condition will ever be reached
     {
-      QgsLogger::critical( "QgsCoordinateReferenceSystem::getProj4FromSrsId :  users qgis.db not found" );
+      QgsDebugMsg( "users qgis.db not found" );
       return NULL;
     }
   }
@@ -1125,7 +1122,7 @@ int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db )
 
   if ( myResult )
   {
-    QgsLogger::critical( "Can't open database: " + QString( sqlite3_errmsg( *db ) ) );
+    QgsDebugMsg( "Can't open database: " + QString( sqlite3_errmsg( *db ) ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     // ... unfortunately it happens on Windows

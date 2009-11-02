@@ -1,5 +1,7 @@
 @echo off
 set GRASS_VERSION=6.4.0svn
+set SVNVERSION=c:/cygwin/bin/svnversion
+set PACKAGENAME=qgis-dev
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -98,7 +100,9 @@ cmake -G "Visual Studio 9 2008" ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/include/qt4 ^
 	-D QT_ZLIB_LIBRARY=%O4W_ROOT%/lib/zlib.lib ^
 	-D QT_PNG_LIBRARY=%O4W_ROOT%/lib/libpng13.lib ^
-	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/qgis-dev ^
+	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /Od /D NDEBUG" ^
+	-D SVNVERSION="%SVNVERSION%" ^
 	%SRCDIR%>>%LOG% 2>&1
 if errorlevel 1 goto error
 
@@ -123,23 +127,23 @@ if errorlevel 1 goto error
 echo PACKAGE: %DATE% %TIME%>>%LOG% 2>&1
 
 cd ..
-copy postinstall.bat %OSGEO4W_ROOT%\etc\postinstall\qgis-dev.bat
-copy preremove.bat %OSGEO4W_ROOT%\etc\preremove\qgis-dev.bat
-copy qgis-dev.bat.tmpl %OSGEO4W_ROOT%\bin\qgis-dev.bat.tmpl
+copy postinstall.bat %OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
+copy preremove.bat %OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
+copy %PACKAGENAME%.bat.tmpl %OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
 
-sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %OSGEO4W_ROOT%\apps\qgis-dev\python\qgis\qgisconfig.py >%OSGEO4W_ROOT%\apps\qgis-dev\python\qgis\qgisconfig.py.tmpl
+sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py >%OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py.tmpl
 if errorlevel 1 goto error
 
-del %OSGEO4W_ROOT%\apps\qgis-dev\python\qgis\qgisconfig.py
+del %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py
 
 touch exclude
 
-tar -C %OSGEO4W_ROOT% -cjf qgis-dev-%VERSION%-%PACKAGE%.tar.bz2 ^
+tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
-	apps/qgis-dev ^
-	bin/qgis-dev.bat.tmpl ^
-	etc/postinstall/qgis-dev.bat ^
-	etc/preremove/qgis-dev.bat>>%LOG% 2>&1
+	apps/%PACKAGENAME% ^
+	bin/%PACKAGENAME%.bat.tmpl ^
+	etc/postinstall/%PACKAGENAME%.bat ^
+	etc/preremove/%PACKAGENAME%.bat>>%LOG% 2>&1
 if errorlevel 1 goto error
 
 goto end
@@ -147,7 +151,7 @@ goto end
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%>>%LOG% 2>&1
-if exist qgis-dev-%VERSION%-%PACKAGE%.tar.bz2 del qgis-dev-%VERSION%-%PACKAGE%.tar.bz2
+if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1
