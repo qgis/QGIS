@@ -42,8 +42,14 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     void on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
     void on_mAddDirectoryButton_clicked();
     void on_mRemoveDirectoryButton_clicked();
+    void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
+    void on_mComposerMapComboBox_activated( const QString & text );
+
     /**Sets the GUI elements to the values of mPicture*/
     void setGuiElementValues();
+
+  protected:
+    void showEvent( QShowEvent * event );
 
   private:
     QgsComposerPicture* mPicture;
@@ -55,6 +61,8 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     bool testSvgFile( const QString& filename ) const;
     /**Tests if a file is a valid pixel format*/
     bool testImageFile( const QString& filename ) const;
+    /**Updates the map combo box with the current composer map ids*/
+    void refreshMapComboBox();
 };
 
 #endif

@@ -688,7 +688,7 @@ void QgsQuickPrint::scaleTextLabels( int theScaleFactor, SymbolScalingType theDi
       if ( mypVectorLayer )
       {
         QgsLabel * mypLabel = mypVectorLayer->label();
-        QgsLabelAttributes * mypLabelAttributes = mypLabel->layerAttributes();
+        QgsLabelAttributes * mypLabelAttributes = mypLabel->labelAttributes();
         if ( theDirection == ScaleUp )
         {
           mypLabelAttributes->setSize(

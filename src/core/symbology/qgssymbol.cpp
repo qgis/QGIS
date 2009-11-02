@@ -217,20 +217,17 @@ void QgsSymbol::setNamedPointSymbol( QString name )
       QgsDebugMsg( "\n\n\n *** Svg Symbol not found on fs ***" );
       QgsDebugMsg( "Name: " + name );
       //see if we can resolve the problem...
-      //by using the qgis svg dir from this local machine
-      //one day when user specified svg are allowed we need
-      //to adjust this logic probably...
+      //
+      
       QStringList svgPaths = QgsApplication::svgPaths();
-
       for( int i=0; i<svgPaths.size(); i++) 
       {
         QgsDebugMsg( "SvgPath: " + svgPaths[i] );
         QFileInfo myInfo( myTempName );
         QString myFileName = myInfo.fileName(); // foo.svg
         QString myLowestDir = myInfo.dir().dirName();
-        QString myLocalPath = svgPaths[i] + QDir::separator() +
-          myLowestDir + QDir::separator() +
-          myFileName;
+        QString myLocalPath = svgPaths[i] + "/" + myLowestDir + "/" + myFileName;
+
         QgsDebugMsg( "Alternative svg path: " + myLocalPath );
         if ( QFile( myLocalPath ).exists() )
         {

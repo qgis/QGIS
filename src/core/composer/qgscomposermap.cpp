@@ -39,8 +39,6 @@
 #include <iostream>
 #include <cmath>
 
-int QgsComposerMap::mCurrentComposerId = 0;
-
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), \
@@ -48,8 +46,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mRotation( 0 ), mCrossLength( 3 )
 {
   mComposition = composition;
+  mId = mComposition->composerMapItems().size();
   mMapRenderer = mComposition->mapRenderer();
-  mId = mCurrentComposerId++;
   mPreviewMode = QgsComposerMap::Rectangle;
   mCurrentRectangle = rect();
 
@@ -87,7 +85,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
 
   mComposition = composition;
   mMapRenderer = mComposition->mapRenderer();
-  mId = mCurrentComposerId++;
+  mId = mComposition->composerMapItems().size();
   mPreviewMode = QgsComposerMap::Rectangle;
   mCurrentRectangle = rect();
 
@@ -146,7 +144,15 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   //force composer map scale for scale dependent visibility
   double bk_scale = theMapRenderer.scale();
   theMapRenderer.setScale( scale() );
+
+  //layer caching (as QImages) cannot be done for composer prints
+  QSettings s;
+  bool bkLayerCaching = s.value( "/qgis/enable_render_caching", false ).toBool();
+  s.setValue( "/qgis/enable_render_caching", false );
+
   theMapRenderer.render( painter );
+  s.setValue( "/qgis/enable_render_caching", bkLayerCaching );
+
   theMapRenderer.setScale( bk_scale );
 }
 
@@ -499,6 +505,12 @@ void QgsComposerMap::setOffset( double xOffset, double yOffset )
   mYOffset = yOffset;
 }
 
+void QgsComposerMap::setRotation( double r )
+{
+  mRotation = r;
+  emit rotationChanged( r );
+}
+
 bool QgsComposerMap::containsWMSLayer() const
 {
   if ( !mMapRenderer )
@@ -552,6 +564,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   }
 
   QDomElement composerMapElem = doc.createElement( "ComposerMap" );
+  composerMapElem.setAttribute( "id", mId );
 
   //previewMode
   if ( mPreviewMode == Cache )
@@ -635,6 +648,11 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     return false;
   }
 
+  QString idRead = itemElem.attribute( "id", "not found" );
+  if ( idRead != "not found" )
+  {
+    mId = idRead.toInt();
+  }
   mPreviewMode = Rectangle;
 
   //previewMode
@@ -1036,7 +1054,7 @@ int QgsComposerMap::xGridLines( QList< QPair< double, QLineF > >& lines ) const
   QRectF mapBoundingRect = mapPolygon.boundingRect();
   double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + 1.0 ) * mGridIntervalY + mGridOffsetY;
 
-  if ( !mRotation > 0.0 )
+  if ( mRotation <= 0.0 )
   {
     //no rotation. Do it 'the easy way'
 
@@ -1101,7 +1119,7 @@ int QgsComposerMap::yGridLines( QList< QPair< double, QLineF > >& lines ) const
   QRectF mapBoundingRect = mapPolygon.boundingRect();
   double currentLevel = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + 1.0 ) * mGridIntervalX + mGridOffsetX;
 
-  if ( !mRotation > 0.0 )
+  if ( mRotation <= 0.0 )
   {
     //no rotation. Do it 'the easy way'
     double xCanvasCoord;
@@ -1234,7 +1252,7 @@ double QgsComposerMap::maxExtension() const
   QList< QPair< double, QLineF > >::const_iterator it = xLines.constBegin();
   for ( ; it != xLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first );
+    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
     currentExtension = std::max( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
     maxExtension = std::max( maxExtension, currentExtension );
   }
@@ -1242,7 +1260,7 @@ double QgsComposerMap::maxExtension() const
   it = yLines.constBegin();
   for ( ; it != yLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first );
+    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
     currentExtension = std::max( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
     maxExtension = std::max( maxExtension, currentExtension );
   }
@@ -1312,7 +1330,7 @@ void QgsComposerMap::requestedExtent( QgsRectangle& extent ) const
 double QgsComposerMap::mapUnitsToMM() const
 {
   double extentWidth = mExtent.width();
-  if ( !extentWidth > 0 )
+  if ( extentWidth <= 0 )
   {
     return 1;
   }

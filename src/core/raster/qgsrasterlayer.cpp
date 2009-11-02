@@ -411,7 +411,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
   }                           // each loaded GDAL driver
 
   // can't forget the default case
-  theFileFiltersString += tr( "%1 and all other files (*)" ).arg( catchallFilter.join( ", " ) );
+  theFileFiltersString += tr( "All other files (*)" );
   QgsDebugMsg( "Raster filter list built: " + theFileFiltersString );
 }                               // buildSupportedRasterFileFilter_()
 

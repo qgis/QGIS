@@ -327,7 +327,6 @@ QgisApp *QgisApp::smInstance = 0;
 QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl ),
     mSplash( splash ),
-    mComposer( 0 ),
     mPythonConsole( NULL ),
     mPythonUtils( NULL )
 {
@@ -372,7 +371,6 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   readSettings();
   updateRecentProjectPaths();
 
-  mComposer = new QgsComposer( this ); // Map composer
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
@@ -464,9 +462,9 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   qApp->processEvents();
   //finally show all the application settings as initialised above
 
-  QgsDebugMsg( "\n\n\nApplication Settings:\n--------------------------\n");
+  QgsDebugMsg( "\n\n\nApplication Settings:\n--------------------------\n" );
   QgsDebugMsg( QgsApplication::showSettings() );
-  QgsDebugMsg( "\n--------------------------\n\n\n");
+  QgsDebugMsg( "\n--------------------------\n\n\n" );
   mMapCanvas->freeze( false );
 } // QgisApp ctor
 
@@ -502,6 +500,8 @@ QgisApp::~QgisApp()
 
   delete mPythonConsole;
   delete mPythonUtils;
+
+  deletePrintComposers();
 
   // delete map layer registry and provider registry
   QgsApplication::exitQgis();
@@ -591,10 +591,10 @@ void QgisApp::createActions()
   mActionSaveMapAsImage->setStatusTip( tr( "Save map as image" ) );
   connect( mActionSaveMapAsImage, SIGNAL( triggered() ), this, SLOT( saveMapAsImage() ) );
 
-  mActionPrintComposer = new QAction( getThemeIcon( "mActionFilePrint.png" ), tr( "&Print Composer" ), this );
-  shortcuts->registerAction( mActionPrintComposer, tr( "Ctrl+P", "Print Composer" ) );
-  mActionPrintComposer->setStatusTip( tr( "Print Composer" ) );
-  connect( mActionPrintComposer, SIGNAL( triggered() ), this, SLOT( filePrint() ) );
+  mActionNewPrintComposer = new QAction( getThemeIcon( "mActionFilePrint.png" ), tr( "&New Print Composer" ), this );
+  shortcuts->registerAction( mActionNewPrintComposer, tr( "Ctrl+P", "New Print Composer" ) );
+  mActionNewPrintComposer->setStatusTip( tr( "New Print Composer" ) );
+  connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
 
   mActionExit = new QAction( getThemeIcon( "mActionFileExit.png" ), tr( "Exit" ), this );
   shortcuts->registerAction( mActionExit, tr( "Ctrl+Q", "Exit QGIS" ) );
@@ -1179,7 +1179,8 @@ void QgisApp::createMenus()
     mActionFileSeparator3 = mFileMenu->addSeparator();
   }
 
-  mFileMenu->addAction( mActionPrintComposer );
+  mFileMenu->addAction( mActionNewPrintComposer );
+  mPrintComposersMenu = mFileMenu->addMenu( tr( "Print Composers" ) );
   mActionFileSeparator4 = mFileMenu->addSeparator();
 
   mFileMenu->addAction( mActionExit );
@@ -1379,7 +1380,7 @@ void QgisApp::createToolBars()
   mFileToolBar->addAction( mActionOpenProject );
   mFileToolBar->addAction( mActionSaveProject );
   mFileToolBar->addAction( mActionSaveProjectAs );
-  mFileToolBar->addAction( mActionPrintComposer );
+  mFileToolBar->addAction( mActionNewPrintComposer );
   mFileToolBar->addAction( mActionAddOgrLayer );
   mFileToolBar->addAction( mActionAddRasterLayer );
 #ifdef HAVE_POSTGRESQL
@@ -1644,7 +1645,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionOpenProject->setIcon( getThemeIcon( "/mActionFileOpen.png" ) );
   mActionSaveProject->setIcon( getThemeIcon( "/mActionFileSave.png" ) );
   mActionSaveProjectAs->setIcon( getThemeIcon( "/mActionFileSaveAs.png" ) );
-  mActionPrintComposer->setIcon( getThemeIcon( "/mActionFilePrint.png" ) );
+  mActionNewPrintComposer->setIcon( getThemeIcon( "/mActionNewComposer.png" ) );
   mActionSaveMapAsImage->setIcon( getThemeIcon( "/mActionSaveMapAsImage.png" ) );
   mActionExit->setIcon( getThemeIcon( "/mActionFileExit.png" ) );
   mActionAddOgrLayer->setIcon( getThemeIcon( "/mActionAddOgrLayer.png" ) );
@@ -1710,10 +1711,13 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddWmsLayer->setIcon( getThemeIcon( "/mActionAddWmsLayer.png" ) );
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
 
-  if ( mComposer )
+  //change themes of all composers
+  QMap<QString, QgsComposer*>::iterator composerIt = mPrintComposers.begin();
+  for ( ; composerIt != mPrintComposers.end(); ++composerIt )
   {
-    mComposer->setupTheme();
+    composerIt.value()->setupTheme();
   }
+
   emit currentThemeChanged( theThemeName );
 }
 
@@ -3071,9 +3075,7 @@ void QgisApp::fileExit()
 
   if ( saveDirty() )
   {
-    delete mComposer;
-    mComposer = 0;
-
+    deletePrintComposers();
     mMapCanvas->freeze( true );
     removeAllLayers();
     qApp->exit( 0 );
@@ -3096,8 +3098,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
     return;
   }
 
-  delete mComposer;
-  mComposer = new QgsComposer( this );
+  deletePrintComposers();
 
   if ( thePromptToSaveFlag )
   {
@@ -3314,9 +3315,7 @@ void QgisApp::fileOpen()
     // Persist last used project dir
     settings.setValue( "/UI/lastProjectDir", myPath );
 
-    delete mComposer;
-    mComposer = new QgsComposer( this );
-
+    deletePrintComposers();
     // clear out any stuff from previous project
     mMapCanvas->freeze( true );
     removeAllLayers();
@@ -3362,6 +3361,9 @@ void QgisApp::fileOpen()
     // project so that they can check any project
     // specific plug-in state
 
+    //load the composers in the project
+    loadComposersFromProject( fullPath );
+
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath, settings );
 
@@ -3382,10 +3384,7 @@ bool QgisApp::addProject( QString projectFile )
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  //clear the composer
-  delete mComposer;
-  mComposer = new QgsComposer( this );
-
+  deletePrintComposers();
   // clear the map canvas
   removeAllLayers();
 
@@ -3456,6 +3455,8 @@ bool QgisApp::addProject( QString projectFile )
   emit projectRead(); // let plug-ins know that we've read in a new
   // project so that they can check any project
   // specific plug-in state
+
+  loadComposersFromProject( projectFile );
 
   // add this to the list of recently used project files
   QSettings settings;
@@ -3695,13 +3696,41 @@ bool QgisApp::openLayer( const QString & fileName )
   return ok;
 }
 
-void QgisApp::filePrint()
+void QgisApp::newPrintComposer()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
   }
-  mComposer->open();
+
+  //ask user about name
+  bool composerExists = true;
+  QString composerId;
+  while ( composerExists )
+  {
+    composerId = QInputDialog::getText( 0, tr( "Enter id string for composer" ), tr( "id:" ) );
+    if ( composerId.isNull() )
+    {
+      return;
+    }
+
+    if ( mPrintComposers.contains( composerId ) )
+    {
+      QMessageBox::critical( 0, tr( "Composer id already exists" ), tr( "The entered composer id '%1' already exists. Please enter a different id" ).arg( composerId ) );
+    }
+    else
+    {
+      composerExists = false;
+    }
+  }
+
+  //create new composer object
+  QgsComposer* newComposerObject = new QgsComposer( this, composerId );
+  //add it to the map of existing print composers
+  mPrintComposers.insert( composerId, newComposerObject );
+  //and place action into print composers menu
+  mPrintComposersMenu->addAction( newComposerObject->windowAction() );
+  newComposerObject->open();
 }
 
 void QgisApp::saveMapAsImage()
@@ -4180,6 +4209,67 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
   QApplication::restoreOverrideCursor();
   progress.setValue( featureList.size() );
   return unionGeom;
+}
+
+QList<QgsComposer*> QgisApp::printComposers()
+{
+  QList<QgsComposer*> composerList;
+  QMap<QString, QgsComposer*>::iterator it = mPrintComposers.begin();
+  for ( ; it != mPrintComposers.end(); ++it )
+  {
+    composerList.push_back( it.value() );
+  }
+  return composerList;
+}
+
+void QgisApp::checkOutComposer( QgsComposer* c )
+{
+  if ( !c )
+  {
+    return;
+  }
+  mPrintComposers.remove( c->id() );
+  mPrintComposersMenu->removeAction( c->windowAction() );
+}
+
+bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
+{
+  //create dom document from file
+  QDomDocument projectDom;
+  QFile projectFile( projectFilePath );
+  if ( !projectFile.open( QIODevice::ReadOnly ) )
+  {
+    return false;
+  }
+
+  if ( !projectDom.setContent( &projectFile, false ) )
+  {
+    return false;
+  }
+
+  //restore each composer
+  QDomNodeList composerNodes = projectDom.elementsByTagName( "Composer" );
+  for ( int i = 0; i < composerNodes.size(); ++i )
+  {
+    QgsComposer* composer = new QgsComposer( this, "" );
+    composer->readXML( composerNodes.at( i ).toElement(), projectDom );
+    mPrintComposers.insert( composer->id(), composer );
+    mPrintComposersMenu->addAction( composer->windowAction() );
+    composer->showMinimized();
+    composer->zoomFull();
+  }
+
+  return true;
+}
+
+void QgisApp::deletePrintComposers()
+{
+  QMap<QString, QgsComposer*>::iterator it = mPrintComposers.begin();
+  for ( ; it != mPrintComposers.end(); ++it )
+  {
+    delete it.value();
+  }
+  mPrintComposers.clear();
 }
 
 void QgisApp::mergeSelectedFeatures()
@@ -5611,9 +5701,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
       //merge tool needs editable layer and provider with the capability of adding and deleting features
       if ( vlayer->isEditable() &&
-           (dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures) &&
-           (dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues) &&
-           (dprovider->capabilities() & QgsVectorDataProvider::AddFeatures) )
+           ( dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) &&
+           ( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
+           ( dprovider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
       {
         mActionMergeFeatures->setEnabled( layerHasSelection );
       }

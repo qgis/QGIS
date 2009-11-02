@@ -81,6 +81,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** mutator for sql where clause used to limit dataset size */
     virtual bool setSubsetString( QString theSQL );
 
+    virtual bool supportsSubsetString() { return true; }
+
     /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
      *  @param fetchAttributes list of attributes which should be fetched
      *  @param rect spatial filter

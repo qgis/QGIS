@@ -152,13 +152,17 @@ QList<QgsComposerView*> QgisAppInterface::activeComposers()
   QList<QgsComposerView*> composerViewList;
   if ( qgis )
   {
-    QgsComposer* c = qgis->printComposer();
-    if ( c )
+    QList<QgsComposer*> composerList = qgis->printComposers();
+    QList<QgsComposer*>::iterator it = composerList.begin();
+    for ( ; it != composerList.end(); ++it )
     {
-      QgsComposerView* v = c->view();
-      if ( v )
+      if ( *it )
       {
-        composerViewList.push_back( v );
+        QgsComposerView* v = ( *it )->view();
+        if ( v )
+        {
+          composerViewList.push_back( v );
+        }
       }
     }
   }
@@ -228,7 +232,7 @@ QAction *QgisAppInterface::actionSaveMapAsImage() { return qgis->actionSaveMapAs
 QAction *QgisAppInterface::actionFileSeparator2() { return qgis->actionFileSeparator2(); }
 QAction *QgisAppInterface::actionProjectProperties() { return qgis->actionProjectProperties(); }
 QAction *QgisAppInterface::actionFileSeparator3() { return qgis->actionFileSeparator3(); }
-QAction *QgisAppInterface::actionPrintComposer() { return qgis->actionPrintComposer(); }
+QAction *QgisAppInterface::actionPrintComposer() { return qgis->actionNewPrintComposer(); }
 QAction *QgisAppInterface::actionFileSeparator4() { return qgis->actionFileSeparator4(); }
 QAction *QgisAppInterface::actionExit() { return qgis->actionExit(); }
 

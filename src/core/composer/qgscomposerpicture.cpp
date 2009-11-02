@@ -17,6 +17,7 @@
 /* $Id$ */
 
 #include "qgscomposerpicture.h"
+#include "qgscomposermap.h"
 #include "qgsproject.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -25,11 +26,18 @@
 #include <QPainter>
 #include <QSvgRenderer>
 
-QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ): QObject( 0 ), QgsComposerItem( composition ), mRotation( 0.0 ), mMode( Unknown ), mSvgCacheUpToDate( false ), mCachedDpi( 0 )
+#ifndef Q_OS_MACX
+#include <cmath>
+#else
+#include <math.h>
+#endif
+
+QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ): QObject( 0 ), QgsComposerItem( composition ), mRotation( 0.0 ), mMode( Unknown ), \
+    mSvgCacheUpToDate( false ), mCachedDpi( 0 ), mRotationMap( 0 )
 {
 }
 
-QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mRotation( 0.0 ), mMode( Unknown ), mSvgCacheUpToDate( false )
+QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mRotation( 0.0 ), mMode( Unknown ), mSvgCacheUpToDate( false ), mRotationMap( 0 )
 {
 
 }
@@ -46,43 +54,54 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     return;
   }
 
-  if ( mMode == SVG )
-  {
-    int newDpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
-    if ( newDpi != mCachedDpi )
-    {
-      mSvgCacheUpToDate = false;
-      mCachedDpi = newDpi;
-      mImage = QImage( rect().width() * newDpi / 25.4, rect().height() * newDpi / 25.4, QImage::Format_ARGB32 );
-    }
-
-    if ( !mSvgCacheUpToDate )
-    {
-      updateImageFromSvg();
-    }
-  }
-
-  painter->save();
-  painter->rotate( mRotation );
   drawBackground( painter );
 
+  int newDpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
   if ( mMode != Unknown )
   {
-    double widthRatio = mImage.width() / rect().width();
-    double heightRatio = mImage.height() / rect().height();
-    double targetWidth, targetHeight;
-    if ( widthRatio > heightRatio )
+    double rectPixelWidth = rect().width() * newDpi / 25.4;
+    double rectPixelHeight = rect().height() * newDpi / 25.4;
+    QRectF boundRect;
+    if ( mMode == SVG )
     {
-      targetWidth = rect().width();
-      targetHeight = mImage.height() / widthRatio;
+      boundRect = boundedSVGRect( rectPixelWidth, rectPixelHeight );
     }
-    else
+    else if ( mMode == RASTER )
     {
-      targetHeight = rect().height();
-      targetWidth = mImage.width() / heightRatio;
+      boundRect = boundedImageRect( rectPixelWidth, rectPixelHeight );
     }
-    painter->drawImage( QRectF( 0, 0, targetWidth, targetHeight ), mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
+
+    double boundRectWidthMM = boundRect.width() / newDpi * 25.4;
+    double boundRectHeightMM = boundRect.height() / newDpi * 25.4;
+    double unrotatedBoundImageWidth = boundRect.width();
+    double unrotatedBoundImageHeight = boundRect.height();
+    double unrotatedBoundImageWidthMM = unrotatedBoundImageWidth / newDpi * 25.4;
+    double unrotatedBoundImageHeightMM = unrotatedBoundImageHeight / newDpi * 25.4;
+    double rotatedBoundImageWidth = boundRect.width();
+    double rotatedBoundImageHeight = boundRect.height();
+    imageSizeConsideringRotation( rotatedBoundImageWidth, rotatedBoundImageHeight );
+    double rotatedBoundImageWidthMM = rotatedBoundImageWidth / newDpi * 25.4;
+    double rotatedBoundImageHeightMM = rotatedBoundImageHeight / newDpi * 25.4;
+
+    if ( mMode == SVG )
+    {
+      if ( !mSvgCacheUpToDate )
+      {
+        mImage = QImage( rotatedBoundImageWidth, rotatedBoundImageHeight, QImage::Format_ARGB32 );
+        updateImageFromSvg();
+      }
+    }
+
+    painter->save();
+    painter->translate( boundRectWidthMM / 2.0, boundRectHeightMM / 2.0 );
+    painter->rotate( mRotation );
+    painter->translate( -rotatedBoundImageWidthMM / 2.0, -rotatedBoundImageHeightMM / 2.0 );
+    painter->drawImage( QRectF( 0, 0, rotatedBoundImageWidthMM,  rotatedBoundImageHeightMM ), mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
+
+    painter->restore();
   }
+
+  mCachedDpi = newDpi;
 
   //frame and selection boxes
   drawFrame( painter );
@@ -90,8 +109,6 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
   {
     drawSelectionBoxes( painter );
   }
-
-  painter->restore();
 }
 
 void QgsComposerPicture::setPictureFile( const QString& path )
@@ -101,9 +118,6 @@ void QgsComposerPicture::setPictureFile( const QString& path )
   {
     mMode = Unknown;
   }
-
-  //mImage = QImage(mImage.width(), mImage.height(), QImage::Format_ARGB32 );
-  //setSceneRect
 
   QFileInfo sourceFileInfo( mSourceFile );
   QString sourceFileSuffix = sourceFileInfo.suffix();
@@ -145,43 +159,124 @@ void QgsComposerPicture::setPictureFile( const QString& path )
   emit settingsChanged();
 }
 
+QRectF QgsComposerPicture::boundedImageRect( double deviceWidth, double deviceHeight )
+{
+  double imageToDeviceRatio;
+  if ( mImage.width() / deviceWidth > mImage.height() / deviceHeight )
+  {
+    imageToDeviceRatio =  deviceWidth / mImage.width();
+    double height = imageToDeviceRatio * mImage.height();
+    return QRectF( 0, 0, deviceWidth, height );
+  }
+  else
+  {
+    imageToDeviceRatio = deviceHeight / mImage.height();
+    double width = imageToDeviceRatio * mImage.width();
+    return QRectF( 0, 0, width, deviceHeight );
+  }
+}
+
+QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeight )
+{
+  double imageToSvgRatio;
+  if ( deviceWidth / mDefaultSvgSize.width() < deviceHeight / mDefaultSvgSize.height() )
+  {
+    imageToSvgRatio = deviceWidth / mDefaultSvgSize.width();
+    double height = mDefaultSvgSize.height() * imageToSvgRatio;
+    return QRectF( 0, 0, deviceWidth, height );
+  }
+  else
+  {
+    imageToSvgRatio = deviceHeight / mDefaultSvgSize.height();
+    double width = mDefaultSvgSize.width() * imageToSvgRatio;
+    return QRectF( 0, 0, width, deviceHeight );
+  }
+}
+
 void QgsComposerPicture::updateImageFromSvg()
 {
   mImage.fill( 0 );
   QPainter p( &mImage );
   p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing, true );
   QSvgRenderer theRenderer( mSourceFile.fileName() );
-  if ( theRenderer.isValid() )
-  {
-    theRenderer.render( &p );
-  }
+  theRenderer.render( &p );
   mSvgCacheUpToDate = true;
+}
+
+bool QgsComposerPicture::imageSizeConsideringRotation( double& width, double& height ) const
+{
+  double x1 = 0;
+  double y1 = 0;
+  double x2 = width;
+  double y2 = 0;
+  double x3 = width;
+  double y3 = height;
+  double x4 = 0;
+  double y4 = height;
+
+  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height ) )
+  {
+    return false;
+  }
+  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height ) )
+  {
+    return false;
+  }
+  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height ) )
+  {
+    return false;
+  }
+  /*
+  if(!cornerPointOnRotatedAndScaledRect(x4, y4, width, height))
+  {
+    return false;
+  }*/
+
+  width = sqrt(( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) );
+  height = sqrt(( x3 - x2 ) * ( x3 - x2 ) + ( y3 - y2 ) * ( y3 - y2 ) );
+  return true;
+}
+
+bool QgsComposerPicture::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
+{
+  //first rotate point clockwise
+  double rotToRad = mRotation * M_PI / 180.0;
+  QPointF midpoint( width / 2.0, height / 2.0 );
+  double xVector = x - midpoint.x();
+  double yVector = y - midpoint.y();
+  //double xRotated = cos(rotToRad) * xVector + sin(rotToRad) * yVector;
+  //double yRotated = -sin(rotToRad) * xVector + cos(rotToRad) * yVector;
+  double xRotated = cos( rotToRad ) * xVector - sin( rotToRad ) * yVector;
+  double yRotated = sin( rotToRad ) * xVector + cos( rotToRad ) * yVector;
+
+  //create line from midpoint to rotated point
+  QLineF line( midpoint.x(), midpoint.y(), midpoint.x() + xRotated, midpoint.y() + yRotated );
+
+  //intersect with all four borders and return result
+  QList<QLineF> borders;
+  borders << QLineF( 0, 0, width, 0 );
+  borders << QLineF( width, 0, width, height );
+  borders << QLineF( width, height, 0, height );
+  borders << QLineF( 0, height, 0, 0 );
+
+  QList<QLineF>::const_iterator it = borders.constBegin();
+  QPointF intersectionPoint;
+
+  for ( ; it != borders.constEnd(); ++it )
+  {
+    if ( line.intersect( *it, &intersectionPoint ) == QLineF::BoundedIntersection )
+    {
+      x = intersectionPoint.x();
+      y = intersectionPoint.y();
+      return true;
+    }
+  }
+  return false;
 }
 
 void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 {
   mSvgCacheUpToDate = false;
-  if ( mMode == SVG )
-  {
-    //keep aspect ratio
-    double widthRatio = rectangle.width() / mDefaultSvgSize.width();
-    double heightRatio = rectangle.height() / mDefaultSvgSize.height();
-
-    double newImageWidth;
-    double newImageHeight;
-
-    if ( widthRatio > heightRatio )
-    {
-      newImageWidth = rectangle.width() * mCachedDpi / 25.4;
-      newImageHeight = mDefaultSvgSize.height() * widthRatio * mCachedDpi / 25.4;
-    }
-    else
-    {
-      newImageHeight = rectangle.height() * mCachedDpi / 25.4;
-      newImageWidth = mDefaultSvgSize.width() * heightRatio * mCachedDpi / 25.4;
-    }
-    mImage = QImage( newImageWidth, newImageHeight, QImage::Format_ARGB32 );
-  }
   QgsComposerItem::setSceneRect( rectangle );
   emit settingsChanged();
 }
@@ -196,6 +291,35 @@ void QgsComposerPicture::setRotation( double rotation )
   {
     mRotation = rotation;
   }
+  emit settingsChanged();
+  update();
+}
+
+void QgsComposerPicture::setRotationMap( int composerMapId )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  if ( composerMapId == -1 ) //disable rotation from map
+  {
+    QObject::disconnect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+    mRotationMap = 0;
+  }
+
+  const QgsComposerMap* map = mComposition->getComposerMapById( composerMapId );
+  if ( !map )
+  {
+    return;
+  }
+  if ( mRotationMap )
+  {
+    QObject::disconnect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+  }
+  mRotation = map->rotation();
+  QObject::connect( map, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+  mRotationMap = map;
 }
 
 QString QgsComposerPicture::pictureFile() const
@@ -212,6 +336,15 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   QDomElement composerPictureElem = doc.createElement( "ComposerPicture" );
   composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourceFile.fileName() ) );
   composerPictureElem.setAttribute( "rotation", QString::number( mRotation ) );
+  if ( !mRotationMap )
+  {
+    composerPictureElem.setAttribute( "mapId", -1 );
+  }
+  else
+  {
+    composerPictureElem.setAttribute( "mapId", mRotationMap->id() );
+  }
+
   _writeXML( composerPictureElem, doc );
   elem.appendChild( composerPictureElem );
   return true;
@@ -230,6 +363,7 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
     _readXML( composerItemList.at( 0 ).toElement(), doc );
   }
 
+
   mSvgCacheUpToDate = false;
   mDefaultSvgSize = QSize( 0, 0 );
   mCachedDpi = 0;
@@ -239,5 +373,34 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
 
   mRotation = itemElem.attribute( "rotation" ).toDouble();
 
+  //rotation map
+  int rotationMapId = itemElem.attribute( "mapId", "-1" ).toInt();
+  if ( rotationMapId == -1 )
+  {
+    mRotationMap = 0;
+  }
+  else if ( mComposition )
+  {
+
+    if ( mRotationMap )
+    {
+      QObject::disconnect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+    }
+    mRotationMap = mComposition->getComposerMapById( rotationMapId );
+    QObject::connect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+  }
+
   return true;
+}
+
+int QgsComposerPicture::rotationMap() const
+{
+  if ( !mRotationMap )
+  {
+    return -1;
+  }
+  else
+  {
+    return mRotationMap->id();
+  }
 }

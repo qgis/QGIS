@@ -1287,7 +1287,7 @@ void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f )
   }
 
   // remove all attributes that will disappear
-  const QgsAttributeMap &map = f.attributeMap();
+  QgsAttributeMap map = f.attributeMap();
   for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); it++ )
     if ( !mUpdatedFields.contains( it.key() ) )
       f.deleteAttribute( it.key() );
@@ -2947,7 +2947,7 @@ int QgsVectorLayer::pendingFeatureCount()
 bool QgsVectorLayer::commitChanges()
 {
   bool success = true;
-  
+
   //clear the cache image so markers dont appear anymore on next draw
   setCacheImage( 0 );
 
@@ -3273,7 +3273,7 @@ bool QgsVectorLayer::rollBack()
   emit editingStopped();
 
   setModified( FALSE );
-  // invalidate teh cache so the layer updates properly to show its original 
+  // invalidate the cache so the layer updates properly to show its original
   // after the rollback
   setCacheImage( 0 );
   triggerRepaint();

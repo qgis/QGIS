@@ -55,7 +55,7 @@ void QgsLabelDialog::init( )
 {
   QgsDebugMsg( "entering." );
 
-  QgsLabelAttributes * myLabelAttributes = mLabel->layerAttributes();
+  QgsLabelAttributes * myLabelAttributes = mLabel->labelAttributes();
   //populate a string list with all the field names which will be used to set up the
   //data bound combos
   QgsFieldMap& myFieldsMap = mLabel->fields();
@@ -340,8 +340,8 @@ void QgsLabelDialog::apply()
   QgsDebugMsg( "entering." );
 
   //set the label props that are NOT bound to a field in the attributes tbl
-  //All of these are set in the layerAttributes member of the layer
-  QgsLabelAttributes * myLabelAttributes = mLabel->layerAttributes();
+  //All of these are set in the labelAttributes member of the layer
+  QgsLabelAttributes * myLabelAttributes = mLabel->labelAttributes();
   myLabelAttributes->setText( leDefaultLabel->text() );
   myLabelAttributes->setFamily( mFont.family() );
   int myTypeInt = 0;

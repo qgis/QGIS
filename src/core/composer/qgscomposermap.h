@@ -241,7 +241,7 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
 
     /**Sets the rotation of the map content
     @note this function was added in version 1.4*/
-    void setRotation( double r ) { mRotation = r; }
+    void setRotation( double r );
     double rotation() const { return mRotation; }
 
     /**Sets length of the cros segments (if grid style is cross)
@@ -259,6 +259,8 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
   signals:
     /**Is emitted when width/height is changed as a result of user interaction*/
     void extentChanged();
+    /**Is emitted on rotation change to notify north arrow pictures*/
+    void rotationChanged( double newRotation );
 
   private:
 
@@ -308,9 +310,6 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
 
     /**Stored layer list (used if layer live-link mKeepLayerSet is disabled)*/
     QStringList mLayerSet;
-
-    /**For the generation of new unique ids*/
-    static int mCurrentComposerId;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();

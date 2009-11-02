@@ -122,6 +122,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
+     * provider supports setting of subset strings
+     * @note added in 1.4
+     */
+    virtual bool supportsSubsetString() { return false; }
+
+    /**
      * Returns the subset definition string (typically sql) currently in
      * use by the layer and used by the provider to limit the feature set.
      * Must be overridden in the dataprovider, otherwise returns a null

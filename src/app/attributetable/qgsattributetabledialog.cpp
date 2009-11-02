@@ -28,6 +28,8 @@
 #include <qgssearchtreenode.h>
 
 #include "qgisapp.h"
+#include "qgsaddattrdialog.h"
+#include "qgsdelattrdialog.h"
 #include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -88,11 +90,18 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mInvertSelectionButton->setIcon( getThemeIcon( "/mActionInvertSelection.png" ) );
   mToggleEditingButton->setIcon( getThemeIcon( "/mActionToggleEditing.png" ) );
   mOpenFieldCalculator->setIcon( getThemeIcon( "/mActionCalculateField.png" ) );
+  mAddAttribute->setIcon( getThemeIcon( "/mActionNewAttribute.png" ) );
+  mRemoveAttribute->setIcon( getThemeIcon( "/mActionDeleteAttribute.png" ) );
+
   // toggle editing
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+  bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
+  bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   mToggleEditingButton->setCheckable( true );
   mToggleEditingButton->setEnabled( canChangeAttributes );
   mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
+  mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
+  mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
 
   // info from table to application
   connect( this, SIGNAL( editingToggled( QgsMapLayer * ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer * ) ) );
@@ -526,7 +535,11 @@ void QgsAttributeTableDialog::editingToggled()
   mToggleEditingButton->blockSignals( false );
 
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+  bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
+  bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
+  mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
+  mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
 
   // (probably reload data if user stopped editing - possible revert)
   mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
@@ -555,10 +568,72 @@ void QgsAttributeTableDialog::revert()
   mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
 }
 
+void QgsAttributeTableDialog::on_mAddAttribute_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QgsAddAttrDialog dialog( mLayer->dataProvider(), this );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    mLayer->beginEditCommand( tr( "Attribute added" ) );
+    if ( mLayer->addAttribute( dialog.field() ) )
+    {
+      mLayer->endEditCommand();
+    }
+    else
+    {
+      QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute could not be added to the layer" ) );
+      mLayer->destroyEditCommand();
+    }
+  }
+}
+
+void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QgsDelAttrDialog dialog( mLayer );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    QList<int> attributes = dialog.selectedAttributes();
+    if ( attributes.size() < 1 )
+    {
+      return;
+    }
+
+    mLayer->beginEditCommand( tr( "Deleted attribute" ) );
+    bool deleted = false;
+    QList<int>::const_iterator it = attributes.constBegin();
+    for ( ; it != attributes.constEnd(); ++it )
+    {
+      if ( mLayer->deleteAttribute( *it ) )
+      {
+        deleted = true;
+      }
+    }
+
+    if ( deleted )
+    {
+      mLayer->endEditCommand();
+    }
+    else
+    {
+      QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute(s) could not be deleted" ) );
+      mLayer->destroyEditCommand();
+    }
+  }
+}
+
 void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
 {
   QgsFieldCalculator calc( mLayer );
-  if ( calc.exec() )
+  if ( calc.exec() == QDialog::Accepted )
   {
     // update model - a field has been added or updated
     mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );

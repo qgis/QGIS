@@ -148,7 +148,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to the srs.db file.
     static const QString srsDbFilePath();
 
-    //! Returns the path to the svg directory.
+    //! Returns the paths to the svg directories.
+    //! @note added in 1.4
+    static const QStringList svgPaths();
+
+    //! Returns the path to the applications svg paths
+    //! @note deprecated
     static const QString svgPath();
 
     //! Returns the path to user's style. Added in QGIS 1.2

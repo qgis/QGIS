@@ -52,6 +52,7 @@ number  {num1}|{num2}
 str_char    ('')|(\\.)|[^'\\]
 string      "'"{str_char}*"'"
 
+
 %%
 
 "NOT"    { return NOT; }
@@ -75,6 +76,9 @@ string      "'"{str_char}*"'"
 "asin" { yylval.op = QgsSearchTreeNode::opASIN; return FUNCTION;}
 "acos" { yylval.op = QgsSearchTreeNode::opACOS; return FUNCTION;}
 "atan" { yylval.op = QgsSearchTreeNode::opATAN; return FUNCTION;}
+"to int" { yylval.op = QgsSearchTreeNode::opTOINT; return FUNCTION;}
+"to real" { yylval.op = QgsSearchTreeNode::opTOREAL; return FUNCTION;}
+"to string" { yylval.op = QgsSearchTreeNode::opTOSTRING; return FUNCTION;}
 
 [+-/*^]    { return yytext[0]; }
 
@@ -83,6 +87,9 @@ string      "'"{str_char}*"'"
 {number}  { yylval.number  = atof(yytext); return NUMBER; }
 
 {string}  { return STRING; }
+
+"$area" { return AREA; }
+"$length" { return LENGTH; }
 
 {column_ref}   { return COLUMN_REF; }
 

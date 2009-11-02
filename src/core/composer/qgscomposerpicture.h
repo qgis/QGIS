@@ -43,8 +43,6 @@ class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
        corresponds to 1 scene size unit*/
     void setSceneRect( const QRectF& rectangle );
 
-    void setRotation( double rotation );
-
     double rotation() const {return mRotation;}
 
     /** stores state in Dom node
@@ -58,6 +56,17 @@ class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
       */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    /**Sets the map object for rotation (by id). A value of -1 disables the map rotation*/
+    void setRotationMap( int composerMapId );
+    /**Returns the id of the rotation map*/
+    int rotationMap() const;
+    /**True if the rotation is taken from a map item*/
+    bool useRotationMap() const {return mRotationMap;}
+
+  public slots:
+
+    void setRotation( double rotation );
+
   private:
 
     enum Mode //SVG or raster graphic format
@@ -69,8 +78,19 @@ class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
 
     //default constructor is forbidden
     QgsComposerPicture();
-    /**Updates content of current image using svg generator*/
+    /**Calculates bounding rect for svg file (mSourcefile) such that aspect ratio is correct*/
+    QRectF boundedSVGRect( double deviceWidth, double deviceHeight );
+    /**Calculates bounding rect for image such that aspect ratio is correct*/
+    QRectF boundedImageRect( double deviceWidth, double deviceHeight );
+
+    /**Updates content of mImage using svg generator
+    @param out: boundWidth width of mImage that is used by the svg renderer. May different from mImage.width() to preserve aspect ratio
+    @param out: boundHeight height of mImage that is used by the svg renderer*/
     void updateImageFromSvg();
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
+    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    /**Calculates corner point after rotation and scaling*/
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
 
     QImage mImage;
     double mRotation;
@@ -80,6 +100,9 @@ class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
     bool mSvgCacheUpToDate;
     int mCachedDpi; //store dpis for which the svg cache is valid
     QSize mDefaultSvgSize;
+    /**Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
+    const QgsComposerMap* mRotationMap;
+
 
   signals:
     /**Tell the configuration widget that the settings need to be updated*/

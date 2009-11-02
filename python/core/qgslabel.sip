@@ -17,29 +17,29 @@ public:
 
     /* Fields */
     enum LabelField {
-  Text = 0,
-  Family,
-  Size,
-  Bold,
-  Italic,
-  Underline,
-  Color,
-  XCoordinate,
-  YCoordinate,
-  XOffset,
-  YOffset,
-  Angle,
-  Alignment,
-  BufferEnabled,
-  BufferSize,
-  BufferColor,
-  BufferBrush,
-  BorderWidth,
-  BorderColor,
-  BorderStyle,
-  MultilineEnabled,
-  LabelFieldCount
-};
+      Text = 0,
+      Family,
+      Size,
+      Bold,
+      Italic,
+      Underline,
+      Color,
+      XCoordinate,
+      YCoordinate,
+      XOffset,
+      YOffset,
+      Angle,
+      Alignment,
+      BufferEnabled,
+      BufferSize,
+      BufferColor,
+      BufferBrush,
+      BorderWidth,
+      BorderColor,
+      BorderStyle,
+      MultilineEnabled,
+      LabelFieldCount
+    };
 
     struct labelpoint {
       QgsPoint p;
@@ -81,8 +81,17 @@ public:
     //! Available vector fields
     QMap<int, QgsField> & fields ( );
 
-    //! Pointer to default attributes
-    QgsLabelAttributes *layerAttributes ( );
+    /** Pointer to default attributes.
+     * @note this will be deprecated in version 2 as it is 
+     * badly named. Rather use attributes.
+     * @see labelAttributes method rather */
+    QgsLabelAttributes *layerAttributes( );
+
+    /** Pointer to default attributes.
+     * @note this replaces the to-be-deprecated layerAttributes method.
+     * @note introduced in QGIS 1.4
+     */
+    QgsLabelAttributes *labelAttributes( );
 
     //! Set label field
     void setLabelField ( int attr, int fieldId );

@@ -203,6 +203,11 @@ class QgsAttributeTableModel: public QAbstractTableModel
     virtual void loadLayer();
 
     /**
+      * Gets mFieldCount, mAttributes and mValueMaps
+      */
+    virtual void loadAttributes();
+
+    /**
      * load feature fid into mFeat
      * @param fid feature id
      * @return feature exists

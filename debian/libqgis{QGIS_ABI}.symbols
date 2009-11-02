@@ -177,6 +177,7 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN7Point3DaSERKS_@Base 1.4.0
  _ZN7Point3DeqERKS_@Base 1.4.0
  _ZN7Point3DneERKS_@Base 1.4.0
+ _ZN7QStringC1EPKc@Base 1.4.0
  _ZN7QStringD1Ev@Base 1.4.0
  _ZN7QVectorI10vertexDataE7reallocEii@Base 1.4.0
  _ZN7QVectorI10vertexDataED1Ev@Base 1.4.0
@@ -491,6 +492,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN11QgsMapLayer12minimumScaleEv@Base 1.4.0
  _ZN11QgsMapLayer12setLayerNameERK7QString@Base 1.4.0
  _ZN11QgsMapLayer13connectNotifyEPKc@Base 1.4.0
+ _ZN11QgsMapLayer13setCacheImageEP6QImage@Base 1.4.0
  _ZN11QgsMapLayer13setLayerOrderE11QStringList@Base 1.4.0
  _ZN11QgsMapLayer13statusChangedE7QString@Base 1.4.0
  _ZN11QgsMapLayer14lastErrorTitleEv@Base 1.4.0
@@ -841,6 +843,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsApplication8exitQgisEv@Base 1.4.0
  _ZN14QgsApplication8i18nPathEv@Base 1.4.0
  _ZN14QgsApplication8initQgisEv@Base 1.4.0
+ _ZN14QgsApplication8svgPathsEv@Base 1.4.0
  _ZN14QgsApplication9iconsPathEv@Base 1.4.0
  _ZN14QgsApplication9themeNameEv@Base 1.4.0
  _ZN14QgsApplicationC1ERiPPcb@Base 1.4.0
@@ -857,18 +860,26 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsComposerMap12setSceneRectERK6QRectF@Base 1.4.0
  _ZN14QgsComposerMap12syncLayerSetEv@Base 1.4.0
  _ZN14QgsComposerMap13extentChangedEv@Base 1.4.0
+ _ZN14QgsComposerMap14drawAnnotationEP8QPainterRK7QPointFiRK7QString@Base 1.4.0
  _ZN14QgsComposerMap15setCacheUpdatedEb@Base 1.4.0
+ _ZN14QgsComposerMap15setGridPenColorERK6QColor@Base 1.4.0
+ _ZN14QgsComposerMap15setGridPenWidthEd@Base 1.4.0
  _ZN14QgsComposerMap16staticMetaObjectE@Base 1.4.0
  _ZN14QgsComposerMap17connectUpdateSlotEv@Base 1.4.0
  _ZN14QgsComposerMap17updateCachedImageEv@Base 1.4.0
  _ZN14QgsComposerMap18mCurrentComposerIdE@Base 1.4.0
+ _ZN14QgsComposerMap18updateBoundingRectEv@Base 1.4.0
+ _ZN14QgsComposerMap19drawGridAnnotationsEP8QPainterRK5QListI5QPairId6QLineFEES8_@Base 1.4.0
  _ZN14QgsComposerMap20storeCurrentLayerSetEv@Base 1.4.0
+ _ZN14QgsComposerMap24drawCoordinateAnnotationEP8QPainterRK7QPointF7QString@Base 1.4.0
+ _ZN14QgsComposerMap25drawCoordinateAnnotationsEP8QPainterRK5QListI5QPairId6QLineFEES8_@Base 1.4.0
  _ZN14QgsComposerMap27renderModeUpdateCachedImageEv@Base 1.4.0
  _ZN14QgsComposerMap4drawEP8QPainterRK12QgsRectangleRK5QSizei@Base 1.4.0
  _ZN14QgsComposerMap5cacheEv@Base 1.4.0
  _ZN14QgsComposerMap5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
  _ZN14QgsComposerMap6resizeEdd@Base 1.4.0
  _ZN14QgsComposerMap7readXMLERK11QDomElementRK12QDomDocument@Base 1.4.0
+ _ZN14QgsComposerMap8drawGridEP8QPainter@Base 1.4.0
  _ZN14QgsComposerMap9setOffsetEdd@Base 1.4.0
  _ZN14QgsComposerMapC1EP14QgsComposition@Base 1.4.0
  _ZN14QgsComposerMapC1EP14QgsCompositioniiii@Base 1.4.0
@@ -878,6 +889,8 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsComposerMapD1Ev@Base 1.4.0
  _ZN14QgsComposerMapD2Ev@Base 1.4.0
  _ZN14QgsComposition10setGridPenERK4QPen@Base 1.4.0
+ _ZN14QgsComposition11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN14QgsComposition11qt_metacastEPKc@Base 1.4.0
  _ZN14QgsComposition12setGridStyleENS_9GridStyleE@Base 1.4.0
  _ZN14QgsComposition12setPaperSizeEdd@Base 1.4.0
  _ZN14QgsComposition13moveItemToTopEP15QgsComposerItem@Base 1.4.0
@@ -885,7 +898,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsComposition14addItemToZListEP15QgsComposerItem@Base 1.4.0
  _ZN14QgsComposition14composerItemAtERK7QPointF@Base 1.4.0
  _ZN14QgsComposition16moveItemToBottomEP15QgsComposerItem@Base 1.4.0
+ _ZN14QgsComposition16paperSizeChangedEv@Base 1.4.0
  _ZN14QgsComposition16setPrintAsRasterEb@Base 1.4.0
+ _ZN14QgsComposition16staticMetaObjectE@Base 1.4.0
  _ZN14QgsComposition18lowerSelectedItemsEv@Base 1.4.0
  _ZN14QgsComposition18raiseSelectedItemsEv@Base 1.4.0
  _ZN14QgsComposition18setSnapGridOffsetXEd@Base 1.4.0
@@ -1350,6 +1365,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN16QgsComposerLabelD2Ev@Base 1.4.0
  _ZN16QgsDataSourceURI10skipBlanksERK7QStringRi@Base 1.4.0
  _ZN16QgsDataSourceURI11clearSchemaEv@Base 1.4.0
+ _ZN16QgsDataSourceURI11setDatabaseERK7QString@Base 1.4.0
  _ZN16QgsDataSourceURI12setKeyColumnE7QString@Base 1.4.0
  _ZN16QgsDataSourceURI13setConnectionERK7QStringS2_S2_S2_S2_NS_7SSLmodeE@Base 1.4.0
  _ZN16QgsDataSourceURI13setDataSourceERK7QStringS2_S2_S2_S2_@Base 1.4.0
@@ -1360,6 +1376,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN16QgsDataSourceURIC1Ev@Base 1.4.0
  _ZN16QgsDataSourceURIC2E7QString@Base 1.4.0
  _ZN16QgsDataSourceURIC2Ev@Base 1.4.0
+ _ZN16QgsDataSourceURID1Ev@Base 1.4.0
  _ZN16QgsMessageOutput19createMessageOutputEv@Base 1.4.0
  _ZN16QgsMessageOutput21mMessageOutputCreatorE@Base 1.4.0
  _ZN16QgsMessageOutput23setMessageOutputCreatorEPFPS_vE@Base 1.4.0
@@ -1619,6 +1636,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN19QgsMapLayerRegistry16staticMetaObjectE@Base 1.4.0
  _ZN19QgsMapLayerRegistry18layerWillBeRemovedE7QString@Base 1.4.0
  _ZN19QgsMapLayerRegistry18removeAllMapLayersEv@Base 1.4.0
+ _ZN19QgsMapLayerRegistry19clearAllLayerCachesEv@Base 1.4.0
  _ZN19QgsMapLayerRegistry5countEv@Base 1.4.0
  _ZN19QgsMapLayerRegistry8instanceEv@Base 1.4.0
  _ZN19QgsMapLayerRegistry8mapLayerE7QString@Base 1.4.0
@@ -1705,6 +1723,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN21QgsVectorDataProvider12maximumValueEi@Base 1.4.0
  _ZN21QgsVectorDataProvider12minimumValueEi@Base 1.4.0
  _ZN21QgsVectorDataProvider12uniqueValuesEiR5QListI8QVariantE@Base 1.4.0
+ _ZN21QgsVectorDataProvider12uniqueValuesEiR5QListI8QVariantEi@Base 1.4.0
  _ZN21QgsVectorDataProvider13addAttributesERK4QMapI7QStringS1_E@Base 1.4.0
  _ZN21QgsVectorDataProvider13addAttributesERK5QListI8QgsFieldE@Base 1.4.0
  _ZN21QgsVectorDataProvider14deleteFeaturesERK4QSetIiE@Base 1.4.0
@@ -2435,15 +2454,24 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI18QgsRasterBandStatsEixEi@Base 1.4.0
  _ZN5QListI22QgsContrastEnhancementE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI22QgsContrastEnhancementED1Ev@Base 1.4.0
+ _ZN5QListI5QPairId6QLineFEE13detach_helperEv@Base 1.4.0
+ _ZN5QListI5QPairId6QLineFEE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI5QPairId6QLineFEE5clearEv@Base 1.4.0
+ _ZN5QListI5QPairId6QLineFEED1Ev@Base 1.4.0
  _ZN5QListI5QPairIddEE13detach_helperEv@Base 1.4.0
  _ZN5QListI5QPairIddEE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI5QPairIddEE5clearEv@Base 1.4.0
  _ZN5QListI5QPairIddEED1Ev@Base 1.4.0
+ _ZN5QListI7QPointFE13detach_helperEv@Base 1.4.0
+ _ZN5QListI7QPointFE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI7QPointFE5clearEv@Base 1.4.0
+ _ZN5QListI7QPointFED1Ev@Base 1.4.0
  _ZN5QListI7QStringE13detach_helperEv@Base 1.4.0
  _ZN5QListI7QStringE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI7QStringE5clearEv@Base 1.4.0
  _ZN5QListI7QStringE5eraseENS1_8iteratorE@Base 1.4.0
  _ZN5QListI7QStringE6appendERKS0_@Base 1.4.0
+ _ZN5QListI7QStringE6detachEv@Base 1.4.0
  _ZN5QListI7QStringE6insertEiRKS0_@Base 1.4.0
  _ZN5QListI7QStringE9removeAllERKS0_@Base 1.4.0
  _ZN5QListI7QStringEixEi@Base 1.4.0
@@ -2709,6 +2737,8 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN7QStringD1Ev@Base 1.4.0
  _ZN7QStringaSEPKc@Base 1.4.0
  _ZN7QStringpLEPKc@Base 1.4.0
+ _ZN7QVectorI6QLineFE7reallocEii@Base 1.4.0
+ _ZN7QVectorI6QLineFED1Ev@Base 1.4.0
  _ZN7QVectorI6QPointE7reallocEii@Base 1.4.0
  _ZN7QVectorI7QPointFE7reallocEii@Base 1.4.0
  _ZN7QVectorI7QPointFElsERKS0_@Base 1.4.0
@@ -2782,6 +2812,8 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN9QgsLogger5debugERK7QStringdiPKcS4_i@Base 1.4.0
  _ZN9QgsLogger5debugERK7QStringiPKcS4_i@Base 1.4.0
  _ZN9QgsLogger5debugERK7QStringiiPKcS4_i@Base 1.4.0
+ _ZN9QgsLogger5debugIdEEvRK7QStringT_PKcS6_ii@Base 1.4.0
+ _ZN9QgsLogger5debugIiEEvRK7QStringT_PKcS6_ii@Base 1.4.0
  _ZN9QgsLogger5fatalERK7QString@Base 1.4.0
  _ZN9QgsLogger7warningERK7QString@Base 1.4.0
  _ZN9QgsLogger8criticalERK7QString@Base 1.4.0
@@ -2906,10 +2938,29 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK13QgsMapToPixel9transformEdd@Base 1.4.0
  _ZNK13QgsRunProcess10metaObjectEv@Base 1.4.0
  _ZNK14QgsApplication10metaObjectEv@Base 1.4.0
+ _ZNK14QgsComposerMap10mapPolygonER9QPolygonF@Base 1.4.0
  _ZNK14QgsComposerMap10metaObjectEv@Base 1.4.0
+ _ZNK14QgsComposerMap10xGridLinesER5QListI5QPairId6QLineFEE@Base 1.4.0
+ _ZNK14QgsComposerMap10yGridLinesER5QListI5QPairId6QLineFEE@Base 1.4.0
+ _ZNK14QgsComposerMap12boundingRectEv@Base 1.4.0
+ _ZNK14QgsComposerMap12mapUnitsToMMEv@Base 1.4.0
+ _ZNK14QgsComposerMap12maxExtensionEv@Base 1.4.0
+ _ZNK14QgsComposerMap14transformShiftERdS0_@Base 1.4.0
+ _ZNK14QgsComposerMap15mapToItemCoordsERK7QPointF@Base 1.4.0
+ _ZNK14QgsComposerMap15requestedExtentER12QgsRectangle@Base 1.4.0
  _ZNK14QgsComposerMap16containsWMSLayerEv@Base 1.4.0
+ _ZNK14QgsComposerMap17transformedExtentEv@Base 1.4.0
+ _ZNK14QgsComposerMap17verticalGridLinesER5QListI5QPairId6QLineFEE@Base 1.4.0
+ _ZNK14QgsComposerMap18borderForLineCoordERK7QPointF@Base 1.4.0
+ _ZNK14QgsComposerMap19horizontalGridLinesER5QListI5QPairId6QLineFEE@Base 1.4.0
+ _ZNK14QgsComposerMap21transformedMapPolygonEv@Base 1.4.0
+ _ZNK14QgsComposerMap22maxExtensionXDirectionEv@Base 1.4.0
+ _ZNK14QgsComposerMap22maxExtensionYDirectionEv@Base 1.4.0
+ _ZNK14QgsComposerMap23pointOnLineWithDistanceERK7QPointFS2_d@Base 1.4.0
  _ZNK14QgsComposerMap5scaleEv@Base 1.4.0
+ _ZNK14QgsComposerMap6rotateEdRdS0_@Base 1.4.0
  _ZNK14QgsComposerMap8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
+ _ZNK14QgsComposition10metaObjectEv@Base 1.4.0
  _ZNK14QgsComposition10paperWidthEv@Base 1.4.0
  _ZNK14QgsComposition11paperHeightEv@Base 1.4.0
  _ZNK14QgsComposition13pixelFontSizeEd@Base 1.4.0
@@ -2971,6 +3022,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK15QgsComposerItem25horizontalViewScaleFactorEv@Base 1.4.0
  _ZNK15QgsComposerItem26rectHandlerBorderToleranceEv@Base 1.4.0
  _ZNK15QgsComposerItem8drawTextEP8QPainterRK6QRectFRK7QStringRK5QFont@Base 1.4.0
+ _ZNK15QgsComposerItem8drawTextEP8QPainterddRK7QStringRK5QFont@Base 1.4.0
  _ZNK15QgsComposerItem8drawTextEP8QPainteriiRK7QStringRK5QFont@Base 1.4.0
  _ZNK15QgsComposerItem9_writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZNK15QgsDataProvider10metaObjectEv@Base 1.4.0
@@ -2992,6 +3044,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK16QgsDataSourceURI4hostEv@Base 1.4.0
  _ZNK16QgsDataSourceURI4portEv@Base 1.4.0
  _ZNK16QgsDataSourceURI5tableEv@Base 1.4.0
+ _ZNK16QgsDataSourceURI6escapeERK7QString@Base 1.4.0
  _ZNK16QgsDataSourceURI6schemaEv@Base 1.4.0
  _ZNK16QgsDataSourceURI7sslModeEv@Base 1.4.0
  _ZNK16QgsDataSourceURI8databaseEv@Base 1.4.0
@@ -3236,6 +3289,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK5Tools8Interval18intersectsIntervalERKNS_9IIntervalE@Base 1.4.0
  _ZNK5Tools8IntervaleqERKS0_@Base 1.4.0
  _ZNK5Tools8IntervalneERKS0_@Base 1.4.0
+ _ZNK7QString3argEiiiRK5QChar@Base 1.4.0
  _ZNK7QString8containsERKS_N2Qt15CaseSensitivityE@Base 1.4.0
  _ZNK7QStringeqEPKc@Base 1.4.0
  _ZNK8QgsField4nameEv@Base 1.4.0
@@ -3252,6 +3306,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK8QgsLabel8minScaleEv@Base 1.4.0
  _ZNK8QgsLabel8writeXMLER8QDomNodeR12QDomDocument@Base 1.4.0
  _ZNK8QgsPoint13wellKnownTextEv@Base 1.4.0
+ _ZNK8QgsPoint23toDegreesMinutesSecondsEi@Base 1.4.0
  _ZNK8QgsPoint7sqrDistERKS_@Base 1.4.0
  _ZNK8QgsPoint7sqrDistEdd@Base 1.4.0
  _ZNK8QgsPoint8toStringEi@Base 1.4.0
@@ -3803,6 +3858,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZThn16_N23QgsMessageOutputConsole8setTitleERK7QString@Base 1.4.0
  _ZThn16_N23QgsMessageOutputConsoleD0Ev@Base 1.4.0
  _ZThn16_N23QgsMessageOutputConsoleD1Ev@Base 1.4.0
+ _ZThn16_NK14QgsComposerMap12boundingRectEv@Base 1.4.0
  _ZThn16_NK14QgsComposerMap8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZThn16_NK17QgsComposerLegend8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZThn16_NK18QgsComposerPicture8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
@@ -3872,6 +3928,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZplRK7QString5QChar@Base 1.4.0
  _ZplRK7QStringPKc@Base 1.4.0
  _ZplRK7QStringS1_@Base 1.4.0
+ _ZplRK7QStringc@Base 1.4.0
  gParserErrorMsg@Base 1.4.0
  gTmpNodes@Base 1.4.0
  gaiaAddDbfField@Base 1.4.0

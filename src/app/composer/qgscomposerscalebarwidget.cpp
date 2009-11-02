@@ -37,7 +37,6 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   mStyleComboBox->insertItem( 3, tr( "Line Ticks Down" ) );
   mStyleComboBox->insertItem( 4, tr( "Line Ticks Up" ) );
   mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
-
   setGuiElements(); //set the GUI elements to the state of scaleBar
   blockMemberSignals( false );
 }
@@ -153,7 +152,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
   {
     QString mapText = tr( "Map %1" ).arg( mComposerScaleBar->composerMap()->id() );
     int itemId = mMapComboBox->findText( mapText );
-    if ( itemId > 0 )
+    if ( itemId >= 0 )
     {
       mMapComboBox->setCurrentIndex( itemId );
     }

@@ -255,6 +255,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** mutator for sql where clause used to limit dataset size */
     bool setSubsetString( QString theSQL );
 
+    virtual bool supportsSubsetString() { return true; }
+
     /**Returns a bitmask containing the supported capabilities*/
     int capabilities() const;
 

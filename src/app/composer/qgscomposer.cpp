@@ -65,9 +65,10 @@
 #include <QSizeGrip>
 #include "qgslogger.h"
 
-QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
+QgsComposer::QgsComposer( QgisApp *qgis, const QString& id ): QMainWindow(), mId( id )
 {
   setupUi( this );
+  setAttribute( Qt::WA_DeleteOnClose );
   setupTheme();
 
   QToolButton* orderingToolButton = new QToolButton( this );
@@ -106,7 +107,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   toggleActionGroup->addAction( mActionSelectMoveItem );
   toggleActionGroup->setExclusive( true );
 
-  setWindowTitle( tr( "QGIS - print composer" ) );
+  setWindowTitle( mId );
 
   mActionAddNewMap->setCheckable( true );
   mActionAddNewLabel->setCheckable( true );
@@ -116,17 +117,21 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   mActionAddImage->setCheckable( true );
   mActionMoveItemContent->setCheckable( true );
 
+#ifdef Q_WS_MAC
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
   appMenu->addAction( QgisApp::instance()->actionAbout() );
   appMenu->addAction( QgisApp::instance()->actionOptions() );
+#endif
 
   QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
-  fileMenu->addAction( tr( "Close" ), this, SLOT( close() ), tr( "Ctrl+W" ) );
   fileMenu->addAction( mActionExportAsImage );
   fileMenu->addAction( mActionExportAsPDF );
   fileMenu->addAction( mActionExportAsSVG );
   fileMenu->addSeparator();
   fileMenu->addAction( mActionPrint );
+  fileMenu->addSeparator();
+  fileMenu->addAction( mActionQuit );
+  QObject::connect( mActionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
 
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
   viewMenu->addAction( mActionZoomIn );
@@ -159,13 +164,12 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
 #endif
 #endif
 
-
-  // Create action to select this window and add it to Window menu
-  mWindowAction = new QAction( windowTitle(), this );
-  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
-
   mQgis = qgis;
   mFirstTime = true;
+
+  // Create action to select this window
+  mWindowAction = new QAction( windowTitle(), this );
+  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
 
   QgsDebugMsg( "entered." );
 
@@ -188,8 +192,6 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   mCompositionOptionsLayout->setMargin( 0 );
   mCompositionOptionsLayout->addWidget( compositionWidget );
 
-  mPrinter = 0;
-
   QGridLayout *l = new QGridLayout( mViewFrame );
   l->setMargin( 0 );
   l->addWidget( mView, 0, 0 );
@@ -206,10 +208,9 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
 
   mView->setFocus();
 
-  //connect with signals from QgsProject to read/write project files
+  //connect with signals from QgsProject to write project files
   if ( QgsProject::instance() )
   {
-    connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument& ) ), this, SLOT( readXML( const QDomDocument& ) ) );
     connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), this, SLOT( writeXML( QDomDocument& ) ) );
   }
 }
@@ -229,6 +230,7 @@ void QgsComposer::setupTheme()
 {
   //now set all the icons - getThemeIcon will fall back to default theme if its
   //missing from active theme
+  mActionQuit->setIcon( QgisApp::getThemeIcon( "/mActionFileExit.png" ) );
   mActionLoadFromTemplate->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
   mActionSaveAsTemplate->setIcon( QgisApp::getThemeIcon( "/mActionFileSaveAs.png" ) );
   mActionExportAsImage->setIcon( QgisApp::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
@@ -290,34 +292,31 @@ void QgsComposer::open( void )
   }
 }
 
-void QgsComposer::paintEvent( QPaintEvent* event )
-{
-  QMainWindow::paintEvent( event );
-#if 0 //MH: disabled for now as there are segfaults on some systems
-  //The cached content of the composer maps need to be recreated it is the first paint event of the composer after reading from XML file.
-  //Otherwise the resolution of the composer map is not suitable for screen
-  if ( mFirstPaint )
-  {
-    QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
-    for ( ; it != mItemWidgetMap.constEnd(); ++it )
-    {
-      QgsComposerMap* cm = qobject_cast<QgsComposerMap *>( it.key() );
-      if ( cm )
-      {
-        mFirstPaint = false;
-        cm->cache();
-        cm->update();
-      }
-    }
-  }
-#endif //0
-}
-
 void QgsComposer::activate()
 {
   raise();
   setWindowState( windowState() & ~Qt::WindowMinimized );
   activateWindow();
+}
+
+void QgsComposer::closeEvent( QCloseEvent *event )
+{
+  if ( QMessageBox::warning( 0, tr( "Remove composer?" ), tr( "Do you really want to remove the composer instance '%1'?" ).arg( mId ), QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Ok )
+  {
+    mQgis->checkOutComposer( this );
+    event->accept();
+  }
+  else
+  {
+    event->ignore();
+  }
+#if 0
+  QMainWindow::closeEvent( event );
+  if ( event->isAccepted() )
+  {
+    QgisApp::instance()->removeWindow( mWindowAction );
+  }
+#endif //0
 }
 
 #ifdef Q_WS_MAC
@@ -335,15 +334,6 @@ void QgsComposer::changeEvent( QEvent* event )
 
     default:
       break;
-  }
-}
-
-void QgsComposer::closeEvent( QCloseEvent *event )
-{
-  QMainWindow::closeEvent( event );
-  if ( event->isAccepted() )
-  {
-    QgisApp::instance()->removeWindow( mWindowAction );
   }
 }
 
@@ -1031,6 +1021,7 @@ void  QgsComposer::writeXML( QDomDocument& doc )
 void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
 {
   QDomElement composerElem = doc.createElement( "Composer" );
+  composerElem.setAttribute( "id", mId );
   parentNode.appendChild( composerElem );
 
   //store composer items:
@@ -1051,6 +1042,145 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
 
 void QgsComposer::readXML( const QDomDocument& doc )
 {
+  QDomNodeList composerNodeList = doc.elementsByTagName( "Composer" );
+  if ( composerNodeList.size() < 1 )
+  {
+    return;
+  }
+  readXML( composerNodeList.at( 0 ).toElement(), doc );
+}
+
+void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& doc )
+{
+  mId = composerElem.attribute( "id", "" );
+  setWindowTitle( mId );
+
+  // Create action to select this window
+  delete mWindowAction;
+  mWindowAction = new QAction( windowTitle(), this );
+  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+
+  //delete composer view and composition
+  delete mView;
+  mView = 0;
+  //delete every child of mViewFrame
+  QObjectList viewFrameChildren = mViewFrame->children();
+  QObjectList::iterator it = viewFrameChildren.begin();
+  for ( ; it != viewFrameChildren.end(); ++it )
+  {
+    delete( *it );
+  }
+  //delete composition widget
+  QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mCompositionOptionsFrame->children().at( 0 ) );
+  delete oldCompositionWidget;
+  delete mCompositionOptionsLayout;
+  mCompositionOptionsLayout = 0;
+
+  mView = new QgsComposerView( mViewFrame );
+  connectSlots();
+
+  mComposition = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
+  mComposition->readXML( composerElem, doc );
+
+  QGridLayout *l = new QGridLayout( mViewFrame );
+  l->setMargin( 0 );
+  l->addWidget( mView, 0, 0 );
+
+  //create compositionwidget
+  QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mCompositionOptionsFrame, mComposition );
+  QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
+  compositionWidget->show();
+
+  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
+  mCompositionOptionsLayout->setMargin( 0 );
+  mCompositionOptionsLayout->addWidget( compositionWidget );
+
+  //read and restore all the items
+
+  //composer labels
+  QDomNodeList composerLabelList = composerElem.elementsByTagName( "ComposerLabel" );
+  for ( int i = 0; i < composerLabelList.size(); ++i )
+  {
+    QDomElement currentComposerLabelElem = composerLabelList.at( i ).toElement();
+    QgsComposerLabel* newLabel = new QgsComposerLabel( mComposition );
+    newLabel->readXML( currentComposerLabelElem, doc );
+    addComposerLabel( newLabel );
+    mComposition->addItem( newLabel );
+    mComposition->update();
+    mComposition->clearSelection();
+    newLabel->setSelected( true );
+    showItemOptions( newLabel );
+  }
+
+  //composer maps
+  QDomNodeList composerMapList = composerElem.elementsByTagName( "ComposerMap" );
+  for ( int i = 0; i < composerMapList.size(); ++i )
+  {
+    QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
+    QgsComposerMap* newMap = new QgsComposerMap( mComposition );
+    newMap->readXML( currentComposerMapElem, doc );
+    addComposerMap( newMap );
+    mComposition->addItem( newMap );
+    mComposition->update();
+    mComposition->clearSelection();
+    newMap->setSelected( true );
+    showItemOptions( newMap );
+  }
+
+  //composer scalebars
+  QDomNodeList composerScaleBarList = composerElem.elementsByTagName( "ComposerScaleBar" );
+  for ( int i = 0; i < composerScaleBarList.size(); ++i )
+  {
+    QDomElement currentScaleBarElem = composerScaleBarList.at( i ).toElement();
+    QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( mComposition );
+    newScaleBar->readXML( currentScaleBarElem, doc );
+    addComposerScaleBar( newScaleBar );
+    mComposition->addItem( newScaleBar );
+    mComposition->update();
+    mComposition->clearSelection();
+    newScaleBar->setSelected( true );
+    showItemOptions( newScaleBar );
+  }
+
+  //composer legends
+  QDomNodeList composerLegendList = composerElem.elementsByTagName( "ComposerLegend" );
+  for ( int i = 0; i < composerLegendList.size(); ++i )
+  {
+    QDomElement currentLegendElem = composerLegendList.at( i ).toElement();
+    QgsComposerLegend* newLegend = new QgsComposerLegend( mComposition );
+    newLegend->readXML( currentLegendElem, doc );
+    addComposerLegend( newLegend );
+    mComposition->addItem( newLegend );
+    mComposition->update();
+    mComposition->clearSelection();
+    newLegend->setSelected( true );
+    showItemOptions( newLegend );
+  }
+
+  //composer pictures
+  QDomNodeList composerPictureList = composerElem.elementsByTagName( "ComposerPicture" );
+  for ( int i = 0; i < composerPictureList.size(); ++i )
+  {
+    QDomElement currentPictureElem = composerPictureList.at( i ).toElement();
+    QgsComposerPicture* newPicture = new QgsComposerPicture( mComposition );
+    newPicture->readXML( currentPictureElem, doc );
+    addComposerPicture( newPicture );
+    mComposition->addItem( newPicture );
+    mComposition->update();
+    mComposition->clearSelection();
+    newPicture->setSelected( true );
+    showItemOptions( newPicture );
+  }
+
+  mComposition->sortZList();
+  mView->setComposition( mComposition );
+
+  setSelectionTool();
+}
+
+#if 0
+void QgsComposer::readXML( const QDomDocument& doc )
+{
   //look for Composer element
   QDomNodeList nl = doc.elementsByTagName( "Composer" );
   if ( nl.size() < 1 )
@@ -1058,6 +1188,7 @@ void QgsComposer::readXML( const QDomDocument& doc )
     return; //nothing to do...
   }
   QDomElement composerElem = nl.at( 0 ).toElement();
+  mId = composerElem.attribute( "id", "" );
 
   //look for Composition element
   QDomNodeList cnl = composerElem.elementsByTagName( "Composition" );
@@ -1187,6 +1318,7 @@ void QgsComposer::readXML( const QDomDocument& doc )
 
   setSelectionTool();
 }
+#endif //0
 
 void QgsComposer::addComposerMap( QgsComposerMap* map )
 {

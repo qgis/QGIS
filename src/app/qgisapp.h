@@ -143,8 +143,6 @@ class QgisApp : public QMainWindow
     /** Get the mapcanvas object from the app */
     QgsMapCanvas * mapCanvas() { return mMapCanvas; };
 
-    QgsComposer* printComposer() {return mComposer;}
-
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
     //! Setup the toolbar popup menus for a given theme
@@ -196,6 +194,12 @@ class QgisApp : public QMainWindow
      * windows which are hidden rather than deleted when closed. */
     void removeWindow( QAction *action );
 
+    /**Returns the print composers*/
+    QList<QgsComposer*> printComposers();
+    /**Unregisters a composer instance but does _not_ delete it. This method is usually called from within QgsComposer::closeEvent before
+    the composer deletes itself using the Qt::WA_DeleteOnClose flag*/
+    void checkOutComposer( QgsComposer* c );
+
     //! Actions to be inserted in menus and toolbars
     QAction *actionNewProject() { return mActionNewProject; }
     QAction *actionOpenProject() { return mActionOpenProject; }
@@ -206,7 +210,7 @@ class QgisApp : public QMainWindow
     QAction *actionFileSeparator2() { return mActionFileSeparator2; }
     QAction *actionProjectProperties() { return mActionProjectProperties; }
     QAction *actionFileSeparator3() { return mActionFileSeparator3; }
-    QAction *actionPrintComposer() { return mActionPrintComposer; }
+    QAction *actionNewPrintComposer() { return mActionNewPrintComposer; }
     QAction *actionFileSeparator4() { return mActionFileSeparator4; }
     QAction *actionExit() { return mActionExit; }
 
@@ -315,6 +319,7 @@ class QgisApp : public QMainWindow
     QMenu *firstRightStandardMenu() { return mHelpMenu; }
     QMenu *windowMenu() { return NULL; }
 #endif
+    QMenu *printComposersMenu() {return mPrintComposersMenu;}
     QMenu *helpMenu() { return mHelpMenu; }
 
     //! Toolbars
@@ -443,7 +448,7 @@ class QgisApp : public QMainWindow
     //! Create a new empty vector layer
     void newVectorLayer();
     //! Print the current map view frame
-    void filePrint();
+    void newPrintComposer();
     //! Add all loaded layers into the overview - overides qgisappbase method
     void addAllToOverview();
     //! Remove all loaded layers from the overview - overides qgisappbase method
@@ -677,6 +682,11 @@ class QgisApp : public QMainWindow
       @return 0 in case of error*/
     QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList );
 
+    /**Deletes all the composer objects and clears mPrintComposers*/
+    void deletePrintComposers();
+    /**Creates the composer instances in a project file and adds them to the menu*/
+    bool loadComposersFromProject( const QString& projectFilePath );
+
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );
     /// QgisApp aren't copyable
@@ -717,7 +727,7 @@ class QgisApp : public QMainWindow
     QAction *mActionFileSeparator2;
     QAction *mActionProjectProperties;
     QAction *mActionFileSeparator3;
-    QAction *mActionPrintComposer;
+    QAction *mActionNewPrintComposer;
     QAction *mActionFileSeparator4;
     QAction *mActionExit;
 
@@ -836,6 +846,7 @@ class QgisApp : public QMainWindow
 #ifdef Q_WS_MAC
     QMenu *mWindowMenu;
 #endif
+    QMenu *mPrintComposersMenu;
     QMenu *mHelpMenu;
 
     // docks ------------------------------------------
@@ -937,8 +948,8 @@ class QgisApp : public QMainWindow
     QgsHelpViewer *mHelpViewer;
     //! list of recently opened/saved project files
     QStringList mRecentProjectPaths;
-    //! Map composer
-    QgsComposer *mComposer;
+    //! Print composers of this project, accessible by id string
+    QMap<QString, QgsComposer*> mPrintComposers;
     //! How to determine the number of decimal places used to
     //! display the mouse position
     bool mMousePrecisionAutomatic;

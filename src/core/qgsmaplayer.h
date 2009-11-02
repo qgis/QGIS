@@ -78,6 +78,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString const & name() const;
 
+    /** This is the method that does the actual work of 
+     * drawing the layer onto a paint device.
+     * @param QgsRenderContext - describes the extents, 
+     * resolution etc. that should be used when rendering the 
+     * layer.
+     */
     virtual bool draw( QgsRenderContext& rendererContext );
 
     /** Draw labels
