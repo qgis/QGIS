@@ -360,7 +360,7 @@ int QgsMemoryProvider::capabilities() const
 {
   return AddFeatures | DeleteFeatures | ChangeGeometries |
          ChangeAttributeValues | AddAttributes | DeleteAttributes | CreateSpatialIndex |
-         SelectAtId | SelectGeometryAtId | RandomSelectGeometryAtId | SequentialSelectGeometryAtId;
+         SelectAtId | SelectGeometryAtId;
 }
 
 

@@ -106,6 +106,9 @@ public:
      */
     void setFlowControlWarningEnabled(bool enabled);
 
+    QSize minimumSizeHint() const;
+    QSize sizeHint() const;
+
 signals:
     void finished();
     void receivedData(const QString &data);

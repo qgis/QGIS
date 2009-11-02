@@ -153,7 +153,7 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
   bool isLine = mSelectedFeature.geometry()->type() == QGis::Line;
   QVector<QgsPoint> pts = getPointList( mSelectedFeature );
   int size = pts.size();
-  if ( size == 0 || ( isLine && size < 2 ) || ( !isLine && size < 4 ) )
+  if ( size == 0 || ( isLine && size <= 2 ) || ( !isLine && size <= 4 ) )
   {
     return false;
   }
@@ -293,6 +293,10 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
     {
       // show dialog as a non-modal window
       mSimplifyDialog->show();
+    }
+    else
+    {
+      QMessageBox::warning( 0, tr( "Unsupported operation" ), tr( "This feature cannot be simplified. Check if feature has enough vertices to be simplified." ) );
     }
   }
 }

@@ -67,7 +67,8 @@
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
   QWidget * parent,
-  Qt::WFlags fl )
+  Qt::WFlags fl
+  )
     : QDialog( parent, fl ),
     layer( lyr ),
     mRendererDialog( 0 )
@@ -92,6 +93,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
   mDeleteAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mToggleEditingButton->setIcon( QgisApp::getThemeIcon( "/mActionToggleEditing.png" ) );
+
 
   // Create the Label dialog tab
   QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
@@ -149,7 +151,7 @@ void QgsVectorLayerProperties::loadRows()
 
   tblAttributes->clear();
 
-  tblAttributes->setColumnCount( 9 );
+  tblAttributes->setColumnCount( 8 );
   tblAttributes->setRowCount( fields.size() );
   tblAttributes->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "id" ) ) );
   tblAttributes->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "name" ) ) );
@@ -158,8 +160,7 @@ void QgsVectorLayerProperties::loadRows()
   tblAttributes->setHorizontalHeaderItem( 4, new QTableWidgetItem( tr( "precision" ) ) );
   tblAttributes->setHorizontalHeaderItem( 5, new QTableWidgetItem( tr( "comment" ) ) );
   tblAttributes->setHorizontalHeaderItem( 6, new QTableWidgetItem( tr( "edit widget" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 7, new QTableWidgetItem( tr( "values" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 8, new QTableWidgetItem( tr( "alias" ) ) );
+  tblAttributes->setHorizontalHeaderItem( 7, new QTableWidgetItem( tr( "alias" ) ) );
 
   tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
   tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
@@ -183,60 +184,143 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
   for ( int i = 0; i < 6; i++ )
     tblAttributes->item( row, i )->setFlags( tblAttributes->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
-  QComboBox *cb = new QComboBox();
-  cb->addItem( tr( "line edit" ), QgsVectorLayer::LineEdit );
-  cb->addItem( tr( "unique values" ), QgsVectorLayer::UniqueValues );
-  cb->addItem( tr( "unique values (editable)" ), QgsVectorLayer::UniqueValuesEditable );
-  cb->addItem( tr( "value map" ), QgsVectorLayer::ValueMap );
-  cb->addItem( tr( "classification" ), QgsVectorLayer::Classification );
-  cb->addItem( tr( "range (editable)" ), QgsVectorLayer::EditRange );
-  cb->addItem( tr( "range (slider)" ), QgsVectorLayer::SliderRange );
-  cb->addItem( tr( "file name" ), QgsVectorLayer::FileName );
-  cb->addItem( tr( "enumeration" ), QgsVectorLayer::Enumeration );
-  cb->addItem( tr( "immutable" ), QgsVectorLayer::Immutable );
-  cb->setSizeAdjustPolicy( QComboBox::AdjustToContentsOnFirstShow );
-  cb->setCurrentIndex( layer->editType( idx ) );
-
-  tblAttributes->setCellWidget( row, 6, cb );
-
-  if ( layer->editType( idx ) == QgsVectorLayer::ValueMap )
+  QString buttonText;
+  switch (layer->editType( idx ))
   {
-    // TODO: create a gui for value maps
-    QStringList mapList;
-    QMap<QString, QVariant> &map = layer->valueMap( idx );
-    for ( QMap<QString, QVariant>::iterator mit = map.begin(); mit != map.end(); mit++ )
-    {
-      QgsDebugMsg( QString( "idx:%1 key:%2 value:%3" ).arg( idx ).arg( mit.key() ).arg( mit.value().toString() ) );
-      if ( mit.value().isNull() )
-        mapList << mit.key();
-      else
-        mapList << QString( "%1=%2" ).arg( mit.key() ).arg( mit.value().toString() );
-    }
-
-    tblAttributes->setItem( row, 7, new QTableWidgetItem( mapList.join( ";" ) ) );
+    case QgsVectorLayer::LineEdit:
+      buttonText = "Line Edit";
+      break;
+    case QgsVectorLayer::UniqueValues:
+      buttonText = "Unique Values";
+      break;
+    case QgsVectorLayer::UniqueValuesEditable:
+      buttonText = "Unique Values Editable";
+      break;
+    case QgsVectorLayer::Classification:
+      buttonText = "Classification";
+      break;
+    case QgsVectorLayer::ValueMap:
+      buttonText = "Value Map";
+      break;
+    case QgsVectorLayer::EditRange:
+      buttonText = "Edit Range";
+      break;
+    case QgsVectorLayer::SliderRange:
+      buttonText = "Slider Range";
+      break;
+    case QgsVectorLayer::FileName:
+      buttonText = "File Name";
+      break;
+    case QgsVectorLayer::Enumeration:
+      buttonText =  tr( "Enumeration" );
+      break;
+    case QgsVectorLayer::Immutable:
+      buttonText =  tr( "Immutable" );
+      break;
   }
-  else if ( layer->editType( idx ) == QgsVectorLayer::EditRange ||
-            layer->editType( idx ) == QgsVectorLayer::SliderRange )
-  {
-    tblAttributes->setItem(
-      row, 7,
-      new QTableWidgetItem( QString( "%1;%2;%3" )
-                            .arg( layer->range( idx ).mMin.toString() )
-                            .arg( layer->range( idx ).mMax.toString() )
-                            .arg( layer->range( idx ).mStep.toString() )
-                          )
-    );
-  }
+  QPushButton * pb = new QPushButton(buttonText);
+  tblAttributes->setCellWidget( row, 6, pb );
+  connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
+  mButtonMap.insert( idx, pb );
 
   //set the alias for the attribute
-  tblAttributes->setItem( row, 8, new QTableWidgetItem( layer->attributeAlias( idx ) ) );
-}
+  tblAttributes->setItem( row, 7, new QTableWidgetItem(layer->attributeAlias(idx)));
 
+}
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
   disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
 }
+
+void QgsVectorLayerProperties::attributeTypeDialog( )
+{
+  int index = -1;
+  QMap<int, QPushButton*>::iterator it = mButtonMap.begin();
+  for (; it != mButtonMap.end() ;it++)
+  {
+     if (it.value()->isDown())
+     {
+       index = it.key();
+     }
+  }
+
+  QgsAttributeTypeDialog attributeTypeDialog( layer );
+
+  if (mValueMaps.contains(index))
+  {
+    attributeTypeDialog.setValueMap(mValueMaps[index]);
+  }
+  else
+  {
+    attributeTypeDialog.setValueMap( QMap<QString, QVariant>() );
+  }
+
+  if (mRanges.contains(index))
+  {
+    attributeTypeDialog.setRange( mRanges[index] );
+  }
+  else
+  {
+    attributeTypeDialog.setRange( QgsVectorLayer::RangeData(0, 5, 1));
+  }
+
+  if (mEditTypeMap.contains(index))
+  {
+    attributeTypeDialog.setIndex( index, mEditTypeMap[index] );
+  }
+  else
+  {
+    attributeTypeDialog.setIndex( index );
+  }
+
+  if (!attributeTypeDialog.exec())
+    return;
+
+  QgsVectorLayer::EditType editType = attributeTypeDialog.editType();
+  mEditTypeMap.insert(index, editType);
+  QString buttonText;
+  switch ( editType )
+  {
+    case QgsVectorLayer::LineEdit:
+      buttonText = "Line Edit";
+      break;
+    case QgsVectorLayer::UniqueValues:
+      buttonText = "Unique Values";
+      break;
+    case QgsVectorLayer::UniqueValuesEditable:
+      buttonText = "Unique Values Editable";
+      break;
+    case QgsVectorLayer::Classification:
+      buttonText = "Classification";
+      break;
+    case QgsVectorLayer::ValueMap:
+      buttonText = "Value Map";
+      mValueMaps.insert(index, attributeTypeDialog.valueMap() );
+      break;
+    case QgsVectorLayer::EditRange:
+      buttonText = "Edit Range";
+      mRanges.insert(index, attributeTypeDialog.rangeData());
+      break;
+    case QgsVectorLayer::SliderRange:
+      buttonText = "Slider Range";
+      mRanges.insert(index, attributeTypeDialog.rangeData());
+      break;
+    case QgsVectorLayer::FileName:
+      buttonText = "File Name";
+      break;
+    case QgsVectorLayer::Enumeration:
+      buttonText = "Enumeration";
+      break;
+    case QgsVectorLayer::Immutable:
+      buttonText = "Immutable";
+      break;
+  }
+  QPushButton *pb = dynamic_cast<QPushButton*>( tblAttributes->cellWidget( index, 6 ) );
+  pb->setText( buttonText );
+
+}
+
 
 void QgsVectorLayerProperties::toggleEditing()
 {
@@ -270,9 +354,15 @@ void QgsVectorLayerProperties::addAttribute()
   QgsAddAttrDialog dialog( layer->dataProvider(), this );
   if ( dialog.exec() == QDialog::Accepted )
   {
+    layer->beginEditCommand("Attribute added");
     if ( !addAttribute( dialog.field() ) )
     {
+      layer->destroyEditCommand();
       QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
+    }
+    else
+    {
+      layer->endEditCommand();
     }
   }
 }
@@ -303,7 +393,6 @@ void QgsVectorLayerProperties::deleteAttribute()
     if (( *it )->column() == 0 )
       idxs << ( *it )->text().toInt();
   }
-
   for ( QList<int>::const_iterator it = idxs.begin(); it != idxs.end(); it++ )
   {
     layer->beginEditCommand( tr( "Deleted attribute" ) );
@@ -524,6 +613,53 @@ void QgsVectorLayerProperties::on_buttonBox_helpRequested()
   QgsContextHelp::run( context_id );
 }
 
+
+QgsVectorLayer::EditType QgsVectorLayerProperties::getEditType(QString text)
+{
+  if (text == "Line Edit")
+  {
+    return QgsVectorLayer::LineEdit;
+  }
+  else if (text == "Unique Values")
+  {
+    return QgsVectorLayer::UniqueValues;
+  }
+  else if (text == "Unique Values Editable")
+  {
+    return QgsVectorLayer::UniqueValuesEditable;
+  }
+  else if (text == "Classification")
+  {
+    return QgsVectorLayer::Classification;
+  }
+  else if (text == "Value Map")
+  {
+    return QgsVectorLayer::ValueMap;
+  }
+  else if (text == "Edit Range")
+  {
+    return QgsVectorLayer::EditRange;
+  }
+  else if (text == "Slider Range")
+  {
+    return QgsVectorLayer::SliderRange;
+  }
+  else if (text == "File Name")
+  {
+    return QgsVectorLayer::FileName;
+  }
+  else if (text == "Enumeration")
+  {
+    return QgsVectorLayer::Enumeration;
+  }
+  else if (text == "Immutable")
+  {
+    return QgsVectorLayer::Immutable;
+  }
+  return QgsVectorLayer::LineEdit;
+}
+
+
 void QgsVectorLayerProperties::apply()
 {
   //
@@ -564,67 +700,28 @@ void QgsVectorLayerProperties::apply()
     int idx = tblAttributes->item( i, 0 )->text().toInt();
     const QgsField &field = layer->pendingFields()[idx];
 
-    QComboBox *cb = dynamic_cast<QComboBox*>( tblAttributes->cellWidget( i, 6 ) );
-    if ( !cb )
+    QPushButton *pb = dynamic_cast<QPushButton*>( tblAttributes->cellWidget( i, 6 ) );
+    if ( !pb )
       continue;
 
-    QgsVectorLayer::EditType editType = ( QgsVectorLayer::EditType ) cb->itemData( cb->currentIndex() ).toInt();
+    QgsVectorLayer::EditType editType = getEditType( pb->text());
     layer->setEditType( idx, editType );
-
-    QString value = tblAttributes->item( i, 7 ) ? tblAttributes->item( i, 7 )->text() : QString::null;
 
     if ( editType == QgsVectorLayer::ValueMap )
     {
-      QMap<QString, QVariant> &map = layer->valueMap( idx );
-      map.clear();
-
-      if ( !value.isEmpty() )
+      if (mValueMaps.contains( idx ))
       {
-        QStringList values = value.split( ";" );
-        for ( int j = 0; j < values.size(); j++ )
-        {
-          QStringList args = values[j].split( "=" );
-          QVariant value;
-
-          if ( args.size() == 1 || ( args.size() == 2 && args[0] == args[1] ) )
-          {
-            QgsDebugMsg( QString( "idx:%1 key:%2 value:%2" ).arg( idx ).arg( args[0] ) );
-            value = args[0];
-          }
-          else if ( args.size() == 2 )
-          {
-            QgsDebugMsg( QString( "idx:%1 key:%2 value:%3" ).arg( idx ).arg( args[0] ).arg( args[1] ) );
-            value = args[1];
-
-          }
-
-          if ( value.canConvert( field.type() ) )
-          {
-            map.insert( args[0], value );
-          }
-        }
+        QMap<QString, QVariant> &map = layer->valueMap( idx );
+        map.clear();
+        map = mValueMaps[idx];
       }
     }
     else if ( editType == QgsVectorLayer::EditRange ||
               editType == QgsVectorLayer::SliderRange )
     {
-      QStringList values = value.split( ";" );
-
-      if ( values.size() == 3 )
+      if (mRanges.contains( idx ) )
       {
-        QVariant min  = values[0];
-        QVariant max  = values[1];
-        QVariant step = values[2];
-
-        if ( min.canConvert( field.type() ) &&
-             max.canConvert( field.type() ) &&
-             step.canConvert( field.type() ) )
-        {
-          min.convert( field.type() );
-          max.convert( field.type() );
-          step.convert( field.type() );
-          layer->range( idx ) = QgsVectorLayer::RangeData( min, max, step );
-        }
+        layer->range( idx ) = mRanges[idx];
       }
     }
   }

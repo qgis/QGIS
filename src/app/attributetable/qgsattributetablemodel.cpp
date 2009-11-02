@@ -82,7 +82,7 @@ void QgsAttributeTableModel::featureDeleted( int fid )
 #endif
 
   QgsDebugMsg( "id->row" );
-  QMap<int, int>::iterator it;
+  QHash<int, int>::iterator it;
   for ( it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
     QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
 
@@ -144,7 +144,7 @@ void QgsAttributeTableModel::layerModified( bool onlyGeometry )
 
   loadLayer();
   emit modelChanged();
-  emit headerDataChanged( Qt::Horizontal, 0, columnCount() );
+  emit headerDataChanged ( Qt::Horizontal, 0, columnCount() - 1);
 }
 
 void QgsAttributeTableModel::loadLayer()
@@ -157,22 +157,27 @@ void QgsAttributeTableModel::loadLayer()
   mRowIdMap.clear();
   mIdRowMap.clear();
 
-  if ( mFeatureCount < mLayer->pendingFeatureCount() )
+  int pendingFeatureCount = mLayer->pendingFeatureCount();
+  if ( mFeatureCount < pendingFeatureCount)
   {
     QgsDebugMsg( "ins" );
     ins = true;
-    beginInsertRows( QModelIndex(), mFeatureCount, mLayer->pendingFeatureCount() - 1 );
+    beginInsertRows( QModelIndex(), mFeatureCount, pendingFeatureCount - 1 );
 // QgsDebugMsg(QString("%1, %2").arg(mFeatureCount).arg(mLayer->pendingFeatureCount() - 1));
   }
-  else if ( mFeatureCount > mLayer->pendingFeatureCount() )
+  else if ( mFeatureCount > pendingFeatureCount )
   {
     QgsDebugMsg( "rm" );
     rm = true;
-    beginRemoveRows( QModelIndex(), mLayer->pendingFeatureCount(), mFeatureCount - 1 );
+    beginRemoveRows( QModelIndex(), pendingFeatureCount, mFeatureCount - 1 );
 // QgsDebugMsg(QString("%1, %2").arg(mFeatureCount).arg(mLayer->pendingFeatureCount() -1));
   }
 
   mLayer->select( QgsAttributeList(), QgsRectangle(), false );
+
+  // preallocate data before inserting
+  mRowIdMap.reserve(pendingFeatureCount + 50);
+  mIdRowMap.reserve(pendingFeatureCount + 50);
 
   for ( int i = 0; mLayer->nextFeature( f ); ++i )
   {
@@ -181,7 +186,7 @@ void QgsAttributeTableModel::loadLayer()
   }
 
   // not needed when we have featureAdded signal
-  mFeatureCount = mLayer->pendingFeatureCount();
+  mFeatureCount = pendingFeatureCount;
   mFieldCount = mLayer->pendingFields().size();
 
   if ( ins )
@@ -197,7 +202,7 @@ void QgsAttributeTableModel::loadLayer()
 
 #if 0
   QgsDebugMsg( "id->row" );
-  QMap<int, int>::iterator it;
+  QHash<int, int>::iterator it;
   for ( it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
     QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
 
@@ -235,7 +240,7 @@ int QgsAttributeTableModel::idToRow( const int id ) const
 {
   if ( !mIdRowMap.contains( id ) )
   {
-    QgsDebugMsg( QString( "idToRow: id %1 not in map" ).arg( id ) );
+    QgsDebugMsg( QString( "idToRow: id %1 not in the map" ).arg( id ) );
     return -1;
   }
 
@@ -246,8 +251,9 @@ int QgsAttributeTableModel::rowToId( const int id ) const
 {
   if ( !mRowIdMap.contains( id ) )
   {
-    QgsDebugMsg( QString( "rowToId: row %1 not in map" ).arg( id ) );
-    return -1;
+    QgsDebugMsg( QString( "rowToId: row %1 not in the map" ).arg( id ) );
+    // return negative infinite (to avoid collision with newly added features)
+    return -999999;
   }
 
   return mRowIdMap[id];

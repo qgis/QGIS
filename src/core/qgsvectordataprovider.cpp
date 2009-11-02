@@ -198,8 +198,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
   if ( abilities & QgsVectorDataProvider::SelectAtId )
   {
-    // Not really meaningful to the user.
-    // abilitiesList += "Select at ID";
+    abilitiesList += "Fast Access to Features at ID";
     QgsDebugMsg( "Capability: Select at ID" );
   }
 
@@ -207,26 +206,6 @@ QString QgsVectorDataProvider::capabilitiesString() const
   {
     abilitiesList += "Change Geometries";
     QgsDebugMsg( "Capability: Change Geometries" );
-  }
-
-  if ( abilities & QgsVectorDataProvider::SelectGeometryAtId )
-  {
-
-    if ( abilities & QgsVectorDataProvider::RandomSelectGeometryAtId )
-    {
-      abilitiesList += "Select Geometries by ID (random access)";
-      QgsDebugMsg( "Capability: Select Geometries by ID (random access)" );
-    }
-    else if ( abilities & QgsVectorDataProvider::SequentialSelectGeometryAtId )
-    {
-      abilitiesList += "Select Geometries by ID (sequential access)";
-      QgsDebugMsg( "Capability: Select Geometries by ID (sequential access)" );
-    }
-    else
-    {
-      abilitiesList += "Select Geometries by ID (unknown access method)";
-      QgsDebugMsg( "Capability: Select Geometries by ID (unknown access method)" );
-    }
   }
 
   return abilitiesList.join( ", " );

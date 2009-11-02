@@ -71,7 +71,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri ): QgsVectorDat
   }
   sqliteHandle = handle->handle();
 
-  enabledCapabilities = QgsVectorDataProvider::SelectGeometryAtId;
+  enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
   enabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
   enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
   enabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;

@@ -506,7 +506,7 @@ bool QgsDelimitedTextProvider::boundsCheck( double x, double y )
 
 int QgsDelimitedTextProvider::capabilities() const
 {
-  return 0;
+  return NoCapabilities;
 }
 
 

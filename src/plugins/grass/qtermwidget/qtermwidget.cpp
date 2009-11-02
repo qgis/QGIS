@@ -259,6 +259,16 @@ void QTermWidget::setFlowControlWarningEnabled(bool enabled)
     }
 }
 
+QSize QTermWidget::minimumSizeHint() const
+{
+    return m_impl->m_terminalDisplay->sizeHint();
+}
+
+QSize QTermWidget::sizeHint() const
+{
+    return m_impl->m_terminalDisplay->sizeHint();
+}
+
 void QTermWidget::setEnvironment(const QStringList& environment)
 {
     m_impl->m_session->setEnvironment(environment);

@@ -6,6 +6,8 @@ SET(QGIS_APP_SRCS
   qgsaddattrdialog.cpp
   qgsattributeactiondialog.cpp
   qgsattributedialog.cpp
+  qgsattributetypedialog.cpp
+  qgsattributetypeloaddialog.cpp
   qgsbookmarkitem.cpp
   qgsbookmarks.cpp
   qgsclipboard.cpp
@@ -108,6 +110,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsaddattrdialog.h
   qgsattributeactiondialog.h
   qgsattributedialog.h
+  qgsattributetypedialog.h
+  qgsattributetypeloaddialog.h
   qgsbookmarks.h
   qgscontinuouscolordialog.h
   qgsconfigureshortcutsdialog.h

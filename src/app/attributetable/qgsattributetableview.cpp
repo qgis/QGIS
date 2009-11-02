@@ -48,7 +48,11 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
 
 void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
 {
-  if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::RandomSelectGeometryAtId )
+  // in case the provider allows fast access to features
+  // we will use the model that calls featureAtId() to fetch only the
+  // features in the current view. Otherwise we'll have to store
+  // everything in the memory because using featureAtId() would be too slow
+  if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SelectAtId )
     mModel = new QgsAttributeTableModel( layer );
   else
     mModel = new QgsAttributeTableMemoryModel( layer );

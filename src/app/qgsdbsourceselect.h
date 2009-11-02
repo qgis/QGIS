@@ -85,6 +85,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void on_btnAdd_clicked();
     void on_btnNew_clicked();
     void on_btnEdit_clicked();
+    void on_btnBuildQuery_clicked();
     void on_btnDelete_clicked();
     void on_mSearchOptionsButton_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
@@ -95,6 +96,8 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void on_cmbConnections_activated( int );
     void setLayerType( QString schema, QString table, QString column,
                        QString type );
+    void on_mTablesTreeView_clicked( const QModelIndex &index );
+    void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
 

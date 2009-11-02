@@ -508,7 +508,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Finish edit command and add it to undo/redo stack */
     void endEditCommand();
 
-    /** Destroy active command and deletes all changes in it */
+    /** Destroy active command and reverts all changes in it */
     void destroyEditCommand();
 
     /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand. */

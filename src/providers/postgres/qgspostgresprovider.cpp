@@ -131,7 +131,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     return;
   }
 
-  enabledCapabilities = QgsVectorDataProvider::SelectGeometryAtId;
+  // postgres has fast access to features at id (thanks to primary key / unique index)
+  // the latter flag is here just for compatibility
+  enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
 
   if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 0 ) ) == "t" )
   {
@@ -543,7 +545,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
       if ( fld.name() == primaryKey )
       {
         // primary key was already processed
-        feature.addAttribute( *it, QString::number( oid ) );
+        feature.addAttribute( *it, convertValue( fld.type(), QString::number(oid) ) );
         continue;
       }
 
@@ -1770,7 +1772,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList& enumValues, c
     Result domainCheckRes = connectionRO->PQexec( domainCheckDefinitionSql );
     if ( PQresultStatus( domainCheckRes ) == PGRES_TUPLES_OK && PQntuples( domainCheckRes ) > 0 )
     {
-      QString checkDefinition = PQgetvalue( domainCheckRes, 0, 0 );
+      QString checkDefinition = QString::fromUtf8( PQgetvalue( domainCheckRes, 0, 0 ) );
 
       //we assume that the constraint is of the following form:
       //(VALUE = ANY (ARRAY['a'::text, 'b'::text, 'c'::text, 'd'::text]))

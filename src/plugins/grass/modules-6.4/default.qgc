@@ -68,7 +68,6 @@
 				<grass name="v.out.ogr.pg"/>
 				<grass name="v.out.ogr.gml"/>
 				<grass name="v.out.ogr.mapinfo"/>
-				<grass name="v.out.ogr.postgis"/>
 				<grass name="v.out.ascii"/>
 				<grass name="v.out.dxf"/>
 				<grass name="v.out.pov"/>

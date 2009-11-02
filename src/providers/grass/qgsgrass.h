@@ -151,6 +151,9 @@ class QgsGrass
     // ! test if the directory is mapset
     static GRASS_EXPORT bool isMapset( QString path );
 
+    // ! Get the lock file
+    static GRASS_EXPORT QString lockFilePath();
+
     //! Library version
     static GRASS_EXPORT int versionMajor();
     static GRASS_EXPORT int versionMinor();

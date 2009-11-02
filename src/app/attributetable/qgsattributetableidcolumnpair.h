@@ -25,6 +25,10 @@ class QgsAttributeTableIdColumnPair
     int id;
     QVariant columnItem;
 
+    /**
+     * Returns true if this id-column pair is less the the tested one
+     * @param b the tested id-column pair
+     */
     bool operator<( const QgsAttributeTableIdColumnPair &b ) const;
 };
 

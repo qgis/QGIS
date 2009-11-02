@@ -141,6 +141,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cbxLegendClassifiers->setChecked( settings.value( "/qgis/showLegendClassifiers", false ).toBool() );
   cbxHideSplash->setChecked( settings.value( "/qgis/hideSplash", false ).toBool() );
   cbxAttributeTableDocked->setChecked( settings.value( "/qgis/dockAttributeTable", false ).toBool() );
+  cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
 
   //set the colour for selections
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
@@ -220,7 +221,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mSearchRadiusVertexEditComboBox->setCurrentIndex( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt() );
 
   //vertex marker
-  mMarkersOnlyForSelectedCheckBox->setChecked(settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool());
+  mMarkersOnlyForSelectedCheckBox->setChecked( settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool() );
 
   mMarkerStyleComboBox->addItem( tr( "Semi transparent circle" ) );
   mMarkerStyleComboBox->addItem( tr( "Cross" ) );
@@ -341,6 +342,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
+  settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );

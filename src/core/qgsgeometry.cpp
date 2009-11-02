@@ -259,8 +259,8 @@ static GEOSCoordSequence *createGeosCoordSequence( const QgsPolyline& points )
   catch ( GEOSException &e )
   {
     Q_UNUSED( e );
-    if ( coord )
-      GEOSCoordSeq_destroy( coord );
+    /*if ( coord )
+      GEOSCoordSeq_destroy( coord );*/
     throw;
   }
 }
@@ -335,8 +335,9 @@ static GEOSGeometry *createGeosLinearRing( const QgsPolyline& polyline )
   catch ( GEOSException &e )
   {
     Q_UNUSED( e );
+    /* as MH has noticed ^, this crashes geos
     if ( coord )
-      GEOSCoordSeq_destroy( coord );
+      GEOSCoordSeq_destroy( coord );*/
     return 0;
   }
 }
@@ -2349,7 +2350,8 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
     int closestVertexIndex = 0;
 
     // set up the GEOS geometry
-    exportWkbToGeos();
+    if ( !exportWkbToGeos() )
+      return -1;
 
     const GEOSGeometry *g = GEOSGetExteriorRing( mGeos );
     if ( g == NULL )
@@ -2628,7 +2630,8 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
 
   //create geos geometry from wkb if not already there
   if ( !mGeos || mDirtyGeos )
-    exportWkbToGeos();
+    if ( !exportWkbToGeos() )
+      return 6;
 
   int type = GEOSGeomTypeId( mGeos );
 
@@ -2831,7 +2834,8 @@ int QgsGeometry::addIsland( const QList<QgsPoint>& ring )
   //create geos geometry from wkb if not already there
   if ( !mGeos || mDirtyGeos )
   {
-    exportWkbToGeos();
+    if ( !exportWkbToGeos() )
+      return 4;
   }
 
   if ( GEOSGeomTypeId( mGeos ) != GEOS_MULTIPOLYGON )
@@ -3164,7 +3168,8 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   }
   if ( !mGeos || mDirtyGeos )
   {
-    exportWkbToGeos();
+    if ( !exportWkbToGeos() )
+      return 1;
   }
 
   //make sure splitLine is valid
@@ -3917,6 +3922,7 @@ bool QgsGeometry::exportWkbToGeos()
     mGeos = 0;
   }
 
+  // this probably shouldn't return TRUE
   if ( !mGeometry )
   {
     // no WKB => no GEOS
@@ -4768,7 +4774,8 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
 
   if ( !mGeos || mDirtyGeos )
   {
-    exportWkbToGeos();
+    if ( !exportWkbToGeos() )
+      return 5;
   }
 
   //first test if linestring intersects geometry. If not, return straight away
@@ -4844,7 +4851,8 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
 
   if ( !mGeos || mDirtyGeos )
   {
-    exportWkbToGeos();
+    if ( !exportWkbToGeos() )
+      return 5;
   }
 
   //first test if linestring intersects geometry. If not, return straight away
@@ -5062,7 +5070,8 @@ int QgsGeometry::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitRes
 {
   if ( !mGeos || mDirtyGeos )
   {
-    exportWkbToGeos();
+    if ( !exportWkbToGeos() )
+      return 1;
   }
 
   //convert mGeos to geometry collection
@@ -5327,6 +5336,9 @@ double QgsGeometry::distance( QgsGeometry& geom )
   {
     geom.exportWkbToGeos();
   }
+
+  if ( mGeos == NULL || geom.mGeos == NULL)
+    return -1.0;
 
   double dist = -1.0;
 

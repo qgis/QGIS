@@ -211,7 +211,7 @@ QStringList QgsOgrProvider::subLayers() const
   }
   for ( unsigned int i = 0; i < layerCount() ; i++ )
   {
-    QString theLayerName = QString( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
+    QString theLayerName = QString::fromLocal8Bit( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) );
 
     int theLayerFeatureCount = OGR_L_GetFeatureCount( OGR_DS_GetLayer( ogrDataSource, i ), 1 ) ;
@@ -896,13 +896,9 @@ int QgsOgrProvider::capabilities() const
       // TODO: Perhaps influence if QGIS caches into memory
       //       (vs read from disk every time) based on this setting.
     {
-      ability |= QgsVectorDataProvider::RandomSelectGeometryAtId;
+      // the latter flag is here just for compatibility
+      ability |= QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
     }
-    else
-    {
-      ability |= QgsVectorDataProvider::SequentialSelectGeometryAtId;
-    }
-    ability |= QgsVectorDataProvider::SelectGeometryAtId;
 
     if ( OGR_L_TestCapability( ogrLayer, "SequentialWrite" ) )
       // TRUE if the CreateFeature() method works for this layer.

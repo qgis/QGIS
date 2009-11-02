@@ -187,7 +187,6 @@ void QgsPgQueryBuilder::fillValues( QString theSQL )
 
   // determine the field type
   QgsField field = mFieldMap[mModelFields->data( lstFields->currentIndex() ).toString()];
-  mActualFieldIsChar = field.typeName().contains( "char" ) || field.typeName().contains( "text" ); // really should be: field.type()==QVariant::String - but is not set correctly above
 
   PGresult *result = PQexec( mPgConnection, theSQL.toUtf8() );
 
@@ -429,14 +428,7 @@ void QgsPgQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 
 void QgsPgQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
 {
-  if ( mActualFieldIsChar )
-  {
-    txtSQL->insertPlainText( "'" + mModelValues->data( index ).toString() + "'" );
-  }
-  else
-  {
-    txtSQL->insertPlainText( mModelValues->data( index ).toString() );
-  }
+  txtSQL->insertPlainText( "'" + mModelValues->data( index ).toString() + "'" );
 }
 
 void QgsPgQueryBuilder::on_btnLessEqual_clicked()

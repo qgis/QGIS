@@ -4,6 +4,6 @@
 	<flag key="o"/>
 	<flag key="e"/>
 	<flag key="r"/>
-	<file key="input" type="directory" />
+	<file key="input" type="directory" label="Directory of rasters to be linked"/>
 	<option key="band"/>
 </qgisgrassmodule>

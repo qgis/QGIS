@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>645</width>
-    <height>517</height>
+    <width>617</width>
+    <height>521</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -224,6 +224,13 @@
             </property>
            </widget>
           </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QCheckBox" name="cbxAddPostgisDC">
+            <property name="text">
+             <string>Add PostGIS layers with double click and select in extended mode</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -249,8 +256,8 @@
       <attribute name="title">
        <string>&amp;Rendering</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
           <string>Rendering behavior</string>
@@ -296,7 +303,7 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="1" column="0">
         <widget class="QGroupBox" name="groupBox_8">
          <property name="title">
           <string>Rendering quality</string>
@@ -325,7 +332,20 @@
          </layout>
         </widget>
        </item>
-       <item>
+       <item row="3" column="0">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Compatibility</string>
@@ -340,19 +360,6 @@
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
