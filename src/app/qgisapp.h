@@ -216,7 +216,7 @@ class QgisApp : public QMainWindow
     QAction *actionEditSeparator1() { return mActionEditSeparator1; }
     QAction *actionCapturePoint() { return mActionCapturePoint; }
     QAction *actionCaptureLine() { return mActionCaptureLine; }
-    QAction *actionCapturePologon() { return mActionCapturePolygon; }
+    QAction *actionCapturePolygon() { return mActionCapturePolygon; }
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
@@ -394,7 +394,7 @@ class QgisApp : public QMainWindow
     /** toggles whether the current selected layer is in overview or not */
     void isInOverview();
     //! Slot to show the map coordinate position of the mouse cursor
-    void showMouseCoordinate( QgsPoint & );
+    void showMouseCoordinate( const QgsPoint & );
     //! Slot to show current map scale;
     void showScale( double theScale );
     //! Slot to handle user scale input;

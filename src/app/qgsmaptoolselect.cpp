@@ -101,9 +101,16 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   {
     delete mRubberBand;
     mRubberBand = 0;
-    // store the rectangle
-    mSelectRect.setRight( e->pos().x() );
-    mSelectRect.setBottom( e->pos().y() );
+
+    // Set valid values for rectangle's width and height
+    if ( mSelectRect.width() == 1 )
+    {
+      mSelectRect.setLeft( mSelectRect.left() + 1 );
+    }
+    if ( mSelectRect.height() == 1 )
+    {
+      mSelectRect.setBottom( mSelectRect.bottom() + 1 );
+    }
   }
 
   mDragging = FALSE;

@@ -19,7 +19,6 @@
 /*  $Id$ */
 
 // includes
-#include <iostream>
 #include <vector>
 
 #include <QAction>

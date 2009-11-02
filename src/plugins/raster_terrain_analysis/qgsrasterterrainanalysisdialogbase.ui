@@ -1,0 +1,144 @@
+<ui version="4.0" >
+ <class>QgsRasterTerrainAnalysisDialogBase</class>
+ <widget class="QDialog" name="QgsRasterTerrainAnalysisDialogBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>355</width>
+    <height>318</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Raster based terrain analysis</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" >
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QLabel" name="mAnalysisLabel" >
+       <property name="text" >
+        <string>Analysis:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mAnalysisComboBox" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="mInputLayerLabel" >
+     <property name="text" >
+      <string>Input layer:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QComboBox" name="mInputLayerComboBox" />
+   </item>
+   <item row="3" column="0" >
+    <widget class="QLabel" name="mOutputLayerLabel" >
+     <property name="text" >
+      <string>Output layer:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+     <item>
+      <widget class="QLineEdit" name="mOutputLayerLineEdit" />
+     </item>
+     <item>
+      <widget class="QPushButton" name="mOutputLayerPushButton" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text" >
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0" >
+    <widget class="QLabel" name="mOutputFormatLabel" >
+     <property name="text" >
+      <string>Output format:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" >
+    <widget class="QComboBox" name="mOutputFormatComboBox" />
+   </item>
+   <item row="7" column="0" >
+    <widget class="QCheckBox" name="mAddResultToProjectCheckBox" >
+     <property name="text" >
+      <string>Add result to project</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" >
+    <widget class="QDialogButtonBox" name="mButtonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsRasterTerrainAnalysisDialogBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsRasterTerrainAnalysisDialogBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

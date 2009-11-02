@@ -439,7 +439,14 @@ void QgsServerSourceSelect::on_btnAdd_clicked()
   }
   else
   {
-    accept();
+    QgisApp::instance()->addRasterLayer(
+      connectionInfo(),
+      leLayerName->text().isEmpty() ? selectedLayers().join( "/" ) : leLayerName->text(),
+      "wms",
+      selectedLayers(),
+      selectedStylesForSelectedLayers(),
+      selectedImageEncoding(),
+      selectedCrs() );
   }
 }
 
@@ -849,11 +856,6 @@ void QgsServerSourceSelect::addWMSListItem( const QDomElement& el, int row, int 
     tableItem->setToolTip( el.text() );
     tableWidgetWMSList->setItem( row, column, tableItem );
   }
-}
-
-void QgsServerSourceSelect::on_btnClose_clicked()
-{
-  accept();
 }
 
 void QgsServerSourceSelect::on_btnSearch_clicked()

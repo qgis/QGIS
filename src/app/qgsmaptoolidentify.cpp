@@ -41,13 +41,12 @@
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas ),
     mResults( 0 ),
-    mRubberBand( 0 )
+    mRubberBand( 0 ),
+    mLayer( 0 )
 {
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
-
-  mLayer = 0; // Initialize mLayer, useful in removeLayer SLOT
 }
 
 QgsMapToolIdentify::~QgsMapToolIdentify()
@@ -75,55 +74,51 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
 
-  mLayer = mCanvas->currentLayer();
-
   // delete rubber band if there was any
   delete mRubberBand;
   mRubberBand = 0;
 
-  // call identify method for selected layer
+  mLayer = mCanvas->currentLayer();
 
-  if ( mLayer )
-  {
-    // In the special case of the WMS provider,
-    // coordinates are sent back to the server as pixel coordinates
-    // not the layer's native CRS.  So identify on screen coordinates!
-    if (
-      ( mLayer->type() == QgsMapLayer::RasterLayer )
-      &&
-      ( dynamic_cast<QgsRasterLayer*>( mLayer )->providerKey() == "wms" )
-    )
-    {
-      identifyRasterWmsLayer( QgsPoint( e->x(), e->y() ) );
-    }
-    else
-    {
-      // convert screen coordinates to map coordinates
-      QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
-
-      if ( mLayer->type() == QgsMapLayer::VectorLayer )
-      {
-        identifyVectorLayer( idPoint );
-      }
-      else if ( mLayer->type() == QgsMapLayer::RasterLayer )
-      {
-        identifyRasterLayer( idPoint );
-      }
-      else
-      {
-        QgsDebugMsg( "unknown layer type!" );
-      }
-    }
-
-  }
-  else
+  if ( !mLayer )
   {
     QMessageBox::warning( mCanvas,
                           tr( "No active layer" ),
                           tr( "To identify features, you must choose an active layer by clicking on its name in the legend" ) );
+    return;
   }
 
+  // cleanup, when layer is removed
+  connect( mLayer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
 
+  // call identify method for selected layer
+
+  // In the special case of the WMS provider,
+  // coordinates are sent back to the server as pixel coordinates
+  // not the layer's native CRS.  So identify on screen coordinates!
+  if ( mLayer->type() == QgsMapLayer::RasterLayer &&
+       dynamic_cast<QgsRasterLayer*>( mLayer )->providerKey() == "wms" )
+  {
+    identifyRasterWmsLayer( QgsPoint( e->x(), e->y() ) );
+  }
+  else
+  {
+    // convert screen coordinates to map coordinates
+    QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
+
+    if ( mLayer->type() == QgsMapLayer::VectorLayer )
+    {
+      identifyVectorLayer( idPoint );
+    }
+    else if ( mLayer->type() == QgsMapLayer::RasterLayer )
+    {
+      identifyRasterLayer( idPoint );
+    }
+    else
+    {
+      QgsDebugMsg( "unknown layer type!" );
+    }
+  }
 }
 
 
@@ -131,7 +126,9 @@ void QgsMapToolIdentify::identifyRasterLayer( const QgsPoint& point )
 {
   QgsRasterLayer *layer = dynamic_cast<QgsRasterLayer*>( mLayer );
   if ( !layer )
+  {
     return;
+  }
 
   QMap<QString, QString> attributes;
   layer->identify( point, attributes );
@@ -232,7 +229,9 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
 {
   QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer*>( mLayer );
   if ( !layer )
+  {
     return;
+  }
 
   // load identify radius from settings
   QSettings settings;
@@ -421,9 +420,19 @@ void QgsMapToolIdentify::showError()
 #endif
 
   QgsMessageViewer * mv = new QgsMessageViewer();
-  mv->setWindowTitle( mLayer->lastErrorTitle() );
-  mv->setMessageAsPlainText( tr( "Could not identify objects on %1 because:\n%2" )
-                             .arg( mLayer->name() ).arg( mLayer->lastError() ) );
+
+  if ( mLayer )
+  {
+    mv->setWindowTitle( mLayer->lastErrorTitle() );
+    mv->setMessageAsPlainText( tr( "Could not identify objects on %1 because:\n%2" )
+                               .arg( mLayer->name() ).arg( mLayer->lastError() ) );
+  }
+  else
+  {
+    mv->setWindowTitle( tr( "Layer was removed" ) );
+    mv->setMessageAsPlainText( tr( "Layer to identify objects on was removed" ) );
+  }
+
   mv->exec(); // deletes itself on close
 }
 
@@ -488,11 +497,10 @@ void QgsMapToolIdentify::editFeature( int featureId )
 void QgsMapToolIdentify::editFeature( QgsFeature &f )
 {
   QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
-  if ( !layer )
+  if ( !layer || !layer->isEditable() )
+  {
     return;
-
-  if ( !layer->isEditable() )
-    return;
+  }
 
   QgsAttributeMap src = f.attributeMap();
 
@@ -519,23 +527,19 @@ void QgsMapToolIdentify::editFeature( QgsFeature &f )
   mCanvas->refresh();
 }
 
-void QgsMapToolIdentify::removeLayer( QString layerID )
+void QgsMapToolIdentify::layerDestroyed()
 {
-  if ( mLayer )
+  mLayer = 0;
+
+  if ( mResults )
   {
-    if ( mLayer->type() == QgsMapLayer::VectorLayer )
-    {
-      if ( mLayer->getLayerID() == layerID )
-      {
-        if ( mResults )
-        {
-          mResults->clear();
-          delete mRubberBand;
-          mRubberBand = 0;
-        }
-        mLayer = 0;
-      }
-    }
+    mResults->clear();
+  }
+
+  if ( mRubberBand )
+  {
+    delete mRubberBand;
+    mRubberBand = 0;
   }
 }
 

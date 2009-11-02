@@ -23,7 +23,7 @@
  */
 class QgsOSMDataProvider: public QgsVectorDataProvider
 {
-
+    Q_OBJECT
   private:
 
     //! provider manages features with one of three geometry types; variable determines feature type of this provider

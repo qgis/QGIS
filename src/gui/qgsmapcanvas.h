@@ -285,8 +285,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
   signals:
     /** Let the owner know how far we are with render operations */
     void setProgress( int, int );
-    /** emits current mouse position */
-    void xyCoordinates( QgsPoint & p );
+
+    /** emits current mouse position
+        \note changed in 1.3 */
+    void xyCoordinates( const QgsPoint & p );
 
     //! Emitted when the scale of the map changes
     void scaleChanged( double );

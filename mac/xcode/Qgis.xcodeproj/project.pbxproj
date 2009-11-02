@@ -1075,6 +1075,21 @@
 		726979AA0F7136D800AFA402 /* qgsopenvectorlayerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A60F71369A00AFA402 /* qgsopenvectorlayerdialog.cpp */; };
 		726979C50F71393B00AFA402 /* 348772824_en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 726979C40F71392200AFA402 /* 348772824_en_US */; };
 		726979C60F71393B00AFA402 /* 63428984_en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 726979C30F71392200AFA402 /* 63428984_en_US */; };
+		726C673A1046030F00EFEDCC /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		726C673B1046030F00EFEDCC /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
+		726C674B10460F7700EFEDCC /* qgsaspectfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C671E104602FB00EFEDCC /* qgsaspectfilter.cpp */; };
+		726C674C10460F7700EFEDCC /* qgsderivativefilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C6720104602FB00EFEDCC /* qgsderivativefilter.cpp */; };
+		726C674D10460F7700EFEDCC /* qgsninecellfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C6722104602FB00EFEDCC /* qgsninecellfilter.cpp */; };
+		726C674E10460F7700EFEDCC /* qgsrasterterrainanalysisdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */; };
+		726C674F10460F7700EFEDCC /* qgsrasterterrainanalysisplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */; };
+		726C675010460F7700EFEDCC /* qgsruggednessfilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C672A104602FB00EFEDCC /* qgsruggednessfilter.cpp */; };
+		726C675110460F7700EFEDCC /* qgsslopefilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C672D104602FB00EFEDCC /* qgsslopefilter.cpp */; };
+		726C675210460F7700EFEDCC /* qgstotalcurvaturefilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726C672F104602FB00EFEDCC /* qgstotalcurvaturefilter.cpp */; };
+		726C675310460F8600EFEDCC /* qgsrasterterrainanalysisdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */; };
+		726C675410460F8600EFEDCC /* qgsrasterterrainanalysisplugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */; };
+		726C675510460FE300EFEDCC /* resources.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 726C6732104602FB00EFEDCC /* resources.qrc */; };
+		726C675D104611A000EFEDCC /* 151694916_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 726C675B1046118B00EFEDCC /* 151694916_pl_PL */; };
+		726C675E104611A000EFEDCC /* 94000531_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 726C675C1046118B00EFEDCC /* 94000531_pl_PL */; };
 		726FD99D0F6BF81300D50560 /* delaunay.png in Copy - ftools-icons-default */ = {isa = PBXBuildFile; fileRef = 726FD99C0F6BF7FE00D50560 /* delaunay.png */; };
 		726FD99E0F6BF81300D50560 /* layer_extent.png in Copy - ftools-icons-default */ = {isa = PBXBuildFile; fileRef = 726FD99B0F6BF7FE00D50560 /* layer_extent.png */; };
 		726FD9A20F6BF83F00D50560 /* delaunay.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 726FD9A10F6BF83100D50560 /* delaunay.png */; };
@@ -1452,6 +1467,8 @@
 		72D0A5431018980500EE6279 /* qgsmarkercatalogue.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7380F39E57A003DC336 /* qgsmarkercatalogue.h */; };
 		72D0A5471018990100EE6279 /* qgsattributeeditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */; };
 		72D0A5481018990100EE6279 /* qgsattributeeditor.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5441018989600EE6279 /* qgsattributeeditor.h */; };
+		72D84C141044BBC7009F8F39 /* mActionReshape.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72D84C131044BBB7009F8F39 /* mActionReshape.png */; };
+		72D84C1F1044BC3A009F8F39 /* qgsmaptoolreshape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D84C1D1044BBFD009F8F39 /* qgsmaptoolreshape.cpp */; };
 		72DB68DE1021D08400ED5F3A /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72DB68ED1021D0BD00ED5F3A /* osmhandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D11021D06C00ED5F3A /* osmhandler.cpp */; };
 		72DB68EF1021D0BD00ED5F3A /* osmprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D31021D06C00ED5F3A /* osmprovider.cpp */; };
@@ -1772,6 +1789,7 @@
 		72EBCB3B0F49E8240016BA3C /* favicon.ico in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0160F39E5DA003DC336 /* favicon.ico */; };
 		72EBCB3C0F49E8240016BA3C /* index.html in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F01B0F39E5DA003DC336 /* index.html */; };
 		72EBCB3D0F49E8240016BA3C /* qgisdoc.css in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0370F39E5DA003DC336 /* qgisdoc.css */; };
+		72EFB924105068590050AC82 /* osmprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D41021D06C00ED5F3A /* osmprovider.h */; };
 		72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */; };
 		72F22FB90FDAC249000E8CB0 /* mActionNodeTool.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */; };
 		72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */; };
@@ -1846,6 +1864,28 @@
 			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7262ED980F7A770300498385 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		726C673C1046030F00EFEDCC /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.qrc";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/qrc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTRCC -name $INPUT_FILE_BASE -o \"$DERIVED_FILES_DIR/qrc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		726C673D1046030F00EFEDCC /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.h";
@@ -3076,6 +3116,7 @@
 				7256F4660F41C4DD0022BE1F /* mActionRemove.png in Copy - theme-default */,
 				7256F4670F41C4DD0022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-default */,
 				7256F4680F41C4DD0022BE1F /* mActionRemoveLayer.png in Copy - theme-default */,
+				72D84C141044BBC7009F8F39 /* mActionReshape.png in Copy - theme-default */,
 				724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */,
 				7256F4690F41C4DD0022BE1F /* mActionSaveAsSVG.png in Copy - theme-default */,
 				7256F46A0F41C4DD0022BE1F /* mActionSaveMapAsImage.png in Copy - theme-default */,
@@ -3370,6 +3411,8 @@
 				7256F57A0F41C64F0022BE1F /* 995980174_de_DE in Copy - context_help */,
 				7256F57B0F41C64F0022BE1F /* 995980174_en_US in Copy - context_help */,
 				7256F57C0F41C64F0022BE1F /* 995980174_sk_SK in Copy - context_help */,
+				726C675E104611A000EFEDCC /* 94000531_pl_PL in Copy - context_help */,
+				726C675D104611A000EFEDCC /* 151694916_pl_PL in Copy - context_help */,
 				72779E95104060DC00CA9DE5 /* 361087368_pl_PL in Copy - context_help */,
 				72779E96104060DC00CA9DE5 /* 687883780_pl_PL in Copy - context_help */,
 				72779E97104060DC00CA9DE5 /* 689216579_pl_PL in Copy - context_help */,
@@ -5859,6 +5902,32 @@
 		726979C20F7138DB00AFA402 /* qgsopenvectorlayerdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsopenvectorlayerdialogbase.ui; path = ../../src/ui/qgsopenvectorlayerdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		726979C30F71392200AFA402 /* 63428984_en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 63428984_en_US; path = ../../resources/context_help/63428984_en_US; sourceTree = SOURCE_ROOT; };
 		726979C40F71392200AFA402 /* 348772824_en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 348772824_en_US; path = ../../resources/context_help/348772824_en_US; sourceTree = SOURCE_ROOT; };
+		726C671D104602FB00EFEDCC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/raster_terrain_analysis/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		726C671E104602FB00EFEDCC /* qgsaspectfilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsaspectfilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsaspectfilter.cpp; sourceTree = SOURCE_ROOT; };
+		726C671F104602FB00EFEDCC /* qgsaspectfilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsaspectfilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsaspectfilter.h; sourceTree = SOURCE_ROOT; };
+		726C6720104602FB00EFEDCC /* qgsderivativefilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsderivativefilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsderivativefilter.cpp; sourceTree = SOURCE_ROOT; };
+		726C6721104602FB00EFEDCC /* qgsderivativefilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsderivativefilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsderivativefilter.h; sourceTree = SOURCE_ROOT; };
+		726C6722104602FB00EFEDCC /* qgsninecellfilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsninecellfilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsninecellfilter.cpp; sourceTree = SOURCE_ROOT; };
+		726C6723104602FB00EFEDCC /* qgsninecellfilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsninecellfilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsninecellfilter.h; sourceTree = SOURCE_ROOT; };
+		726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrasterterrainanalysisdialog.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp; sourceTree = SOURCE_ROOT; };
+		726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisdialog.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.h; sourceTree = SOURCE_ROOT; };
+		726C6726104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisdialogbase.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.h; sourceTree = SOURCE_ROOT; };
+		726C6727104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsrasterterrainanalysisdialogbase.ui; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrasterterrainanalysisplugin.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp; sourceTree = SOURCE_ROOT; };
+		726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisplugin.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.h; sourceTree = SOURCE_ROOT; };
+		726C672A104602FB00EFEDCC /* qgsruggednessfilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsruggednessfilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsruggednessfilter.cpp; sourceTree = SOURCE_ROOT; };
+		726C672B104602FB00EFEDCC /* qgsruggednessfilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsruggednessfilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsruggednessfilter.h; sourceTree = SOURCE_ROOT; };
+		726C672C104602FB00EFEDCC /* qgsruggednessindex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsruggednessindex.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsruggednessindex.cpp; sourceTree = SOURCE_ROOT; };
+		726C672D104602FB00EFEDCC /* qgsslopefilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsslopefilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsslopefilter.cpp; sourceTree = SOURCE_ROOT; };
+		726C672E104602FB00EFEDCC /* qgsslopefilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsslopefilter.h; path = ../../src/plugins/raster_terrain_analysis/qgsslopefilter.h; sourceTree = SOURCE_ROOT; };
+		726C672F104602FB00EFEDCC /* qgstotalcurvaturefilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstotalcurvaturefilter.cpp; path = ../../src/plugins/raster_terrain_analysis/qgstotalcurvaturefilter.cpp; sourceTree = SOURCE_ROOT; };
+		726C6730104602FB00EFEDCC /* qgstotalcurvaturefilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstotalcurvaturefilter.h; path = ../../src/plugins/raster_terrain_analysis/qgstotalcurvaturefilter.h; sourceTree = SOURCE_ROOT; };
+		726C6731104602FB00EFEDCC /* raster_terrain_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = raster_terrain_icon.png; path = ../../src/plugins/raster_terrain_analysis/raster_terrain_icon.png; sourceTree = SOURCE_ROOT; };
+		726C6732104602FB00EFEDCC /* resources.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resources.qrc; path = ../../src/plugins/raster_terrain_analysis/resources.qrc; sourceTree = SOURCE_ROOT; };
+		726C6733104602FB00EFEDCC /* ui_qgsrasterterrainanalysisdialogbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_qgsrasterterrainanalysisdialogbase.h; path = ../../src/plugins/raster_terrain_analysis/ui_qgsrasterterrainanalysisdialogbase.h; sourceTree = SOURCE_ROOT; };
+		726C67411046030F00EFEDCC /* librasterterrainplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = librasterterrainplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		726C675B1046118B00EFEDCC /* 151694916_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 151694916_pl_PL; path = ../../resources/context_help/151694916_pl_PL; sourceTree = SOURCE_ROOT; };
+		726C675C1046118B00EFEDCC /* 94000531_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 94000531_pl_PL; path = ../../resources/context_help/94000531_pl_PL; sourceTree = SOURCE_ROOT; };
 		726FD99B0F6BF7FE00D50560 /* layer_extent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = layer_extent.png; path = ../../python/plugins/fTools/icons/default/layer_extent.png; sourceTree = SOURCE_ROOT; };
 		726FD99C0F6BF7FE00D50560 /* delaunay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delaunay.png; path = ../../python/plugins/fTools/icons/default/delaunay.png; sourceTree = SOURCE_ROOT; };
 		726FD9A00F6BF83100D50560 /* layer_extent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = layer_extent.png; path = ../../python/plugins/fTools/icons/gis/layer_extent.png; sourceTree = SOURCE_ROOT; };
@@ -6861,6 +6930,9 @@
 		72D0A5441018989600EE6279 /* qgsattributeeditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributeeditor.h; path = ../../src/app/qgsattributeeditor.h; sourceTree = SOURCE_ROOT; };
 		72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributeeditor.cpp; path = ../../src/app/qgsattributeeditor.cpp; sourceTree = SOURCE_ROOT; };
 		72D232D30F4A206E000B9039 /* qgis_user-template.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "qgis_user-template.xcconfig"; sourceTree = SOURCE_ROOT; };
+		72D84C131044BBB7009F8F39 /* mActionReshape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionReshape.png; path = ../../images/themes/default/mActionReshape.png; sourceTree = SOURCE_ROOT; };
+		72D84C1D1044BBFD009F8F39 /* qgsmaptoolreshape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolreshape.cpp; path = ../../src/app/qgsmaptoolreshape.cpp; sourceTree = SOURCE_ROOT; };
+		72D84C1E1044BBFD009F8F39 /* qgsmaptoolreshape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolreshape.h; path = ../../src/app/qgsmaptoolreshape.h; sourceTree = SOURCE_ROOT; };
 		72DB68D01021D06C00ED5F3A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/providers/osm/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		72DB68D11021D06C00ED5F3A /* osmhandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osmhandler.cpp; path = ../../src/providers/osm/osmhandler.cpp; sourceTree = SOURCE_ROOT; };
 		72DB68D21021D06C00ED5F3A /* osmhandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = osmhandler.h; path = ../../src/providers/osm/osmhandler.h; sourceTree = SOURCE_ROOT; };
@@ -7201,6 +7273,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		726C67391046030F00EFEDCC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				726C673A1046030F00EFEDCC /* libqgis_core.dylib in Frameworks */,
+				726C673B1046030F00EFEDCC /* libqgis_gui.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		729BBEFD0F40770B001BCB63 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7504,6 +7585,7 @@
 				7223B78D0F96A96500D905B4 /* liboracleplugin.so */,
 				72FB0B550FFD680F0052360B /* libevisplugin.so */,
 				72DB68E31021D08400ED5F3A /* libosmprovider.so */,
+				726C67411046030F00EFEDCC /* librasterterrainplugin.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -7768,6 +7850,8 @@
 				7209E62E0F39E57A003DC336 /* qgsmaptoolmovevertex.h */,
 				72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */,
 				72F22FB60FDAC1F4000E8CB0 /* qgsmaptoolnodetool.h */,
+				72D84C1D1044BBFD009F8F39 /* qgsmaptoolreshape.cpp */,
+				72D84C1E1044BBFD009F8F39 /* qgsmaptoolreshape.h */,
 				7209E62F0F39E57A003DC336 /* qgsmaptoolselect.cpp */,
 				7209E6300F39E57A003DC336 /* qgsmaptoolselect.h */,
 				7209E6310F39E57A003DC336 /* qgsmaptoolsplitfeatures.cpp */,
@@ -8382,6 +8466,7 @@
 				7209EBF90F39E57B003DC336 /* ogr_converter */,
 				7223B7720F969A9D00D905B4 /* oracle_raster */,
 				7209EC150F39E57B003DC336 /* quick_print */,
+				726C671C104602FB00EFEDCC /* raster_terrain_analysis */,
 				7209EC1E0F39E57B003DC336 /* scale_bar */,
 				7209E79A0F39E57A003DC336 /* CMakeLists.txt */,
 				7209E7F50F39E57B003DC336 /* georeferencer */,
@@ -9485,6 +9570,8 @@
 				7209ED7F0F39E5D9003DC336 /* 995980174_sk_SK */,
 				726979C30F71392200AFA402 /* 63428984_en_US */,
 				726979C40F71392200AFA402 /* 348772824_en_US */,
+				726C675C1046118B00EFEDCC /* 94000531_pl_PL */,
+				726C675B1046118B00EFEDCC /* 151694916_pl_PL */,
 				72779E8D104060CF00CA9DE5 /* 361087368_pl_PL */,
 				72779E8E104060CF00CA9DE5 /* 831088384_pl_PL */,
 				72779E8F104060CF00CA9DE5 /* 939347163_pl_PL */,
@@ -10123,6 +10210,7 @@
 				7209EF300F39E5D9003DC336 /* mActionRemove.png */,
 				7209EF310F39E5D9003DC336 /* mActionRemoveAllFromOverview.png */,
 				7209EF320F39E5D9003DC336 /* mActionRemoveLayer.png */,
+				72D84C131044BBB7009F8F39 /* mActionReshape.png */,
 				7209EF330F39E5D9003DC336 /* mActionSaveAsSVG.png */,
 				7209EF340F39E5D9003DC336 /* mActionSaveMapAsImage.png */,
 				7209EF350F39E5D9003DC336 /* mActionScaleBar.png */,
@@ -10622,6 +10710,37 @@
 			);
 			name = ogr;
 			path = ../../src/app/ogr;
+			sourceTree = SOURCE_ROOT;
+		};
+		726C671C104602FB00EFEDCC /* raster_terrain_analysis */ = {
+			isa = PBXGroup;
+			children = (
+				726C671D104602FB00EFEDCC /* CMakeLists.txt */,
+				726C671E104602FB00EFEDCC /* qgsaspectfilter.cpp */,
+				726C671F104602FB00EFEDCC /* qgsaspectfilter.h */,
+				726C6720104602FB00EFEDCC /* qgsderivativefilter.cpp */,
+				726C6721104602FB00EFEDCC /* qgsderivativefilter.h */,
+				726C6722104602FB00EFEDCC /* qgsninecellfilter.cpp */,
+				726C6723104602FB00EFEDCC /* qgsninecellfilter.h */,
+				726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */,
+				726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */,
+				726C6726104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.h */,
+				726C6727104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.ui */,
+				726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */,
+				726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */,
+				726C672A104602FB00EFEDCC /* qgsruggednessfilter.cpp */,
+				726C672B104602FB00EFEDCC /* qgsruggednessfilter.h */,
+				726C672C104602FB00EFEDCC /* qgsruggednessindex.cpp */,
+				726C672D104602FB00EFEDCC /* qgsslopefilter.cpp */,
+				726C672E104602FB00EFEDCC /* qgsslopefilter.h */,
+				726C672F104602FB00EFEDCC /* qgstotalcurvaturefilter.cpp */,
+				726C6730104602FB00EFEDCC /* qgstotalcurvaturefilter.h */,
+				726C6731104602FB00EFEDCC /* raster_terrain_icon.png */,
+				726C6732104602FB00EFEDCC /* resources.qrc */,
+				726C6733104602FB00EFEDCC /* ui_qgsrasterterrainanalysisdialogbase.h */,
+			);
+			name = raster_terrain_analysis;
+			path = ../../src/plugins/raster_terrain_analysis;
 			sourceTree = SOURCE_ROOT;
 		};
 		727459F40F770252007F4218 /* plugins */ = {
@@ -12253,6 +12372,25 @@
 			productReference = 7262ED9C0F7A770300498385 /* libspatialiteprovider.so */;
 			productType = "com.apple.product-type.tool";
 		};
+		726C67361046030F00EFEDCC /* rasterterrain */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 726C673E1046030F00EFEDCC /* Build configuration list for PBXNativeTarget "rasterterrain" */;
+			buildPhases = (
+				726C67371046030F00EFEDCC /* Script - ui */,
+				726C67381046030F00EFEDCC /* Sources */,
+				726C67391046030F00EFEDCC /* Frameworks */,
+			);
+			buildRules = (
+				726C673C1046030F00EFEDCC /* PBXBuildRule */,
+				726C673D1046030F00EFEDCC /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = rasterterrain;
+			productName = testprog;
+			productReference = 726C67411046030F00EFEDCC /* librasterterrainplugin.so */;
+			productType = "com.apple.product-type.tool";
+		};
 		729BBEFE0F40770B001BCB63 /* qgis_help */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 729BBF040F40770C001BCB63 /* Build configuration list for PBXNativeTarget "qgis_help" */;
@@ -12884,6 +13022,7 @@
 				72A56C060F3C887300BA32A1 /* ogrconverterplugin */,
 				7223B77E0F96A96500D905B4 /* oracleplugin */,
 				72A56B800F3C824400BA32A1 /* quickprintplugin */,
+				726C67361046030F00EFEDCC /* rasterterrain */,
 				72A56B8A0F3C824900BA32A1 /* scalebarplugin */,
 				72A56B430F3C822800BA32A1 /* georeferencerplugin */,
 				72A56B4E0F3C823800BA32A1 /* gpsimporterplugin */,
@@ -12946,11 +13085,10 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/../../cmake_templates/qgsconfig.h.in",
-				"$(SRCROOT)/../../cmake_templates/qgssvnversion.h.in_cmake",
 			);
 			outputPaths = (
-				"$(CONFIGURATION_BUILD_DIR)/include/qgsconfig.h",
 				"$(CONFIGURATION_BUILD_DIR)/include/qgssvnversion.h",
+				"$(CONFIGURATION_BUILD_DIR)/include/qgsconfig.h",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -12999,7 +13137,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# generate and run configure.py\n\nif [ ! -f \"$TARGET_TEMP_DIR/python/python/configure.py\" ] || [ ../../python/configure.py.in -nt \"$TARGET_TEMP_DIR/python/python/configure.py\" ] ; then\n\nif [ \"$ARCHS\" = \"ppc i386\" ] || [ \"$ARCHS\" = \"i386 ppc\" ] ; then\n\tARCHS_P=\"ppc;i386\"\nelse\n\tARCHS_P=\"$ARCHS\"\nfi\n\nif [ \"$GDAL_FORM\" = \"fw\" ] ; then\n\tGDALPATH=\"$GDAL_PREFIX/unix/lib\"\nelse\n\tGDALPATH=\"$GDAL_PREFIX/lib\"\nfi\n\nif [ \"$GEOS_FORM\" = \"fw\" ] ; then\n\tGEOSPATH=\"$GEOS_PREFIX/unix/lib\"\nelse\n\tGEOSPATH=\"$GEOS_PREFIX/lib\"\nfi\n\nsed -e \"s,@CMAKE_SOURCE_DIR@,$PROJECT_DIR/../..,\" \\\n\t-e \"s,@CMAKE_BINARY_DIR@,$TARGET_TEMP_DIR/python,\" \\\n\t-e \"s,@GDAL_INCLUDE_DIR@,$GDAL_INC,\" \\\n\t-e \"s,@GEOS_INCLUDE_DIR@,$GEOS_INC,\" \\\n\t-e \"s,@GEOS_LIB_NAME@,geos,\" \\\n\t-e \"s,@GEOS_LIB_PATH@,$GEOSPATH,\" \\\n\t-e \"s,@GDAL_LIB_NAME@,gdal,\" \\\n\t-e \"s,@GDAL_LIB_PATH@,$GDALPATH,\" \\\n\t-e \"s,@CMAKE_OSX_ARCHITECTURES@,$ARCHS_P,\" \\\n\t-e \"s,@CMAKE_OSX_SYSROOT@,$SDKROOT,\" \\\n\t-e \"s,@CMAKE_MODULE_LINKER_FLAGS@,,\" \\\n\t../../python/configure.py.in > \"$TARGET_TEMP_DIR/python/python/configure.py\"\n\nfi\n\ncd \"$TARGET_TEMP_DIR/python/python\"\nif [ ! -f core/Makefile ] || [ ! -f gui/Makefile ] || [ configure.py -nt core/Makefile ] || [ configure.py -nt gui/Makefile ] ; then\n\t$PYTHON configure.py .\nfi\n\nif [ -f core/Makefile ] && [ -f gui/Makefile ] ; then\n\texit 0\nelse\n\texit 1\nfi\n";
+			shellScript = "# generate and run configure.py\n\nif [ ! -f \"$TARGET_TEMP_DIR/python/python/configure.py\" ] || [ ../../python/configure.py.in -nt \"$TARGET_TEMP_DIR/python/python/configure.py\" ] ; then\n\nif [ \"$GDAL_FORM\" = \"fw\" ] ; then\n\tGDALPATH=\"$GDAL_PREFIX/unix/lib\"\nelse\n\tGDALPATH=\"$GDAL_PREFIX/lib\"\nfi\n\nif [ \"$GEOS_FORM\" = \"fw\" ] ; then\n\tGEOSPATH=\"$GEOS_PREFIX/unix/lib\"\nelse\n\tGEOSPATH=\"$GEOS_PREFIX/lib\"\nfi\n\nsed -e \"s,@CMAKE_SOURCE_DIR@,$PROJECT_DIR/../..,\" \\\n\t-e \"s,@CMAKE_BINARY_DIR@,$TARGET_TEMP_DIR/python,\" \\\n\t-e \"s,@GDAL_INCLUDE_DIR@,$GDAL_INC,\" \\\n\t-e \"s,@GEOS_INCLUDE_DIR@,$GEOS_INC,\" \\\n\t-e \"s,@GEOS_LIB_NAME@,geos,\" \\\n\t-e \"s,@GEOS_LIB_PATH@,$GEOSPATH,\" \\\n\t-e \"s,@GDAL_LIB_NAME@,gdal,\" \\\n\t-e \"s,@GDAL_LIB_PATH@,$GDALPATH,\" \\\n\t-e \"s,@CMAKE_OSX_ARCHITECTURES@,$ARCHS_P,\" \\\n\t-e \"s,@CMAKE_OSX_SYSROOT@,$SDKROOT,\" \\\n\t-e \"s,@CMAKE_MODULE_LINKER_FLAGS@,,\" \\\n\t../../python/configure.py.in > \"$TARGET_TEMP_DIR/python/python/configure.py\"\n\nfi\n\ncd \"$TARGET_TEMP_DIR/python/python\"\nif [ ! -f core/Makefile ] || [ ! -f gui/Makefile ] || [ configure.py -nt core/Makefile ] || [ configure.py -nt gui/Makefile ] ; then\n\t$PYTHON configure.py .\nfi\n\nif [ -f core/Makefile ] && [ -f gui/Makefile ] ; then\n\texit 0\nelse\n\texit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		7256F23F0F41370A0022BE1F /* setup */ = {
@@ -13014,7 +13152,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"Setting up Python target...\"\n\n# setup dirs\n\nmkdir -p \"$TARGET_TEMP_DIR/python/python/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/python/gui\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/gui\"\n\n# setup some symlinks to make compilation happy\n\nln -sf \"$PROJECT_TARGET_DIR/include/qgsconfig.h\" \"$TARGET_TEMP_DIR/python/\"\nln -sf \"$PROJECT_TARGET_DIR/include/qgssvnversion.h\" \"$TARGET_TEMP_DIR/python/\"\n\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_core.dylib\" \"$TARGET_TEMP_DIR/python/src/core/\"\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_gui.dylib\" \"$TARGET_TEMP_DIR/python/src/gui/\"\n\ncd \"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\nuih=`ls ui_*.h`\ncd \"$TARGET_TEMP_DIR/python/src/gui\"\nfor h in $uih\ndo\n\tln -sf ../../../../qgis_gui.build/DerivedSources/$h $h\ndone\n\nexit 0\n";
+			shellScript = "echo \"Setting up Python target...\"\n\n# setup dirs\n\nmkdir -p \"$TARGET_TEMP_DIR/python/python/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/python/gui\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/gui\"\n\n# setup some symlinks to make compilation happy\n\nln -sf \"$PROJECT_TARGET_DIR/include/qgsconfig.h\" \"$TARGET_TEMP_DIR/python/\"\nln -sf \"$PROJECT_TARGET_DIR/include/qgssvnversion.h\" \"$TARGET_TEMP_DIR/python/\"\n\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_core.dylib\" \"$TARGET_TEMP_DIR/python/src/core/\"\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_gui.dylib\" \"$TARGET_TEMP_DIR/python/src/gui/\"\n\ncd \"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\nuih=`ls ui_*.h`\ncd \"$TARGET_TEMP_DIR/python/src/gui\"\nfor h in $uih\ndo\n\tln -sf ../../../../qgis_gui.build/DerivedSources/$h $h\ndone\n\n# workaround for broken arch command on Snow - we need to run python 32bit (from pyuic4)\n\nif [ \"$SDKSYS\" = \"snow\" ] && [ \"$PYTHON_FORM\" = \"system\" ] ; then\n\tmkdir -p \"$TARGET_TEMP_DIR/python/bin/\"\n\tditto -arch i386 /System/Library/Frameworks/Python.framework/Versions/2.6/bin/pythonw2.6 \"$TARGET_TEMP_DIR/python/bin/pythonw\"\nfi\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		7256F2760F413B400022BE1F /* make */ = {
@@ -13059,7 +13197,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Note: quoting messes up the -change action in install_name_tool, so for now\n# dependency libraries should have no spaces in paths.  ***FIXME***\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls *.so`\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR\"\nliblist=`ls *.dylib`\n\ncd \"$PROJECT_DIR\"\n\n# Postgres\n\nPGSQLROOT=\"$PGSQL_PREFIX/lib\"\nif [ \"$BUNDLE_PGSQL\" = \"YES\" ] && [ -f \"$PGSQLROOT/libpq.dylib\" ] ; then\n\tcp -f \"$PGSQLROOT/libpq.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libpq.dylib\"\n\tplib=`otool -L \"$PGSQLROOT/libpq.dylib\" | grep -E -m 1 \"libpq.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPGSQL_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libpq.dylib\"\nfi\n\n# GDAL\n# *** Note: may need support files also ***\n\nGDALROOT=\"$GDAL_PREFIX/lib\"\nif [ \"$BUNDLE_GDAL\" = \"YES\" ] && [ \"$GDAL_FORM\" = \"shared\" ] && [ -f \"$GDALROOT/libgdal.dylib\" ] ; then\n\tcp -f \"$GDALROOT/libgdal.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgdal.dylib\"\n\tglib=`otool -L \"$GDALROOT/libgdal.dylib\" | grep -E -m 1 \"libgdal.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGDAL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgdal.dylib\"\nfi\n\n# PROJ\n# *** Note: may need support files also ***\n\nPROJROOT=\"$PROJ_PREFIX/lib\"\nif [ \"$BUNDLE_PROJ\" = \"YES\" ] && [ \"$PROJ_FORM\" = \"shared\" ] && [ -f \"$PROJROOT/libproj.dylib\" ] ; then\n\tcp -f \"$PROJROOT/libproj.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libproj.dylib\"\n\tplib=`otool -L \"$PROJROOT/libproj.dylib\" | grep -E -m 1 \"libproj.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPROJ_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libproj.dylib\"\nfi\n\n# GEOS\n\nGEOSROOT=\"$GEOS_PREFIX/lib\"\nif [ \"$BUNDLE_GEOS\" = \"YES\" ] && [ \"$GEOS_FORM\" = \"shared\" ] && [ -f \"$GEOSROOT/libgeos.dylib\" ] ; then\n\tcp -f \"$GEOSROOT/libgeos.dylib\" \"$GEOSROOT/libgeos_c.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/\"\n\tglib=`otool -L \"$GEOSROOT/libgeos.dylib\" | grep -E -m 1 \"libgeos.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GEOSROOT/libgeos_c.dylib\" | grep -E -m 1 \"libgeos_c.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGEOS_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgeos.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgeos_c.dylib\"\nfi\n\n# SQLite & SpatiaLite\n\nSQLITEROOT=\"$SQLITE_PREFIX/lib\"\nif [ \"$BUNDLE_SQLITE\" = \"YES\" ] && [ \"$SQLITE_FORM\" = \"shared\" ] && [ -f \"$SQLITEROOT/libsqlite3.dylib\" ] ; then\n\tcp -f \"$SQLITEROOT/libsqlite3.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tslib=`otool -L \"$SQLITEROOT/libsqlite3.dylib\" | grep -E -m 1 \"libsqlite3.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSQLITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tif [ -f \"$SQLITEROOT/libspatialite.dylib\" ] ; then\n\t\tcp -f \"$SQLITEROOT/libspatialite.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\t\tslib=`otool -L \"$SQLITEROOT/libspatialite.dylib\" | grep -E -m 1 \"libspatialite.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tSPATIALITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\tfi\nfi\n\n# GSL\n\nGSLROOT=\"$GSL_PREFIX/lib\"\nif [ \"$BUNDLE_GSL\" = \"YES\" ] && [ \"$GSL_FORM\" = \"shared\" ] && [ -f \"$GSLROOT/libgsl.dylib\" ] ; then\n\tcp -f \"$GSLROOT/libgsl.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgsl.dylib\"\n\tcp -f \"$GSLROOT/libgslcblas.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\n\tglib=`otool -L \"$GSLROOT/libgsl.dylib\" | grep -E -m 1 \"libgsl.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GSLROOT/libgslcblas.dylib\" | grep -E -m 1 \"libgslcblas.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGSL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgsl.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\nfi\n\n# change for all bundled libs now\n\necho \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/Qgis\\\"\"\ninstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/Qgis\"\n\nfor p in $pluglist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\"\ndone\n\nfor l in $liblist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\"\ndone\n\nif [ -f \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\" ] ; then\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/gui.so\"\nfi\n\n# other bundling\n\n# gpsbabel\n\nif [ \"$BUNDLE_GPSBABEL\" = \"YES\" ] && [ -f \"$GPSBABEL\" ] ; then\n\tcp -f \"$GPSBABEL\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"/\nfi\n\n# user bundling from bundle.sh\n\nif [ -f bundle.sh ] ; then\n\t./bundle.sh\nfi\n";
+			shellScript = "# Note: quoting messes up the -change action in install_name_tool, so for now\n# dependency libraries should have no spaces in paths.  ***FIXME***\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls *.so`\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR\"\nliblist=`ls *.dylib`\n\ncd \"$PROJECT_DIR\"\n\n# Postgres\n\nPGSQLROOT=\"$PGSQL_PREFIX/lib\"\nif [ \"$BUNDLE_PGSQL\" = \"YES\" ] && [ -f \"$PGSQLROOT/libpq.dylib\" ] ; then\n\tcp -fp \"$PGSQLROOT/libpq.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libpq.dylib\"\n\tplib=`otool -L \"$PGSQLROOT/libpq.dylib\" | grep -E -m 1 \"libpq.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPGSQL_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libpq.dylib\"\nfi\n\n# GDAL\n# *** Note: may need support files also ***\n\nGDALROOT=\"$GDAL_PREFIX/lib\"\nif [ \"$BUNDLE_GDAL\" = \"YES\" ] && [ \"$GDAL_FORM\" = \"shared\" ] && [ -f \"$GDALROOT/libgdal.dylib\" ] ; then\n\tcp -fp \"$GDALROOT/libgdal.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgdal.dylib\"\n\tglib=`otool -L \"$GDALROOT/libgdal.dylib\" | grep -E -m 1 \"libgdal.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGDAL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgdal.dylib\"\nfi\n\n# PROJ\n# *** Note: may need support files also ***\n\nPROJROOT=\"$PROJ_PREFIX/lib\"\nif [ \"$BUNDLE_PROJ\" = \"YES\" ] && [ \"$PROJ_FORM\" = \"shared\" ] && [ -f \"$PROJROOT/libproj.dylib\" ] ; then\n\tcp -fp \"$PROJROOT/libproj.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libproj.dylib\"\n\tplib=`otool -L \"$PROJROOT/libproj.dylib\" | grep -E -m 1 \"libproj.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPROJ_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libproj.dylib\"\nfi\n\n# GEOS\n\nGEOSROOT=\"$GEOS_PREFIX/lib\"\nif [ \"$BUNDLE_GEOS\" = \"YES\" ] && [ \"$GEOS_FORM\" = \"shared\" ] && [ -f \"$GEOSROOT/libgeos.dylib\" ] ; then\n\tcp -fp \"$GEOSROOT/libgeos.dylib\" \"$GEOSROOT/libgeos_c.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/\"\n\tglib=`otool -L \"$GEOSROOT/libgeos.dylib\" | grep -E -m 1 \"libgeos.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GEOSROOT/libgeos_c.dylib\" | grep -E -m 1 \"libgeos_c.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGEOS_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgeos.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgeos_c.dylib\"\nfi\n\n# SQLite & SpatiaLite\n\nSQLITEROOT=\"$SQLITE_PREFIX/lib\"\nif [ \"$BUNDLE_SQLITE\" = \"YES\" ] && [ \"$SQLITE_FORM\" = \"shared\" ] && [ -f \"$SQLITEROOT/libsqlite3.dylib\" ] ; then\n\tcp -fp \"$SQLITEROOT/libsqlite3.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tslib=`otool -L \"$SQLITEROOT/libsqlite3.dylib\" | grep -E -m 1 \"libsqlite3.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSQLITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tif [ -f \"$SQLITEROOT/libspatialite.dylib\" ] ; then\n\t\tcp -fp \"$SQLITEROOT/libspatialite.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\t\tslib=`otool -L \"$SQLITEROOT/libspatialite.dylib\" | grep -E -m 1 \"libspatialite.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tSPATIALITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\tfi\nfi\n\n# GSL\n\nGSLROOT=\"$GSL_PREFIX/lib\"\nif [ \"$BUNDLE_GSL\" = \"YES\" ] && [ \"$GSL_FORM\" = \"shared\" ] && [ -f \"$GSLROOT/libgsl.dylib\" ] ; then\n\tcp -fp \"$GSLROOT/libgsl.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgsl.dylib\"\n\tcp -fp \"$GSLROOT/libgslcblas.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\n\tglib=`otool -L \"$GSLROOT/libgsl.dylib\" | grep -E -m 1 \"libgsl.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GSLROOT/libgslcblas.dylib\" | grep -E -m 1 \"libgslcblas.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGSL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgsl.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\nfi\n\n# change for all bundled libs now\n\necho \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/Qgis\\\"\"\ninstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/Qgis\"\n\nfor p in $pluglist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\"\ndone\n\nfor l in $liblist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\"\ndone\n\nif [ -f \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\" ] ; then\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/gui.so\"\nfi\n\n# other bundling\n\n# gpsbabel\n\nif [ \"$BUNDLE_GPSBABEL\" = \"YES\" ] && [ -f \"$GPSBABEL\" ] ; then\n\tcp -f \"$GPSBABEL\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"/\nfi\n\n# user bundling from bundle.sh\n\nif [ -f bundle.sh ] ; then\n\t./bundle.sh\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		726C67371046030F00EFEDCC /* Script - ui */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - ui";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		727AD4FA0F7325CA002B9DCD /* install */ = {
@@ -13104,7 +13257,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "plug=\"osm\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug/ui_files\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\ncd ..\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
+			shellScript = "plug=\"osm\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug/ui_files\n\n# workaround for broken arch command on Snow - we need to run python 32bit (from pyuic4)\n\nif [ \"$SDKSYS\" = \"snow\" ] && [ \"$PYTHON_FORM\" = \"system\" ] ; then\n\texport PATH=\"$TARGET_TEMP_DIR/python/bin:$PATH\"\nfi\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\ncd ..\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		729287A60F71D4FE006D9489 /* Script - ui */ = {
@@ -13404,7 +13557,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "plug=\"fTools\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\n# generate tools ui py files\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug/tools\"\nmkdir -p \"$targetdir\"\ncd tools\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\nexit 0\n";
+			shellScript = "plug=\"fTools\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# workaround for broken arch command on Snow - we need to run python 32bit (from pyuic4)\n\nif [ \"$SDKSYS\" = \"snow\" ] && [ \"$PYTHON_FORM\" = \"system\" ] ; then\n\texport PATH=\"$TARGET_TEMP_DIR/python/bin:$PATH\"\nfi\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\n# generate tools ui py files\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug/tools\"\nmkdir -p \"$targetdir\"\ncd tools\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		72C535941038E16500A9CC02 /* Script - mapserver ui+rc */ = {
@@ -13419,7 +13572,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "plug=\"mapserver_export\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
+			shellScript = "plug=\"mapserver_export\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# workaround for broken arch command on Snow - we need to run python 32bit (from pyuic4)\n\nif [ \"$SDKSYS\" = \"snow\" ] && [ \"$PYTHON_FORM\" = \"system\" ] ; then\n\texport PATH=\"$TARGET_TEMP_DIR/python/bin:$PATH\"\nfi\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
 		};
 		72C535961038E22700A9CC02 /* Script - plugininstall ui+rc */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -13433,7 +13586,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "plug=\"plugin_installer\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
+			shellScript = "plug=\"plugin_installer\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# workaround for broken arch command on Snow - we need to run python 32bit (from pyuic4)\n\nif [ \"$SDKSYS\" = \"snow\" ] && [ \"$PYTHON_FORM\" = \"system\" ] ; then\n\texport PATH=\"$TARGET_TEMP_DIR/python/bin:$PATH\"\nfi\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		72E706ED0F42589900142011 /* fix linking */ = {
@@ -13463,7 +13616,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# copy Qt frameworks\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tcp -f \"/Library/Frameworks/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rf \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tcp -f \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"/Library/Frameworks/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tcp -Rf \"/Library/Frameworks/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tcp -f \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tcp -f \"$PYSITE/sip.so\" \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tcp -f \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/\"\n\t\tfi\n\tdone\n\tcp -f \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls *.dylib`\n\n# main Qt framework loop\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tqq=\"$q.framework/Versions/$QT_FWVER/$q\"\n\t# app\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/Qgis\"\n\t# bin\n\t# qgis_help qt linking done with symlinks\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t# libs\n\tfor ql in $qgliblist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\tdone\n\t# plugins\n\tfor qp in $pluglist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\tdone\n\t# qt fw\n\tfor qf in $QTLISTQG\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\tdone\n\t# qt plugs\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t# PyQt\n\tif [ \"$PYSITE\" ] ; then\n\tfor pq in $PYQTLIST\n\t\tdo\n\t\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\tdone\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/core.so\"\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/gui.so\"\n\tfi\ndone\n";
+			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# copy Qt frameworks\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tcp -fp \"/Library/Frameworks/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tcp -fp \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"/Library/Frameworks/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tcp -Rfp \"/Library/Frameworks/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tcp -fp \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tcp -fp \"$PYSITE/sip.so\" \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tcp -fp \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls *.dylib`\n\n# main Qt framework loop\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tqq=\"$q.framework/Versions/$QT_FWVER/$q\"\n\t# app\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/Qgis\"\n\t# bin\n\t# qgis_help qt linking done with symlinks\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t# libs\n\tfor ql in $qgliblist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\tdone\n\t# plugins\n\tfor qp in $pluglist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\tdone\n\t# qt fw\n\tfor qf in $QTLISTQG\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\tdone\n\t# qt plugs\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t# PyQt\n\tif [ \"$PYSITE\" ] ; then\n\tfor pq in $PYQTLIST\n\t\tdo\n\t\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\tdone\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/core.so\"\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/gui.so\"\n\tfi\ndone\n";
 			showEnvVarsInLog = 0;
 		};
 		72FB0B4B0FFD680F0052360B /* Script - ui */ = {
@@ -13721,6 +13874,24 @@
 			files = (
 				7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */,
 				7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		726C67381046030F00EFEDCC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				726C675510460FE300EFEDCC /* resources.qrc in Sources */,
+				726C674B10460F7700EFEDCC /* qgsaspectfilter.cpp in Sources */,
+				726C674C10460F7700EFEDCC /* qgsderivativefilter.cpp in Sources */,
+				726C674D10460F7700EFEDCC /* qgsninecellfilter.cpp in Sources */,
+				726C674E10460F7700EFEDCC /* qgsrasterterrainanalysisdialog.cpp in Sources */,
+				726C674F10460F7700EFEDCC /* qgsrasterterrainanalysisplugin.cpp in Sources */,
+				726C675010460F7700EFEDCC /* qgsruggednessfilter.cpp in Sources */,
+				726C675110460F7700EFEDCC /* qgsslopefilter.cpp in Sources */,
+				726C675210460F7700EFEDCC /* qgstotalcurvaturefilter.cpp in Sources */,
+				726C675310460F8600EFEDCC /* qgsrasterterrainanalysisdialog.h in Sources */,
+				726C675410460F8600EFEDCC /* qgsrasterterrainanalysisplugin.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14119,6 +14290,7 @@
 				72DB68EF1021D0BD00ED5F3A /* osmprovider.cpp in Sources */,
 				72DB68F11021D0BD00ED5F3A /* osmrenderer.cpp in Sources */,
 				72DB68F31021D0BD00ED5F3A /* osmstyle.cpp in Sources */,
+				72EFB924105068590050AC82 /* osmprovider.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14181,6 +14353,7 @@
 				7209F4460F3A468C003DC336 /* qgsmaptoolmovefeature.cpp in Sources */,
 				7209F4470F3A468C003DC336 /* qgsmaptoolmovevertex.cpp in Sources */,
 				72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */,
+				72D84C1F1044BC3A009F8F39 /* qgsmaptoolreshape.cpp in Sources */,
 				7209F4480F3A468C003DC336 /* qgsmaptoolselect.cpp in Sources */,
 				7209F4490F3A468C003DC336 /* qgsmaptoolsplitfeatures.cpp in Sources */,
 				7209F44A0F3A468C003DC336 /* qgsmaptoolvertexedit.cpp in Sources */,
@@ -14980,6 +15153,71 @@
 					"$(SQLITE_LIB)",
 				);
 				PRODUCT_NAME = spatialiteprovider.so;
+			};
+			name = Release;
+		};
+		726C673F1046030F00EFEDCC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/plugin,
+					../../src/core,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(GDAL_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(GDAL_LIB)",
+				);
+				PRODUCT_NAME = rasterterrainplugin.so;
+				TARGET_PLUGINDIR = raster_terrain_analysis;
+			};
+			name = Debug;
+		};
+		726C67401046030F00EFEDCC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/plugin,
+					../../src/core,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(GDAL_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(GDAL_LIB)",
+				);
+				PRODUCT_NAME = rasterterrainplugin.so;
+				TARGET_PLUGINDIR = raster_terrain_analysis;
 			};
 			name = Release;
 		};
@@ -17092,6 +17330,15 @@
 			buildConfigurations = (
 				7262ED9A0F7A770300498385 /* Debug */,
 				7262ED9B0F7A770300498385 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		726C673E1046030F00EFEDCC /* Build configuration list for PBXNativeTarget "rasterterrain" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				726C673F1046030F00EFEDCC /* Debug */,
+				726C67401046030F00EFEDCC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

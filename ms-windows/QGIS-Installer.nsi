@@ -9,7 +9,7 @@
 ;Select if you are building a "Development Version" or a "Release Version" of the Quantum GIS Installer
 ;Change the INSTALLER_TYPE variable to Release or Development
 
-!define INSTALLER_TYPE "Release"
+!define INSTALLER_TYPE "Release-NoGrass"
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@
 ;----------------------------------------------------------------------------------------------------------------------------
 
 ;define the QGIS Base Name
-!define RELEASE_QGIS_BASE "Quantum GIS"
+!define RELEASE_QGIS_BASE "Quantum GIS Daphnis"
 !define DEV_QGIS_BASE "Quantum GIS Unstable Dev"
 
 ;Set the installer variables, depending on the selected version to build
@@ -56,6 +56,18 @@
 	!define CHECK_INSTALL_NAME "${RELEASE_QGIS_BASE}"
 	!define INSTALLER_DISPLAYED_NAME "${COMPLETE_NAME}"
 	!define PACKAGE_FOLDER ".\QGIS-Release-Package"
+!else if ${INSTALLER_TYPE} == "Release-NoGrass"
+	!define VERSION_NUMBER "${RELEASE_VERSION_NUMBER}"
+	!define VERSION_NAME "${RELEASE_VERSION_NAME}"
+	!define COMPLETE_NAME "${RELEASE_QGIS_BASE} ${RELEASE_VERSION_NUMBER} ${RELEASE_VERSION_NAME}"
+	!define SVN_REVISION "${RELEASE_SVN_REVISION}"
+	!define BINARY_REVISION "${RELEASE_BINARY_REVISION}"
+	!define QGIS_BASE "${RELEASE_QGIS_BASE}"
+	!define INSTALLER_NAME "QGIS-${VERSION_NUMBER}-${BINARY_REVISION}-No-GrassSetup.exe"
+	!define DISPLAYED_NAME "${RELEASE_QGIS_BASE} ${VERSION_NUMBER}-${BINARY_REVISION}"
+	!define CHECK_INSTALL_NAME "${RELEASE_QGIS_BASE}"
+	!define INSTALLER_DISPLAYED_NAME "${COMPLETE_NAME}"
+	!define PACKAGE_FOLDER ".\QGIS-Release-Package-No-Grass"
 !else if ${INSTALLER_TYPE} == "Development"
 	!define VERSION_NUMBER "${DEV_VERSION_NUMBER}"
 	!define VERSION_NAME "${DEV_VERSION_NAME}"
@@ -525,6 +537,9 @@ Section "Uninstall"
 	
 	Delete "$INSTDIR\icons\QGIS.ico"
 	Delete "$INSTDIR\icons\QGIS_Web.ico"
+
+	Delete "$INSTDIR\MRSID_README.txt"
+	Delete "$INSTDIR\run.bat"
 	
 	;remove folders
 	RMDir /r "$INSTDIR\bin"
@@ -541,6 +556,8 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\resources"
 	RMDir /r "$INSTDIR\svg"
 	RMDir /r "$INSTDIR\themes"
+	RMDir /r "$INSTDIR\proj"
+	RMDir /r "$INSTDIR\epsg_csv"
 	
 	;if empty, remove the install folder
 	RMDir "$INSTDIR"

@@ -827,7 +827,7 @@
          <property name="title">
           <string>Vertex markers</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout_1">
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="mMarkersOnlyForSelectedCheckBox">
             <property name="text">
@@ -936,7 +936,7 @@
        <item row="0" column="0">
         <widget class="QGroupBox" name="grpProjectionBehaviour">
          <property name="title">
-          <string>When layer is loaded that has no coordinate reference system (CRS)</string>
+          <string>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</string>
          </property>
          <layout class="QVBoxLayout">
           <property name="margin">

@@ -201,7 +201,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionEditSeparator1() = 0;
     virtual QAction *actionCapturePoint() = 0;
     virtual QAction *actionCaptureLine() = 0;
-    virtual QAction *actionCapturePologon() = 0;
+    virtual QAction *actionCapturePolygon() = 0;
     virtual QAction *actionDeleteSelected() = 0;
     virtual QAction *actionMoveFeature() = 0;
     virtual QAction *actionSplitFeatures() = 0;

@@ -373,7 +373,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) != NULL )
   {
     // skip features without geometry
-    if ( OGR_F_GetGeometryRef( fet ) == NULL && !mFetchFeaturesWithoutGeom )
+    if ( !mFetchFeaturesWithoutGeom && OGR_F_GetGeometryRef( fet ) == NULL )
     {
       OGR_F_Destroy( fet );
       continue;
@@ -388,6 +388,12 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
     if ( mFetchGeom || mUseIntersect )
     {
       OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
+
+      if ( geom == 0 )
+      {
+        OGR_F_Destroy( fet );
+        continue;
+      }
 
       // get the wkb representation
       unsigned char *wkb = new unsigned char[OGR_G_WkbSize( geom )];

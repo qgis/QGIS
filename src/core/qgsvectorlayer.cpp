@@ -71,14 +71,12 @@
 #include "qgsvectoroverlay.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsclipper.h"
 
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
 
-#ifdef Q_WS_X11
-#include "qgsclipper.h"
-#endif
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -394,9 +392,7 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
 
   transformPoints( x, y, z, renderContext );
 
-#if defined(Q_WS_X11)
-  // Work around a +/- 32768 limitation on coordinates in X11
-
+  // Work around a +/- 32768 limitation on coordinates
   // Look through the x and y coordinates and see if there are any
   // that need trimming. If one is found, there's no need to look at
   // the rest of them so end the loop at that point.
@@ -410,7 +406,6 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
       break;
     }
   }
-#endif
 
   // set up QPolygonF class with transformed points
   QPolygonF pa( nPoints );
@@ -526,9 +521,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
 
     transformPoints( ring->first, ring->second, zVector, renderContext );
 
-#if defined(Q_WS_X11)
-    // Work around a +/- 32768 limitation on coordinates in X11
-
+    // Work around a +/- 32768 limitation on coordinates
     // Look through the x and y coordinates and see if there are any
     // that need trimming. If one is found, there's no need to look at
     // the rest of them so end the loop at that point.
@@ -541,7 +534,6 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
         break;
       }
     }
-#endif
 
     // Don't bother keeping the ring if it has been trimmed out of
     // existence.
@@ -3661,9 +3653,7 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
   // executed, but never used, in a bit of code where performance is
   // critical).
   if ( ! fet.isValid() ) { return; }
-#if defined(Q_WS_X11)
   bool needToTrim = false;
-#endif
 
   QgsGeometry* geom = fet.geometry();
   unsigned char* feature = geom->asWkb();
@@ -3679,6 +3669,12 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
       double y = *(( double * )( feature + 5 + sizeof( double ) ) );
 
       transformPoint( x, y, &renderContext.mapToPixel(), renderContext.coordinateTransform() );
+      if ( std::abs( x ) > QgsClipper::MAX_X ||
+             std::abs( y ) > QgsClipper::MAX_Y )
+      {
+        break;
+      }
+
       //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
       QPointF pt( x*renderContext.rasterScaleFactor() - ( marker->width() / 2 ),
                   y*renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
@@ -3720,13 +3716,11 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
                     y*renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
         //QPointF pt( x, y );
 
-#if defined(Q_WS_X11)
-        // Work around a +/- 32768 limitation on coordinates in X11
+        // Work around a +/- 32768 limitation on coordinates
         if ( std::abs( x ) > QgsClipper::MAX_X ||
              std::abs( y ) > QgsClipper::MAX_Y )
           needToTrim = true;
         else
-#endif
           p->drawImage( pt, *marker );
       }
       p->restore();

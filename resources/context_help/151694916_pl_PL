@@ -1,0 +1,21 @@
+<h3>Zakładki przestrzenne</h3>
+Zakładki przestrzenne pozwalają zapamiętać lokalizację geograficzną w oknie mapy i później do niej wrócić.
+
+<h4>Tworzenie zakładek</h4>
+Aby utworzyć zakładkę:
+<ol>
+<li>Przybliż lub przesuń się do interesującego Cię obszaru mapy
+<li>Kliknij <i>Nowa zakładka</i> lub wciśnij Ctrl+B
+<li>Wprowadź opisową nazwę zakładki (do 255 znaków)
+<li>Kliknij <i>OK</i> aby dodać zakładkę, lub <i>Anuluj</i> aby wyjść bez dodania zakładki.
+</ol>
+Zauważ, że możesz mieć wiele zakładek o tej samej nazwie.
+<h4>Praca z zakładkami</h4>
+W celu skorzystania z istniejących zakładek lub zarządzania nimi, kliknij przycisk <i>Pokaż zakładki</i> lub wybierz <i>Pokaż zakładki</i> z menu <i>Widok</i>. Okno dialogowe pozwala na przywołanie zapamiętanego obszaru w oknie mapy lub usunięcie zakładki. Nie ma możliwości edytowania nazwy ani współrzędnych zakładki.
+<h5>Przybliżanie się do zakładki</h5>
+Z okna dialogowego Zakładki wybierz pożądaną zakładkę klikając na niej, następnie kliknij przycisk <i>Powiększ do</i>.
+<p>
+Możesz także przybliżyć się do zakładki dwukrotnie klikając na jej nazwie.
+
+<h5>Usuwanie zakładki</h5>
+Aby usunąć zakładkę z okna Zakładki, kliknij na jej nazwie, a następnie wybierz przycisk <i>Usuń</i>. Potwierdź swój wybór, klikając <i>OK</i> lub cofnij go, klikając <i>Anuluj</i>.

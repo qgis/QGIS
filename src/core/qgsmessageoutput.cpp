@@ -62,7 +62,10 @@ void QgsMessageOutputConsole::showMessage( bool )
 {
   // show title if provided
   if ( !mTitle.isNull() )
+  {
     QgsDebugMsg( QString( "%1:" ).arg( mTitle ) );
+  }
+
   // show the message
   QgsDebugMsg( mMessage );
   emit destroyed();

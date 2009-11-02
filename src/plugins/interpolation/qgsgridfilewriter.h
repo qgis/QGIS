@@ -29,7 +29,7 @@ class QgsInterpolator;
 class QgsGridFileWriter
 {
   public:
-    QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows );
+    QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
     ~QgsGridFileWriter();
 
     /**Writes the grid file.

@@ -20,10 +20,10 @@
 #include <QFile>
 #include <QProgressDialog>
 
-QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows ): mInterpolator( i ), mOutputFilePath( outputPath ), mInterpolationExtent( extent ), mNumColumns( nCols ), mNumRows( nRows )
+QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows , double cellSizeX, double cellSizeY ): \
+    mInterpolator( i ), mOutputFilePath( outputPath ), mInterpolationExtent( extent ), mNumColumns( nCols ), mNumRows( nRows ), mCellSizeX( cellSizeX ), mCellSizeY( cellSizeY )
 {
-  mCellSizeX = ( mInterpolationExtent.xMaximum() - mInterpolationExtent.xMinimum() ) / mNumColumns;
-  mCellSizeY = ( mInterpolationExtent.yMaximum() - mInterpolationExtent.yMinimum() ) / mNumRows;
+
 }
 
 QgsGridFileWriter::QgsGridFileWriter(): mInterpolator( 0 )

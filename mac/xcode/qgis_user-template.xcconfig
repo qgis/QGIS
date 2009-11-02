@@ -6,9 +6,12 @@
 // commented values values shown here are defaults
 // there is no need to set *everything* here.
 
-//SDKSYS =  // tig (Tiger), leo (Leopard), [empty] (native)
-//ARCHS = $(NATIVE_ARCH) // default
+//SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
+//ARCHS = $(NATIVE_ARCH)  // ppc i386 ppc64 x86_64
 //ARCHS = ppc i386 // for universal
+
+// python archs may be different
+//ARCHS_P = $(ARCH_P_$(SDKSYS)) // in the form arch1;arch2;...
 
 //////////////////////////////////////////////////////////////////////
 // Qt and other support
@@ -51,17 +54,15 @@
 //PGSQL_FORM = shared // static or shared
 
 // system expat only on Leopard+
-//EXPAT_FORM = shared // static, shared or system
+//EXPAT_FORM = $(EXPAT_FORM_$(SDKSYS)) // static, shared or system
 
 //GRASS_FORM = app // app or unix
 // version as in app name or unix folder name, can't auto-detect here
 //GRASS_VERSION = 6.4
 
 // system Python only on Leopard+
-//PYTHON_FORM = fw // fw, system or disabled
-//PYTHON_VERSION = 2.5 // can't auto-detect here
-// only uncomment this for a native build on Leopard
-//PYTHON_HAVE_system_ = HAVE_PYTHON=1
+//PYTHON_FORM = $(PYTHON_FORM_$(SDKSYS)) // fw, system or disabled
+//PYTHON_VERSION = $(PYTHON_VERSION_$(SDKSYS))
 
 //////////////////////////////////////////////////////////////////////
 // whether to bundle some external libs in the app package

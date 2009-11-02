@@ -129,7 +129,7 @@ void QgsRectangle::expand( double scaleFactor, const QgsPoint * cp )
   ymax = centerY + newHeight;
 }
 
-QgsRectangle QgsRectangle::intersect( QgsRectangle * rect ) const
+QgsRectangle QgsRectangle::intersect( const QgsRectangle * rect ) const
 {
   QgsRectangle intersection = QgsRectangle();
   //If they don't actually intersect an empty QgsRectangle should be returned

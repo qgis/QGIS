@@ -102,7 +102,7 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     */
     void on_btnConnect_clicked();
 
-    //! Determines the layers the user selected and closes the dialog
+    //! Determines the layers the user selected
     void on_btnAdd_clicked();
 
     //! Opens the Spatial Reference System dialog.
@@ -193,7 +193,6 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     static const int context_id = 710979116;
 
   private slots:
-    void on_btnClose_clicked();
     void on_btnSearch_clicked();
     void on_btnAddWMS_clicked();
     void wmsSelectionChanged();

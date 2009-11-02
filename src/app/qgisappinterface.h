@@ -169,7 +169,7 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionEditSeparator1();
     virtual QAction *actionCapturePoint();
     virtual QAction *actionCaptureLine();
-    virtual QAction *actionCapturePologon();
+    virtual QAction *actionCapturePolygon();
     virtual QAction *actionDeleteSelected();
     virtual QAction *actionMoveFeature();
     virtual QAction *actionSplitFeatures();

@@ -211,6 +211,14 @@ void QgsDbSourceSelect::setLayerType( QString schema,
 QgsDbSourceSelect::~QgsDbSourceSelect()
 {
   PQfinish( pd );
+
+  if ( mColumnTypeThread )
+  {
+    mColumnTypeThread->stop();
+    mColumnTypeThread->wait();
+    delete mColumnTypeThread;
+    mColumnTypeThread = NULL;
+  }
 }
 
 void QgsDbSourceSelect::populateConnectionList()
@@ -844,7 +852,7 @@ void QgsGeomColumnTypeThread::getLayerTypes()
   {
     PQsetClientEncoding( pd, QString( "UNICODE" ).toLocal8Bit() );
 
-    for ( uint i = 0; i < schemas.size(); i++ )
+    for ( uint i = 0; i < schemas.size() && !mStopped; i++ )
     {
       QString query = QString( "select distinct "
                                "case"
@@ -871,12 +879,10 @@ void QgsGeomColumnTypeThread::getLayerTypes()
       }
       PQclear( gresult );
 
-      if ( mStopped )
-        break;
-
       // Now tell the layer list dialog box...
       emit setLayerType( schemas[i], tables[i], columns[i], type );
     }
+
   }
 
   PQfinish( pd );

@@ -251,7 +251,6 @@
      <zorder>fillcolorlabel</zorder>
      <zorder>btnFillColor</zorder>
      <zorder>fillcolorlabel_2</zorder>
-     <zorder>mGroupPoint</zorder>
     </widget>
    </item>
    <item row="1" column="0" >

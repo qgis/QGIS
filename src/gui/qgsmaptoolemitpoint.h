@@ -47,7 +47,8 @@ class GUI_EXPORT QgsMapToolEmitPoint : public QgsMapTool
   signals:
 
     //! signal emitted on canvas click
-    void canvasClicked( QgsPoint& point, Qt::MouseButton button );
+    // \note changed in 1.3
+    void canvasClicked( const QgsPoint& point, Qt::MouseButton button );
 };
 
 #endif

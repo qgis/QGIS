@@ -62,6 +62,11 @@ int QgsIDWInterpolator::interpolatePoint( double x, double y, double& result )
     sumDenominator += currentWeight;
   }
 
+  if ( sumDenominator == 0.0 )
+  {
+    return 1;
+  }
+
   result = sumCounter / sumDenominator;
   return 0;
 }

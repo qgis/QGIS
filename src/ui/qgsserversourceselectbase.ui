@@ -5,17 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>481</height>
+    <width>510</width>
+    <height>508</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Add Layer(s) from a Server</string>
   </property>
   <property name="windowIcon" >
-   <iconset>
-    <normaloff/>
-   </iconset>
+   <iconset/>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -75,6 +73,22 @@
         </widget>
        </item>
        <item row="1" column="4" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>31</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="5" >
         <widget class="QPushButton" name="btnAddDefault" >
          <property name="statusTip" >
           <string>Adds a few example WMS servers</string>
@@ -86,22 +100,6 @@
           <string>Add default servers</string>
          </property>
         </widget>
-       </item>
-       <item row="1" column="5" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType" >
-          <enum>QSizePolicy::Expanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0" >
-          <size>
-           <width>131</width>
-           <height>30</height>
-          </size>
-         </property>
-        </spacer>
        </item>
        <item row="2" column="0" colspan="6" >
         <widget class="QTreeWidget" name="lstLayers" >
@@ -145,7 +143,7 @@
       <attribute name="title" >
        <string>Layer Order</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout" >
+      <layout class="QGridLayout" >
        <item row="0" column="0" >
         <widget class="QPushButton" name="mLayerUpButton" >
          <property name="text" >
@@ -161,11 +159,11 @@
         </widget>
        </item>
        <item row="0" column="2" >
-        <spacer name="horizontalSpacer" >
+        <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" >
           <size>
            <width>391</width>
            <height>30</height>
@@ -191,10 +189,6 @@
         </widget>
        </item>
       </layout>
-      <zorder>mLayerUpButton</zorder>
-      <zorder>mLayerDownButton</zorder>
-      <zorder>horizontalSpacer</zorder>
-      <zorder>mLayerOrderTreeWidget</zorder>
      </widget>
      <widget class="QWidget" name="tab_2" >
       <attribute name="title" >
@@ -275,33 +269,27 @@
    <item row="2" column="0" colspan="4" >
     <widget class="QGroupBox" name="gbCRS" >
      <property name="title" >
-      <string>Coordinate Reference System</string>
+      <string>Options</string>
      </property>
-     <layout class="QHBoxLayout" >
-      <item>
-       <widget class="QLabel" name="labelCoordRefSys" >
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label" >
         <property name="text" >
-         <string/>
+         <string>Layer name</string>
         </property>
        </widget>
       </item>
-      <item>
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType" >
-         <enum>QSizePolicy::Expanding</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>441</width>
-          <height>23</height>
-         </size>
-        </property>
-       </spacer>
+      <item row="0" column="1" colspan="2" >
+       <widget class="QLineEdit" name="leLayerName" />
       </item>
-      <item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QLabel" name="labelCoordRefSys" >
+        <property name="text" >
+         <string>Coordinate Reference System</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
        <widget class="QPushButton" name="btnChangeSpatialRefSys" >
         <property name="enabled" >
          <bool>false</bool>
@@ -338,7 +326,7 @@
      <property name="sizeType" >
       <enum>QSizePolicy::Expanding</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" >
       <size>
        <width>284</width>
        <height>31</height>

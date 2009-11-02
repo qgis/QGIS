@@ -28,7 +28,7 @@
 #define isnan(f) _isnan(f)
 #endif
 
-QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData ): mLayerData( layerData )
+QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData ): mDataIsCached( false ), mLayerData( layerData )
 {
 
 }
