@@ -27,6 +27,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QTextStream>
 
 #include <climits>
 #include <cfloat>
@@ -120,9 +121,13 @@ void QgsAttributeTypeDialog::loadFromCSVButtonPushed()
   {
     QMessageBox::information( NULL,
                               tr( "Error" ),
-                              tr( "Could not open file %1\nError was:%2" ).arg( fileName ).arg( f.errorString() ), QMessageBox::Cancel );
+                              tr( "Could not open file %1\nError was:%2" ).arg( fileName ).arg( f.errorString() ),
+			      QMessageBox::Cancel );
     return;
   }
+
+  QTextStream s(&f);
+  s.setAutoDetectUnicode(true);
 
   QRegExp re0( "^([^;]*);(.*)$" );
   re0.setMinimal( true );
@@ -130,11 +135,11 @@ void QgsAttributeTypeDialog::loadFromCSVButtonPushed()
   re1.setMinimal( true );
   QMap<QString, QVariant> map;
 
-  f.readLine();
+  s.readLine();
 
-  while ( !f.atEnd() )
+  while ( !s.atEnd() )
   {
-    QString l = f.readLine().trimmed();
+    QString l = s.readLine().trimmed();
 
     QString key, val;
     if ( re0.indexIn( l ) >= 0 && re0.numCaptures() == 2 )

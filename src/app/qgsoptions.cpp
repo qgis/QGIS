@@ -62,6 +62,22 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
   spinBoxIdentifyValue->setValue( identifyValue );
 
+
+  //local directories to search when looking for an SVG with a given basename
+  QString myPaths = settings.value( "svg/searchPathsForSVG", "" ).toString();
+  if ( !myPaths.isEmpty() )
+  {
+    QStringList myPathList = myPaths.split( "|" );
+    QStringList::const_iterator pathIt = myPathList.constBegin();
+    for ( ; pathIt != myPathList.constEnd(); ++pathIt )
+    {
+      QListWidgetItem* newItem = new QListWidgetItem( mListSVGPaths );
+      newItem->setText( *pathIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mListSVGPaths->addItem( newItem );
+    }
+  }
+
   //Web proxy settings
   grpProxy->setChecked( settings.value( "proxy/proxyEnabled", "0" ).toBool() );
   leProxyHost->setText( settings.value( "proxy/proxyHost", "" ).toString() );
@@ -149,6 +165,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   //set the state of the checkboxes
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", false ).toBool() );
+  chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
 
   chkUseSymbologyNG->setChecked( settings.value( "/qgis/use_symbology_ng", false ).toBool() );
 
@@ -337,6 +354,19 @@ QString QgsOptions::theme()
 void QgsOptions::saveOptions()
 {
   QSettings settings;
+  
+  //search directories for svgs
+  QString myPaths;
+  for ( int i = 0; i < mListSVGPaths->count(); ++i )
+  {
+    if ( i != 0 )
+    {
+      myPaths += "|";
+    }
+    myPaths += mListSVGPaths->item( i )->text();
+  }
+  settings.setValue( "svg/searchPathsForSVG", myPaths );
+
   //Web proxy settings
   settings.setValue( "proxy/proxyEnabled", grpProxy->isChecked() );
   settings.setValue( "proxy/proxyHost", leProxyHost->text() );
@@ -344,6 +374,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "proxy/proxyUser", leProxyUser->text() );
   settings.setValue( "proxy/proxyPassword", leProxyPassword->text() );
   settings.setValue( "proxy/proxyType", mProxyTypeComboBox->currentText() );
+
 
   //url to exclude from proxys
   QString proxyExcludeString;
@@ -367,6 +398,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
+  settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
   settings.setValue( "/qgis/use_symbology_ng", chkUseSymbologyNG->isChecked() );
   settings.setValue( "qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
@@ -533,7 +565,9 @@ void QgsOptions::on_chkAntiAliasing_stateChanged()
   // used (we we can. but it then doesn't do anti-aliasing, and this
   // will confuse people).
   if ( chkAntiAliasing->isChecked() )
+  {
     chkUseQPixmap->setChecked( false );
+  }
 
 }
 
@@ -543,7 +577,9 @@ void QgsOptions::on_chkUseQPixmap_stateChanged()
   // used (we we can. but it then doesn't do anti-aliasing, and this
   // will confuse people).
   if ( chkUseQPixmap->isChecked() )
+  {
     chkAntiAliasing->setChecked( false );
+  }
 
 }
 
@@ -672,6 +708,32 @@ QStringList QgsOptions::i18nList()
     myList << myFileName.replace( "qgis_", "" ).replace( ".qm", "" );
   }
   return myList;
+}
+
+void QgsOptions::on_mBtnAddSVGPath_clicked()
+{
+  QString myDir = QFileDialog::getExistingDirectory(
+      this,
+      tr( "Choose a directory" ),
+      QDir::toNativeSeparators( QDir::homePath() ),
+      QFileDialog::ShowDirsOnly
+      );
+
+  if ( ! myDir.isEmpty() )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListSVGPaths );
+    newItem->setText( myDir );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListSVGPaths->addItem( newItem );
+    mListSVGPaths->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::on_mBtnRemoveSVGPath_clicked()
+{
+  int currentRow = mListSVGPaths->currentRow();
+  QListWidgetItem* itemToRemove = mListSVGPaths->takeItem( currentRow );
+  delete itemToRemove;
 }
 
 void QgsOptions::on_mAddUrlPushButton_clicked()

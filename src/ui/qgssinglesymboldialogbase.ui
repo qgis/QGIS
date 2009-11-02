@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>717</width>
-    <height>529</height>
+    <width>710</width>
+    <height>443</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -19,241 +19,33 @@
    <string>Single Symbol</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="verticalSpacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="leftMargin" >
-      <number>11</number>
+    <widget class="QLabel" name="mLabel" >
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>22</height>
+      </size>
      </property>
-     <property name="topMargin" >
-      <number>0</number>
+     <property name="text" >
+      <string>Label</string>
      </property>
-     <property name="rightMargin" >
-      <number>11</number>
+     <property name="buddy" >
+      <cstring>mLabelEdit</cstring>
      </property>
-     <property name="bottomMargin" >
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="mLabel" >
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>22</height>
-        </size>
-       </property>
-       <property name="text" >
-        <string>Label</string>
-       </property>
-       <property name="buddy" >
-        <cstring>mLabelEdit</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mLabelEdit" >
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>22</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0" >
-    <widget class="QGroupBox" name="groupBox_3" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title" >
-      <string>Style Options</string>
-     </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="outlinecolorlabel_2" >
-        <property name="text" >
-         <string>Outline style</string>
-        </property>
-        <property name="buddy" >
-         <cstring>cboOutlineStyle</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="QComboBox" name="cboOutlineStyle" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>172</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="outlinecolorlabel" >
-        <property name="text" >
-         <string>Outline color</string>
-        </property>
-        <property name="buddy" >
-         <cstring>btnOutlineColor</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QgsColorButton" name="btnOutlineColor" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>172</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>136</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="outlinewidthlabel" >
-        <property name="text" >
-         <string>Outline width</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" >
-       <widget class="QDoubleSpinBox" name="outlinewidthspinbox" >
-        <property name="minimumSize" >
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>172</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="singleStep" >
-         <double>0.100000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="fillcolorlabel" >
-        <property name="text" >
-         <string>Fill color</string>
-        </property>
-        <property name="buddy" >
-         <cstring>btnFillColor</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" >
-       <widget class="QgsColorButton" name="btnFillColor" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize" >
-         <size>
-          <width>100</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="maximumSize" >
-         <size>
-          <width>172</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" >
-       <widget class="QLabel" name="fillcolorlabel_2" >
-        <property name="text" >
-         <string>Fill style</string>
-        </property>
-        <property name="buddy" >
-         <cstring>cboFillStyle</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1" >
-       <layout class="QHBoxLayout" >
-        <item>
-         <widget class="QComboBox" name="cboFillStyle" >
-          <property name="minimumSize" >
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-          <property name="maximumSize" >
-           <size>
-            <width>142</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="toolSelectTexture" >
-          <property name="text" >
-           <string>...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-     <zorder>outlinecolorlabel_2</zorder>
-     <zorder>cboOutlineStyle</zorder>
-     <zorder>outlinecolorlabel</zorder>
-     <zorder>btnOutlineColor</zorder>
-     <zorder>outlinewidthlabel</zorder>
-     <zorder>outlinewidthspinbox</zorder>
-     <zorder>fillcolorlabel</zorder>
-     <zorder>btnFillColor</zorder>
-     <zorder>fillcolorlabel_2</zorder>
     </widget>
    </item>
-   <item row="1" column="0" >
+   <item row="0" column="1" >
+    <widget class="QLineEdit" name="mLabelEdit" >
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>22</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
     <widget class="QGroupBox" name="mGroupPoint" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
@@ -341,6 +133,9 @@
         <property name="text" >
          <string>Symbol field</string>
         </property>
+        <property name="buddy" >
+         <cstring>mSymbolComboBox</cstring>
+        </property>
        </widget>
       </item>
       <item row="3" column="2" >
@@ -348,10 +143,19 @@
         <property name="text" >
          <string>Size</string>
         </property>
+        <property name="buddy" >
+         <cstring>mPointSizeSpinBox</cstring>
+        </property>
        </widget>
       </item>
       <item row="3" column="3" >
        <widget class="QDoubleSpinBox" name="mPointSizeSpinBox" >
+        <property name="decimals" >
+         <number>5</number>
+        </property>
+        <property name="maximum" >
+         <double>1000000.000000000000000</double>
+        </property>
         <property name="singleStep" >
          <double>0.100000000000000</double>
         </property>
@@ -370,6 +174,202 @@
      </layout>
     </widget>
    </item>
+   <item row="2" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox_3" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title" >
+      <string>Style Options</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="outlinecolorlabel_2" >
+        <property name="text" >
+         <string>Outline style</string>
+        </property>
+        <property name="buddy" >
+         <cstring>cboOutlineStyle</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="cboOutlineStyle" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>172</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QLabel" name="outlinecolorlabel" >
+        <property name="text" >
+         <string>Outline color</string>
+        </property>
+        <property name="buddy" >
+         <cstring>btnOutlineColor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QgsColorButton" name="btnOutlineColor" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>32</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>32</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4" >
+       <widget class="QLabel" name="outlinewidthlabel" >
+        <property name="text" >
+         <string>Outline width</string>
+        </property>
+        <property name="buddy" >
+         <cstring>outlinewidthspinbox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5" >
+       <widget class="QDoubleSpinBox" name="outlinewidthspinbox" >
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>172</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="singleStep" >
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="fillcolorlabel_2" >
+        <property name="text" >
+         <string>Fill style</string>
+        </property>
+        <property name="buddy" >
+         <cstring>cboFillStyle</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QComboBox" name="cboFillStyle" >
+          <property name="minimumSize" >
+           <size>
+            <width>0</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="maximumSize" >
+           <size>
+            <width>142</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="toolSelectTexture" >
+          <property name="text" >
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QLabel" name="fillcolorlabel" >
+        <property name="text" >
+         <string>Fill color</string>
+        </property>
+        <property name="buddy" >
+         <cstring>btnFillColor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QgsColorButton" name="btnFillColor" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>32</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>32</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>271</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
@@ -383,12 +383,17 @@
  <tabstops>
   <tabstop>mLabelEdit</tabstop>
   <tabstop>lstSymbols</tabstop>
+  <tabstop>mRotationClassificationComboBox</tabstop>
+  <tabstop>mSymbolComboBox</tabstop>
+  <tabstop>mScaleClassificationComboBox</tabstop>
+  <tabstop>mPointSizeSpinBox</tabstop>
+  <tabstop>mPointSizeUnitsCheckBox</tabstop>
   <tabstop>cboOutlineStyle</tabstop>
   <tabstop>btnOutlineColor</tabstop>
   <tabstop>outlinewidthspinbox</tabstop>
-  <tabstop>btnFillColor</tabstop>
   <tabstop>cboFillStyle</tabstop>
   <tabstop>toolSelectTexture</tabstop>
+  <tabstop>btnFillColor</tabstop>
  </tabstops>
  <resources/>
  <connections/>

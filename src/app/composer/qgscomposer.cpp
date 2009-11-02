@@ -181,6 +181,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   mView->setComposition( mComposition );
 
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mCompositionOptionsFrame, mComposition );
+  QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
   compositionWidget->show();
 
   mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
@@ -1097,6 +1098,7 @@ void QgsComposer::readXML( const QDomDocument& doc )
 
   //create compositionwidget
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mCompositionOptionsFrame, mComposition );
+  QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
   compositionWidget->show();
 
   mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );

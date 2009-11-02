@@ -24,6 +24,26 @@ class QgsComposerMap : QObject, QgsComposerItem
       Rectangle    // Display only rectangle
     };
 
+    enum GridStyle
+    {
+      Solid = 0, //solid lines
+      Cross //only draw line crossings
+    };
+
+    enum GridAnnotationPosition
+    {
+      InsideMapFrame = 0,
+      OutsideMapFrame
+    };
+
+    enum GridAnnotationDirection
+    {
+      Horizontal = 0,
+      Vertical,
+      HorizontalAndVertical,
+      BoundaryDirection
+    };
+
     /** \brief Draw to paint device
     @param extent map extent
     @param size size in scene coordinates
@@ -71,6 +91,22 @@ class QgsComposerMap : QObject, QgsComposerItem
     PreviewMode previewMode();
     void setPreviewMode( PreviewMode m );
 
+    /**Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
+    @note this function was added in version 1.2*/
+    bool keepLayerSet() const;
+    /**Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
+    @note this function was added in version 1.2*/
+    void setKeepLayerSet( bool enabled );
+
+    /**Getter for stored layer set that is used if mKeepLayerSet is true
+    @note this function was added in version 1.2*/
+    QStringList layerSet() const;
+    /**Setter for stored layer set that is used if mKeepLayerSet is true
+    @note this function was added in version 1.2*/
+    void setLayerSet( const QStringList& layerSet );
+    /**Stores the current layer set of the qgis mapcanvas in mLayerSet*/
+    void storeCurrentLayerSet();
+
     // Set cache outdated
     void setCacheUpdated( bool u = false );
 
@@ -94,6 +130,96 @@ class QgsComposerMap : QObject, QgsComposerItem
      * @param itemElem is Dom node corresponding to 'ComposerMap' tag
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+
+    /**Enables a coordinate grid that is shown on top of this composermap.
+        @note this function was added in version 1.4*/
+    void setGridEnabled( bool enabled );
+    bool gridEnabled() const;
+
+    /**Sets coordinate grid style to solid or cross
+        @note this function was added in version 1.4*/
+    void setGridStyle( GridStyle style );
+    GridStyle gridStyle() const;
+
+    /**Sets coordinate interval in x-direction for composergrid.
+        @note this function was added in version 1.4*/
+    void setGridIntervalX( double interval );
+    double gridIntervalX() const;
+
+    /**Sets coordinate interval in y-direction for composergrid.
+    @note this function was added in version 1.4*/
+    void setGridIntervalY( double interval );
+    double gridIntervalY() const;
+
+    /**Sets x-coordinate offset for composer grid
+    @note this function was added in version 1.4*/
+    void setGridOffsetX( double offset );
+    double gridOffsetX() const;
+
+    /**Sets y-coordinate offset for composer grid
+    @note this function was added in version 1.4*/
+    void setGridOffsetY( double offset );
+    double gridOffsetY() const;
+
+    /**Sets the pen to draw composer grid
+    @note this function was added in version 1.4*/
+    void setGridPen( const QPen& p );
+    QPen gridPen() const;
+
+     /**Sets with of grid pen
+    @note this function was added in version 1.4*/
+    void setGridPenWidth( double w );
+
+    /**Sets the color of the grid pen
+    @note this function was added in version 1.4*/
+    void setGridPenColor( const QColor& c );
+
+    /**Sets font for grid annotations
+    @note this function was added in version 1.4*/
+    void setGridAnnotationFont( const QFont& f );
+    QFont gridAnnotationFont() const;
+
+     /**Sets coordinate precision for grid annotations
+    @note this function was added in version 1.4*/
+    void setGridAnnotationPrecision( int p );
+    int gridAnnotationPrecision() const;
+
+    /**Sets flag if grid annotation should be shown
+    @note this function was added in version 1.4*/
+    void setShowGridAnnotation( bool show );
+    bool showGridAnnotation() const;
+
+    /**Sets position of grid annotations. Possibilities are inside or outside of the map frame
+    @note this function was added in version 1.4*/
+    void setGridAnnotationPosition( GridAnnotationPosition p );
+    GridAnnotationPosition gridAnnotationPosition() const;
+
+    /**Sets distance between map frame and annotations
+    @note this function was added in version 1.4*/
+    void setAnnotationFrameDistance( double d );
+    double annotationFrameDistance() const;
+
+    /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
+    @note this function was added in version 1.4*/
+    void setGridAnnotationDirection( GridAnnotationDirection d );
+    GridAnnotationDirection gridAnnotationDirection() const;
+
+    /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
+    @note this function was added in version 1.4*/
+    QRectF boundingRect() const;
+    /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
+    @note this function was added in version 1.4*/
+    void updateBoundingRect();
+
+    /**Sets the rotation of the map content
+    @note this function was added in version 1.4*/
+    void setRotation(double r);
+    double rotation() const;
+
+    /**Sets length of the cros segments (if grid style is cross)
+    @note this function was added in version 1.4*/
+    void setCrossLength(double l);
+    double crossLength();
 
   public slots:
 

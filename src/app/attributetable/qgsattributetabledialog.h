@@ -132,6 +132,10 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      * Starts editing mode
      */
     void startEditing();
+    /**
+     * Opens field calculator dialog
+     */
+    void on_mOpenFieldCalculator_clicked();
 
   signals:
     /**

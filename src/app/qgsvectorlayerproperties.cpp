@@ -358,7 +358,7 @@ void QgsVectorLayerProperties::updateButtons()
     int cap = layer->dataProvider()->capabilities();
     mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
     mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
-    mCalculateFieldButton->setEnabled(( cap &  QgsVectorDataProvider::AddAttributes ) && ( cap & QgsVectorDataProvider::ChangeAttributeValues ) );
+    mCalculateFieldButton->setEnabled( cap & QgsVectorDataProvider::ChangeAttributeValues );
     mToggleEditingButton->setChecked( true );
   }
   else
@@ -686,6 +686,9 @@ void QgsVectorLayerProperties::apply()
 
   // update symbology
   emit refreshLegend( layer->getLayerID(), false );
+
+  //no need to delete the old one, maplayer will do it if needed
+  layer->setCacheImage( 0 );
 
   layer->triggerRepaint();
   // notify the project we've made a change

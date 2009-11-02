@@ -301,19 +301,22 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
 void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
 {
   //list all directories in $prefix/share/qgis/svg
-  QDir svgDirectory( QgsApplication::svgPath() );
-  if ( !svgDirectory.exists() || !svgDirectory.isReadable() )
-  {
-    return; //error
-  }
-
-  QFileInfoList directoryList = svgDirectory.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
-  QFileInfoList::const_iterator dirIt = directoryList.constBegin();
-  for ( ; dirIt != directoryList.constEnd(); ++dirIt )
-  {
-    if ( addDirectoryToPreview( dirIt->absoluteFilePath() ) == 0 )
+  QStringList svgPaths = QgsApplication::svgPaths();
+  for(int i=0; i<svgPaths.size(); i++) {
+    QDir svgDirectory( svgPaths[i] );
+    if ( !svgDirectory.exists() || !svgDirectory.isReadable() )
     {
-      mSearchDirectoriesComboBox->addItem( dirIt->absoluteFilePath() );
+      return; //error
+    }
+
+    QFileInfoList directoryList = svgDirectory.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
+    QFileInfoList::const_iterator dirIt = directoryList.constBegin();
+    for ( ; dirIt != directoryList.constEnd(); ++dirIt )
+    {
+      if ( addDirectoryToPreview( dirIt->absoluteFilePath() ) == 0 )
+      {
+	mSearchDirectoriesComboBox->addItem( dirIt->absoluteFilePath() );
+      }
     }
   }
 }

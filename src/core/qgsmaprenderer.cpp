@@ -80,6 +80,8 @@ void QgsMapRenderer::updateScale()
 
 bool QgsMapRenderer::setExtent( const QgsRectangle& extent )
 {
+  //remember the previous extent
+  mLastExtent = mExtent;
 
   // Don't allow zooms where the current extent is so small that it
   // can't be accurately represented using a double (which is what
@@ -207,6 +209,11 @@ void QgsMapRenderer::adjustExtentToSize()
 
 void QgsMapRenderer::render( QPainter* painter )
 {
+  //flag to see if the render context has changed 
+  //since the last time we rendered. If it hasnt changed we can
+  //take some shortcuts with rendering
+  bool mySameAsLastFlag = true;
+
   QgsDebugMsg( "========== Rendering ==========" );
 
   if ( mExtent.isEmpty() )
@@ -216,7 +223,9 @@ void QgsMapRenderer::render( QPainter* painter )
   }
 
   if ( mDrawing )
+  {
     return;
+  }
 
   QPaintDevice* thePaintDevice = painter->device();
   if ( !thePaintDevice )
@@ -251,9 +260,39 @@ void QgsMapRenderer::render( QPainter* painter )
     scaleFactor = sceneDpi / 25.4;
   }
   double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
-  mRenderContext.setScaleFactor( scaleFactor );
-  mRenderContext.setRasterScaleFactor( rasterScaleFactor );
-  mRenderContext.setRendererScale( mScale );
+  if ( mRenderContext.rasterScaleFactor() != rasterScaleFactor )
+  {
+    mRenderContext.setRasterScaleFactor( rasterScaleFactor );
+    mySameAsLastFlag = false;
+  }
+  if ( mRenderContext.scaleFactor() != scaleFactor )
+  {
+    mRenderContext.setScaleFactor( scaleFactor );
+    mySameAsLastFlag = false;
+  }
+  if ( mRenderContext.rendererScale() != mScale )
+  {
+    //add map scale to render context
+    mRenderContext.setRendererScale( mScale );
+    mySameAsLastFlag = false;
+  }
+  if ( mLastExtent != mExtent )
+  {
+    mLastExtent = mExtent;
+    mySameAsLastFlag = false;
+  }
+
+  // know we know if this render is just a repeat of the last time, we 
+  // can clear caches if it has changed
+  if ( !mySameAsLastFlag )
+  {
+      //clear the cache pixmap if we changed resolution / extent
+      QSettings mySettings;
+      if ( mySettings.value ( "/qgis/enable_render_caching", false ).toBool() )
+      {
+        QgsMapLayerRegistry::instance()->clearAllLayerCaches();
+      }
+  }
 
   bool placeOverlays = false;
   QgsOverlayObjectPositionManager* overlayManager = overlayManagerFromSettings();
@@ -262,9 +301,6 @@ void QgsMapRenderer::render( QPainter* painter )
   {
     placeOverlays = true;
   }
-
-  //add map scale to render context
-  mRenderContext.setRendererScale( mScale );
 
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mLayerSet );
@@ -278,6 +314,10 @@ void QgsMapRenderer::render( QPainter* painter )
     {
       break;
     }
+
+    // Store the painter in case we need to swap it out for the 
+    // cache painter
+    QPainter * mypContextPainter = mRenderContext.painter();
 
     QString layerId = li.previous();
 
@@ -343,17 +383,6 @@ void QgsMapRenderer::render( QPainter* painter )
       }
 
 
-      if ( scaleRaster )
-      {
-        bk_mapToPixel = mRenderContext.mapToPixel();
-        rasterMapToPixel = mRenderContext.mapToPixel();
-        rasterMapToPixel.setMapUnitsPerPixel( mRenderContext.mapToPixel().mapUnitsPerPixel() / rasterScaleFactor );
-        rasterMapToPixel.setYMaximum( mSize.height() * rasterScaleFactor );
-        mRenderContext.setMapToPixel( rasterMapToPixel );
-        mRenderContext.painter()->save();
-        mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-      }
-
       //create overlay objects for features within the view extent
       if ( ml->type() == QgsMapLayer::VectorLayer && overlayManager )
       {
@@ -377,11 +406,67 @@ void QgsMapRenderer::render( QPainter* painter )
         }
       }
 
+      // Force render of layers that are being edited
+      if ( ml->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+        if ( vl->isEditable() )
+        {
+          ml->setCacheImage( 0 );
+        }
+      }
+        
+      QSettings mySettings;
+      if ( ! split )//render caching does not yet cater for split extents
+      {
+        if ( mySettings.value ( "/qgis/enable_render_caching", false ).toBool() )
+        {
+          if ( !mySameAsLastFlag || ml->cacheImage() == 0 ) 
+          {
+            QgsDebugMsg( "\n\n\nCaching enabled but layer redraw forced by extent change or empty cache\n\n\n" );
+            QImage * mypImage = new QImage( mRenderContext.painter()->device()->width(), 
+                mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 ); 
+            mypImage->fill( 0 );
+            ml->setCacheImage( mypImage ); //no need to delete the oldone, maplayer does it for you
+            QPainter * mypPainter = new QPainter( ml->cacheImage() );
+            if ( mySettings.value( "/qgis/enable_anti_aliasing", false ).toBool() )
+            {
+              mypPainter->setRenderHint( QPainter::Antialiasing );
+            }
+            mRenderContext.setPainter( mypPainter  );
+          }
+          else if ( mySameAsLastFlag )
+          {
+            //draw from cached image
+            QgsDebugMsg( "\n\n\nCaching enabled --- drawing layer from cached image\n\n\n" );
+            mypContextPainter->drawImage( 0,0, *(ml->cacheImage()) );
+            disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
+            //short circuit as there is nothing else to do...
+            continue;
+          }
+        }
+      }
+
+      if ( scaleRaster )
+      {
+        bk_mapToPixel = mRenderContext.mapToPixel();
+        rasterMapToPixel = mRenderContext.mapToPixel();
+        rasterMapToPixel.setMapUnitsPerPixel( mRenderContext.mapToPixel().mapUnitsPerPixel() / rasterScaleFactor );
+        rasterMapToPixel.setYMaximum( mSize.height() * rasterScaleFactor );
+        mRenderContext.setMapToPixel( rasterMapToPixel );
+        mRenderContext.painter()->save();
+        mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
+      }
+
+
       if ( !ml->draw( mRenderContext ) )
       {
         emit drawError( ml );
       }
-
+      else
+      {
+            QgsDebugMsg( "\n\n\nLayer rendered without issues\n\n\n" );
+      }
       if ( split )
       {
         mRenderContext.setExtent( r2 );
@@ -397,12 +482,24 @@ void QgsMapRenderer::render( QPainter* painter )
         mRenderContext.painter()->restore();
       }
 
+      if ( mySettings.value ( "/qgis/enable_render_caching", false ).toBool() )
+      {
+        if ( !split )
+        {
+          // composite the cached image into our view and then clean up from caching
+          // by reinstating the painter as it was swapped out for caching renders
+          delete mRenderContext.painter();
+          mRenderContext.setPainter( mypContextPainter  );
+          //draw from cached image that we created further up
+          mypContextPainter->drawImage( 0,0, *(ml->cacheImage()) );
+        }
+      }
       disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
     }
-    else
+    else // layer not visible due to scale
     {
       QgsDebugMsg( "Layer not rendered because it is not within the defined "
-                   "visibility scale range" );
+          "visibility scale range" );
     }
 
   } // while (li.hasPrevious())

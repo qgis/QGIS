@@ -21,6 +21,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QPalette>
+#include <QSettings>
 
 #include "qgsconfig.h"
 
@@ -281,7 +282,29 @@ const QString QgsApplication::srsDbFilePath()
 }
 
 /*!
-  Returns the path to the svg directory.
+  Returns the paths to the svg directories.
+*/
+const QStringList QgsApplication::svgPaths()
+{
+  //local directories to search when looking for an SVG with a given basename
+  //defined by user in options dialog
+  QSettings settings;
+  QStringList myPathList;
+  QString myPaths = settings.value( "svg/searchPathsForSVG", "" ).toString();
+  if ( !myPaths.isEmpty() )
+  {
+    myPathList = myPaths.split( "|" );
+  }
+  //additional default paths
+  myPathList
+    << mPkgDataPath + QString( "/svg/" )
+    << qgisSettingsDirPath() + QString( "svg/" );
+  return myPathList;
+
+}
+
+/*!
+  Returns the path to the applications svg directories.
 */
 const QString QgsApplication::svgPath()
 {
@@ -327,13 +350,15 @@ QString QgsApplication::showSettings()
                              "Active Theme Name   : %4\n"
                              "Active Theme Path   : %5\n"
                              "Default Theme Path  : %6\n"
-                             "User DB Path        : %7\n" )
+                             "SVG Search Paths    : %7\n"
+                             "User DB Path        : %8\n" )
                     .arg( mPrefixPath )
                     .arg( mPluginPath )
                     .arg( mPkgDataPath )
                     .arg( themeName() )
                     .arg( activeThemePath() )
                     .arg( defaultThemePath() )
+                    .arg( svgPaths().join( "\n" ) )
                     .arg( qgisMasterDbFilePath() );
   return myState;
 }

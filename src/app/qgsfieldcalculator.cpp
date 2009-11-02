@@ -35,6 +35,14 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVector
 
   //disable ok button until there is text for output field and expression
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  // disable creation of new fields if not supported by data provider
+  if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
+  {
+    mUpdateExistingFieldCheckBox->setEnabled( false ); // must stay checked
+    mNewFieldGroupBox->setEnabled( false );
+    mNewFieldGroupBox->setTitle( mNewFieldGroupBox->title() + tr( " (not supported by provider)" ) );
+  }
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
@@ -122,6 +130,8 @@ void QgsFieldCalculator::accept()
     bool onlySelected = ( mOnlyUpdateSelectedCheckBox->checkState() == Qt::Checked );
     QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
 
+    // block layerModified signals (that would trigger table update)
+    mVectorLayer->blockSignals( true );
 
     mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
     while ( mVectorLayer->nextFeature( feature ) )
@@ -148,6 +158,10 @@ void QgsFieldCalculator::accept()
       {
         mVectorLayer->changeAttributeValue( feature.id(), attributeId, value.string(), false );
       }
+
+      // stop blocking layerModified signals and make sure that one layerModified signal is emitted
+      mVectorLayer->blockSignals( true );
+      mVectorLayer->setModified( true, false );
 
     }
 

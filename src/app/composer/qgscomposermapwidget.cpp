@@ -25,10 +25,13 @@
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidget(), mComposerMap( composerMap )
 {
   setupUi( this );
+  mGridWidget->setVisible( false );
+  mGridWidget->setParent( 0 ); //in order to save space, separate the grid widget
+  mGridWidget->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowTitleHint );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
-  gridLayout_3->addWidget( itemPropertiesWidget, 8, 0, 1, 1 );
+  gridLayout_3->addWidget( itemPropertiesWidget, 6, 0, 1, 1 );
   QDoubleValidator v( 0 );
 
   mWidthLineEdit->setValidator( &v );
@@ -54,6 +57,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mAnnotationDirectionComboBox->insertItem( 0, tr( "Horizontal" ) );
   mAnnotationDirectionComboBox->insertItem( 1, tr( "Vertical" ) );
   mAnnotationDirectionComboBox->insertItem( 2, tr( "Horizontal and Vertical" ) );
+  mAnnotationDirectionComboBox->insertItem( 2, tr( "Boundary direction" ) );
+
   blockAllSignals( false );
 
   if ( composerMap )
@@ -66,7 +71,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
 
 QgsComposerMapWidget::~QgsComposerMapWidget()
 {
-
+  delete mGridWidget;
 }
 
 void QgsComposerMapWidget::on_mWidthLineEdit_editingFinished()
@@ -154,6 +159,18 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
   }
 
   mComposerMap->setNewScale( scaleDenominator );
+}
+
+void QgsComposerMapWidget::on_mRotationSpinBox_valueChanged( int value )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setRotation( value );
+  mComposerMap->cache();
+  mComposerMap->update();
 }
 
 void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
@@ -270,6 +287,8 @@ void QgsComposerMapWidget::updateGuiElements()
     mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );
     mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
 
+    mRotationSpinBox->setValue( mComposerMap->rotation() );
+
     //keep layer list check box
     if ( mComposerMap->keepLayerSet() )
     {
@@ -305,6 +324,8 @@ void QgsComposerMapWidget::updateGuiElements()
       mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Solid" ) ) );
     }
 
+    mCrossWidthSpinBox->setValue( mComposerMap->crossLength() );
+
     QgsComposerMap::GridAnnotationPosition annotationPos = mComposerMap->gridAnnotationPosition();
     if ( annotationPos == QgsComposerMap::InsideMapFrame )
     {
@@ -335,11 +356,16 @@ void QgsComposerMapWidget::updateGuiElements()
     {
       mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Vertical" ) ) );
     }
-    else
+    else if ( dir == QgsComposerMap::HorizontalAndVertical )
     {
       mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Horizontal and Vertical" ) ) );
     }
+    else //BoundaryDirection
+    {
+      mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Boundary direction" ) ) );
+    }
 
+    mCoordinatePrecisionSpinBox->setValue( mComposerMap->gridAnnotationPrecision() );
 
     QPen gridPen = mComposerMap->gridPen();
     mLineWidthSpinBox->setValue( gridPen.widthF() );
@@ -386,6 +412,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mOffsetXSpinBox->blockSignals( b );
   mOffsetYSpinBox->blockSignals( b );
   mGridTypeComboBox->blockSignals( b );
+  mCrossWidthSpinBox->blockSignals( b );
   mPreviewModeComboBox->blockSignals( b );
   mKeepLayerListCheckBox->blockSignals( b );
   mSetToMapCanvasExtentButton->blockSignals( b );
@@ -397,6 +424,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAnnotationPositionComboBox->blockSignals( b );
   mDistanceToMapFrameSpinBox->blockSignals( b );
   mAnnotationDirectionComboBox->blockSignals( b );
+  mCoordinatePrecisionSpinBox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -459,46 +487,46 @@ void QgsComposerMapWidget::on_mGridCheckBox_stateChanged( int state )
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mIntervalXSpinBox_valueChanged( double d )
+void QgsComposerMapWidget::on_mIntervalXSpinBox_editingFinished()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  mComposerMap->setGridIntervalX( d );
+  mComposerMap->setGridIntervalX( mIntervalXSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mIntervalYSpinBox_valueChanged( double d )
+void QgsComposerMapWidget::on_mIntervalYSpinBox_editingFinished()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  mComposerMap->setGridIntervalY( d );
+  mComposerMap->setGridIntervalY( mIntervalYSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mOffsetXSpinBox_valueChanged( double d )
+void QgsComposerMapWidget::on_mOffsetXSpinBox_editingFinished()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  mComposerMap->setGridOffsetX( d );
+  mComposerMap->setGridOffsetX( mOffsetXSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mOffsetYSpinBox_valueChanged( double d )
+void QgsComposerMapWidget::on_mOffsetYSpinBox_editingFinished()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  mComposerMap->setGridOffsetY( d );
+  mComposerMap->setGridOffsetY( mOffsetYSpinBox->value() );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
 }
@@ -543,6 +571,17 @@ void QgsComposerMapWidget::on_mGridTypeComboBox_currentIndexChanged( const QStri
   {
     mComposerMap->setGridStyle( QgsComposerMap::Solid );
   }
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::on_mCrossWidthSpinBox_valueChanged( double d )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setCrossLength( d );
   mComposerMap->update();
 }
 
@@ -632,10 +671,36 @@ void QgsComposerMapWidget::on_mAnnotationDirectionComboBox_currentIndexChanged( 
   {
     mComposerMap->setGridAnnotationDirection( QgsComposerMap::Vertical );
   }
-  else
+  else if ( text == tr( "Horizontal and Vertical" ) )
   {
     mComposerMap->setGridAnnotationDirection( QgsComposerMap::HorizontalAndVertical );
   }
+  else //BoundaryDirection
+  {
+    mComposerMap->setGridAnnotationDirection( QgsComposerMap::BoundaryDirection );
+  }
   mComposerMap->updateBoundingRect();
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::on_mShowGridDialogCheckBox_stateChanged( int state )
+{
+  if ( state == Qt::Checked )
+  {
+    mGridWidget->setVisible( true );
+  }
+  else
+  {
+    mGridWidget->setVisible( false );
+  }
+}
+
+void QgsComposerMapWidget::on_mCoordinatePrecisionSpinBox_valueChanged( int value )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+  mComposerMap->setGridAnnotationPrecision( value );
   mComposerMap->update();
 }

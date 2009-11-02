@@ -73,7 +73,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
       //fill the items of the renderer into mValues
       for ( QList<QgsSymbol*>::const_iterator iter = list.begin(); iter != list.end(); ++iter )
       {
-        QgsSymbol* symbol = ( *iter );
+        QgsSymbol* symbol = *iter;
         QString symbolvalue = symbol->lowerValue();
         QgsSymbol* sym = new QgsSymbol( mVectorLayer->geometryType(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );
         sym->setPen( symbol->pen() );
@@ -97,15 +97,15 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
 
   mDeletePushButton->setEnabled( false );
 
-  QObject::connect( mClassifyButton, SIGNAL( clicked() ), this, SLOT( changeClassificationAttribute() ) );
-  QObject::connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClass() ) );
-  QObject::connect( mDeletePushButton, SIGNAL( clicked() ), this, SLOT( deleteSelectedClasses() ) );
-  QObject::connect( mRandomizeColors, SIGNAL( clicked() ), this, SLOT( randomizeColors() ) );
-  QObject::connect( mResetColors, SIGNAL( clicked() ), this, SLOT( resetColors() ) );
-  QObject::connect( mClassListWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
-  QObject::connect( mCommonPropertyLock, SIGNAL( clicked() ), this, SLOT( selectionChanged() ) );
-  QObject::connect( mClassListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( itemChanged( QListWidgetItem * ) ) );
-  QObject::connect( &sydialog, SIGNAL( settingsChanged() ), this, SLOT( applySymbologyChanges() ) );
+  connect( mClassifyButton, SIGNAL( clicked() ), this, SLOT( changeClassificationAttribute() ) );
+  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClass() ) );
+  connect( mDeletePushButton, SIGNAL( clicked() ), this, SLOT( deleteSelectedClasses() ) );
+  connect( mRandomizeColors, SIGNAL( clicked() ), this, SLOT( randomizeColors() ) );
+  connect( mResetColors, SIGNAL( clicked() ), this, SLOT( resetColors() ) );
+  connect( mClassListWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+  connect( mCommonPropertyLock, SIGNAL( clicked() ), this, SLOT( selectionChanged() ) );
+  connect( mClassListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( itemChanged( QListWidgetItem * ) ) );
+  connect( &sydialog, SIGNAL( settingsChanged() ), this, SLOT( applySymbologyChanges() ) );
   mSymbolWidgetStack->addWidget( &sydialog );
   mSymbolWidgetStack->setCurrentWidget( &sydialog );
 }
@@ -436,18 +436,21 @@ void QgsUniqueValueDialog::applySymbologyChanges()
   }
 }
 
-void QgsUniqueValueDialog::updateEntryIcon( QgsSymbol * thepSymbol,
-    QListWidgetItem * thepItem )
+void QgsUniqueValueDialog::updateEntryIcon( QgsSymbol *thepSymbol, QListWidgetItem *thepItem )
 {
   QGis::GeometryType myType = mVectorLayer->geometryType();
   switch ( myType )
   {
     case QGis::Point:
-    {
-      int myWidthScale = 4; //magick no to try to make vector props dialog preview look same as legend
-      thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPointSymbolAsImage( myWidthScale ) ) ) );
-    }
-    break;
+      {
+        double size = thepSymbol->pointSize();
+        if( size > 50.0 )
+          thepSymbol->setPointSize( 50.0 );
+        thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPointSymbolAsImage( 4.0, false, Qt::yellow, 1.0, 0.0001 ) ) ) );
+        if( size > 50.0 )
+          thepSymbol->setPointSize( size );
+      }
+      break;
     case QGis::Line:
       thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getLineSymbolAsImage() ) ) );
       break;

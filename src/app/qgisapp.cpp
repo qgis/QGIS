@@ -463,7 +463,10 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   show();
   qApp->processEvents();
   //finally show all the application settings as initialised above
-  QgsApplication::showSettings();
+
+  QgsDebugMsg( "\n\n\nApplication Settings:\n--------------------------\n");
+  QgsDebugMsg( QgsApplication::showSettings() );
+  QgsDebugMsg( "\n--------------------------\n\n\n");
   mMapCanvas->freeze( false );
 } // QgisApp ctor
 
@@ -2312,6 +2315,8 @@ static void buildSupportedVectorFileFilter_( QString & fileFilters )
   the current working directory if this is the first time invoked
   with the current filter name.
 
+  This method returns true if cancel all was clicked, otherwise false
+
 */
 
 static bool openFilesRememberingFilter_( QString const &filterName,
@@ -2332,7 +2337,34 @@ static bool openFilesRememberingFilter_( QString const &filterName,
   QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
 
   QgsDebugMsg( "Opening file dialog with filters: " + filters );
-  selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
+  if ( !cancelAll )
+  {
+    selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
+  }
+  else //we have to use non-native dialog to add cancel all button
+  {
+    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0, title, lastUsedDir, filters, QString( "" ) );
+    // allow for selection of more than one file
+    openFileDialog->setFileMode( QFileDialog::ExistingFiles );
+    if ( haveLastUsedFilter )     // set the filter to the last one used
+    {
+      openFileDialog->selectFilter( lastUsedFilter );
+    }
+    openFileDialog->addCancelAll();
+    if ( openFileDialog->exec() == QDialog::Accepted )
+    {
+      selectedFiles = openFileDialog->selectedFiles();
+    }
+    else
+    {
+      //cancel or cancel all?
+      if ( openFileDialog->cancelAll() )
+      {
+        return true;
+      }
+    }
+  }
+
   if ( !selectedFiles.isEmpty() )
   {
     // Fix by Tim - getting the dirPath from the dialog
@@ -2346,7 +2378,6 @@ static bool openFilesRememberingFilter_( QString const &filterName,
 
     settings.setValue( "/UI/" + filterName, lastUsedFilter );
     settings.setValue( "/UI/" + filterName + "Dir", myPath );
-    return true;
   }
   return false;
 }   // openFilesRememberingFilter_
@@ -4463,6 +4494,9 @@ void QgisApp::pasteTransformations()
 
 void QgisApp::refreshMapCanvas()
 {
+  //clear all caches first
+  QgsMapLayerRegistry::instance()->clearAllLayerCaches();
+  //then refresh
   mMapCanvas->refresh();
 }
 
@@ -4541,6 +4575,7 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
     }
     else //cancel
     {
+      mActionToggleEditing->setChecked( vlayer->isEditable() );
       return;
     }
   }
@@ -4550,8 +4585,12 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
   }
 
   if ( layer == mMapLegend->currentLayer() )
+  {
     activateDeactivateLayerRelatedActions( layer );
+  }
 
+  //ensure the toolbar icon state is consistent with the layer editing state
+  mActionToggleEditing->setChecked( vlayer->isEditable() );
   vlayer->triggerRepaint();
 }
 
@@ -4580,7 +4619,14 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
   }
   else
   {
-    mCoordsEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
+    if ( mMapCanvas->mapUnits() == QGis::DegreesMinutesSeconds )
+    {
+      mCoordsEdit->setText( p.toDegreesMinutesSeconds( mMousePrecisionDecimalPlaces ) );
+    }
+    else
+    {
+      mCoordsEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
+    }
     if ( mCoordsEdit->width() > mCoordsEdit->minimumWidth() )
     {
       mCoordsEdit->setMinimumWidth( mCoordsEdit->width() );
@@ -5564,8 +5610,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
 
       //merge tool needs editable layer and provider with the capability of adding and deleting features
-      if ( vlayer->isEditable() && ( dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) \
-           &&  QgsVectorDataProvider::AddFeatures )
+      if ( vlayer->isEditable() &&
+           (dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures) &&
+           (dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues) &&
+           (dprovider->capabilities() & QgsVectorDataProvider::AddFeatures) )
       {
         mActionMergeFeatures->setEnabled( layerHasSelection );
       }

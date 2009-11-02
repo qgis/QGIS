@@ -1,91 +1,92 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsComposerItemWidgetBase</class>
- <widget class="QWidget" name="QgsComposerItemWidgetBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QgsComposerItemWidgetBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>347</width>
-    <height>207</height>
+    <height>157</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="mComposerItemPropertiesGroupBox" >
-     <property name="title" >
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="mComposerItemPropertiesGroupBox">
+     <property name="title">
       <string>Composer item properties</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="mColorLabel" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mColorLabel">
+        <property name="text">
          <string>Color</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mFrameColorButton</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2" >
-       <widget class="QPushButton" name="mFrameColorButton" >
-        <property name="text" >
+      <item row="0" column="1" colspan="2">
+       <widget class="QPushButton" name="mFrameColorButton">
+        <property name="text">
          <string>Frame...</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3" >
-       <widget class="QPushButton" name="mBackgroundColorButton" >
-        <property name="text" >
+      <item row="0" column="3">
+       <widget class="QPushButton" name="mBackgroundColorButton">
+        <property name="text">
          <string>Background...</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QLabel" name="mOpacityLabel" >
-        <property name="text" >
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="mOpacityLabel">
+        <property name="text">
          <string>Opacity</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mOpacitySlider</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="2" colspan="2" >
-       <widget class="QSlider" name="mOpacitySlider" >
-        <property name="maximum" >
+      <item row="1" column="2" colspan="2">
+       <widget class="QSlider" name="mOpacitySlider">
+        <property name="maximum">
          <number>255</number>
         </property>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2" >
-       <widget class="QLabel" name="mOutlineWidthLabel" >
-        <property name="text" >
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="mOutlineWidthLabel">
+        <property name="text">
          <string>Outline width</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mOutlineWidthSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="2" colspan="2" >
-       <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox" />
+      <item row="2" column="2" colspan="2">
+       <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox"/>
       </item>
-      <item row="3" column="0" colspan="2" >
-       <widget class="QPushButton" name="mPositionButton" >
-        <property name="text" >
+      <item row="3" column="0" colspan="2">
+       <widget class="QPushButton" name="mPositionButton">
+        <property name="text">
          <string>Position...</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="3" >
-       <widget class="QCheckBox" name="mFrameCheckBox" >
-        <property name="text" >
+      <item row="3" column="3">
+       <widget class="QCheckBox" name="mFrameCheckBox">
+        <property name="text">
          <string>Frame</string>
         </property>
        </widget>
