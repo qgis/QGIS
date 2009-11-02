@@ -231,4 +231,6 @@ class QgsComposerMap : QObject, QgsComposerItem
   signals:
     /**Is emitted when width/height is changed as a result of user interaction*/
     void extentChanged();
+    /**Is emitted on rotation change to notify north arrow pictures*/
+    void rotationChanged( double newRotation );
 };

@@ -38,6 +38,14 @@ class QgsComposerPicture: QObject, QgsComposerItem
       */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    /**Sets the map object for rotation (by id). A value of -1 disables the map rotation*/
+    void setRotationMap( int composerMapId );
+    /**Returns the id of the rotation map*/
+    int rotationMap() const;
+    /**True if the rotation is taken from a map item*/
+    bool useRotationMap() const;
+
+
   signals:
     /**Tell the configuration widget that the settings need to be updated*/
     void settingsChanged();
