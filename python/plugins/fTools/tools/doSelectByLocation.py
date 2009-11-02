@@ -2,7 +2,7 @@
 from PyQt4.QtGui import *
 
 from qgis.core import *
-from frmPointsInPolygon import Ui_Dialog
+from ui_frmPointsInPolygon import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 
@@ -37,8 +37,8 @@ class Dialog(QDialog, Ui_Dialog):
 		self.label_mod.setText(self.tr("Modify current selection by:"))
 		self.cmbModify = QComboBox(self)
 		self.cmbModify.setObjectName("cmbModify")
-		self.gridlayout.addWidget(self.label_mod,2,0,1,1)
-		self.gridlayout.addWidget(self.cmbModify,3,0,1,1)
+		self.gridLayout.addWidget(self.label_mod,2,0,1,1)
+		self.gridLayout.addWidget(self.cmbModify,3,0,1,1)
 		self.resize(381, 100)
 
 	def accept(self):

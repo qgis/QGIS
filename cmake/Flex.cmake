@@ -4,9 +4,10 @@
 MACRO(FIND_FLEX)
     IF(NOT FLEX_EXECUTABLE)
       IF (MSVC)
-        FIND_PROGRAM(FLEX_EXECUTABLE 
-            "$ENV{LIB_DIR}/bin/flex.exe"
-	    )
+        FIND_PROGRAM(FLEX_EXECUTABLE
+                     NAMES flex.exe
+                     PATHS $ENV{LIB_DIR}/bin $ENV{PROGRAMFILES}/GnuWin32/bin
+                    )
       ELSE(MSVC)
         FIND_PROGRAM(FLEX_EXECUTABLE flex)
       ENDIF (MSVC)

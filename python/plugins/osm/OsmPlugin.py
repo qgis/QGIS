@@ -30,7 +30,7 @@ from OsmFeatureDW import *
 from OsmUndoRedoDW import *
 
 # initialize Qt resources from file resouces.py
-import resources
+import resources_rc
 
 
 

@@ -122,6 +122,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
   }
   if ( mValid )
   {
+    // Always set crs
     setCoordinateSystem();
 
     // check if there is a default style / propertysheet defined

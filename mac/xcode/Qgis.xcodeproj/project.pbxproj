@@ -27,14 +27,17 @@
 				7256F2760F413B400022BE1F /* make */,
 				727AD4FA0F7325CA002B9DCD /* install */,
 				72E707020F42685C00142011 /* Copy - qgis */,
-				72E707090F426A2D00142011 /* Copy - mapserver */,
+				72C535961038E22700A9CC02 /* Script - plugininstall ui+rc */,
 				72E707120F426AD500142011 /* Copy - plugininstall */,
+				72C535941038E16500A9CC02 /* Script - mapserver ui+rc */,
+				72E707090F426A2D00142011 /* Copy - mapserver */,
+				72C5358F1038DB0800A9CC02 /* Script - fTools ui+rc */,
 				72EBCA6C0F49DDA60016BA3C /* Copy - fTools */,
 				72EBCB0D0F49DEC10016BA3C /* Copy - fTools-tools */,
 				72EBCB0E0F49DEC10016BA3C /* Copy - fTools-icons */,
 				72EBCB0F0F49DEC10016BA3C /* Copy - ftools-icons-default */,
 				72EBCB100F49DEC10016BA3C /* Copy - ftools-icons-gis */,
-				72832D1210362D61002E3B72 /* Script - osm ui */,
+				72832D1210362D61002E3B72 /* Script - osm ui+rc */,
 				72DB694E1021DA3500ED5F3A /* Copy - osm */,
 				72DB69701021DC8400ED5F3A /* Copy - osm-map_tools */,
 				72DB69751021DCFE00ED5F3A /* Copy - osm-styles */,
@@ -1437,7 +1440,6 @@
 		72DB695D1021DA5600ED5F3A /* OsmUndoRedoDW.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691D1021D98600ED5F3A /* OsmUndoRedoDW.py */; };
 		72DB695F1021DA5600ED5F3A /* OsmFeatureDW.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691F1021D98600ED5F3A /* OsmFeatureDW.py */; };
 		72DB69611021DA5600ED5F3A /* OsmPlugin.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB693C1021D98600ED5F3A /* OsmPlugin.py */; };
-		72DB69621021DA5600ED5F3A /* resources.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB693D1021D98600ED5F3A /* resources.py */; };
 		72DB69661021DC7600ED5F3A /* __init__.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69361021D98600ED5F3A /* __init__.py */; };
 		72DB69671021DC7600ED5F3A /* OsmCreateLineMT.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69371021D98600ED5F3A /* OsmCreateLineMT.py */; };
 		72DB69681021DC7600ED5F3A /* OsmCreatePointMT.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69381021D98600ED5F3A /* OsmCreatePointMT.py */; };
@@ -1454,28 +1456,15 @@
 		72E7070C0F426A5C00142011 /* mapserverexport.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD60F39E5D9003DC336 /* mapserverexport.py */; };
 		72E7070D0F426A5C00142011 /* mapserverexportdialog.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD70F39E5D9003DC336 /* mapserverexportdialog.py */; };
 		72E7070E0F426A5C00142011 /* ms_export.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD80F39E5D9003DC336 /* ms_export.py */; };
-		72E7070F0F426A5C00142011 /* resources.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDDA0F39E5D9003DC336 /* resources.py */; };
-		72E707100F426A5C00142011 /* ui_mapserverexport.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDDC0F39E5D9003DC336 /* ui_mapserverexport.py */; };
 		72E707130F426AFB00142011 /* __init__.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDDE0F39E5D9003DC336 /* __init__.py */; };
 		72E707140F426AFB00142011 /* installer_data.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDE10F39E5D9003DC336 /* installer_data.py */; };
 		72E707150F426AFB00142011 /* installer_gui.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDE20F39E5D9003DC336 /* installer_gui.py */; };
 		72E707160F426AFB00142011 /* installer_plugin.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDE30F39E5D9003DC336 /* installer_plugin.py */; };
 		72E707170F426AFB00142011 /* plugin_installer.png in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDE50F39E5D9003DC336 /* plugin_installer.png */; };
 		72E707180F426AFB00142011 /* qgis-icon.png in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDE60F39E5D9003DC336 /* qgis-icon.png */; };
-		72E707190F426AFB00142011 /* qgsplugininstallerbase.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDE70F39E5D9003DC336 /* qgsplugininstallerbase.py */; };
-		72E7071A0F426AFB00142011 /* qgsplugininstallerbase.ui in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDE80F39E5D9003DC336 /* qgsplugininstallerbase.ui */; };
-		72E7071B0F426AFB00142011 /* qgsplugininstallerfetchingbase.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDE90F39E5D9003DC336 /* qgsplugininstallerfetchingbase.py */; };
-		72E7071C0F426AFB00142011 /* qgsplugininstallerfetchingbase.ui in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDEA0F39E5D9003DC336 /* qgsplugininstallerfetchingbase.ui */; };
-		72E7071D0F426AFB00142011 /* qgsplugininstallerinstallingbase.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDEB0F39E5D9003DC336 /* qgsplugininstallerinstallingbase.py */; };
-		72E7071E0F426AFB00142011 /* qgsplugininstallerinstallingbase.ui in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDEC0F39E5D9003DC336 /* qgsplugininstallerinstallingbase.ui */; };
-		72E7071F0F426AFB00142011 /* qgsplugininstallerpluginerrorbase.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDED0F39E5D9003DC336 /* qgsplugininstallerpluginerrorbase.py */; };
-		72E707200F426AFB00142011 /* qgsplugininstallerpluginerrorbase.ui in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDEE0F39E5D9003DC336 /* qgsplugininstallerpluginerrorbase.ui */; };
-		72E707210F426AFB00142011 /* qgsplugininstallerrepositorybase.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDEF0F39E5D9003DC336 /* qgsplugininstallerrepositorybase.py */; };
-		72E707220F426AFB00142011 /* qgsplugininstallerrepositorybase.ui in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF00F39E5D9003DC336 /* qgsplugininstallerrepositorybase.ui */; };
 		72E707230F426AFB00142011 /* repoConnected.png in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF10F39E5D9003DC336 /* repoConnected.png */; };
 		72E707240F426AFB00142011 /* repoDisabled.png in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF20F39E5D9003DC336 /* repoDisabled.png */; };
 		72E707250F426AFB00142011 /* repoUnavailable.png in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF30F39E5D9003DC336 /* repoUnavailable.png */; };
-		72E707260F426AFB00142011 /* resources_rc.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF50F39E5D9003DC336 /* resources_rc.py */; };
 		72E707270F426AFB00142011 /* unzip.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF60F39E5D9003DC336 /* unzip.py */; };
 		72E707280F426AFB00142011 /* version_compare.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF70F39E5D9003DC336 /* version_compare.py */; };
 		72E707350F426C6900142011 /* locations.gml in Copy - grass */ = {isa = PBXBuildFile; fileRef = 7209E8360F39E57B003DC336 /* locations.gml */; };
@@ -1641,13 +1630,9 @@
 		72EBC9C20F49DBA30016BA3C /* mActionAlignVCenter.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EBC9B70F49DB8F0016BA3C /* mActionAlignVCenter.png */; };
 		72EBCA6D0F49DDC00016BA3C /* __init__.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9C50F49DC120016BA3C /* __init__.py */; };
 		72EBCA6E0F49DDC00016BA3C /* doAbout.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9C70F49DC120016BA3C /* doAbout.py */; };
-		72EBCA6F0F49DDC00016BA3C /* frmAbout.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9C80F49DC120016BA3C /* frmAbout.py */; };
-		72EBCA700F49DDC00016BA3C /* frmAbout.ui in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9C90F49DC120016BA3C /* frmAbout.ui */; };
 		72EBCA710F49DDC00016BA3C /* fTools.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9CA0F49DC120016BA3C /* fTools.py */; };
 		72EBCA720F49DDC00016BA3C /* ftools_help.xml in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9CB0F49DC120016BA3C /* ftools_help.xml */; };
 		72EBCA730F49DDC00016BA3C /* ftools_help.xsl in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9CC0F49DC120016BA3C /* ftools_help.xsl */; };
-		72EBCA750F49DDC00016BA3C /* resources.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBCA2D0F49DC130016BA3C /* resources.py */; };
-		72EBCA760F49DDC00016BA3C /* resources.qrc in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBCA2E0F49DC130016BA3C /* resources.qrc */; };
 		72EBCA790F49DDF80016BA3C /* doDefineProj.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA310F49DC130016BA3C /* doDefineProj.py */; };
 		72EBCA7A0F49DDF80016BA3C /* doGeometry.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA320F49DC130016BA3C /* doGeometry.py */; };
 		72EBCA7B0F49DDF80016BA3C /* doGeoprocessing.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA330F49DC130016BA3C /* doGeoprocessing.py */; };
@@ -1667,40 +1652,6 @@
 		72EBCA890F49DDF80016BA3C /* doVectorGrid.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA410F49DC130016BA3C /* doVectorGrid.py */; };
 		72EBCA8A0F49DDF80016BA3C /* doVectorSplit.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA420F49DC130016BA3C /* doVectorSplit.py */; };
 		72EBCA8B0F49DDF80016BA3C /* doVisual.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA430F49DC130016BA3C /* doVisual.py */; };
-		72EBCA8C0F49DDF80016BA3C /* frmGeometry.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA440F49DC130016BA3C /* frmGeometry.py */; };
-		72EBCA8D0F49DDF80016BA3C /* frmGeometry.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA450F49DC130016BA3C /* frmGeometry.ui */; };
-		72EBCA8E0F49DDF80016BA3C /* frmGeoprocessing.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA460F49DC130016BA3C /* frmGeoprocessing.py */; };
-		72EBCA8F0F49DDF80016BA3C /* frmGeoprocessing.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA470F49DC130016BA3C /* frmGeoprocessing.ui */; };
-		72EBCA900F49DDF80016BA3C /* frmIntersectLines.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA480F49DC130016BA3C /* frmIntersectLines.py */; };
-		72EBCA910F49DDF80016BA3C /* frmIntersectLines.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA490F49DC130016BA3C /* frmIntersectLines.ui */; };
-		72EBCA920F49DDF80016BA3C /* frmJoinAttributes.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA4A0F49DC130016BA3C /* frmJoinAttributes.py */; };
-		72EBCA930F49DDF80016BA3C /* frmJoinAttributes.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA4B0F49DC130016BA3C /* frmJoinAttributes.ui */; };
-		72EBCA940F49DDF80016BA3C /* frmMeanCoords.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA4C0F49DC130016BA3C /* frmMeanCoords.py */; };
-		72EBCA950F49DDF80016BA3C /* frmMeanCoords.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA4D0F49DC130016BA3C /* frmMeanCoords.ui */; };
-		72EBCA960F49DDF80016BA3C /* frmPointDistance.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA4E0F49DC130016BA3C /* frmPointDistance.py */; };
-		72EBCA970F49DDF80016BA3C /* frmPointDistance.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA4F0F49DC130016BA3C /* frmPointDistance.ui */; };
-		72EBCA980F49DDF80016BA3C /* frmPointsInPolygon.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA500F49DC130016BA3C /* frmPointsInPolygon.py */; };
-		72EBCA990F49DDF80016BA3C /* frmPointsInPolygon.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA510F49DC130016BA3C /* frmPointsInPolygon.ui */; };
-		72EBCA9A0F49DDF80016BA3C /* frmRandom.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA520F49DC130016BA3C /* frmRandom.py */; };
-		72EBCA9B0F49DDF80016BA3C /* frmRandom.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA530F49DC130016BA3C /* frmRandom.ui */; };
-		72EBCA9C0F49DDF80016BA3C /* frmRandPoints.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA540F49DC130016BA3C /* frmRandPoints.py */; };
-		72EBCA9D0F49DDF80016BA3C /* frmRandPoints.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA550F49DC130016BA3C /* frmRandPoints.ui */; };
-		72EBCA9E0F49DDF80016BA3C /* frmRegPoints.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA560F49DC130016BA3C /* frmRegPoints.py */; };
-		72EBCA9F0F49DDF80016BA3C /* frmRegPoints.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA570F49DC130016BA3C /* frmRegPoints.ui */; };
-		72EBCAA00F49DDF80016BA3C /* frmReProject.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA580F49DC130016BA3C /* frmReProject.py */; };
-		72EBCAA10F49DDF80016BA3C /* frmReProject.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA590F49DC130016BA3C /* frmReProject.ui */; };
-		72EBCAA20F49DDF80016BA3C /* frmSpatialJoin.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA5A0F49DC130016BA3C /* frmSpatialJoin.py */; };
-		72EBCAA30F49DDF80016BA3C /* frmSpatialJoin.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA5B0F49DC130016BA3C /* frmSpatialJoin.ui */; };
-		72EBCAA40F49DDF80016BA3C /* frmSubsetSelect.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA5C0F49DC130016BA3C /* frmSubsetSelect.py */; };
-		72EBCAA50F49DDF80016BA3C /* frmSubsetSelect.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA5D0F49DC130016BA3C /* frmSubsetSelect.ui */; };
-		72EBCAA60F49DDF80016BA3C /* frmSumLines.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA5E0F49DC130016BA3C /* frmSumLines.py */; };
-		72EBCAA70F49DDF80016BA3C /* frmSumLines.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA5F0F49DC130016BA3C /* frmSumLines.ui */; };
-		72EBCAA80F49DDF80016BA3C /* frmVectorGrid.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA600F49DC130016BA3C /* frmVectorGrid.py */; };
-		72EBCAA90F49DDF80016BA3C /* frmVectorGrid.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA610F49DC130016BA3C /* frmVectorGrid.ui */; };
-		72EBCAAA0F49DDF80016BA3C /* frmVectorSplit.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA620F49DC130016BA3C /* frmVectorSplit.py */; };
-		72EBCAAB0F49DDF80016BA3C /* frmVectorSplit.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA630F49DC130016BA3C /* frmVectorSplit.ui */; };
-		72EBCAAC0F49DDF80016BA3C /* frmVisual.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA640F49DC130016BA3C /* frmVisual.py */; };
-		72EBCAAD0F49DDF80016BA3C /* frmVisual.ui in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA650F49DC130016BA3C /* frmVisual.ui */; };
 		72EBCAAE0F49DDF80016BA3C /* ftools_utils.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA660F49DC130016BA3C /* ftools_utils.py */; };
 		72EBCAB10F49DE330016BA3C /* gis-0.1.svg in Copy - fTools-icons */ = {isa = PBXBuildFile; fileRef = 72EBCA2A0F49DC130016BA3C /* gis-0.1.svg */; };
 		72EBCAB20F49DE330016BA3C /* logo.svg in Copy - fTools-icons */ = {isa = PBXBuildFile; fileRef = 72EBCA2B0F49DC130016BA3C /* logo.svg */; };
@@ -1774,7 +1725,6 @@
 		72EBCAF80F49DEA60016BA3C /* mean.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 72EBCA160F49DC130016BA3C /* mean.png */; };
 		72EBCAF90F49DEA60016BA3C /* multi_to_single.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 72EBCA170F49DC130016BA3C /* multi_to_single.png */; };
 		72EBCAFA0F49DEA60016BA3C /* neighbour.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 72EBCA180F49DC130016BA3C /* neighbour.png */; };
-		72EBCAFB0F49DEA60016BA3C /* nodes.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 72EBCA190F49DC130016BA3C /* nodes.png */; };
 		72EBCAFC0F49DEA60016BA3C /* random_points.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 72EBCA1A0F49DC130016BA3C /* random_points.png */; };
 		72EBCAFD0F49DEA60016BA3C /* random_selection.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 72EBCA1B0F49DC130016BA3C /* random_selection.png */; };
 		72EBCAFE0F49DEA60016BA3C /* regular_points.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 72EBCA1C0F49DC130016BA3C /* regular_points.png */; };
@@ -3426,7 +3376,6 @@
 				72DB695D1021DA5600ED5F3A /* OsmUndoRedoDW.py in Copy - osm */,
 				72DB695F1021DA5600ED5F3A /* OsmFeatureDW.py in Copy - osm */,
 				72DB69611021DA5600ED5F3A /* OsmPlugin.py in Copy - osm */,
-				72DB69621021DA5600ED5F3A /* resources.py in Copy - osm */,
 			);
 			name = "Copy - osm";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3482,8 +3431,6 @@
 				72E7070C0F426A5C00142011 /* mapserverexport.py in Copy - mapserver */,
 				72E7070D0F426A5C00142011 /* mapserverexportdialog.py in Copy - mapserver */,
 				72E7070E0F426A5C00142011 /* ms_export.py in Copy - mapserver */,
-				72E7070F0F426A5C00142011 /* resources.py in Copy - mapserver */,
-				72E707100F426A5C00142011 /* ui_mapserverexport.py in Copy - mapserver */,
 			);
 			name = "Copy - mapserver";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3500,20 +3447,9 @@
 				72E707160F426AFB00142011 /* installer_plugin.py in Copy - plugininstall */,
 				72E707170F426AFB00142011 /* plugin_installer.png in Copy - plugininstall */,
 				72E707180F426AFB00142011 /* qgis-icon.png in Copy - plugininstall */,
-				72E707190F426AFB00142011 /* qgsplugininstallerbase.py in Copy - plugininstall */,
-				72E7071A0F426AFB00142011 /* qgsplugininstallerbase.ui in Copy - plugininstall */,
-				72E7071B0F426AFB00142011 /* qgsplugininstallerfetchingbase.py in Copy - plugininstall */,
-				72E7071C0F426AFB00142011 /* qgsplugininstallerfetchingbase.ui in Copy - plugininstall */,
-				72E7071D0F426AFB00142011 /* qgsplugininstallerinstallingbase.py in Copy - plugininstall */,
-				72E7071E0F426AFB00142011 /* qgsplugininstallerinstallingbase.ui in Copy - plugininstall */,
-				72E7071F0F426AFB00142011 /* qgsplugininstallerpluginerrorbase.py in Copy - plugininstall */,
-				72E707200F426AFB00142011 /* qgsplugininstallerpluginerrorbase.ui in Copy - plugininstall */,
-				72E707210F426AFB00142011 /* qgsplugininstallerrepositorybase.py in Copy - plugininstall */,
-				72E707220F426AFB00142011 /* qgsplugininstallerrepositorybase.ui in Copy - plugininstall */,
 				72E707230F426AFB00142011 /* repoConnected.png in Copy - plugininstall */,
 				72E707240F426AFB00142011 /* repoDisabled.png in Copy - plugininstall */,
 				72E707250F426AFB00142011 /* repoUnavailable.png in Copy - plugininstall */,
-				72E707260F426AFB00142011 /* resources_rc.py in Copy - plugininstall */,
 				72E707270F426AFB00142011 /* unzip.py in Copy - plugininstall */,
 				72E707280F426AFB00142011 /* version_compare.py in Copy - plugininstall */,
 			);
@@ -3740,13 +3676,9 @@
 			files = (
 				72EBCA6D0F49DDC00016BA3C /* __init__.py in Copy - fTools */,
 				72EBCA6E0F49DDC00016BA3C /* doAbout.py in Copy - fTools */,
-				72EBCA6F0F49DDC00016BA3C /* frmAbout.py in Copy - fTools */,
-				72EBCA700F49DDC00016BA3C /* frmAbout.ui in Copy - fTools */,
 				72EBCA710F49DDC00016BA3C /* fTools.py in Copy - fTools */,
 				72EBCA720F49DDC00016BA3C /* ftools_help.xml in Copy - fTools */,
 				72EBCA730F49DDC00016BA3C /* ftools_help.xsl in Copy - fTools */,
-				72EBCA750F49DDC00016BA3C /* resources.py in Copy - fTools */,
-				72EBCA760F49DDC00016BA3C /* resources.qrc in Copy - fTools */,
 			);
 			name = "Copy - fTools";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3776,40 +3708,6 @@
 				72EBCA890F49DDF80016BA3C /* doVectorGrid.py in Copy - fTools-tools */,
 				72EBCA8A0F49DDF80016BA3C /* doVectorSplit.py in Copy - fTools-tools */,
 				72EBCA8B0F49DDF80016BA3C /* doVisual.py in Copy - fTools-tools */,
-				72EBCA8C0F49DDF80016BA3C /* frmGeometry.py in Copy - fTools-tools */,
-				72EBCA8D0F49DDF80016BA3C /* frmGeometry.ui in Copy - fTools-tools */,
-				72EBCA8E0F49DDF80016BA3C /* frmGeoprocessing.py in Copy - fTools-tools */,
-				72EBCA8F0F49DDF80016BA3C /* frmGeoprocessing.ui in Copy - fTools-tools */,
-				72EBCA900F49DDF80016BA3C /* frmIntersectLines.py in Copy - fTools-tools */,
-				72EBCA910F49DDF80016BA3C /* frmIntersectLines.ui in Copy - fTools-tools */,
-				72EBCA920F49DDF80016BA3C /* frmJoinAttributes.py in Copy - fTools-tools */,
-				72EBCA930F49DDF80016BA3C /* frmJoinAttributes.ui in Copy - fTools-tools */,
-				72EBCA940F49DDF80016BA3C /* frmMeanCoords.py in Copy - fTools-tools */,
-				72EBCA950F49DDF80016BA3C /* frmMeanCoords.ui in Copy - fTools-tools */,
-				72EBCA960F49DDF80016BA3C /* frmPointDistance.py in Copy - fTools-tools */,
-				72EBCA970F49DDF80016BA3C /* frmPointDistance.ui in Copy - fTools-tools */,
-				72EBCA980F49DDF80016BA3C /* frmPointsInPolygon.py in Copy - fTools-tools */,
-				72EBCA990F49DDF80016BA3C /* frmPointsInPolygon.ui in Copy - fTools-tools */,
-				72EBCA9A0F49DDF80016BA3C /* frmRandom.py in Copy - fTools-tools */,
-				72EBCA9B0F49DDF80016BA3C /* frmRandom.ui in Copy - fTools-tools */,
-				72EBCA9C0F49DDF80016BA3C /* frmRandPoints.py in Copy - fTools-tools */,
-				72EBCA9D0F49DDF80016BA3C /* frmRandPoints.ui in Copy - fTools-tools */,
-				72EBCA9E0F49DDF80016BA3C /* frmRegPoints.py in Copy - fTools-tools */,
-				72EBCA9F0F49DDF80016BA3C /* frmRegPoints.ui in Copy - fTools-tools */,
-				72EBCAA00F49DDF80016BA3C /* frmReProject.py in Copy - fTools-tools */,
-				72EBCAA10F49DDF80016BA3C /* frmReProject.ui in Copy - fTools-tools */,
-				72EBCAA20F49DDF80016BA3C /* frmSpatialJoin.py in Copy - fTools-tools */,
-				72EBCAA30F49DDF80016BA3C /* frmSpatialJoin.ui in Copy - fTools-tools */,
-				72EBCAA40F49DDF80016BA3C /* frmSubsetSelect.py in Copy - fTools-tools */,
-				72EBCAA50F49DDF80016BA3C /* frmSubsetSelect.ui in Copy - fTools-tools */,
-				72EBCAA60F49DDF80016BA3C /* frmSumLines.py in Copy - fTools-tools */,
-				72EBCAA70F49DDF80016BA3C /* frmSumLines.ui in Copy - fTools-tools */,
-				72EBCAA80F49DDF80016BA3C /* frmVectorGrid.py in Copy - fTools-tools */,
-				72EBCAA90F49DDF80016BA3C /* frmVectorGrid.ui in Copy - fTools-tools */,
-				72EBCAAA0F49DDF80016BA3C /* frmVectorSplit.py in Copy - fTools-tools */,
-				72EBCAAB0F49DDF80016BA3C /* frmVectorSplit.ui in Copy - fTools-tools */,
-				72EBCAAC0F49DDF80016BA3C /* frmVisual.py in Copy - fTools-tools */,
-				72EBCAAD0F49DDF80016BA3C /* frmVisual.ui in Copy - fTools-tools */,
 				72EBCAAE0F49DDF80016BA3C /* ftools_utils.py in Copy - fTools-tools */,
 				726FD9A50F6BF87300D50560 /* voronoi.py in Copy - fTools-tools */,
 			);
@@ -3918,7 +3816,6 @@
 				72EBCAF80F49DEA60016BA3C /* mean.png in Copy - ftools-icons-gis */,
 				72EBCAF90F49DEA60016BA3C /* multi_to_single.png in Copy - ftools-icons-gis */,
 				72EBCAFA0F49DEA60016BA3C /* neighbour.png in Copy - ftools-icons-gis */,
-				72EBCAFB0F49DEA60016BA3C /* nodes.png in Copy - ftools-icons-gis */,
 				72EBCAFC0F49DEA60016BA3C /* random_points.png in Copy - ftools-icons-gis */,
 				72EBCAFD0F49DEA60016BA3C /* random_selection.png in Copy - ftools-icons-gis */,
 				72EBCAFE0F49DEA60016BA3C /* regular_points.png in Copy - ftools-icons-gis */,
@@ -6984,7 +6881,6 @@
 		72EBC9C50F49DC120016BA3C /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = ../../python/plugins/fTools/__init__.py; sourceTree = SOURCE_ROOT; };
 		72EBC9C60F49DC120016BA3C /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../python/plugins/fTools/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		72EBC9C70F49DC120016BA3C /* doAbout.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = doAbout.py; path = ../../python/plugins/fTools/doAbout.py; sourceTree = SOURCE_ROOT; };
-		72EBC9C80F49DC120016BA3C /* frmAbout.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmAbout.py; path = ../../python/plugins/fTools/frmAbout.py; sourceTree = SOURCE_ROOT; };
 		72EBC9C90F49DC120016BA3C /* frmAbout.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmAbout.ui; path = ../../python/plugins/fTools/frmAbout.ui; sourceTree = SOURCE_ROOT; };
 		72EBC9CA0F49DC120016BA3C /* fTools.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = fTools.py; path = ../../python/plugins/fTools/fTools.py; sourceTree = SOURCE_ROOT; };
 		72EBC9CB0F49DC120016BA3C /* ftools_help.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = ftools_help.xml; path = ../../python/plugins/fTools/ftools_help.xml; sourceTree = SOURCE_ROOT; };
@@ -7061,7 +6957,6 @@
 		72EBCA160F49DC130016BA3C /* mean.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mean.png; path = ../../python/plugins/fTools/icons/gis/mean.png; sourceTree = SOURCE_ROOT; };
 		72EBCA170F49DC130016BA3C /* multi_to_single.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = multi_to_single.png; path = ../../python/plugins/fTools/icons/gis/multi_to_single.png; sourceTree = SOURCE_ROOT; };
 		72EBCA180F49DC130016BA3C /* neighbour.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = neighbour.png; path = ../../python/plugins/fTools/icons/gis/neighbour.png; sourceTree = SOURCE_ROOT; };
-		72EBCA190F49DC130016BA3C /* nodes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = nodes.png; path = ../../python/plugins/fTools/icons/gis/nodes.png; sourceTree = SOURCE_ROOT; };
 		72EBCA1A0F49DC130016BA3C /* random_points.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = random_points.png; path = ../../python/plugins/fTools/icons/gis/random_points.png; sourceTree = SOURCE_ROOT; };
 		72EBCA1B0F49DC130016BA3C /* random_selection.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = random_selection.png; path = ../../python/plugins/fTools/icons/gis/random_selection.png; sourceTree = SOURCE_ROOT; };
 		72EBCA1C0F49DC130016BA3C /* regular_points.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = regular_points.png; path = ../../python/plugins/fTools/icons/gis/regular_points.png; sourceTree = SOURCE_ROOT; };
@@ -7081,7 +6976,6 @@
 		72EBCA2A0F49DC130016BA3C /* gis-0.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "gis-0.1.svg"; path = "../../python/plugins/fTools/icons/gis-0.1.svg"; sourceTree = SOURCE_ROOT; };
 		72EBCA2B0F49DC130016BA3C /* logo.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = logo.svg; path = ../../python/plugins/fTools/icons/logo.svg; sourceTree = SOURCE_ROOT; };
 		72EBCA2C0F49DC130016BA3C /* menu_icons.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = menu_icons.svg; path = ../../python/plugins/fTools/icons/menu_icons.svg; sourceTree = SOURCE_ROOT; };
-		72EBCA2D0F49DC130016BA3C /* resources.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = resources.py; path = ../../python/plugins/fTools/resources.py; sourceTree = SOURCE_ROOT; };
 		72EBCA2E0F49DC130016BA3C /* resources.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resources.qrc; path = ../../python/plugins/fTools/resources.qrc; sourceTree = SOURCE_ROOT; };
 		72EBCA300F49DC130016BA3C /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../python/plugins/fTools/tools/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		72EBCA310F49DC130016BA3C /* doDefineProj.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = doDefineProj.py; path = ../../python/plugins/fTools/tools/doDefineProj.py; sourceTree = SOURCE_ROOT; };
@@ -7103,39 +6997,22 @@
 		72EBCA410F49DC130016BA3C /* doVectorGrid.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = doVectorGrid.py; path = ../../python/plugins/fTools/tools/doVectorGrid.py; sourceTree = SOURCE_ROOT; };
 		72EBCA420F49DC130016BA3C /* doVectorSplit.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = doVectorSplit.py; path = ../../python/plugins/fTools/tools/doVectorSplit.py; sourceTree = SOURCE_ROOT; };
 		72EBCA430F49DC130016BA3C /* doVisual.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = doVisual.py; path = ../../python/plugins/fTools/tools/doVisual.py; sourceTree = SOURCE_ROOT; };
-		72EBCA440F49DC130016BA3C /* frmGeometry.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmGeometry.py; path = ../../python/plugins/fTools/tools/frmGeometry.py; sourceTree = SOURCE_ROOT; };
 		72EBCA450F49DC130016BA3C /* frmGeometry.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmGeometry.ui; path = ../../python/plugins/fTools/tools/frmGeometry.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA460F49DC130016BA3C /* frmGeoprocessing.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmGeoprocessing.py; path = ../../python/plugins/fTools/tools/frmGeoprocessing.py; sourceTree = SOURCE_ROOT; };
 		72EBCA470F49DC130016BA3C /* frmGeoprocessing.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmGeoprocessing.ui; path = ../../python/plugins/fTools/tools/frmGeoprocessing.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA480F49DC130016BA3C /* frmIntersectLines.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmIntersectLines.py; path = ../../python/plugins/fTools/tools/frmIntersectLines.py; sourceTree = SOURCE_ROOT; };
 		72EBCA490F49DC130016BA3C /* frmIntersectLines.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmIntersectLines.ui; path = ../../python/plugins/fTools/tools/frmIntersectLines.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA4A0F49DC130016BA3C /* frmJoinAttributes.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmJoinAttributes.py; path = ../../python/plugins/fTools/tools/frmJoinAttributes.py; sourceTree = SOURCE_ROOT; };
 		72EBCA4B0F49DC130016BA3C /* frmJoinAttributes.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmJoinAttributes.ui; path = ../../python/plugins/fTools/tools/frmJoinAttributes.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA4C0F49DC130016BA3C /* frmMeanCoords.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmMeanCoords.py; path = ../../python/plugins/fTools/tools/frmMeanCoords.py; sourceTree = SOURCE_ROOT; };
 		72EBCA4D0F49DC130016BA3C /* frmMeanCoords.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmMeanCoords.ui; path = ../../python/plugins/fTools/tools/frmMeanCoords.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA4E0F49DC130016BA3C /* frmPointDistance.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmPointDistance.py; path = ../../python/plugins/fTools/tools/frmPointDistance.py; sourceTree = SOURCE_ROOT; };
 		72EBCA4F0F49DC130016BA3C /* frmPointDistance.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmPointDistance.ui; path = ../../python/plugins/fTools/tools/frmPointDistance.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA500F49DC130016BA3C /* frmPointsInPolygon.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmPointsInPolygon.py; path = ../../python/plugins/fTools/tools/frmPointsInPolygon.py; sourceTree = SOURCE_ROOT; };
 		72EBCA510F49DC130016BA3C /* frmPointsInPolygon.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmPointsInPolygon.ui; path = ../../python/plugins/fTools/tools/frmPointsInPolygon.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA520F49DC130016BA3C /* frmRandom.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmRandom.py; path = ../../python/plugins/fTools/tools/frmRandom.py; sourceTree = SOURCE_ROOT; };
 		72EBCA530F49DC130016BA3C /* frmRandom.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmRandom.ui; path = ../../python/plugins/fTools/tools/frmRandom.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA540F49DC130016BA3C /* frmRandPoints.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmRandPoints.py; path = ../../python/plugins/fTools/tools/frmRandPoints.py; sourceTree = SOURCE_ROOT; };
 		72EBCA550F49DC130016BA3C /* frmRandPoints.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmRandPoints.ui; path = ../../python/plugins/fTools/tools/frmRandPoints.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA560F49DC130016BA3C /* frmRegPoints.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmRegPoints.py; path = ../../python/plugins/fTools/tools/frmRegPoints.py; sourceTree = SOURCE_ROOT; };
 		72EBCA570F49DC130016BA3C /* frmRegPoints.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmRegPoints.ui; path = ../../python/plugins/fTools/tools/frmRegPoints.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA580F49DC130016BA3C /* frmReProject.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmReProject.py; path = ../../python/plugins/fTools/tools/frmReProject.py; sourceTree = SOURCE_ROOT; };
 		72EBCA590F49DC130016BA3C /* frmReProject.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmReProject.ui; path = ../../python/plugins/fTools/tools/frmReProject.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA5A0F49DC130016BA3C /* frmSpatialJoin.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmSpatialJoin.py; path = ../../python/plugins/fTools/tools/frmSpatialJoin.py; sourceTree = SOURCE_ROOT; };
 		72EBCA5B0F49DC130016BA3C /* frmSpatialJoin.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmSpatialJoin.ui; path = ../../python/plugins/fTools/tools/frmSpatialJoin.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA5C0F49DC130016BA3C /* frmSubsetSelect.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmSubsetSelect.py; path = ../../python/plugins/fTools/tools/frmSubsetSelect.py; sourceTree = SOURCE_ROOT; };
 		72EBCA5D0F49DC130016BA3C /* frmSubsetSelect.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmSubsetSelect.ui; path = ../../python/plugins/fTools/tools/frmSubsetSelect.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA5E0F49DC130016BA3C /* frmSumLines.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmSumLines.py; path = ../../python/plugins/fTools/tools/frmSumLines.py; sourceTree = SOURCE_ROOT; };
 		72EBCA5F0F49DC130016BA3C /* frmSumLines.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmSumLines.ui; path = ../../python/plugins/fTools/tools/frmSumLines.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA600F49DC130016BA3C /* frmVectorGrid.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmVectorGrid.py; path = ../../python/plugins/fTools/tools/frmVectorGrid.py; sourceTree = SOURCE_ROOT; };
 		72EBCA610F49DC130016BA3C /* frmVectorGrid.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmVectorGrid.ui; path = ../../python/plugins/fTools/tools/frmVectorGrid.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA620F49DC130016BA3C /* frmVectorSplit.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmVectorSplit.py; path = ../../python/plugins/fTools/tools/frmVectorSplit.py; sourceTree = SOURCE_ROOT; };
 		72EBCA630F49DC130016BA3C /* frmVectorSplit.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmVectorSplit.ui; path = ../../python/plugins/fTools/tools/frmVectorSplit.ui; sourceTree = SOURCE_ROOT; };
-		72EBCA640F49DC130016BA3C /* frmVisual.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmVisual.py; path = ../../python/plugins/fTools/tools/frmVisual.py; sourceTree = SOURCE_ROOT; };
 		72EBCA650F49DC130016BA3C /* frmVisual.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmVisual.ui; path = ../../python/plugins/fTools/tools/frmVisual.ui; sourceTree = SOURCE_ROOT; };
 		72EBCA660F49DC130016BA3C /* ftools_utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ftools_utils.py; path = ../../python/plugins/fTools/tools/ftools_utils.py; sourceTree = SOURCE_ROOT; };
 		72F117AB0F73DB1A00D68564 /* tsstat.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = tsstat.pl; path = ../../scripts/tsstat.pl; sourceTree = SOURCE_ROOT; };
@@ -11756,14 +11633,12 @@
 				72EBC9C50F49DC120016BA3C /* __init__.py */,
 				72EBC9C60F49DC120016BA3C /* CMakeLists.txt */,
 				72EBC9C70F49DC120016BA3C /* doAbout.py */,
-				72EBC9C80F49DC120016BA3C /* frmAbout.py */,
 				72EBC9C90F49DC120016BA3C /* frmAbout.ui */,
 				72EBC9CA0F49DC120016BA3C /* fTools.py */,
 				72EBC9CB0F49DC120016BA3C /* ftools_help.xml */,
 				72EBC9CC0F49DC120016BA3C /* ftools_help.xsl */,
 				72EBC9CE0F49DC120016BA3C /* icons */,
 				72EB12930F7E9AED002C38FA /* LICENSE */,
-				72EBCA2D0F49DC130016BA3C /* resources.py */,
 				72EBCA2E0F49DC130016BA3C /* resources.qrc */,
 				72EBCA2F0F49DC130016BA3C /* tools */,
 			);
@@ -11871,7 +11746,6 @@
 				72EBCA160F49DC130016BA3C /* mean.png */,
 				72EBCA170F49DC130016BA3C /* multi_to_single.png */,
 				72EBCA180F49DC130016BA3C /* neighbour.png */,
-				72EBCA190F49DC130016BA3C /* nodes.png */,
 				72EBCA1A0F49DC130016BA3C /* random_points.png */,
 				72EBCA1B0F49DC130016BA3C /* random_selection.png */,
 				72EBCA1C0F49DC130016BA3C /* regular_points.png */,
@@ -11916,39 +11790,22 @@
 				72EBCA410F49DC130016BA3C /* doVectorGrid.py */,
 				72EBCA420F49DC130016BA3C /* doVectorSplit.py */,
 				72EBCA430F49DC130016BA3C /* doVisual.py */,
-				72EBCA440F49DC130016BA3C /* frmGeometry.py */,
 				72EBCA450F49DC130016BA3C /* frmGeometry.ui */,
-				72EBCA460F49DC130016BA3C /* frmGeoprocessing.py */,
 				72EBCA470F49DC130016BA3C /* frmGeoprocessing.ui */,
-				72EBCA480F49DC130016BA3C /* frmIntersectLines.py */,
 				72EBCA490F49DC130016BA3C /* frmIntersectLines.ui */,
-				72EBCA4A0F49DC130016BA3C /* frmJoinAttributes.py */,
 				72EBCA4B0F49DC130016BA3C /* frmJoinAttributes.ui */,
-				72EBCA4C0F49DC130016BA3C /* frmMeanCoords.py */,
 				72EBCA4D0F49DC130016BA3C /* frmMeanCoords.ui */,
-				72EBCA4E0F49DC130016BA3C /* frmPointDistance.py */,
 				72EBCA4F0F49DC130016BA3C /* frmPointDistance.ui */,
-				72EBCA500F49DC130016BA3C /* frmPointsInPolygon.py */,
 				72EBCA510F49DC130016BA3C /* frmPointsInPolygon.ui */,
-				72EBCA520F49DC130016BA3C /* frmRandom.py */,
 				72EBCA530F49DC130016BA3C /* frmRandom.ui */,
-				72EBCA540F49DC130016BA3C /* frmRandPoints.py */,
 				72EBCA550F49DC130016BA3C /* frmRandPoints.ui */,
-				72EBCA560F49DC130016BA3C /* frmRegPoints.py */,
 				72EBCA570F49DC130016BA3C /* frmRegPoints.ui */,
-				72EBCA580F49DC130016BA3C /* frmReProject.py */,
 				72EBCA590F49DC130016BA3C /* frmReProject.ui */,
-				72EBCA5A0F49DC130016BA3C /* frmSpatialJoin.py */,
 				72EBCA5B0F49DC130016BA3C /* frmSpatialJoin.ui */,
-				72EBCA5C0F49DC130016BA3C /* frmSubsetSelect.py */,
 				72EBCA5D0F49DC130016BA3C /* frmSubsetSelect.ui */,
-				72EBCA5E0F49DC130016BA3C /* frmSumLines.py */,
 				72EBCA5F0F49DC130016BA3C /* frmSumLines.ui */,
-				72EBCA600F49DC130016BA3C /* frmVectorGrid.py */,
 				72EBCA610F49DC130016BA3C /* frmVectorGrid.ui */,
-				72EBCA620F49DC130016BA3C /* frmVectorSplit.py */,
 				72EBCA630F49DC130016BA3C /* frmVectorSplit.ui */,
-				72EBCA640F49DC130016BA3C /* frmVisual.py */,
 				72EBCA650F49DC130016BA3C /* frmVisual.ui */,
 				72EBCA660F49DC130016BA3C /* ftools_utils.py */,
 				726FD9A40F6BF86600D50560 /* voronoi.py */,
@@ -13123,19 +12980,19 @@
 			shellScript = "# optional moc sources, can't use dummy file with #if'd #include\n\nrm -f src/x_qgsspatialitesourceselect.h\nif [ \"$SQLITE_SYSTEM\" = \"1\" ] ; then\n\ttouch src/x_qgsspatialitesourceselect.h\nelse\n\tln -s ../../../src/app/qgsspatialitesourceselect.h src/x_qgsspatialitesourceselect.h\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		72832D1210362D61002E3B72 /* Script - osm ui */ = {
+		72832D1210362D61002E3B72 /* Script - osm ui+rc */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Script - osm ui";
+			name = "Script - osm ui+rc";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# generate ui py files\n\nosm_targetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/osm\"\nmkdir -p \"$osm_targetdir\"\n\ncd ../../python/plugins/osm/ui_files\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=`echo $u | sed 's,\\.ui$,_ui.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$osm_targetdir/$upy\" ] || [ $u -nt \"$osm_targetdir/$upy\" ] ; then\n\t\trm -f \"$osm_targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$osm_targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$osm_targetdir/$upy\" $u\n\tfi\ndone\n\nexit 0\n";
+			shellScript = "plug=\"osm\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug/ui_files\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\ncd ..\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		729287A60F71D4FE006D9489 /* Script - ui */ = {
@@ -13421,6 +13278,50 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
+			showEnvVarsInLog = 0;
+		};
+		72C5358F1038DB0800A9CC02 /* Script - fTools ui+rc */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - fTools ui+rc";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "plug=\"fTools\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\n# generate tools ui py files\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug/tools\"\nmkdir -p \"$targetdir\"\ncd tools\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\nexit 0\n";
+			showEnvVarsInLog = 0;
+		};
+		72C535941038E16500A9CC02 /* Script - mapserver ui+rc */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - mapserver ui+rc";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "plug=\"mapserver_export\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
+		};
+		72C535961038E22700A9CC02 /* Script - plugininstall ui+rc */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - plugininstall ui+rc";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "plug=\"plugin_installer\"\n\ntargetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/$plug\"\nmkdir -p \"$targetdir\"\n\ncd ../../python/plugins/$plug\n\n# generate ui py files\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=\"ui_`echo $u | sed 's,\\.ui$,.py,'`\"\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$targetdir/$upy\" ] || [ $u -nt \"$targetdir/$upy\" ] ; then\n\t\trm -f \"$targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$targetdir/$upy\" $u\n\tfi\ndone\n\n# generate rc py files\n#  qrc may not change, but referenced resources might. for now, regenerate always.\n#  TODO: need to list qrc resources and check them all if changed\n\nRCRC=`ls *.qrc`\n\nfor r in $RCRC\ndo\n\trpy=`echo $r | sed 's,\\.qrc$,_rc.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\t#if [ ! -f \"$targetdir/$rpy\" ] || [ $r -nt \"$targetdir/$rpy\" ] ; then\n\t\trm -f \"$targetdir/$rpy\"\n\t\techo \"$PYRCC4 -name $rpy -o \\\"$targetdir/$rpy\\\" $r\"\n\t\t$PYRCC4 -name $rpy -o \"$targetdir/$rpy\" $r\n\t#fi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		72E706ED0F42589900142011 /* fix linking */ = {

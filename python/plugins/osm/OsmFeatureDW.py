@@ -15,7 +15,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from OsmFeatureDW_ui import Ui_OsmFeatureDW
+from ui_OsmFeatureDW import Ui_OsmFeatureDW
 from OsmAddRelationDlg import OsmAddRelationDlg
 
 # include all available osm map tools

@@ -4,7 +4,7 @@ This module is used to import OSM data from standard QGIS vector layer.
 """
 
 
-from OsmImportDlg_ui import Ui_OsmImportDlg
+from ui_OsmImportDlg import Ui_OsmImportDlg
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *

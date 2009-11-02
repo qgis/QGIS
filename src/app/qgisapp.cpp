@@ -1626,10 +1626,14 @@ void QgisApp::setTheme( QString theThemeName )
   mActionMoveVertex->setIcon( getThemeIcon( "/mActionMoveVertex.png" ) );
   mActionDeleteVertex->setIcon( getThemeIcon( "/mActionDeleteVertex.png" ) );
   mActionSimplifyFeature->setIcon( getThemeIcon( "/mActionSimplify.png" ) );
+  mActionUndo->setIcon( getThemeIcon( "/mActionUndo.png" ) );
+  mActionRedo->setIcon( getThemeIcon( "/mActionRedo.png" ) );
   mActionAddRing->setIcon( getThemeIcon( "/mActionAddRing.png" ) );
   mActionAddIsland->setIcon( getThemeIcon( "/mActionAddIsland.png" ) );
   mActionDeleteRing->setIcon( getThemeIcon( "/mActionDeleteRing.png" ) );
   mActionDeletePart->setIcon( getThemeIcon( "/mActionDeletePart.png" ) );
+  mActionMergeFeatures->setIcon( getThemeIcon( "/mActionMergeFeatures.png" ) );
+  mActionNodeTool->setIcon( getThemeIcon( "/mActionNodeTool.png" ) );
   mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
   mActionZoomFullExtent->setIcon( getThemeIcon( "/mActionZoomFullExtent.png" ) );
@@ -4452,6 +4456,7 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
     {
       QgsFeatureList features = selectionVectorLayer->selectedFeatures();
       clipboard()->replaceWithCopyOf( selectionVectorLayer->dataProvider()->fields(), features );
+      clipboard()->setCRS( selectionVectorLayer->srs() );
       selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
       selectionVectorLayer->deleteSelectedFeatures();
       selectionVectorLayer->endEditCommand();
@@ -4480,6 +4485,7 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
     {
       QgsFeatureList features = selectionVectorLayer->selectedFeatures();
       clipboard()->replaceWithCopyOf( selectionVectorLayer->dataProvider()->fields(), features );
+      clipboard()->setCRS( selectionVectorLayer->srs() );
     }
   }
 }
@@ -4504,7 +4510,14 @@ void QgisApp::editPaste( QgsMapLayer * destinationLayer )
     if ( pasteVectorLayer != 0 )
     {
       pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
-      pasteVectorLayer->addFeatures( clipboard()->copyOf() );
+      if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+      {
+        pasteVectorLayer->addFeatures( clipboard()->transformedCopyOf( pasteVectorLayer->srs() ) );
+      }
+      else
+      {
+        pasteVectorLayer->addFeatures( clipboard()->copyOf() );
+      }
       pasteVectorLayer->endEditCommand();
       mMapCanvas->refresh();
     }

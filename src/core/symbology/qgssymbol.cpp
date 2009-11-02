@@ -381,8 +381,10 @@ QImage QgsSymbol::getCachedPointSymbolAsImage( double widthScale, bool selected,
 QImage QgsSymbol::getPointSymbolAsImage( double widthScale, bool selected, QColor selectionColor, double scale,
     double rotation, double rasterScaleFactor, double opacity )
 {
+  double scaleProduct = scale * rasterScaleFactor;
 
-  if ( 1.0 == ( scale * rasterScaleFactor ) && 0 == rotation )
+  //on systems where dpi in x- and y-direction are not the same, the scaleProduct may differ from 1.0 by a very small number
+  if ( scaleProduct > 0.9 && scaleProduct < 1.1 && 0 == rotation )
   {
     if ( mWidthScale < 0 || widthScale == mWidthScale )
     {

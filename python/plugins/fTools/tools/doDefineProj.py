@@ -4,7 +4,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from frmReProject import Ui_Dialog
+from ui_frmReProject import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 	def __init__(self, iface):

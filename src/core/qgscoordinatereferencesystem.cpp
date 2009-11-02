@@ -221,7 +221,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString field, long i
   */
 
   QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where " + field + "='" + QString::number( id ) + "'";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
   {
@@ -506,7 +506,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     return myMap;
   }
 
-  myResult = sqlite3_prepare( myDatabase, theSql.toUtf8(), theSql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, theSql.toUtf8(), theSql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
   {
@@ -542,7 +542,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
       return myMap;
     }
 
-    myResult = sqlite3_prepare( myDatabase, theSql.toUtf8(), theSql.length(), &myPreparedStatement, &myTail );
+    myResult = sqlite3_prepare( myDatabase, theSql.toUtf8(), theSql.toUtf8().length(), &myPreparedStatement, &myTail );
     // XXX Need to free memory from the error msg if one is set
     if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
@@ -799,7 +799,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
     return 0;
   }
 
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
@@ -839,7 +839,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
     return 0;
   }
 
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
@@ -935,48 +935,59 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
   {
     QDomNode myNode = srsNode.namedItem( "proj4" );
     QDomElement myElement = myNode.toElement();
-    setProj4String( myElement.text() );
 
-    myNode = srsNode.namedItem( "srsid" );
-    myElement = myNode.toElement();
-    setInternalId( myElement.text().toLong() );
-
-    myNode = srsNode.namedItem( "srid" );
-    myElement = myNode.toElement();
-    setSrid( myElement.text().toLong() );
-
-    myNode = srsNode.namedItem( "epsg" );
-    myElement = myNode.toElement();
-    setEpsg( myElement.text().toLong() );
-
-    myNode = srsNode.namedItem( "description" );
-    myElement = myNode.toElement();
-    setDescription( myElement.text() );
-
-    myNode = srsNode.namedItem( "projectionacronym" );
-    myElement = myNode.toElement();
-    setProjectionAcronym( myElement.text() );
-
-    myNode = srsNode.namedItem( "ellipsoidacronym" );
-    myElement = myNode.toElement();
-    setEllipsoidAcronym( myElement.text() );
-
-    myNode = srsNode.namedItem( "geographicflag" );
-    myElement = myNode.toElement();
-    if ( myElement.text().compare( "true" ) )
+    if ( createFromProj4( myElement.text() ) )
     {
-      setGeographicFlag( true );
+      // createFromProj4() sets everything, inlcuding map units
+      QgsDebugMsg( "Setting from proj4 string" );
     }
     else
     {
-      setGeographicFlag( false );
+      QgsDebugMsg( "Setting from elements one by one" );
+
+      setProj4String( myElement.text() );
+
+      myNode = srsNode.namedItem( "srsid" );
+      myElement = myNode.toElement();
+      setInternalId( myElement.text().toLong() );
+
+      myNode = srsNode.namedItem( "srid" );
+      myElement = myNode.toElement();
+      setSrid( myElement.text().toLong() );
+
+      myNode = srsNode.namedItem( "epsg" );
+      myElement = myNode.toElement();
+      setEpsg( myElement.text().toLong() );
+
+      myNode = srsNode.namedItem( "description" );
+      myElement = myNode.toElement();
+      setDescription( myElement.text() );
+
+      myNode = srsNode.namedItem( "projectionacronym" );
+      myElement = myNode.toElement();
+      setProjectionAcronym( myElement.text() );
+
+      myNode = srsNode.namedItem( "ellipsoidacronym" );
+      myElement = myNode.toElement();
+      setEllipsoidAcronym( myElement.text() );
+
+      myNode = srsNode.namedItem( "geographicflag" );
+      myElement = myNode.toElement();
+      if ( myElement.text().compare( "true" ) )
+      {
+        setGeographicFlag( true );
+      }
+      else
+      {
+        setGeographicFlag( false );
+      }
+
+      //make sure the map units have been set
+      setMapUnits();
+
+      //@TODO this srs needs to be validated!!!
+      mIsValidFlag = true;//shamelessly hard coded for now
     }
-
-    //make sure the map units have been set
-    setMapUnits();
-
-    //@TODO this srs needs to be validated!!!
-    mIsValidFlag = true;//shamelessly hard coded for now
   }
   else
   {
@@ -1088,7 +1099,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   const char *pzTail;
   sqlite3_stmt *ppStmt;
 
-  rc = sqlite3_prepare( db, mySql.toUtf8(), mySql.length(), &ppStmt, &pzTail );
+  rc = sqlite3_prepare( db, mySql.toUtf8(), mySql.toUtf8().length(), &ppStmt, &pzTail );
   // XXX Need to free memory from the error msg if one is set
 
   if ( rc == SQLITE_OK )
@@ -1220,7 +1231,7 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
     assert( myResult == SQLITE_OK );
   }
   QgsDebugMsg( QString( "Update or insert sql \n%1" ).arg( mySql ) );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   sqlite3_step( myPreparedStatement );
   // XXX Need to free memory from the error msg if one is set
   return myResult == SQLITE_OK;
@@ -1245,7 +1256,7 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select count(*) from tbl_srs";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {

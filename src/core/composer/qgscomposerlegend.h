@@ -127,15 +127,16 @@ class CORE_EXPORT QgsComposerLegend: public QObject, public QgsComposerItem
        @param layerItem parent model item (layer)
        @param currentYCoord in/out: current y position of legend item
        @param maxXCoord in/out: maximum x-coordinate of the whole legend
+       @param layerOpacity opacity of the corresponding map layer
     */
-    void drawLayerChildItems( QPainter* p, QStandardItem* layerItem, double& currentYCoord, double& maxXCoord );
+    void drawLayerChildItems( QPainter* p, QStandardItem* layerItem, double& currentYCoord, double& maxXCoord, int layerOpacity = 255 );
 
     /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
      it is possible that it differs from mSymbolHeight*/
-    void drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
-    void drawPointSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
-    void drawLineSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition ) const;
-    void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition ) const;
+    void drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity = 255 ) const;
+    void drawPointSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity = 255 ) const;
+    void drawLineSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
+    void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
 
     /**Helper function that lists ids of layers contained in map canvas*/
     QStringList layerIdList() const;

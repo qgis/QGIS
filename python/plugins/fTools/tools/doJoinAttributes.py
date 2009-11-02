@@ -36,7 +36,7 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 import struct, itertools, datetime, decimal, ftools_utils
-from frmJoinAttributes import Ui_Dialog
+from ui_frmJoinAttributes import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 

@@ -76,7 +76,7 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     void removeAllSymbols();
 
     /**Creates a model item for a vector symbol. The calling function takes ownership*/
-    QStandardItem* itemFromSymbol( QgsSymbol* s );
+    QStandardItem* itemFromSymbol( QgsSymbol* s, int opacity );
 
     /**Keep track of copied symbols to delete them if not used anymore*/
     QSet<QgsSymbol*> mSymbols;

@@ -226,9 +226,10 @@ void QgsGrassAttributes::updateAttributes( )
 
   if ( tb->rowCount() > 2 )
   {
-
     // Stop editing
-    QApplication::focusWidget()->clearFocus();
+    QWidget *w = QApplication::focusWidget();
+    if ( w )
+      w->clearFocus();
 
     QString sql;
 

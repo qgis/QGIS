@@ -19,8 +19,8 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 import webbrowser, os
-from frmAbout import Ui_Dialog
-import resources
+from ui_frmAbout import Ui_Dialog
+import resources_rc
 currentPath = os.path.dirname(__file__)
 
 class Dialog(QDialog, Ui_Dialog):

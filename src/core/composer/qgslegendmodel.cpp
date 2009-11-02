@@ -91,6 +91,7 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
   {
     return 2;
   }
+  int opacity = vectorLayer->getTransparency();
 
   const QgsRenderer* vectorRenderer = vectorLayer->renderer();
   if ( !vectorRenderer )
@@ -127,7 +128,7 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
       continue;
     }
 
-    QStandardItem* currentSymbolItem = itemFromSymbol( *symbolIt );
+    QStandardItem* currentSymbolItem = itemFromSymbol( *symbolIt, opacity );
     if ( !currentSymbolItem )
     {
       continue;
@@ -278,6 +279,7 @@ void QgsLegendModel::updateVectorClassificationItem( QStandardItem* classificati
   {
     return;
   }
+  int opacity = vl->getTransparency();
 
   const QgsRenderer* layerRenderer = vl->renderer();
   if ( !layerRenderer )
@@ -297,7 +299,7 @@ void QgsLegendModel::updateVectorClassificationItem( QStandardItem* classificati
     if ( currentSymbol->lowerValue() + " - " + currentSymbol->upperValue() == itemText )
     {
       removeSymbol( symbol );
-      parentItem->insertRow( classificationItem->row(), itemFromSymbol( currentSymbol ) );
+      parentItem->insertRow( classificationItem->row(), itemFromSymbol( currentSymbol, opacity ) );
       parentItem->removeRow( classificationItem->row() );
       return;
     }
@@ -311,7 +313,7 @@ void QgsLegendModel::updateVectorClassificationItem( QStandardItem* classificati
     if ( currentSymbol->lowerValue() == itemText )
     {
       removeSymbol( symbol );
-      parentItem->insertRow( classificationItem->row(), itemFromSymbol( currentSymbol ) );
+      parentItem->insertRow( classificationItem->row(), itemFromSymbol( currentSymbol, opacity ) );
       parentItem->removeRow( classificationItem->row() );
       return;
     }
@@ -325,7 +327,7 @@ void QgsLegendModel::updateVectorClassificationItem( QStandardItem* classificati
     if ( currentSymbol->label() == itemText )
     {
       removeSymbol( symbol );
-      parentItem->insertRow( classificationItem->row(), itemFromSymbol( currentSymbol ) );
+      parentItem->insertRow( classificationItem->row(), itemFromSymbol( currentSymbol, opacity ) );
       parentItem->removeRow( classificationItem->row() );
       return;
     }
@@ -415,7 +417,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
   emit layersChanged();
 }
 
-QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s )
+QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s, int opacity )
 {
   QStandardItem* currentSymbolItem = 0;
 
@@ -444,21 +446,38 @@ QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s )
   }
 
   //icon item
+  QImage symbolImage;
   switch ( s->type() )
   {
     case QGis::Point:
-      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getPointSymbolAsImage() ) ), itemText );
+      symbolImage =  s->getPointSymbolAsImage();
       break;
     case QGis::Line:
-      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getLineSymbolAsImage() ) ), itemText );
+      symbolImage = s->getLineSymbolAsImage();
       break;
     case QGis::Polygon:
-      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getPolygonSymbolAsImage() ) ), itemText );
+      symbolImage = s->getPolygonSymbolAsImage();
       break;
     default:
-      currentSymbolItem = 0;
-      break;
+      return 0;
   }
+
+  if ( opacity != 255 )
+  {
+    //todo: manipulate image pixel by pixel...
+    QRgb oldColor;
+    for ( int i = 0; i < symbolImage.height(); ++i )
+    {
+      QRgb* scanLineBuffer = ( QRgb* ) symbolImage.scanLine( i );
+      for ( int j = 0; j < symbolImage.width(); ++j )
+      {
+        oldColor = symbolImage.pixel( j, i );
+        scanLineBuffer[j] = qRgba( qRed( oldColor ), qGreen( oldColor ), qBlue( oldColor ), opacity );
+      }
+    }
+  }
+
+  currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( symbolImage ) ), itemText );
 
   if ( !currentSymbolItem )
   {

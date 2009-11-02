@@ -12,7 +12,7 @@ Each error response from OSM server is caught by OSM Plugin and display to its u
 """
 
 
-from OsmDownloadDlg_ui import Ui_OsmDownloadDlg
+from ui_OsmDownloadDlg import Ui_OsmDownloadDlg
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtNetwork import *

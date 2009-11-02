@@ -36,7 +36,7 @@ import ftools_utils
 from qgis.core import *
 from random import *
 from math import *
-from frmRegPoints import Ui_Dialog
+from ui_frmRegPoints import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 	def __init__(self, iface):

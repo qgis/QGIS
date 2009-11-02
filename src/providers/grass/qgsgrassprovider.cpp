@@ -1241,7 +1241,7 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
       if ( att != NULL )
       {
         QByteArray cstr( att->values[i] );
-        feature->addAttribute( i, QVariant( mEncoding->toUnicode( cstr ) ) );
+        feature->addAttribute( i, convertValue( mLayers[mLayerId].fields[i].type(), mEncoding->toUnicode( cstr ) ) );
       }
       else   /* it may happen that attributes are missing -> set to empty string */
       {
@@ -1273,7 +1273,7 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
       if ( att != NULL )
       {
         QByteArray cstr( att->values[*iter] );
-        feature->addAttribute( *iter, QVariant( mEncoding->toUnicode( cstr ) ) );
+        feature->addAttribute( *iter, convertValue( mLayers[mLayerId].fields[*iter].type(), mEncoding->toUnicode( cstr ) ) );
       }
       else   /* it may happen that attributes are missing -> set to empty string */
       {

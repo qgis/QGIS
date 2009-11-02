@@ -173,7 +173,7 @@ void QgsHelpViewer::loadContextFromSqlite( const QString &contextId )
       // build the sql statement
       QString sql = "select content,title from context_helps where context_id = "
                     + contextId;
-      rc = sqlite3_prepare( db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail );
+      rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
       if ( rc == SQLITE_OK )
       {
         if ( sqlite3_step( ppStmt ) == SQLITE_ROW )

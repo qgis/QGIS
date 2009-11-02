@@ -25,6 +25,7 @@
 
 #include "qgsfield.h"
 #include "qgsfeature.h"
+#include "qgscoordinatereferencesystem.h"
 
 
 /**
@@ -68,7 +69,7 @@ class QgsClipboard
 
     /*
      *  Returns a copy of features on the internal clipboard,
-     *  the caller assumes responsibility fot destroying the contents
+     *  the caller assumes responsibility for destroying the contents
      *  when it's done with it.
      */
     QgsFeatureList copyOf();
@@ -89,6 +90,25 @@ class QgsClipboard
      */
     bool empty();
 
+    /*
+     *  Returns a copy of features on the internal clipboard, transformed
+     *  from the clipboard CRS to the destCRS.
+     *  The caller assumes responsibility for destroying the contents
+     *  when it's done with it.
+     */
+    QgsFeatureList transformedCopyOf( QgsCoordinateReferenceSystem destCRS );
+
+    /*
+     *  Set the clipboard CRS
+     */
+    void setCRS( QgsCoordinateReferenceSystem crs );
+
+
+    /*
+     *  Get the clipboard CRS
+     */
+    QgsCoordinateReferenceSystem crs();
+
   private:
 
     /** QGIS-internal vector feature clipboard.
@@ -96,6 +116,9 @@ class QgsClipboard
         involves a deep copy anyway.
      */
     QgsFeatureList mFeatureClipboard;
+
+    QgsCoordinateReferenceSystem mCRS;
+
 
 };
 

@@ -4,7 +4,7 @@ import ftools_utils
 from qgis.core import *
 from qgis.gui import *
 
-from frmReProject import Ui_Dialog
+from ui_frmReProject import Ui_Dialog
 import types
 
 class Dialog(QDialog, Ui_Dialog):

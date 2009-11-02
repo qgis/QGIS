@@ -108,6 +108,13 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     if ( currentLayerItem )
     {
       QString currentLayerId = currentLayerItem->data().toString();
+      int opacity = 255;
+      QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( currentLayerId );
+      if ( currentLayer )
+      {
+        opacity = currentLayer->getTransparency();
+      }
+
       if ( visibleLayerIds.contains( currentLayerId ) )
       {
         //Let the user omit the layer title item by having an empty layer title string
@@ -126,7 +133,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
         maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, currentLayerItem->text() ) );
 
         //and child items
-        drawLayerChildItems( painter, currentLayerItem, currentYCoordinate, maxXCoord );
+        drawLayerChildItems( painter, currentLayerItem, currentYCoordinate, maxXCoord, opacity );
       }
     }
   }
@@ -170,7 +177,7 @@ void QgsComposerLegend::adjustBoxSize()
   }
 }
 
-void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerItem, double& currentYCoord, double& maxXCoord )
+void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerItem, double& currentYCoord, double& maxXCoord, int layerOpacity )
 {
   if ( !layerItem )
   {
@@ -212,7 +219,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     if ( symbol )  //item with symbol?
     {
       //draw symbol
-      drawSymbol( p, symbol, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, currentXCoord, realSymbolHeight );
+      drawSymbol( p, symbol, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, currentXCoord, realSymbolHeight, layerOpacity );
       realItemHeight = std::max( realSymbolHeight, itemHeight );
       currentXCoord += mIconLabelSpace;
     }
@@ -239,7 +246,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
   }
 }
 
-void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const
+void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity ) const
 {
   if ( !s )
   {
@@ -250,14 +257,14 @@ void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCo
   switch ( symbolType )
   {
     case QGis::Point:
-      drawPointSymbol( p, s, currentYCoord, currentXPosition, symbolHeight );
+      drawPointSymbol( p, s, currentYCoord, currentXPosition, symbolHeight, layerOpacity );
       break;
     case QGis::Line:
-      drawLineSymbol( p, s, currentYCoord, currentXPosition );
+      drawLineSymbol( p, s, currentYCoord, currentXPosition, layerOpacity );
       symbolHeight = mSymbolHeight;
       break;
     case QGis::Polygon:
-      drawPolygonSymbol( p, s, currentYCoord, currentXPosition );
+      drawPolygonSymbol( p, s, currentYCoord, currentXPosition, layerOpacity );
       symbolHeight = mSymbolHeight;
       break;
     case QGis::UnknownGeometry:
@@ -266,7 +273,7 @@ void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCo
   }
 }
 
-void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const
+void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity ) const
 {
   if ( !s )
   {
@@ -287,7 +294,7 @@ void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double curre
   }
 
   //width scale is 1.0
-  pointImage = s->getPointSymbolAsImage( 1.0, false, Qt::yellow, 1.0, 0.0, rasterScaleFactor );
+  pointImage = s->getPointSymbolAsImage( 1.0, false, Qt::yellow, 1.0, 0.0, rasterScaleFactor, opacity / 255.0 );
 
   if ( p )
   {
@@ -303,7 +310,7 @@ void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double curre
   symbolHeight = s->pointSize(); //pointImage.height() / rasterScaleFactor;
 }
 
-void QgsComposerLegend::drawLineSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition ) const
+void QgsComposerLegend::drawLineSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity ) const
 {
   if ( !s )
   {
@@ -315,7 +322,11 @@ void QgsComposerLegend::drawLineSymbol( QPainter* p, QgsSymbol* s, double curren
   if ( p )
   {
     p->save();
-    p->setPen( s->pen() );
+    QPen symbolPen = s->pen();
+    QColor penColor = symbolPen.color();
+    penColor.setAlpha( opacity );
+    symbolPen.setColor( penColor );
+    p->setPen( symbolPen );
     p->drawLine( QPointF( currentXPosition, yCoord ), QPointF( currentXPosition + mSymbolWidth, yCoord ) );
     p->restore();
   }
@@ -323,7 +334,7 @@ void QgsComposerLegend::drawLineSymbol( QPainter* p, QgsSymbol* s, double curren
   currentXPosition += mSymbolWidth;
 }
 
-void QgsComposerLegend::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition ) const
+void QgsComposerLegend::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity ) const
 {
   if ( !s )
   {
@@ -332,8 +343,11 @@ void QgsComposerLegend::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double cur
 
   if ( p )
   {
-    //scale brush
+    //scale brush and set transparencies
     QBrush symbolBrush = s->brush();
+    QColor brushColor = symbolBrush.color();
+    brushColor.setAlpha( opacity );
+    symbolBrush.setColor( brushColor );
     QPaintDevice* paintDevice = p->device();
     if ( paintDevice )
     {
@@ -341,7 +355,13 @@ void QgsComposerLegend::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double cur
       QgsRenderer::scaleBrush( symbolBrush, rasterScaleFactor );
     }
     p->setBrush( symbolBrush );
-    p->setPen( s->pen() );
+
+    QPen symbolPen = s->pen();
+    QColor penColor = symbolPen.color();
+    penColor.setAlpha( opacity );
+    symbolPen.setColor( penColor );
+    p->setPen( symbolPen );
+
     p->drawRect( QRectF( currentXPosition, currentYCoord, mSymbolWidth, mSymbolHeight ) );
   }
 

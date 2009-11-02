@@ -36,7 +36,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from random import *
 import math, ftools_utils
-from frmRandPoints import Ui_Dialog
+from ui_frmRandPoints import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
     def __init__(self, iface):

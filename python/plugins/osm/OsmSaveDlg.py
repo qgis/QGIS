@@ -6,7 +6,7 @@ Of course, user is asked where to save the current data first.
 """
 
 
-from OsmSaveDlg_ui import Ui_OsmSaveDlg
+from ui_OsmSaveDlg import Ui_OsmSaveDlg
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
