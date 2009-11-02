@@ -1,52 +1,53 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsComposerPictureWidgetBase</class>
- <widget class="QWidget" name="QgsComposerPictureWidgetBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QgsComposerPictureWidgetBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>342</width>
+    <width>299</width>
     <height>613</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Picture Options</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" colspan="4" >
-    <widget class="QGroupBox" name="mSearchDirectoriesGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="mSearchDirectoriesGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Search directories</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" colspan="3" >
-       <widget class="QComboBox" name="mSearchDirectoriesComboBox" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+     <layout class="QGridLayout">
+      <item row="0" column="0" colspan="3">
+       <widget class="QComboBox" name="mSearchDirectoriesComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
+      <item row="1" column="0">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>101</width>
           <height>20</height>
@@ -54,16 +55,16 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="1" >
-       <widget class="QPushButton" name="mAddDirectoryButton" >
-        <property name="text" >
+      <item row="1" column="1">
+       <widget class="QPushButton" name="mAddDirectoryButton">
+        <property name="text">
          <string>Add...</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2" >
-       <widget class="QPushButton" name="mRemoveDirectoryButton" >
-        <property name="text" >
+      <item row="1" column="2">
+       <widget class="QPushButton" name="mRemoveDirectoryButton">
+        <property name="text">
          <string>Remove</string>
         </property>
        </widget>
@@ -71,45 +72,45 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4" >
-    <widget class="QGroupBox" name="mPreviewGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+   <item row="1" column="0" colspan="2">
+    <widget class="QGroupBox" name="mPreviewGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Preview</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QListWidget" name="mPreviewListWidget" >
-        <property name="showDropIndicator" stdset="0" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QListWidget" name="mPreviewListWidget">
+        <property name="showDropIndicator" stdset="0">
          <bool>false</bool>
         </property>
-        <property name="dragDropMode" >
+        <property name="dragDropMode">
          <enum>QAbstractItemView::DragDrop</enum>
         </property>
-        <property name="movement" >
+        <property name="movement">
          <enum>QListView::Free</enum>
         </property>
-        <property name="flow" >
+        <property name="flow">
          <enum>QListView::LeftToRight</enum>
         </property>
-        <property name="isWrapping" stdset="0" >
+        <property name="isWrapping" stdset="0">
          <bool>true</bool>
         </property>
-        <property name="gridSize" >
+        <property name="gridSize">
          <size>
           <width>30</width>
           <height>30</height>
          </size>
         </property>
-        <property name="viewMode" >
+        <property name="viewMode">
          <enum>QListView::IconMode</enum>
         </property>
-        <property name="wordWrap" >
+        <property name="wordWrap">
          <bool>true</bool>
         </property>
        </widget>
@@ -117,107 +118,121 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="label" >
-     <property name="text" >
-      <string>Load</string>
-     </property>
-     <property name="buddy" >
-      <cstring>mPictureLineEdit</cstring>
-     </property>
-    </widget>
+   <item row="2" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Load</string>
+       </property>
+       <property name="buddy">
+        <cstring>mPictureLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mPictureLineEdit"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mPictureBrowseButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>32767</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="2" column="1" colspan="2" >
-    <widget class="QLineEdit" name="mPictureLineEdit" />
-   </item>
-   <item row="2" column="3" >
-    <widget class="QPushButton" name="mPictureBrowseButton" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+   <item row="3" column="0">
+    <widget class="QLabel" name="textLabel3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="maximumSize" >
-      <size>
-       <width>150</width>
-       <height>32767</height>
-      </size>
-     </property>
-     <property name="text" >
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" >
-    <widget class="QLabel" name="textLabel3" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text" >
+     <property name="text">
       <string>Width</string>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>true</bool>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>mWidthLineEdit</cstring>
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="3" >
-    <widget class="QLineEdit" name="mWidthLineEdit" />
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="mWidthLineEdit"/>
    </item>
-   <item row="4" column="0" >
-    <widget class="QLabel" name="textLabel4" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+   <item row="4" column="0">
+    <widget class="QLabel" name="textLabel4">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="text" >
+     <property name="text">
       <string>Height</string>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>true</bool>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>mHeightLineEdit</cstring>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="3" >
-    <widget class="QLineEdit" name="mHeightLineEdit" />
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="mHeightLineEdit"/>
    </item>
-   <item row="5" column="0" colspan="2" >
-    <widget class="QLabel" name="mRotationLabel" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+   <item row="5" column="0">
+    <widget class="QLabel" name="mRotationLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="text" >
+     <property name="text">
       <string>Rotation</string>
      </property>
-     <property name="wordWrap" >
+     <property name="wordWrap">
       <bool>true</bool>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>mRotationSpinBox</cstring>
      </property>
     </widget>
    </item>
-   <item row="5" column="2" colspan="2" >
-    <widget class="QDoubleSpinBox" name="mRotationSpinBox" />
+   <item row="5" column="1">
+    <widget class="QDoubleSpinBox" name="mRotationSpinBox"/>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QCheckBox" name="mRotationFromComposerMapCheckBox">
+     <property name="text">
+      <string>Take rotation from composer map</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QComboBox" name="mComposerMapComboBox"/>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>mSearchDirectoriesComboBox</tabstop>
   <tabstop>mAddDirectoryButton</tabstop>
