@@ -575,6 +575,7 @@ void QgsVectorLayerProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::FileName, tr( "File name" ) );
   editTypeMap.insert( QgsVectorLayer::Enumeration, tr( "Enumeration" ) );
   editTypeMap.insert( QgsVectorLayer::Immutable, tr( "Immutable" ) );
+  editTypeMap.insert( QgsVectorLayer::Hidden, tr( "Hidden" ) );
 }
 
 QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )

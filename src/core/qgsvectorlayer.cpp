@@ -935,7 +935,7 @@ void QgsVectorLayer::drawVertexMarker( int x, int y, QPainter& p, QgsVectorLayer
   {
     p.setPen( QColor( 50, 100, 120, 200 ) );
     p.setBrush( QColor( 200, 200, 210, 120 ) );
-    p.drawEllipse( x-m, y-m, m*2+1, m*2+1 );
+    p.drawEllipse( x - m, y - m, m*2 + 1, m*2 + 1 );
   }
   else if ( type == QgsVectorLayer::Cross )
   {
@@ -3678,7 +3678,7 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
 
       transformPoint( x, y, &renderContext.mapToPixel(), renderContext.coordinateTransform() );
       if ( std::abs( x ) > QgsClipper::MAX_X ||
-             std::abs( y ) > QgsClipper::MAX_Y )
+           std::abs( y ) > QgsClipper::MAX_Y )
       {
         break;
       }
@@ -3874,7 +3874,7 @@ QMap< QString, QVariant > &QgsVectorLayer::valueMap( int idx )
   const QgsFieldMap &fields = pendingFields();
 
   // FIXME: throw an exception!?
-  if ( fields.contains( idx ) )
+  if ( !fields.contains( idx ) )
   {
     QgsDebugMsg( QString( "field %1 not found" ).arg( idx ) );
   }

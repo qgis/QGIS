@@ -583,27 +583,6 @@
 		724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */; };
 		724C9FED1019EE3700A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
-		7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */; };
-		7256F2FB0F4148FC0022BE1F /* Christoph_Spoerri.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE010F39E5D9003DC336 /* Christoph_Spoerri.jpg */; };
-		7256F2FC0F4148FC0022BE1F /* Denis_Antipov.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE030F39E5D9003DC336 /* Denis_Antipov.jpg */; };
-		7256F2FD0F4148FC0022BE1F /* Gary_E_Sherman.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE040F39E5D9003DC336 /* Gary_E_Sherman.jpg */; };
-		7256F2FE0F4148FC0022BE1F /* Gavin_Macaulay.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE050F39E5D9003DC336 /* Gavin_Macaulay.jpg */; };
-		7256F2FF0F4148FC0022BE1F /* Godofredo_Contreras.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE060F39E5D9003DC336 /* Godofredo_Contreras.jpg */; };
-		7256F3000F4148FC0022BE1F /* Jc3bcrgen_Fischer.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE070F39E5D9003DC336 /* Jc3bcrgen_Fischer.jpg */; };
-		7256F3010F4148FC0022BE1F /* Jens_Oberender.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE080F39E5D9003DC336 /* Jens_Oberender.jpg */; };
-		7256F3020F4148FC0022BE1F /* Lars_Luthman.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE090F39E5D9003DC336 /* Lars_Luthman.jpg */; };
-		7256F3030F4148FC0022BE1F /* Leonardo_Lami.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE0A0F39E5D9003DC336 /* Leonardo_Lami.jpg */; };
-		7256F3040F4148FC0022BE1F /* Magnus_Homann.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE0B0F39E5D9003DC336 /* Magnus_Homann.jpg */; };
-		7256F3050F4148FC0022BE1F /* Marco_Hugentobler.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE0C0F39E5D9003DC336 /* Marco_Hugentobler.jpg */; };
-		7256F3060F4148FC0022BE1F /* Mark_Coletti.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE0D0F39E5D9003DC336 /* Mark_Coletti.jpg */; };
-		7256F3070F4148FC0022BE1F /* Martin_Dobias.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE0E0F39E5D9003DC336 /* Martin_Dobias.jpg */; };
-		7256F3080F4148FC0022BE1F /* Masaru_Hoshi.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE0F0F39E5D9003DC336 /* Masaru_Hoshi.jpg */; };
-		7256F3090F4148FC0022BE1F /* Peter_Brewer.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE100F39E5D9003DC336 /* Peter_Brewer.jpg */; };
-		7256F30A0F4148FC0022BE1F /* Radim_Blazek.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE110F39E5D9003DC336 /* Radim_Blazek.jpg */; };
-		7256F30B0F4148FC0022BE1F /* Steve_Halasz.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE120F39E5D9003DC336 /* Steve_Halasz.jpg */; };
-		7256F30C0F4148FC0022BE1F /* Tim_Sutton.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE130F39E5D9003DC336 /* Tim_Sutton.jpg */; };
-		7256F30D0F4148FC0022BE1F /* Tisham_Dhar.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE140F39E5D9003DC336 /* Tisham_Dhar.jpg */; };
-		7256F30E0F4148FC0022BE1F /* Tom_Elwertowski.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE150F39E5D9003DC336 /* Tom_Elwertowski.jpg */; };
 		7256F3190F4149390022BE1F /* qgis-icon-16x16.png in Copy - images-icons */ = {isa = PBXBuildFile; fileRef = 7209EE190F39E5D9003DC336 /* qgis-icon-16x16.png */; };
 		7256F31A0F4149390022BE1F /* qgis-icon-60x60.png in Copy - images-icons */ = {isa = PBXBuildFile; fileRef = 7209EE1A0F39E5D9003DC336 /* qgis-icon-60x60.png */; };
 		7256F31B0F4149390022BE1F /* qgis-icon.png in Copy - images-icons */ = {isa = PBXBuildFile; fileRef = 7209EE1B0F39E5D9003DC336 /* qgis-icon.png */; };
@@ -1149,6 +1128,9 @@
 		72820FEF0FACCFA90011C963 /* mActionDeleteRing.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FEE0FACCF970011C963 /* mActionDeleteRing.png */; };
 		72820FF00FACCFA90011C963 /* mActionDeletePart.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FED0FACCF970011C963 /* mActionDeletePart.png */; };
 		72820FF10FACCFA90011C963 /* mActionSimplify.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FEC0FACCF970011C963 /* mActionSimplify.png */; };
+		7286D63B1062763F008D83A6 /* mActionRotatePointSymbols.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7286D63A10627610008D83A6 /* mActionRotatePointSymbols.png */; };
+		7286D640106276D3008D83A6 /* qgsmaptoolrotatepointsymbols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7286D63C1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.cpp */; };
+		7286D641106276D3008D83A6 /* qgspointrotationitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */; };
 		7292873D0F71C0DF006D9489 /* qgssearchstringparser.yy in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6CE0F39E57A003DC336 /* qgssearchstringparser.yy */; };
 		7292873E0F71C103006D9489 /* qgssearchstringlexer.ll in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6CD0F39E57A003DC336 /* qgssearchstringlexer.ll */; };
 		729287430F71C2CB006D9489 /* qgsapplication.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6840F39E57A003DC336 /* qgsapplication.h */; };
@@ -2743,37 +2725,6 @@
 			name = "Copy - doc-images";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7256F2F50F4148C70022BE1F /* Copy - images-developers */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_DATA_SUBDIR)/images/developers";
-			dstSubfolderSpec = 6;
-			files = (
-				7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */,
-				7256F2FB0F4148FC0022BE1F /* Christoph_Spoerri.jpg in Copy - images-developers */,
-				7256F2FC0F4148FC0022BE1F /* Denis_Antipov.jpg in Copy - images-developers */,
-				7256F2FD0F4148FC0022BE1F /* Gary_E_Sherman.jpg in Copy - images-developers */,
-				7256F2FE0F4148FC0022BE1F /* Gavin_Macaulay.jpg in Copy - images-developers */,
-				7256F2FF0F4148FC0022BE1F /* Godofredo_Contreras.jpg in Copy - images-developers */,
-				7256F3000F4148FC0022BE1F /* Jc3bcrgen_Fischer.jpg in Copy - images-developers */,
-				7256F3010F4148FC0022BE1F /* Jens_Oberender.jpg in Copy - images-developers */,
-				7256F3020F4148FC0022BE1F /* Lars_Luthman.jpg in Copy - images-developers */,
-				7256F3030F4148FC0022BE1F /* Leonardo_Lami.jpg in Copy - images-developers */,
-				7256F3040F4148FC0022BE1F /* Magnus_Homann.jpg in Copy - images-developers */,
-				7256F3050F4148FC0022BE1F /* Marco_Hugentobler.jpg in Copy - images-developers */,
-				7256F3060F4148FC0022BE1F /* Mark_Coletti.jpg in Copy - images-developers */,
-				7256F3070F4148FC0022BE1F /* Martin_Dobias.jpg in Copy - images-developers */,
-				7256F3080F4148FC0022BE1F /* Masaru_Hoshi.jpg in Copy - images-developers */,
-				7256F3090F4148FC0022BE1F /* Peter_Brewer.jpg in Copy - images-developers */,
-				7256F30A0F4148FC0022BE1F /* Radim_Blazek.jpg in Copy - images-developers */,
-				7256F30B0F4148FC0022BE1F /* Steve_Halasz.jpg in Copy - images-developers */,
-				7256F30C0F4148FC0022BE1F /* Tim_Sutton.jpg in Copy - images-developers */,
-				7256F30D0F4148FC0022BE1F /* Tisham_Dhar.jpg in Copy - images-developers */,
-				7256F30E0F4148FC0022BE1F /* Tom_Elwertowski.jpg in Copy - images-developers */,
-			);
-			name = "Copy - images-developers";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7256F3180F4149300022BE1F /* Copy - images-icons */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3142,6 +3093,7 @@
 				7256F4670F41C4DD0022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-default */,
 				7256F4680F41C4DD0022BE1F /* mActionRemoveLayer.png in Copy - theme-default */,
 				72D84C141044BBC7009F8F39 /* mActionReshape.png in Copy - theme-default */,
+				7286D63B1062763F008D83A6 /* mActionRotatePointSymbols.png in Copy - theme-default */,
 				724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */,
 				7256F4690F41C4DD0022BE1F /* mActionSaveAsSVG.png in Copy - theme-default */,
 				7256F46A0F41C4DD0022BE1F /* mActionSaveMapAsImage.png in Copy - theme-default */,
@@ -5947,14 +5899,12 @@
 		726C671D104602FB00EFEDCC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/raster_terrain_analysis/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrasterterrainanalysisdialog.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp; sourceTree = SOURCE_ROOT; };
 		726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisdialog.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.h; sourceTree = SOURCE_ROOT; };
-		726C6726104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisdialogbase.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.h; sourceTree = SOURCE_ROOT; };
 		726C6727104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsrasterterrainanalysisdialogbase.ui; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrasterterrainanalysisplugin.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp; sourceTree = SOURCE_ROOT; };
 		726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterterrainanalysisplugin.h; path = ../../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.h; sourceTree = SOURCE_ROOT; };
 		726C672C104602FB00EFEDCC /* qgsruggednessindex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsruggednessindex.cpp; path = ../../src/plugins/raster_terrain_analysis/qgsruggednessindex.cpp; sourceTree = SOURCE_ROOT; };
 		726C6731104602FB00EFEDCC /* raster_terrain_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = raster_terrain_icon.png; path = ../../src/plugins/raster_terrain_analysis/raster_terrain_icon.png; sourceTree = SOURCE_ROOT; };
 		726C6732104602FB00EFEDCC /* resources.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resources.qrc; path = ../../src/plugins/raster_terrain_analysis/resources.qrc; sourceTree = SOURCE_ROOT; };
-		726C6733104602FB00EFEDCC /* ui_qgsrasterterrainanalysisdialogbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_qgsrasterterrainanalysisdialogbase.h; path = ../../src/plugins/raster_terrain_analysis/ui_qgsrasterterrainanalysisdialogbase.h; sourceTree = SOURCE_ROOT; };
 		726C67411046030F00EFEDCC /* librasterterrainplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = librasterterrainplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		726C675B1046118B00EFEDCC /* 151694916_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 151694916_pl_PL; path = ../../resources/context_help/151694916_pl_PL; sourceTree = SOURCE_ROOT; };
 		726C675C1046118B00EFEDCC /* 94000531_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 94000531_pl_PL; path = ../../resources/context_help/94000531_pl_PL; sourceTree = SOURCE_ROOT; };
@@ -6009,6 +5959,11 @@
 		72832D0D1036242E002E3B72 /* osm_addRelation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_addRelation.png; path = ../../python/plugins/osm/images/osm_addRelation.png; sourceTree = SOURCE_ROOT; };
 		72832D0E1036242E002E3B72 /* osm_urDetails.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_urDetails.png; path = ../../python/plugins/osm/images/osm_urDetails.png; sourceTree = SOURCE_ROOT; };
 		72832D0F1036242E002E3B72 /* osm_removeRelation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeRelation.png; path = ../../python/plugins/osm/images/osm_removeRelation.png; sourceTree = SOURCE_ROOT; };
+		7286D63A10627610008D83A6 /* mActionRotatePointSymbols.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRotatePointSymbols.png; path = ../../images/themes/default/mActionRotatePointSymbols.png; sourceTree = SOURCE_ROOT; };
+		7286D63C1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolrotatepointsymbols.cpp; path = ../../src/app/qgsmaptoolrotatepointsymbols.cpp; sourceTree = SOURCE_ROOT; };
+		7286D63D1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolrotatepointsymbols.h; path = ../../src/app/qgsmaptoolrotatepointsymbols.h; sourceTree = SOURCE_ROOT; };
+		7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspointrotationitem.cpp; path = ../../src/app/qgspointrotationitem.cpp; sourceTree = SOURCE_ROOT; };
+		7286D63F1062769D008D83A6 /* qgspointrotationitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspointrotationitem.h; path = ../../src/app/qgspointrotationitem.h; sourceTree = SOURCE_ROOT; };
 		7299396A0FE3037600244D1A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = "../../src/plugins/grass/modules-6.3/CMakeLists.txt"; sourceTree = SOURCE_ROOT; };
 		7299396B0FE3037600244D1A /* r.surf.fractal.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.1.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.1.png"; sourceTree = SOURCE_ROOT; };
 		7299396C0FE3037600244D1A /* r.surf.fractal.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.2.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.2.png"; sourceTree = SOURCE_ROOT; };
@@ -7969,6 +7924,10 @@
 				72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */,
 				7216ADF00FE571F000552832 /* qgsundowidget.cpp */,
 				7216ADF10FE571F000552832 /* qgsundowidget.h */,
+				7286D63C1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.cpp */,
+				7286D63D1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.h */,
+				7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */,
+				7286D63F1062769D008D83A6 /* qgspointrotationitem.h */,
 				72A239420F74A62200AFC35B /* attributetable */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				7209E5D00F39E57A003DC336 /* legend */,
@@ -10229,6 +10188,7 @@
 				7209EF310F39E5D9003DC336 /* mActionRemoveAllFromOverview.png */,
 				7209EF320F39E5D9003DC336 /* mActionRemoveLayer.png */,
 				72D84C131044BBB7009F8F39 /* mActionReshape.png */,
+				7286D63A10627610008D83A6 /* mActionRotatePointSymbols.png */,
 				7209EF330F39E5D9003DC336 /* mActionSaveAsSVG.png */,
 				7209EF340F39E5D9003DC336 /* mActionSaveMapAsImage.png */,
 				7209EF350F39E5D9003DC336 /* mActionScaleBar.png */,
@@ -10814,14 +10774,12 @@
 				726C671D104602FB00EFEDCC /* CMakeLists.txt */,
 				726C6724104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.cpp */,
 				726C6725104602FB00EFEDCC /* qgsrasterterrainanalysisdialog.h */,
-				726C6726104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.h */,
 				726C6727104602FB00EFEDCC /* qgsrasterterrainanalysisdialogbase.ui */,
 				726C6728104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.cpp */,
 				726C6729104602FB00EFEDCC /* qgsrasterterrainanalysisplugin.h */,
 				726C672C104602FB00EFEDCC /* qgsruggednessindex.cpp */,
 				726C6731104602FB00EFEDCC /* raster_terrain_icon.png */,
 				726C6732104602FB00EFEDCC /* resources.qrc */,
-				726C6733104602FB00EFEDCC /* ui_qgsrasterterrainanalysisdialogbase.h */,
 			);
 			name = raster_terrain_analysis;
 			path = ../../src/plugins/raster_terrain_analysis;
@@ -13042,7 +13000,6 @@
 				8D0C4E910486CD37000505A6 /* Frameworks */,
 				72EBCB3F0F49E8430016BA3C /* Copy - doc */,
 				7256F2D60F4146A70022BE1F /* Copy - doc-images */,
-				7256F2F50F4148C70022BE1F /* Copy - images-developers */,
 				7256F3180F4149300022BE1F /* Copy - images-icons */,
 				7256F3220F41494A0022BE1F /* Copy - images-n_arrows */,
 				7256F3290F41498A0022BE1F /* Copy - images-splash */,
@@ -13304,7 +13261,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Note: quoting messes up the -change action in install_name_tool, so for now\n# dependency libraries should have no spaces in paths.  ***FIXME***\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls *.so`\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR\"\nliblist=`ls *.dylib`\n\ncd \"$PROJECT_DIR\"\n\n# Postgres\n\nPGSQLROOT=\"$PGSQL_PREFIX/lib\"\nif [ \"$BUNDLE_PGSQL\" = \"YES\" ] && [ -f \"$PGSQLROOT/libpq.dylib\" ] ; then\n\tcp -fp \"$PGSQLROOT/libpq.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libpq.dylib\"\n\tplib=`otool -L \"$PGSQLROOT/libpq.dylib\" | grep -E -m 1 \"libpq.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPGSQL_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libpq.dylib\"\nfi\n\n# GDAL\n# *** Note: may need support files also ***\n\nGDALROOT=\"$GDAL_PREFIX/lib\"\nif [ \"$BUNDLE_GDAL\" = \"YES\" ] && [ \"$GDAL_FORM\" = \"shared\" ] && [ -f \"$GDALROOT/libgdal.dylib\" ] ; then\n\tcp -fp \"$GDALROOT/libgdal.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgdal.dylib\"\n\tglib=`otool -L \"$GDALROOT/libgdal.dylib\" | grep -E -m 1 \"libgdal.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGDAL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgdal.dylib\"\nfi\n\n# PROJ\n# *** Note: may need support files also ***\n\nPROJROOT=\"$PROJ_PREFIX/lib\"\nif [ \"$BUNDLE_PROJ\" = \"YES\" ] && [ \"$PROJ_FORM\" = \"shared\" ] && [ -f \"$PROJROOT/libproj.dylib\" ] ; then\n\tcp -fp \"$PROJROOT/libproj.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libproj.dylib\"\n\tplib=`otool -L \"$PROJROOT/libproj.dylib\" | grep -E -m 1 \"libproj.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPROJ_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libproj.dylib\"\nfi\n\n# GEOS\n\nGEOSROOT=\"$GEOS_PREFIX/lib\"\nif [ \"$BUNDLE_GEOS\" = \"YES\" ] && [ \"$GEOS_FORM\" = \"shared\" ] && [ -f \"$GEOSROOT/libgeos.dylib\" ] ; then\n\tcp -fp \"$GEOSROOT/libgeos.dylib\" \"$GEOSROOT/libgeos_c.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/\"\n\tglib=`otool -L \"$GEOSROOT/libgeos.dylib\" | grep -E -m 1 \"libgeos.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GEOSROOT/libgeos_c.dylib\" | grep -E -m 1 \"libgeos_c.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGEOS_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgeos.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgeos_c.dylib\"\nfi\n\n# SQLite & SpatiaLite\n\nSQLITEROOT=\"$SQLITE_PREFIX/lib\"\nif [ \"$BUNDLE_SQLITE\" = \"YES\" ] && [ \"$SQLITE_FORM\" = \"shared\" ] && [ -f \"$SQLITEROOT/libsqlite3.dylib\" ] ; then\n\tcp -fp \"$SQLITEROOT/libsqlite3.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tslib=`otool -L \"$SQLITEROOT/libsqlite3.dylib\" | grep -E -m 1 \"libsqlite3.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSQLITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tif [ -f \"$SQLITEROOT/libspatialite.dylib\" ] ; then\n\t\tcp -fp \"$SQLITEROOT/libspatialite.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\t\tslib=`otool -L \"$SQLITEROOT/libspatialite.dylib\" | grep -E -m 1 \"libspatialite.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tSPATIALITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\tfi\nfi\n\n# GSL\n\nGSLROOT=\"$GSL_PREFIX/lib\"\nif [ \"$BUNDLE_GSL\" = \"YES\" ] && [ \"$GSL_FORM\" = \"shared\" ] && [ -f \"$GSLROOT/libgsl.dylib\" ] ; then\n\tcp -fp \"$GSLROOT/libgsl.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgsl.dylib\"\n\tcp -fp \"$GSLROOT/libgslcblas.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\n\tglib=`otool -L \"$GSLROOT/libgsl.dylib\" | grep -E -m 1 \"libgsl.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GSLROOT/libgslcblas.dylib\" | grep -E -m 1 \"libgslcblas.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGSL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgsl.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\nfi\n\n# change for all bundled libs now\n\necho \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/Qgis\\\"\"\ninstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/Qgis\"\n\nfor p in $pluglist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\"\ndone\n\nfor l in $liblist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\"\ndone\n\nif [ -f \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\" ] ; then\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/gui.so\"\nfi\n\n# other bundling\n\n# gpsbabel\n\nif [ \"$BUNDLE_GPSBABEL\" = \"YES\" ] && [ -f \"$GPSBABEL\" ] ; then\n\tcp -f \"$GPSBABEL\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"/\nfi\n\n# user bundling from bundle.sh\n\nif [ -f bundle.sh ] ; then\n\t./bundle.sh\nfi\n";
+			shellScript = "# Note: quoting messes up the -change action in install_name_tool, so for now\n# dependency libraries should have no spaces in paths.  ***FIXME***\n\n# arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls *.so`\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR\"\nliblist=`ls *.dylib`\n\ncd \"$PROJECT_DIR\"\n\n# Postgres\n\nPGSQLROOT=\"$PGSQL_PREFIX/lib\"\nif [ \"$BUNDLE_PGSQL\" = \"YES\" ] && [ -f \"$PGSQLROOT/libpq.dylib\" ] ; then\n\tditto $QARCHS \"$PGSQLROOT/libpq.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libpq.dylib\"\n\tplib=`otool -L \"$PGSQLROOT/libpq.dylib\" | grep -E -m 1 \"libpq.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPGSQL_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libpq.dylib\"\nfi\n\n# GDAL\n# *** Note: may need support files also ***\n\nGDALROOT=\"$GDAL_PREFIX/lib\"\nif [ \"$BUNDLE_GDAL\" = \"YES\" ] && [ \"$GDAL_FORM\" = \"shared\" ] && [ -f \"$GDALROOT/libgdal.dylib\" ] ; then\n\tditto $QARCHS \"$GDALROOT/libgdal.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgdal.dylib\"\n\tglib=`otool -L \"$GDALROOT/libgdal.dylib\" | grep -E -m 1 \"libgdal.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGDAL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgdal.dylib\"\nfi\n\n# PROJ\n# *** Note: may need support files also ***\n\nPROJROOT=\"$PROJ_PREFIX/lib\"\nif [ \"$BUNDLE_PROJ\" = \"YES\" ] && [ \"$PROJ_FORM\" = \"shared\" ] && [ -f \"$PROJROOT/libproj.dylib\" ] ; then\n\tditto $QARCHS \"$PROJROOT/libproj.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libproj.dylib\"\n\tplib=`otool -L \"$PROJROOT/libproj.dylib\" | grep -E -m 1 \"libproj.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPROJ_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libproj.dylib\"\nfi\n\n# GEOS\n\nGEOSROOT=\"$GEOS_PREFIX/lib\"\nif [ \"$BUNDLE_GEOS\" = \"YES\" ] && [ \"$GEOS_FORM\" = \"shared\" ] && [ -f \"$GEOSROOT/libgeos.dylib\" ] ; then\n\tditto $QARCHS \"$GEOSROOT/libgeos.dylib\" \"$GEOSROOT/libgeos_c.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/\"\n\tglib=`otool -L \"$GEOSROOT/libgeos.dylib\" | grep -E -m 1 \"libgeos.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GEOSROOT/libgeos_c.dylib\" | grep -E -m 1 \"libgeos_c.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGEOS_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgeos.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgeos_c.dylib\"\nfi\n\n# SQLite & SpatiaLite\n\nSQLITEROOT=\"$SQLITE_PREFIX/lib\"\nif [ \"$BUNDLE_SQLITE\" = \"YES\" ] && [ \"$SQLITE_FORM\" = \"shared\" ] && [ -f \"$SQLITEROOT/libsqlite3.dylib\" ] ; then\n\tditto $QARCHS \"$SQLITEROOT/libsqlite3.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tslib=`otool -L \"$SQLITEROOT/libsqlite3.dylib\" | grep -E -m 1 \"libsqlite3.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSQLITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tif [ -f \"$SQLITEROOT/libspatialite.dylib\" ] ; then\n\t\tditto $QARCHS \"$SQLITEROOT/libspatialite.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\t\tslib=`otool -L \"$SQLITEROOT/libspatialite.dylib\" | grep -E -m 1 \"libspatialite.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tSPATIALITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\tfi\nfi\n\n# GSL\n\nGSLROOT=\"$GSL_PREFIX/lib\"\nif [ \"$BUNDLE_GSL\" = \"YES\" ] && [ \"$GSL_FORM\" = \"shared\" ] && [ -f \"$GSLROOT/libgsl.dylib\" ] ; then\n\tditto $QARCHS \"$GSLROOT/libgsl.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgsl.dylib\"\n\tditto $QARCHS \"$GSLROOT/libgslcblas.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\n\tglib=`otool -L \"$GSLROOT/libgsl.dylib\" | grep -E -m 1 \"libgsl.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GSLROOT/libgslcblas.dylib\" | grep -E -m 1 \"libgslcblas.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGSL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgsl.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\nfi\n\n# change for all bundled libs now\n\necho \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/Qgis\\\"\"\ninstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/Qgis\"\n\nfor p in $pluglist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\"\ndone\n\nfor l in $liblist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\"\ndone\n\nif [ -f \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\" ] ; then\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/gui.so\"\nfi\n\n# other bundling\n\n# gpsbabel\n\nif [ \"$BUNDLE_GPSBABEL\" = \"YES\" ] && [ -f \"$GPSBABEL\" ] ; then\n\tcp -f \"$GPSBABEL\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"/\nfi\n\n# user bundling from bundle.sh\n\nif [ -f bundle.sh ] ; then\n\t./bundle.sh\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		726C67371046030F00EFEDCC /* Script - ui */ = {
@@ -13723,7 +13680,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# copy Qt frameworks\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tcp -fp \"/Library/Frameworks/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tcp -fp \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"/Library/Frameworks/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tcp -Rfp \"/Library/Frameworks/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tcp -fp \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tcp -fp \"$PYSITE/sip.so\" \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tcp -fp \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls *.dylib`\n\n# main Qt framework loop\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tqq=\"$q.framework/Versions/$QT_FWVER/$q\"\n\t# app\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/Qgis\"\n\t# bin\n\t# qgis_help qt linking done with symlinks\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t# libs\n\tfor ql in $qgliblist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\tdone\n\t# plugins\n\tfor qp in $pluglist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\tdone\n\t# qt fw\n\tfor qf in $QTLISTQG\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\tdone\n\t# qt plugs\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t# PyQt\n\tif [ \"$PYSITE\" ] ; then\n\tfor pq in $PYQTLIST\n\t\tdo\n\t\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\tdone\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/core.so\"\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/gui.so\"\n\tfi\ndone\n";
+			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# qt arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\n# copy Qt frameworks\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tditto $QARCHS \"/Library/Frameworks/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$q\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tditto $QARCHS \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$qd\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"/Library/Frameworks/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tditto $QARCHS \"/Library/Frameworks/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tditto $QARCHS \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tditto $QARCHS \"$PYSITE/sip.so\" \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tditto $QARCHS \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls *.dylib`\n\n# main Qt framework loop\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tqq=\"$q.framework/Versions/$QT_FWVER/$q\"\n\t# app\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/Qgis\"\n\t# bin\n\t# qgis_help qt linking done with symlinks\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t# libs\n\tfor ql in $qgliblist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\tdone\n\t# plugins\n\tfor qp in $pluglist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\tdone\n\t# qt fw\n\tfor qf in $QTLISTQG\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\tdone\n\t# qt plugs\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t# PyQt\n\tif [ \"$PYSITE\" ] ; then\n\tfor pq in $PYQTLIST\n\t\tdo\n\t\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\tdone\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/core.so\"\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/gui.so\"\n\tfi\ndone\n";
 			showEnvVarsInLog = 0;
 		};
 		72FB0B4B0FFD680F0052360B /* Script - ui */ = {
@@ -14598,6 +14555,8 @@
 				72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */,
 				72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */,
 				72820FE70FACCEC80011C963 /* qgsmaptoolsimplify.h in Sources */,
+				7286D640106276D3008D83A6 /* qgsmaptoolrotatepointsymbols.cpp in Sources */,
+				7286D641106276D3008D83A6 /* qgspointrotationitem.cpp in Sources */,
 				72FB54C90FAF3AD400AB2F8D /* qgsattributetabledelegate.cpp in Sources */,
 				72FB54CA0FAF3AD800AB2F8D /* qgsattributetablefiltermodel.cpp in Sources */,
 				72FB54CB0FAF3ADA00AB2F8D /* qgsattributetableidcolumnpair.cpp in Sources */,
@@ -17584,7 +17543,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20090905;
+				QGIS_VERSION_BUILD = 20090918;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -17595,7 +17554,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20090905;
+				QGIS_VERSION_BUILD = 20090918;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;

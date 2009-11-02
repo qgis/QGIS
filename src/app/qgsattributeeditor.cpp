@@ -228,6 +228,10 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
     }
     break;
 
+    case QgsVectorLayer::Hidden:
+      myWidget = NULL;
+      break;
+
     case QgsVectorLayer::FileName:
     {
       QLineEdit *le = new QLineEdit();
@@ -252,6 +256,9 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
 
 bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int idx, QVariant &value )
 {
+  if ( !widget )
+    return false;
+
   const QgsField &theField = vl->pendingFields()[idx];
   QgsVectorLayer::EditType editType = vl->editType( idx );
   bool modified = false;
@@ -349,6 +356,9 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
 
 bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
 {
+  if ( !editor )
+    return false;
+
   QgsVectorLayer::EditType editType = vl->editType( idx );
   const QgsField &field = vl->pendingFields()[idx];
   QVariant::Type myFieldType = field.type();
@@ -362,7 +372,8 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       QComboBox *cb = dynamic_cast<QComboBox *>( editor );
       if ( cb == NULL )
         return false;
-      int idx = cb->findText( value.toString() );
+
+      int idx = cb->findData( value );
       if ( idx < 0 )
         return false;
 

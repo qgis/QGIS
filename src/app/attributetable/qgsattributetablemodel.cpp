@@ -34,8 +34,29 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   mLastRow = NULL;
   mLayer = theLayer;
   mFeatureCount = mLayer->pendingFeatureCount();
-  mFieldCount = mLayer->pendingFields().size();
-  mAttributes = mLayer->pendingAllAttributesList();
+
+  mFieldCount = 0;
+  mAttributes.clear();
+  mValueMaps.clear();
+
+  for ( QgsFieldMap::const_iterator it = theLayer->pendingFields().constBegin(); it != theLayer->pendingFields().end(); it++ )
+  {
+    switch ( mLayer->editType( it.key() ) )
+    {
+      case QgsVectorLayer::Hidden:
+        continue;
+
+      case QgsVectorLayer::ValueMap:
+        mValueMaps.insert( it.key(), &mLayer->valueMap( it.key() ) );
+        break;
+
+      default:
+        break;
+    }
+
+    mFieldCount++;
+    mAttributes << it.key();
+  }
 
   connect( mLayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
   //connect(mLayer, SIGNAL(attributeAdded(int)), this, SLOT( attributeAdded(int)));
@@ -173,7 +194,7 @@ void QgsAttributeTableModel::loadLayer()
 // QgsDebugMsg(QString("%1, %2").arg(mFeatureCount).arg(mLayer->pendingFeatureCount() -1));
   }
 
-  mLayer->select( QgsAttributeList(), QgsRectangle(), false );
+  mLayer->select( mAttributes, QgsRectangle(), false );
 
   // preallocate data before inserting
   mRowIdMap.reserve( pendingFeatureCount + 50 );
@@ -187,7 +208,7 @@ void QgsAttributeTableModel::loadLayer()
 
   // not needed when we have featureAdded signal
   mFeatureCount = pendingFeatureCount;
-  mFieldCount = mLayer->pendingFields().size();
+  mFieldCount = mAttributes.size();
 
   if ( ins )
   {
@@ -369,7 +390,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( !mLastRow )
     return QVariant( "ERROR" );
 
-  QVariant &val = ( *mLastRow )[ mAttributes[index.column()] ];
+  const QVariant &val = ( *mLastRow )[ mAttributes[index.column()] ];
 
   if ( val.isNull() )
   {
@@ -382,6 +403,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     {
       return QVariant( "NULL" );
     }
+  }
+
+  if ( role == Qt::DisplayRole && mValueMaps.contains( index.column() ) )
+  {
+    return mValueMaps[ index.column()]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
   }
 
   // force also numeric data for EditRole to be strings

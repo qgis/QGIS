@@ -84,7 +84,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       SliderRange,
       FileName,
       Enumeration,
-      Immutable /*The attribute value should not be changed in the attribute form*/
+      Immutable,   /*The attribute value should not be changed in the attribute form*/
+      Hidden       /*The attribute value should not be shown in the attribute form @added in 1.4 */
     };
 
     struct RangeData

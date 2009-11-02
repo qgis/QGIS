@@ -116,7 +116,9 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   QgsDebugMsg( "creating " + QString::number( fields.size() ) + " fields" );
 
   mFields = fields;
+  mAttrIdxToOgrIdx.clear();
 
+  int ogrIdx = 0;
   QgsFieldMap::const_iterator fldIt;
   for ( fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
   {
@@ -178,6 +180,8 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
       mError = ErrAttributeCreationFailed;
       return;
     }
+
+    mAttrIdxToOgrIdx.insert( fldIt.key(), ogrIdx++ );
   }
 
   QgsDebugMsg( "Done creating fields" );
@@ -218,8 +222,14 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
       continue;
     }
 
-    int ogrField = fldIt.key();
-    const QVariant& attrValue = feature.attributeMap()[ ogrField ];
+    if ( !mAttrIdxToOgrIdx.contains( fldIt.key() ) )
+    {
+      QgsDebugMsg( QString( "no ogr field for field %1" ).arg( fldIt.key() ) );
+      continue;
+    }
+
+    const QVariant& attrValue = feature.attributeMap()[ fldIt.key()];
+    int ogrField = mAttrIdxToOgrIdx[ fldIt.key()];
 
     switch ( attrValue.type() )
     {

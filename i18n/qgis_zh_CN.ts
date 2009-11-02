@@ -1766,6 +1766,46 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <source>OSM Information</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show type description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shows brief description of selected relation type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fills tag table with tags that are typical for relation of specified type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove all selected tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removes all selected tags.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select member on map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starts process of selecting next relation member on map.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove all selected members</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removes all selected members.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OsmDockWidget</name>
@@ -1908,14 +1948,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <source>Identify object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Create point</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1961,10 +1993,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Remove feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2024,7 +2052,15 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Property &apos;%1&apos; cannot be added twice.</source>
+        <source>Identify feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove this feature</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5431,121 +5467,6 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Whats new in Version 1.2.0?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This release includes over 140 bug fixes and enhancements over the QGIS 1.1.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Editing:
-
-Editing functionality in QGIS has had a major update in this release. This
-includes the addition of new vector editing tools:
-- delete part of multipart feature
-- delete hole from polygon
-- simplify feature
-- Added a new node tool (in advanced digitizing toolbar).
-- New functionality for merging features
-- Added undo/redo functionality for vector layer editing.
-- Added option to show only markers of selected features in editing mode.
-- Change layer&apos;s icon in legend to reflext that the layer is editable.
-
-In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar
-and there is a new dock widget displaying undo stack of active layer.
-
-About the node tool: It resembles a tool for editing paths by nodes that is
-present in every vector editor. How does it work (in QGIS)? Click on a
-feature, its nodes will be marked by small rectangles. Clicking and dragging a
-node moves it. Double clicking a segment will add a new node. Pressing delete
-key will remove active node. It&apos;s possible to select more active nodes at
-once: by clicking and dragging a rectangle. It&apos;s possible to select a segment&apos;s
-adjacent nodes by clicking on the segment. It&apos;s possible to add/remove active
-nodes by using Ctrl when clicking a node or dragging a rectangle
-
-We recommend that you turn off vertex markers in QGIS options when working with
-this tool: the redraws are much faster and the map is not cluttered with
-markers. 
-
-Keyboard shortcuts:
-
-New feature: configure shortcuts for actions within main window of qgis!
-See menu Setting-&gt;Configure shortcuts
-
-Map Composer:
-
-It is now possible to lock/unlock composer item positions by right mouse click.
-The width and height of the composer map will now remain fixed if user sets the
-composer map extent to the map canvas extent. possibility to display
-current date in composer label by typing (d &apos;June&apos; yyyy) or similar.
-It is now possible to keep the current layers in a composer map even if further
-layers are added to the main map. Export to PDF in composer is now possible.
-
-Attribute tables:
-
-It is now possible to search the attribute table within selected records only.
-General speedups have been made on the attribute table. Setting of field width
-and precision when adding attributes is now possible. Handling of attribute
-types in WFS provider has bee improved.
-
-Attribute aliases for vector layers are now available. The aliases are shown
-instead of the original field names in the info tool and attribute table to
-make things easier for end users. There is now a GUI for setting edit widgets
-for layer attributes.  A new dialog allows loading a value map from a layer
-(could be non-spatial table too!).  The edit widgets settings will also now
-be respected in the attribute table.
-
-Plugins:
-
-- The order of layers in the WMS dialog can now be changed.
-- The eVis plugin, version 1.1.0, has been added to the QGIS project and
-  included as a standard plugin. More information about eVis can be found here:
-  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
-- The interpolation plugin now has the ability to use line layers as constrains
-  for triangulation in interpolation plugin. You can also now save the
-  triangulation to shape file.
-- An new OpenStreetMap provider and plugin have been added to QGIS.
-
-Projects Management:
-
-QGIS now includes support for  project relative position of file data sources
-and svgs. The saving of relative paths of file data sources is optional.
-
-PostGIS &amp; the PostgreSQL Provider:
-
-You can now select the SSL mode when adding a new DB connection. Turning off
-SSL encryption can greatly improve performance of PostGIS data loading where
-connection security is not required. Support has been added for more native
-types and for setting of column comments.
-
-Symbology enhancements:
-
-- allow refresh of symbols via popup menu on the renderer&apos;s symbol selection
-- add support for data defined symbol(name)s
-- add support for font symbol markers (only data defined - no gui yet)
-- add symbol size in map units (ie. symbols that keep the size in mapunits
-  independent of the mapscale)
-
-Command line arguments:
-
-Added command line argument support on windows.
-Enhancement of command line arguments:
-- allow given snapshot sizes
-- allow suppression of splash screen
-- capture map decorations from plugins on snapshots
-
-Grass:
-
-There is a new GRASS shell. Also there have been many cleanups and consistency
-updates.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ctrl+.</source>
         <comment>Capture Points</comment>
         <translation type="unfinished"></translation>
@@ -5658,6 +5579,47 @@ updates.</source>
     <message>
         <source>Extents:</source>
         <translation type="unfinished">范围:</translation>
+    </message>
+    <message>
+        <source>Rotate Point Symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whats new in Version 1.3.0?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.2.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release includes over 30 bug fixes and enhancements over the QGIS 1.2.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;OSM plugin &amp;amp; provider updates:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;new OSM style files.&lt;/li&gt;
+  &lt;li&gt;new icons.&lt;/li&gt;
+  &lt;li&gt;dialog text updated and completed.&lt;/li&gt;
+  &lt;li&gt;Saving OSM into file functionality was improvements.&lt;/li&gt;
+  &lt;li&gt;fixed some problems with encoding... ascii to utf-8.&lt;/li&gt;
+  &lt;li&gt;all OSM layers are automatically removed after disabling OSM plugin in plugin manager.&lt;/li&gt;
+  &lt;li&gt;other OSM related bugfixes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Other notable features and improvements in this release&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Marker size is now configurable when editing a layer.&lt;/li&gt;
+  &lt;li&gt;Incorporation of the analysis library into the mainstream release.&lt;/li&gt;
+  &lt;li&gt;Identify features across multiple layers.&lt;/li&gt;
+  &lt;li&gt;Added a new plugin for carrying out raster terrain analysis (computing slope aspect, steepness etc).&lt;/li&gt;
+  &lt;li&gt;A reshape tool to apply to line/polygon geometries. The part of a geometry between the first and
+      last intersection of the reshape line will be replaced.&lt;/li&gt;
+  &lt;li&gt;Added snapping to current layer in measure dialog.&lt;/li&gt;
+  &lt;li&gt;Added ability to select the primary key for views.&lt;/li&gt;
+  &lt;li&gt;Zoom to a coordinate by entering it in the status bar coordinate display.&lt;/li&gt;
+&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6379,7 +6341,7 @@ updates.</source>
     </message>
     <message>
         <source>Ok</source>
-        <translation>确定</translation>
+        <translation type="obsolete">确定</translation>
     </message>
     <message>
         <source>About</source>
@@ -6395,7 +6357,7 @@ updates.</source>
     </message>
     <message>
         <source>Contributors</source>
-        <translation type="obsolete">贡献者</translation>
+        <translation type="unfinished">贡献者</translation>
     </message>
     <message>
         <source>&lt;h2&gt;QGIS Contributors&lt;/h2&gt;</source>
@@ -6511,7 +6473,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Qt Image Plugin Search Paths&lt;br&gt;</source>
+        <source>Qt Image Plugin Search Paths	&lt;br&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7292,10 +7254,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select a file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7310,6 +7268,18 @@ Error was:%2</source>
     </message>
     <message>
         <source>Load Data from CSV file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hidden</source>
+        <translation type="unfinished">隐藏</translation>
+    </message>
+    <message>
+        <source>An immutable attribute is read-only - the user is not able to modify the contents.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A hidden attribute will be invisible - the user is not able to see it&apos;s contents.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14074,6 +14044,22 @@ p, li { white-space: pre-wrap; }
         <source>Attribute changed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Identify Results</source>
+        <translation type="unfinished">结果</translation>
+    </message>
+    <message>
+        <source>(Actions)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Collapse all</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsIdentifyResultsBase</name>
@@ -15501,6 +15487,14 @@ p, li { white-space: pre-wrap; }
         <source>Raster</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>feature id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>new feature</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolMoveFeature</name>
@@ -15568,6 +15562,29 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Reshape</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolRotatePointSymbols</name>
+    <message>
+        <source>No point feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No rotation Attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The active point layer does not have a rotation attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate symbol</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17497,6 +17514,14 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     <message>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open identify results in a dock window (QGIS restart required)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Marker size</source>
+        <translation type="unfinished">标记的大小</translation>
     </message>
 </context>
 <context>
@@ -22141,10 +22166,6 @@ SQL: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> @ </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
         <translation type="unfinished"></translation>
     </message>
@@ -22180,6 +22201,10 @@ SQL: %2</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>@</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23339,6 +23364,10 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>File name</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hidden</source>
+        <translation type="unfinished">隐藏</translation>
     </message>
 </context>
 <context>

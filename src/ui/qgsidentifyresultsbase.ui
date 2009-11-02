@@ -1,64 +1,73 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsIdentifyResultsBase</class>
- <widget class="QDialog" name="QgsIdentifyResultsBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsIdentifyResultsBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>281</width>
+    <width>301</width>
     <height>316</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Identify Results</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
+  <layout class="QVBoxLayout">
+   <property name="spacing">
     <number>6</number>
    </property>
+   <property name="margin">
+    <number>9</number>
+   </property>
    <item>
-    <widget class="QTreeWidget" name="lstResults" >
-     <property name="lineWidth" >
+    <widget class="QTreeWidget" name="lstResults">
+     <property name="lineWidth">
       <number>2</number>
      </property>
-     <property name="sortingEnabled" >
+     <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+     <column>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </column>
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
      <item>
-      <widget class="QPushButton" name="buttonHelp" >
-       <property name="text" >
+      <widget class="QPushButton" name="buttonHelp">
+       <property name="text">
         <string>Help</string>
        </property>
-       <property name="shortcut" >
+       <property name="shortcut">
         <string>F1</string>
        </property>
-       <property name="autoDefault" >
+       <property name="autoDefault">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
          <height>0</height>
@@ -67,14 +76,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="buttonCancel" >
-       <property name="text" >
+      <widget class="QPushButton" name="buttonCancel">
+       <property name="text">
         <string>Close</string>
        </property>
-       <property name="shortcut" >
+       <property name="shortcut">
         <string/>
        </property>
-       <property name="autoDefault" >
+       <property name="autoDefault">
         <bool>true</bool>
        </property>
       </widget>
@@ -83,7 +92,7 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
 </ui>
