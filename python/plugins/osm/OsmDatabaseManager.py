@@ -40,7 +40,6 @@ class OsmDatabaseManager:
 
         Initializes inner structures of OsmDatabaseManager and connect signals to appropriate slots.
         """
-
         self.plugin=plugin
         self.canvas=plugin.canvas
 
@@ -50,6 +49,7 @@ class OsmDatabaseManager:
         self.polygonLayers={}
         self.currentKey=None
         self.removing=False
+        self.mapReg=QgsMapLayerRegistry.instance()
 
         QObject.connect(self.plugin.iface,SIGNAL("currentLayerChanged(QgsMapLayer*)"),self.currLayerChanged)
         QObject.connect(QgsMapLayerRegistry.instance(),SIGNAL("layerWillBeRemoved(QString)"),self.layerRemoved)
@@ -72,14 +72,18 @@ class OsmDatabaseManager:
         # set new currentKey and tell all other plugin components
         if not layer:
             self.currentKey=None
-            self.plugin.undoredo.databaseChanged(None)
-            self.plugin.dockWidget.databaseChanged(None)
+            if self.plugin.undoredo<>None:
+                self.plugin.undoredo.databaseChanged(None)
+            if self.plugin.dockWidget<>None:
+                self.plugin.dockWidget.databaseChanged(None)
             return
 
         if layer.type() != QgsMapLayer.VectorLayer or layer.dataProvider().name()<>"osm":
             self.currentKey=None
-            self.plugin.undoredo.databaseChanged(None)
-            self.plugin.dockWidget.databaseChanged(None)
+            if self.plugin.undoredo<>None:
+                self.plugin.undoredo.databaseChanged(None)
+            if self.plugin.dockWidget<>None:
+                self.plugin.dockWidget.databaseChanged(None)
             return
 
         # find out filename of new current database
@@ -89,12 +93,18 @@ class OsmDatabaseManager:
 
         if dbFileName not in self.dbConns.keys():
             self.currentKey=None
+            if self.plugin.undoredo<>None:
+                self.plugin.undoredo.databaseChanged(None)
+            if self.plugin.dockWidget<>None:
+                self.plugin.dockWidget.databaseChanged(None)
             return
 
         if dbFileName.toLatin1().data()<>self.currentKey:
             self.currentKey=dbFileName.toLatin1().data()
-            self.plugin.undoredo.databaseChanged(self.currentKey)
-            self.plugin.dockWidget.databaseChanged(self.currentKey)
+            if self.plugin.undoredo<>None:
+                self.plugin.undoredo.databaseChanged(self.currentKey)
+            if self.plugin.dockWidget<>None:
+                self.plugin.dockWidget.databaseChanged(self.currentKey)
 
 
     def layerRemoved(self,layerID):
@@ -112,7 +122,7 @@ class OsmDatabaseManager:
             return
 
         # get appropriate qgsvectorlayer object
-        layer=QgsMapLayerRegistry.instance().mapLayer(layerID)
+        layer=self.mapReg.mapLayer(layerID)
 
         if not layer:
             return            # strange situation
@@ -126,21 +136,49 @@ class OsmDatabaseManager:
         dbFileName=layerSource.left(pos)+".db"
         key=dbFileName.toLatin1().data()
 
-        # remove all map layers that belong to dbFileName database
-        self.removing=True
-        if layer.getLayerID()<>self.pointLayers[key].getLayerID():
-            QgsMapLayerRegistry.instance().removeMapLayer(self.pointLayers[key].getLayerID(),True)
-        if layer.getLayerID()<>self.lineLayers[key].getLayerID():
-            QgsMapLayerRegistry.instance().removeMapLayer(self.lineLayers[key].getLayerID(),True)
-        if layer.getLayerID()<>self.polygonLayers[key].getLayerID():
-            QgsMapLayerRegistry.instance().removeMapLayer(self.polygonLayers[key].getLayerID(),True)
-        self.removing=False
+        # remove map layers that belong to dbFileName database
+        if key in self.lineLayers.keys() and layer.getLayerID()==self.lineLayers[key].getLayerID():
+            del self.lineLayers[key]
 
-        # removed map items of key <dbFileName>
-        del self.dbConns[key]
-        del self.pointLayers[key]
-        del self.lineLayers[key]
-        del self.polygonLayers[key]
+        elif key in self.pointLayers.keys() and layer.getLayerID()==self.pointLayers[key].getLayerID():
+            del self.pointLayers[key]
+            if key in self.lineLayers.keys():
+                if self.lineLayers[key]:
+                    lineLayID=self.lineLayers[key].getLayerID()
+                    self.mapReg.removeMapLayer(lineLayID,True)
+
+        elif key in self.polygonLayers.keys() and layer.getLayerID()==self.polygonLayers[key].getLayerID():
+            del self.polygonLayers[key]
+            if key in self.pointLayers.keys():
+                if self.pointLayers[key]:
+                    pointLayID=self.pointLayers[key].getLayerID()
+                    self.mapReg.removeMapLayer(pointLayID,True)
+
+        if key in self.dbConns.keys():
+            del self.dbConns[key]
+
+
+    def removeAllOsmLayers(self):
+
+        # remove all map layers with osm provider set
+        self.removing=True
+        allLayers=QgsMapLayerRegistry.instance().mapLayers()
+
+        for ix in allLayers.keys():
+
+            layer=allLayers[ix]    # layer object
+            if not layer:
+                continue
+
+            if layer.type()==QgsMapLayer.VectorLayer and layer.dataProvider().name()=="osm":
+                QgsMapLayerRegistry.instance().removeMapLayer(layer.getLayerID(),True)
+
+        self.dbConns={}    # map dbFileName->sqlite3ConnectionObject
+        self.pointLayers={}
+        self.lineLayers={}
+        self.polygonLayers={}
+        self.currentKey=None
+        self.removing=False
 
 
     def addDatabase(self,dbFileName,pointLayer,lineLayer,polygonLayer):
@@ -1661,7 +1699,7 @@ class OsmDatabaseManager:
                 ,{"objId":str(featId),"objType":str(osmType)})
 
         for tagRec in c:
-            tags.append((tagRec[0],tagRec[1]))
+            tags.append((tagRec[0],tagRec[1].encode('utf-8')))
 
         c.close()
         return tags
@@ -1709,7 +1747,7 @@ class OsmDatabaseManager:
         c=self.getConnection().cursor()
 
         c.execute("update tag set val=:tagVal where object_id=:objId and object_type=:objType and key=:tagKey and u=1"
-                ,{"tagVal":tagValue,"objId":str(featId),"objType":osmType,"tagKey":tagKey})
+                ,{"tagVal":unicode(tagValue,'utf-8'),"objId":str(featId),"objType":osmType,"tagKey":tagKey})
 
         for rec in c:
             val=rec[0]
@@ -1889,7 +1927,7 @@ class OsmDatabaseManager:
         osmType=self.convertToOsmType(featType)
         c=self.getConnection().cursor()
         c.execute("update tag set val=:val where object_id=:objId and object_type=:objType and key=:key and u=1"
-                 ,{"val":value,"objId":str(featId),"objType":osmType,"key":key})
+                 ,{"val":unicode(value,'utf-8'),"objId":str(featId),"objType":osmType,"key":str(key)})
         c.close()
         self.commit()
 
@@ -1901,6 +1939,11 @@ class OsmDatabaseManager:
         @param featType type of feature
         @return True if given tag already exists for given feature; False otherwise
         """
+
+        if key==None:
+            return False
+        if len(key)==0:
+            return False
 
         tagEx=False
         osmType=self.convertToOsmType(featType)
@@ -1990,10 +2033,14 @@ class OsmDatabaseManager:
         @param doCommit if True then commit is performed after tag insertion
         """
 
+        val=''
+        if value<>None:
+            val=unicode(value,'utf-8')
+
         osmType=self.convertToOsmType(featType)
         c=self.getConnection().cursor()
         c.execute("insert into tag (object_id, object_type, key, val) values (:objId, :objType, :key, :val)"
-                 ,{"objId":str(featId),"objType":osmType,"key":key,"val":value})
+                 ,{"objId":str(featId),"objType":osmType,"key":str(key),"val":val})
         c.close()
         if doCommit:
           self.commit()
@@ -2029,7 +2076,7 @@ class OsmDatabaseManager:
         osmType=self.convertToOsmType(featType)
         c=self.getConnection().cursor()
         c.execute("delete from tag where object_id=:objId and object_type=:objType and key=:key and u=1"
-                ,{"objId":str(featId),"objType":osmType,"key":key})
+                ,{"objId":str(featId),"objType":osmType,"key":str(key)})
         c.close()
         self.commit()
 

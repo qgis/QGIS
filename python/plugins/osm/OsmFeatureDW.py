@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-99
 """@package OsmFeatureDW
 This module is descendant of "OSM Feature" dockable widget and makes user able
 to view and edit information on selected OSM feature.
@@ -24,6 +25,7 @@ from map_tools.OsmCreateLineMT import OsmCreateLineMT
 from map_tools.OsmCreatePolygonMT import OsmCreatePolygonMT
 from map_tools.OsmMoveMT import OsmMoveMT
 from map_tools.OsmIdentifyMT import OsmIdentifyMT
+import unicodedata
 
 
 class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
@@ -54,8 +56,8 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
         self.createLineButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_createLine.png"))
         self.createPolygonButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_createPolygon.png"))
         self.createRelationButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_createRelation.png"))
-        self.removeButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_remove.png"))
-        self.deleteTagsButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_remove.png"))
+        self.removeButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_removeFeat.png"))
+        self.deleteTagsButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_removeTag.png"))
         self.undoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_undo.png"))
         self.redoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_redo.png"))
         self.addRelationButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_addRelation.png"))
@@ -432,7 +434,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
 
             # store tag's change into database
             self.plugin.undoredo.startAction("Change tag value.")
-            self.plugin.dbm.changeTagValue(self.feature.id(),self.featureType,key.toUtf8().data(),value.toUtf8().data())
+            self.plugin.dbm.changeTagValue(self.feature.id(),self.featureType,key.toAscii().data(),value.toUtf8())
         else:
             key = self.tagTable.item(row,0).text()
             if key=="" or key==self.newTagLabel:
@@ -441,23 +443,28 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
             # adding new tag and setting its key
             if column==0:
 
+                # only ascii keys are allowed
+                nkfd_form=unicodedata.normalize('NFKD', unicode(key.toUtf8(),'utf-8'))
+                key_only_ascii=nkfd_form.encode('ASCII', 'ignore')
+
                 # store it into database
-                isAlreadyDef=self.plugin.dbm.isTagDefined(self.feature.id(),self.featureType,key.toUtf8().data())
+                isAlreadyDef=self.plugin.dbm.isTagDefined(self.feature.id(),self.featureType,key_only_ascii)
                 if isAlreadyDef:
                     # such a key already exists for this relation
                     self.tagTable.setItem(row,0,QTableWidgetItem(self.newTagLabel))
                     QMessageBox.information(self, self.tr("OSM Feature Dock Widget")
-                        ,self.tr("Property '%1' cannot be added twice.").arg(key.toUtf8().data()))
+                        ,self.tr(QString("Property '").append(key_only_ascii).append("' cannot be added twice.")))
                     return
 
                 # well, insert new tag into database
                 self.plugin.undoredo.startAction("Insert new tag.")
-                self.plugin.dbm.insertTag(self.feature.id(),self.featureType,key.toUtf8().data(),'')
+                self.plugin.dbm.insertTag(self.feature.id(),self.featureType,key_only_ascii,None)
 
                 self.__tagsLoaded=False
 
                 self.tagTable.item(row,0).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
                 self.tagTable.item(row,1).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
+                self.tagTable.item(row,0).setText(QString(key_only_ascii))
 
                 newLastRow = row+1
                 self.tagTable.setRowCount(row+2)
@@ -488,7 +495,8 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
         self.plugin.dbm.recacheAffectedNow(affected)
 
         # refresh map canvas so that changes take effect
-        self.plugin.canvas.refresh()
+        if column==1:
+            self.plugin.canvas.refresh()
 
 
     def __onTagsItemDoubleClicked(self,item):
@@ -1236,7 +1244,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
                 self.plugin.dbm.changeRelationStatus(self.feature.id(),'N','U')
 
             # perform tag removing 
-            self.plugin.dbm.removeTag(self.feature.id(),self.featureType,key.toUtf8().data())
+            self.plugin.dbm.removeTag(self.feature.id(),self.featureType,key.toAscii().data())
 
             self.tagTable.removeRow(ix)
 
@@ -1425,8 +1433,8 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
         self.tagTable.setHorizontalHeaderItem(1,QTableWidgetItem("Value"))
 
         for i in range(0,rowCount):
-            self.tagTable.setItem(i,0,QTableWidgetItem(tableData[i][0]))
-            self.tagTable.setItem(i,1,QTableWidgetItem(tableData[i][1]))
+            self.tagTable.setItem(i,0,QTableWidgetItem(QString.fromUtf8(tableData[i][0])))
+            self.tagTable.setItem(i,1,QTableWidgetItem(QString.fromUtf8(tableData[i][1])))
             self.tagTable.item(i,0).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
             self.tagTable.item(i,1).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
 

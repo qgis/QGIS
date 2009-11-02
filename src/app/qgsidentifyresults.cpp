@@ -36,8 +36,24 @@
 #include <QSettings>
 #include <QMenu>
 #include <QClipboard>
+#include <QDockWidget>
 
 #include "qgslogger.h"
+
+class QgsIdentifyResultsDock : public QDockWidget
+{
+  public:
+    QgsIdentifyResultsDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
+        : QDockWidget( title, parent, flags )
+    {
+      setObjectName( "IdentifyResultsTableDock" ); // set object name so the position can be saved
+    }
+
+    virtual void closeEvent( QCloseEvent * ev )
+    {
+      deleteLater();
+    }
+};
 
 // Tree hierachy
 //
@@ -57,9 +73,20 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
     : QDialog( parent, f ),
     mActionPopup( 0 ),
     mRubberBand( 0 ),
-    mCanvas( canvas )
+    mCanvas( canvas ),
+    mDock( NULL )
 {
   setupUi( this );
+  QSettings mySettings;
+  bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
+  if ( myDockFlag )
+  {
+    mDock = new QgsIdentifyResultsDock( tr( "Identify Results" ) , QgisApp::instance() );
+    mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    mDock->setWidget( this );
+    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
+    buttonCancel->hide();
+  }
   lstResults->setColumnCount( 2 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
@@ -98,13 +125,13 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
                                      const QMap<QString, QString> &attributes,
                                      const QMap<QString, QString> &derivedAttributes )
 {
-  QTreeWidgetItem *item = layerItem( layer );
+  QTreeWidgetItem *layItem = layerItem( layer );
 
-  if ( item == 0 )
+  if ( layItem == 0 )
   {
-    item = new QTreeWidgetItem( QStringList() << layer->name() << tr( "Layer" ) );
-    item->setData( 0, Qt::UserRole, QVariant::fromValue( dynamic_cast<QObject*>( layer ) ) );
-    lstResults->addTopLevelItem( item );
+    layItem = new QTreeWidgetItem( QStringList() << layer->name() << tr( "Layer" ) );
+    layItem->setData( 0, Qt::UserRole, QVariant::fromValue( dynamic_cast<QObject*>( layer ) ) );
+    lstResults->addTopLevelItem( layItem );
 
     connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
 
@@ -132,7 +159,7 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     }
   }
 
-  item->addChild( featItem );
+  layItem->addChild( featItem );
 }
 
 // Call to show the dialog box.
@@ -141,6 +168,28 @@ void QgsIdentifyResults::show()
   // Enfore a few things before showing the dialog box
   lstResults->sortItems( 0, Qt::AscendingOrder );
   expandColumnsToFit();
+
+  if ( lstResults->topLevelItemCount() > 0 )
+  {
+    QTreeWidgetItem *layItem = lstResults->topLevelItem( 0 );
+    QTreeWidgetItem *featItem = layItem->child( 0 );
+
+    if ( layItem->childCount() == 1 )
+    {
+      QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
+      if ( layer && layer->isEditable() )
+      {
+        // if this is the only feature, it's on a vector layer and that layer is editable:
+        // don't show the edit dialog instead of the results window
+        editFeature( featItem );
+        return;
+      }
+    }
+
+    // expand first layer and feature
+    featItem->setExpanded( true );
+    layItem->setExpanded( true );
+  }
 
   QDialog::show();
 }
@@ -360,7 +409,6 @@ void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
   {
     QString fieldName = item->data( 0, Qt::DisplayRole ).toString();
 
-    int idx = -1;
     for ( QgsFieldMap::const_iterator it = layer->pendingFields().begin(); it != layer->pendingFields().end(); it++ )
     {
       if ( it->name() == fieldName )
@@ -381,8 +429,16 @@ QTreeWidgetItem *QgsIdentifyResults::featureItem( QTreeWidgetItem *item )
   {
     if ( item->parent()->parent() )
     {
-      // attribute item
-      featItem = item->parent();
+      if ( item->parent()->parent()->parent() )
+      {
+        // derived attribute item
+        featItem = item->parent()->parent();
+      }
+      else
+      {
+        // attribute item
+        featItem = item->parent();
+      }
     }
     else
     {

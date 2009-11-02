@@ -34,6 +34,7 @@ class QgsMapLayer;
 class QgsVectorLayer;
 class QgsRubberBand;
 class QgsMapCanvas;
+class QDockWidget;
 
 /**
  *@author Gary E.Sherman
@@ -117,6 +118,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void editFeature( QTreeWidgetItem *item );
 
     void doAction( QTreeWidgetItem *item, int action );
+
+    QDockWidget *mDock;
 };
 
 #endif

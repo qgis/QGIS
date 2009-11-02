@@ -162,6 +162,13 @@ const QString QgsApplication::authorsFilePath()
   return mPkgDataPath + QString( "/doc/AUTHORS" );
 }
 /*!
+  Returns the path to the contributors file.
+*/
+const QString QgsApplication::contributorsFilePath()
+{
+  return mPkgDataPath + QString( "/doc/CONTRIBUTORS" );
+}
+/*!
   Returns the path to the sponsors file.
 */
 const QString QgsApplication::sponsorsFilePath()

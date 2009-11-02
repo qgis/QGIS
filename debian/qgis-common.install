@@ -4,6 +4,9 @@ usr/share/qgis/doc/index.html
 usr/share/qgis/doc/qgisdoc.css
 usr/share/qgis/doc/AUTHORS
 usr/share/qgis/doc/SPONSORS
+usr/share/qgis/doc/CONTRIBUTORS
+usr/share/qgis/doc/TRANSLATORS
+usr/share/qgis/doc/DONORS
 usr/share/qgis/doc/images
 usr/share/qgis/i18n/*
 usr/share/qgis/images/*

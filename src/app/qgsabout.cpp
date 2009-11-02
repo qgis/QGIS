@@ -55,53 +55,64 @@ void QgsAbout::init()
   QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
   qgisIcon->setPixmap( icon );
 
-  //read the authors file to populate the contributors list
+  //read the authors file to populate the svn committers list
   QStringList lines;
 
+  //
+  // Load the authors (svn committers) list
+  //
   QFile file( QgsApplication::authorsFilePath() );
-#ifdef QGISDEBUG
-  printf( "Reading authors file %s.............................................\n",
-          file.fileName().toLocal8Bit().constData() );
-#endif
   if ( file.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file );
     // Always use UTF-8
     stream.setCodec( "UTF-8" );
     QString line;
-#ifdef QGISDEBUG
-    int i = 1;
-#endif
-
     while ( !stream.atEnd() )
     {
       line = stream.readLine(); // line of text excluding '\n'
       //ignore the line if it starts with a hash....
       if ( line.left( 1 ) == "#" ) continue;
-#ifdef QGISDEBUG
-      printf( "Contributor: %3d: %s\n", i++, line.toLocal8Bit().constData() );
-#endif
       QStringList myTokens = line.split( "\t", QString::SkipEmptyParts );
-      //printf ("Added contributor name to listbox: %s ",myTokens[0]);
       lines += myTokens[0];
-
-      // add the image to the map
-      /* Uncomment this block to preload the images (takes time at initial startup)
-      QString authorName = myTokens[0].replace(" ","_");
-
-      QString myString =QString(appPath + "/images/developers/") + authorName + QString(".jpg");
-      printf ("Loading mug: %s\n", myString.toLocal8Bit().constData());
-      QPixmap *pixmap = new QPixmap(myString);
-      mugs[myTokens[0]] = *pixmap;
-      */
     }
     file.close();
-    listBox1->clear();
-    listBox1->insertItems( 0, lines );
+    lstDevelopers->clear();
+    lstDevelopers->insertItems( 0, lines );
 
-    // Load in the image for the first author
-    if ( listBox1->count() > 0 )
-      listBox1->setCurrentRow( 0 );
+    if ( lstDevelopers->count() > 0 )
+    {
+      lstDevelopers->setCurrentRow( 0 );
+    }
+  }
+
+  lines.clear();
+  //
+  // Now load up the contributors list
+  //
+  QFile file2( QgsApplication::contributorsFilePath() );
+  printf( "Reading contributors file %s.............................................\n",
+          file2.fileName().toLocal8Bit().constData() );
+  if ( file2.open( QIODevice::ReadOnly ) )
+  {
+    QTextStream stream( &file2 );
+    // Always use UTF-8
+    stream.setCodec( "UTF-8" );
+    QString line;
+    while ( !stream.atEnd() )
+    {
+      line = stream.readLine(); // line of text excluding '\n'
+      //ignore the line if it starts with a hash....
+      if ( line.left( 1 ) == "#" ) continue;
+      lines += line;
+    }
+    file2.close();
+    lstContributors->clear();
+    lstContributors->insertItems( 0, lines );
+    if ( lstContributors->count() > 0 )
+    {
+      lstContributors->setCurrentRow( 0 );
+    }
   }
 
 
@@ -280,7 +291,7 @@ void QgsAbout::setPluginInfo()
   myString += "</li>\n</ol>\n";
   //qt image plugins
   myString += "<b>" + tr( "Available Qt Image Plugins" ) + "</b><br>";
-  myString += tr( "Qt Image Plugin Search Paths<br>" );
+  myString += tr( "Qt Image Plugin Search Paths	<br>" );
   myString += QApplication::libraryPaths().join("<br>");
   myString += "<ol>\n<li>\n";
   QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
@@ -294,36 +305,14 @@ void QgsAbout::setPluginInfo()
   myString += "</li>\n</ol>\n";
 
   QString myStyle = QgsApplication::reportStyleSheet();
-  txtBrowserPlugins->clear();
-  txtBrowserPlugins->document()->setDefaultStyleSheet( myStyle );
-  txtBrowserPlugins->setText( myString );
+  txtProviders->clear();
+  txtProviders->document()->setDefaultStyleSheet( myStyle );
+  txtProviders->setText( myString );
 }
 
 void QgsAbout::on_buttonCancel_clicked()
 {
   reject();
-}
-
-void QgsAbout::on_listBox1_currentItemChanged( QListWidgetItem *theItem )
-{
-  //replace spaces in author name
-#ifdef QGISDEBUG
-  printf( "Loading mug: " );
-#endif
-  QString myString = listBox1->currentItem()->text();
-  myString = myString.replace( " ", "_" );
-  myString = QgsAbout::fileSystemSafe( myString );
-#ifdef QGISDEBUG
-  printf( "Loading mug: %s", myString.toLocal8Bit().constData() );
-#endif
-  myString = QgsApplication::developerPath() + myString + QString( ".jpg" );
-#ifdef QGISDEBUG
-  printf( "Loading mug: %s\n", myString.toLocal8Bit().constData() );
-#endif
-
-  /* Uncomment this block to use preloaded images
-  pixAuthorMug->setPixmap(mugs[myString]);
-  */
 }
 
 void QgsAbout::on_btnQgisUser_clicked()

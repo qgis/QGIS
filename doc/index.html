@@ -10,7 +10,7 @@
   </td>
   <td valign="center">
     <span class="header">Quantum GIS Documentation</span><br>
-    <span class="subheader">Version 1.2.0 <i>Daphnis</i></span><br>
+    <span class="subheader">Version 1.3.0 <i>Mimas</i></span><br>
     <span class="warning">Please read this entire document for important information about this release.</span>
   </td>
 </tr>
@@ -21,14 +21,46 @@
 -->
 <!-- This documentation describes the Quantum GIS (QGIS) application. More
 information on QGIS is available on the web page at http://qgis.org. -->
-<h2>Whats new in Version 1.2.0?</h2>
+<h2>Whats new in Version 1.3.0 'Mimas'?</h2>
 <p>
 Please note that this is a release in our 'cutting edge' release series. As 
 such it contains new features and extends the programmatic interface over 
-QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you 
-then cool new and untested features, we recommend that you use a copy 
-of QGIS from our stable 1.0.x release series.
+QGIS 1.0.x and QGIS 1.2.0. If an unchanging user interface, programmatic API
+and long term support is more important to you then cool new and untested
+features, we recommend that you use a copy of QGIS from our Long Term Support
+(LTS)1.0.x release series.
 </p>
+
+<p>
+This release includes over 30 bug fixes and several useful new features:
+</p>
+
+<p>OSM plugin &amp; provider updates:</p>
+<ul>
+  <li>new OSM style files.</li>
+  <li>new icons.</li>
+  <li>dialog text updated and completed.</li>
+  <li>"Saving OSM into file" functionality was improvements.</li>
+  <li>fixed some problems with encoding... ascii to utf-8.</li>
+  <li>all OSM layers are automatically removed after disabling OSM plugin in plugin manager.</li>
+  <li>other OSM related bugfixes.</li>
+</ul>
+
+<p>Other notable features and improvements in this release</p>
+<ul>
+  <li>Marker size is now configurable when editing a layer.</li>
+  <li>Incorporation of the analysis library into the mainstream release.</li>
+  <li>Identify features across multiple layers.</li>
+  <li>Added a new plugin for carrying out raster terrain analysis (computing slope
+      aspect, steepness etc).</li>
+  <li>A reshape tool to apply to line/polygon geometries. The part of a geometry
+     between the first and last intersection of the reshape line will be replaced.</li>
+  <li>Added snapping to current layer in measure dialog.</li>
+  <li>Added ability to select the primary key for views.</li>
+  <li>Zoom to a coordinate by entering it in the status bar coordinate display.</li>
+</ul>
+
+<h2>Whats new in Version 1.2.0?</h2>
 <p>
 This release includes over 140 bug fixes and enhancements 
 over the QGIS 1.1.0 release. In addition we have added 
@@ -139,13 +171,6 @@ updates.
 </pre>
 
 <h2>Whats new in Version 1.1.0?</h2>
-<p>
-Please note that this is a release in our 'unstable' release series. As 
-such it contains new features and extends the programmatic interface over 
-QGIS 1.0.x. If stability and long term support is more important to you 
-then cool new and untested features, we recommend that you use a copy 
-of QGIS from our stable 1.0.x release series.
-</p>
 <p>
 This release includes many bug fixes and enchancements 
 over the QGIS 1.0.0 release. In addition we have added 

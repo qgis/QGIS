@@ -26,6 +26,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectordataprovider.h"
 #include "qgsdistancearea.h"
+#include <QProgressDialog>
 
 
 
@@ -606,4 +607,158 @@ QList<QgsPoint> QgsGeometryAnalyzer::extractPoints( QgsGeometry* geometry )
     }
     return pointList;
     */
+}
+
+bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefileName, double bufferDistance, \
+                                  bool onlySelectedFeatures, bool dissolve, int bufferDistanceField, QProgressDialog* p )
+{
+  if ( !layer )
+  {
+    return false;
+  }
+
+  QgsVectorDataProvider* dp = layer->dataProvider();
+  if ( !dp )
+  {
+    return false;
+  }
+
+  QGis::WkbType outputType = QGis::WKBPolygon;
+  if ( dissolve )
+  {
+    outputType = QGis::WKBMultiPolygon;
+  }
+  const QgsCoordinateReferenceSystem crs = layer->srs();
+
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
+  QgsFeature currentFeature;
+  QgsGeometry* dissolveGeometry; //dissolve geometry (if dissolve enabled)
+
+  //take only selection
+  if ( onlySelectedFeatures )
+  {
+    //use QgsVectorLayer::featureAtId
+    const QgsFeatureIds selection = layer->selectedFeaturesIds();
+    if ( p )
+    {
+      p->setMaximum( selection.size() );
+    }
+
+    int processedFeatures = 0;
+    QgsFeatureIds::const_iterator it = selection.constBegin();
+    for ( ; it != selection.constEnd(); ++it )
+    {
+      if ( p )
+      {
+        p->setValue( processedFeatures );
+      }
+
+      if ( p && p->wasCanceled() )
+      {
+        break;
+      }
+      if ( !layer->featureAtId( *it, currentFeature, true, true ) )
+      {
+        continue;
+      }
+      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, &dissolveGeometry, bufferDistance, bufferDistanceField );
+      ++processedFeatures;
+    }
+
+    if ( p )
+    {
+      p->setValue( selection.size() );
+    }
+  }
+  //take all features
+  else
+  {
+    layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
+
+
+    int featureCount = layer->featureCount();
+    if ( p )
+    {
+      p->setMaximum( featureCount );
+    }
+    int processedFeatures = 0;
+
+    while ( layer->nextFeature( currentFeature ) )
+    {
+      if ( p )
+      {
+        p->setValue( processedFeatures );
+      }
+      if ( p && p->wasCanceled() )
+      {
+        break;
+      }
+      bufferFeature( currentFeature, processedFeatures, &vWriter, dissolve, &dissolveGeometry, bufferDistance, bufferDistanceField );
+      ++processedFeatures;
+    }
+    if ( p )
+    {
+      p->setValue( featureCount );
+    }
+  }
+
+  if ( dissolve )
+  {
+    QgsFeature dissolveFeature;
+    dissolveFeature.setGeometry( dissolveGeometry );
+    vWriter.addFeature( dissolveFeature );
+  }
+  return true;
+}
+
+void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, \
+    QgsGeometry** dissolveGeometry, double bufferDistance, int bufferDistanceField )
+{
+  double currentBufferDistance;
+  QgsGeometry* featureGeometry = f.geometry();
+  QgsGeometry* tmpGeometry = 0;
+  QgsGeometry* bufferGeometry = 0;
+
+  if ( !featureGeometry )
+  {
+    return;
+  }
+
+  //create buffer
+  if ( bufferDistanceField == -1 )
+  {
+    currentBufferDistance = bufferDistance;
+  }
+  else
+  {
+    currentBufferDistance = f.attributeMap()[bufferDistanceField].toDouble();
+  }
+  bufferGeometry = featureGeometry->buffer( currentBufferDistance, 5 );
+
+  if ( dissolve )
+  {
+    if ( nProcessedFeatures == 0 )
+    {
+      *dissolveGeometry = bufferGeometry;
+    }
+    else
+    {
+      tmpGeometry = *dissolveGeometry;
+      *dissolveGeometry = ( *dissolveGeometry )->combine( bufferGeometry );
+      delete tmpGeometry;
+      delete bufferGeometry;
+    }
+  }
+  else //dissolve
+  {
+    QgsFeature newFeature;
+    newFeature.setGeometry( bufferGeometry );
+    newFeature.setAttributeMap( f.attributeMap() );
+
+    //add it to vector file writer
+    if ( vfw )
+    {
+      vfw->addFeature( newFeature );
+    }
+  }
 }

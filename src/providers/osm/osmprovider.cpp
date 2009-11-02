@@ -27,7 +27,6 @@
 #include <QDateTime>
 #include <QByteArray>
 
-
 static const QString TEXT_PROVIDER_KEY = "osm";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Open Street Map data provider";
 static const QString DATE_TIME_FMT = "dd.MM.yyyy HH:mm:ss";
@@ -142,8 +141,11 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
   // flag determining if OSM file parsing is neccessary
   bool shouldParse = true;
 
+  if ( mFeatureType != PolygonType )
+    shouldParse = false;
+
   // test if db file that belongs to source OSM file already exists and if it has the right version
-  if ( databaseExists && isDatabaseCompatibleWithInput( mFileName ) && isDatabaseCompatibleWithPlugin() )
+  if ( shouldParse && databaseExists && isDatabaseCompatibleWithInput( mFileName ) && isDatabaseCompatibleWithProvider() )
     shouldParse = false;
 
   if ( shouldParse )
@@ -178,16 +180,16 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     // no OSM file parsing was done, we must find out default area boundaries from database meta information
     char sqlSelectBoundary[] = "SELECT val FROM meta WHERE key='default-area-boundaries';";
     sqlite3_stmt *stmtSelectBoundary;
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectBoundary, sizeof(sqlSelectBoundary), &stmtSelectBoundary, 0 ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mDatabase, sqlSelectBoundary, sizeof( sqlSelectBoundary ), &stmtSelectBoundary, 0 ) != SQLITE_OK )
     {
       QgsDebugMsg( "Getting default area boundary failed." );
       // don't worry, we just let default values in xMax, yMax, xMin and yMin variables
     }
     else
     {
-      if (sqlite3_step( stmtSelectBoundary ) != SQLITE_ROW)
+      if ( sqlite3_step( stmtSelectBoundary ) != SQLITE_ROW )
       {
-        QgsDebugMsg("Getting default area boundary failed.");
+        QgsDebugMsg( "Getting default area boundary failed." );
         // don't worry again, we just let default values in boundary variables
       }
       else
@@ -213,35 +215,35 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
 
   // prepare statement for tag retrieval
   char sqlSelectTags[] = "SELECT key, val FROM tag WHERE object_id=? AND object_type=?";
-  int rc = sqlite3_prepare_v2( mDatabase, sqlSelectTags, sizeof(sqlSelectTags), &mTagsStmt, 0 );
+  int rc = sqlite3_prepare_v2( mDatabase, sqlSelectTags, sizeof( sqlSelectTags ), &mTagsStmt, 0 );
   if ( rc != SQLITE_OK )
   {
-    QgsDebugMsg("sqlite3 statement for feature tags selection - prepare failed.");
+    QgsDebugMsg( "sqlite3 statement for feature tags selection - prepare failed." );
     return;
   }
 
   char sqlSelectTagValue[] = "SELECT val FROM tag WHERE object_id=? AND object_type=? AND key=?";
-  rc = sqlite3_prepare_v2( mDatabase, sqlSelectTagValue, sizeof(sqlSelectTagValue), &mCustomTagsStmt, 0 );
+  rc = sqlite3_prepare_v2( mDatabase, sqlSelectTagValue, sizeof( sqlSelectTagValue ), &mCustomTagsStmt, 0 );
   if ( rc != SQLITE_OK )
   {
-    QgsDebugMsg("sqlite3 statement for tag value selection - prepare failed.");
+    QgsDebugMsg( "sqlite3 statement for tag value selection - prepare failed." );
     return;
   }
 
   // prepare statements for feature retrieval
   char sqlSelectWay[] = "SELECT id, wkb, timestamp, user FROM way WHERE id=? AND status<>'R' AND u=1";
-  rc = sqlite3_prepare_v2( mDatabase, sqlSelectWay, sizeof(sqlSelectWay), &mWayStmt, 0 );
+  rc = sqlite3_prepare_v2( mDatabase, sqlSelectWay, sizeof( sqlSelectWay ), &mWayStmt, 0 );
   if ( rc != SQLITE_OK )
   {
-    QgsDebugMsg("sqlite3 statement for way retrieval - prepare failed.");
+    QgsDebugMsg( "sqlite3 statement for way retrieval - prepare failed." );
     return;
   }
 
   char sqlSelectNode[] = "SELECT id, lat, lon, timestamp, user FROM node WHERE id=? AND usage=0 AND status<>'R' AND u=1";
-  rc = sqlite3_prepare_v2( mDatabase, sqlSelectNode, sizeof(sqlSelectNode), &mNodeStmt, 0 );
+  rc = sqlite3_prepare_v2( mDatabase, sqlSelectNode, sizeof( sqlSelectNode ), &mNodeStmt, 0 );
   if ( rc != SQLITE_OK )
   {
-    QgsDebugMsg("sqlite3 statement for node retrieval - prepare failed.");
+    QgsDebugMsg( "sqlite3 statement for node retrieval - prepare failed." );
     return;
   }
 
@@ -251,14 +253,14 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     char sqlSelectPointsIn[] = "SELECT id, lat, lon, timestamp, user FROM node WHERE usage=0 AND status<>'R' AND u=1 \
                                 AND lat>=? AND lat<=? AND lon>=? AND lon<=?";
 
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPoints, sizeof(sqlSelectPoints), &mSelectFeatsStmt, 0 ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPoints, sizeof( sqlSelectPoints ), &mSelectFeatsStmt, 0 ) != SQLITE_OK )
     {
-      QgsDebugMsg("sqlite3 statement for points retrieval - prepare failed.");
+      QgsDebugMsg( "sqlite3 statement for points retrieval - prepare failed." );
       return;
     }
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPointsIn, sizeof(sqlSelectPointsIn), &mSelectFeatsInStmt, 0 ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPointsIn, sizeof( sqlSelectPointsIn ), &mSelectFeatsInStmt, 0 ) != SQLITE_OK )
     {
-      QgsDebugMsg("sqlite3 statement for points in boundary retrieval - prepare failed.");
+      QgsDebugMsg( "sqlite3 statement for points in boundary retrieval - prepare failed." );
       return;
     }
   }
@@ -267,16 +269,16 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     char sqlSelectLines[] = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=0 AND w.status<>'R' AND w.u=1";
     char sqlSelectLinesIn[] = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=0 AND w.status<>'R' AND w.u=1 \
                                AND (((w.max_lat between ? AND ?) OR (w.min_lat between ? AND ?) OR (w.min_lat<? AND w.max_lat>?)) \
-                               OR ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
+                               AND ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
 
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectLines, sizeof(sqlSelectLines), &mSelectFeatsStmt, 0 ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mDatabase, sqlSelectLines, sizeof( sqlSelectLines ), &mSelectFeatsStmt, 0 ) != SQLITE_OK )
     {
-      QgsDebugMsg("sqlite3 statement for lines retrieval - prepare failed.");
+      QgsDebugMsg( "sqlite3 statement for lines retrieval - prepare failed." );
       return;
     }
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectLinesIn, sizeof(sqlSelectLinesIn), &mSelectFeatsInStmt, 0 ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mDatabase, sqlSelectLinesIn, sizeof( sqlSelectLinesIn ), &mSelectFeatsInStmt, 0 ) != SQLITE_OK )
     {
-      QgsDebugMsg("sqlite3 statement for lines in boundary retrieval - prepare failed.");
+      QgsDebugMsg( "sqlite3 statement for lines in boundary retrieval - prepare failed." );
       return;
     }
   }
@@ -285,16 +287,16 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     char sqlSelectPolys[] = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=1 AND w.status<>'R' AND w.u=1";
     char sqlSelectPolysIn[] = "SELECT w.id, w.wkb, w.timestamp, w.user FROM way w WHERE w.closed=1 AND w.status<>'R' AND w.u=1 \
                                AND (((w.max_lat between ? AND ?) OR (w.min_lat between ? AND ?) OR (w.min_lat<? AND w.max_lat>?)) \
-                               OR ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
+                               AND ((w.max_lon between ? AND ?) OR (w.min_lon between ? AND ?) OR (w.min_lon<? AND w.max_lon>?)))";
 
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPolys, sizeof(sqlSelectPolys), &mSelectFeatsStmt, 0 ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPolys, sizeof( sqlSelectPolys ), &mSelectFeatsStmt, 0 ) != SQLITE_OK )
     {
-      QgsDebugMsg("sqlite3 statement for polygons retrieval - prepare failed.");
+      QgsDebugMsg( "sqlite3 statement for polygons retrieval - prepare failed." );
       return;
     }
-    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPolysIn, sizeof(sqlSelectPolysIn), &mSelectFeatsInStmt, 0 ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( mDatabase, sqlSelectPolysIn, sizeof( sqlSelectPolysIn ), &mSelectFeatsInStmt, 0 ) != SQLITE_OK )
     {
-      QgsDebugMsg("sqlite3 statement for polygons in boundary retrieval - prepare failed.");
+      QgsDebugMsg( "sqlite3 statement for polygons in boundary retrieval - prepare failed." );
       return;
     }
   }
@@ -318,7 +320,10 @@ QgsOSMDataProvider::~QgsOSMDataProvider()
   sqlite3_finalize( mSelectFeatsInStmt );
 
   // close opened sqlite3 database
-  closeDatabase();
+  if ( mDatabase )
+  {
+    closeDatabase();
+  }
 }
 
 
@@ -331,9 +336,9 @@ bool QgsOSMDataProvider::isDatabaseCompatibleWithInput( QString mFileName )
   char sqlSelectLastModif[] = "SELECT val FROM meta WHERE key='osm-file-last-modified';";
   sqlite3_stmt *stmtSelectLastModif;
 
-  if ( sqlite3_prepare_v2( mDatabase, sqlSelectLastModif, sizeof(sqlSelectLastModif), &stmtSelectLastModif, 0 ) == SQLITE_OK )
+  if ( sqlite3_prepare_v2( mDatabase, sqlSelectLastModif, sizeof( sqlSelectLastModif ), &stmtSelectLastModif, 0 ) == SQLITE_OK )
   {
-    if ( sqlite3_step(stmtSelectLastModif) == SQLITE_ROW )
+    if ( sqlite3_step( stmtSelectLastModif ) == SQLITE_ROW )
     {
       QString oldOsmLastModifString = ( const char * ) sqlite3_column_text( stmtSelectLastModif, 0 );
       QDateTime oldOsmFileLastModif = QDateTime::fromString( oldOsmLastModifString, DATE_TIME_FMT );
@@ -354,28 +359,28 @@ bool QgsOSMDataProvider::isDatabaseCompatibleWithInput( QString mFileName )
 }
 
 
-bool QgsOSMDataProvider::isDatabaseCompatibleWithPlugin()
+bool QgsOSMDataProvider::isDatabaseCompatibleWithProvider()
 {
-  char sqlSelectPluginVer[] = "SELECT val FROM meta WHERE key='osm-plugin-version';";
-  sqlite3_stmt *stmtSelectPluginVer;
+  char sqlSelectProviderVer[] = "SELECT val FROM meta WHERE key='osm-provider-version';";
+  sqlite3_stmt *stmtSelectProviderVer;
 
-  if ( sqlite3_prepare_v2( mDatabase, sqlSelectPluginVer, sizeof(sqlSelectPluginVer), &stmtSelectPluginVer, 0 ) == SQLITE_OK )
+  if ( sqlite3_prepare_v2( mDatabase, sqlSelectProviderVer, sizeof( sqlSelectProviderVer ), &stmtSelectProviderVer, 0 ) == SQLITE_OK )
   {
-    if ( sqlite3_step( stmtSelectPluginVer ) == SQLITE_ROW )
+    if ( sqlite3_step( stmtSelectProviderVer ) == SQLITE_ROW )
     {
-      QString osmPluginVersion = ( const char * ) sqlite3_column_text( stmtSelectPluginVer, 0 );
+      QString osmProviderVersion = ( const char * ) sqlite3_column_text( stmtSelectProviderVer, 0 );
 
       // each OSM database schema carry info on version of QGIS OSM plugin from which database was created;
       // this provider must be of the same version to be able to manage OSM data correctly
-      if ( osmPluginVersion == PROVIDER_VERSION )
+      if ( osmProviderVersion == PROVIDER_VERSION )
       {
-        sqlite3_finalize( stmtSelectPluginVer );
+        sqlite3_finalize( stmtSelectProviderVer );
         return true;
       }
     }
   }
   // destroy database statement
-  sqlite3_finalize( stmtSelectPluginVer );
+  sqlite3_finalize( stmtSelectProviderVer );
   return false;
 }
 
@@ -470,7 +475,7 @@ int QgsOSMDataProvider::wayMemberCount( int wayId )
   char sqlWayMemberCnt[] = "SELECT count(n.id) FROM way_member wm, node n WHERE wm.way_id=? AND wm.node_id=n.id AND wm.u=1 AND n.u=1;";
   sqlite3_stmt *stmtWayMemberCnt;
 
-  if ( sqlite3_prepare_v2( mDatabase, sqlWayMemberCnt, sizeof(sqlWayMemberCnt), &stmtWayMemberCnt, 0 ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( mDatabase, sqlWayMemberCnt, sizeof( sqlWayMemberCnt ), &stmtWayMemberCnt, 0 ) != SQLITE_OK )
   {
     QgsDebugMsg( "sqlite3 statement for selecting waymember count - prepare failed." );
     sqlite3_finalize( stmtWayMemberCnt );
@@ -1360,17 +1365,17 @@ bool QgsOSMDataProvider::loadOsmFile( QString osm_filename )
 
   if ( sqlite3_exec( mDatabase, ptr, 0, 0, 0 ) != SQLITE_OK )
   {
-    QgsDebugMsg("Storing osm-file-last-modified info into database failed.");
+    QgsDebugMsg( "Storing osm-file-last-modified info into database failed." );
     // its not fatal situation, lets continue..
   }
 
-  QString cmd2 = "INSERT INTO meta ( key, val ) VALUES ('osm-plugin-version','" + PROVIDER_VERSION + "');";
+  QString cmd2 = "INSERT INTO meta ( key, val ) VALUES ('osm-provider-version','" + PROVIDER_VERSION + "');";
   QByteArray cmd_bytes2  = cmd2.toAscii();
   const char *ptr2 = cmd_bytes2.data();
 
   if ( sqlite3_exec( mDatabase, ptr2, 0, 0, 0 ) != SQLITE_OK )
   {
-    QgsDebugMsg("Storing osm-plugin-version info into database failed.");
+    QgsDebugMsg( "Storing osm-provider-version info into database failed." );
     return false;
   }
 
@@ -1388,7 +1393,7 @@ bool QgsOSMDataProvider::loadOsmFile( QString osm_filename )
 
   if ( sqlite3_exec( mDatabase, ptr3, 0, 0, 0 ) != SQLITE_OK )
   {
-    QgsDebugMsg("Storing default area boundaries information into database failed.");
+    QgsDebugMsg( "Storing default area boundaries information into database failed." );
     // its not critical situation
   }
 
@@ -1655,6 +1660,7 @@ bool QgsOSMDataProvider::closeDatabase()
     mError = ( char * ) "Closing SQLite3 database failed.";
     return false;
   }
+  mDatabase = NULL;
   return true;
 };
 

@@ -1,10 +1,12 @@
 qgis (1.3.0) UNRELEASED; urgency=low
 
-  * new development version after 1.2 branch
+  * new upstream release
   * add analysis library and raster terrain analysis plugin
   * alternativly depend on libgdal1-1.6.0-grass
+  * include CONTRIBUTORS, TRANSLATORS and DONORS
+  * reverse order of libgdal1-*-grass dependencies
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sat, 05 Sep 2009 17:45:21 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 12 Sep 2009 22:09:18 +0200
 
 qgis (1.2.0) UNRELEASED; urgency=low
 

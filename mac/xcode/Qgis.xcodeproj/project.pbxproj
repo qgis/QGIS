@@ -1821,6 +1821,8 @@
 		72FB54CC0FAF3ADB00AB2F8D /* qgsattributetablememorymodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C10FAF3A5D00AB2F8D /* qgsattributetablememorymodel.cpp */; };
 		72FB54CE0FAF3B5E00AB2F8D /* qgsattributetabledelegate.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C60FAF3A5D00AB2F8D /* qgsattributetabledelegate.h */; };
 		72FB54CF0FAF3B5E00AB2F8D /* qgsattributetablememorymodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C20FAF3A5D00AB2F8D /* qgsattributetablememorymodel.h */; };
+		72FE24C7105BE1B50026B6CB /* CONTRIBUTORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2E30F4147890022BE1F /* CONTRIBUTORS */; };
+		72FE24C8105BE2400026B6CB /* qgsgeometryanalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597E71052B2B0003D1610 /* qgsgeometryanalyzer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -2444,7 +2446,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 721597EA1052B46D003D1610 /* qgis_analysis */;
+			remoteGlobalIDString = 721597EA1052B46D003D1610;
 			remoteInfo = qgis_analysis;
 		};
 		7223B7A50F96AA6C00D905B4 /* PBXContainerItemProxy */ = {
@@ -3966,6 +3968,7 @@
 			files = (
 				7299E8BA0F90F06C002F58DE /* AUTHORS in Copy - doc */,
 				7299E8BB0F90F06C002F58DE /* CODING in Copy - doc */,
+				72FE24C7105BE1B50026B6CB /* CONTRIBUTORS in Copy - doc */,
 				72DBAB500FFD744400E587DC /* DONORS in Copy - doc */,
 				7299E8BC0F90F06C002F58DE /* SPONSORS in Copy - doc */,
 				7299E8BD0F90F06C002F58DE /* TRANSLATORS in Copy - doc */,
@@ -6948,6 +6951,11 @@
 		72C4242D103DE718005CD18E /* mActionRedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRedo.png; path = ../../images/themes/gis/mActionRedo.png; sourceTree = SOURCE_ROOT; };
 		72C4242E103DE718005CD18E /* mActionMergeFeatures.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionMergeFeatures.png; path = ../../images/themes/gis/mActionMergeFeatures.png; sourceTree = SOURCE_ROOT; };
 		72C4242F103DE718005CD18E /* mActionAddImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddImage.png; path = ../../images/themes/gis/mActionAddImage.png; sourceTree = SOURCE_ROOT; };
+		72C5C9071059386500555945 /* osm_clearUndoRedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_clearUndoRedo.png; path = ../../python/plugins/osm/images/osm_clearUndoRedo.png; sourceTree = SOURCE_ROOT; };
+		72C5C9081059386500555945 /* osm_generateTags.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_generateTags.png; path = ../../python/plugins/osm/images/osm_generateTags.png; sourceTree = SOURCE_ROOT; };
+		72C5C9091059386500555945 /* osm_removeFeat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeFeat.png; path = ../../python/plugins/osm/images/osm_removeFeat.png; sourceTree = SOURCE_ROOT; };
+		72C5C90A1059386500555945 /* osm_removeMember.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeMember.png; path = ../../python/plugins/osm/images/osm_removeMember.png; sourceTree = SOURCE_ROOT; };
+		72C5C90B1059386500555945 /* osm_removeTag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeTag.png; path = ../../python/plugins/osm/images/osm_removeTag.png; sourceTree = SOURCE_ROOT; };
 		72D0A536101896AA00EE6279 /* qgsattributetypeloaddialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetypeloaddialog.h; path = ../../src/app/qgsattributetypeloaddialog.h; sourceTree = SOURCE_ROOT; };
 		72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetypeloaddialog.cpp; path = ../../src/app/qgsattributetypeloaddialog.cpp; sourceTree = SOURCE_ROOT; };
 		72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetypedialog.h; path = ../../src/app/qgsattributetypedialog.h; sourceTree = SOURCE_ROOT; };
@@ -7006,7 +7014,6 @@
 		72DB693A1021D98600ED5F3A /* OsmIdentifyMT.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmIdentifyMT.py; path = ../../python/plugins/osm/map_tools/OsmIdentifyMT.py; sourceTree = SOURCE_ROOT; };
 		72DB693B1021D98600ED5F3A /* OsmMoveMT.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmMoveMT.py; path = ../../python/plugins/osm/map_tools/OsmMoveMT.py; sourceTree = SOURCE_ROOT; };
 		72DB693C1021D98600ED5F3A /* OsmPlugin.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmPlugin.py; path = ../../python/plugins/osm/OsmPlugin.py; sourceTree = SOURCE_ROOT; };
-		72DB693D1021D98600ED5F3A /* resources.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = resources.py; path = ../../python/plugins/osm/resources.py; sourceTree = SOURCE_ROOT; };
 		72DB693E1021D98600ED5F3A /* resources.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resources.qrc; path = ../../python/plugins/osm/resources.qrc; sourceTree = SOURCE_ROOT; };
 		72DB69401021D98600ED5F3A /* big_scale.style */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = big_scale.style; path = ../../python/plugins/osm/styles/big_scale.style; sourceTree = SOURCE_ROOT; };
 		72DB69411021D98600ED5F3A /* medium_scale.style */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = medium_scale.style; path = ../../python/plugins/osm/styles/medium_scale.style; sourceTree = SOURCE_ROOT; };
@@ -11815,7 +11822,6 @@
 				72DB69211021D98600ED5F3A /* images */,
 				72DB69351021D98600ED5F3A /* map_tools */,
 				72DB693C1021D98600ED5F3A /* OsmPlugin.py */,
-				72DB693D1021D98600ED5F3A /* resources.py */,
 				72DB693E1021D98600ED5F3A /* resources.qrc */,
 				72DB693F1021D98600ED5F3A /* styles */,
 				72DB69431021D98600ED5F3A /* ui_files */,
@@ -11848,6 +11854,11 @@
 				72832D0D1036242E002E3B72 /* osm_addRelation.png */,
 				72832D0E1036242E002E3B72 /* osm_urDetails.png */,
 				72832D0F1036242E002E3B72 /* osm_removeRelation.png */,
+				72C5C9071059386500555945 /* osm_clearUndoRedo.png */,
+				72C5C9081059386500555945 /* osm_generateTags.png */,
+				72C5C9091059386500555945 /* osm_removeFeat.png */,
+				72C5C90A1059386500555945 /* osm_removeMember.png */,
+				72C5C90B1059386500555945 /* osm_removeTag.png */,
 				72DB69331021D98600ED5F3A /* osmIconsMaster.svg */,
 			);
 			name = images;
@@ -12350,6 +12361,7 @@
 				7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */,
 				7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */,
 				7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */,
+				72FE24C8105BE2400026B6CB /* qgsgeometryanalyzer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

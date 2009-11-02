@@ -37,6 +37,14 @@
    <string>OSM Feature</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>21</y>
+     <width>265</width>
+     <height>715</height>
+    </rect>
+   </property>
    <layout class="QVBoxLayout" >
     <item>
      <layout class="QHBoxLayout" >
@@ -89,13 +97,13 @@
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="toolTip" >
-         <string>Identify object</string>
+         <string>Identify feature</string>
         </property>
         <property name="statusTip" >
-         <string>Identify object</string>
+         <string>Identify feature</string>
         </property>
         <property name="whatsThis" >
-         <string>Identify object</string>
+         <string>Identify feature</string>
         </property>
         <property name="text" >
          <string>...</string>
@@ -123,7 +131,13 @@
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="toolTip" >
-         <string>Move object</string>
+         <string>Move feature</string>
+        </property>
+        <property name="statusTip" >
+         <string>Move feature</string>
+        </property>
+        <property name="whatsThis" >
+         <string>Move feature</string>
         </property>
         <property name="text" >
          <string>...</string>
@@ -348,10 +362,7 @@
        </property>
        <item>
         <layout class="QGridLayout" >
-         <property name="horizontalSpacing" >
-          <number>0</number>
-         </property>
-         <property name="verticalSpacing" >
+         <property name="spacing" >
           <number>0</number>
          </property>
          <item row="0" column="0" >
@@ -405,13 +416,13 @@
             </size>
            </property>
            <property name="toolTip" >
-            <string>Remove feature</string>
+            <string>Remove this feature</string>
            </property>
            <property name="statusTip" >
-            <string>Remove feature</string>
+            <string>Remove this feature</string>
            </property>
            <property name="whatsThis" >
-            <string>Remove feature</string>
+            <string>Remove this feature</string>
            </property>
            <property name="text" >
             <string>...</string>
@@ -456,6 +467,14 @@
        <number>1</number>
       </property>
       <widget class="QWidget" name="Properties" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>640</width>
+         <height>320</height>
+        </rect>
+       </property>
        <attribute name="title" >
         <string>Properties</string>
        </attribute>
@@ -492,7 +511,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -521,6 +540,14 @@
        </layout>
       </widget>
       <widget class="QWidget" name="Relations" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>243</width>
+         <height>534</height>
+        </rect>
+       </property>
        <attribute name="title" >
         <string>Relations</string>
        </attribute>
@@ -607,7 +634,7 @@
               <property name="sizeType" >
                <enum>QSizePolicy::Minimum</enum>
               </property>
-              <property name="sizeHint" >
+              <property name="sizeHint" stdset="0" >
                <size>
                 <width>26</width>
                 <height>0</height>

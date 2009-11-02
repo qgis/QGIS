@@ -18,6 +18,7 @@ from qgis.core import *
 from qgis.gui import *
 
 import sqlite3
+import unicodedata
 
 
 
@@ -47,9 +48,9 @@ class OsmAddRelationDlg(QDialog, Ui_OsmAddRelationDlg):
 
         # set icons for tool buttons (identify,move,createPoint,createLine,createPolygon)
         self.chooseMemberButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_identify.png"))
-        self.removeMemberButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_remove.png"))
-        self.removeTagButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_remove.png"))
-        self.loadStandardTagsButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_star.png"))
+        self.removeMemberButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_removeMember.png"))
+        self.removeTagButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_removeTag.png"))
+        self.loadStandardTagsButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_generateTags.png"))
         self.typeInfoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_questionMark.png"))
 
         self.info = dict()
@@ -101,6 +102,7 @@ class OsmAddRelationDlg(QDialog, Ui_OsmAddRelationDlg):
         self.relTagsTable.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.relMembersTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.relTagsTable.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.typeInfoButton.setEnabled(False)
 
 
     def connectDlgSignals(self):
@@ -283,6 +285,11 @@ class OsmAddRelationDlg(QDialog, Ui_OsmAddRelationDlg):
 
             # adding new tag to table
             if column==0:
+
+                # only ascii keys are allowed
+                nkfd_form=unicodedata.normalize('NFKD', unicode(key.toUtf8(),'utf-8'))
+                key_only_ascii=nkfd_form.encode('ASCII', 'ignore')
+
                 newLastRow = row+1
                 self.relTagsTable.setRowCount(row+2)
                 self.relTagsTable.setItem(newLastRow,0,QTableWidgetItem(self.newTagLabel))
@@ -292,6 +299,7 @@ class OsmAddRelationDlg(QDialog, Ui_OsmAddRelationDlg):
 
                 self.relTagsTable.item(row,0).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
                 self.relTagsTable.item(row,1).setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
+                self.relTagsTable.item(row,0).setText(QString(key_only_ascii))
 
 
     def __onMembersCellChanged(self,row,column):
@@ -426,8 +434,10 @@ class OsmAddRelationDlg(QDialog, Ui_OsmAddRelationDlg):
         # if non-standard typename was set up, loadStandardTagsButton is useless
         if typeName.toAscii().data() in self.relationTypes:
             self.loadStandardTagsButton.setEnabled(True)
+            self.typeInfoButton.setEnabled(True)
         else:
             self.loadStandardTagsButton.setEnabled(False)
+            self.typeInfoButton.setEnabled(False)
 
 
     def determineSuitableMemberRoles(self,relType):
