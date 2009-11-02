@@ -25,13 +25,15 @@
 
 #include <QTableWidgetItem>
 
+#include <climits>
+#include <cfloat>
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
     : QDialog(),
     mLayer( vl )
 {
   setupUi( this );
-  tableWidget->insertRow(0);
+  tableWidget->insertRow( 0 );
   connect( selectionComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setStackPage( int ) ) );
   connect( removeSelectedButton, SIGNAL( pressed( ) ), this, SLOT( removeSelectedButtonPushed( ) ) );
   connect( loadFromLayerButton, SIGNAL( pressed( ) ), this, SLOT( loadFromLayerButtonPushed( ) ) );
@@ -60,11 +62,11 @@ QMap<QString, QVariant> &QgsAttributeTypeDialog::valueMap()
 }
 
 
-void QgsAttributeTypeDialog::vCellChanged(int row, int column)
+void QgsAttributeTypeDialog::vCellChanged( int row, int column )
 {
-  if (row == tableWidget->rowCount() -1)
+  if ( row == tableWidget->rowCount() - 1 )
   {
-    tableWidget->insertRow(row + 1);
+    tableWidget->insertRow( row + 1 );
   } //else check type
 }
 
@@ -75,18 +77,18 @@ void QgsAttributeTypeDialog::removeSelectedButtonPushed()
   QSet<int> rowsToRemove;
   int removed = 0;
   int i = 0;
-  for (; i < list.size(); i++)
+  for ( ; i < list.size(); i++ )
   {
-    if (list[i]->column() == 0)
+    if ( list[i]->column() == 0 )
     {
       int row = list[i]->row();
-      if (!rowsToRemove.contains( row ))
+      if ( !rowsToRemove.contains( row ) )
       {
         rowsToRemove.insert( row );
       }
     }
   }
-  for (i = 0; i< rowsToRemove.values().size(); i++)
+  for ( i = 0; i < rowsToRemove.values().size(); i++ )
   {
     tableWidget->removeRow( rowsToRemove.values()[i] - removed );
     removed++;
@@ -100,9 +102,9 @@ void QgsAttributeTypeDialog::loadFromLayerButtonPushed()
     return;
 
   tableWidget->clearContents();
-  for (int i = tableWidget->rowCount() -1; i > 0; i--)
+  for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
   {
-    tableWidget->removeRow(i);
+    tableWidget->removeRow( i );
   }
   int row = 0;
   QMap<QString, QVariant> &map = layerDialog.valueMap();
@@ -123,88 +125,57 @@ void QgsAttributeTypeDialog::loadFromLayerButtonPushed()
 }
 
 
-void QgsAttributeTypeDialog::setPageForIndex( int index )
-{
-  if ( mLayer->editType( index ) ==  QgsVectorLayer::LineEdit )
-  {
-    setPage( 0 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::Classification)
-  {
-    setPage( 1 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::EditRange ||
-            mLayer->editType( index ) == QgsVectorLayer::SliderRange )
-  {
-    setPage( 2 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::UniqueValues ||
-            mLayer->editType( index ) == QgsVectorLayer::UniqueValuesEditable )
-  {
-    setPage( 3 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::FileName)
-  {
-    setPage( 4 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::ValueMap)
-  {
-    setPage( 5 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::Enumeration)
-  {
-    setPage( 6 );
-  }
-  else if ( mLayer->editType( index ) == QgsVectorLayer::Immutable)
-  {
-    setPage( 7 );
-  }
-}
-
 void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editType )
 {
-  if ( editType ==  QgsVectorLayer::LineEdit )
+  switch ( editType )
   {
-    setPage( 0 );
-  }
-  else if ( editType == QgsVectorLayer::Classification)
-  {
-    setPage( 1 );
-  }
-  else if ( editType == QgsVectorLayer::EditRange ||
-            editType == QgsVectorLayer::SliderRange )
-  {
-    setPage( 2 );
-  }
-  else if ( editType == QgsVectorLayer::UniqueValues ||
-            editType == QgsVectorLayer::UniqueValuesEditable )
-  {
-    setPage( 3 );
-  }
-  else if ( editType == QgsVectorLayer::FileName)
-  {
-    setPage( 4 );
-  }
-  else if ( editType == QgsVectorLayer::ValueMap)
-  {
-    setPage( 5 );
-  }
-  else if ( editType == QgsVectorLayer::Enumeration)
-  {
-    setPage( 6 );
-  }
-  else if ( editType == QgsVectorLayer::Immutable)
-  {
-    setPage( 7 );
+    case QgsVectorLayer::Classification:
+      setPage( 1 );
+      break;
+
+    case QgsVectorLayer::EditRange:
+    case QgsVectorLayer::SliderRange:
+      setPage( 2 );
+      break;
+
+    case QgsVectorLayer::UniqueValues:
+    case QgsVectorLayer::UniqueValuesEditable:
+      setPage( 3 );
+      break;
+
+    case QgsVectorLayer::FileName:
+      setPage( 4 );
+      break;
+
+    case QgsVectorLayer::ValueMap:
+      setPage( 5 );
+      break;
+
+    case QgsVectorLayer::Enumeration:
+      setPage( 6 );
+      break;
+
+    case QgsVectorLayer::Immutable:
+      setPage( 7 );
+      break;
+
+    case QgsVectorLayer::LineEdit:
+      setPage( 0 );
+      break;
   }
 }
 
-void QgsAttributeTypeDialog::setValueMap(QMap<QString, QVariant> valueMap)
+void QgsAttributeTypeDialog::setPageForIndex( int index )
+{
+  setPageForEditType( mLayer->editType( index ) );
+}
+
+void QgsAttributeTypeDialog::setValueMap( QMap<QString, QVariant> valueMap )
 {
   mValueMap = valueMap;
 }
 
-void QgsAttributeTypeDialog::setRange(QgsVectorLayer::RangeData range)
+void QgsAttributeTypeDialog::setRange( QgsVectorLayer::RangeData range )
 {
   mRangeData = range;
 }
@@ -214,7 +185,7 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
   mIndex = index;
   //need to set index for combobox
   QgsVectorLayer::EditType editType;
-  if (editTypeInt > -1)
+  if ( editTypeInt > -1 )
   {
     editType = QgsVectorLayer::EditType( editTypeInt );
   }
@@ -223,7 +194,7 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
     editType = mLayer->editType( index );
   }
 
-  setWindowTitle( defaultWindowTitle() + " \"" + mLayer->pendingFields()[index].name() + "\"");
+  setWindowTitle( defaultWindowTitle() + " \"" + mLayer->pendingFields()[index].name() + "\"" );
   QgsAttributeList attributeList = QgsAttributeList();
   attributeList.append( index );
   mLayer->select( attributeList, QgsRectangle(), false );
@@ -231,79 +202,67 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
   QgsFeature f;
   QString text;
   //calculate min and max for range for this field
-  if (mLayer->pendingFields()[index].type() == QVariant::Int)
+  if ( mLayer->pendingFields()[index].type() == QVariant::Int )
   {
     sliderRadioButton->setDisabled( false );
-    int min;
-    int max;
-    //filling initial values
-    if (mLayer->nextFeature( f ))
-    {
-      min = f.attributeMap()[index].toInt();
-      max = f.attributeMap()[index].toInt();
-    }
-    for ( ; mLayer->nextFeature( f );  )
+    int min = INT_MIN;
+    int max = INT_MAX;
+    while ( mLayer->nextFeature( f ) )
     {
       QVariant val = f.attributeMap()[index];
       if ( val.isValid() && !val.isNull() )
       {
         int valInt = val.toInt();
-        if (min > valInt)
-            min = valInt;
-        if (max < valInt)
-            max = valInt;
+        if ( min > valInt )
+          min = valInt;
+        if ( max < valInt )
+          max = valInt;
       }
       text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min ).arg( max );
     }
   }
-  else if (mLayer->pendingFields()[index].type() == QVariant::Double)
+  else if ( mLayer->pendingFields()[index].type() == QVariant::Double )
   {
-    double dMin;
-    double dMax;
-
-    if (mLayer->nextFeature( f ))
-    {
-      dMin = f.attributeMap()[index].toDouble();
-      dMax = f.attributeMap()[index].toDouble();
-    }
+    double dMin = -DBL_MAX;
+    double dMax = DBL_MAX;
 
     sliderRadioButton->setDisabled( true );
     editableRadioButton->setChecked( true );
-    for ( ; mLayer->nextFeature( f );  )
+    while ( mLayer->nextFeature( f ) )
     {
       QVariant val = f.attributeMap()[index];
       if ( val.isValid() && !val.isNull() )
       {
         double dVal =  val.toDouble();
-        if (dMin > dVal)
-            dMin = dVal;
-        if (dMax < dVal)
-            dMax = dVal;
+        if ( dMin > dVal )
+          dMin = dVal;
+        if ( dMax < dVal )
+          dMax = dVal;
       }
       text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( dMin ).arg( dMax );
     }
   }
   else
   {
-    text = tr( "Attribute has no integer or real type, therefore range is not usable.");
+    text = tr( "Attribute has no integer or real type, therefore range is not usable." );
   }
-  valuesLabel->setText(text);
+  valuesLabel->setText( text );
 
   //setPageForIndex( index );
   setPageForEditType( editType );
 
-  if ( editType == QgsVectorLayer::ValueMap)
+  if ( editType == QgsVectorLayer::ValueMap )
   {
 
     tableWidget->clearContents();
-    for (int i = tableWidget->rowCount() -1; i > 0; i--)
+    for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
     {
-      tableWidget->removeRow(i);
+      tableWidget->removeRow( i );
     }
 
     // if some value map already present use it
     QMap<QString, QVariant> map;
-    if (!mValueMap.empty())
+    if ( !mValueMap.empty() )
     {
       map = mValueMap;
     }
@@ -331,7 +290,7 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
   else if ( editType == QgsVectorLayer::EditRange ||
             editType == QgsVectorLayer::SliderRange )
   {
-    if (mLayer->pendingFields()[mIndex].type() != QVariant::Int)
+    if ( mLayer->pendingFields()[mIndex].type() != QVariant::Int )
     {
       minimumSpinBox->setValue( mLayer->range( index ).mMin.toInt() );
       maximumSpinBox->setValue( mLayer->range( index ).mMax.toInt() );
@@ -364,12 +323,12 @@ void QgsAttributeTypeDialog::setStackPage( int index )
   bool okDisabled = false;
   if ( index == 2 )
   {
-    if (mLayer->pendingFields()[mIndex].type() != QVariant::Double &&
-        mLayer->pendingFields()[mIndex].type() != QVariant::Int)
+    if ( mLayer->pendingFields()[mIndex].type() != QVariant::Double &&
+         mLayer->pendingFields()[mIndex].type() != QVariant::Int )
     {
       okDisabled = true;
     }
-    else if (mLayer->pendingFields()[mIndex].type() != QVariant::Double)
+    else if ( mLayer->pendingFields()[mIndex].type() != QVariant::Double )
     {
       this->rangeStackedWidget->setCurrentIndex( 0 );
       //load data
@@ -397,7 +356,7 @@ void QgsAttributeTypeDialog::setStackPage( int index )
     }
     else
     {
-        enumerationWarningLabel->setText( "" );
+      enumerationWarningLabel->setText( "" );
     }
 
   }
@@ -408,7 +367,7 @@ void QgsAttributeTypeDialog::setStackPage( int index )
 void QgsAttributeTypeDialog::accept()
 {
   //store data to output variables
-  switch (selectionComboBox->currentIndex())
+  switch ( selectionComboBox->currentIndex() )
   {
     case 0:
       mEditType = QgsVectorLayer::LineEdit;
@@ -431,7 +390,7 @@ void QgsAttributeTypeDialog::accept()
                                                 stepDoubleSpinBox->value() );
       }
       //select correct one
-      if (editableRadioButton->isChecked())
+      if ( editableRadioButton->isChecked() )
       {
         mEditType = QgsVectorLayer::EditRange;
       }
@@ -441,7 +400,7 @@ void QgsAttributeTypeDialog::accept()
       }
       break;
     case 3:
-      if (editableUniqueValues->isChecked())
+      if ( editableUniqueValues->isChecked() )
       {
         mEditType = QgsVectorLayer::UniqueValuesEditable;
       }
@@ -456,15 +415,15 @@ void QgsAttributeTypeDialog::accept()
     case 5:
       //store data to map
       mValueMap.clear();
-      for (int i = 0; i < tableWidget->rowCount() - 1; i++)
+      for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
       {
-        if ( tableWidget->item(i, 1)->text().isNull() )
+        if ( tableWidget->item( i, 1 )->text().isNull() )
         {
-          mValueMap.insert(tableWidget->item(i, 0)->text(), tableWidget->item(i, 0)->text());
+          mValueMap.insert( tableWidget->item( i, 0 )->text(), tableWidget->item( i, 0 )->text() );
         }
         else
         {
-          mValueMap.insert(tableWidget->item(i, 1)->text(), tableWidget->item(i, 0)->text());
+          mValueMap.insert( tableWidget->item( i, 1 )->text(), tableWidget->item( i, 0 )->text() );
         }
       }
       mEditType = QgsVectorLayer::ValueMap;

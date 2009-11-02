@@ -88,7 +88,7 @@ class  CORE_EXPORT QgsAttributeAction
     //! Does the action using the given values. defaultValueIndex is an
     // index into values which indicates which value in the values vector
     // is to be used if the action has a default placeholder.
-    void doAction( unsigned int index, const std::vector<std::pair<QString, QString> >& values,
+    void doAction( unsigned int index, const std::vector< std::pair<QString, QString> > &values,
                    uint defaultValueIndex = 0 );
 
     //! Returns a const_iterator that points to the QgsAction at the
@@ -114,7 +114,7 @@ class  CORE_EXPORT QgsAttributeAction
 
     //! Expands the given action, replacing all %'s with the value as
     // given.
-    static QString expandAction( QString action, const std::vector<std::pair<QString, QString> >& values,
+    static QString expandAction( QString action, const std::vector< std::pair<QString, QString> > &values,
                                  uint defaultValueIndex );
 
     //! Writes the actions out in XML format

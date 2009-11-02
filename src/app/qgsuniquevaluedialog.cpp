@@ -102,6 +102,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
   QObject::connect( mRandomizeColors, SIGNAL( clicked() ), this, SLOT( randomizeColors() ) );
   QObject::connect( mResetColors, SIGNAL( clicked() ), this, SLOT( resetColors() ) );
   QObject::connect( mClassListWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+  QObject::connect( mCommonPropertyLock, SIGNAL( clicked() ), this, SLOT( selectionChanged() ) );
   QObject::connect( mClassListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( itemChanged( QListWidgetItem * ) ) );
   QObject::connect( &sydialog, SIGNAL( settingsChanged() ), this, SLOT( applySymbologyChanges() ) );
   mSymbolWidgetStack->addWidget( &sydialog );
@@ -284,6 +285,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
                               .arg( mOldClassificationAttribute ).arg( attributeName ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
+    mClassListWidget->clearSelection();
     deleteSelectedClasses();
   }
   mOldClassificationAttribute = attributeName;
@@ -348,7 +350,7 @@ void QgsUniqueValueDialog::selectionChanged()
   {
     mDeletePushButton->setEnabled( true );
 
-    if ( selection.size() == 1 )
+    if ( selection.size() == 1 || !mCommonPropertyLock->isChecked() )
     {
       QListWidgetItem *item = selection[0];
       if ( !item )
@@ -361,7 +363,7 @@ void QgsUniqueValueDialog::selectionChanged()
       sydialog.set( symbol );
       sydialog.setLabel( symbol->label() );
     }
-    else if ( selection.size() > 1 )
+    else if ( selection.size() > 1 && mCommonPropertyLock->isChecked() )
     {
       if ( !mValues.contains( selection[0]->text() ) )
         return;

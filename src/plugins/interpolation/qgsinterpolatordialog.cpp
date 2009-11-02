@@ -27,7 +27,7 @@ QgsInterpolatorDialog::~QgsInterpolatorDialog()
 
 }
 
-void QgsInterpolatorDialog::setInputData( const QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> >& inputData )
+void QgsInterpolatorDialog::setInputData( const QList< QgsInterpolator::LayerData >& inputData )
 {
   mInputData = inputData;
 }

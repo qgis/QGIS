@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>485</width>
-    <height>372</height>
+    <width>538</width>
+    <height>577</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -18,7 +18,7 @@
   <property name="windowTitle" >
    <string>Interpolation plugin</string>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QGridLayout" name="gridLayout_2" >
    <item row="0" column="0" >
     <widget class="QGroupBox" name="mInputGroupBox" >
      <property name="sizePolicy" >
@@ -30,21 +30,18 @@
      <property name="title" >
       <string>Input</string>
      </property>
-     <layout class="QGridLayout" >
+     <layout class="QGridLayout" name="gridLayout" >
       <item row="0" column="0" >
-       <widget class="QLabel" name="mInputVectorLayerLabel" >
+       <widget class="QLabel" name="label_2" >
         <property name="text" >
-         <string>Input vector layer</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mInputLayerComboBox</cstring>
+         <string>Vector layers:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
+      <item row="0" column="1" colspan="2" >
        <widget class="QComboBox" name="mInputLayerComboBox" >
         <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -52,30 +49,16 @@
        </widget>
       </item>
       <item row="1" column="0" >
-       <widget class="QLabel" name="label" >
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QCheckBox" name="mUseZCoordCheckBox" >
-        <property name="text" >
-         <string>Use z-Coordinate for interpolation</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" >
        <widget class="QLabel" name="mInterpolationAttributeLabel" >
         <property name="text" >
-         <string>Interpolation attribute </string>
+         <string>Interpolation attribute:</string>
         </property>
         <property name="buddy" >
          <cstring>mInterpolationAttributeComboBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
+      <item row="1" column="1" colspan="2" >
        <widget class="QComboBox" name="mInterpolationAttributeComboBox" >
         <property name="sizePolicy" >
          <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
@@ -83,6 +66,46 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3" >
+       <widget class="QCheckBox" name="mUseZCoordCheckBox" >
+        <property name="text" >
+         <string>Use z-Coordinate for interpolation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" >
+       <widget class="QPushButton" name="mAddPushButton" >
+        <property name="text" >
+         <string>Add</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2" >
+       <widget class="QPushButton" name="mRemovePushButton" >
+        <property name="text" >
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="3" >
+       <widget class="QTreeWidget" name="mLayersTreeWidget" >
+        <column>
+         <property name="text" >
+          <string>Vector layer</string>
+         </property>
+        </column>
+        <column>
+         <property name="text" >
+          <string>Attribute</string>
+         </property>
+        </column>
+        <column>
+         <property name="text" >
+          <string>Type</string>
+         </property>
+        </column>
        </widget>
       </item>
      </layout>
@@ -119,7 +142,8 @@
          <string>...</string>
         </property>
         <property name="icon" >
-         <iconset resource="interpolator.qrc" >:/options.png</iconset>
+         <iconset resource="interpolator.qrc" >
+          <normaloff>:/options.png</normaloff>:/options.png</iconset>
         </property>
        </widget>
       </item>
@@ -186,16 +210,13 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>mInputLayerComboBox</tabstop>
-  <tabstop>mUseZCoordCheckBox</tabstop>
-  <tabstop>mInterpolationAttributeComboBox</tabstop>
   <tabstop>mInterpolationMethodComboBox</tabstop>
   <tabstop>mConfigureInterpolationButton</tabstop>
   <tabstop>mNumberOfColumnsSpinBox</tabstop>

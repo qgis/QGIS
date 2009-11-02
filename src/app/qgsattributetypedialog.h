@@ -63,7 +63,7 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * Setter to value map variable to display actual value
      * @param valueMap map which is to be dispayed in this dialog
      */
-    void setValueMap( QMap<QString, QVariant> valueMap);
+    void setValueMap( QMap<QString, QVariant> valueMap );
 
     /**
      * Setter to range for to be displayed and edited in this dialog

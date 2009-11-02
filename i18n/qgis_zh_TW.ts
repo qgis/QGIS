@@ -1041,6 +1041,355 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>DlgAddRelation</name>
+    <message>
+        <source>OSM Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create OSM relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished">屬性</translation>
+    </message>
+    <message>
+        <source>Members</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation type="unfinished">建立</translation>
+    </message>
+    <message>
+        <source>Storno</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+</context>
+<context>
+    <name>DlgDownloadOSM</name>
+    <message>
+        <source>Download OSM data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extent</source>
+        <translation type="unfinished">範圍</translation>
+    </message>
+    <message>
+        <source>Latitude:</source>
+        <translation type="unfinished">緯度:</translation>
+    </message>
+    <message>
+        <source>   From</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude:</source>
+        <translation type="unfinished">經度:</translation>
+    </message>
+    <message>
+        <source>&lt;nothing&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open data automatically after download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace current data (current layer will be removed)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <source>OSM Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waiting for OpenStreetMap server ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Download Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download failed: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Getting data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both extents are too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latitude extent is too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude extent is too large!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK! Area is probably acceptable to server.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DlgImport</name>
+    <message>
+        <source>Import data to OSM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">圖層</translation>
+    </message>
+    <message>
+        <source>Import only current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DlgLoadOSM</name>
+    <message>
+        <source>Load OSM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenStreetMap file to load:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add columns for tags:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use custom renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace current data (current layers will be removed)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DlgSaveOSM</name>
+    <message>
+        <source>Save OSM to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save the file %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Initializing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving nodes...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving lines...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving polygons...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving relations...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save OSM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Where to save:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Features to save:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lines</source>
+        <translation type="unfinished">線</translation>
+    </message>
+    <message>
+        <source>Polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DlgUploadOSM</name>
+    <message>
+        <source>Upload OSM data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ready for upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <source>2</source>
+        <translation type="unfinished">2</translation>
+    </message>
+    <message>
+        <source>3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comment on your changes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Username:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uploading data...</source>
+        <translation type="unfinished">上傳數據...</translation>
+    </message>
+</context>
+<context>
+    <name>DockWidget</name>
+    <message>
+        <source>OSM Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Feature Dock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose OSM feature first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose relation for editing first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Property with key &apos;%1&apos; already exists for this feature.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>GeometryDialog</name>
     <message>
         <source>Input vector layer</source>
@@ -1596,6 +1945,140 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <source>Save Password</source>
         <translation type="unfinished">儲存密碼</translation>
+    </message>
+</context>
+<context>
+    <name>OsmDockWidget</name>
+    <message>
+        <source>OSM Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identify object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show/Hide OSM Edit History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TYPE, ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CREATED:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USER:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished">屬性</translation>
+    </message>
+    <message>
+        <source>Add new relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit selected relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E</source>
+        <translation type="unfinished">東</translation>
+    </message>
+    <message>
+        <source>Remove selected relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>R</source>
+        <translation type="unfinished">R</translation>
+    </message>
+    <message>
+        <source>Relation tags:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <source>Relation members:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmUndoRedoDockWidget</name>
+    <message>
+        <source>OSM Edit History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3044,6 +3527,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>No active layers found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Building triangulation...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5936,7 +6423,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished">以下是使用金錢來贊助QGIS專案開發的名單</translation>
+        <translation type="obsolete">以下是使用金錢來贊助QGIS專案開發的名單</translation>
     </message>
     <message>
         <source>Website</source>
@@ -5968,6 +6455,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Translators</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The following individuals and institutions have contributed money to fund QGIS development and other project costs&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Donors</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6204,11 +6703,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <source>Select a file</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
@@ -6247,6 +6742,44 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsAttributeEditor</name>
+    <message>
+        <source>Select a file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeLoadValues</name>
+    <message>
+        <source>Load values from layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">圖層</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">描述</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">值</translation>
+    </message>
+    <message>
+        <source>Select data from attributes in selected layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View All</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsAttributeTable</name>
     <message>
         <source>&lt;center&gt;Run action&lt;/center&gt;</source>
@@ -6261,7 +6794,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTableBase</name>
     <message>
         <source>Attribute Table</source>
-        <translation type="unfinished">屬性工作表</translation>
+        <translation type="obsolete">屬性工作表</translation>
     </message>
     <message>
         <source>Start editing</source>
@@ -6297,35 +6830,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="unfinished">反向選擇</translation>
+        <translation type="obsolete">反向選擇</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation type="unfinished">將選中的記錄移動到頂端</translation>
+        <translation type="obsolete">將選中的記錄移動到頂端</translation>
     </message>
     <message>
         <source>Remove selection</source>
-        <translation type="unfinished">取消選擇</translation>
+        <translation type="obsolete">取消選擇</translation>
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">將選中的列複製到剪貼簿 (Ctrl+C)</translation>
+        <translation type="obsolete">將選中的列複製到剪貼簿 (Ctrl+C)</translation>
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">將選中的列複製到剪貼簿</translation>
+        <translation type="obsolete">將選中的列複製到剪貼簿</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <source>Stop editin&amp;g</source>
@@ -6341,19 +6874,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>in</source>
-        <translation type="unfinished">在欄位</translation>
+        <translation type="obsolete">在欄位</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished">尋找</translation>
+        <translation type="obsolete">尋找</translation>
     </message>
     <message>
         <source>Adva&amp;nced...</source>
-        <translation type="unfinished">進階查詢(&amp;n)...</translation>
+        <translation type="obsolete">進階查詢(&amp;n)...</translation>
     </message>
     <message>
         <source>Alt+N</source>
-        <translation type="unfinished">Alt+N</translation>
+        <translation type="obsolete">Alt+N</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -6361,27 +6894,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">縮放地圖至選取的列</translation>
+        <translation type="obsolete">縮放地圖至選取的列</translation>
     </message>
     <message>
         <source>Search for</source>
-        <translation type="unfinished">搜尋關鍵字</translation>
+        <translation type="obsolete">搜尋關鍵字</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished">縮放地圖至選取的列</translation>
+        <translation type="obsolete">縮放地圖至選取的列</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">切換編輯模式</translation>
+        <translation type="obsolete">切換編輯模式</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">按一下切換表格編輯</translation>
-    </message>
-    <message>
-        <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">按一下切換表格編輯</translation>
     </message>
 </context>
 <context>
@@ -6640,6 +7169,129 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTableModel</name>
     <message>
         <source>Attribute changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeTypeDialog</name>
+    <message>
+        <source>Current minimum for this value is %1 and current maximum is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute has no integer or real type, therefore range is not usable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enumeration is not available for this attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute Edit Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">範圍</translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Immutable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simple edit box. This is the default editation widget.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays combo box containing values of attribute used for classification.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished">最小值</translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished">最大值</translation>
+    </message>
+    <message>
+        <source>Step</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local minimum/maximum = 0/0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplifies file selection by adding a file chooser dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Data from layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">值</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">描述</translation>
+    </message>
+    <message>
+        <source>Remove Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Combo box with values that can be used within the column&apos;s type. Must be supported by the provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7047,6 +7699,10 @@ p, li { white-space: pre-wrap; }
         <source>Content of template file is not valid</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>PDF Format</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerBase</name>
@@ -7328,6 +7984,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Align selected items bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export as PDF...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9061,6 +9721,10 @@ The database said:
         <source>Search options...</source>
         <translation type="unfinished">尋找選項...</translation>
     </message>
+    <message>
+        <source>Build query</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDbTableModel</name>
@@ -10576,14 +11240,6 @@ p, li { white-space: pre-wrap; }
         <source>Description georeferencer</source>
         <translation type="unfinished">幾何校正(Georeferencer)描述</translation>
     </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsGeorefPlugin</name>
@@ -10983,12 +11639,23 @@ Factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Delete map &lt;b&gt;%1&lt;/b&gt;</source>
+        <source>Cannot delete map %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot delete map %1</source>
+        <source>New name for layer &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Question</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Are you sure you want to delete %n selected layer(s)?</source>
+        <comment>number of layers to delete</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -12872,7 +13539,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGrassShell</name>
     <message>
         <source>Close</source>
-        <translation type="unfinished">關閉</translation>
+        <translation type="obsolete">關閉</translation>
     </message>
     <message>
         <source>Ctrl+Shift+V</source>
@@ -12880,6 +13547,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Ctrl+Shift+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <source>Cannot rename the lock file %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13435,6 +14110,38 @@ p, li { white-space: pre-wrap; }
         <source>Inverse Distance Weighting (IDW)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>No input data for interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please add one or more input layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file name invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter a valid output file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Break lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Structure lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save interpolated raster as...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsInterpolationDialogBase</name>
@@ -13456,7 +14163,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">輸入向量圖層</translation>
+        <translation type="obsolete">輸入向量圖層</translation>
     </message>
     <message>
         <source>Use z-Coordinate for interpolation</source>
@@ -13464,7 +14171,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Interpolation attribute </source>
-        <translation type="unfinished">內插屬性</translation>
+        <translation type="obsolete">內插屬性</translation>
     </message>
     <message>
         <source>Interpolation method</source>
@@ -13481,6 +14188,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Output file </source>
         <translation type="unfinished">輸出檔案</translation>
+    </message>
+    <message>
+        <source>Vector layers:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolation attribute:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished">新增</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished">移除</translation>
+    </message>
+    <message>
+        <source>Vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute</source>
+        <translation type="unfinished">屬性</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">類型</translation>
     </message>
 </context>
 <context>
@@ -13819,7 +14554,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Font transparency</source>
-        <translation type="unfinished">字體透明度</translation>
+        <translation type="obsolete">字體透明度</translation>
     </message>
     <message>
         <source>Color</source>
@@ -13915,6 +14650,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font size</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14182,6 +14921,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The shapefile could not be created (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation of an attribute failed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14709,6 +15452,24 @@ p, li { white-space: pre-wrap; }
         <source>Attribute changed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>firstX</source>
+        <comment>attributes get sorted; translation for lastX should be lexically larger than this one</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>firstY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>lastX</source>
+        <comment>attributes get sorted; translation for firstX should be lexically smaller than this one</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>lastY</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolMoveFeature</name>
@@ -14779,6 +15540,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Geometry simplified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This feature cannot be simplified. Check if feature has enough vertices to be simplified.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15736,6 +16501,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsOSMDataProvider</name>
+    <message>
+        <source>Open Street Map format</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsOgrProvider</name>
     <message>
         <source>Integer</source>
@@ -16634,6 +17406,10 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>Show markers only for selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add PostGIS layers with double click and select in extended mode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19384,10 +20160,6 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Note: Minimum Maximum values are estimates or user defined</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19442,6 +20214,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unknown style format: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20969,6 +21745,10 @@ The error was:
         <source>Texture</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Refresh markers</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSingleSymbolDialogBase</name>
@@ -21055,6 +21835,14 @@ The error was:
     <message>
         <source>Label</source>
         <translation type="unfinished">標籤</translation>
+    </message>
+    <message>
+        <source>Symbol field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size in map units</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21715,6 +22503,10 @@ Do you want to overwrite the [%2] relation?</source>
         <source>Linear interpolation</source>
         <translation type="unfinished">線性內插</translation>
     </message>
+    <message>
+        <source>Save triangulation to file</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsTINInterpolatorDialogBase</name>
@@ -21723,29 +22515,23 @@ Do you want to overwrite the [%2] relation?</source>
         <translation type="unfinished">三角內插法</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This interpolator provides different methods for interpolation in a triangular irregular network (TIN).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Interpolation method:</source>
         <translation type="unfinished">內插方法:</translation>
     </message>
-</context>
-<context>
-    <name>QgsTabWidget</name>
     <message>
-        <source>Tab text</source>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:12pt;&quot;&gt;This interpolator provides different methods for interpolation in a triangular irregular network (TIN).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enter new tab text:</source>
+        <source>Export triangulation to shapefile after interpolation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Canvas %1</source>
+        <source>...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21828,6 +22614,10 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Reset Colors</source>
         <translation type="unfinished">重設顏色</translation>
+    </message>
+    <message>
+        <source>Restrict changes to common properties</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22269,39 +23059,23 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>values</source>
-        <translation type="unfinished">值</translation>
-    </message>
-    <message>
-        <source>line edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">值</translation>
     </message>
     <message>
         <source>unique values</source>
-        <translation type="unfinished">唯一值</translation>
+        <translation type="obsolete">唯一值</translation>
     </message>
     <message>
         <source>unique values (editable)</source>
-        <translation type="unfinished">唯一值(可編輯)</translation>
-    </message>
-    <message>
-        <source>value map</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">唯一值(可編輯)</translation>
     </message>
     <message>
         <source>classification</source>
-        <translation type="unfinished">分類</translation>
-    </message>
-    <message>
-        <source>range (editable)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>range (slider)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">分類</translation>
     </message>
     <message>
         <source>file name</source>
-        <translation type="unfinished">檔案名稱</translation>
+        <translation type="obsolete">檔案名稱</translation>
     </message>
     <message>
         <source>Name conflict</source>
@@ -22372,19 +23146,19 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>enumeration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>immutable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Added attribute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Deleted attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Immutable</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23251,6 +24025,18 @@ Tried URL: %1</source>
     </message>
 </context>
 <context>
+    <name>SelectionFeature</name>
+    <message>
+        <source>Node tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Result geometry is invalid. Reverting last changes.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SimplifyLineDialog</name>
     <message>
         <source>Simplify line tolerance</source>
@@ -23541,14 +24327,6 @@ For support send a mail to scala@itc.cnr.it
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Connection to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>established</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>connected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23557,31 +24335,31 @@ For support send a mail to scala@itc.cnr.it
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Connection to [</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>] failed: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Error: Parse error at line %1, column %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error: Unabled to open file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: Query failed: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: Counld not create temporary file, process halted</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Error: A database connection is not currently established</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection to [%1.%2] established</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection to [%1.%2] failed: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Unabled to open file [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Query failed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Could not create temporary file, process halted</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23608,10 +24386,6 @@ For support send a mail to scala@itc.cnr.it
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Predfined Queries</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Load predefined queries</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23621,10 +24395,6 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>The description of the selected query.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the predefined query you want to use from the drop-down list containing queries identified form the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -23702,6 +24472,14 @@ p, li { white-space: pre-wrap; }
         <source>Output Console</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Predefined Queries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>eVisDatabaseLayerFieldSelectionGuiBase</name>
@@ -23773,19 +24551,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Event Browser - Displaying records 01 of</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Attribute Contents</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Event Browser - Displaying records </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>of</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -23794,6 +24560,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All ( * )</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Event Browser - Displaying records 01 of %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Event Browser - Displaying records %1 of %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23856,10 +24630,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.  </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -23935,19 +24705,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Base path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The Base Path onto which the relative path defined above will be appended.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>If checked, the Base Path will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message utf8="true">
-        <source>Enters the default “Base Path” which is the  path to the directory of the vector layer containing the image information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -23965,10 +24727,6 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Clears the check-box on this line.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>If checked, the same path rules that are defined  for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -24015,6 +24773,18 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message utf8="true">
+        <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>eVisImageDisplayWidget</name>
@@ -24031,15 +24801,15 @@ Base Path (i.e. keep only filename from attribute)</source>
         <translation type="unfinished">全幅顯示</translation>
     </message>
     <message>
-        <source>Zoom in to see more detal.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Zoom out to see more area.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom to display the entire image.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom in to see more detail.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

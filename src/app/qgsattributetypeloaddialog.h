@@ -67,7 +67,7 @@ class QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttributeLoadVa
      * @param fieldIndex indexOfChangedField
      * @param full flag if all values should be displayed or just preview of first 10
      */
-    void createPreview( int fieldIndex, bool full = false);
+    void createPreview( int fieldIndex, bool full = false );
 
 
     /**

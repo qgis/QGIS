@@ -17,7 +17,9 @@
 
 #include "DualEdgeTriangulation.h"
 #include <map>
+#include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsvectorfilewriter.h"
 
 double leftOfTresh = 0.00000001;
 
@@ -85,6 +87,7 @@ void DualEdgeTriangulation::addLine( Line3D* line, bool breakline )
 
     if ( actpoint == -100 )//no point of the line could be inserted
     {
+      delete line;
       return;
     }
 
@@ -92,13 +95,14 @@ void DualEdgeTriangulation::addLine( Line3D* line, bool breakline )
     {
       line->goToNext();
       currentpoint = mDecorator->addPoint( line->getPoint() );
-      //if(currentpoint!=-100&&actpoint!=-100&&currentpoint!=actpoint)//-100 is the return value if the point could not be not inserted
-      //{
-      // insertForcedSegment(actpoint,currentpoint,breakline);
-      //}
+      if ( currentpoint != -100 && actpoint != -100 && currentpoint != actpoint )//-100 is the return value if the point could not be not inserted
+      {
+        insertForcedSegment( actpoint, currentpoint, breakline );
+      }
       actpoint = currentpoint;
     }
   }
+  delete line;
 }
 
 int DualEdgeTriangulation::addPoint( Point3D* p )
@@ -1178,7 +1182,6 @@ unsigned int DualEdgeTriangulation::insertEdge( int dual, int next, int point, b
 
 }
 
-#if 0
 int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 {
   if ( p1 == p2 )
@@ -1436,8 +1439,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   }
 
   //set the flags 'forced' and 'break' to false for every edge and dualedge of 'crossEdges'
-  QListIterator<int> iter;
-  for ( iter = crossedEdges.begin();iter != crossedEdges.end();++iter )
+  QList<int>::const_iterator iter;
+  for ( iter = crossedEdges.constBegin();iter != crossedEdges.constEnd();++iter )
   {
     mHalfEdge[( *( iter ) )]->setForced( false );
     mHalfEdge[( *( iter ) )]->setBreak( false );
@@ -1467,8 +1470,9 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
   //finish the polygon on the left side
   int actpointl = p2;
-  QListIterator<int> leftiter;
-  leftiter = crossedEdges.fromLast();
+  QList<int>::const_iterator leftiter; //todo: is there a better way to set an iterator to the last list element?
+  leftiter = crossedEdges.constEnd();
+  --leftiter;
   while ( true )
   {
     int newpoint = mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[( *leftiter )]->getDual()]->getNext()]->getNext()]->getPoint();
@@ -1479,7 +1483,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
       int theedge = mHalfEdge[mHalfEdge[mHalfEdge[( *leftiter )]->getDual()]->getNext()]->getNext();
       leftPolygon.append( theedge );
     }
-    if ( leftiter == crossedEdges.begin() )
+    if ( leftiter == crossedEdges.constBegin() )
       {break;}
     --leftiter;
   }
@@ -1488,9 +1492,9 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   leftPolygon.append( mHalfEdge[crossedEdges.first()]->getNext() );
 
   //finish the polygon on the right side
-  QValueListIterator<int> rightiter;
+  QList<int>::const_iterator rightiter;
   int actpointr = p1;
-  for ( rightiter = crossedEdges.begin();rightiter != crossedEdges.end();++rightiter )
+  for ( rightiter = crossedEdges.constBegin();rightiter != crossedEdges.constEnd();++rightiter )
   {
     int newpoint = mHalfEdge[mHalfEdge[mHalfEdge[( *rightiter )]->getNext()]->getNext()]->getPoint();
     if ( newpoint != actpointr )
@@ -1509,7 +1513,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
   //set the necessary nexts of leftPolygon(exept the first)
   int actedgel = leftPolygon[1];
-  for ( leftiter = leftPolygon.at( 2 );leftiter != leftPolygon.end();++leftiter )
+  leftiter = leftPolygon.constBegin(); leftiter += 2;
+  for ( ;leftiter != leftPolygon.constEnd();++leftiter )
   {
     mHalfEdge[actedgel]->setNext(( *leftiter ) );
     actedgel = ( *leftiter );
@@ -1517,7 +1522,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
   //set all the necessary nexts of rightPolygon
   int actedger = rightPolygon[1];
-  for ( rightiter = rightPolygon.at( 2 );rightiter != rightPolygon.end();++rightiter )
+  rightiter = rightPolygon.constBegin(); rightiter += 2;
+  for ( ;rightiter != rightPolygon.constEnd();++rightiter )
   {
     mHalfEdge[actedger]->setNext(( *rightiter ) );
     actedger = ( *( rightiter ) );
@@ -1532,8 +1538,6 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   mHalfEdge[rightPolygon.first()]->setPoint( p1 );
   mHalfEdge[rightPolygon.last()]->setNext( dualfirstedge );
 
-
-
   triangulatePolygon( &leftPolygon, &freelist, firstedge );
   triangulatePolygon( &rightPolygon, &freelist, dualfirstedge );
 
@@ -1545,7 +1549,6 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
   return leftPolygon.first();
 }
-#endif //0
 
 void DualEdgeTriangulation::setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b )
 {
@@ -2442,7 +2445,6 @@ bool DualEdgeTriangulation::swapPossible( unsigned int edge )
   return true;
 }
 
-#if 0
 void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* free, int mainedge )
 {
   if ( poly && free )
@@ -2453,13 +2455,13 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
     }
 
     //search for the edge pointing on the closest point(distedge) and for the next(nextdistedge)
-    QValueListIterator<int> iterator = ++( poly->begin() );//go to the second edge
+    QList<int>::const_iterator iterator = ++( poly->constBegin() );//go to the second edge
     double distance = MathUtils::distPointFromLine( mPointVector[mHalfEdge[( *iterator )]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mainedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[mainedge]->getPoint()] );
     int distedge = ( *iterator );
     int nextdistedge = mHalfEdge[( *iterator )]->getNext();
     ++iterator;
 
-    while ( iterator != --( poly->end() ) )
+    while ( iterator != --( poly->constEnd() ) )
     {
       if ( MathUtils::distPointFromLine( mPointVector[mHalfEdge[( *iterator )]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[mainedge]->getDual()]->getPoint()], mPointVector[mHalfEdge[mainedge]->getPoint()] ) < distance )
       {
@@ -2476,15 +2478,15 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
       int insertb = mHalfEdge[inserta]->getDual();
       free->pop_front();
 
-      mHalfEdge[inserta]->setNext(( *( poly->at( 1 ) ) ) );
+      mHalfEdge[inserta]->setNext(( poly->at( 1 ) ) );
       mHalfEdge[inserta]->setPoint( mHalfEdge[mainedge]->getPoint() );
       mHalfEdge[insertb]->setNext( nextdistedge );
       mHalfEdge[insertb]->setPoint( mHalfEdge[distedge]->getPoint() );
       mHalfEdge[distedge]->setNext( inserta );
       mHalfEdge[mainedge]->setNext( insertb );
 
-      QValueList<int> polya;
-      for ( iterator = ( ++( poly->begin() ) );( *iterator ) != nextdistedge;++iterator )
+      QList<int> polya;
+      for ( iterator = ( ++( poly->constBegin() ) );( *iterator ) != nextdistedge;++iterator )
       {
         polya.append(( *iterator ) );
       }
@@ -2507,16 +2509,16 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
       int insertb = mHalfEdge[inserta]->getDual();
       free->pop_front();
 
-      mHalfEdge[inserta]->setNext(( *( poly->at( 2 ) ) ) );
+      mHalfEdge[inserta]->setNext(( poly->at( 2 ) ) );
       mHalfEdge[inserta]->setPoint( mHalfEdge[distedge]->getPoint() );
       mHalfEdge[insertb]->setNext( mainedge );
       mHalfEdge[insertb]->setPoint( mHalfEdge[mHalfEdge[mainedge]->getDual()]->getPoint() );
       mHalfEdge[distedge]->setNext( insertb );
       mHalfEdge[( *( --poly->end() ) )]->setNext( inserta );
 
-      QValueList<int> polya;
-      iterator = poly->at( 2 );
-      while ( iterator != poly->end() )
+      QList<int> polya;
+      iterator = poly->constBegin(); iterator += 2;
+      while ( iterator != poly->constEnd() )
       {
         polya.append(( *iterator ) );
         ++iterator;
@@ -2536,7 +2538,7 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
       int insertd = mHalfEdge[insertc]->getDual();
       free->pop_front();
 
-      mHalfEdge[inserta]->setNext(( *( poly->at( 1 ) ) ) );
+      mHalfEdge[inserta]->setNext(( poly->at( 1 ) ) );
       mHalfEdge[inserta]->setPoint( mHalfEdge[mainedge]->getPoint() );
       mHalfEdge[insertb]->setNext( insertd );
       mHalfEdge[insertb]->setPoint( mHalfEdge[distedge]->getPoint() );
@@ -2550,17 +2552,17 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
       mHalfEdge[( *( --poly->end() ) )]->setNext( insertc );
 
       //build two new polygons for recursive triangulation
-      QValueList<int> polya;
-      QValueList<int> polyb;
+      QList<int> polya;
+      QList<int> polyb;
 
-      for ( iterator = ++( poly->begin() );( *iterator ) != nextdistedge;++iterator )
+      for ( iterator = ++( poly->constBegin() );( *iterator ) != nextdistedge;++iterator )
       {
         polya.append(( *iterator ) );
       }
       polya.prepend( inserta );
 
 
-      while ( iterator != poly->end() )
+      while ( iterator != poly->constEnd() )
       {
         polyb.append(( *iterator ) );
         ++iterator;
@@ -2578,7 +2580,6 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
   }
 
 }
-#endif //0
 
 bool DualEdgeTriangulation::pointInside( double x, double y )
 {
@@ -3068,6 +3069,87 @@ QList<int>* DualEdgeTriangulation::getPointsAroundEdge( double x, double y )
     QgsDebugMsg( "Edge number negative" );
     return 0;
   }
+}
+
+bool DualEdgeTriangulation::saveAsShapefile( const QString& fileName ) const
+{
+  QString shapeFileName = fileName;
+
+  QgsFieldMap fields;
+  fields.insert( 0, QgsField( "type", QVariant::String, "String" ) );
+
+  // add the extension if not present
+  if ( shapeFileName.indexOf( ".shp" ) == -1 )
+  {
+    shapeFileName += ".shp";
+  }
+
+  //delete already existing files
+  if ( QFile::exists( shapeFileName ) )
+  {
+    if ( !QgsVectorFileWriter::deleteShapeFile( shapeFileName ) )
+    {
+      return false;
+    }
+  }
+
+  QgsVectorFileWriter writer( shapeFileName, "Utf-8", fields, QGis::WKBLineString, 0 );
+  if ( writer.hasError() != QgsVectorFileWriter::NoError )
+  {
+    return false;
+  }
+
+  bool *alreadyVisitedEdges = new bool[mHalfEdge.size()];
+  if ( !alreadyVisitedEdges )
+  {
+    QgsDebugMsg( "out of memory" );
+    return false;
+  }
+
+  for ( int i = 0; i < mHalfEdge.size(); ++i )
+  {
+    alreadyVisitedEdges[i] = false;
+  }
+
+  for ( int i = 0; i < mHalfEdge.size(); ++i )
+  {
+    HalfEdge* currentEdge = mHalfEdge[i];
+    if ( currentEdge->getPoint() != -1 && mHalfEdge[currentEdge->getDual()]->getPoint() != -1 && !alreadyVisitedEdges[currentEdge->getDual()] )
+    {
+      QgsFeature edgeLineFeature;
+
+      //geometry
+      Point3D* p1 = mPointVector[currentEdge->getPoint()];
+      Point3D* p2 = mPointVector[mHalfEdge[currentEdge->getDual()]->getPoint()];
+      QgsPolyline lineGeom;
+      lineGeom.push_back( QgsPoint( p1->getX(), p1->getY() ) );
+      lineGeom.push_back( QgsPoint( p2->getX(), p2->getY() ) );
+      QgsGeometry* geom = QgsGeometry::fromPolyline( lineGeom );
+      edgeLineFeature.setGeometry( geom );
+
+      //attributes
+      QString attributeString;
+      if ( currentEdge->getForced() )
+      {
+        if ( currentEdge->getBreak() )
+        {
+          attributeString = "break line";
+        }
+        else
+        {
+          attributeString = "structure line";
+        }
+      }
+      edgeLineFeature.addAttribute( 0, attributeString );
+
+      writer.addFeature( edgeLineFeature );
+    }
+    alreadyVisitedEdges[i] = true;
+  }
+
+  delete [] alreadyVisitedEdges;
+
+  return true;
 }
 
 double DualEdgeTriangulation::swapMinAngle( int edge ) const

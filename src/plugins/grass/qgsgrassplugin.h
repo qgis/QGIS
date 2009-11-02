@@ -120,7 +120,7 @@ class QgsGrassPlugin: public QObject, public QgisPlugin
     //! Set edit action
     void setEditAction();
     //! Close the edit if layer is removed
-    void closeEdit(QString layerId);
+    void closeEdit( QString layerId );
     //! Cleanup the Grass Edit
     void cleanUp();
     //! update plugin icons when the app tells us its theme is changed

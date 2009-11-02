@@ -300,6 +300,31 @@ class QgsLegend : public QTreeWidget
     /**This function compares the layer order before a drag with the current layer ordering and triggers a canvas repaint if it has changed*/
     bool checkLayerOrderUpdate();
 
+    /**The target that the mouse is over when dragging */
+    QTreeWidgetItem *mDropTarget;
+
+    enum DROP_ACTION_TYPE
+    {
+      BEFORE,
+      AFTER,
+      INTO_GROUP,
+      NO_ACTION
+    };
+    /** Set when mouse is moved over different kind of items, depending opn what they accept() */
+    DROP_ACTION_TYPE mDropAction;
+
+    /** Hide the line that indicates insertion position */
+    void hideLine();
+
+    /** Show the line that indicates insertion position */
+    void showLine(int y, int left);
+
+    /** Update the widget with latest changes immediately */
+    void updateLineWidget();
+
+    /** Returns the last visible item in the tree widget */
+    QTreeWidgetItem *lastVisibleItem();
+
   private slots:
 
     /**Calls 'handleRightClickEvent' on the item*/
@@ -416,7 +441,8 @@ class QgsLegend : public QTreeWidget
 
     } mPixmaps;
 
-
+    //! Widget that holds the indicator line //
+    QWidget *mInsertionLine;
 
   signals:
     void zOrderChanged( QgsLegend * lv );

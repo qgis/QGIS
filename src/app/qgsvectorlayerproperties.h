@@ -41,7 +41,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 {
     Q_OBJECT
   public:
-    QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsVectorLayerProperties();
     /**Sets the legend type to "single symbol", "graduated symbol" or "continuous color"*/
     void setLegendType( QString type );
@@ -143,7 +143,10 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     //QPixmap bufferPixmap;
     static const int context_id = 94000531;
 
-    QgsVectorLayer::EditType getEditType(QString text);
+    static QMap< QgsVectorLayer::EditType, QString > editTypeMap;
+    static void setupEditTypes();
+    static QString editTypeButtonText( QgsVectorLayer::EditType type );
+    static QgsVectorLayer::EditType editTypeFromButtonText( QString text );
 };
 
 inline QString QgsVectorLayerProperties::displayName()

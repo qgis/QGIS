@@ -23,7 +23,6 @@
  ***************************************************************************/
 /*  $Id$ */
 
-#include <iostream>
 #include <vector>
 
 #include <QStringList>
@@ -40,7 +39,7 @@ void QgsAttributeAction::addAction( QString name, QString action,
   mActions.push_back( QgsAction( name, action, capture ) );
 }
 
-void QgsAttributeAction::doAction( unsigned int index, const std::vector<std::pair<QString, QString> >& values,
+void QgsAttributeAction::doAction( unsigned int index, const std::vector< std::pair<QString, QString> > &values,
                                    uint defaultValueIndex )
 {
   aIter action = retrieveAction( index );
@@ -79,7 +78,7 @@ QgsAttributeAction::aIter QgsAttributeAction::retrieveAction( unsigned int index
   return a_iter;
 }
 
-QString QgsAttributeAction::expandAction( QString action, const std::vector<std::pair<QString, QString> >& values,
+QString QgsAttributeAction::expandAction( QString action, const std::vector< std::pair<QString, QString> > &values,
     uint clickedOnValue )
 {
   // This function currently replaces all %% characters in the action

@@ -20,6 +20,8 @@
 #define QGIS_H
 #include <QEvent>
 #include <QString>
+#include <cmath>
+#include <cfloat>
 /** \ingroup core
  * The QGis class provides global constants for use throughout the application.
  */
@@ -110,6 +112,15 @@ inline void ( *cast_to_fptr( void *p ) )()
 
   u.p = p;
   return u.f;
+}
+
+//
+// compare two doubles (but allow some difference)
+//
+inline bool doubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
+{
+  const double diff = a - b;
+  return diff>-epsilon && diff<=epsilon;
 }
 
 /** Wkt string that represents a geographic coord sys */

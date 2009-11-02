@@ -32,6 +32,10 @@ class QgsTINInterpolatorDialog: public QgsInterpolatorDialog, private Ui::QgsTIN
     /**Method that returns an interpolator object from the settings or 0 in case of error.
      The calling method takes ownership of the created interpolator and is responsible for its proper destruction*/
     QgsInterpolator* createInterpolator() const;
+
+  private slots:
+    void on_mExportTriangulationCheckBox_stateChanged( int state );
+    void on_mTriangulationFileButton_clicked();
 };
 
 #endif

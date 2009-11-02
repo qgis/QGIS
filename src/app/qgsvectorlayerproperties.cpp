@@ -74,6 +74,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mRendererDialog( 0 )
 {
   setupUi( this );
+  setupEditTypes();
+
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -184,41 +186,7 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
   for ( int i = 0; i < 6; i++ )
     tblAttributes->item( row, i )->setFlags( tblAttributes->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
-  QString buttonText;
-  switch ( layer->editType( idx ) )
-  {
-    case QgsVectorLayer::LineEdit:
-      buttonText = "Line Edit";
-      break;
-    case QgsVectorLayer::UniqueValues:
-      buttonText = "Unique Values";
-      break;
-    case QgsVectorLayer::UniqueValuesEditable:
-      buttonText = "Unique Values Editable";
-      break;
-    case QgsVectorLayer::Classification:
-      buttonText = "Classification";
-      break;
-    case QgsVectorLayer::ValueMap:
-      buttonText = "Value Map";
-      break;
-    case QgsVectorLayer::EditRange:
-      buttonText = "Edit Range";
-      break;
-    case QgsVectorLayer::SliderRange:
-      buttonText = "Slider Range";
-      break;
-    case QgsVectorLayer::FileName:
-      buttonText = "File Name";
-      break;
-    case QgsVectorLayer::Enumeration:
-      buttonText =  tr( "Enumeration" );
-      break;
-    case QgsVectorLayer::Immutable:
-      buttonText =  tr( "Immutable" );
-      break;
-  }
-  QPushButton * pb = new QPushButton( buttonText );
+  QPushButton * pb = new QPushButton( editTypeButtonText( layer->editType( idx ) ) );
   tblAttributes->setCellWidget( row, 6, pb );
   connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
   mButtonMap.insert( idx, pb );
@@ -279,45 +247,22 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
 
   QgsVectorLayer::EditType editType = attributeTypeDialog.editType();
   mEditTypeMap.insert( index, editType );
+
   QString buttonText;
   switch ( editType )
   {
-    case QgsVectorLayer::LineEdit:
-      buttonText = "Line Edit";
-      break;
-    case QgsVectorLayer::UniqueValues:
-      buttonText = "Unique Values";
-      break;
-    case QgsVectorLayer::UniqueValuesEditable:
-      buttonText = "Unique Values Editable";
-      break;
-    case QgsVectorLayer::Classification:
-      buttonText = "Classification";
-      break;
     case QgsVectorLayer::ValueMap:
-      buttonText = "Value Map";
       mValueMaps.insert( index, attributeTypeDialog.valueMap() );
       break;
     case QgsVectorLayer::EditRange:
-      buttonText = "Edit Range";
-      mRanges.insert( index, attributeTypeDialog.rangeData() );
-      break;
     case QgsVectorLayer::SliderRange:
-      buttonText = "Slider Range";
       mRanges.insert( index, attributeTypeDialog.rangeData() );
       break;
-    case QgsVectorLayer::FileName:
-      buttonText = "File Name";
-      break;
-    case QgsVectorLayer::Enumeration:
-      buttonText = "Enumeration";
-      break;
-    case QgsVectorLayer::Immutable:
-      buttonText = "Immutable";
+    default:
       break;
   }
   QPushButton *pb = dynamic_cast<QPushButton*>( tblAttributes->cellWidget( index, 6 ) );
-  pb->setText( buttonText );
+  pb->setText( editTypeButtonText( editType ) );
 
 }
 
@@ -613,52 +558,34 @@ void QgsVectorLayerProperties::on_buttonBox_helpRequested()
   QgsContextHelp::run( context_id );
 }
 
+QMap< QgsVectorLayer::EditType, QString > QgsVectorLayerProperties::editTypeMap;
 
-QgsVectorLayer::EditType QgsVectorLayerProperties::getEditType( QString text )
+void QgsVectorLayerProperties::setupEditTypes()
 {
-  if ( text == "Line Edit" )
-  {
-    return QgsVectorLayer::LineEdit;
-  }
-  else if ( text == "Unique Values" )
-  {
-    return QgsVectorLayer::UniqueValues;
-  }
-  else if ( text == "Unique Values Editable" )
-  {
-    return QgsVectorLayer::UniqueValuesEditable;
-  }
-  else if ( text == "Classification" )
-  {
-    return QgsVectorLayer::Classification;
-  }
-  else if ( text == "Value Map" )
-  {
-    return QgsVectorLayer::ValueMap;
-  }
-  else if ( text == "Edit Range" )
-  {
-    return QgsVectorLayer::EditRange;
-  }
-  else if ( text == "Slider Range" )
-  {
-    return QgsVectorLayer::SliderRange;
-  }
-  else if ( text == "File Name" )
-  {
-    return QgsVectorLayer::FileName;
-  }
-  else if ( text == "Enumeration" )
-  {
-    return QgsVectorLayer::Enumeration;
-  }
-  else if ( text == "Immutable" )
-  {
-    return QgsVectorLayer::Immutable;
-  }
-  return QgsVectorLayer::LineEdit;
+  if ( !editTypeMap.isEmpty() )
+    return;
+
+  editTypeMap.insert( QgsVectorLayer::LineEdit, tr( "Line edit" ) );
+  editTypeMap.insert( QgsVectorLayer::UniqueValues, tr( "Unique values" ) );
+  editTypeMap.insert( QgsVectorLayer::UniqueValuesEditable, tr( "Unique values editable" ) );
+  editTypeMap.insert( QgsVectorLayer::Classification, tr( "Classification" ) );
+  editTypeMap.insert( QgsVectorLayer::ValueMap, tr( "Value map" ) );
+  editTypeMap.insert( QgsVectorLayer::EditRange, tr( "Edit range" ) );
+  editTypeMap.insert( QgsVectorLayer::SliderRange, tr( "Slider range" ) );
+  editTypeMap.insert( QgsVectorLayer::FileName, tr( "File name" ) );
+  editTypeMap.insert( QgsVectorLayer::Enumeration, tr( "Enumeration" ) );
+  editTypeMap.insert( QgsVectorLayer::Immutable, tr( "Immutable" ) );
 }
 
+QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )
+{
+  return editTypeMap[ type ];
+}
+
+QgsVectorLayer::EditType QgsVectorLayerProperties::editTypeFromButtonText( QString text )
+{
+  return editTypeMap.key( text );
+}
 
 void QgsVectorLayerProperties::apply()
 {
@@ -703,7 +630,7 @@ void QgsVectorLayerProperties::apply()
     if ( !pb )
       continue;
 
-    QgsVectorLayer::EditType editType = getEditType( pb->text() );
+    QgsVectorLayer::EditType editType = editTypeFromButtonText( pb->text() );
     layer->setEditType( idx, editType );
 
     if ( editType == QgsVectorLayer::ValueMap )

@@ -74,7 +74,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   if ( !mCodec )
   {
     QSettings settings;
-    QString enc = settings.value( "/UI/encoding", QString("System") ).toString();
+    QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
     QgsDebugMsg( "error finding QTextCodec for " + fileEncoding );
     mCodec = QTextCodec::codecForName( enc.toLocal8Bit().data() );
     if ( !mCodec )
@@ -121,13 +121,14 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     const QgsField& attrField = fldIt.value();
 
     OGRFieldType ogrType = OFTString; //default to string
-    int ogrWidth = -1;
-    int ogrPrecision = -1;
+    int ogrWidth = fldIt->length();
+    int ogrPrecision = fldIt->precision();
     switch ( attrField.type() )
     {
       case QVariant::LongLong:
         ogrType = OFTString;
-        ogrWidth = 21;
+        ogrWidth = ogrWidth <= 21 ? ogrWidth : 21;
+        ogrPrecision = -1;
         break;
 
       case QVariant::String:
@@ -136,13 +137,14 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
 
       case QVariant::Int:
         ogrType = OFTInteger;
-        ogrWidth = 10;
+        ogrWidth = ogrWidth <= 10 ? ogrWidth : 10;
+        ogrPrecision = 0;
         break;
+
       case QVariant::Double:
         ogrType = OFTReal;
-        ogrWidth = 32;
-        ogrPrecision = 3;
         break;
+
       default:
         //assert(0 && "invalid variant type!");
         mError = ErrAttributeTypeUnsupported;
@@ -169,6 +171,8 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     if ( OGR_L_CreateField( mLayer, fld, TRUE ) != OGRERR_NONE )
     {
       QgsDebugMsg( "error creating field " + attrField.name() );
+      mError = ErrAttributeCreationFailed;
+      return;
     }
   }
 
@@ -201,21 +205,17 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
 
   // attribute handling
-  const QgsAttributeMap& attributes = feature.attributeMap();
-  for ( it = attributes.begin(); it != attributes.end(); it++ )
+  QgsFieldMap::const_iterator fldIt;
+  for ( fldIt = mFields.begin(); fldIt != mFields.end(); ++fldIt )
   {
-    QgsFieldMap::const_iterator fldIt = mFields.find( it.key() );
-    if ( fldIt == mFields.end() )
+    if ( !feature.attributeMap().contains( fldIt.key() ) )
     {
-      QgsDebugMsg( "ignoring attribute that's not in field map: type=" +
-                   QString( it.value().typeName() ) + " value=" + it.value().toString() );
+      QgsDebugMsg( QString( "no attribute for field %1" ).arg( fldIt.key() ) );
       continue;
     }
 
-    QString attrName = mFields[it.key()].name();
-    QByteArray encAttrName = mCodec->fromUnicode( attrName );
-    const QVariant& attrValue = it.value();
-    int ogrField = OGR_F_GetFieldIndex( poFeature, encAttrName.data() );
+    int ogrField = fldIt.key();
+    const QVariant& attrValue = feature.attributeMap()[ ogrField ];
 
     switch ( attrValue.type() )
     {

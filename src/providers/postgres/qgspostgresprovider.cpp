@@ -545,7 +545,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
       if ( fld.name() == primaryKey )
       {
         // primary key was already processed
-        feature.addAttribute( *it, convertValue( fld.type(), QString::number(oid) ) );
+        feature.addAttribute( *it, convertValue( fld.type(), QString::number( oid ) ) );
         continue;
       }
 
@@ -2950,7 +2950,7 @@ bool QgsPostgresProvider::Conn::closeCursor( QString cursorName )
 
   if ( --openCursors == 0 )
   {
-    QgsDebugMsg( "Commiting read-only transaction" );
+    QgsDebugMsg( "Committing read-only transaction" );
     PQexecNR( "COMMIT" );
   }
 

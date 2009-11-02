@@ -58,7 +58,7 @@ static const QString pluginVersion = QObject::tr( "Version 0.1" );
  * @param theQgisInterFace Pointer to the QGIS interface object
  */
 QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace ):
-    qGisInterface( theQgisInterFace ), mEdit(NULL), mTools(NULL)
+    qGisInterface( theQgisInterFace ), mTools( NULL ), mEdit( NULL )
 {
   /** Initialize the plugin and set the required attributes */
   pluginNameQString = tr( "GrassVector" );
@@ -414,16 +414,16 @@ void QgsGrassPlugin::edit()
 
   mEditAction->setEnabled( false );
   mEdit = new QgsGrassEdit( qGisInterface, qGisInterface->activeLayer(), false,
-                                       qGisInterface->mainWindow(), Qt::Dialog );
+                            qGisInterface->mainWindow(), Qt::Dialog );
 
   if ( mEdit->isValid() )
   {
     mEdit->show();
     mCanvas->refresh();
     connect( mEdit, SIGNAL( finished() ), this, SLOT( setEditAction() ) );
-    connect( mEdit, SIGNAL(finished()), this, SLOT(cleanUp()));
-    connect( QgsMapLayerRegistry::instance(), SIGNAL(layerWillBeRemoved(QString)), this, SLOT(closeEdit(QString)));
-    }
+    connect( mEdit, SIGNAL( finished() ), this, SLOT( cleanUp() ) );
+    connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( closeEdit( QString ) ) );
+  }
   else
   {
     delete mEdit;
@@ -448,16 +448,17 @@ void QgsGrassPlugin::setEditAction()
   }
 }
 
-void QgsGrassPlugin::closeEdit(QString layerId)
+void QgsGrassPlugin::closeEdit( QString layerId )
 {
-    if(mEdit->layer()->getLayerID() == layerId){
-        mEdit->closeEdit();
-    }
+  if ( mEdit->layer()->getLayerID() == layerId )
+  {
+    mEdit->closeEdit();
+  }
 }
 
 void QgsGrassPlugin::cleanUp()
 {
-    disconnect( QgsMapLayerRegistry::instance(), SIGNAL(layerWillBeRemoved(QString)), this, SLOT(closeEdit(QString)));
+  disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( closeEdit( QString ) ) );
 }
 
 void QgsGrassPlugin::newVector()

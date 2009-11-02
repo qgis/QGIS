@@ -477,7 +477,7 @@ void QgsSingleSymbolDialog::updateSet( const QgsSymbol *sy )
   if ( lstSymbols->isEnabled() && lstSymbols->currentItem()->data( Qt::UserRole ).toString() != sy->pointSymbolName() )
     lstSymbols->setEnabled( false );
 
-  if ( mPointSizeSpinBox->isEnabled() && mPointSizeSpinBox->value() != sy->pointSize() )
+  if ( mPointSizeSpinBox->isEnabled() && !doubleNear( mPointSizeSpinBox->value(), sy->pointSize() ) )
     mPointSizeSpinBox->setEnabled( false );
 
   if ( mPointSizeUnitsCheckBox->isEnabled() && mPointSizeUnitsCheckBox->isChecked() != sy->pointSizeUnits() )
@@ -495,7 +495,7 @@ void QgsSingleSymbolDialog::updateSet( const QgsSymbol *sy )
        mSymbolComboBox->itemData( mSymbolComboBox->currentIndex() ).toInt() != sy->symbolField() )
     mSymbolComboBox->setEnabled( false );
 
-  if ( outlinewidthspinbox->isEnabled() && outlinewidthspinbox->value() != sy->pen().widthF() )
+  if ( outlinewidthspinbox->isEnabled() && !doubleNear( outlinewidthspinbox->value(), sy->pen().widthF() ) )
     outlinewidthspinbox->setEnabled( false );
 
   if ( btnFillColor->isEnabled() &&  btnFillColor->color() != sy->brush().color() )

@@ -54,7 +54,7 @@ const static double ZERO_TOLERANCE = 0.000000001;
  */
 class SelectionFeature: public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     SelectionFeature();
@@ -309,7 +309,7 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      * @param vertexMap map of vertexes
      * @param vertex currently processed vertex
      */
-    void createTopologyRubbedBands(QgsVectorLayer* vlayer, QList<VertexEntry> vertexMap, int vertex);
+    void createTopologyRubbedBands( QgsVectorLayer* vlayer, QList<VertexEntry> vertexMap, int vertex );
 
     /** The position of the vertex to move (in map coordinates) to exclude later from snapping*/
     QList<QgsPoint> mExcludePoint;

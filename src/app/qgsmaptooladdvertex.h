@@ -25,6 +25,8 @@ class QgsRubberBand;
 /**Map tool to add vertices to line/polygon features*/
 class QgsMapToolAddVertex: public QgsMapToolVertexEdit
 {
+  Q_OBJECT
+
   public:
     QgsMapToolAddVertex( QgsMapCanvas* canvas );
     virtual ~QgsMapToolAddVertex();

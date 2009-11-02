@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <qgis.h>
 #include "qgscompositionwidget.h"
 #include "qgscomposition.h"
 #include <QColorDialog>
@@ -25,9 +26,9 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   setupUi( this );
   createPaperEntries();
 
-  //unit (only mm at the moment, therefore disabled)
-  mPaperUnitsComboBox->addItem( "mm" );
-  mPaperUnitsComboBox->setEnabled( false );
+  //unit
+  mPaperUnitsComboBox->addItem( tr( "mm" ) );
+  mPaperUnitsComboBox->addItem( tr( "inch" ) );
 
   //orientation
   mPaperOrientationComboBox->blockSignals( true );
@@ -112,36 +113,46 @@ QgsCompositionWidget::~QgsCompositionWidget()
 
 void QgsCompositionWidget::createPaperEntries()
 {
+  QList<QgsCompositionPaper> formats;
+
+  formats
+  // ISO formats
+  << QgsCompositionPaper( tr( "A5 (148x210 mm)" ), 148, 210 )
+  << QgsCompositionPaper( tr( "A4 (210x297 mm)" ), 210, 297 )
+  << QgsCompositionPaper( tr( "A3 (297x420 mm)" ), 297, 420 )
+  << QgsCompositionPaper( tr( "A2 (420x594 mm)" ), 420, 594 )
+  << QgsCompositionPaper( tr( "A1 (594x841 mm)" ), 594, 841 )
+  << QgsCompositionPaper( tr( "A0 (841x1189 mm)" ), 841, 1189 )
+  << QgsCompositionPaper( tr( "B5 (176 x 250 mm)" ), 176, 250 )
+  << QgsCompositionPaper( tr( "B4 (250 x 353 mm)" ), 250, 353 )
+  << QgsCompositionPaper( tr( "B3 (353 x 500 mm)" ), 353, 500 )
+  << QgsCompositionPaper( tr( "B2 (500 x 707 mm)" ), 500, 707 )
+  << QgsCompositionPaper( tr( "B1 (707 x 1000 mm)" ), 707, 1000 )
+  << QgsCompositionPaper( tr( "B0 (1000 x 1414 mm)" ), 1000, 1414 )
+  // North american formats
+  << QgsCompositionPaper( tr( "Legal (8.5x14 inches)" ), 215.9, 355.6 )
+  << QgsCompositionPaper( tr( "ANSI A (Letter; 8.5x11 inches)" ), 215.9, 279.4 )
+  << QgsCompositionPaper( tr( "ANSI B (Tabloid; 11x17 inches)" ), 279.4, 431.8 )
+  << QgsCompositionPaper( tr( "ANSI C (17x22 inches)" ), 431.8, 558.8 )
+  << QgsCompositionPaper( tr( "ANSI D (22x34 inches)" ), 558.8, 863.6 )
+  << QgsCompositionPaper( tr( "ANSI E (34x44 inches)" ), 863.6, 1117.6 )
+  << QgsCompositionPaper( tr( "Arch A (9x12 inches)" ), 228.6, 304.8 )
+  << QgsCompositionPaper( tr( "Arch B (12x18 inches)" ), 304.8, 457.2 )
+  << QgsCompositionPaper( tr( "Arch C (18x24 inches)" ), 457.2, 609.6 )
+  << QgsCompositionPaper( tr( "Arch D (24x36 inches)" ), 609.6, 914.4 )
+  << QgsCompositionPaper( tr( "Arch E (36x48 inches)" ), 914.4, 1219.2 )
+  << QgsCompositionPaper( tr( "Arch E1 (30x42 inches)" ), 762, 1066.8 )
+  ;
+
   mPaperSizeComboBox->blockSignals( true );
-  mPaperSizeComboBox->insertItem( 0, tr( "Custom" ) );
-  mPaperMap.insert( tr( "A5 (148x210 mm)" ), QgsCompositionPaper( tr( "A5 (148x210 mm)" ), 148, 210 ) );
-  mPaperSizeComboBox->insertItem( 1, tr( "A5 (148x210 mm)" ) );
-  mPaperMap.insert( tr( "A4 (210x297 mm)" ), QgsCompositionPaper( tr( "A4 (210x297 mm)" ), 210, 297 ) );
-  mPaperSizeComboBox->insertItem( 2, tr( "A4 (210x297 mm)" ) );
-  mPaperMap.insert( tr( "A3 (297x420 mm)" ), QgsCompositionPaper( tr( "A3 (297x420 mm)" ), 297, 420 ) );
-  mPaperSizeComboBox->insertItem( 3, tr( "A3 (297x420 mm)" ) );
-  mPaperMap.insert( tr( "A2 (420x594 mm)" ), QgsCompositionPaper( tr( "A2 (420x594 mm)" ), 420, 594 ) );
-  mPaperSizeComboBox->insertItem( 4, tr( "A2 (420x594 mm)" ) );
-  mPaperMap.insert( tr( "A1 (594x841 mm)" ), QgsCompositionPaper( tr( "A1 (594x841 mm)" ), 594, 841 ) );
-  mPaperSizeComboBox->insertItem( 5, tr( "A1 (594x841 mm)" ) );
-  mPaperMap.insert( tr( "A0 (841x1189 mm)" ), QgsCompositionPaper( tr( "A0 (841x1189 mm)" ), 841, 1189 ) );
-  mPaperSizeComboBox->insertItem( 6, tr( "A0 (841x1189 mm)" ) );
-  mPaperMap.insert( tr( "B5 (176 x 250 mm)" ), QgsCompositionPaper( tr( "B5 (176 x 250 mm)" ), 176, 250 ) );
-  mPaperSizeComboBox->insertItem( 7, tr( "B5 (176 x 250 mm)" ) );
-  mPaperMap.insert( tr( "B4 (250 x 353 mm)" ), QgsCompositionPaper( tr( "B4 (250 x 353 mm)" ), 250, 353 ) );
-  mPaperSizeComboBox->insertItem( 8, tr( "B4 (250 x 353 mm)" ) );
-  mPaperMap.insert( tr( "B3 (353 x 500 mm)" ), QgsCompositionPaper( tr( "B3 (353 x 500 mm)" ), 353, 500 ) );
-  mPaperSizeComboBox->insertItem( 9, tr( "B3 (353 x 500 mm)" ) );
-  mPaperMap.insert( tr( "B2 (500 x 707 mm)" ), QgsCompositionPaper( tr( "B2 (500 x 707 mm)" ), 500, 707 ) );
-  mPaperSizeComboBox->insertItem( 10, tr( "B2 (500 x 707 mm)" ) );
-  mPaperMap.insert( tr( "B1 (707 x 1000 mm)" ), QgsCompositionPaper( tr( "B1 (707 x 1000 mm)" ), 707, 1000 ) );
-  mPaperSizeComboBox->insertItem( 11, tr( "B1 (707 x 1000 mm)" ) );
-  mPaperMap.insert( tr( "B0 (1000 x 1414 mm)" ), QgsCompositionPaper( tr( "B0 (1000 x 1414 mm)" ), 1000, 1414 ) );
-  mPaperSizeComboBox->insertItem( 12, tr( "B0 (1000 x 1414 mm)" ) );
-  mPaperMap.insert( tr( "Letter (8.5x11 inches)" ), QgsCompositionPaper( tr( "Letter (8.5x11 inches)" ),  216, 279 ) );
-  mPaperSizeComboBox->insertItem( 13, tr( "Letter (8.5x11 inches)" ) );
-  mPaperMap.insert( tr( "Legal (8.5x14 inches)" ), QgsCompositionPaper( tr( "Legal (8.5x14 inches)" ), 216, 356 ) );
-  mPaperSizeComboBox->insertItem( 14, tr( "Legal (8.5x14 inches)" ) );
+  mPaperSizeComboBox->addItem( tr( "Custom" ) );
+
+  for ( QList<QgsCompositionPaper>::const_iterator it = formats.begin(); it != formats.end(); it++ )
+  {
+    mPaperSizeComboBox->addItem( it->mName );
+    mPaperMap.insert( it->mName, *it );
+  }
+
   mPaperSizeComboBox->blockSignals( false );
 }
 
@@ -151,11 +162,13 @@ void QgsCompositionWidget::on_mPaperSizeComboBox_currentIndexChanged( const QStr
   {
     mPaperWidthLineEdit->setEnabled( true );
     mPaperHeightLineEdit->setEnabled( true );
+    mPaperUnitsComboBox->setEnabled( true );
   }
   else
   {
     mPaperWidthLineEdit->setEnabled( false );
     mPaperHeightLineEdit->setEnabled( false );
+    mPaperUnitsComboBox->setEnabled( false );
   }
   applyCurrentPaperSettings();
 }
@@ -174,19 +187,45 @@ void QgsCompositionWidget::on_mPaperOrientationComboBox_currentIndexChanged( con
   }
 }
 
-void QgsCompositionWidget::adjustOrientation()
+void QgsCompositionWidget::on_mPaperUnitsComboBox_currentIndexChanged( const QString& text )
 {
-  double width, height;
-  bool conversionSuccess;
+  double width = size( mPaperWidthLineEdit );
+  double height = size( mPaperHeightLineEdit );
 
-  width = mPaperWidthLineEdit->text().toDouble( &conversionSuccess );
-  if ( !conversionSuccess )
+  if ( mPaperUnitsComboBox->currentIndex() == 0 )
   {
-    return;
+    // mm, value was inch
+    width *= 25.4;
+    height *= 25.4;
+  }
+  else
+  {
+    // inch, values was mm,
+    width /= 25.4;
+    height /= 25.4;
   }
 
-  height = mPaperHeightLineEdit->text().toDouble( &conversionSuccess );
-  if ( !conversionSuccess )
+  setSize( mPaperWidthLineEdit, width );
+  setSize( mPaperHeightLineEdit, height );
+
+  if ( mPaperSizeComboBox->currentText() == tr( "Custom" ) )
+  {
+    adjustOrientation();
+    applyWidthHeight();
+  }
+  else
+  {
+    adjustOrientation();
+    applyCurrentPaperSettings();
+  }
+}
+
+void QgsCompositionWidget::adjustOrientation()
+{
+  double width = size( mPaperWidthLineEdit );
+  double height = size( mPaperHeightLineEdit );
+
+  if ( width < 0 || height < 0 )
   {
     return;
   }
@@ -204,16 +243,50 @@ void QgsCompositionWidget::adjustOrientation()
   mPaperHeightLineEdit->setEnabled( true );
   if ( mPaperOrientationComboBox->currentText() == tr( "Landscape" ) )
   {
-    mPaperWidthLineEdit->setText( QString::number( width ) );
-    mPaperHeightLineEdit->setText( QString::number( height ) );
+    setSize( mPaperWidthLineEdit, width );
+    setSize( mPaperHeightLineEdit, height );
   }
   else
   {
-    mPaperWidthLineEdit->setText( QString::number( height ) );
-    mPaperHeightLineEdit->setText( QString::number( width ) );
+    setSize( mPaperWidthLineEdit, height );
+    setSize( mPaperHeightLineEdit, width );
   }
   mPaperWidthLineEdit->setEnabled( lineEditsEnabled );
   mPaperHeightLineEdit->setEnabled( lineEditsEnabled );
+}
+
+void QgsCompositionWidget::setSize( QLineEdit *le, double v )
+{
+  if ( mPaperUnitsComboBox->currentIndex() == 0 )
+  {
+    // mm
+    le->setText( QString("%1").arg( v ) );
+  }
+  else
+  {
+    // inch (show width in inch)
+    le->setText( QString("%1").arg( v / 25.4 ) );
+  }
+}
+
+double QgsCompositionWidget::size( QLineEdit *le )
+{
+  bool conversionSuccess;
+
+  double size = le->text().toDouble( &conversionSuccess );
+  if ( !conversionSuccess )
+    return -1.0;
+
+  if ( mPaperUnitsComboBox->currentIndex() == 0 )
+  {
+    // mm
+    return size;
+  }
+  else
+  {
+    // inch return in mm
+    return size * 25.4;
+  }
 }
 
 void QgsCompositionWidget::applyCurrentPaperSettings()
@@ -229,8 +302,8 @@ void QgsCompositionWidget::applyCurrentPaperSettings()
 
     mPaperWidthLineEdit->setEnabled( true );
     mPaperHeightLineEdit->setEnabled( true );
-    mPaperWidthLineEdit->setText( QString::number( it->mWidth ) );
-    mPaperHeightLineEdit->setText( QString::number( it->mHeight ) );
+    setSize( mPaperWidthLineEdit, it->mWidth );
+    setSize( mPaperHeightLineEdit, it->mHeight );
     mPaperWidthLineEdit->setEnabled( false );
     mPaperHeightLineEdit->setEnabled( false );
 
@@ -241,20 +314,11 @@ void QgsCompositionWidget::applyCurrentPaperSettings()
 
 void QgsCompositionWidget::applyWidthHeight()
 {
-  double width, height;
-  bool conversionSuccess;
+  double width = size( mPaperWidthLineEdit );
+  double height = size( mPaperHeightLineEdit );
 
-  width = mPaperWidthLineEdit->text().toDouble( &conversionSuccess );
-  if ( !conversionSuccess )
-  {
+  if ( width < 0 || height < 0 )
     return;
-  }
-
-  height = mPaperHeightLineEdit->text().toDouble( &conversionSuccess );
-  if ( !conversionSuccess )
-  {
-    return;
-  }
 
   mComposition->setPaperSize( width, height );
 }
@@ -285,10 +349,10 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   mResolutionLineEdit->blockSignals( true );
 
   double paperWidth = mComposition->paperWidth();
-  mPaperWidthLineEdit->setText( QString::number( paperWidth ) );
+  setSize( mPaperWidthLineEdit, paperWidth );
 
   double paperHeight = mComposition->paperHeight();
-  mPaperHeightLineEdit->setText( QString::number( paperHeight ) );
+  setSize( mPaperHeightLineEdit, paperHeight );
 
   //set orientation
   if ( paperWidth > paperHeight )
@@ -308,11 +372,12 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
     QgsCompositionPaper currentPaper = paper_it.value();
 
     //consider width and height values may be exchanged
-    if (( currentPaper.mWidth == paperWidth && currentPaper.mHeight == paperHeight )
-        || ( currentPaper.mWidth == paperHeight && currentPaper.mHeight == paperWidth ) )
+    if (( doubleNear( currentPaper.mWidth, paperWidth ) && doubleNear( currentPaper.mHeight, paperHeight ) )
+        || ( doubleNear( currentPaper.mWidth, paperHeight ) && doubleNear( currentPaper.mHeight, paperWidth ) ) )
     {
       mPaperSizeComboBox->setCurrentIndex( mPaperSizeComboBox->findText( paper_it.key() ) );
       found = true;
+      break;
     }
   }
 

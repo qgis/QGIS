@@ -17,13 +17,21 @@
 
 #include "qgstininterpolatordialog.h"
 #include "qgstininterpolator.h"
+#include <QFileDialog>
+#include <QSettings>
 
 QgsTINInterpolatorDialog::QgsTINInterpolatorDialog( QWidget* parent, QgisInterface* iface ): QgsInterpolatorDialog( parent, iface )
 {
   setupUi( this );
+
+  //don't export triangulation by default
+  mExportTriangulationCheckBox->setCheckState( Qt::Unchecked );
+  mTriangulationFileEdit->setEnabled( false );
+  mTriangulationFileButton->setEnabled( false );
+
   //enter available interpolation methods
   mInterpolationComboBox->insertItem( 0, tr( "Linear interpolation" ) );
-  //mInterpolationComboBox->insertItem(1, tr("Clough-Toucher interpolation"));
+  //mInterpolationComboBox->insertItem(1, tr("Clough-Toucher interpolation")); //to come...
 }
 
 QgsTINInterpolatorDialog::~QgsTINInterpolatorDialog()
@@ -33,14 +41,49 @@ QgsTINInterpolatorDialog::~QgsTINInterpolatorDialog()
 
 QgsInterpolator* QgsTINInterpolatorDialog::createInterpolator() const
 {
-  QList<QgsVectorLayer*> inputLayerList;
-
-  QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> >::const_iterator data_it = mInputData.constBegin();
-  for ( ; data_it != mInputData.constEnd(); ++data_it )
+  QgsTINInterpolator* theInterpolator = new QgsTINInterpolator( mInputData, true );
+  if ( mExportTriangulationCheckBox->checkState() == Qt::Checked )
   {
-    inputLayerList.push_back( data_it->first );
+    theInterpolator->setExportTriangulationToFile( true );
+    theInterpolator->setTriangulationFilePath( mTriangulationFileEdit->text() );
   }
-
-  QgsTINInterpolator* theInterpolator = new QgsTINInterpolator( inputLayerList );
+  else
+  {
+    theInterpolator->setExportTriangulationToFile( false );
+  }
   return theInterpolator;
+}
+
+void QgsTINInterpolatorDialog::on_mExportTriangulationCheckBox_stateChanged( int state )
+{
+  if ( state == Qt::Checked )
+  {
+    mTriangulationFileEdit->setEnabled( true );
+    mTriangulationFileButton->setEnabled( true );
+  }
+  else
+  {
+    mTriangulationFileEdit->setEnabled( false );
+    mTriangulationFileButton->setEnabled( false );
+  }
+}
+
+void QgsTINInterpolatorDialog::on_mTriangulationFileButton_clicked()
+{
+  QSettings s;
+  //read last triangulation directory
+  QString lastTriangulationDir = s.value( "/Interpolation/lastTriangulationDir", "" ).toString();
+  QString filename = QFileDialog::getSaveFileName( 0, tr( "Save triangulation to file" ), lastTriangulationDir, "*shp" );
+  if ( !filename.isEmpty() )
+  {
+    mTriangulationFileEdit->setText( filename );
+
+    //and save triangulation directory
+    QFileInfo triangulationFileInfo( filename );
+    QDir fileDir = triangulationFileInfo.absoluteDir();
+    if ( fileDir.exists() )
+    {
+      s.setValue( "/Interpolation/lastTriangulationDir", triangulationFileInfo.absolutePath() );
+    }
+  }
 }

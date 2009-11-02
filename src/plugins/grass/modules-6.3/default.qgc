@@ -38,11 +38,14 @@
 				<grass name="v.in.garmin"/>
 				<grass name="v.in.gpsbabel"/>
 			</section>
+			<section label="Database">
+				<grass name="db.in.ogr"/>
+			</section>
 		</section>
 		<section label="Export">
 			<section label="Export raster">
-				<grass name="r.out.gdal.gtiff"/>
 				<grass name="r.out.gdal"/>
+				<grass name="r.out.gdal.gtiff"/>
 				<grass name="r.out.ascii"/>
 				<grass name="r.out.xyz"/>
 				<grass name="r.out.arc"/>
@@ -429,7 +432,6 @@
 			<grass name="db.connect.schema"/>
 			<grass name="v.db.reconnect.all"/>
 			<grass name="db.login"/>
-			<grass name="db.in.ogr"/>
 		</section>
 		<section label="Tables management">
 			<grass name="db.copy"/>

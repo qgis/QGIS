@@ -39,15 +39,19 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
     void on_mOutputFileButton_clicked();
     void on_mConfigureInterpolationButton_clicked();
     void on_mInterpolationMethodComboBox_currentIndexChanged( const QString &text );
+    void on_mAddPushButton_clicked();
+    void on_mRemovePushButton_clicked();
 
   private:
     QgisInterface* mIface;
     /**Dialog to get input for the current interpolation method*/
     QgsInterpolatorDialog* mInterpolatorDialog;
 
-    /**Returns the vector layer that is selected in the layer combo box.
-     Returns 0 in case of error.*/
-    QgsVectorLayer* getCurrentVectorLayer();
+    /**Returns the vector layer object with the given name
+     Returns a pointer to the vector layer or 0 in case of error.*/
+    QgsVectorLayer* vectorLayerFromName( const QString& name );
+    /**Enables or disables the Ok button depending on the availability of input layers and the output file*/
+    void enableOrDisableOkButton();
 };
 
 #endif

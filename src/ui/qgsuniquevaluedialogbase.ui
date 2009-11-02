@@ -124,7 +124,7 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0" >
+   <item row="2" column="0" rowspan="2" >
     <widget class="QListWidget" name="mClassListWidget" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Expanding" hsizetype="Minimum" >
@@ -144,6 +144,16 @@
      </property>
      <widget class="QWidget" name="page" />
      <widget class="QWidget" name="page_2" />
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QCheckBox" name="mCommonPropertyLock">
+     <property name="text">
+      <string>Restrict changes to common properties</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
   </layout>

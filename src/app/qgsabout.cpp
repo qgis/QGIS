@@ -133,7 +133,7 @@ void QgsAbout::init()
       QStringList myTokens = sline.split( "|", QString::SkipEmptyParts );
       if ( myTokens.size() > 1 )
       {
-        website = "<a href=\"" + myTokens[1].remove(' ') + "\">" + myTokens[1] + "</a>";
+        website = "<a href=\"" + myTokens[1].remove( ' ' ) + "\">" + myTokens[1] + "</a>";
       }
       else
       {
@@ -153,7 +153,7 @@ void QgsAbout::init()
     QgsDebugMsg( QString( "sponsorHTML:%1" ).arg( sponsorHTML.toAscii().constData() ) );
     QgsDebugMsg( QString( "txtSponsors:%1" ).arg( txtSponsors->toHtml().toAscii().constData() ) );
   }
-  
+
   // read the DONORS file and populate the text widget
   QFile donorsFile( QgsApplication::donorsFilePath() );
 #ifdef QGISDEBUG
@@ -163,12 +163,12 @@ void QgsAbout::init()
   if ( donorsFile.open( QIODevice::ReadOnly ) )
   {
     QString donorsHTML = ""
-                          + tr( "<p>The following individuals and institutions have contributed "
-                                "money to fund QGIS development and other project costs</p>" )
-                          + "<hr>"
-                          "<table width='100%'>"
-                          "<tr><th>" + tr( "Name" ) + "</th>"
-                          "<th>" + tr( "Website" ) + "</th></tr>";
+                         + tr( "<p>The following individuals and institutions have contributed "
+                               "money to fund QGIS development and other project costs</p>" )
+                         + "<hr>"
+                         "<table width='100%'>"
+                         "<tr><th>" + tr( "Name" ) + "</th>"
+                         "<th>" + tr( "Website" ) + "</th></tr>";
     QString website;
     QTextStream donorsStream( &donorsFile );
     // Always use UTF-8
@@ -182,7 +182,7 @@ void QgsAbout::init()
       QStringList myTokens = sline.split( "|", QString::SkipEmptyParts );
       if ( myTokens.size() > 1 )
       {
-        website = "<a href=\"" + myTokens[1].remove(' ') + "\">" + myTokens[1] + "</a>";
+        website = "<a href=\"" + myTokens[1].remove( ' ' ) + "\">" + myTokens[1] + "</a>";
       }
       else
       {

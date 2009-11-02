@@ -36,14 +36,14 @@ class QgsInterpolatorDialog: public QDialog
      The calling method takes ownership of the created interpolator and is responsible for its proper destruction*/
     virtual QgsInterpolator* createInterpolator() const = 0;
 
-    void setInputData( const QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> >& inputData );
+    void setInputData( const QList< QgsInterpolator::LayerData >& inputData );
 
   protected:
     /**Pointer to the running QGIS instance. This may be necessary to show interpolator properties on the map (e.g. triangulation)*/
     QgisInterface* mInterface;
 
-    /**A list of input data layers and their type (point, structure lines, breaklines)*/
-    QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> > mInputData;
+    /**A list of input data layers, their interpolation attribute and their type (point, structure lines, breaklines)*/
+    QList< QgsInterpolator::LayerData > mInputData;
 };
 
 #endif

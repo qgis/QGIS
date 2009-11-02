@@ -14,8 +14,14 @@ PATH=$QTDIR/bin:$PATH
 #first tar the qt_xx.ts files in i18n folder such that lupdate does not 
 #merge the qgis strings to them
 echo Creating qt_ts.tar
-tar -cvf i18n/qt_ts.tar i18n/qt_*.ts
-rm i18n/qt_*.ts
+tar --remove-files -cvf i18n/qt_ts.tar i18n/qt_*.ts
+exclude=
+for i in "$@"; do
+  exclude="$exclude --exclude i18n/qgis_$i.ts"
+done
+if [ -n "$exclude" ]; then
+  tar --remove-files -cvf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
+fi
 echo Updating python plugin translations
 for i in python/plugins/*/.; do
 	cd $i
@@ -29,9 +35,15 @@ qmake -project -o qgis_ts.pro -nopwd src python i18n
 echo Updating translation files
 lupdate -verbose qgis_ts.pro
 echo Removing temporary python plugin translation files
-perl -i.bak -pe '$_="" if /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
+perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
 rm python/plugins/*/python-i18n.cpp i18n/qgis_*.ts.bak
 echo Removing qmake project file
 rm qgis_ts.pro
 echo Unpacking qt_ts.tar
-tar -xvf i18n/qt_ts.tar
+tar -xvf i18n/qt_ts.tar 
+rm i18n/qt_ts.tar
+if [ -f i18n/qgis_ts.tar ]; then
+  echo Unpacking i18n/qgis_ts.tar
+  tar -xvf i18n/qgis_ts.tar 
+  rm i18n/qgis_ts.tar
+fi

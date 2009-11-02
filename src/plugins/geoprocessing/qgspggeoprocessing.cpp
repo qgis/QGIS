@@ -343,8 +343,7 @@ void QgsPgGeoprocessing::buffer()
 
                 QMessageBox::critical( 0, tr( "Unable to add geometry column" ),
                                        tr( "Unable to add geometry column to the output table %1-%2" )
-                                       .arg( bb->bufferLayerName() ).arg( PQerrorMessage( conn ) ) ) );
-
+                                       .arg( bb->bufferLayerName() ).arg( PQerrorMessage( conn ) ) );
               }
             }
             else

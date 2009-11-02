@@ -5337,7 +5337,7 @@ double QgsGeometry::distance( QgsGeometry& geom )
     geom.exportWkbToGeos();
   }
 
-  if ( mGeos == NULL || geom.mGeos == NULL)
+  if ( mGeos == NULL || geom.mGeos == NULL )
     return -1.0;
 
   double dist = -1.0;

@@ -3866,7 +3866,9 @@ QMap< QString, QVariant > &QgsVectorLayer::valueMap( int idx )
 
   // FIXME: throw an exception!?
   if ( fields.contains( idx ) )
+  {
     QgsDebugMsg( QString( "field %1 not found" ).arg( idx ) );
+  }
 
   if ( !mValueMaps.contains( fields[idx].name() ) )
     mValueMaps[ fields[idx].name()] = QMap<QString, QVariant>();
@@ -3880,7 +3882,9 @@ QgsVectorLayer::RangeData &QgsVectorLayer::range( int idx )
 
   // FIXME: throw an exception!?
   if ( fields.contains( idx ) )
+  {
     QgsDebugMsg( QString( "field %1 not found" ).arg( idx ) );
+  }
 
   if ( !mRanges.contains( fields[idx].name() ) )
     mRanges[ fields[idx].name()] = RangeData();

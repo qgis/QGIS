@@ -2,7 +2,7 @@ SET(CPACK_PACKAGE_VERSION_MAJOR "1")
 SET(CPACK_PACKAGE_VERSION_MINOR "2")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-SET(RELEASE_NAME "Unstable Trunk")
+SET(RELEASE_NAME "Daphnis")
 SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
@@ -106,6 +106,9 @@ ENDIF (NOT BISON_EXECUTABLE)
 
 #############################################################
 # search for dependencies
+
+# we don't use cblas
+SET(DONT_LINK_CBLAS TRUE)
 
 # required
 FIND_PACKAGE(Proj)

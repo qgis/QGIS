@@ -2318,7 +2318,7 @@ static void openFilesRememberingFilter_( QString const &filterName,
   QgsDebugMsg( "Opening file dialog with filters: " + filters );
 
   QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0,
-  title, lastUsedDir, filters, QString ("" ) );
+      title, lastUsedDir, filters, QString( "" ) );
 
   // allow for selection of more than one file
   openFileDialog->setFileMode( QFileDialog::ExistingFiles );
@@ -3168,7 +3168,7 @@ void QgisApp::newVectorLayer()
   QgsDebugMsg( "Saving vector file dialog without filters: " );
 
   QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( this,
-  tr( "Save As" ), lastUsedDir, "", QString( "" ) );
+      tr( "Save As" ), lastUsedDir, "", QString( "" ) );
 
   // allow for selection of more than one file
   openFileDialog->setFileMode( QFileDialog::AnyFile );

@@ -31,7 +31,7 @@ QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     mFetchFeaturesWithoutGeom( FALSE )
 {
   QSettings settings;
-  setEncoding( settings.value( "/UI/encoding", QString("System") ).toString() );
+  setEncoding( settings.value( "/UI/encoding", QString( "System" ) ).toString() );
 }
 
 

@@ -26,6 +26,8 @@ class QgsRubberBand;
 /**A maptool to move vertices of line or polygon fetures*/
 class QgsMapToolMoveVertex: public QgsMapToolVertexEdit
 {
+  Q_OBJECT
+
   public:
     QgsMapToolMoveVertex( QgsMapCanvas* canvas );
     virtual ~QgsMapToolMoveVertex();
