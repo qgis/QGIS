@@ -281,6 +281,16 @@ void QgsDataSourceURI::clearSchema()
   mSchema = "";
 }
 
+QString QgsDataSourceURI::escape( const QString &theVal ) const
+{
+  QString val = theVal;
+
+  val.replace( "\\", "\\\\" );
+  val.replace( "\'", "\\'" );
+
+  return val;
+}
+
 void QgsDataSourceURI::skipBlanks( const QString &uri, int &i )
 {
   // skip space before value
@@ -314,6 +324,8 @@ QString QgsDataSourceURI::getValue( const QString &uri, int &i )
         i++;
         if ( i == uri.length() )
           continue;
+        if ( uri[i] != '\'' && uri[i] != '\\' )
+          i--;
       }
       else if ( uri[i] == delim )
       {
@@ -340,6 +352,8 @@ QString QgsDataSourceURI::getValue( const QString &uri, int &i )
         i++;
         if ( i == uri.length() )
           break;
+        if ( uri[i] != '\\' && uri[i] != '\'' )
+          i--;
       }
 
       pval += uri[i++];
@@ -353,7 +367,7 @@ QString QgsDataSourceURI::getValue( const QString &uri, int &i )
 
 QString QgsDataSourceURI::connectionInfo() const
 {
-  QString connectionInfo = "dbname='" + mDatabase + "'";
+  QString connectionInfo = "dbname='" + escape( mDatabase ) + "'";
 
   if ( mHost != "" )
   {
@@ -364,14 +378,11 @@ QString QgsDataSourceURI::connectionInfo() const
 
   if ( mUsername != "" )
   {
-    connectionInfo += " user='" + mUsername + "'"; //needs to be escaped
+    connectionInfo += " user='" + escape( mUsername ) + "'";
 
     if ( mPassword != "" )
     {
-      QString p = mPassword;
-      p.replace( '\\', "\\\\" );
-      p.replace( '\'', "\\'" );
-      connectionInfo += " password='" + p + "'";
+      connectionInfo += " password='" + escape( mPassword ) + "'";
     }
   }
 
@@ -381,20 +392,29 @@ QString QgsDataSourceURI::connectionInfo() const
     connectionInfo += " sslmode=allow";
   else if ( mSSLmode == SSLrequire )
     connectionInfo += " sslmode=require";
+#if 0
   else if ( mSSLmode == SSLprefer )
     connectionInfo += " sslmode=prefer";
+#endif
 
   return connectionInfo;
 }
 
 QString QgsDataSourceURI::uri() const
 {
-  return connectionInfo()
-         + QString( " key='%1' table=%2 (%3) sql=%4" )
-         .arg( keyColumn() )
-         .arg( quotedTablename() )
-         .arg( mGeometryColumn )
-         .arg( mSql );
+  QString theUri = connectionInfo();
+
+  if ( !mKeyColumn.isEmpty() )
+  {
+    theUri += QString( " key='%1'" ).arg( escape( mKeyColumn ) );
+  }
+
+  theUri += QString( " table=%1 (%2) sql=%3" )
+            .arg( quotedTablename() )
+            .arg( mGeometryColumn )
+            .arg( mSql );
+
+  return theUri;
 }
 
 QString QgsDataSourceURI::quotedTablename() const

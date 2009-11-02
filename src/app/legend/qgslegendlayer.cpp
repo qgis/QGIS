@@ -135,7 +135,7 @@ QgsLegendLayerFile* QgsLegendLayer::firstLayerFile() const
   QgsLegendLayerFileGroup* llfg = 0;
   for ( int i = 0; i < childCount(); ++i )
   {
-    llfg = dynamic_cast<QgsLegendLayerFileGroup*>( child( i ) );
+    llfg = dynamic_cast<QgsLegendLayerFileGroup *>( child( i ) );
     if ( llfg )
     {
       break;
@@ -152,7 +152,7 @@ QgsLegendLayerFile* QgsLegendLayer::firstLayerFile() const
   {
     return 0;
   }
-  QgsLegendLayerFile* legendlayerfile = dynamic_cast<QgsLegendLayerFile*>( llf );
+  QgsLegendLayerFile* legendlayerfile = dynamic_cast<QgsLegendLayerFile *>( llf );
   return legendlayerfile;
 }
 
@@ -188,7 +188,7 @@ std::list<QgsLegendLayerFile*> QgsLegendLayer::legendLayerFiles()
   QgsLegendLayerFileGroup* theLayerGroup = 0;
   for ( int i = 0; i < childCount(); ++i )
   {
-    theLayerGroup = dynamic_cast<QgsLegendLayerFileGroup*>( child( i ) );
+    theLayerGroup = dynamic_cast<QgsLegendLayerFileGroup *>( child( i ) );
     if ( theLayerGroup )
     {
       break;
@@ -201,7 +201,7 @@ std::list<QgsLegendLayerFile*> QgsLegendLayer::legendLayerFiles()
     QgsLegendLayerFile* theFile = 0;
     for ( int i = 0; i < theLayerGroup->childCount(); ++i )
     {
-      theFile = dynamic_cast<QgsLegendLayerFile*>( theLayerGroup->child( i ) );
+      theFile = dynamic_cast<QgsLegendLayerFile *>( theLayerGroup->child( i ) );
       if ( theFile )
       {
         list.push_back( theFile );
@@ -268,7 +268,7 @@ void QgsLegendLayer::refreshSymbology( const QString& key, double widthScale )
 
   if ( theMapLayer->type() == QgsMapLayer::VectorLayer ) // VECTOR
   {
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( theMapLayer );
     if ( vlayer->isUsingRendererV2() )
       vectorLayerSymbologyV2( vlayer );
     else
@@ -276,7 +276,7 @@ void QgsLegendLayer::refreshSymbology( const QString& key, double widthScale )
   }
   else // RASTER
   {
-    QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( theMapLayer );
+    QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( theMapLayer );
     rasterLayerSymbology( rlayer ); // get and change symbology
   }
 }
@@ -294,7 +294,7 @@ void QgsLegendLayer::changeSymbologySettings( const QgsMapLayer* theMapLayer,
   //remove the symbology items under the legend layer
   for ( int i = childCount(); i >= 0; --i )
   {
-    theSymbologyItem = dynamic_cast<QgsLegendSymbologyItem*>( child( i ) );
+    theSymbologyItem = dynamic_cast<QgsLegendSymbologyItem *>( child( i ) );
     if ( theSymbologyItem )
     {
       delete takeChild( i );
@@ -525,7 +525,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap() const
   {
     if ( firstLayer->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( firstLayer );
+      QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( firstLayer );
       switch ( vlayer->geometryType() )
       {
         case QGis::Point:
@@ -543,7 +543,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap() const
     }
     else if ( firstLayer->type() == QgsMapLayer::RasterLayer )
     {
-      QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( firstLayer );
+      QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( firstLayer );
       QPixmap myPixmap( 32, 32 );
       rlayer->thumbnailAsPixmap( &myPixmap );
       return myPixmap;
@@ -597,7 +597,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
       theMenu.addAction( toggleEditingAction );
     }
 
-    QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>( firstLayer );
+    QgsVectorLayer* theVectorLayer = qobject_cast<QgsVectorLayer *>( firstLayer );
 
     if ( files.size() != 1 )
     {

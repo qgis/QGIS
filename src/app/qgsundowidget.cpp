@@ -118,8 +118,8 @@ void QgsUndoWidget::setupUi( QDockWidget *UndoWidget )
 {
   if ( UndoWidget->objectName().isEmpty() )
     UndoWidget->setObjectName( QString::fromUtf8( "UndoWidget" ) );
-  UndoWidget->resize( 350, 223 );
-  UndoWidget->setMinimumSize( QSize( 346, 220 ) );
+  UndoWidget->resize( 200, 223 );
+  UndoWidget->setMinimumSize( QSize( 200, 220 ) );
   dockWidgetContents = new QWidget( UndoWidget );
   dockWidgetContents->setObjectName( QString::fromUtf8( "dockWidgetContents" ) );
   gridLayout = new QGridLayout( dockWidgetContents );

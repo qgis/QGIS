@@ -71,7 +71,7 @@ QgsDiagramFactory* QgsSVGDiagramFactoryWidget::createFactory()
 void QgsSVGDiagramFactoryWidget::setExistingFactory( const QgsDiagramFactory* f )
 {
   mPreviewListWidget->setLayoutDirection( Qt::LeftToRight );
-  const QgsSVGDiagramFactory* svgFactory = dynamic_cast<const QgsSVGDiagramFactory*>( f );
+  const QgsSVGDiagramFactory* svgFactory = dynamic_cast<const QgsSVGDiagramFactory *>( f );
   if ( svgFactory )
   {
     mPictureLineEdit->setText( svgFactory->svgFilePath() );

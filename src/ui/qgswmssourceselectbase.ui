@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>QgsServerSourceSelectBase</class>
- <widget class="QDialog" name="QgsServerSourceSelectBase" >
+ <class>QgsWMSSourceSelectBase</class>
+ <widget class="QDialog" name="QgsWMSSourceSelectBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>

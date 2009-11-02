@@ -60,7 +60,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
 
   if ( mVectorLayer )
   {
-    const QgsUniqueValueRenderer* renderer = dynamic_cast < const QgsUniqueValueRenderer * >( mVectorLayer->renderer() );
+    const QgsUniqueValueRenderer* renderer = dynamic_cast<const QgsUniqueValueRenderer *>( mVectorLayer->renderer() );
 
     if ( renderer )
     {

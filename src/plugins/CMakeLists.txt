@@ -5,6 +5,13 @@ SUBDIRS (copyright_label
   scale_bar
   oracle_raster
   raster_terrain_analysis
+  quick_print
+  coordinate_capture
+  dxf2shp_converter
+  ogr_converter
+  diagram_overlay
+  evis
+  labeling
   )
 
 IF (POSTGRES_FOUND)
@@ -25,14 +32,3 @@ ENDIF (GRASS_FOUND)
 
 INSTALL(FILES qgisplugin.h qgsrendererplugin.h DESTINATION ${QGIS_INCLUDE_DIR})
 
-SUBDIRS (quick_print)
-
-SUBDIRS (coordinate_capture dxf2shp_converter) 
-
-SUBDIRS (ogr_converter)
-
-SUBDIRS (diagram_overlay)
-
-SUBDIRS (evis)
-
-SUBDIRS (labeling)

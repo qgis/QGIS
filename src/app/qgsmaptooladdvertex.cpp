@@ -79,7 +79,7 @@ void QgsMapToolAddVertex::canvasReleaseEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = 0;
   if ( currentLayer )
   {
-    vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
   }
 
   if ( vlayer && mRecentSnappingResults.size() > 0 )

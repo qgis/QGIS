@@ -28,11 +28,11 @@
 
 QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model ) const
 {
-  const QgsAttributeTableModel *tm = dynamic_cast<const QgsAttributeTableModel*>( model );
+  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
   if ( tm )
     return tm->layer();
 
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel*>( model );
+  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
   if ( fm )
     return fm->layer();
 
@@ -41,11 +41,11 @@ QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *mode
 
 int QgsAttributeTableDelegate::fieldIdx( const QModelIndex &index ) const
 {
-  const QgsAttributeTableModel *tm = dynamic_cast<const QgsAttributeTableModel*>( index.model() );
+  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( index.model() );
   if ( tm )
     return tm->fieldIdx( index.column() );
 
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel*>( index.model() );
+  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( index.model() );
   if ( fm )
     return fm->tableModel()->fieldIdx( index.column() );
 

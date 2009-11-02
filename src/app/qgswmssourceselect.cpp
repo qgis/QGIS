@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgserversourceselect.cpp  -  selector for WMS servers, etc.
+    qgswmssourceselect.cpp  -  selector for WMS servers, etc.
                              -------------------
     begin                : 3 April 2005
     copyright            :
@@ -32,7 +32,7 @@
 #include "qgsnumericsortlistviewitem.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
-#include "qgsserversourceselect.h"
+#include "qgswmssourceselect.h"
 #include <qgisinterface.h>
 
 
@@ -50,7 +50,7 @@
 
 
 
-QgsServerSourceSelect::QgsServerSourceSelect( QWidget * parent, Qt::WFlags fl )
+QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
     : QDialog( parent, fl ),
     m_Epsg( GEO_EPSG_CRS_ID ),
     mWmsProvider( 0 )
@@ -130,11 +130,11 @@ QgsServerSourceSelect::QgsServerSourceSelect( QWidget * parent, Qt::WFlags fl )
   connect( tableWidgetWMSList, SIGNAL( itemSelectionChanged() ), this, SLOT( wmsSelectionChanged() ) );
 }
 
-QgsServerSourceSelect::~QgsServerSourceSelect()
+QgsWMSSourceSelect::~QgsWMSSourceSelect()
 {
 
 }
-void QgsServerSourceSelect::populateConnectionList()
+void QgsWMSSourceSelect::populateConnectionList()
 {
   QSettings settings;
   settings.beginGroup( "/Qgis/connections-wms" );
@@ -164,7 +164,7 @@ void QgsServerSourceSelect::populateConnectionList()
     btnDelete->setEnabled( TRUE );
   }
 }
-void QgsServerSourceSelect::on_btnNew_clicked()
+void QgsWMSSourceSelect::on_btnNew_clicked()
 {
 
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this );
@@ -175,7 +175,7 @@ void QgsServerSourceSelect::on_btnNew_clicked()
   }
 }
 
-void QgsServerSourceSelect::on_btnEdit_clicked()
+void QgsWMSSourceSelect::on_btnEdit_clicked()
 {
 
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-wms/", cmbConnections->currentText() );
@@ -186,7 +186,7 @@ void QgsServerSourceSelect::on_btnEdit_clicked()
   }
 }
 
-void QgsServerSourceSelect::on_btnDelete_clicked()
+void QgsWMSSourceSelect::on_btnDelete_clicked()
 {
   QSettings settings;
   QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
@@ -201,14 +201,14 @@ void QgsServerSourceSelect::on_btnDelete_clicked()
   }
 }
 
-void QgsServerSourceSelect::on_btnHelp_clicked()
+void QgsWMSSourceSelect::on_btnHelp_clicked()
 {
 
   QgsContextHelp::run( context_id );
 
 }
 
-QgsNumericSortTreeWidgetItem *QgsServerSourceSelect::createItem(
+QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
   int id, const QStringList &names, QMap<int, QgsNumericSortTreeWidgetItem *> &items, int &layerAndStyleCount,
   const QMap<int, int> &layerParents, const QMap<int, QStringList> &layerParentNames )
 
@@ -235,7 +235,7 @@ QgsNumericSortTreeWidgetItem *QgsServerSourceSelect::createItem(
   return item;
 }
 
-bool QgsServerSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
+bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 {
   QVector<QgsWmsLayerProperty> layers;
 
@@ -299,7 +299,7 @@ bool QgsServerSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 }
 
 
-void QgsServerSourceSelect::populateImageEncodingGroup( QgsWmsProvider* wmsProvider )
+void QgsWMSSourceSelect::populateImageEncodingGroup( QgsWmsProvider* wmsProvider )
 {
   QStringList formats;
 
@@ -361,7 +361,7 @@ void QgsServerSourceSelect::populateImageEncodingGroup( QgsWmsProvider* wmsProvi
 }
 
 
-void QgsServerSourceSelect::on_btnConnect_clicked()
+void QgsWMSSourceSelect::on_btnConnect_clicked()
 {
   // populate the table list
   QSettings settings;
@@ -427,7 +427,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
 
 }
 
-void QgsServerSourceSelect::on_btnAdd_clicked()
+void QgsWMSSourceSelect::on_btnAdd_clicked()
 {
   if ( selectedLayers().empty() == TRUE )
   {
@@ -451,7 +451,7 @@ void QgsServerSourceSelect::on_btnAdd_clicked()
 }
 
 
-void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
+void QgsWMSSourceSelect::on_btnChangeSpatialRefSys_clicked()
 {
   if ( !mWmsProvider )
   {
@@ -498,7 +498,7 @@ void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
  * 2. Ensure that only one style is selected per layer.
  *    If more than one is found, the most recently selected style wins.
  */
-void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
+void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
 {
   QStringList newSelectedLayers;
   QStringList newSelectedStylesForSelectedLayers;
@@ -598,17 +598,17 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
 }
 
 
-QString QgsServerSourceSelect::connName()
+QString QgsWMSSourceSelect::connName()
 {
   return m_connName;
 }
 
-QString QgsServerSourceSelect::connectionInfo()
+QString QgsWMSSourceSelect::connectionInfo()
 {
   return m_connectionInfo;
 }
 
-QStringList QgsServerSourceSelect::selectedLayers()
+QStringList QgsWMSSourceSelect::selectedLayers()
 {
   //go through list in layer order tab
   QStringList selectedLayerList;
@@ -619,7 +619,7 @@ QStringList QgsServerSourceSelect::selectedLayers()
   return selectedLayerList;
 }
 
-QStringList QgsServerSourceSelect::selectedStylesForSelectedLayers()
+QStringList QgsWMSSourceSelect::selectedStylesForSelectedLayers()
 {
   //go through list in layer order tab
   QStringList selectedStyleList;
@@ -631,7 +631,7 @@ QStringList QgsServerSourceSelect::selectedStylesForSelectedLayers()
 }
 
 
-QString QgsServerSourceSelect::selectedImageEncoding()
+QString QgsWMSSourceSelect::selectedImageEncoding()
 {
   // TODO: Match this hard coded list to the list of formats Qt reports it can actually handle.
 
@@ -650,7 +650,7 @@ QString QgsServerSourceSelect::selectedImageEncoding()
 }
 
 
-QString QgsServerSourceSelect::selectedCrs()
+QString QgsWMSSourceSelect::selectedCrs()
 {
   if ( m_Epsg )
   {
@@ -663,7 +663,7 @@ QString QgsServerSourceSelect::selectedCrs()
   }
 }
 
-void QgsServerSourceSelect::serverChanged()
+void QgsWMSSourceSelect::serverChanged()
 {
   // Remember which server was selected.
   QSettings settings;
@@ -671,7 +671,7 @@ void QgsServerSourceSelect::serverChanged()
                      cmbConnections->currentText() );
 }
 
-void QgsServerSourceSelect::setConnectionListPosition()
+void QgsWMSSourceSelect::setConnectionListPosition()
 {
   QSettings settings;
   QString toSelect = settings.value( "/Qgis/connections-wms/selected" ).toString();
@@ -700,7 +700,7 @@ void QgsServerSourceSelect::setConnectionListPosition()
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
 }
-void QgsServerSourceSelect::showStatusMessage( QString const & theMessage )
+void QgsWMSSourceSelect::showStatusMessage( QString const & theMessage )
 {
   labelStatus->setText( theMessage );
 
@@ -709,7 +709,7 @@ void QgsServerSourceSelect::showStatusMessage( QString const & theMessage )
 }
 
 
-void QgsServerSourceSelect::showError( QgsWmsProvider * wms )
+void QgsWMSSourceSelect::showError( QgsWmsProvider * wms )
 {
 #if 0
   QMessageBox::warning(
@@ -728,17 +728,17 @@ void QgsServerSourceSelect::showError( QgsWmsProvider * wms )
   mv->showMessage( true ); // Is deleted when closed
 }
 
-void QgsServerSourceSelect::on_cmbConnections_activated( int )
+void QgsWMSSourceSelect::on_cmbConnections_activated( int )
 {
   serverChanged();
 }
 
-void QgsServerSourceSelect::on_btnAddDefault_clicked()
+void QgsWMSSourceSelect::on_btnAddDefault_clicked()
 {
   addDefaultServers();
 }
 
-QString QgsServerSourceSelect::descriptionForEpsg( long epsg )
+QString QgsWMSSourceSelect::descriptionForEpsg( long epsg )
 {
   // We'll assume this function isn't called very often,
   // so please forgive the lack of caching of results
@@ -748,7 +748,7 @@ QString QgsServerSourceSelect::descriptionForEpsg( long epsg )
   return qgisSrs.description();
 }
 
-void QgsServerSourceSelect::addDefaultServers()
+void QgsWMSSourceSelect::addDefaultServers()
 {
   QMap<QString, QString> exampleServers;
   exampleServers["NASA (JPL)"] = "http://wms.jpl.nasa.gov/wms.cgi";
@@ -779,7 +779,7 @@ void QgsServerSourceSelect::addDefaultServers()
                             "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
 }
 
-bool QgsServerSourceSelect::retrieveSearchResults( const QString& searchTerm, QByteArray& httpResponse )
+bool QgsWMSSourceSelect::retrieveSearchResults( const QString& searchTerm, QByteArray& httpResponse )
 {
   // TODO: test proxy
   // read proxy settings: code from QgsWmsProvider::retrieveUrl()
@@ -837,7 +837,7 @@ bool QgsServerSourceSelect::retrieveSearchResults( const QString& searchTerm, QB
   return true;
 }
 
-void QgsServerSourceSelect::addWMSListRow( const QDomElement& item, int row )
+void QgsWMSSourceSelect::addWMSListRow( const QDomElement& item, int row )
 {
   QDomElement title = item.firstChildElement( "title" );
   addWMSListItem( title, row, 0 );
@@ -847,7 +847,7 @@ void QgsServerSourceSelect::addWMSListRow( const QDomElement& item, int row )
   addWMSListItem( description, row, 2 );
 }
 
-void QgsServerSourceSelect::addWMSListItem( const QDomElement& el, int row, int column )
+void QgsWMSSourceSelect::addWMSListItem( const QDomElement& el, int row, int column )
 {
   if ( !el.isNull() )
   {
@@ -858,7 +858,7 @@ void QgsServerSourceSelect::addWMSListItem( const QDomElement& el, int row, int 
   }
 }
 
-void QgsServerSourceSelect::on_btnSearch_clicked()
+void QgsWMSSourceSelect::on_btnSearch_clicked()
 {
   // clear results
   tableWidgetWMSList->clearContents();
@@ -886,7 +886,7 @@ void QgsServerSourceSelect::on_btnSearch_clicked()
 
   QDomNodeList list = doc.elementsByTagName( "item" );
   tableWidgetWMSList->setRowCount( list.size() );
-  for ( int i = 0;i < list.size();i++ )
+  for ( int i = 0; i < list.size(); i++ )
   {
     if ( list.item( i ).isElement() )
     {
@@ -896,7 +896,7 @@ void QgsServerSourceSelect::on_btnSearch_clicked()
   }
 }
 
-void QgsServerSourceSelect::on_btnAddWMS_clicked()
+void QgsWMSSourceSelect::on_btnAddWMS_clicked()
 {
   // TODO: deactivate button if dialog is open?
   // TODO: remove from config on close?
@@ -928,12 +928,12 @@ void QgsServerSourceSelect::on_btnAddWMS_clicked()
   tabWidget->setCurrentIndex( 0 );
 }
 
-void QgsServerSourceSelect::wmsSelectionChanged()
+void QgsWMSSourceSelect::wmsSelectionChanged()
 {
   btnAddWMS->setEnabled( tableWidgetWMSList->currentRow() != -1 );
 }
 
-void QgsServerSourceSelect::on_mLayerUpButton_clicked()
+void QgsWMSSourceSelect::on_mLayerUpButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
   if ( selectionList.size() < 1 )
@@ -952,7 +952,7 @@ void QgsServerSourceSelect::on_mLayerUpButton_clicked()
   selectedItem->setSelected( true );
 }
 
-void QgsServerSourceSelect::on_mLayerDownButton_clicked()
+void QgsWMSSourceSelect::on_mLayerDownButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
   if ( selectionList.size() < 1 )
@@ -971,7 +971,7 @@ void QgsServerSourceSelect::on_mLayerDownButton_clicked()
   selectedItem->setSelected( true );
 }
 
-void QgsServerSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList )
+void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList )
 {
   //check, if each layer / style combination is already contained in the  layer order tab
   //if not, add it to the top of the list

@@ -150,7 +150,9 @@ void QgsSpit::removeConnection()
     settings.remove( key + "/port" );
     settings.remove( key + "/username" );
     settings.remove( key + "/password" );
+    settings.remove( key + "/sslmode" );
     settings.remove( key + "/save" );
+    settings.remove( key );
 
     cmbConnections->removeItem( cmbConnections->currentIndex() );
   }
@@ -467,8 +469,7 @@ void QgsSpit::dbConnect()
       }
     }
 
-    QString schemaSql = QString( "select nspname from pg_namespace where has_schema_privilege(nspname, 'CREATE')" )
-                        .arg( QgsPgUtil::quotedValue( username ) );
+    QString schemaSql = "select nspname from pg_namespace where has_schema_privilege(nspname, 'CREATE')";
     PGresult *schemas = PQexec( conn, schemaSql.toUtf8() );
     // get the schema names
     if ( PQresultStatus( schemas ) == PGRES_TUPLES_OK )

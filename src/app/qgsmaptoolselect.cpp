@@ -66,7 +66,7 @@ void QgsMapToolSelect::canvasMoveEvent( QMouseEvent * e )
 void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
 {
   if ( !mCanvas->currentLayer() ||
-       dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() ) == NULL )
+       qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) == NULL )
   {
     QMessageBox::warning( mCanvas, tr( "No active layer" ),
                           tr( "To select features, you must choose a "
@@ -74,7 +74,7 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
                             ) );
     return;
   }
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   //if the user simply clicked without dragging a rect
   //we will fabricate a small 1x1 pix rect and then continue
   //as if they had dragged a rect

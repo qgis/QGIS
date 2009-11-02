@@ -488,11 +488,7 @@ int main( int argc, char *argv[] )
     exit( 1 );
   }
 
-
-  // myApp.setFont(QFont("helvetica", 11));
-
   QString i18nPath = QgsApplication::i18nPath();
-
 
   /* Translation file for QGIS.
    */
@@ -614,11 +610,8 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-
-
   QgisApp *qgis = new QgisApp( mypSplash ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( "QgisApp" );
-
 
   /////////////////////////////////////////////////////////////////////
   // If no --project was specified, parse the args to look for a     //
@@ -648,15 +641,12 @@ int main( int argc, char *argv[] )
     qgis->openProject( myProjectFileName );
   }
 
-
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
   QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( myFileList.count() ) );
   for ( QStringList::Iterator myIterator = myFileList.begin(); myIterator != myFileList.end(); ++myIterator )
   {
-
-
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg(( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files

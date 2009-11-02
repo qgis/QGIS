@@ -242,8 +242,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param subset The subset string. This may be the where clause of a sql statement
      *               or other defintion string specific to the underlying dataprovider
      *               and data store.
+     * @return true, when setting the subset string was successful, false otherwise (added in 1.4)
      */
-    virtual void setSubsetString( QString subset );
+    virtual bool setSubsetString( QString subset );
 
     /**
      * Get the string (typically sql) used to define a subset of the layer

@@ -54,6 +54,25 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
       Rectangle    // Display only rectangle
     };
 
+    enum GridStyle
+    {
+      Solid = 0, //solid lines
+      Cross //only draw line crossings
+    };
+
+    enum GridAnnotationPosition
+    {
+      InsideMapFrame = 0,
+      OutsideMapFrame
+    };
+
+    enum GridAnnotationDirection
+    {
+      Horizontal = 0,
+      Vertical,
+      HorizontalAndVertical
+    };
+
     /** \brief Draw to paint device
     @param extent map extent
     @param size size in scene coordinates
@@ -141,6 +160,49 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
+    void setGridEnabled( bool enabled ) {mGridEnabled = enabled;}
+    bool gridEnabled() const { return mGridEnabled; }
+
+    void setGridStyle( GridStyle style ) {mGridStyle = style;}
+    GridStyle gridStyle() const { return mGridStyle; }
+
+    void setGridIntervalX( double interval ) { mGridIntervalX = interval;}
+    double gridIntervalX() const { return mGridIntervalX; }
+
+    void setGridIntervalY( double interval ) { mGridIntervalY = interval;}
+    double gridIntervalY() const { return mGridIntervalY; }
+
+    void setGridOffsetX( double offset ) { mGridOffsetX = offset; }
+    double gridOffsetX() const { return mGridOffsetX; }
+
+    void setGridOffsetY( double offset ) { mGridOffsetY = offset; }
+    double gridOffsetY() const { return mGridOffsetY; }
+
+    void setGridPen( const QPen& p ) { mGridPen = p; }
+    QPen gridPen() const { return mGridPen; }
+    void setGridPenWidth( double w );
+    void setGridPenColor( const QColor& c );
+
+    void setGridAnnotationFont( const QFont& f ) { mGridAnnotationFont = f; }
+    QFont gridAnnotationFont() const { return mGridAnnotationFont; }
+
+    void setShowGridAnnotation( bool show ) {mShowGridAnnotation = show;}
+    bool showGridAnnotation() const {return mShowGridAnnotation;}
+
+    void setGridAnnotationPosition( GridAnnotationPosition p ) {mGridAnnotationPosition = p;}
+    GridAnnotationPosition gridAnnotationPosition() const {return mGridAnnotationPosition;}
+
+    void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
+    double annotationFrameDistance() const {return mAnnotationFrameDistance;}
+
+    void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
+    GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
+
+    /**In case of annotations, the bounding rectangle can be larger than the map item rectangle*/
+    QRectF boundingRect() const;
+    /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle*/
+    void updateBoundingRect();
+
   public slots:
 
     /**Called if map canvas has changed*/
@@ -200,6 +262,56 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
 
     /**Removes layer ids from mLayerSet that are no longer present in the qgis main map*/
     void syncLayerSet();
+
+    /**True if coordinate grid has to be displayed*/
+    bool mGridEnabled;
+    /**Solid or crosses*/
+    GridStyle mGridStyle;
+    /**Grid line interval in x-direction (map units)*/
+    double mGridIntervalX;
+    /**Grid line interval in y-direction (map units)*/
+    double mGridIntervalY;
+    /**Grid line offset in x-direction*/
+    double mGridOffsetX;
+    /**Grid line offset in y-direction*/
+    double mGridOffsetY;
+    /**Grid line pen*/
+    QPen mGridPen;
+    /**Font for grid line annotation*/
+    QFont mGridAnnotationFont;
+    /**True if coordinate values should be drawn*/
+    bool mShowGridAnnotation;
+    /**Annotation position inside or outside of map frame*/
+    GridAnnotationPosition mGridAnnotationPosition;
+    /**Distance between map frame and annotation*/
+    double mAnnotationFrameDistance;
+    /**Annotation can be horizontal / vertical or different for axes*/
+    GridAnnotationDirection mGridAnnotationDirection;
+    /**Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
+    QRectF mCurrentRectangle;
+
+    /**Draws the map grid*/
+    void drawGrid( QPainter* p );
+    /**Annotations for composer grid*/
+    void drawGridAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
+    /**Draws a single annotation
+        @param p drawing painter
+        @param pos item coordinates where to draw
+        @param rotation text rotation
+        @param the text to draw*/
+    void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText );
+    /**Calculates the horizontal grid lines
+        @lines list containing the map coordinates and the lines in item coordinates
+        @return 0 in case of success*/
+    int horizontalGridLines( QList< QPair< double, QLineF > >& lines ) const;
+    /**Calculates the vertical grid lines
+        @lines list containing the map coordinates and the lines in item coordinates
+        @return 0 in case of success*/
+    int verticalGridLines( QList< QPair< double, QLineF > >& lines ) const;
+    /**Returns extent that considers mOffsetX / mOffsetY (during content move)*/
+    QgsRectangle transformedExtent() const;
+    double maxExtensionXDirection() const;
+    double maxExtensionYDirection() const;
 };
 
 #endif

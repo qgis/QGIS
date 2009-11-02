@@ -131,7 +131,7 @@
 #include "qgsrasterlayerproperties.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
-#include "qgsserversourceselect.h"
+#include "qgswmssourceselect.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsundowidget.h"
 #include "qgsvectordataprovider.h"
@@ -183,7 +183,7 @@
 // Conditional Includes
 //
 #ifdef HAVE_POSTGRESQL
-#include "qgsdbsourceselect.h"
+#include "qgspgsourceselect.h"
 #endif
 #ifdef HAVE_SPATIALITE
 #include "qgsspatialitesourceselect.h"
@@ -227,7 +227,16 @@ static void buildSupportedVectorFileFilter_( QString & fileFilters );
   */
 static void setTitleBarText_( QWidget & qgisApp )
 {
-  QString caption = QgisApp::tr( "Quantum GIS - %1 " ).arg( QGis::QGIS_VERSION );
+  QString caption = QgisApp::tr( "Quantum GIS " );
+
+  if ( QString( QGis::QGIS_VERSION ).endsWith( "Trunk" ) )
+  {
+    caption += QString( "r%1" ).arg( QGis::QGIS_SVN_VERSION );
+  }
+  else
+  {
+    caption += QGis::QGIS_VERSION;
+  }
 
   if ( QgsProject::instance()->title().isEmpty() )
   {
@@ -239,12 +248,12 @@ static void setTitleBarText_( QWidget & qgisApp )
     else
     {
       QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption += " " + projectFileInfo.baseName();
+      caption += " - " + projectFileInfo.baseName();
     }
   }
   else
   {
-    caption += QgsProject::instance()->title();
+    caption += " - " + QgsProject::instance()->title();
   }
 
   qgisApp.setWindowTitle( caption );
@@ -2310,8 +2319,6 @@ static bool openFilesRememberingFilter_( QString const &filterName,
     bool cancelAll = false )
 {
 
-  bool retVal = false;
-
   bool haveLastUsedFilter = false; // by default, there is no last
   // used filter
 
@@ -2325,28 +2332,9 @@ static bool openFilesRememberingFilter_( QString const &filterName,
   QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
 
   QgsDebugMsg( "Opening file dialog with filters: " + filters );
-
-  QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0,
-      title, lastUsedDir, filters, QString( "" ) );
-
-  // allow for selection of more than one file
-  openFileDialog->setFileMode( QFileDialog::ExistingFiles );
-
-  if ( haveLastUsedFilter )     // set the filter to the last one used
+  selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
+  if ( !selectedFiles.isEmpty() )
   {
-    openFileDialog->selectFilter( lastUsedFilter );
-  }
-
-  // Check if we should add a cancel all button
-  if ( cancelAll )
-  {
-    openFileDialog->addCancelAll();
-  }
-
-  if ( openFileDialog->exec() == QDialog::Accepted )
-  {
-    selectedFiles = openFileDialog->selectedFiles();
-    enc = openFileDialog->encoding();
     // Fix by Tim - getting the dirPath from the dialog
     // directly truncates the last node in the dir path.
     // This is a workaround for that
@@ -2356,17 +2344,11 @@ static bool openFilesRememberingFilter_( QString const &filterName,
 
     QgsDebugMsg( "Writing last used dir: " + myPath );
 
-    settings.setValue( "/UI/" + filterName, openFileDialog->selectedFilter() );
+    settings.setValue( "/UI/" + filterName, lastUsedFilter );
     settings.setValue( "/UI/" + filterName + "Dir", myPath );
+    return true;
   }
-  else
-  {
-    // Cancel or cancel all
-    retVal = openFileDialog->cancelAll();
-  }
-
-  delete openFileDialog;
-  return retVal;
+  return false;
 }   // openFilesRememberingFilter_
 
 
@@ -2592,7 +2574,7 @@ void QgisApp::addDatabaseLayer()
   // only supports postgis layers at present
   // show the postgis dialog
 
-  QgsDbSourceSelect *dbs = new QgsDbSourceSelect( this );
+  QgsPgSourceSelect *dbs = new QgsPgSourceSelect( this );
 
   mMapCanvas->freeze();
 
@@ -2748,7 +2730,7 @@ void QgisApp::addWmsLayer()
   // Fudge for now
   QgsDebugMsg( "about to addRasterLayer" );
 
-  QgsServerSourceSelect *wmss = new QgsServerSourceSelect( this );
+  QgsWMSSourceSelect *wmss = new QgsWMSSourceSelect( this );
   wmss->exec();
 }
 
@@ -3090,10 +3072,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   {
     if ( !saveDirty() )
     {
-      mMapCanvas->freeze( true );
-      removeAllLayers();
-      mMapCanvas->freeze( false );
-      return;
+      return; //cancel pressed
     }
   }
 
@@ -3154,10 +3133,6 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
 
 void QgisApp::newVectorLayer()
 {
-  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
-  QgsDebugMsg( "newVectorLayer called" );
-  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
-
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -3173,7 +3148,7 @@ void QgisApp::newVectorLayer()
   }
   geometrytype = geomDialog.selectedType();
   fileformat = geomDialog.selectedFileFormat();
-  QgsDebugMsg ( QString( "New file format will be: %1" ).arg( fileformat ) );
+  QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
 
   std::list<std::pair<QString, QString> > attributes;
   geomDialog.attributes( attributes );
@@ -3279,9 +3254,6 @@ void QgisApp::newVectorLayer()
   fileNames.append( fileName );
   //todo: the last parameter will change accordingly to layer type
   addVectorLayers( fileNames, enc, "file" );
-  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
-  QgsDebugMsg( "newVectorLayer done!" );
-  QgsDebugMsg( "++++++++++++++++++++++++++++++++++++++++++" );
 }
 
 void QgisApp::fileOpen()
@@ -3297,33 +3269,19 @@ void QgisApp::fileOpen()
     // Retrieve last used project dir from persistent settings
     QSettings settings;
     QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
-
-    QFileDialog * openFileDialog = new QFileDialog( this,
-        tr( "Choose a QGIS project file to open" ),
-        lastUsedDir, tr( "QGis files (*.qgs)" ) );
-    openFileDialog->setFileMode( QFileDialog::ExistingFile );
-
-
-    QString fullPath;
-    if ( openFileDialog->exec() == QDialog::Accepted )
+    QString fullPath = QFileDialog::getOpenFileName( this, tr( "Choose a QGIS project file to open" ), lastUsedDir, tr( "QGis files (*.qgs)" ) );
+    if ( fullPath.isNull() )
     {
-      // Fix by Tim - getting the dirPath from the dialog
-      // directly truncates the last node in the dir path.
-      // This is a workaround for that
-      fullPath = openFileDialog->selectedFiles().first();
-      QFileInfo myFI( fullPath );
-      QString myPath = myFI.path();
-      // Persist last used project dir
-      settings.setValue( "/UI/lastProjectDir", myPath );
-    }
-    else
-    {
-      // if they didn't select anything, just return
-      delete openFileDialog;
       return;
     }
 
-    delete openFileDialog;
+    // Fix by Tim - getting the dirPath from the dialog
+    // directly truncates the last node in the dir path.
+    // This is a workaround for that
+    QFileInfo myFI( fullPath );
+    QString myPath = myFI.path();
+    // Persist last used project dir
+    settings.setValue( "/UI/lastProjectDir", myPath );
 
     delete mComposer;
     mComposer = new QgsComposer( this );
@@ -3579,55 +3537,31 @@ void QgisApp::fileSaveAs()
   // Retrieve last used project dir from persistent settings
   QSettings settings;
   QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
-
-  std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
-      tr( "Choose a file name to save the QGIS project file as" ),
-      lastUsedDir, tr( "QGis files (*.qgs)" ) ) );
-
-  saveFileDialog->setFileMode( QFileDialog::AnyFile );
-
-  saveFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-
-  saveFileDialog->setConfirmOverwrite( true );
-
-  // if we don't have a file name, then obviously we need to get one; note
-  // that the project file name is reset to null in fileNew()
-  QFileInfo fullPath;
-
-  if ( saveFileDialog->exec() == QDialog::Accepted )
+  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Choose a file name to save the QGIS project file as" ), lastUsedDir, tr( "QGis files (*.qgs)" ) );
+  if ( saveFilePath.isNull() ) //canceled
   {
-    // Fix by Tim - getting the dirPath from the dialog
-    // directly truncates the last node in the dir path.
-    // This is a workaround for that
-    fullPath.setFile( saveFileDialog->selectedFiles().first() );
-    QString myPath = fullPath.path();
-    // Persist last used project dir
-    settings.setValue( "/UI/lastProjectDir", myPath );
-  }
-  else
-  {
-    // if they didn't select anything, just return
-    // delete saveFileDialog; auto_ptr auto deletes
     return;
   }
+  QFileInfo myFI( saveFilePath );
+  QString myPath = myFI.path();
+  settings.setValue( "/UI/lastProjectDir", myPath );
 
   // make sure the .qgs extension is included in the path name. if not, add it...
-  if ( "qgs" != fullPath.suffix() )
+  if ( "qgs" != myFI.suffix() )
   {
-    QString newFilePath = fullPath.filePath() + ".qgs";
-    fullPath.setFile( newFilePath );
+    saveFilePath = myFI.filePath() + ".qgs";
   }
 
   try
   {
-    QgsProject::instance()->setFileName( fullPath.filePath() );
+    QgsProject::instance()->setFileName( saveFilePath );
 
     if ( QgsProject::instance()->write() )
     {
       setTitleBarText_( *this ); // update title bar
       statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
       // add this to the list of recently used project files
-      saveRecentProjectPath( fullPath.filePath(), settings );
+      saveRecentProjectPath( saveFilePath, settings );
     }
     else
     {
@@ -4079,7 +4013,7 @@ void QgisApp::attributeTable()
     return;
   }
 
-  QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>( mMapLegend->currentLayer() );
+  QgsVectorLayer * myLayer = qobject_cast<QgsVectorLayer *>( mMapLegend->currentLayer() );
   QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer );
   mDialog->show();
   // the dialog will be deleted by itself on close
@@ -4110,7 +4044,7 @@ void QgisApp::deleteSelected()
     return;
   }
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
     QMessageBox::information( this, tr( "No Vector Layer Selected" ),
@@ -4226,7 +4160,7 @@ void QgisApp::mergeSelectedFeatures()
     QMessageBox::information( 0, tr( "No active layer" ), tr( "No active layer found. Please select a layer in the layer list" ) );
     return;
   }
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( activeMapLayer );
+  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( activeMapLayer );
   if ( !vl )
   {
     QMessageBox::information( 0, tr( "Active layer is not vector" ), tr( "The merge features tool only works on vector layers. Please select a vector layer from the layer list" ) );
@@ -4442,7 +4376,7 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
   if ( selectionLayer )
   {
     // Test for feature support in this layer
-    QgsVectorLayer* selectionVectorLayer = dynamic_cast<QgsVectorLayer*>( selectionLayer );
+    QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( selectionLayer );
 
     if ( selectionVectorLayer != 0 )
     {
@@ -4471,7 +4405,7 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
   if ( selectionLayer )
   {
     // Test for feature support in this layer
-    QgsVectorLayer* selectionVectorLayer = dynamic_cast<QgsVectorLayer*>( selectionLayer );
+    QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( selectionLayer );
 
     if ( selectionVectorLayer != 0 )
     {
@@ -4497,7 +4431,7 @@ void QgisApp::editPaste( QgsMapLayer * destinationLayer )
   if ( pasteLayer )
   {
     // Test for feature support in this layer
-    QgsVectorLayer* pasteVectorLayer = dynamic_cast<QgsVectorLayer*>( pasteLayer );
+    QgsVectorLayer* pasteVectorLayer = qobject_cast<QgsVectorLayer *>( pasteLayer );
 
     if ( pasteVectorLayer != 0 )
     {
@@ -4563,7 +4497,7 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
   if ( !layer )
     return;
 
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return;
 
@@ -4795,8 +4729,8 @@ void QgisApp::loadPythonSupport()
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );
 #endif
-  QString version = QString("%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
-  QgsDebugMsg( QString("load library %1 (%2)").arg( pythonlibName ).arg( version ) );
+  QString version = QString( "%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
+  QgsDebugMsg( QString( "load library %1 (%2)" ).arg( pythonlibName ).arg( version ) );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
@@ -5578,7 +5512,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   /***********Vector layers****************/
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
     const QgsVectorDataProvider* dprovider = vlayer->dataProvider();
     bool layerHasSelection = ( vlayer->selectedFeatureCount() != 0 );
 
@@ -5815,7 +5749,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
     if ( identifyMode == 0 )
     {
-      const QgsRasterLayer *rlayer = dynamic_cast<const QgsRasterLayer*>( layer );
+      const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
       const QgsRasterDataProvider* dprovider = rlayer->dataProvider();
       if ( dprovider )
       {
@@ -6316,7 +6250,7 @@ void QgisApp::updateUndoActions()
   QgsMapLayer* layer = activeLayer();
   if ( layer )
   {
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer && vlayer->isEditable() )
     {
       canUndo = vlayer->undoStack()->canUndo();

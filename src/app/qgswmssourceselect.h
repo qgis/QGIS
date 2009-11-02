@@ -16,9 +16,9 @@
  ***************************************************************************/
 /* $Id$ */
 
-#ifndef QGSSERVERSOURCESELECT_H
-#define QGSSERVERSOURCESELECT_H
-#include "ui_qgsserversourceselectbase.h"
+#ifndef QGSWMSSOURCESELECT_H
+#define QGSWMSSOURCESELECT_H
+#include "ui_qgswmssourceselectbase.h"
 #include "qgisgui.h"
 
 #include <QStringList>
@@ -39,16 +39,16 @@ class QDomElement;
  * The user can then connect and add
  * layers from the WMS server to the map canvas.
  */
-class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectBase
+class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 {
     Q_OBJECT
 
   public:
 
     //! Constructor
-    QgsServerSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsWMSSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
-    ~QgsServerSourceSelect();
+    ~QgsWMSSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
 
@@ -201,4 +201,4 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
 };
 
 
-#endif // QgsServerSourceSelect_H
+#endif // QGSWMSSOURCESELECT_H

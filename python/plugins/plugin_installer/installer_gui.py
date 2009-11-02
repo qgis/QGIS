@@ -152,7 +152,10 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     tmpDir = QDir.tempPath()
     tmpPath = QDir.cleanPath(tmpDir+"/"+fileName)
     self.file = QFile(tmpPath)
-    self.http = QPHttp(url.host())
+    port = url.port()
+    if port < 0:
+      port = 80
+    self.http = QPHttp(url.host(), port)
     self.connect(self.http, SIGNAL("stateChanged ( int )"), self.stateChanged) 
     self.connect(self.http, SIGNAL("dataReadProgress ( int , int )"), self.readProgress)
     self.connect(self.http, SIGNAL("requestFinished (int, bool)"), self.requestFinished)
@@ -335,7 +338,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           a.setToolTip(0,self.tr("This repository is disabled"))
         else:
           a.setToolTip(0,self.tr("This repository is blocked due to incompatibility with your Quantum GIS version"))
-        a.setDisabled(True)
+        for i in [0,1,2]:
+          a.setForeground(i,QBrush(QColor(Qt.gray)))
     for i in [0,1,2]:
       self.treeRepositories.resizeColumnToContents(i)
     self.comboFilter1.addItem(self.tr("orphans"))

@@ -537,12 +537,9 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
 
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    if ( typeid( *( mItems[i] ) ) != typeid( QgsGrassModuleOption ) )
-    {
+    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
+    if ( !opt )
       continue;
-    }
-    QgsGrassModuleOption *opt =
-      dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
 
     QgsDebugMsg( "opt->key() = " + opt->key() );
 
@@ -566,12 +563,9 @@ void QgsGrassModuleStandardOptions::freezeOutput()
 #ifdef WIN32
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    if ( typeid( *( mItems[i] ) ) != typeid( QgsGrassModuleOption ) )
-    {
+    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
+    if ( !opt )
       continue;
-    }
-    QgsGrassModuleOption *opt =
-      dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
 
     QgsDebugMsg( "opt->key() = " + opt->key() );
 
@@ -638,12 +632,9 @@ void QgsGrassModuleStandardOptions::thawOutput()
 #ifdef WIN32
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    if ( typeid( *( mItems[i] ) ) != typeid( QgsGrassModuleOption ) )
-    {
+    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
+    if ( !opt )
       continue;
-    }
-    QgsGrassModuleOption *opt =
-      dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
 
     QgsDebugMsg( "opt->key() = " + opt->key() );
 
@@ -711,12 +702,9 @@ QStringList QgsGrassModuleStandardOptions::output( int type )
 
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    if ( typeid( *( mItems[i] ) ) != typeid( QgsGrassModuleOption ) )
-    {
+    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
+    if ( !opt )
       continue;
-    }
-    QgsGrassModuleOption *opt =
-      dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
 
     QgsDebugMsg( "opt->key() = " + opt->key() );
 
@@ -766,14 +754,11 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
 
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    if ( typeid( *( mItems[i] ) ) != typeid( QgsGrassModuleInput ) )
-    {
-      continue;
-    }
-
     struct Cell_head window;
 
     QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mItems[i] );
+    if ( !item )
+      continue;
 
     QgsGrass::MapType mapType = QgsGrass::Vector;
     switch ( item->type() )
@@ -826,14 +811,11 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, bool 
   int vectorCount = 0;
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    if ( typeid( *( mItems[i] ) ) != typeid( QgsGrassModuleInput ) )
-    {
-      continue;
-    }
-
     struct Cell_head mapWindow;
 
     QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mItems[i] );
+    if ( !item )
+      continue;
 
     if ( !all && !item->useRegion() ) continue;
 
@@ -894,15 +876,12 @@ bool QgsGrassModuleStandardOptions::requestsRegion()
 
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    if ( typeid( *( mItems[i] ) ) != typeid( QgsGrassModuleInput ) )
-    {
+    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mItems[i] );
+    if ( !item )
       continue;
-    }
 
-    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>
-                                ( mItems[i] );
-
-    if ( item->useRegion() ) return true;
+    if ( item->useRegion() )
+      return true;
   }
   return false;
 }
@@ -913,25 +892,15 @@ bool QgsGrassModuleStandardOptions::usesRegion()
 
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
-    if ( typeid( *( mItems[i] ) ) == typeid( QgsGrassModuleInput ) )
-    {
-      QgsGrassModuleInput *item =
-        dynamic_cast<QgsGrassModuleInput *>( mItems[i] );
-
-      if ( item->useRegion() )
-        return true;
-    }
+    QgsGrassModuleInput *input = dynamic_cast<QgsGrassModuleInput *>( mItems[i] );
+    if ( input && input->useRegion() )
+      return true;
 
     /* It only make sense to check input, right?
      * Output has no region yet */
-    if ( typeid( *( mItems[i] ) ) == typeid( QgsGrassModuleOption ) )
-    {
-      QgsGrassModuleOption *item =
-        dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
-
-      if ( item->usesRegion() )
-        return true;
-    }
+    QgsGrassModuleOption *option = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
+    if ( option && option->usesRegion() )
+      return true;
   }
 
   QgsDebugMsg( "NO usesRegion()" );
@@ -1171,7 +1140,8 @@ void QgsGrassModule::run()
                                         tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( "," ) ),
                                         QMessageBox::Ok | QMessageBox::Cancel );
 
-      if ( ret == QMessageBox::Cancel ) return;
+      if ( ret == QMessageBox::Cancel )
+        return;
 
       // r.mapcalc does not use standard parser
       if ( typeid( *mOptions ) != typeid( QgsGrassMapcalc ) )
@@ -1202,9 +1172,9 @@ void QgsGrassModule::run()
 
       // Quote options with special characters so that user
       // can copy-paste-run the command
-      if (( *it ).contains( QRegExp( "[ <>\\$|;&]" ) ) )
+      if ( it->contains( QRegExp( "[ <>\\$|;&]" ) ) )
       {
-        argumentsHtml.append( "'" + *it + "'" );
+        argumentsHtml.append( "\"" + *it + "\"" );
       }
       else
       {
@@ -2152,8 +2122,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     QgsGrassModuleItem *item = mModuleStandardOptions->item( mMapId );
     if ( item )
     {
-      QgsGrassModuleInput *mapInput =
-        dynamic_cast<QgsGrassModuleInput *>( item );
+      QgsGrassModuleInput *mapInput = dynamic_cast<QgsGrassModuleInput *>( item );
 
       connect( mapInput, SIGNAL( valueChanged() ), this, SLOT( updateQgisLayers() ) );
     }
@@ -2219,8 +2188,7 @@ void QgsGrassModuleInput::updateQgisLayers()
     QgsGrassModuleItem *item = mModuleStandardOptions->item( mMapId );
     if ( item )
     {
-      QgsGrassModuleInput *mapInput =
-        dynamic_cast<QgsGrassModuleInput *>( item );
+      QgsGrassModuleInput *mapInput = dynamic_cast<QgsGrassModuleInput *>( item );
       sourceMap = mapInput->currentMap();
     }
   }
@@ -2646,7 +2614,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   }
 
   // Read "whereoption" if defined
-  opt = qdesc.attribute( "where" );
+  opt = qdesc.attribute( "whereoption" );
   if ( !opt.isNull() )
   {
     QDomNode optNode = QgsGrassModule::nodeByKey( gdesc, opt );
@@ -2697,6 +2665,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   {
     mUri.push_back( QString() );
     mOgrLayers.push_back( QString() );
+    mOgrWheres.push_back( QString() );
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
   }
 
@@ -2709,9 +2678,11 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
     if ( mType == Ogr && layer->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
-      if ( vector->providerType() != "ogr"
-           && vector->providerType() != "postgres" ) continue;
+      QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
+      if ( !vector ||
+           ( vector->providerType() != "ogr" && vector->providerType() != "postgres" )
+         )
+        continue;
 
       QgsDataProvider *provider = vector->dataProvider();
 
@@ -2732,10 +2703,45 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
         ogrLayer += dsUri.table();
         ogrWhere = dsUri.sql();
       }
-      else
+      else if ( vector->providerType() == "ogr" )
       {
-        uri = provider->dataSourceUri();
-        ogrLayer = "";
+        QStringList items = provider->dataSourceUri().split( "|" );
+
+        if ( items.size() > 1 )
+        {
+          uri = items[0];
+
+          ogrLayer = "";
+          ogrWhere = "";
+
+          for ( int i = 1; i < items.size(); i++ )
+          {
+            QStringList args = items[i].split( "=" );
+
+            if ( args.size() != 2 )
+              continue;
+
+            if ( args[0] == "layername" && args[0] == "layerid" )
+            {
+              ogrLayer = args[1];
+            }
+            else if ( args[0] == "subset" )
+            {
+              ogrWhere = args[1];
+            }
+          }
+
+          if ( uri.endsWith( ".shp", Qt::CaseInsensitive ) )
+          {
+            ogrLayer = "";
+          }
+        }
+        else
+        {
+          uri = items[0];
+          ogrLayer = "";
+          ogrWhere = "";
+        }
       }
 
       QgsDebugMsg( "uri = " + uri );
@@ -2804,11 +2810,11 @@ QStringList QgsGrassModuleGdalInput::options()
     }
 #endif //GDAL_VERSION_NUM
     list.push_back( opt );
+  }
 
-    if ( !mOgrWhereOption.isNull() && mOgrWheres[current].length() > 0 )
-    {
-      list.push_back( mOgrWhereOption + "=" + mOgrWheres[current] );
-    }
+  if ( !mOgrWhereOption.isNull() && mOgrWheres[current].length() > 0 )
+  {
+    list.push_back( mOgrWhereOption + "=" + mOgrWheres[current] );
   }
 
   return list;
@@ -2961,7 +2967,7 @@ void QgsGrassModuleSelection::updateSelection()
 
   QgsMapLayer *layer = mLayerInput->currentLayer();
   if ( !layer ) return;
-  QgsVectorLayer *vector = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer *vector = qobject_cast<QgsVectorLayer *>( layer );
 
   QgsGrassProvider *provider = ( QgsGrassProvider * ) vector->dataProvider();
   QgsAttributeList allAttributes = provider->attributeIndexes();

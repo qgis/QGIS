@@ -87,7 +87,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     case MoveItemContent:
     {
       //store item as member if it is selected and cursor is over item
-      QgsComposerItem* item = dynamic_cast<QgsComposerItem*>( itemAt( e->pos() ) );
+      QgsComposerItem* item = dynamic_cast<QgsComposerItem *>( itemAt( e->pos() ) );
       if ( item )
       {
         mMoveContentStartPos = scenePoint;
@@ -172,7 +172,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       if ( mMoveContentItem )
       {
         //update map preview if composer map
-        QgsComposerMap* composerMap = dynamic_cast<QgsComposerMap*>( mMoveContentItem );
+        QgsComposerMap* composerMap = dynamic_cast<QgsComposerMap *>( mMoveContentItem );
         if ( composerMap )
         {
           composerMap->setOffset( 0, 0 );
@@ -275,7 +275,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case MoveItemContent:
       {
         //update map preview if composer map
-        QgsComposerMap* composerMap = dynamic_cast<QgsComposerMap*>( mMoveContentItem );
+        QgsComposerMap* composerMap = dynamic_cast<QgsComposerMap *>( mMoveContentItem );
         if ( composerMap )
         {
           composerMap->setOffset( scenePoint.x() - mMoveContentStartPos.x(), scenePoint.y() - mMoveContentStartPos.y() );
@@ -309,7 +309,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
-      QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( *itemIt );
+      QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( *itemIt );
       if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
       {
         composition()->removeItem( *itemIt );
@@ -381,7 +381,7 @@ QgsComposition* QgsComposerView::composition()
 {
   if ( scene() )
   {
-    QgsComposition* c = dynamic_cast<QgsComposition*>( scene() );
+    QgsComposition* c = dynamic_cast<QgsComposition *>( scene() );
     if ( c )
     {
       return c;
@@ -484,7 +484,7 @@ void QgsComposerView::ungroupItems()
   QList<QgsComposerItem*>::iterator itemIter = selectionList.begin();
   for ( ; itemIter != selectionList.end(); ++itemIter )
   {
-    QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( *itemIter );
+    QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup *>( *itemIter );
     if ( itemGroup )
     {
       itemGroup->removeItems();
@@ -507,7 +507,7 @@ QMainWindow* QgsComposerView::composerWindow()
   QObject* currentObject = parent();
   if ( !currentObject )
   {
-    return dynamic_cast<QMainWindow*>( currentObject );
+    return qobject_cast<QMainWindow *>( currentObject );
   }
 
   while ( true )
@@ -520,6 +520,6 @@ QMainWindow* QgsComposerView::composerWindow()
     currentObject = currentObject->parent();
   }
 
-  return dynamic_cast<QMainWindow*>( composerObject );
+  return qobject_cast<QMainWindow *>( composerObject );
 }
 

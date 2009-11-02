@@ -79,7 +79,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     virtual QString subsetString();
 
     /** mutator for sql where clause used to limit dataset size */
-    virtual void setSubsetString( QString theSQL );
+    virtual bool setSubsetString( QString theSQL );
 
     /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
      *  @param fetchAttributes list of attributes which should be fetched
@@ -156,8 +156,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
-     *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList < QVariant > &uniqueValues );
+     *  @param values reference to the list of unique values
+     *  @param limit maximum number of values (added in 1.4) */
+    virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 );
 
     /**Returns true if layer is valid
     */

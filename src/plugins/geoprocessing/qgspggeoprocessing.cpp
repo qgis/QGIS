@@ -123,7 +123,7 @@ void QgsPgGeoprocessing::buffer()
         QString tableName = uri.quotedTablename();
 
         // set the fields on the dialog box drop-down
-        QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>( lyr->dataProvider() );
+        QgsVectorDataProvider *dp = qobject_cast<QgsVectorDataProvider *>( lyr->dataProvider() );
         QgsFieldMap flds = dp->fields();
         for ( QgsFieldMap::iterator it = flds.begin(); it != flds.end(); ++it )
         {

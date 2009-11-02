@@ -260,7 +260,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
       QgsMapLayer *currentLayer = layer( i );
       disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
       disconnect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
-      QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >( currentLayer );
+      QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
         disconnect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
@@ -276,7 +276,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
       QgsMapLayer *currentLayer = layer( i );
       connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
       connect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
-      QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >( currentLayer );
+      QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
         connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
@@ -624,7 +624,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
   if ( layer == NULL )
   {
     // use current layer by default
-    layer = dynamic_cast < QgsVectorLayer * >( mCurrentLayer );
+    layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
   }
 
   if ( layer == NULL )
@@ -934,7 +934,7 @@ void QgsMapCanvas::updateCanvasItemPositions()
   QList<QGraphicsItem*>::iterator it = list.begin();
   while ( it != list.end() )
   {
-    QgsMapCanvasItem* item = dynamic_cast<QgsMapCanvasItem*>( *it );
+    QgsMapCanvasItem* item = dynamic_cast<QgsMapCanvasItem *>( *it );
 
     if ( item )
     {
@@ -1261,8 +1261,6 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 
 void QgsMapCanvas::panAction( QMouseEvent * e )
 {
-  QgsDebugMsg( "panAction: entering." );
-
   if ( mDrawing )
   {
     return;
@@ -1286,8 +1284,6 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
   if ( !reset )
     pnt += mCanvasProperties->mouseLastXY - mCanvasProperties->rubberStartPoint;
 
-  QgsDebugMsg( "moveCanvasContents: pnt " + QString::number( pnt.x() ) + "," + QString::number( pnt.y() ) );
-
   mMap->setPanningOffset( pnt );
 
   QList<QGraphicsItem*> list = mScene->items();
@@ -1299,7 +1295,7 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
     if ( item != mMap )
     {
       // this tells map canvas item to draw with offset
-      QgsMapCanvasItem* canvasItem = dynamic_cast<QgsMapCanvasItem*>( item );
+      QgsMapCanvasItem* canvasItem = dynamic_cast<QgsMapCanvasItem *>( item );
       if ( canvasItem )
         canvasItem->setPanningOffset( pnt );
     }

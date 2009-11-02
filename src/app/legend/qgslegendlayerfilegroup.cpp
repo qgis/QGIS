@@ -54,11 +54,11 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept( const QgsLegendItem*
       }
       else
       {
-        QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( child( 0 ) );
+        QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile *>( child( 0 ) );
         if ( llf )
         {
           QgsMapLayer* childlayer = llf->layer();
-          const QgsMapLayer* newlayer = ( dynamic_cast<const QgsLegendLayerFile*>( li ) )->layer();
+          const QgsMapLayer* newlayer = qobject_cast<const QgsLegendLayerFile *>( li )->layer();
           if ( newlayer->hasCompatibleSymbology( *childlayer ) )
           {
             return INSERT;
@@ -88,7 +88,7 @@ bool QgsLegendLayerFileGroup::insert( QgsLegendItem* newItem )
     {
       oldItem = oldItem->nextSibling();
     }
-    QgsLegendLayerFile* thefile = dynamic_cast<QgsLegendLayerFile*>( oldItem );
+    QgsLegendLayerFile* thefile = qobject_cast<QgsLegendLayerFile *>( oldItem );
 
     if ( !thefile )
     {
@@ -99,7 +99,7 @@ bool QgsLegendLayerFileGroup::insert( QgsLegendItem* newItem )
     {
       return false;
     }
-    QgsMapLayer* newLayer = ( dynamic_cast<QgsLegendLayerFile*>( newItem ) )->layer();
+    QgsMapLayer* newLayer = qobject_cast<QgsLegendLayerFile *>( newItem )->layer();
     if ( newLayer->hasCompatibleSymbology( *thelayer ) )
     {
       insertChild( childCount(), newItem );
@@ -134,7 +134,7 @@ void QgsLegendLayerFileGroup::receive( QgsLegendItem* newChild )
 {
   if ( newChild->type() == LEGEND_LAYER_FILE )
   {
-    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( parent() );
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( parent() );
     if ( ll )
     {
       ll->updateIcon();
@@ -148,7 +148,7 @@ void QgsLegendLayerFileGroup::release( QgsLegendItem* formerChild )
   QgsDebugMsg( "entered." );
   if ( formerChild->type() == LEGEND_LAYER_FILE )
   {
-    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( parent() );
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( parent() );
     if ( ll )
     {
       ll->updateIcon();

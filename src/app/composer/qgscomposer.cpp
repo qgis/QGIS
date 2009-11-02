@@ -116,30 +116,17 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   mActionAddImage->setCheckable( true );
   mActionMoveItemContent->setCheckable( true );
 
-#ifdef Q_WS_MAC
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
   appMenu->addAction( QgisApp::instance()->actionAbout() );
   appMenu->addAction( QgisApp::instance()->actionOptions() );
 
   QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
-  QAction *closeAction = fileMenu->addAction( tr( "Close" ), this, SLOT( close() ), tr( "Ctrl+W" ) );
+  fileMenu->addAction( tr( "Close" ), this, SLOT( close() ), tr( "Ctrl+W" ) );
   fileMenu->addAction( mActionExportAsImage );
+  fileMenu->addAction( mActionExportAsPDF );
   fileMenu->addAction( mActionExportAsSVG );
   fileMenu->addSeparator();
   fileMenu->addAction( mActionPrint );
-
-  QMenu *editMenu = menuBar()->addMenu( tr( "Edit" ) );
-  QAction *undoAction = editMenu->addAction( tr( "&Undo" ), this, SLOT( undo() ), tr( "Ctrl+Z" ) );
-  undoAction->setEnabled( false );
-  editMenu->addSeparator();
-  QAction *cutAction = editMenu->addAction( tr( "Cu&t" ), this, SLOT( cut() ), tr( "Ctrl+X" ) );
-  cutAction->setEnabled( false );
-  QAction *copyAction = editMenu->addAction( tr( "&Copy" ), this, SLOT( copy() ), tr( "Ctrl+C" ) );
-  copyAction->setEnabled( false );
-  QAction *pasteAction = editMenu->addAction( tr( "&Paste" ), this, SLOT( paste() ), tr( "Ctrl+V" ) );
-  pasteAction->setEnabled( false );
-  QAction *deleteAction = editMenu->addAction( tr( "Delete" ) );
-  deleteAction->setEnabled( false );
 
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
   viewMenu->addAction( mActionZoomIn );
@@ -164,16 +151,18 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow(), mFirstPaint( true )
   layoutMenu->addAction( mActionMoveItemsToTop );
   layoutMenu->addAction( mActionMoveItemsToBottom );
 
+#ifdef Q_WS_MAC
 #ifndef Q_WS_MAC64 /* assertion failure in NSMenuItem setSubmenu (Qt 4.5.0-snapshot-20080830) */
   menuBar()->addMenu( QgisApp::instance()->windowMenu() );
 
   menuBar()->addMenu( QgisApp::instance()->helpMenu() );
 #endif
+#endif
+
 
   // Create action to select this window and add it to Window menu
   mWindowAction = new QAction( windowTitle(), this );
   connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
-#endif
 
   mQgis = qgis;
   mFirstTime = true;
@@ -311,7 +300,7 @@ void QgsComposer::paintEvent( QPaintEvent* event )
     QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
     for ( ; it != mItemWidgetMap.constEnd(); ++it )
     {
-      QgsComposerMap* cm = dynamic_cast<QgsComposerMap*>( it.key() );
+      QgsComposerMap* cm = qobject_cast<QgsComposerMap *>( it.key() );
       if ( cm )
       {
         mFirstPaint = false;
@@ -481,6 +470,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( myOutputFileNameQString );
+  printer.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
 
   print( printer );
 }
@@ -504,16 +494,6 @@ void QgsComposer::print( QPrinter &printer )
   if ( containsWMSLayer() )
   {
     showWMSPrintingWarning();
-  }
-
-  //try to set most of the print dialog settings based on composer properties
-  if ( mComposition->paperHeight() > mComposition->paperWidth() )
-  {
-    printer.setOrientation( QPrinter::Portrait );
-  }
-  else
-  {
-    printer.setOrientation( QPrinter::Landscape );
   }
 
   //set resolution based on composer setting
@@ -1025,14 +1005,9 @@ void QgsComposer::restoreWindowState()
   }
 }
 
-void QgsComposer::on_helpPButton_clicked()
+void QgsComposer::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run( context_id );
-}
-
-void QgsComposer::on_closePButton_clicked()
-{
-  close();
 }
 
 void  QgsComposer::writeXML( QDomDocument& doc )
@@ -1102,7 +1077,7 @@ void QgsComposer::readXML( const QDomDocument& doc )
     delete( *it );
   }
   //delete composition widget
-  QgsCompositionWidget* oldCompositionWidget = dynamic_cast<QgsCompositionWidget*>( mCompositionOptionsFrame->children().at( 0 ) );
+  QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mCompositionOptionsFrame->children().at( 0 ) );
   delete oldCompositionWidget;
   delete mCompositionOptionsLayout;
   mCompositionOptionsLayout = 0;
@@ -1296,7 +1271,7 @@ bool QgsComposer::containsWMSLayer() const
   for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
   {
     currentItem = item_it.key();
-    currentMap = dynamic_cast<QgsComposerMap*>( currentItem );
+    currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
     if ( currentMap )
     {
       if ( currentMap->containsWMSLayer() )
@@ -1333,7 +1308,7 @@ void QgsComposer::cleanupAfterTemplateRead()
   for ( ; itemIt != mItemWidgetMap.constEnd(); ++itemIt )
   {
     //update all legends completely
-    QgsComposerLegend* legendItem = dynamic_cast<QgsComposerLegend*>( itemIt.key() );
+    QgsComposerLegend* legendItem = dynamic_cast<QgsComposerLegend *>( itemIt.key() );
     if ( legendItem )
     {
       legendItem->updateLegend();
@@ -1341,7 +1316,7 @@ void QgsComposer::cleanupAfterTemplateRead()
     }
 
     //update composer map extent if it does not intersect the full extent of all layers
-    QgsComposerMap* mapItem = dynamic_cast<QgsComposerMap*>( itemIt.key() );
+    QgsComposerMap* mapItem = dynamic_cast<QgsComposerMap *>( itemIt.key() );
     if ( mapItem )
     {
       //test if composer map extent intersects extent of all layers

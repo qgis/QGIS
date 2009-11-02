@@ -92,6 +92,12 @@ class QgsOgrProvider : public QgsVectorDataProvider
                               bool fetchGeometry = true,
                               QgsAttributeList fetchAttributes = QgsAttributeList() );
 
+    /** Accessor for sql where clause used to limit dataset */
+    virtual QString subsetString();
+
+    /** mutator for sql where clause used to limit dataset size */
+    virtual bool setSubsetString( QString theSQL );
+
     /**
      * Get feature type.
      * @return int representing the feature type
@@ -193,7 +199,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues );
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
     /** return a provider name
 
@@ -244,6 +250,19 @@ class QgsOgrProvider : public QgsVectorDataProvider
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
     QgsRectangle mExtentRect;
     OGRLayerH ogrLayer;
+    OGRLayerH ogrOrigLayer;
+
+    //! path to filename
+    QString mFilePath;
+
+    //! layer name
+    QString mLayerName;
+
+    //! layer index
+    int mLayerIndex;
+
+    //! String used to define a subset of the layer
+    QString mSubsetString;
 
     // OGR Driver that was actually used to open the layer
     OGRSFDriverH ogrDriver;

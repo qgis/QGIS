@@ -29,7 +29,7 @@ mRepositories = dict of dicts: {repoName : {"url" QString,
                                             "valid" bool,
                                             "QPHttp" QPHttp,
                                             "Relay" Relay, # Relay object for transmitting signals from QPHttp with adding the repoName information
-                                            "xmlData" QDomDocument,
+                                            "xmlData" QBuffer,
                                             "state" int,   (0 - disabled, 1-loading, 2-loaded ok, 3-error (to be retried), 4-rejected)
                                             "error" QString}}
 mPlugins = dict of dicts {id : {"name" QString,
@@ -87,6 +87,7 @@ authorRepos  = [("Carson Farmer's Repository", "http://www.ftools.ca/cfarmerQgis
                 ("Volkan Kepoglu's Repository","http://ggit.metu.edu.tr/~volkan/plugins.xml", ""),
                 ("GIS-Lab Repository",         "http://gis-lab.info/programs/qgis/qgis-repo.xml", ""),
                 ("Marco Hugentobler's Repository","http://karlinapp.ethz.ch/python_plugins/python_plugins.xml", ""),
+                ("Bob Bruce's Repository",     "http://www.mappinggeek.ca/QGISPythonPlugins/Bobs-QGIS-plugins.xml", ""),
                 ("Sourcepole Repository",      "http://build.sourcepole.ch/qgis/plugins.xml", "")]
 
 
@@ -376,7 +377,10 @@ class Repositories(QObject):
     self.mRepositories[key]["state"] = 1
     url = QUrl(self.mRepositories[key]["url"])
     path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:@/"))
-    self.mRepositories[key]["QPHttp"] = QPHttp(url.host())
+    port = url.port()
+    if port < 0:
+      port = 80
+    self.mRepositories[key]["QPHttp"] = QPHttp(url.host(), port)
     self.connect(self.mRepositories[key]["QPHttp"], SIGNAL("requestFinished (int, bool)"), self.xmlDownloaded)
     self.connect(self.mRepositories[key]["QPHttp"], SIGNAL("stateChanged ( int )"), self.mRepositories[key]["Relay"].stateChanged)
     self.connect(self.mRepositories[key]["QPHttp"], SIGNAL("dataReadProgress ( int , int )"), self.mRepositories[key]["Relay"].dataReadProgress)

@@ -90,7 +90,7 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
   }
 
   QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentText() );
-  QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer *>( dataLayer );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( vLayer == NULL )
   {
     return;
@@ -121,7 +121,7 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
   int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
   QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentText() );
-  QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer *>( dataLayer );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( vLayer == NULL )
   {
     return;
@@ -171,7 +171,7 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
   int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
   QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->currentText() );
-  QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer *>( dataLayer );
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( vLayer == NULL )
   {
     return;

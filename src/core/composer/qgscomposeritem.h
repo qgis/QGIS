@@ -139,7 +139,7 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
 
     /**Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
      to work arount the Qt font bug)*/
-    void drawText( QPainter* p, int x, int y, const QString& text, const QFont& font ) const;
+    void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text*/
     void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font ) const;

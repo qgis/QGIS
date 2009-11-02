@@ -68,6 +68,11 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   loadLayer();
 }
 
+bool QgsAttributeTableModel::featureAtId( int fid )
+{
+  return mLayer->featureAtId( fid, mFeat, false, true );
+}
+
 void QgsAttributeTableModel::featureDeleted( int fid )
 {
   QgsDebugMsg( "entered." );
@@ -361,6 +366,11 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
+  return (( QgsAttributeTableModel * ) this )->data( index, role );
+}
+
+QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role )
+{
   if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
 
@@ -378,7 +388,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   // if we don't have the row in current cache, load it from layer first
   if ( mLastRowId != rowToId( index.row() ) )
   {
-    bool res = mLayer->featureAtId( rowToId( index.row() ), mFeat, false, true );
+    bool res = featureAtId( rowToId( index.row() ) );
 
     if ( !res )
       return QVariant( "ERROR" );
@@ -429,12 +439,13 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   if ( !mLayer->isEditable() )
     return false;
 
-  bool res = mLayer->featureAtId( rowToId( index.row() ), mFeat, false, true );
+  bool res = featureAtId( rowToId( index.row() ) );
 
   if ( res )
   {
     mLastRowId = rowToId( index.row() );
-    mLastRow = ( QgsAttributeMap * )( &( mFeat.attributeMap() ) );
+    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
+
     mLayer->beginEditCommand( tr( "Attribute changed" ) );
     mLayer->changeAttributeValue( rowToId( index.row() ), mAttributes[ index.column()], value, true );
     mLayer->endEditCommand();

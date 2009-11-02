@@ -16,7 +16,6 @@
 #ifndef QGSVECTORDATAPROVIDER_H
 #define QGSVECTORDATAPROVIDER_H
 
-
 class QTextCodec;
 
 #include <QList>
@@ -33,7 +32,7 @@ class QTextCodec;
  * This is the base class for vector data providers.
  *
  * Data providers abstract the retrieval and writing (where supported)
- * of feature and attrubute information from a spatial datasource.
+ * of feature and attribute information from a spatial datasource.
  *
  *
  */
@@ -195,10 +194,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Return unique values of an attribute
      * @param index the index of the attribute
      * @param values reference to the list to fill
+     * @param limit maxmum number of the values to return (added in 1.4)
      *
      * Default implementation simply iterates the features
      */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues );
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
     /**Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
       or if the given attribute is not an enum type.

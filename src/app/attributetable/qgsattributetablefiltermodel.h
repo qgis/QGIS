@@ -20,15 +20,12 @@
 #include <QSortFilterProxyModel>
 #include <QModelIndex>
 
-//QGIS Includes
-#include "qgsvectorlayer.h" //QgsAttributeList
-
 class QgsAttributeTableModel;
+class QgsVectorLayer;
 
 class QgsAttributeTableFilterModel: public QSortFilterProxyModel
 {
   public:
-    bool mHideUnselected;
     /**
      * Constructor
      * @param theLayer initializing layer pointer
@@ -46,6 +43,8 @@ class QgsAttributeTableFilterModel: public QSortFilterProxyModel
     QgsVectorLayer *layer() const { return mLayer; }
     QgsAttributeTableModel *tableModel() const { return reinterpret_cast<QgsAttributeTableModel*>( sourceModel() ); }
 
+    void setHideUnselected( bool theFlag ) { mHideUnselected = theFlag; }
+
   protected:
     /**
      * Returns true if the source row will be accepted
@@ -55,6 +54,7 @@ class QgsAttributeTableFilterModel: public QSortFilterProxyModel
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
   private:
     QgsVectorLayer* mLayer;
+    bool mHideUnselected;
 };
 
 #endif

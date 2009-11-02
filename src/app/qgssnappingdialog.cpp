@@ -48,7 +48,7 @@ QgsSnappingDialog::QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, 
       currentLayer = mMapCanvas->layer( i );
       if ( currentLayer )
       {
-        currentVectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+        currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
         if ( currentVectorLayer )
         {
           //snap to layer yes/no

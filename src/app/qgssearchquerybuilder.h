@@ -22,7 +22,7 @@
 #include <QStandardItemModel>
 #include <QModelIndex>
 
-#include "ui_qgspgquerybuilderbase.h"
+#include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
 
 class QgsField;
@@ -33,7 +33,7 @@ class QgsVectorLayer;
  * \brief Query Builder for search strings
  *
  */
-class QgsSearchQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase
+class QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
 {
     Q_OBJECT
 

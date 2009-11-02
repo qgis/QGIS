@@ -109,7 +109,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     bool getTableInfo( sqlite3 * handle );
 
     // SpatiaLite DB open / close
-    sqlite3 *openSpatiaLiteDb( const char *path );
+    sqlite3 *openSpatiaLiteDb( QString path );
     void closeSpatiaLiteDb( sqlite3 * handle );
 
     // Set the position of the database connection list to the last

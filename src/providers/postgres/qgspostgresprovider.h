@@ -189,7 +189,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues );
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
     /**Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
       or if the given attribute is not an enum type.
@@ -253,7 +253,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString subsetString();
 
     /** mutator for sql where clause used to limit dataset size */
-    void setSubsetString( QString theSQL );
+    bool setSubsetString( QString theSQL );
 
     /**Returns a bitmask containing the supported capabilities*/
     int capabilities() const;
@@ -340,6 +340,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Quote a value for placement in a SQL string.
      */
     QString quotedValue( QString value ) const;
+
+    /** expression to retrieve value
+     */
+    QString fieldExpression( const QgsField &fld ) const;
 
     /** Load the field list
     */
