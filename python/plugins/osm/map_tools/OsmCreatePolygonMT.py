@@ -1,12 +1,12 @@
-"""@package CreateLineMapTool
+"""@package OsmCreatePolygonMT
 This module holds all structures and methods required to perform
-"create line" operation on current OSM data.
+"create polygon" operation on current OSM data.
 
-Snapping to existing points is supported when creating new line.
+Snapping to existing points is supported when creating new polygon.
 Process generates some rubberBands and vertexMarkers so that user can watch
 the whole operation on the map in a nice way.
 
-There is also an interaction with plugin's "OSM Feature" dialog.
+There is also an interaction with plugin's "OSM Feature" dockwidget.
 Points to which snapping is performed are loaded to it dynamically.
 """
 
@@ -17,15 +17,15 @@ from qgis.core import *
 from qgis.gui import *
 
 
-class CreateLineMapTool(QgsMapTool):
+class OsmCreatePolygonMT(QgsMapTool):
     """This class holds all structures and methods required to perform
-    "create line" operation on current OSM data.
+    "create polygon" operation on current OSM data.
 
-    Snapping to existing points is supported when creating new line.
+    Snapping to existing points is supported when creating new polygon.
     Process generates some rubberBands and vertexMarkers so that user can watch
     the whole operation on the map in a nice way.
 
-    There is also an interaction with plugin's "OSM Feature" dialog.
+    There is also an interaction with plugin's "OSM Feature" dockwidget.
     Points to which snapping is performed are loaded to it dynamically.
     """
 
@@ -48,13 +48,13 @@ class CreateLineMapTool(QgsMapTool):
         # initialization
         self.snappingEnabled=True
         self.lastPointIsStable=True
-        self.linePoints=[]
+        self.polygonPoints=[]
         self.snappedPoint=None
         self.snapFeat=None
         self.snapFeatType=None
 
-        # creating rubberband which will be on new line
-        self.lineRubBand=self.createLineRubberband()
+        # creating rubberband which will be on new polygon
+        self.polygonRubBand=self.createPolygonRubberband()
 
         # creating rubberband for snapped objects
         self.snapVerMarker=self.createSnapVertexMarker()
@@ -78,10 +78,10 @@ class CreateLineMapTool(QgsMapTool):
         self.snapVerMarker.setCenter(QgsPoint(-1000,-1000))
         del self.snapVerMarker
         self.snapVerMarker=self.createSnapVertexMarker()
-        self.lineRubBand.reset(False)
+        self.polygonRubBand.reset(True)
 
         self.lastPointIsStable=True
-        self.linePoints=[]
+        self.polygonPoints=[]
         self.snappedPoint=None
 
         if dbKey:
@@ -91,22 +91,22 @@ class CreateLineMapTool(QgsMapTool):
         self.dockWidget.plugin.iface.mainWindow().statusBar().showMessage("")
 
 
-    def createLineRubberband(self):
-        """Function creates rubberband that is used for marking new line on the map.
+    def createPolygonRubberband(self):
+        """Function creates rubberband that is used for marking new polygon on the map.
 
-        @return rubberband that marks new line
+        @return rubberband that marks new polygon
         """
 
         # get qgis settings of line width and color for rubberband
-        settings=QSettings()
-        qgsLineWidth=settings.value("/qgis/digitizing/line_width",QVariant(10)).toInt()
-        qgsLineRed=settings.value("/qgis/digitizing/line_color_red",QVariant(255)).toInt()
-        qgsLineGreen=settings.value("/qgis/digitizing/line_color_green",QVariant(0)).toInt()
-        qgsLineBlue=settings.value("/qgis/digitizing/line_color_blue",QVariant(0)).toInt()
+        settings = QSettings()
+        qgsLineWidth = settings.value( "/qgis/digitizing/line_width", QVariant(10) ).toInt()
+        qgsLineRed = settings.value( "/qgis/digitizing/line_color_red", QVariant(255) ).toInt()
+        qgsLineGreen = settings.value( "/qgis/digitizing/line_color_green", QVariant(0) ).toInt()
+        qgsLineBlue = settings.value( "/qgis/digitizing/line_color_blue", QVariant(0) ).toInt()
 
-        rband=QgsRubberBand(self.canvas,False)
-        rband.setColor(QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]))
-        rband.setWidth(qgsLineWidth[0])
+        rband=QgsRubberBand(self.canvas,True)
+        rband.setColor( QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]) )
+        rband.setWidth( qgsLineWidth[0] )
 
         return rband
 
@@ -176,19 +176,19 @@ class CreateLineMapTool(QgsMapTool):
 
 
     def deactivate(self):
-        """Functions is called when create line map-tool is being deactivated.
+        """Functions is called when create polygon map-tool is being deactivated.
 
         Function performs standard cleaning; re-initialization etc.
         """
 
-        self.lineRubBand.reset()
+        self.polygonRubBand.reset(True)
         self.snapVerMarker.setCenter(QgsPoint(-1000,-1000))
         self.snappingEnabled=True
         self.lastPointIsStable=True
-        self.linePoints=[]
+        self.polygonPoints=[]
 
         self.dockWidget.toolButtons.setExclusive(False)
-        self.dockWidget.createLineButton.setChecked(False)
+        self.dockWidget.createPolygonButton.setChecked(False)
         self.dockWidget.toolButtons.setExclusive(True)
         self.dockWidget.activeEditButton=self.dockWidget.dummyButton
 
@@ -220,7 +220,7 @@ class CreateLineMapTool(QgsMapTool):
 
         if (event.key() == Qt.Key_Control):
             self.snappingEnabled = True
-            self.dockWidget.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
+            self.dockWidget.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON - hold Ctrl to disable it.")
 
 
     def canvasMoveEvent(self, event):
@@ -231,10 +231,10 @@ class CreateLineMapTool(QgsMapTool):
 
         self.mapPoint=self.dockWidget.canvasToOsmCoords(event.pos())
 
-        if len(self.linePoints)>0:
+        if len(self.polygonPoints)>0:
             if not self.lastPointIsStable:
-                self.lineRubBand.removeLastPoint()
-            self.lineRubBand.addPoint(QgsPoint(self.mapPoint.x(),self.mapPoint.y()))
+                self.polygonRubBand.removeLastPoint()
+            self.polygonRubBand.addPoint(QgsPoint(self.mapPoint.x(),self.mapPoint.y()))
             self.lastPointIsStable=False
 
         if not self.snappingEnabled:
@@ -257,13 +257,13 @@ class CreateLineMapTool(QgsMapTool):
                 self.dockWidget.clear()
             return
 
-        # process snapping result (get point, set vertex marker)
+        # process snapping result (get point, set rubberband)
         self.snappedPoint=QgsPoint(snappingResults[0].snappedVertex)
         self.snapVerMarker.setCenter(self.snappedPoint)
 
-        if len(self.linePoints)>0:
-            self.lineRubBand.removeLastPoint()
-            self.lineRubBand.addPoint(QgsPoint(self.snappedPoint.x(),self.snappedPoint.y()))
+        if len(self.polygonPoints)>0:
+            self.polygonRubBand.removeLastPoint()
+            self.polygonRubBand.addPoint(QgsPoint(self.snappedPoint.x(),self.snappedPoint.y()))
 
         # start identification
         feature=self.dbm.findFeature(self.snappedPoint)
@@ -276,13 +276,13 @@ class CreateLineMapTool(QgsMapTool):
     def canvasReleaseEvent(self, event):
         """This function is called after mouse button releasing when using this map tool.
 
-        If left button is released new vertex of line is created (pre-created).
-        If right button is released the whole process of line creation is finished.
+        If left button is released new vertex of polygon is created (pre-created).
+        If right button is released the whole process of polygon creation is finished.
 
         @param event event that occured when button releasing
         """
 
-        # we are interested in left/right button clicking only
+        # we are interested only in left/right button clicking
         if event.button() not in (Qt.LeftButton,Qt.RightButton):
             return
 
@@ -291,47 +291,46 @@ class CreateLineMapTool(QgsMapTool):
             # where we are exactly?
             actualMapPoint = self.dockWidget.canvasToOsmCoords(event.pos())
 
-            # what point will be the next line member?
-            newLinePoint=actualMapPoint
+            # what point will be the next polygon member?
+            newPolygonPoint=actualMapPoint
             if self.snappedPoint:
-                newLinePoint=self.snappedPoint
+                newPolygonPoint=self.snappedPoint
 
-            # add new point into rubberband (and removing last one if neccessary) and into new line members list
+            # add new point into rubberband (and removing last one if neccessary) and into new polygon members list
             if not self.lastPointIsStable:
-                self.lineRubBand.removeLastPoint()
+                self.polygonRubBand.removeLastPoint()
                 self.lastPointIsStable=True
 
-            self.lineRubBand.addPoint(newLinePoint)
-            self.linePoints.append((newLinePoint,self.snapFeat,self.snapFeatType))
+            self.polygonRubBand.addPoint(newPolygonPoint)
+            self.polygonPoints.append((newPolygonPoint,self.snapFeat,self.snapFeatType))
 
         # right button clicking signalizes the last line member!
         elif event.button()==Qt.RightButton:
 
-            # line must have at least 2 member points (else it's point rather than line)
-            if len(self.linePoints)<2:
+            # polygon must have at least three member points (triangle)
+            if len(self.polygonPoints)<3:
 
-                self.lineRubBand.reset()
+                self.polygonRubBand.reset(True)
                 self.snapVerMarker.setCenter(QgsPoint(-1000,-1000))
                 self.lastPointIsStable=True
-                self.linePoints=[]
+                self.polygonPoints=[]
                 return
 
-            self.ur.startAction("Create a line.")
-            # call function of database manager that will create new line
-            (line,affected)=self.dbm.createLine(self.linePoints)
+            self.ur.startAction("Create a polygon.")
+            # call function of database manager that will create new polygon
+            (polyg,affected)=self.dbm.createPolygon(self.polygonPoints)
             self.ur.stopAction(affected)
             self.dbm.recacheAffectedNow(affected)
 
-            if line:
-                self.dockWidget.loadFeature(line,"Line",2)
+            if polyg:
+                self.dockWidget.loadFeature(polyg,'Polygon',2)
 
             # cleaning..
-            self.lineRubBand.reset()
-            self.linePoints=[]
+            self.polygonRubBand.reset(True)
+            self.polygonPoints=[]
 
-            # after line creation canvas must be refresh so that changes take effect on map
+            # after polygon creation canvas must be refresh so that changes take effect on map
             self.canvas.refresh()
-
 
 
 

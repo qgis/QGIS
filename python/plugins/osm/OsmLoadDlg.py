@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""@package DlgLoadOSM
+"""@package OsmLoadDlg
 This module provides all structures and methods neccessary for OSM data loading.
 
 Loading is done from XML file. After XML file selection and confirming the dialog three vector layers
@@ -12,7 +12,7 @@ OSM data loading can be canceled, in such case system returns to the same state 
 """
 
 
-from DlgLoadOSM_ui import Ui_DlgLoadOSM
+from OsmLoadDlg_ui import Ui_OsmLoadDlg
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -23,7 +23,7 @@ from sip import *
 
 
 
-class DlgLoadOSM(QDialog, Ui_DlgLoadOSM):
+class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
     """This class provides all structures and methods neccessary for OSM data loading.
 
     Loading is done from XML file. After XML file selection and confirming the dialog three vector layers
@@ -215,9 +215,9 @@ class DlgLoadOSM(QDialog, Ui_DlgLoadOSM):
 
             st=self.styles[self.styleCombo.currentIndex()]
             if st=="Small scale":
-                rect=QgsRectangle(midX-rX/15,midY-rY/15,midX+rX/15,midY+rY/15)
+                rect=QgsRectangle(midX-rX/6,midY-rY/6,midX+rX/6,midY+rY/6)
             elif st=="Medium scale":
-                rect=QgsRectangle(midX-rX/8,midY-rY/8,midX+rX/8,midY+rY/8)
+                rect=QgsRectangle(midX-rX/3,midY-rY/3,midX+rX/3,midY+rY/3)
             else:
                rect=QgsRectangle(midX-rX/1.2,midY-rY/1.2,midX+rX/1.2,midY+rY/1.2)
 

@@ -1,4 +1,4 @@
-#-----------------------------------------------------------
+﻿#-----------------------------------------------------------
 # 
 # Create Point Distance Matrix
 #
@@ -49,7 +49,7 @@ class Dialog(QDialog, Ui_Dialog):
 		QObject.connect(self.inPoint1, SIGNAL("currentIndexChanged(QString)"), self.update1)
 		QObject.connect(self.inPoint2, SIGNAL("currentIndexChanged(QString)"), self.update2)
 		# populate layer list
-		self.setWindowTitle("Distance matrix")
+		self.setWindowTitle(self.tr("Distance matrix"))
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
 		for i in range(mapCanvas.layerCount()):
@@ -104,7 +104,7 @@ class Dialog(QDialog, Ui_Dialog):
 			self.outFile.clear()
 			self.compute(point1, point2, field1, field2, outPath, matType, nearest, self.progressBar)
 			self.progressBar.setValue(100)
-			addToTOC = QMessageBox.information(self, "Create Point Distance Matrix", "Created output matrix:\n" + outPath)
+			addToTOC = QMessageBox.information(self, "Create Point Distance Matrix", self.tr("Created output matrix:\n") + outPath)
 		self.progressBar.setValue(0)
 
 	def saveFile(self):

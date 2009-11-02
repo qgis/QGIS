@@ -1,11 +1,11 @@
-"""@package DockWidget
+"""@package OsmFeatureDW
 This module is descendant of "OSM Feature" dockable widget and makes user able
 to view and edit information on selected OSM feature.
 
-DockWidget module shows details of selected feature - its basic info, tags and relations.
+OsmFeatureDW module shows details of selected feature - its basic info, tags and relations.
 It provides methods for editing features' tags so that user can edit them directly on the widget.
 
-There are also some identify and edit buttons on "DockWidget" widget - this modul implements all the methods that are called
+There are also some identify and edit buttons on "OsmFeatureDW" - this modul implements all the methods that are called
 after clicking on these buttons. Such methods creates (and set) map tool that coresponds to specified button.
 """
 
@@ -15,23 +15,23 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from DockWidget_ui import Ui_OsmDockWidget
-from DlgAddRelation import DlgAddRelation
+from OsmFeatureDW_ui import Ui_OsmFeatureDW
+from OsmAddRelationDlg import OsmAddRelationDlg
 
-# include all osm map tools
-from map_tools.CreatePointMapTool import CreatePointMapTool
-from map_tools.CreateLineMapTool import CreateLineMapTool
-from map_tools.CreatePolygonMapTool import CreatePolygonMapTool
-from map_tools.MoveMapTool import MoveMapTool
-from map_tools.IdentifyMapTool import IdentifyMapTool
+# include all available osm map tools
+from map_tools.OsmCreatePointMT import OsmCreatePointMT
+from map_tools.OsmCreateLineMT import OsmCreateLineMT
+from map_tools.OsmCreatePolygonMT import OsmCreatePolygonMT
+from map_tools.OsmMoveMT import OsmMoveMT
+from map_tools.OsmIdentifyMT import OsmIdentifyMT
 
 
-class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
+class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
     """This class shows details of selected feature - its basic info, tags and relations.
 
     It provides methods for editing features' tags so that user can edit them directly on the widget.
 
-    There are also some identify and edit buttons on "DockWidget" widget - this modul implements all the methods that are called
+    There are also some identify and edit buttons on "OsmFeatureDW" - this modul implements all the methods that are called
     after clicking them. Such methods creates (and set) map tool that coresponds to specified button.
     """
 
@@ -44,7 +44,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.plugin=plugin
-        self.__mapTool=None
+        self.mapTool=None
         self.__dlgAddRel=None
 
         # set icons for tool buttons (identify,move,createPoint,createLine,createPolygon)
@@ -58,6 +58,10 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.deleteTagsButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_remove.png"))
         self.undoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_undo.png"))
         self.redoButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_redo.png"))
+        self.addRelationButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_addRelation.png"))
+        self.removeRelationButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_removeRelation.png"))
+        self.editRelationButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_editRelation.png"))
+        self.urDetailsButton.setIcon(QIcon(":/plugins/osm_plugin/images/osm_urDetails.png"))
 
         # initializing group of edit buttons
         self.toolButtons=QButtonGroup(self)
@@ -222,7 +226,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
     def databaseChanged(self,dbKey):
         """This function is called when current OSM database of plugin changes.
-        The DockWidget performs neccessary actions and tells current map tool about the change.
+        The OsmFeatureDW performs neccessary actions and tells current map tool about the change.
 
         @param dbKey key (name) of new current database
         """
@@ -241,16 +245,16 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.clear()
 
         # if some mapTool is currently set tell it about database changing
-        if self.__mapTool:
-            self.__mapTool.databaseChanged(dbKey)
+        if self.mapTool:
+            self.mapTool.databaseChanged(dbKey)
             self.activeEditButton=self.dummyButton
 
         # and if new database is None, disable the whole dockwidget
         if not dbKey:
             self.setContentEnabled(False)
-            if self.__mapTool:
-                self.plugin.canvas.unsetMapTool(self.__mapTool)
-                self.__mapTool=None
+            if self.mapTool:
+                self.plugin.canvas.unsetMapTool(self.mapTool)
+                self.mapTool=None
                 self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
             return
 
@@ -259,7 +263,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
     def clear(self):
         """Function clears all widget items.
-        It resets rubberbands, vertexmarkers, re-initializes DockWidget inner structures.
+        It resets rubberbands, vertexmarkers, re-initializes OsmFeatureDW inner structures.
         """
 
         # clear common feature infos
@@ -322,9 +326,9 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.clear()
         self.plugin.iface.mainWindow().statusBar().showMessage("")
 
-        self.plugin.canvas.unsetMapTool(self.__mapTool)
-        del self.__mapTool
-        self.__mapTool=None
+        self.plugin.canvas.unsetMapTool(self.mapTool)
+        del self.mapTool
+        self.mapTool=None
 
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
         self.activeEditButton=self.dummyButton
@@ -333,8 +337,8 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.plugin.undoredo.setContentEnabled(False)
         self.plugin.toolBar.setEnabled(False)
 
-        # DlgAddRelation parameters: plugin, newRelationFirstMember, relationToEdit
-        self.__dlgAddRel=DlgAddRelation(self.plugin, None, None)
+        # OsmAddRelationDlg parameters: plugin, newRelationFirstMember, relationToEdit
+        self.__dlgAddRel=OsmAddRelationDlg(self.plugin, None, None)
         self.__dlgAddRel.setWindowModality(Qt.WindowModal)
         self.__dlgAddRel.exec_()
         self.__dlgAddRel=None
@@ -349,15 +353,15 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         Function pre-fills dialog with information on currently loaded feature.
         """
 
-        self.__dlgAddRel=DlgAddRelation(self.plugin, QString(self.featureType+" %1").arg(self.feature.id()), None)
+        self.__dlgAddRel=OsmAddRelationDlg(self.plugin, QString(self.featureType+" %1").arg(self.feature.id()), None)
 
         # clear dockwidget
         self.clear()
         self.plugin.iface.mainWindow().statusBar().showMessage("")
 
-        self.plugin.canvas.unsetMapTool(self.__mapTool)
-        del self.__mapTool
-        self.__mapTool=None
+        self.plugin.canvas.unsetMapTool(self.mapTool)
+        del self.mapTool
+        self.mapTool=None
 
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
         self.activeEditButton=self.dummyButton
@@ -397,7 +401,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.plugin.undoredo.setContentEnabled(False)
         self.plugin.toolBar.setEnabled(False)
 
-        self.__dlgAddRel=DlgAddRelation(self.plugin, None, relId)
+        self.__dlgAddRel=OsmAddRelationDlg(self.plugin, None, relId)
         self.__dlgAddRel.setWindowModality(Qt.WindowModal)
         self.__dlgAddRel.exec_()
         self.__dlgAddRel=None
@@ -1053,7 +1057,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
     def __startIdentifyingFeature(self):
         """Function prepares feature identification.
-        The appropriate map tool (IdentifyMapTool) is set to map canvas.
+        The appropriate map tool (OsmIdentifyMT) is set to map canvas.
         """
 
         if self.activeEditButton==self.identifyButton:
@@ -1066,8 +1070,8 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         self.plugin.iface.mainWindow().statusBar().showMessage("")
 
-        self.__mapTool=IdentifyMapTool(self.plugin.canvas, self, self.plugin.dbm)
-        self.plugin.canvas.setMapTool(self.__mapTool)
+        self.mapTool=OsmIdentifyMT(self.plugin.canvas, self, self.plugin.dbm)
+        self.plugin.canvas.setMapTool(self.mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
         self.activeEditButton=self.identifyButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
@@ -1075,7 +1079,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
     def __startMovingFeature(self):
         """Function prepares feature moving.
-        The appropriate map tool (MoveMapTool) is set to map canvas.
+        The appropriate map tool (OsmMoveMT) is set to map canvas.
         """
 
         if self.activeEditButton==self.moveButton:
@@ -1085,8 +1089,8 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         self.clear()
         self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
 
-        self.__mapTool=MoveMapTool(self.plugin)
-        self.plugin.canvas.setMapTool(self.__mapTool)
+        self.mapTool=OsmMoveMT(self.plugin)
+        self.plugin.canvas.setMapTool(self.mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.CrossCursor))
         self.activeEditButton=self.moveButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
@@ -1094,7 +1098,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
     def __startPointCreation(self):
         """Function prepares point creating operation.
-        The appropriate map tool (CreatePointMapTool) is set to map canvas.
+        The appropriate map tool (OsmCreatePointMT) is set to map canvas.
         """
 
         if self.activeEditButton==self.createPointButton:
@@ -1102,8 +1106,8 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
 
-        self.__mapTool=CreatePointMapTool(self.plugin)
-        self.plugin.canvas.setMapTool(self.__mapTool)
+        self.mapTool=OsmCreatePointMT(self.plugin)
+        self.plugin.canvas.setMapTool(self.mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
         self.activeEditButton=self.createPointButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
@@ -1111,7 +1115,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
     def __startLineCreation(self):
         """Function prepares line creating operation.
-        The appropriate map tool (CreateLineMapTool) is set to map canvas.
+        The appropriate map tool (OsmCreateLineMT) is set to map canvas.
         """
 
         if self.activeEditButton==self.createLineButton:
@@ -1119,8 +1123,8 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
 
-        self.__mapTool=CreateLineMapTool(self.plugin)
-        self.plugin.canvas.setMapTool(self.__mapTool)
+        self.mapTool=OsmCreateLineMT(self.plugin)
+        self.plugin.canvas.setMapTool(self.mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
         self.activeEditButton=self.createLineButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
@@ -1128,7 +1132,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
     def __startPolygonCreation(self):
         """Function prepares polygon creating operation.
-        The appropriate map tool (CreatePolygonMapTool) is set to map canvas.
+        The appropriate map tool (OsmCreatePolygonMT) is set to map canvas.
         """
 
         if self.activeEditButton==self.createPolygonButton:
@@ -1136,8 +1140,8 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
 
-        self.__mapTool=CreatePolygonMapTool(self.plugin)
-        self.plugin.canvas.setMapTool(self.__mapTool)
+        self.mapTool=OsmCreatePolygonMT(self.plugin)
+        self.plugin.canvas.setMapTool(self.mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
         self.activeEditButton=self.createPolygonButton
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
@@ -1185,10 +1189,10 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         self.plugin.iface.mainWindow().statusBar().showMessage("")
 
-        self.plugin.canvas.unsetMapTool(self.__mapTool)
-        del self.__mapTool
-        self.__mapTool=IdentifyMapTool(self.plugin.canvas, self, self.plugin.dbm)
-        self.plugin.canvas.setMapTool(self.__mapTool)
+        self.plugin.canvas.unsetMapTool(self.mapTool)
+        del self.mapTool
+        self.mapTool=OsmIdentifyMT(self.plugin.canvas, self, self.plugin.dbm)
+        self.plugin.canvas.setMapTool(self.mapTool)
         self.plugin.canvas.setCursor(QCursor(Qt.ArrowCursor))
         self.plugin.canvas.setFocus(Qt.OtherFocusReason)
         self.activeEditButton=self.identifyButton
@@ -1374,7 +1378,7 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
         @param featType type of feature to load - one of 'Point','Line','Polygon'
         """
 
-        # asking DatabaseManager for missing information
+        # asking OsmDatabaseManager for missing information
         featUser=self.plugin.dbm.getFeatureOwner(featId,featType)
         featCreated=self.plugin.dbm.getFeatureCreated(featId,featType)    # returned as string
             # timestamp example: "2008-02-18T15:34:14Z"
@@ -1715,7 +1719,9 @@ class DockWidget(QDockWidget, Ui_OsmDockWidget,  object):
 
         if self.urDetailsButton.isChecked():
             self.plugin.undoredo.show()
+            self.urDetailsButton.setToolTip("Hide OSM Edit History")
         else:
             self.plugin.undoredo.hide()
+            self.urDetailsButton.setToolTip("Show OSM Edit History")
 
 

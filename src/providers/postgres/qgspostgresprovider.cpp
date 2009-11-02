@@ -2184,7 +2184,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
   {
     connectionRW->PQexecNR( "BEGIN" );
 
-    for ( QgsFeatureIds::const_iterator it = id.begin();it != id.end();++it )
+    for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
     {
       QString sql = QString( "DELETE FROM %1 WHERE %2" )
                     .arg( mSchemaTableName ).arg( whereClause( *it ) );
@@ -2222,7 +2222,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
   {
     connectionRW->PQexecNR( "BEGIN" );
 
-    for ( QList<QgsField>::const_iterator iter = attributes.begin();iter != attributes.end();++iter )
+    for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
     {
       QString type = iter->typeName();
       if ( type == "char" || type == "varchar" )
@@ -2283,7 +2283,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
   {
     connectionRW->PQexecNR( "BEGIN" );
 
-    for ( QgsAttributeIds::const_iterator iter = ids.begin();iter != ids.end();++iter )
+    for ( QgsAttributeIds::const_iterator iter = ids.begin(); iter != ids.end(); ++iter )
     {
       QgsFieldMap::const_iterator field_it = attributeFields.find( *iter );
       if ( field_it == attributeFields.constEnd() )
@@ -2329,7 +2329,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
     connectionRW->PQexecNR( "BEGIN" );
 
     // cycle through the features
-    for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin();iter != attr_map.end();++iter )
+    for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
     {
       int fid = iter.key();
 

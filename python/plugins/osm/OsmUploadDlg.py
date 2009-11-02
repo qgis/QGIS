@@ -1,4 +1,4 @@
-"""@package DlgUploadOSM
+"""@package OsmUploadDlg
 Module provides simple way of uploading current OSM data.
 
 When performing edit operations all changed features are marked as 'U'=Updated.
@@ -15,7 +15,7 @@ Upload phases and their exact order:
 """
 
 
-from DlgUploadOSM_ui import Ui_DlgUploadOSM
+from OsmUploadDlg_ui import Ui_OsmUploadDlg
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -25,7 +25,7 @@ from sys import *
 
 
 
-class DlgUploadOSM(QDialog, Ui_DlgUploadOSM):
+class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
     """Class provides simple way of uploading current OSM data.
 
     When performing edit operations all changed features are marked as 'U'=Updated.
@@ -917,7 +917,7 @@ class DlgUploadOSM(QDialog, Ui_DlgUploadOSM):
         userCommentBytes=userComment.toUtf8()
 
         # create http request's body (create XML with info about uploaded way)
-        requestXml=QString("<osm>\n<changeset>\n<tag k=\"created_by\" v=\"QGIS OSM v0.4\"/>\n<tag k=\"comment\" v=\""+userCommentBytes.data()+"\"/>\n</changeset>\n</osm>")
+        requestXml=QString("<osm>\n<changeset>\n<tag k=\"created_by\" v=\"QGIS OSM v0.5\"/>\n<tag k=\"comment\" v=\""+userCommentBytes.data()+"\"/>\n</changeset>\n</osm>")
 
         # send prepared request
         requestBytes=requestXml.toAscii()

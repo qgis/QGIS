@@ -476,6 +476,8 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
   itemList.push_back( std::make_pair( "", legendpixmap ) );
 
   changeSymbologySettings( layer, itemList );
+
+  updateIcon();
 }
 
 void QgsLegendLayer::updateIcon()

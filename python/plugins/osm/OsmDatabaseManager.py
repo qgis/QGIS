@@ -1,7 +1,7 @@
-"""@package DatabaseManager
+"""@package OsmDatabaseManager
 This module provides methods to manipulate with database where OSM data are stored.
 
-DatabaseManager is the only part of OSM Plugin that has the right to access OSM (sqlite) database.
+OsmDatabaseManager is the only part of OSM Plugin that has the right to access OSM (sqlite) database.
 If any other part of plugin wants to manipulate with OSM data, it is expected to use constructs of this module.
 
 This module can manage more than one database at a time.
@@ -21,10 +21,10 @@ import datetime
 
 
 
-class DatabaseManager:
-    """This is the only class of DatabaseManager module. Its purpose is to manage work with OSM databases.
+class OsmDatabaseManager:
+    """This is the only class of OsmDatabaseManager module. Its purpose is to manage work with OSM databases.
 
-    DatabaseManager class provides method to add new OSM database.
+    OsmDatabaseManager class provides method to add new OSM database.
 
     It holds all connections to all databases and holds the information
     on which database is currently used with all operations.
@@ -38,7 +38,7 @@ class DatabaseManager:
     def __init__(self,plugin):
         """The constructor.
 
-        Initializes inner structures of DatabaseManager and connect signals to appropriate slots.
+        Initializes inner structures of OsmDatabaseManager and connect signals to appropriate slots.
         """
 
         self.plugin=plugin
@@ -124,28 +124,19 @@ class DatabaseManager:
         layerSource=layer.source()
         pos=layerSource.lastIndexOf("?")
         dbFileName=layerSource.left(pos)+".db"
+        key=dbFileName.toLatin1().data()
 
         # remove all map layers that belong to dbFileName database
-        allLayers=QgsMapLayerRegistry.instance().mapLayers()
-        for ix in allLayers.keys():
-            l=allLayers[ix]    # layer object
-            if not l:
-                continue
-
-            lSource=l.source()
-            if not lSource:
-                continue
-
-            p=lSource.lastIndexOf("?")
-            dbFName=lSource.left(p)+".db"
-
-            if dbFName==dbFileName and l.getLayerID()<>layer.getLayerID():
-                self.removing=True
-                QgsMapLayerRegistry.instance().removeMapLayer(l.getLayerID(),True)
-                self.removing=False
+        self.removing=True
+        if layer.getLayerID()<>self.pointLayers[key].getLayerID():
+            QgsMapLayerRegistry.instance().removeMapLayer(self.pointLayers[key].getLayerID(),True)
+        if layer.getLayerID()<>self.lineLayers[key].getLayerID():
+            QgsMapLayerRegistry.instance().removeMapLayer(self.lineLayers[key].getLayerID(),True)
+        if layer.getLayerID()<>self.polygonLayers[key].getLayerID():
+            QgsMapLayerRegistry.instance().removeMapLayer(self.polygonLayers[key].getLayerID(),True)
+        self.removing=False
 
         # removed map items of key <dbFileName>
-        key=dbFileName.toLatin1().data()
         del self.dbConns[key]
         del self.pointLayers[key]
         del self.lineLayers[key]
@@ -156,7 +147,7 @@ class DatabaseManager:
         """Function provides possibility to add new OSM data.
 
         It's called (mainly) from OSM data loader.
-        New data (OSM database) is added into inner structures of DatabaseManager.
+        New data (OSM database) is added into inner structures of OsmDatabaseManager.
         New database is automatically considered new current (!) OSM database.
 
         @param dbFileName filename of new OSM database

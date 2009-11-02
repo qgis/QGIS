@@ -74,7 +74,7 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void updateUi();
 
     //! Converts the measurement, depending on settings in options and current transformation
-    void convertMeasurement(double &measure, QGis::UnitType &u, bool isArea);
+    void convertMeasurement( double &measure, QGis::UnitType &u, bool isArea );
 
     double mTotal;
 

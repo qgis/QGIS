@@ -644,7 +644,8 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
 */
 std::pair< bool, std::list<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &doc )
 {
-  // Layer order is implicit in the order they are stored in the project file
+  // Layer order is set by the restoring the legend settings from project file.
+  // This is done on the 'readProject( ... ) signal
 
   QDomNodeList nl = doc.elementsByTagName( "maplayer" );
 
@@ -847,7 +848,7 @@ bool QgsProject::read()
     // doesn't *have* layers -- nor a GUI for that matter -- we'll just
     // leave in the whining and boldly stomp on.
     emit readProject( *doc );
-    throw QgsProjectBadLayerException( getMapLayersResults.second );
+    throw QgsProjectBadLayerException( getMapLayersResults.second, *doc );
 
 //         return false;
   }

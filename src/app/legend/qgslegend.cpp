@@ -40,7 +40,6 @@
 #include "qgsattributetabledialog.h"
 
 #include <cfloat>
-#include <iostream>
 
 #include <QFont>
 #include <QDomDocument>
@@ -617,8 +616,11 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   doItemsLayout();
 
   // setup connections that will update the layer icons
-  connect( layer, SIGNAL( editingStarted() ), llayer, SLOT( updateIcon() ) );
-  connect( layer, SIGNAL( editingStopped() ), llayer, SLOT( updateIcon() ) );
+  if( dynamic_cast<QgsVectorLayer *>( layer ) ) 
+  {
+    connect( layer, SIGNAL( editingStarted() ), llayer, SLOT( updateIcon() ) );
+    connect( layer, SIGNAL( editingStopped() ), llayer, SLOT( updateIcon() ) );
+  } 
 }
 
 QgsLegendLayerFile* QgsLegend::currentLayerFile()

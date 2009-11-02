@@ -1,4 +1,4 @@
-#-----------------------------------------------------------
+﻿#-----------------------------------------------------------
 # 
 # Sum Lines In Polygons
 #
@@ -44,7 +44,7 @@ class Dialog(QDialog, Ui_Dialog):
 		# Set up the user interface from Designer.
 		self.setupUi(self)
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
-		self.setWindowTitle("Sum line lengths")
+		self.setWindowTitle(self.tr("Sum line lengths"))
 		# populate layer list
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()

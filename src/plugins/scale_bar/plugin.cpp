@@ -43,6 +43,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include <QColor>
 #include <QMenu>
 #include <QFile>
+#include <QLocale>
 
 //non qt includes
 #include <cmath>
@@ -262,17 +263,22 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
         if ( myActualSize > 5280.0 ) //5280 feet to the mile
         {
           myScaleBarUnitLabel = tr( " miles" );
-          myActualSize = myActualSize / 5280;
+          // Adjust scale bar width to get even numbers
+          myActualSize = myActualSize / 5000;
+          myScaleBarWidth = ( myScaleBarWidth * 5280 ) / 5000;
         }
         else if ( myActualSize == 5280.0 ) //5280 feet to the mile
         {
           myScaleBarUnitLabel = tr( " mile" );
-          myActualSize = myActualSize / 5280;
+          // Adjust scale bar width to get even numbers
+          myActualSize = myActualSize / 5000;
+          myScaleBarWidth = ( myScaleBarWidth * 5280 ) / 5000;
         }
         else if ( myActualSize < 1 )
         {
           myScaleBarUnitLabel = tr( " inches" );
-          myActualSize = myActualSize * 12;
+          myActualSize = myActualSize * 10;
+          myScaleBarWidth = ( myScaleBarWidth * 10 ) / 12;
         }
         else if ( myActualSize == 1.0 )
         {
@@ -304,7 +310,7 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
     double myFontHeight = myFontMetrics.height();
 
     //Set the maximum label
-    QString myScaleBarMaxLabel = QString::number( myActualSize );
+    QString myScaleBarMaxLabel = QLocale::system().toString( myActualSize );
 
     //Calculate total width of scale bar and label
     double myTotalScaleBarWidth = myScaleBarWidth + myFontWidth;

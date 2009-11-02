@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>DlgImport</class>
- <widget class="QDialog" name="DlgImport" >
+ <class>OsmImportDlg</class>
+ <widget class="QDialog" name="OsmImportDlg" >
   <property name="windowModality" >
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -105,7 +105,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgImport</receiver>
+   <receiver>OsmImportDlg</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

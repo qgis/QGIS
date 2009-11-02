@@ -90,7 +90,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
 
     //display the classification field
     QString classfield = "";
-    for ( std::map<QString, int>::iterator it = mFieldMap.begin();it != mFieldMap.end();++it )
+    for ( std::map<QString, int>::iterator it = mFieldMap.begin(); it != mFieldMap.end(); ++it )
     {
       if ( it->second == renderer->classificationField() )
       {
@@ -102,7 +102,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
 
     numberofclassesspinbox->setValue( list.size() );
     //fill the items of the renderer into mValues
-    for ( QList<QgsSymbol*>::iterator it = list.begin();it != list.end();++it )
+    for ( QList<QgsSymbol*>::iterator it = list.begin(); it != list.end(); ++it )
     {
       //todo: make an assignment operator and a copy constructor for QgsSymbol
       QString classbreak = ( *it )->lowerValue() + " - " + ( *it )->upperValue();
@@ -187,7 +187,7 @@ void QgsGraduatedSymbolDialog::apply()
   //
   // Now the class breaks
   //
-  for ( int item = 0;item < mClassListWidget->count();++item )
+  for ( int item = 0; item < mClassListWidget->count(); ++item )
   {
     QString classbreak = mClassListWidget->item( item )->text();
     std::map<QString, QgsSymbol*>::iterator it = mEntries.find( classbreak );
@@ -268,7 +268,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
   double maximum = 0;
 
   //delete all previous entries
-  for ( std::map<QString, QgsSymbol*>::iterator it = mEntries.begin();it != mEntries.end();++it )
+  for ( std::map<QString, QgsSymbol*>::iterator it = mEntries.begin(); it != mEntries.end(); ++it )
   {
     delete it->second;
   }
@@ -366,7 +366,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
   else if ( modeComboBox->currentText() == tr( "Equal Interval" ) )
   {
     std::list<QgsSymbol*>::const_iterator symbol_it = symbolList.begin();
-    for ( int i = 0;i < numberofclassesspinbox->value();++i )
+    for ( int i = 0; i < numberofclassesspinbox->value(); ++i )
     {
       //switch if attribute is int or double
       double lower = minimum + ( maximum - minimum ) / numberofclassesspinbox->value() * i;
@@ -388,7 +388,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
   else if ( modeComboBox->currentText() == tr( "Empty" ) )
   {
     std::list<QgsSymbol*>::const_iterator symbol_it = symbolList.begin();
-    for ( int i = 0;i < numberofclassesspinbox->value();++i )
+    for ( int i = 0; i < numberofclassesspinbox->value(); ++i )
     {
       listBoxText = "Empty" + QString::number( i + 1 );
       QListWidgetItem * mypItem = new QListWidgetItem( listBoxText );

@@ -34,6 +34,7 @@
 				72EBCB0E0F49DEC10016BA3C /* Copy - fTools-icons */,
 				72EBCB0F0F49DEC10016BA3C /* Copy - ftools-icons-default */,
 				72EBCB100F49DEC10016BA3C /* Copy - ftools-icons-gis */,
+				72832D1210362D61002E3B72 /* Script - osm ui */,
 				72DB694E1021DA3500ED5F3A /* Copy - osm */,
 				72DB69701021DC8400ED5F3A /* Copy - osm-map_tools */,
 				72DB69751021DCFE00ED5F3A /* Copy - osm-styles */,
@@ -551,7 +552,7 @@
 		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
 		72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 72267A500F9A1D3100010C18 /* mActionZoomNext.png */; };
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
-		724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */; };
+		724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */; };
 		724C9FED1019EE3700A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
 		7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */; };
@@ -1057,7 +1058,6 @@
 		7264FE9C1024D117004D4CDD /* qgsmaptooldeletevertex.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6260F39E57A003DC336 /* qgsmaptooldeletevertex.h */; };
 		7264FE9D1024D117004D4CDD /* qgsmaptoolmovevertex.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E62E0F39E57A003DC336 /* qgsmaptoolmovevertex.h */; };
 		7264FE9F1024D183004D4CDD /* qgsogrprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC650F39E57B003DC336 /* qgsogrprovider.h */; };
-		7264FEA01024D1B3004D4CDD /* osmprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D41021D06C00ED5F3A /* osmprovider.h */; };
 		72683FFB0FD6B21A00D90FFC /* mActionFromSelectedFeature.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FF90FD6B1EA00D90FFC /* mActionFromSelectedFeature.png */; };
 		72683FFC0FD6B21A00D90FFC /* mActionMergeFeatures.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FF80FD6B1EA00D90FFC /* mActionMergeFeatures.png */; };
 		72683FFD0FD6B21A00D90FFC /* mActionRemoveSelectedFeature.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FFA0FD6B1EA00D90FFC /* mActionRemoveSelectedFeature.png */; };
@@ -1427,31 +1427,23 @@
 		72DB68F11021D0BD00ED5F3A /* osmrenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D51021D06C00ED5F3A /* osmrenderer.cpp */; };
 		72DB68F31021D0BD00ED5F3A /* osmstyle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D71021D06C00ED5F3A /* osmstyle.cpp */; };
 		72DB694F1021DA5600ED5F3A /* __init__.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB690E1021D98600ED5F3A /* __init__.py */; };
-		72DB69501021DA5600ED5F3A /* DatabaseManager.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69101021D98600ED5F3A /* DatabaseManager.py */; };
-		72DB69511021DA5600ED5F3A /* DlgAddRelation.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69111021D98600ED5F3A /* DlgAddRelation.py */; };
-		72DB69521021DA5600ED5F3A /* DlgAddRelation_ui.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69121021D98600ED5F3A /* DlgAddRelation_ui.py */; };
-		72DB69531021DA5600ED5F3A /* DlgDownloadOSM.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69131021D98600ED5F3A /* DlgDownloadOSM.py */; };
-		72DB69541021DA5600ED5F3A /* DlgDownloadOSM_ui.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69141021D98600ED5F3A /* DlgDownloadOSM_ui.py */; };
-		72DB69551021DA5600ED5F3A /* DlgImport.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69151021D98600ED5F3A /* DlgImport.py */; };
-		72DB69561021DA5600ED5F3A /* DlgImport_ui.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69161021D98600ED5F3A /* DlgImport_ui.py */; };
-		72DB69571021DA5600ED5F3A /* DlgLoadOSM.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69171021D98600ED5F3A /* DlgLoadOSM.py */; };
-		72DB69581021DA5600ED5F3A /* DlgLoadOSM_ui.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69181021D98600ED5F3A /* DlgLoadOSM_ui.py */; };
-		72DB69591021DA5600ED5F3A /* DlgSaveOSM.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69191021D98600ED5F3A /* DlgSaveOSM.py */; };
-		72DB695A1021DA5600ED5F3A /* DlgSaveOSM_ui.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691A1021D98600ED5F3A /* DlgSaveOSM_ui.py */; };
-		72DB695B1021DA5600ED5F3A /* DlgUploadOSM.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691B1021D98600ED5F3A /* DlgUploadOSM.py */; };
-		72DB695C1021DA5600ED5F3A /* DlgUploadOSM_ui.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691C1021D98600ED5F3A /* DlgUploadOSM_ui.py */; };
-		72DB695D1021DA5600ED5F3A /* DockUndoRedo.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691D1021D98600ED5F3A /* DockUndoRedo.py */; };
-		72DB695E1021DA5600ED5F3A /* DockUndoRedo_ui.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691E1021D98600ED5F3A /* DockUndoRedo_ui.py */; };
-		72DB695F1021DA5600ED5F3A /* DockWidget.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691F1021D98600ED5F3A /* DockWidget.py */; };
-		72DB69601021DA5600ED5F3A /* DockWidget_ui.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69201021D98600ED5F3A /* DockWidget_ui.py */; };
-		72DB69611021DA5600ED5F3A /* osm_plugin.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB693C1021D98600ED5F3A /* osm_plugin.py */; };
+		72DB69501021DA5600ED5F3A /* OsmDatabaseManager.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69101021D98600ED5F3A /* OsmDatabaseManager.py */; };
+		72DB69511021DA5600ED5F3A /* OsmAddRelationDlg.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69111021D98600ED5F3A /* OsmAddRelationDlg.py */; };
+		72DB69531021DA5600ED5F3A /* OsmDownloadDlg.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69131021D98600ED5F3A /* OsmDownloadDlg.py */; };
+		72DB69551021DA5600ED5F3A /* OsmImportDlg.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69151021D98600ED5F3A /* OsmImportDlg.py */; };
+		72DB69571021DA5600ED5F3A /* OsmLoadDlg.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69171021D98600ED5F3A /* OsmLoadDlg.py */; };
+		72DB69591021DA5600ED5F3A /* OsmSaveDlg.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB69191021D98600ED5F3A /* OsmSaveDlg.py */; };
+		72DB695B1021DA5600ED5F3A /* OsmUploadDlg.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691B1021D98600ED5F3A /* OsmUploadDlg.py */; };
+		72DB695D1021DA5600ED5F3A /* OsmUndoRedoDW.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691D1021D98600ED5F3A /* OsmUndoRedoDW.py */; };
+		72DB695F1021DA5600ED5F3A /* OsmFeatureDW.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB691F1021D98600ED5F3A /* OsmFeatureDW.py */; };
+		72DB69611021DA5600ED5F3A /* OsmPlugin.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB693C1021D98600ED5F3A /* OsmPlugin.py */; };
 		72DB69621021DA5600ED5F3A /* resources.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72DB693D1021D98600ED5F3A /* resources.py */; };
 		72DB69661021DC7600ED5F3A /* __init__.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69361021D98600ED5F3A /* __init__.py */; };
-		72DB69671021DC7600ED5F3A /* CreateLineMapTool.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69371021D98600ED5F3A /* CreateLineMapTool.py */; };
-		72DB69681021DC7600ED5F3A /* CreatePointMapTool.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69381021D98600ED5F3A /* CreatePointMapTool.py */; };
-		72DB69691021DC7600ED5F3A /* CreatePolygonMapTool.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69391021D98600ED5F3A /* CreatePolygonMapTool.py */; };
-		72DB696A1021DC7600ED5F3A /* IdentifyMapTool.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB693A1021D98600ED5F3A /* IdentifyMapTool.py */; };
-		72DB696B1021DC7600ED5F3A /* MoveMapTool.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB693B1021D98600ED5F3A /* MoveMapTool.py */; };
+		72DB69671021DC7600ED5F3A /* OsmCreateLineMT.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69371021D98600ED5F3A /* OsmCreateLineMT.py */; };
+		72DB69681021DC7600ED5F3A /* OsmCreatePointMT.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69381021D98600ED5F3A /* OsmCreatePointMT.py */; };
+		72DB69691021DC7600ED5F3A /* OsmCreatePolygonMT.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB69391021D98600ED5F3A /* OsmCreatePolygonMT.py */; };
+		72DB696A1021DC7600ED5F3A /* OsmIdentifyMT.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB693A1021D98600ED5F3A /* OsmIdentifyMT.py */; };
+		72DB696B1021DC7600ED5F3A /* OsmMoveMT.py in Copy - osm-map_tools */ = {isa = PBXBuildFile; fileRef = 72DB693B1021D98600ED5F3A /* OsmMoveMT.py */; };
 		72DB69721021DCE000ED5F3A /* big_scale.style in Copy - osm-styles */ = {isa = PBXBuildFile; fileRef = 72DB69401021D98600ED5F3A /* big_scale.style */; };
 		72DB69731021DCE000ED5F3A /* medium_scale.style in Copy - osm-styles */ = {isa = PBXBuildFile; fileRef = 72DB69411021D98600ED5F3A /* medium_scale.style */; };
 		72DB69741021DCE000ED5F3A /* small_scale.style in Copy - osm-styles */ = {isa = PBXBuildFile; fileRef = 72DB69421021D98600ED5F3A /* small_scale.style */; };
@@ -2980,7 +2972,6 @@
 				7256F3CF0F41C3E20022BE1F /* mActionRemove.png in Copy - theme-classic */,
 				7256F3D00F41C3E20022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-classic */,
 				7256F3D10F41C3E20022BE1F /* mActionRemoveLayer.png in Copy - theme-classic */,
-				724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-classic */,
 				7256F3D20F41C3E20022BE1F /* mActionSaveAsSVG.png in Copy - theme-classic */,
 				7256F3D30F41C3E20022BE1F /* mActionSaveMapAsImage.png in Copy - theme-classic */,
 				7256F3D40F41C3E20022BE1F /* mActionScaleBar.png in Copy - theme-classic */,
@@ -3107,6 +3098,7 @@
 				7256F4660F41C4DD0022BE1F /* mActionRemove.png in Copy - theme-default */,
 				7256F4670F41C4DD0022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-default */,
 				7256F4680F41C4DD0022BE1F /* mActionRemoveLayer.png in Copy - theme-default */,
+				724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */,
 				7256F4690F41C4DD0022BE1F /* mActionSaveAsSVG.png in Copy - theme-default */,
 				7256F46A0F41C4DD0022BE1F /* mActionSaveMapAsImage.png in Copy - theme-default */,
 				7256F46B0F41C4DD0022BE1F /* mActionScaleBar.png in Copy - theme-default */,
@@ -3424,24 +3416,16 @@
 			dstSubfolderSpec = 0;
 			files = (
 				72DB694F1021DA5600ED5F3A /* __init__.py in Copy - osm */,
-				72DB69501021DA5600ED5F3A /* DatabaseManager.py in Copy - osm */,
-				72DB69511021DA5600ED5F3A /* DlgAddRelation.py in Copy - osm */,
-				72DB69521021DA5600ED5F3A /* DlgAddRelation_ui.py in Copy - osm */,
-				72DB69531021DA5600ED5F3A /* DlgDownloadOSM.py in Copy - osm */,
-				72DB69541021DA5600ED5F3A /* DlgDownloadOSM_ui.py in Copy - osm */,
-				72DB69551021DA5600ED5F3A /* DlgImport.py in Copy - osm */,
-				72DB69561021DA5600ED5F3A /* DlgImport_ui.py in Copy - osm */,
-				72DB69571021DA5600ED5F3A /* DlgLoadOSM.py in Copy - osm */,
-				72DB69581021DA5600ED5F3A /* DlgLoadOSM_ui.py in Copy - osm */,
-				72DB69591021DA5600ED5F3A /* DlgSaveOSM.py in Copy - osm */,
-				72DB695A1021DA5600ED5F3A /* DlgSaveOSM_ui.py in Copy - osm */,
-				72DB695B1021DA5600ED5F3A /* DlgUploadOSM.py in Copy - osm */,
-				72DB695C1021DA5600ED5F3A /* DlgUploadOSM_ui.py in Copy - osm */,
-				72DB695D1021DA5600ED5F3A /* DockUndoRedo.py in Copy - osm */,
-				72DB695E1021DA5600ED5F3A /* DockUndoRedo_ui.py in Copy - osm */,
-				72DB695F1021DA5600ED5F3A /* DockWidget.py in Copy - osm */,
-				72DB69601021DA5600ED5F3A /* DockWidget_ui.py in Copy - osm */,
-				72DB69611021DA5600ED5F3A /* osm_plugin.py in Copy - osm */,
+				72DB69501021DA5600ED5F3A /* OsmDatabaseManager.py in Copy - osm */,
+				72DB69511021DA5600ED5F3A /* OsmAddRelationDlg.py in Copy - osm */,
+				72DB69531021DA5600ED5F3A /* OsmDownloadDlg.py in Copy - osm */,
+				72DB69551021DA5600ED5F3A /* OsmImportDlg.py in Copy - osm */,
+				72DB69571021DA5600ED5F3A /* OsmLoadDlg.py in Copy - osm */,
+				72DB69591021DA5600ED5F3A /* OsmSaveDlg.py in Copy - osm */,
+				72DB695B1021DA5600ED5F3A /* OsmUploadDlg.py in Copy - osm */,
+				72DB695D1021DA5600ED5F3A /* OsmUndoRedoDW.py in Copy - osm */,
+				72DB695F1021DA5600ED5F3A /* OsmFeatureDW.py in Copy - osm */,
+				72DB69611021DA5600ED5F3A /* OsmPlugin.py in Copy - osm */,
 				72DB69621021DA5600ED5F3A /* resources.py in Copy - osm */,
 			);
 			name = "Copy - osm";
@@ -3454,11 +3438,11 @@
 			dstSubfolderSpec = 0;
 			files = (
 				72DB69661021DC7600ED5F3A /* __init__.py in Copy - osm-map_tools */,
-				72DB69671021DC7600ED5F3A /* CreateLineMapTool.py in Copy - osm-map_tools */,
-				72DB69681021DC7600ED5F3A /* CreatePointMapTool.py in Copy - osm-map_tools */,
-				72DB69691021DC7600ED5F3A /* CreatePolygonMapTool.py in Copy - osm-map_tools */,
-				72DB696A1021DC7600ED5F3A /* IdentifyMapTool.py in Copy - osm-map_tools */,
-				72DB696B1021DC7600ED5F3A /* MoveMapTool.py in Copy - osm-map_tools */,
+				72DB69671021DC7600ED5F3A /* OsmCreateLineMT.py in Copy - osm-map_tools */,
+				72DB69681021DC7600ED5F3A /* OsmCreatePointMT.py in Copy - osm-map_tools */,
+				72DB69691021DC7600ED5F3A /* OsmCreatePolygonMT.py in Copy - osm-map_tools */,
+				72DB696A1021DC7600ED5F3A /* OsmIdentifyMT.py in Copy - osm-map_tools */,
+				72DB696B1021DC7600ED5F3A /* OsmMoveMT.py in Copy - osm-map_tools */,
 			);
 			name = "Copy - osm-map_tools";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5869,7 +5853,7 @@
 		723FD05E0FBCB85D00EFA55D /* qgspalgeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspalgeometry.h; path = ../../src/core/qgspalgeometry.h; sourceTree = SOURCE_ROOT; };
 		723FD0660FBCB94600EFA55D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/scripts/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "db.connect-login.pg.py"; path = "../../src/plugins/grass/scripts/db.connect-login.pg.py"; sourceTree = SOURCE_ROOT; };
-		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/classic/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
+		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/default/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/gis/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
 		7256F2DD0F4147890022BE1F /* SPONSORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SPONSORS; path = ../../SPONSORS; sourceTree = SOURCE_ROOT; };
@@ -5961,6 +5945,10 @@
 		72820FEC0FACCF970011C963 /* mActionSimplify.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSimplify.png; path = ../../images/themes/default/mActionSimplify.png; sourceTree = SOURCE_ROOT; };
 		72820FED0FACCF970011C963 /* mActionDeletePart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeletePart.png; path = ../../images/themes/default/mActionDeletePart.png; sourceTree = SOURCE_ROOT; };
 		72820FEE0FACCF970011C963 /* mActionDeleteRing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeleteRing.png; path = ../../images/themes/default/mActionDeleteRing.png; sourceTree = SOURCE_ROOT; };
+		72832D0C1036242E002E3B72 /* osm_editRelation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_editRelation.png; path = ../../python/plugins/osm/images/osm_editRelation.png; sourceTree = SOURCE_ROOT; };
+		72832D0D1036242E002E3B72 /* osm_addRelation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_addRelation.png; path = ../../python/plugins/osm/images/osm_addRelation.png; sourceTree = SOURCE_ROOT; };
+		72832D0E1036242E002E3B72 /* osm_urDetails.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_urDetails.png; path = ../../python/plugins/osm/images/osm_urDetails.png; sourceTree = SOURCE_ROOT; };
+		72832D0F1036242E002E3B72 /* osm_removeRelation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeRelation.png; path = ../../python/plugins/osm/images/osm_removeRelation.png; sourceTree = SOURCE_ROOT; };
 		7299396A0FE3037600244D1A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = "../../src/plugins/grass/modules-6.3/CMakeLists.txt"; sourceTree = SOURCE_ROOT; };
 		7299396B0FE3037600244D1A /* r.surf.fractal.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.1.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.1.png"; sourceTree = SOURCE_ROOT; };
 		7299396C0FE3037600244D1A /* r.surf.fractal.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.2.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.2.png"; sourceTree = SOURCE_ROOT; };
@@ -6904,23 +6892,15 @@
 		72DB68E31021D08400ED5F3A /* libosmprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libosmprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72DB690E1021D98600ED5F3A /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = ../../python/plugins/osm/__init__.py; sourceTree = SOURCE_ROOT; };
 		72DB690F1021D98600ED5F3A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../python/plugins/osm/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		72DB69101021D98600ED5F3A /* DatabaseManager.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DatabaseManager.py; path = ../../python/plugins/osm/DatabaseManager.py; sourceTree = SOURCE_ROOT; };
-		72DB69111021D98600ED5F3A /* DlgAddRelation.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgAddRelation.py; path = ../../python/plugins/osm/DlgAddRelation.py; sourceTree = SOURCE_ROOT; };
-		72DB69121021D98600ED5F3A /* DlgAddRelation_ui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgAddRelation_ui.py; path = ../../python/plugins/osm/DlgAddRelation_ui.py; sourceTree = SOURCE_ROOT; };
-		72DB69131021D98600ED5F3A /* DlgDownloadOSM.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgDownloadOSM.py; path = ../../python/plugins/osm/DlgDownloadOSM.py; sourceTree = SOURCE_ROOT; };
-		72DB69141021D98600ED5F3A /* DlgDownloadOSM_ui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgDownloadOSM_ui.py; path = ../../python/plugins/osm/DlgDownloadOSM_ui.py; sourceTree = SOURCE_ROOT; };
-		72DB69151021D98600ED5F3A /* DlgImport.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgImport.py; path = ../../python/plugins/osm/DlgImport.py; sourceTree = SOURCE_ROOT; };
-		72DB69161021D98600ED5F3A /* DlgImport_ui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgImport_ui.py; path = ../../python/plugins/osm/DlgImport_ui.py; sourceTree = SOURCE_ROOT; };
-		72DB69171021D98600ED5F3A /* DlgLoadOSM.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgLoadOSM.py; path = ../../python/plugins/osm/DlgLoadOSM.py; sourceTree = SOURCE_ROOT; };
-		72DB69181021D98600ED5F3A /* DlgLoadOSM_ui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgLoadOSM_ui.py; path = ../../python/plugins/osm/DlgLoadOSM_ui.py; sourceTree = SOURCE_ROOT; };
-		72DB69191021D98600ED5F3A /* DlgSaveOSM.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgSaveOSM.py; path = ../../python/plugins/osm/DlgSaveOSM.py; sourceTree = SOURCE_ROOT; };
-		72DB691A1021D98600ED5F3A /* DlgSaveOSM_ui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgSaveOSM_ui.py; path = ../../python/plugins/osm/DlgSaveOSM_ui.py; sourceTree = SOURCE_ROOT; };
-		72DB691B1021D98600ED5F3A /* DlgUploadOSM.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgUploadOSM.py; path = ../../python/plugins/osm/DlgUploadOSM.py; sourceTree = SOURCE_ROOT; };
-		72DB691C1021D98600ED5F3A /* DlgUploadOSM_ui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DlgUploadOSM_ui.py; path = ../../python/plugins/osm/DlgUploadOSM_ui.py; sourceTree = SOURCE_ROOT; };
-		72DB691D1021D98600ED5F3A /* DockUndoRedo.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DockUndoRedo.py; path = ../../python/plugins/osm/DockUndoRedo.py; sourceTree = SOURCE_ROOT; };
-		72DB691E1021D98600ED5F3A /* DockUndoRedo_ui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DockUndoRedo_ui.py; path = ../../python/plugins/osm/DockUndoRedo_ui.py; sourceTree = SOURCE_ROOT; };
-		72DB691F1021D98600ED5F3A /* DockWidget.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DockWidget.py; path = ../../python/plugins/osm/DockWidget.py; sourceTree = SOURCE_ROOT; };
-		72DB69201021D98600ED5F3A /* DockWidget_ui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = DockWidget_ui.py; path = ../../python/plugins/osm/DockWidget_ui.py; sourceTree = SOURCE_ROOT; };
+		72DB69101021D98600ED5F3A /* OsmDatabaseManager.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmDatabaseManager.py; path = ../../python/plugins/osm/OsmDatabaseManager.py; sourceTree = SOURCE_ROOT; };
+		72DB69111021D98600ED5F3A /* OsmAddRelationDlg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmAddRelationDlg.py; path = ../../python/plugins/osm/OsmAddRelationDlg.py; sourceTree = SOURCE_ROOT; };
+		72DB69131021D98600ED5F3A /* OsmDownloadDlg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmDownloadDlg.py; path = ../../python/plugins/osm/OsmDownloadDlg.py; sourceTree = SOURCE_ROOT; };
+		72DB69151021D98600ED5F3A /* OsmImportDlg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmImportDlg.py; path = ../../python/plugins/osm/OsmImportDlg.py; sourceTree = SOURCE_ROOT; };
+		72DB69171021D98600ED5F3A /* OsmLoadDlg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmLoadDlg.py; path = ../../python/plugins/osm/OsmLoadDlg.py; sourceTree = SOURCE_ROOT; };
+		72DB69191021D98600ED5F3A /* OsmSaveDlg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmSaveDlg.py; path = ../../python/plugins/osm/OsmSaveDlg.py; sourceTree = SOURCE_ROOT; };
+		72DB691B1021D98600ED5F3A /* OsmUploadDlg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmUploadDlg.py; path = ../../python/plugins/osm/OsmUploadDlg.py; sourceTree = SOURCE_ROOT; };
+		72DB691D1021D98600ED5F3A /* OsmUndoRedoDW.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmUndoRedoDW.py; path = ../../python/plugins/osm/OsmUndoRedoDW.py; sourceTree = SOURCE_ROOT; };
+		72DB691F1021D98600ED5F3A /* OsmFeatureDW.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmFeatureDW.py; path = ../../python/plugins/osm/OsmFeatureDW.py; sourceTree = SOURCE_ROOT; };
 		72DB69221021D98600ED5F3A /* osm_createLine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_createLine.png; path = ../../python/plugins/osm/images/osm_createLine.png; sourceTree = SOURCE_ROOT; };
 		72DB69231021D98600ED5F3A /* osm_createPoint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_createPoint.png; path = ../../python/plugins/osm/images/osm_createPoint.png; sourceTree = SOURCE_ROOT; };
 		72DB69241021D98600ED5F3A /* osm_createPolygon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_createPolygon.png; path = ../../python/plugins/osm/images/osm_createPolygon.png; sourceTree = SOURCE_ROOT; };
@@ -6939,27 +6919,26 @@
 		72DB69311021D98600ED5F3A /* osm_undo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_undo.png; path = ../../python/plugins/osm/images/osm_undo.png; sourceTree = SOURCE_ROOT; };
 		72DB69321021D98600ED5F3A /* osm_upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_upload.png; path = ../../python/plugins/osm/images/osm_upload.png; sourceTree = SOURCE_ROOT; };
 		72DB69331021D98600ED5F3A /* osmIconsMaster.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = osmIconsMaster.svg; path = ../../python/plugins/osm/images/osmIconsMaster.svg; sourceTree = SOURCE_ROOT; };
-		72DB69341021D98600ED5F3A /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = ../../python/plugins/osm/Makefile; sourceTree = SOURCE_ROOT; };
 		72DB69361021D98600ED5F3A /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = ../../python/plugins/osm/map_tools/__init__.py; sourceTree = SOURCE_ROOT; };
-		72DB69371021D98600ED5F3A /* CreateLineMapTool.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = CreateLineMapTool.py; path = ../../python/plugins/osm/map_tools/CreateLineMapTool.py; sourceTree = SOURCE_ROOT; };
-		72DB69381021D98600ED5F3A /* CreatePointMapTool.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = CreatePointMapTool.py; path = ../../python/plugins/osm/map_tools/CreatePointMapTool.py; sourceTree = SOURCE_ROOT; };
-		72DB69391021D98600ED5F3A /* CreatePolygonMapTool.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = CreatePolygonMapTool.py; path = ../../python/plugins/osm/map_tools/CreatePolygonMapTool.py; sourceTree = SOURCE_ROOT; };
-		72DB693A1021D98600ED5F3A /* IdentifyMapTool.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = IdentifyMapTool.py; path = ../../python/plugins/osm/map_tools/IdentifyMapTool.py; sourceTree = SOURCE_ROOT; };
-		72DB693B1021D98600ED5F3A /* MoveMapTool.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = MoveMapTool.py; path = ../../python/plugins/osm/map_tools/MoveMapTool.py; sourceTree = SOURCE_ROOT; };
-		72DB693C1021D98600ED5F3A /* osm_plugin.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = osm_plugin.py; path = ../../python/plugins/osm/osm_plugin.py; sourceTree = SOURCE_ROOT; };
+		72DB69371021D98600ED5F3A /* OsmCreateLineMT.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmCreateLineMT.py; path = ../../python/plugins/osm/map_tools/OsmCreateLineMT.py; sourceTree = SOURCE_ROOT; };
+		72DB69381021D98600ED5F3A /* OsmCreatePointMT.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmCreatePointMT.py; path = ../../python/plugins/osm/map_tools/OsmCreatePointMT.py; sourceTree = SOURCE_ROOT; };
+		72DB69391021D98600ED5F3A /* OsmCreatePolygonMT.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmCreatePolygonMT.py; path = ../../python/plugins/osm/map_tools/OsmCreatePolygonMT.py; sourceTree = SOURCE_ROOT; };
+		72DB693A1021D98600ED5F3A /* OsmIdentifyMT.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmIdentifyMT.py; path = ../../python/plugins/osm/map_tools/OsmIdentifyMT.py; sourceTree = SOURCE_ROOT; };
+		72DB693B1021D98600ED5F3A /* OsmMoveMT.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmMoveMT.py; path = ../../python/plugins/osm/map_tools/OsmMoveMT.py; sourceTree = SOURCE_ROOT; };
+		72DB693C1021D98600ED5F3A /* OsmPlugin.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmPlugin.py; path = ../../python/plugins/osm/OsmPlugin.py; sourceTree = SOURCE_ROOT; };
 		72DB693D1021D98600ED5F3A /* resources.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = resources.py; path = ../../python/plugins/osm/resources.py; sourceTree = SOURCE_ROOT; };
 		72DB693E1021D98600ED5F3A /* resources.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resources.qrc; path = ../../python/plugins/osm/resources.qrc; sourceTree = SOURCE_ROOT; };
 		72DB69401021D98600ED5F3A /* big_scale.style */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = big_scale.style; path = ../../python/plugins/osm/styles/big_scale.style; sourceTree = SOURCE_ROOT; };
 		72DB69411021D98600ED5F3A /* medium_scale.style */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = medium_scale.style; path = ../../python/plugins/osm/styles/medium_scale.style; sourceTree = SOURCE_ROOT; };
 		72DB69421021D98600ED5F3A /* small_scale.style */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = small_scale.style; path = ../../python/plugins/osm/styles/small_scale.style; sourceTree = SOURCE_ROOT; };
-		72DB69441021D98600ED5F3A /* DlgAddRelation.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DlgAddRelation.ui; path = ../../python/plugins/osm/ui_files/DlgAddRelation.ui; sourceTree = SOURCE_ROOT; };
-		72DB69451021D98600ED5F3A /* DlgDownloadOSM.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DlgDownloadOSM.ui; path = ../../python/plugins/osm/ui_files/DlgDownloadOSM.ui; sourceTree = SOURCE_ROOT; };
-		72DB69461021D98600ED5F3A /* DlgImport.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DlgImport.ui; path = ../../python/plugins/osm/ui_files/DlgImport.ui; sourceTree = SOURCE_ROOT; };
-		72DB69471021D98600ED5F3A /* DlgLoadOSM.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DlgLoadOSM.ui; path = ../../python/plugins/osm/ui_files/DlgLoadOSM.ui; sourceTree = SOURCE_ROOT; };
-		72DB69481021D98600ED5F3A /* DlgSaveOSM.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DlgSaveOSM.ui; path = ../../python/plugins/osm/ui_files/DlgSaveOSM.ui; sourceTree = SOURCE_ROOT; };
-		72DB69491021D98600ED5F3A /* DlgUploadOSM.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DlgUploadOSM.ui; path = ../../python/plugins/osm/ui_files/DlgUploadOSM.ui; sourceTree = SOURCE_ROOT; };
-		72DB694A1021D98600ED5F3A /* DockUndoRedo.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = DockUndoRedo.ui; path = ../../python/plugins/osm/ui_files/DockUndoRedo.ui; sourceTree = SOURCE_ROOT; };
-		72DB694B1021D98600ED5F3A /* DockWidget.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = DockWidget.ui; path = ../../python/plugins/osm/ui_files/DockWidget.ui; sourceTree = SOURCE_ROOT; };
+		72DB69441021D98600ED5F3A /* OsmAddRelationDlg.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OsmAddRelationDlg.ui; path = ../../python/plugins/osm/ui_files/OsmAddRelationDlg.ui; sourceTree = SOURCE_ROOT; };
+		72DB69451021D98600ED5F3A /* OsmDownloadDlg.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OsmDownloadDlg.ui; path = ../../python/plugins/osm/ui_files/OsmDownloadDlg.ui; sourceTree = SOURCE_ROOT; };
+		72DB69461021D98600ED5F3A /* OsmImportDlg.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OsmImportDlg.ui; path = ../../python/plugins/osm/ui_files/OsmImportDlg.ui; sourceTree = SOURCE_ROOT; };
+		72DB69471021D98600ED5F3A /* OsmLoadDlg.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OsmLoadDlg.ui; path = ../../python/plugins/osm/ui_files/OsmLoadDlg.ui; sourceTree = SOURCE_ROOT; };
+		72DB69481021D98600ED5F3A /* OsmSaveDlg.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OsmSaveDlg.ui; path = ../../python/plugins/osm/ui_files/OsmSaveDlg.ui; sourceTree = SOURCE_ROOT; };
+		72DB69491021D98600ED5F3A /* OsmUploadDlg.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OsmUploadDlg.ui; path = ../../python/plugins/osm/ui_files/OsmUploadDlg.ui; sourceTree = SOURCE_ROOT; };
+		72DB694A1021D98600ED5F3A /* OsmUndoRedoDW.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OsmUndoRedoDW.ui; path = ../../python/plugins/osm/ui_files/OsmUndoRedoDW.ui; sourceTree = SOURCE_ROOT; };
+		72DB694B1021D98600ED5F3A /* OsmFeatureDW.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OsmFeatureDW.ui; path = ../../python/plugins/osm/ui_files/OsmFeatureDW.ui; sourceTree = SOURCE_ROOT; };
 		72E4DF0C0FE00FAD00D3505D /* v.out.ogr.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = v.out.ogr.pg.py; path = ../../src/plugins/grass/scripts/v.out.ogr.pg.py; sourceTree = SOURCE_ROOT; };
 		72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = qgscomposerview.sip; sourceTree = "<group>"; };
 		72E9A3BE0F5AE63500E78E3C /* qgsscalebarstyle.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsscalebarstyle.sip; path = ../../python/core/qgsscalebarstyle.sip; sourceTree = SOURCE_ROOT; };
@@ -10042,7 +10021,6 @@
 				7209EEBE0F39E5D9003DC336 /* mActionRemove.png */,
 				7209EEBF0F39E5D9003DC336 /* mActionRemoveAllFromOverview.png */,
 				7209EEC00F39E5D9003DC336 /* mActionRemoveLayer.png */,
-				724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */,
 				7209EEC10F39E5D9003DC336 /* mActionSaveAsSVG.png */,
 				7209EEC20F39E5D9003DC336 /* mActionSaveMapAsImage.png */,
 				7209EEC30F39E5D9003DC336 /* mActionScaleBar.png */,
@@ -10085,6 +10063,7 @@
 		7209EEE30F39E5D9003DC336 /* default */ = {
 			isa = PBXGroup;
 			children = (
+				724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */,
 				72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */,
 				7209EEE50F39E5D9003DC336 /* clear_input.svg */,
 				7209EEE60F39E5D9003DC336 /* clearInput.png */,
@@ -11639,27 +11618,18 @@
 			children = (
 				72DB690E1021D98600ED5F3A /* __init__.py */,
 				72DB690F1021D98600ED5F3A /* CMakeLists.txt */,
-				72DB69101021D98600ED5F3A /* DatabaseManager.py */,
-				72DB69111021D98600ED5F3A /* DlgAddRelation.py */,
-				72DB69121021D98600ED5F3A /* DlgAddRelation_ui.py */,
-				72DB69131021D98600ED5F3A /* DlgDownloadOSM.py */,
-				72DB69141021D98600ED5F3A /* DlgDownloadOSM_ui.py */,
-				72DB69151021D98600ED5F3A /* DlgImport.py */,
-				72DB69161021D98600ED5F3A /* DlgImport_ui.py */,
-				72DB69171021D98600ED5F3A /* DlgLoadOSM.py */,
-				72DB69181021D98600ED5F3A /* DlgLoadOSM_ui.py */,
-				72DB69191021D98600ED5F3A /* DlgSaveOSM.py */,
-				72DB691A1021D98600ED5F3A /* DlgSaveOSM_ui.py */,
-				72DB691B1021D98600ED5F3A /* DlgUploadOSM.py */,
-				72DB691C1021D98600ED5F3A /* DlgUploadOSM_ui.py */,
-				72DB691D1021D98600ED5F3A /* DockUndoRedo.py */,
-				72DB691E1021D98600ED5F3A /* DockUndoRedo_ui.py */,
-				72DB691F1021D98600ED5F3A /* DockWidget.py */,
-				72DB69201021D98600ED5F3A /* DockWidget_ui.py */,
+				72DB69101021D98600ED5F3A /* OsmDatabaseManager.py */,
+				72DB69111021D98600ED5F3A /* OsmAddRelationDlg.py */,
+				72DB69131021D98600ED5F3A /* OsmDownloadDlg.py */,
+				72DB69151021D98600ED5F3A /* OsmImportDlg.py */,
+				72DB69171021D98600ED5F3A /* OsmLoadDlg.py */,
+				72DB69191021D98600ED5F3A /* OsmSaveDlg.py */,
+				72DB691B1021D98600ED5F3A /* OsmUploadDlg.py */,
+				72DB691D1021D98600ED5F3A /* OsmUndoRedoDW.py */,
+				72DB691F1021D98600ED5F3A /* OsmFeatureDW.py */,
 				72DB69211021D98600ED5F3A /* images */,
-				72DB69341021D98600ED5F3A /* Makefile */,
 				72DB69351021D98600ED5F3A /* map_tools */,
-				72DB693C1021D98600ED5F3A /* osm_plugin.py */,
+				72DB693C1021D98600ED5F3A /* OsmPlugin.py */,
 				72DB693D1021D98600ED5F3A /* resources.py */,
 				72DB693E1021D98600ED5F3A /* resources.qrc */,
 				72DB693F1021D98600ED5F3A /* styles */,
@@ -11689,6 +11659,10 @@
 				72DB69301021D98600ED5F3A /* osm_star.png */,
 				72DB69311021D98600ED5F3A /* osm_undo.png */,
 				72DB69321021D98600ED5F3A /* osm_upload.png */,
+				72832D0C1036242E002E3B72 /* osm_editRelation.png */,
+				72832D0D1036242E002E3B72 /* osm_addRelation.png */,
+				72832D0E1036242E002E3B72 /* osm_urDetails.png */,
+				72832D0F1036242E002E3B72 /* osm_removeRelation.png */,
 				72DB69331021D98600ED5F3A /* osmIconsMaster.svg */,
 			);
 			name = images;
@@ -11699,11 +11673,11 @@
 			isa = PBXGroup;
 			children = (
 				72DB69361021D98600ED5F3A /* __init__.py */,
-				72DB69371021D98600ED5F3A /* CreateLineMapTool.py */,
-				72DB69381021D98600ED5F3A /* CreatePointMapTool.py */,
-				72DB69391021D98600ED5F3A /* CreatePolygonMapTool.py */,
-				72DB693A1021D98600ED5F3A /* IdentifyMapTool.py */,
-				72DB693B1021D98600ED5F3A /* MoveMapTool.py */,
+				72DB69371021D98600ED5F3A /* OsmCreateLineMT.py */,
+				72DB69381021D98600ED5F3A /* OsmCreatePointMT.py */,
+				72DB69391021D98600ED5F3A /* OsmCreatePolygonMT.py */,
+				72DB693A1021D98600ED5F3A /* OsmIdentifyMT.py */,
+				72DB693B1021D98600ED5F3A /* OsmMoveMT.py */,
 			);
 			name = map_tools;
 			path = ../../python/plugins/osm/map_tools;
@@ -11723,14 +11697,14 @@
 		72DB69431021D98600ED5F3A /* ui_files */ = {
 			isa = PBXGroup;
 			children = (
-				72DB69441021D98600ED5F3A /* DlgAddRelation.ui */,
-				72DB69451021D98600ED5F3A /* DlgDownloadOSM.ui */,
-				72DB69461021D98600ED5F3A /* DlgImport.ui */,
-				72DB69471021D98600ED5F3A /* DlgLoadOSM.ui */,
-				72DB69481021D98600ED5F3A /* DlgSaveOSM.ui */,
-				72DB69491021D98600ED5F3A /* DlgUploadOSM.ui */,
-				72DB694A1021D98600ED5F3A /* DockUndoRedo.ui */,
-				72DB694B1021D98600ED5F3A /* DockWidget.ui */,
+				72DB69441021D98600ED5F3A /* OsmAddRelationDlg.ui */,
+				72DB69451021D98600ED5F3A /* OsmDownloadDlg.ui */,
+				72DB69461021D98600ED5F3A /* OsmImportDlg.ui */,
+				72DB69471021D98600ED5F3A /* OsmLoadDlg.ui */,
+				72DB69481021D98600ED5F3A /* OsmSaveDlg.ui */,
+				72DB69491021D98600ED5F3A /* OsmUploadDlg.ui */,
+				72DB694A1021D98600ED5F3A /* OsmUndoRedoDW.ui */,
+				72DB694B1021D98600ED5F3A /* OsmFeatureDW.ui */,
 			);
 			name = ui_files;
 			path = ../../python/plugins/osm/ui_files;
@@ -13149,6 +13123,21 @@
 			shellScript = "# optional moc sources, can't use dummy file with #if'd #include\n\nrm -f src/x_qgsspatialitesourceselect.h\nif [ \"$SQLITE_SYSTEM\" = \"1\" ] ; then\n\ttouch src/x_qgsspatialitesourceselect.h\nelse\n\tln -s ../../../src/app/qgsspatialitesourceselect.h src/x_qgsspatialitesourceselect.h\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		72832D1210362D61002E3B72 /* Script - osm ui */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - osm ui";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# generate ui py files\n\nosm_targetdir=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/plugins/osm\"\nmkdir -p \"$osm_targetdir\"\n\ncd ../../python/plugins/osm/ui_files\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tupy=`echo $u | sed 's,\\.ui$,_ui.py,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$osm_targetdir/$upy\" ] || [ $u -nt \"$osm_targetdir/$upy\" ] ; then\n\t\trm -f \"$osm_targetdir/$upy\"\n\t\techo \"$PYUIC4 -o \\\"$osm_targetdir/$upy\\\" $u\"\n\t\t$PYUIC4 -o \"$osm_targetdir/$upy\" $u\n\tfi\ndone\n\nexit 0\n";
+			showEnvVarsInLog = 0;
+		};
 		729287A60F71D4FE006D9489 /* Script - ui */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -13206,7 +13195,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# copy modules with script for conditional stuff\n\nMODDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nmkdir -p \"$MODDIR\"\nCONFDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/config\"\nmkdir -p \"$CONFDIR\"\nSCRIPTSDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/scripts\"\nmkdir \"$SCRIPTSDIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\nMODS=`ls *.png *.qgm *.svg`\nfor m in $MODS\ndo\n\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\tcp -fp $m \"$MODDIR\"\n\tfi\ndone\n\ncd ..\n#if [ ! \"$GRASS_VERSION\" = \"10.3\" ] ; then\n\techo \"cp -fp scripts/*.py \\\"$SCRIPTSDIR\\\"\"\n\tcp -fp scripts/*.py \"$SCRIPTSDIR\"\n#fi\n\nif [ -d ../modules-$GRASS_VERSION ] ; then\n\tcd ../modules-$GRASS_VERSION\n\tMODS=`ls *.png *.qgm *.svg`\n\tfor m in $MODS\n\tdo\n\t\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\t\tcp -fp $m \"$MODDIR\"\n\t\tfi\n\tdone\n\tif [ ! -f \"$CONFDIR/default.qgc\" ] || [ default.qgc -nt \"$CONFDIR/default.qgc\" ] ; then\n\t\techo \"cp -f default.qgc \\\"$CONFDIR\\\"\"\n\t\tcp -fp default.qgc \"$CONFDIR\"\n\tfi\n\nfi\n";
+			shellScript = "# copy modules with script for conditional stuff\n\nMODDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/modules\"\nmkdir -p \"$MODDIR\"\nCONFDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/config\"\nmkdir -p \"$CONFDIR\"\nSCRIPTSDIR=\"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/grass/scripts\"\nmkdir \"$SCRIPTSDIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR/modules-common\nMODS=`ls *.png *.qgm *.svg`\nfor m in $MODS\ndo\n\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\tcp -fp $m \"$MODDIR\"\n\tfi\ndone\ncd ..\n\necho \"cp -fp scripts/*.py \\\"$SCRIPTSDIR\\\"\"\ncp -fp scripts/*.py \"$SCRIPTSDIR\"\n\nif [ -d modules-$GRASS_VERSION ] ; then\n\tcd modules-$GRASS_VERSION\n\tMODS=`ls *.png *.qgm *.svg`\n\tfor m in $MODS\n\tdo\n\t\tif [ ! -f \"$MODDIR/$m\" ] || [ $m -nt \"$MODDIR/$m\" ] ; then\n\t\t\techo \"cp -f $m \\\"$MODDIR\\\"\"\n\t\t\tcp -fp $m \"$MODDIR\"\n\t\tfi\n\tdone\n\tif [ ! -f \"$CONFDIR/default.qgc\" ] || [ default.qgc -nt \"$CONFDIR/default.qgc\" ] ; then\n\t\techo \"cp -f default.qgc \\\"$CONFDIR\\\"\"\n\t\tcp -fp default.qgc \"$CONFDIR\"\n\tfi\n\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		729BBF0E0F407818001BCB63 /* Script - ui */ = {
@@ -14117,7 +14106,6 @@
 				72DB68EF1021D0BD00ED5F3A /* osmprovider.cpp in Sources */,
 				72DB68F11021D0BD00ED5F3A /* osmrenderer.cpp in Sources */,
 				72DB68F31021D0BD00ED5F3A /* osmstyle.cpp in Sources */,
-				7264FEA01024D1B3004D4CDD /* osmprovider.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16986,7 +16974,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20090618;
+				QGIS_VERSION_BUILD = 20090815;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -16997,7 +16985,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20090618;
+				QGIS_VERSION_BUILD = 20090815;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;

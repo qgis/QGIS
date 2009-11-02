@@ -149,6 +149,8 @@
 //SPATIALITE_LIBADD = $(GEOS_LIB) $(PROJ_LIB)
 
 //PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/$(PYTHON_VERSION)
+//PYTHON_BIN = $(PYTHON_BIN_$(PYTHON_FORM))
+//PYTHON_USRBIN = $(PYTHON_USRBIN_$(PYTHON_FORM))
 //PYTHON_INC = $(PYTHON_PREFIX)/Headers
 //PYTHON_LIB = -framework Python // must always be framework, full path will work
 //PYSITE = $(PYSITE_$(PYTHON_FORM))

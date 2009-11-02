@@ -637,19 +637,19 @@ void QgisApp::createActions()
   mActionPasteFeatures->setEnabled( false );
 
   mActionCapturePoint = new QAction( getThemeIcon( "mActionCapturePoint.png" ), tr( "Capture Point" ), this );
-  shortcuts->registerAction( mActionCapturePoint, tr( ".", "Capture Points" ) );
+  shortcuts->registerAction( mActionCapturePoint, tr( "Ctrl+.", "Capture Points" ) );
   mActionCapturePoint->setStatusTip( tr( "Capture Points" ) );
   connect( mActionCapturePoint, SIGNAL( triggered() ), this, SLOT( capturePoint() ) );
   mActionCapturePoint->setEnabled( false );
 
   mActionCaptureLine = new QAction( getThemeIcon( "mActionCaptureLine.png" ), tr( "Capture Line" ), this );
-  shortcuts->registerAction( mActionCaptureLine, tr( "/", "Capture Lines" ) );
+  shortcuts->registerAction( mActionCaptureLine, tr( "Ctrl+/", "Capture Lines" ) );
   mActionCaptureLine->setStatusTip( tr( "Capture Lines" ) );
   connect( mActionCaptureLine, SIGNAL( triggered() ), this, SLOT( captureLine() ) );
   mActionCaptureLine->setEnabled( false );
 
   mActionCapturePolygon = new QAction( getThemeIcon( "mActionCapturePolygon.png" ), tr( "Capture Polygon" ), this );
-  shortcuts->registerAction( mActionCapturePolygon, tr( "Ctrl+/", "Capture Polygons" ) );
+  shortcuts->registerAction( mActionCapturePolygon, tr( "Ctrl+Shift+/", "Capture Polygons" ) );
   mActionCapturePolygon->setStatusTip( tr( "Capture Polygons" ) );
   connect( mActionCapturePolygon, SIGNAL( triggered() ), this, SLOT( capturePolygon() ) );
   mActionCapturePolygon->setEnabled( false );
@@ -756,23 +756,23 @@ void QgisApp::createActions()
   mActionSelect->setEnabled( false );
 
   mActionIdentify = new QAction( getThemeIcon( "mActionIdentify.png" ), tr( "Identify Features" ), this );
-  shortcuts->registerAction( mActionIdentify, tr( "I", "Click on features to identify them" ) );
+  shortcuts->registerAction( mActionIdentify, tr( "Ctrl+Shift+I", "Click on features to identify them" ) );
   mActionIdentify->setStatusTip( tr( "Click on features to identify them" ) );
   connect( mActionIdentify, SIGNAL( triggered() ), this, SLOT( identify() ) );
   mActionIdentify->setEnabled( false );
 
   mActionMeasure = new QAction( getThemeIcon( "mActionMeasure.png" ), tr( "Measure Line " ), this );
-  shortcuts->registerAction( mActionMeasure, tr( "M", "Measure a Line" ) );
+  shortcuts->registerAction( mActionMeasure, tr( "Ctrl+Shift+M", "Measure a Line" ) );
   mActionMeasure->setStatusTip( tr( "Measure a Line" ) );
   connect( mActionMeasure, SIGNAL( triggered() ), this, SLOT( measure() ) );
 
   mActionMeasureArea = new QAction( getThemeIcon( "mActionMeasureArea.png" ), tr( "Measure Area" ), this );
-  shortcuts->registerAction( mActionMeasureArea, tr( "J", "Measure an Area" ) );
+  shortcuts->registerAction( mActionMeasureArea, tr( "Ctrl+Shift+J", "Measure an Area" ) );
   mActionMeasureArea->setStatusTip( tr( "Measure an Area" ) );
   connect( mActionMeasureArea, SIGNAL( triggered() ), this, SLOT( measureArea() ) );
 
   mActionZoomFullExtent = new QAction( getThemeIcon( "mActionZoomFullExtent.png" ), tr( "Zoom Full" ), this );
-  shortcuts->registerAction( mActionZoomFullExtent, tr( "F", "Zoom to Full Extents" ) );
+  shortcuts->registerAction( mActionZoomFullExtent, tr( "Ctrl+Shift+F", "Zoom to Full Extents" ) );
   mActionZoomFullExtent->setStatusTip( tr( "Zoom to Full Extents" ) );
   connect( mActionZoomFullExtent, SIGNAL( triggered() ), this, SLOT( zoomFull() ) );
 
@@ -814,7 +814,7 @@ void QgisApp::createActions()
   connect( mActionNewBookmark, SIGNAL( triggered() ), this, SLOT( newBookmark() ) );
 
   mActionShowBookmarks = new QAction( getThemeIcon( "mActionShowBookmarks.png" ), tr( "Show Bookmarks" ), this );
-  shortcuts->registerAction( mActionShowBookmarks, tr( "B", "Show Bookmarks" ) );
+  shortcuts->registerAction( mActionShowBookmarks, tr( "Ctrl+Shift+B", "Show Bookmarks" ) );
   mActionShowBookmarks->setStatusTip( tr( "Show Bookmarks" ) );
   connect( mActionShowBookmarks, SIGNAL( triggered() ), this, SLOT( showBookmarks() ) );
 
@@ -826,22 +826,22 @@ void QgisApp::createActions()
   // Layer Menu Items
 
   mActionNewVectorLayer = new QAction( getThemeIcon( "mActionNewVectorLayer.png" ), tr( "New Vector Layer..." ), this );
-  shortcuts->registerAction( mActionNewVectorLayer, tr( "N", "Create a New Vector Layer" ) );
+  shortcuts->registerAction( mActionNewVectorLayer, tr( "Ctrl+Shift+N", "Create a New Vector Layer" ) );
   mActionNewVectorLayer->setStatusTip( tr( "Create a New Vector Layer" ) );
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
 
   mActionAddOgrLayer = new QAction( getThemeIcon( "mActionAddOgrLayer.png" ), tr( "Add Vector Layer..." ), this );
-  shortcuts->registerAction( mActionAddOgrLayer, tr( "V", "Add a Vector Layer" ) );
+  shortcuts->registerAction( mActionAddOgrLayer, tr( "Ctrl+Shift+V", "Add a Vector Layer" ) );
   mActionAddOgrLayer->setStatusTip( tr( "Add a Vector Layer" ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
 
   mActionAddRasterLayer = new QAction( getThemeIcon( "mActionAddRasterLayer.png" ), tr( "Add Raster Layer..." ), this );
-  shortcuts->registerAction( mActionAddRasterLayer, tr( "R", "Add a Raster Layer" ) );
+  shortcuts->registerAction( mActionAddRasterLayer, tr( "Ctrl+Shift+R", "Add a Raster Layer" ) );
   mActionAddRasterLayer->setStatusTip( tr( "Add a Raster Layer" ) );
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
 
   mActionAddPgLayer = new QAction( getThemeIcon( "mActionAddLayer.png" ), tr( "Add PostGIS Layer..." ), this );
-  shortcuts->registerAction( mActionAddPgLayer, tr( "D", "Add a PostGIS Layer" ) );
+  shortcuts->registerAction( mActionAddPgLayer, tr( "Ctrl+Shift+D", "Add a PostGIS Layer" ) );
   mActionAddPgLayer->setStatusTip( tr( "Add a PostGIS Layer" ) );
 //#ifdef HAVE_POSTGRESQL
   // QgsDebugMsg("HAVE_POSTGRESQL is defined");
@@ -853,7 +853,7 @@ void QgisApp::createActions()
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
 
   mActionAddSpatiaLiteLayer = new QAction( getThemeIcon( "mActionAddSpatiaLiteLayer.png" ), tr( "Add SpatiaLite Layer..." ), this );
-  shortcuts->registerAction( mActionAddSpatiaLiteLayer, tr( "L", "Add a SpatiaLite Layer" ) );
+  shortcuts->registerAction( mActionAddSpatiaLiteLayer, tr( "Ctrl+Shift+L", "Add a SpatiaLite Layer" ) );
   mActionAddSpatiaLiteLayer->setStatusTip( tr( "Add a SpatiaLite Layer" ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
 //#ifdef HAVE_SPATIALITE
@@ -865,7 +865,7 @@ void QgisApp::createActions()
 //#endif
 
   mActionAddWmsLayer = new QAction( getThemeIcon( "mActionAddWmsLayer.png" ), tr( "Add WMS Layer..." ), this );
-  shortcuts->registerAction( mActionAddWmsLayer, tr( "W", "Add a Web Mapping Server Layer" ) );
+  shortcuts->registerAction( mActionAddWmsLayer, tr( "Ctrl+Shift+W", "Add a Web Mapping Server Layer" ) );
   mActionAddWmsLayer->setStatusTip( tr( "Add a Web Mapping Server Layer" ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
 
@@ -907,28 +907,28 @@ void QgisApp::createActions()
   mActionLayerProperties->setEnabled( false );
 
   mActionAddToOverview = new QAction( getThemeIcon( "mActionInOverview.png" ), tr( "Add to Overview" ), this );
-  shortcuts->registerAction( mActionAddToOverview, tr( "O", "Add current layer to overview map" ) );
+  shortcuts->registerAction( mActionAddToOverview, tr( "Ctrl+Shift+O", "Add current layer to overview map" ) );
   mActionAddToOverview->setStatusTip( tr( "Add current layer to overview map" ) );
   connect( mActionAddToOverview, SIGNAL( triggered() ), this, SLOT( isInOverview() ) );
   mActionAddToOverview->setEnabled( false );
 
   mActionAddAllToOverview = new QAction( getThemeIcon( "mActionAddAllToOverview.png" ), tr( "Add All to Overview" ), this );
-  shortcuts->registerAction( mActionAddAllToOverview, tr( "+", "Show all layers in the overview map" ) );
+  shortcuts->registerAction( mActionAddAllToOverview ); //, tr( "+", "Show all layers in the overview map" ) );
   mActionAddAllToOverview->setStatusTip( tr( "Show all layers in the overview map" ) );
   connect( mActionAddAllToOverview, SIGNAL( triggered() ), this, SLOT( addAllToOverview() ) );
 
   mActionRemoveAllFromOverview = new QAction( getThemeIcon( "mActionRemoveAllFromOverview.png" ), tr( "Remove All From Overview" ), this );
-  shortcuts->registerAction( mActionRemoveAllFromOverview, tr( "-", "Remove all layers from overview map" ) );
+  shortcuts->registerAction( mActionRemoveAllFromOverview ); //, tr( "-", "Remove all layers from overview map" ) );
   mActionRemoveAllFromOverview->setStatusTip( tr( "Remove all layers from overview map" ) );
   connect( mActionRemoveAllFromOverview, SIGNAL( triggered() ), this, SLOT( removeAllFromOverview() ) );
 
   mActionShowAllLayers = new QAction( getThemeIcon( "mActionShowAllLayers.png" ), tr( "Show All Layers" ), this );
-  shortcuts->registerAction( mActionShowAllLayers, tr( "S", "Show all layers" ) );
+  shortcuts->registerAction( mActionShowAllLayers, tr( "Ctrl+Shift+U", "Show all layers" ) );
   mActionShowAllLayers->setStatusTip( tr( "Show all layers" ) );
   connect( mActionShowAllLayers, SIGNAL( triggered() ), this, SLOT( showAllLayers() ) );
 
   mActionHideAllLayers = new QAction( getThemeIcon( "mActionHideAllLayers.png" ), tr( "Hide All Layers" ), this );
-  shortcuts->registerAction( mActionHideAllLayers, tr( "H", "Hide all layers" ) );
+  shortcuts->registerAction( mActionHideAllLayers, tr( "Ctrl+Shift+H", "Hide all layers" ) );
   mActionHideAllLayers->setStatusTip( tr( "Hide all layers" ) );
   connect( mActionHideAllLayers, SIGNAL( triggered() ), this, SLOT( hideAllLayers() ) );
 
@@ -947,7 +947,7 @@ void QgisApp::createActions()
   connect( mActionToggleFullScreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
 
   mActionProjectProperties = new QAction( getThemeIcon( "mActionProjectProperties.png" ), tr( "Project Properties..." ), this );
-  shortcuts->registerAction( mActionProjectProperties, tr( "P", "Set project properties" ) );
+  shortcuts->registerAction( mActionProjectProperties, tr( "Ctrl+Shift+P", "Set project properties" ) );
   mActionProjectProperties->setStatusTip( tr( "Set project properties" ) );
   connect( mActionProjectProperties, SIGNAL( triggered() ), this, SLOT( projectProperties() ) );
 
@@ -2021,89 +2021,124 @@ void QgisApp::about()
 #endif
 
     abt->setVersion( versionString );
-    QString whatsNew = "<html><body>" + tr( "Version" ) + " ";
-    whatsNew += QGis::QGIS_VERSION;
-    whatsNew += "<h2>" + tr( "Whats new in Version 1.1.0?" ) + "</h2>"
-                + "<p>"
-                + tr( "Please note that this is a release in our 'unstable' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series." )
-                + "</p>"
-                + "<p>"
-                + tr( "This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:" )
-                + "</p>"
-                + "<ul>"
-                + "<li>"
-                + tr( "Updates to translations." )
-                + "</li>"
-                + "<li>"
-                + tr( "Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository." )
-                + "</li>"
-                + "<li>"
-                + tr( "Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme." )
-                + "</li>"
-                + "<li>"
-                + tr( "Improvements to Debian packaging to better support Debian standard requirements." )
-                + "</li>"
-                + "<li>"
-                + tr( "Support usb: as a GPS device under Linux." )
-                + "</li>"
-                + "<li>"
-                + tr( "WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers." )
-                + "</li>"
-                + "<li>"
-                + tr( "Added svg point symbols from Matt Amos (with his permission)." )
-                + "</li>"
-                + "<li>"
-                + tr( "Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data." )
-                + "</li>"
-                + "<li>"
-                + tr( "Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)" )
-                + "</li>"
-                + "<li>"
-                + tr( "Mapserver Export improvements for continuous color support." )
-                + "</li>"
-                + "<li>"
-                + tr( "Added tools menu - the fTools plugin is now part of the core QGIS plugins and will always be installed by default." )
-                + "</li>"
-                + "<li>"
-                + tr( "Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings." )
-                + "</li>"
-                + "<li>"
-                + tr( "When using File - Save as image, the saved image is now georeferenced." )
-                + "</li>"
-                + "<li>"
-                + tr( "Projection selector now includes quick selection of recently used CRS's." )
-                + "</li>"
-                + "<li>"
-                + tr( "Continuous color renderer supports point symbols now too." )
-                + "</li>"
-                + "<li>"
-                + tr( "Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX." )
-                + "</li>"
-                + "<li>"
-                + tr( "Updates and cleanups to the GRASS toolbox." )
-                + "</li>"
-                + "<li>"
-                + tr( "Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system." )
-                + "</li>"
-                + "<li>"
-                + tr( "The middle mouse button can now be used for panning. " )
-                + "</li>"
-                + "<li>"
-                + tr( "A new, faster attribute table implementation." )
-                + "</li>"
-                + "<li>"
-                + tr( "Numerous cleanups to the user interface." )
-                + "</li>"
-                + "<li>"
-                + tr( "A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database." )
-                + "</li>"
-                + "<li>"
-                + tr( "Vector overlay support that can draw pie and bar charts over vector layers based on attribute data." )
-                + "</li>"
-//+ "<li>"
-//+ tr("X")
-//+ "</li>"
-                + "</ul></body></html>";
+    QString whatsNew = "<html><body>" ;
+    whatsNew += "<h2>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h2>";
+    whatsNew += "<h3>" + tr( "Whats new in Version 1.2.0?" ) + "</h3>"
+                +
+                "<p>"
+                + tr( "Please note that this is a release in our 'cutting edge' release series. As "
+                      "such it contains new features and extends the programmatic interface over "
+                      "QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you "
+                      "then cool new and untested features, we recommend that you use a copy "
+                      "of QGIS from our stable 1.0.x release series." )
+                +
+                "</p><p>"
+                +
+                tr( "This release includes over 140 bug fixes and enhancements "
+                    "over the QGIS 1.1.0 release. In addition we have added "
+                    "the following new features:" )
+                + "<pre>"
+                + tr( "Editing:\n"
+                      "\n"
+                      "Editing functionality in QGIS has had a major update in this release. This\n"
+                      "includes the addition of new vector editing tools:\n"
+                      "- delete part of multipart feature\n"
+                      "- delete hole from polygon\n"
+                      "- simplify feature\n"
+                      "- Added a new node tool (in advanced digitizing toolbar).\n"
+                      "- New functionality for merging features\n"
+                      "- Added undo/redo functionality for vector layer editing.\n"
+                      "- Added option to show only markers of selected features in editing mode.\n"
+                      "- Change layer's icon in legend to reflext that the layer is editable.\n"
+                      "\n"
+                      "In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar\n"
+                      "and there is a new dock widget displaying undo stack of active layer.\n"
+                      "\n"
+                      "About the node tool: It resembles a tool for editing paths by nodes that is\n"
+                      "present in every vector editor. How does it work (in QGIS)? Click on a\n"
+                      "feature, its nodes will be marked by small rectangles. Clicking and dragging a\n"
+                      "node moves it. Double clicking a segment will add a new node. Pressing delete\n"
+                      "key will remove active node. It's possible to select more active nodes at\n"
+                      "once: by clicking and dragging a rectangle. It's possible to select a segment's\n"
+                      "adjacent nodes by clicking on the segment. It's possible to add/remove active\n"
+                      "nodes by using Ctrl when clicking a node or dragging a rectangle\n"
+                      "\n"
+                      "We recommend that you turn off vertex markers in QGIS options when working with\n"
+                      "this tool: the redraws are much faster and the map is not cluttered with\n"
+                      "markers. \n"
+                      "\n"
+                      "Keyboard shortcuts:\n"
+                      "\n"
+                      "New feature: configure shortcuts for actions within main window of qgis!\n"
+                      "See menu Setting->Configure shortcuts\n"
+                      "\n"
+                      "Map Composer:\n"
+                      "\n"
+                      "It is now possible to lock/unlock composer item positions by right mouse click.\n"
+                      "The width and height of the composer map will now remain fixed if user sets the\n"
+                      "composer map extent to the map canvas extent. possibility to display\n"
+                      "current date in composer label by typing (d 'June' yyyy) or similar.\n"
+                      "It is now possible to keep the current layers in a composer map even if further\n"
+                      "layers are added to the main map. Export to PDF in composer is now possible.\n"
+                      "\n"
+                      "Attribute tables:\n"
+                      "\n"
+                      "It is now possible to search the attribute table within selected records only.\n"
+                      "General speedups have been made on the attribute table. Setting of field width\n"
+                      "and precision when adding attributes is now possible. Handling of attribute\n"
+                      "types in WFS provider has bee improved.\n"
+                      "\n"
+                      "Attribute aliases for vector layers are now available. The aliases are shown\n"
+                      "instead of the original field names in the info tool and attribute table to\n"
+                      "make things easier for end users. There is now a GUI for setting edit widgets\n"
+                      "for layer attributes.  A new dialog allows loading a value map from a layer\n"
+                      "(could be non-spatial table too!).  The edit widgets settings will also now\n"
+                      "be respected in the attribute table.\n"
+                      "\n"
+                      "Plugins:\n"
+                      "\n"
+                      "- The order of layers in the WMS dialog can now be changed.\n"
+                      "- The eVis plugin, version 1.1.0, has been added to the QGIS project and\n"
+                      "  included as a standard plugin. More information about eVis can be found here:\n"
+                      "  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .\n"
+                      "- The interpolation plugin now has the ability to use line layers as constrains\n"
+                      "  for triangulation in interpolation plugin. You can also now save the\n"
+                      "  triangulation to shape file.\n"
+                      "- An new OpenStreetMap provider and plugin have been added to QGIS.\n"
+                      "\n"
+                      "Projects Management:\n"
+                      "\n"
+                      "QGIS now includes support for  project relative position of file data sources\n"
+                      "and svgs. The saving of relative paths of file data sources is optional.\n"
+                      "\n"
+                      "PostGIS & the PostgreSQL Provider:\n"
+                      "\n"
+                      "You can now select the SSL mode when adding a new DB connection. Turning off\n"
+                      "SSL encryption can greatly improve performance of PostGIS data loading where\n"
+                      "connection security is not required. Support has been added for more native\n"
+                      "types and for setting of column comments.\n"
+                      "\n"
+                      "Symbology enhancements:\n"
+                      "\n"
+                      "- allow refresh of symbols via popup menu on the renderer's symbol selection\n"
+                      "- add support for data defined symbol(name)s\n"
+                      "- add support for font symbol markers (only data defined - no gui yet)\n"
+                      "- add symbol size in map units (ie. symbols that keep the size in mapunits\n"
+                      "  independant of the mapscale)\n"
+                      "\n"
+                      "Command line arguments:\n"
+                      "\n"
+                      "Added command line argument support on windows.\n"
+                      "Enhancement of command line arguments:\n"
+                      "- allow given snapshot sizes\n"
+                      "- allow suppression of splash screen\n"
+                      "- capture map decorations from plugins on snapshots\n"
+                      "\n"
+                      "Grass:\n"
+                      "\n"
+                      "There is a new GRASS shell. Also there have been many cleanups and consistency\n"
+                      "updates." )
+                + "</pre></body></html>";
 
     abt->setWhatsNew( whatsNew );
 
@@ -3041,6 +3076,9 @@ void QgisApp::fileExit()
 
   if ( saveDirty() )
   {
+    delete mComposer;
+    mComposer = 0;
+
     mMapCanvas->freeze( true );
     removeAllLayers();
     qApp->exit( 0 );
@@ -3063,6 +3101,9 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
     return;
   }
 
+  delete mComposer;
+  mComposer = new QgsComposer( this );
+
   if ( thePromptToSaveFlag )
   {
     if ( !saveDirty() )
@@ -3079,9 +3120,6 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   mMapCanvas->freeze( true );
   removeAllLayers();
   mMapCanvas->clear();
-
-  delete mComposer;
-  mComposer = new QgsComposer( this );
 
   QgsProject* prj = QgsProject::instance();
   prj->title( QString::null );
@@ -3298,26 +3336,22 @@ void QgisApp::fileOpen()
 
     delete openFileDialog;
 
+    delete mComposer;
+    mComposer = new QgsComposer( this );
+
     // clear out any stuff from previous project
     mMapCanvas->freeze( true );
     removeAllLayers();
-
-    delete mComposer;
-    mComposer = new QgsComposer( this );
 
     QgsProject::instance()->setFileName( fullPath );
 
     try
     {
-      if ( QgsProject::instance()->read() )
+      if ( ! QgsProject::instance()->read() )
       {
-        setTitleBarText_( *this );
-        emit projectRead();     // let plug-ins know that we've read in a new
-        // project so that they can check any project
-        // specific plug-in state
-
-        // add this to the list of recently used project files
-        saveRecentProjectPath( fullPath, settings );
+        mMapCanvas->freeze( false );
+        mMapCanvas->refresh();
+        return;
       }
     }
     catch ( QgsProjectBadLayerException & e )
@@ -3330,6 +3364,9 @@ void QgisApp::fileOpen()
       // attempt to find the new locations for missing layers
       // XXX vector file hard-coded -- but what if it's raster?
       findLayers_( mVectorFileFilter, e.layers() );
+
+      // Tell the legend to update the ordering
+      mMapLegend->readProject( e.document() );
     }
     catch ( std::exception & e )
     {
@@ -3337,7 +3374,18 @@ void QgisApp::fileOpen()
                              tr( "QGIS Project Read Error" ),
                              QString::fromLocal8Bit( e.what() ) );
       QgsDebugMsg( "BAD QgsMapLayer::LayerType FOUND" );
+      mMapCanvas->freeze( false );
+      mMapCanvas->refresh();
+      return;
     }
+
+    setTitleBarText_( *this );
+    emit projectRead();     // let plug-ins know that we've read in a new
+    // project so that they can check any project
+    // specific plug-in state
+
+    // add this to the list of recently used project files
+    saveRecentProjectPath( fullPath, settings );
 
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
@@ -3356,42 +3404,23 @@ bool QgisApp::addProject( QString projectFile )
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  // clear the map canvas
-  removeAllLayers();
-
   //clear the composer
   delete mComposer;
   mComposer = new QgsComposer( this );
 
+  // clear the map canvas
+  removeAllLayers();
+
   try
   {
-    if ( QgsProject::instance()->read( projectFile ) )
-    {
-      setTitleBarText_( *this );
-      int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
-      int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
-      int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
-      QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-      mMapCanvas->setCanvasColor( myColor ); //this is fill colour before rendering starts
-      QgsDebugMsg( "Canvas background color restored..." );
-
-      mMapCanvas->updateScale();
-      QgsDebugMsg( "Scale restored..." );
-
-      emit projectRead(); // let plug-ins know that we've read in a new
-      // project so that they can check any project
-      // specific plug-in state
-
-      // add this to the list of recently used project files
-      QSettings settings;
-      saveRecentProjectPath( projectFile, settings );
-    }
-    else
+    if ( ! QgsProject::instance()->read( projectFile ) )
     {
       mMapCanvas->freeze( false );
       mMapCanvas->refresh();
       return false;
     }
+    // Continue after last catch statement
+
   }
   catch ( QgsProjectBadLayerException & e )
   {
@@ -3406,8 +3435,16 @@ bool QgisApp::addProject( QString projectFile )
 
       // attempt to find the new locations for missing layers
       // XXX vector file hard-coded -- but what if it's raster?
+      QApplication::restoreOverrideCursor();
+
       findLayers_( mVectorFileFilter, e.layers() );
+
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+
+      // Tell the legend to update the ordering
+      mMapLegend->readProject( e.document() );
     }
+    // Continue after last catch statement
 
   }
   catch ( std::exception & e )
@@ -3418,10 +3455,33 @@ bool QgisApp::addProject( QString projectFile )
                            tr( "Unable to open project" ),
                            QString::fromLocal8Bit( e.what() ) );
 
+    QApplication::restoreOverrideCursor();
+
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
     return false;
   }
+
+  // Continue, now with layers found (hopefully)
+
+  setTitleBarText_( *this );
+  int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
+  int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
+  int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
+  QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  mMapCanvas->setCanvasColor( myColor ); //this is fill colour before rendering starts
+  QgsDebugMsg( "Canvas background color restored..." );
+
+  mMapCanvas->updateScale();
+  QgsDebugMsg( "Scale restored..." );
+
+  emit projectRead(); // let plug-ins know that we've read in a new
+  // project so that they can check any project
+  // specific plug-in state
+
+  // add this to the list of recently used project files
+  QSettings settings;
+  saveRecentProjectPath( projectFile, settings );
 
   QApplication::restoreOverrideCursor();
 
@@ -3683,43 +3743,6 @@ bool QgisApp::openLayer( const QString & fileName )
 
   return ok;
 }
-
-
-#if 0
-void QgisApp::filePrint()
-{
-//
-//  Warn the user first that priting is experimental still
-//
-  QString myHeading = "QGIS Printing Support is Experimental";
-  QString myMessage = "Please note that printing only works on A4 landscape at the moment.\n";
-  myMessage += "For other page sizes your mileage may vary.\n";
-  QMessageBox::information( this, tr( myHeading ), tr( myMessage ) );
-
-  QPrinter myQPrinter;
-  if ( myQPrinter.setup( this ) )
-  {
-    QgsDebugMsg( ".............................." );
-    QgsDebugMsg( "...........Printing..........." );
-    QgsDebugMsg( ".............................." );
-// Ithought we could just do this:
-//mMapCanvas->render(&myQPrinter);
-//but it doesnt work so now we try this....
-    QPaintDeviceMetrics myMetrics( &myQPrinter ); // need width/height of printer surface
-    QgsDebugMsg( QString( "Print device width: %1" ).arg( myMetrics.width() ) );
-    QgsDebugMsg( QString( "Print device height: %1" ).arg( myMetrics.height() ) );
-    QPainter myQPainter;
-    myQPainter.begin( &myQPrinter );
-    QPixmap myQPixmap( myMetrics.width(), myMetrics.height() );
-    myQPixmap.fill();
-    mMapCanvas->freeze( false );
-    mMapCanvas->setDirty( true );
-    mMapCanvas->render( &myQPixmap );
-    myQPainter.drawPixmap( 0, 0, myQPixmap );
-    myQPainter.end();
-  }
-}
-#endif
 
 void QgisApp::filePrint()
 {

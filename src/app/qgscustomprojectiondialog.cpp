@@ -27,6 +27,7 @@
 //qt includes
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QLocale>
 
 //stdc++ includes
 #include <cassert>
@@ -926,9 +927,9 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   {
     QString tmp;
 
-    tmp = tmp.setNum( northing, 'f', 4 );
+    tmp = tmp = QLocale::system().toString( northing, 'f', 4 );
     projectedX->setText( tmp );
-    tmp = tmp.setNum( easthing, 'f', 4 );
+    tmp = tmp = QLocale::system().toString( easthing, 'f', 4 );
     projectedY->setText( tmp );
   }
 

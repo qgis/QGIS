@@ -120,7 +120,7 @@ inline void ( *cast_to_fptr( void *p ) )()
 inline bool doubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 {
   const double diff = a - b;
-  return diff>-epsilon && diff<=epsilon;
+  return diff > -epsilon && diff <= epsilon;
 }
 
 /** Wkt string that represents a geographic coord sys */

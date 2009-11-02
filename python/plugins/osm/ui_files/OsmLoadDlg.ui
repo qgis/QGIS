@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>DlgLoadOSM</class>
- <widget class="QDialog" name="DlgLoadOSM" >
+ <class>OsmLoadDlg</class>
+ <widget class="QDialog" name="OsmLoadDlg" >
   <property name="windowModality" >
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -118,7 +118,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -146,7 +146,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgLoadOSM</receiver>
+   <receiver>OsmLoadDlg</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

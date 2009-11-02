@@ -183,7 +183,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
 
   if ( fullName.startsWith( "hard:" ) )
   {
-    hardMarker( &myPainter, imageSize, fullName.mid( 5 ), size, pen, brush);
+    hardMarker( &myPainter, imageSize, fullName.mid( 5 ), size, pen, brush );
 #ifdef IMAGEDEBUG
     QgsDebugMsg( "*** Saving hard marker to hardMarker.png ***" );
 #ifdef QGISDEBUG
@@ -196,7 +196,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
   return QImage(); // empty
 }
 
-QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen pen, QBrush brush, double opacity)
+QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen pen, QBrush brush, double opacity )
 {
 
   //

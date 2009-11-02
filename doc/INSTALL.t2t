@@ -368,7 +368,7 @@ Included are a few notes for building on Mac OS X 10.5 (__Leopard__).
 == Install XCODE ==
 
 I recommend to get the latest xcode dmg from the Apple XDC Web site. Install
-XCODE after the ~941mb download is complete.
+XCODE after the ~1gb download is complete.
 
 /!\ Note: It may be that you need to create some symlinks after installing 
 the XCODE SDK (in particular if you are using XCODE 2.5 on tiger):
@@ -384,26 +384,29 @@ sudo ln -s /usr/local/ local
 You need a minimum of Qt4.3.0. I suggest getting the latest (at time of writing).
 
 ``` 
-ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.3.2.dmg
+ftp://ftp.trolltech.com/qt/source/
 ```
 
-If you want debug libs, Qt also provide a dmg with these:
+Mac versions are named as:
 
-``` 
-ftp://ftp.trolltech.com/qt/source/qt-mac-opensource-4.3.2-debug-libs.dmg
+```
+qt-mac-opensource-x.y.z.dmg
 ```
 
-I am going to proceed using only release libs at this stage as the download for
-the debug dmg is substantially bigger. If you plan to do any debugging though
-you probably want to get the debug libs dmg. Once downloaded open the dmg and
-run the installer. Note you need admin access to install.
+x, y, z being the major, minor and revision version.
+
+If you want debug frameworks, Qt also provide a dmg with these.  These are in
+addition to the non-debug frameworks.
+
+Once downloaded open the dmg and run the installer. Note you need admin
+privileges to install.
 
 After installing you need to make two small changes:
 
 First edit ``/Library/Frameworks/QtCore.framework/Headers/qconfig.h`` and
 change 
 
-/!\ Note this doesnt seem to be needed since version 4.2.3
+/!\ Note: this isn't needed since version 4.2.3
 
 ``QT_EDITION_Unknown`` to ``QT_EDITION_OPENSOURCE``
 
@@ -415,6 +418,7 @@ sudo rm default
 sudo ln -sf macx-g++ default
 ```
 
+/!\ Note: this doesn't seem to be needed since version 4.4.
 
 == Install development frameworks for QGIS dependencies ==
 
@@ -427,33 +431,37 @@ http://www.kyngchaos.com/wiki/software:frameworks
 
 Once downloaded, open and install the frameworks.
 
-William provides an additional installer package for Postgresql/PostGIS. Its
+William provides an additional installer package for Postgresql/PostGIS. It's
 available here:
 
 ``` 
 http://www.kyngchaos.com/wiki/software:postgres 
 ```
 
+Also available is a GRASS application:
+
+```
+http://www.kyngchaos.com/wiki/software:grass
+```
+
 There are some additional dependencies that at the time of writing are not
-provided as frameworks so we will need to build these from source.
+provided as frameworks or installers so we will need to build these from source.
 
 === Additional Dependencies : GSL ===
 
-Retrieve the Gnu Scientific Library from
+Retrieve the current version of the Gnu Scientific Library from:
 
 ``` 
-curl -O ftp://ftp.gnu.org/gnu/gsl/gsl-1.8.tar.gz 
+ftp://ftp.gnu.org/gnu/gsl/
 ```
 
-Then extract it and build it to a prefix of /usr/local:
+Then extract it and build it to a prefix of /usr/local.  Double-click the source
+tarball to unpack it, then cd to the source folder and:
 
 ``` 
-tar xvfz gsl-1.8.tar.gz 
-cd gsl-1.8 
-./configure --prefix=/usr/local 
+./configure
 make
 sudo make install
-cd ..  
 ```
 
 === Additional Dependencies : Expat ===
@@ -464,18 +472,17 @@ Get the expat sources:
 http://sourceforge.net/project/showfiles.php?group_id=10127 
 ```
 
+Double-click the source tarball to unpack, then cd to the source folder and:
+
 ```
-tar xvfz expat-2.0.0.tar.gz 
-cd expat-2.0.0 
-./configure --prefix=/usr/local
+./configure
 make 
 sudo make install 
-cd ..  
 ```
 
 === Additional Dependencies : SIP ===
 
-Make sure you have the latest Python fom 
+Make sure you have the latest Python 2.5 fom 
 
 ```
 http://www.python.org/download/mac/
@@ -489,15 +496,13 @@ Retrieve the python bindings toolkit SIP from
 http://www.riverbankcomputing.com/software/sip/download
 ```
 
-Then extract and build it (this installs by default into the Python framework):
+Double-click the source tarball to unpack it, then cd to the source folder
+and (this installs by default into the Python framework):
 
 ``` 
-tar xvfz sip-<version number>.tar.gz 
-cd sip-<version number>
 python configure.py 
 make 
 sudo make install 
-cd ..  
 ```
 
 __Leopard notes__
@@ -515,7 +520,7 @@ below you can also try adding python from your frameworks dir
 explicitly to your path e.g.
 
 ```
-export PATH=/Library/Frameworks/Python.framework/Versions/Current/bin:$PATH$
+export PATH=/Library/Frameworks/Python.framework/Versions/Current/bin:$PATH
 ```
 
 Retrieve the python bindings toolkit for Qt from
@@ -524,17 +529,15 @@ Retrieve the python bindings toolkit for Qt from
 http://www.riverbankcomputing.com/software/pyqt/download
 ```
 
-Then extract and build it (this installs by default into the Python framework):
+Double-click the source tarball to unpack it, then cd to the source folder
+and (this installs by default into the Python framework):
 
 ``` 
-tar xvfz PyQt-mac<version number here>
-cd PyQt-mac<version number here>
 export QTDIR=/Developer/Applications/Qt
 python configure.py 
 yes 
 make 
 sudo make install 
-cd ..  
 ```
 
 __Leopard notes__
@@ -545,45 +548,48 @@ If building on Leopard, using Leopard's bundled Python, PyQt wants to install in
 python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
 ```
 
-There may be a problem with undefined symbols in QtOpenGL on Leopard.  Edit QtOpenGL/makefile and add ""-undefined dynamic_lookup"" to LFLAGS.
+If there is a problem with undefined symbols in QtOpenGL on Leopard, edit
+QtOpenGL/makefile and add ""-undefined dynamic_lookup"" to LFLAGS.
+Then make again.
 
 === Additional Dependencies : Bison ===
 
 __Leopard note:__ Leopard includes Bison 2.3, so this step can be skipped on Leopard.
 
 The version of bison available by default on Mac OSX is too old so you need to
-get a more recent one on your system. Download if from:
+get a more recent one on your system. Download at least version 2.3 from:
 
 ``` 
-curl -O http://ftp.gnu.org/gnu/bison/bison-2.3.tar.gz 
+ftp.gnu.org/gnu/bison/
 ```
 
-Now build and install it to a prefix of /usr/local :
+Now build and install it to a prefix of /usr/local.Ê Double-click the source
+tarball to unpack it, then cd to the source folder and:
 
 ``` 
-tar xvfz bison-2.3.tar.gz 
-cd bison-2.3 
 ./configure --prefix=/usr/local 
 make
 sudo make install 
-cd ..  
 ```
 
 == Install CMAKE for OSX ==
 
-Get the latest release from here:
+Get the latest source release from here:
 
 ``` 
-http://www.cmake.org/HTML/Download.html 
+http://www.cmake.org/cmake/resources/software.html
 ```
 
-At the time of writing the file I grabbed was:
+Binary installers are available for OS X, but they are not recommended
+(2.4 versions install in /usr instead of /usr/local, and 2.6 versions are a
+strange application).Ê Download the source.Ê Double-click the source tarball,
+then cd to the source folder and:
 
 ``` 
-curl -O http://www.cmake.org/files/v2.4/cmake-2.4.6-Darwin-universal.dmg
+./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
+make
+sudo make install
 ```
-
-Once downloaded open the dmg and run the installer
 
 == Install subversion for OSX ==
 
@@ -646,14 +652,9 @@ Trunk:
 svn co https://svn.osgeo.org/qgis/trunk/qgis qgis 
 ```
 
-For svn 0.8 branch
+For a release branch version x.y.z:
 ``` 
-svn co https://svn.osgeo.org/qgis/branches/Release-0_8_0 qgis0.8
-```
-
-For svn 0.9 branch
-``` 
-svn co https://svn.qgis.org/qgis/branches/Release-0_9_0 qgis0.9
+svn co https://svn.qgis.org/qgis/branches/Release-x_y_z qgis-x.y.z
 ```
 
 The first time you check out QGIS sources you will probably get a message like
@@ -672,8 +673,15 @@ this:
 
 I suggest you press 'p' to accept the key permanently.
 
-
 == Configure the build ==
+
+There are 2 different methods to build QGIS.Ê The traditional Cmake method,
+and the new Xcode project (starting with QGIS 1.1). The Xcode project has
+additional bundling steps, though some optional QGIS features are required due
+to limited conditional compilation.Ê The Cmake build handles optional features,
+and some bundling steps are available with scripts in the mac directory.
+
+=== Configure the Cmake build ===
 
 CMake supports out of source build so we will create a 'build' dir for the
 build process. By convention I build my software into a dir called 'apps' in
@@ -703,9 +711,9 @@ version as required):
 
 ```
 cmake -D CMAKE_INSTALL_PREFIX=${HOME}/apps/ \
-      -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.3.app/Contents/MacOS/
+      -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/
       include \
-      -D GRASS_PREFIX=/Applications/GRASS-6.3.app/Contents/MacOS \
+      -D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
       -D CMAKE_BUILD_TYPE=Release \
       ..
 ```
@@ -716,13 +724,29 @@ path and version as required):
 
 ```
 cmake -D CMAKE_INSTALL_PREFIX=${HOME}/apps/ \
-  -D GRASS_INCLUDE_DIR=/user/local/grass-6.3.0/include \
-  -D GRASS_PREFIX=/user/local/grass-6.3.0 \
+  -D GRASS_INCLUDE_DIR=/user/local/grass-6.4.0/include \
+  -D GRASS_PREFIX=/user/local/grass-6.4.0 \
   -D CMAKE_BUILD_TYPE=Release \
   ..
 ```
 
+=== Configure the Xcode build ===
+
+In the mac/xcode folder in the source, duplicate the 'qgis_user-template.xcconfig'
+file and name it 'qgis_user.xcconfig'.Ê A default build will use the KyngChaos
+frameworks, Postgres, GRASS 6.4, the python.org Python 2.5 and extra dependencies
+as described above, and compile for the build OSX version, so no extra configuration
+is necessary. If building on Leopard, you may want to use the system Python, which
+requires editing qgis_user.xcconfig.
+
+See the mac/xcode/readme.rtf for details, if you need to customize the build.
+The default build will also bundle the Qt frameworks, Postgres library, and
+other dependency libraries to create a self-contained package.Ê The KyngChaos
+frameworks and GRASS application are not bundled.
+
 == Building ==
+
+=== Building with Cmake ===
 
 Now we can start the build process:
 
@@ -733,8 +757,16 @@ make
 If all built without errors you can then install it:
 
 ``` 
-make install 
+sudo make install 
 ```
+
+=== Building with Xcode ===
+
+Open the xcode project file in Xcode.Ê Select 'Release' build configuration
+and select the 'Full Qgis' target, then build.
+
+The Qgis application will be found in the 'build/Release' folder in the xcode folder.
+Copy this to whereever you like.
 
 % -----------------------------------------------------------------------------
 % ----Please leave this break marker here for clarity - it wont be rendered ---

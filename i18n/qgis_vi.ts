@@ -5,7 +5,7 @@
     <name></name>
     <message>
         <source>&amp;Geoprocessing</source>
-        <translation>&amp;Xử lý địa lý</translation>
+        <translation type="obsolete">&amp;Xử lý địa lý</translation>
     </message>
 </context>
 <context>
@@ -1101,6 +1101,68 @@ p, li { white-space: pre-wrap; }
         <source>Use only selected features</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>creating new selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>adding to current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>removing from current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select by location</source>
+        <translation type="unfinished">Chọn theo vị trí</translation>
+    </message>
+    <message>
+        <source>Select features in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>that intersect features in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify current selection by:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify select layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance matrix</source>
+        <translation type="unfinished">Ma trận khoảng cách</translation>
+    </message>
+    <message>
+        <source>Created output matrix:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points in polygon</source>
+        <translation type="unfinished">Các điểm trong vùng</translation>
+    </message>
+    <message>
+        <source>Created output Shapefile:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector layer is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum line lengths</source>
+        <translation type="unfinished">Tính tổng chiều dài đường</translation>
+    </message>
 </context>
 <context>
     <name>DlgAddRelation</name>
@@ -1447,7 +1509,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Property with key &apos;%1&apos; already exists for this feature.</source>
+        <source>Property &apos;%1&apos; cannot be added twice.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3928,6 +3990,11 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <source>Building triangulation...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Generated CRS</source>
+        <comment>A CRS automatically generated from layer info get this prefix for description</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -5811,107 +5878,107 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
     </message>
     <message>
         <source>Whats new in Version 1.1.0?</source>
-        <translation>Có gì mới trong phiên bản 1.1.0?</translation>
+        <translation type="obsolete">Có gì mới trong phiên bản 1.1.0?</translation>
     </message>
     <message>
         <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation>Vui lòng lưu ý rằng đây là bản phát hành trong chuỗi các bản phát hành chưa ổn định. Vì thế nó chứa các tính chất mới và mở rộng giao diện lập trình của QGIS 1.0.x. Nếu như tính chất ổn định cũng như sự hỗ trợ dài hạn là điều quan trọng đối với bạn hơn là các tính chất mới và chưa được kiểm tra, chúng tôi khuyến cáo bạn nên dùng chuỗi phát hành ổn định QGIS 1.0.x.</translation>
+        <translation type="obsolete">Vui lòng lưu ý rằng đây là bản phát hành trong chuỗi các bản phát hành chưa ổn định. Vì thế nó chứa các tính chất mới và mở rộng giao diện lập trình của QGIS 1.0.x. Nếu như tính chất ổn định cũng như sự hỗ trợ dài hạn là điều quan trọng đối với bạn hơn là các tính chất mới và chưa được kiểm tra, chúng tôi khuyến cáo bạn nên dùng chuỗi phát hành ổn định QGIS 1.0.x.</translation>
     </message>
     <message>
         <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
-        <translation>Bản phát hành này bao gồm nhiều lỗi đã được loại bỏ và các cải tiến so với bản phát hành 1.0.0. Ngoài ra chúng tôi đã thêm vào các tính chất mới sau:</translation>
+        <translation type="obsolete">Bản phát hành này bao gồm nhiều lỗi đã được loại bỏ và các cải tiến so với bản phát hành 1.0.0. Ngoài ra chúng tôi đã thêm vào các tính chất mới sau:</translation>
     </message>
     <message>
         <source>Updates to translations.</source>
-        <translation>Các cập nhật về bản dịch.</translation>
+        <translation type="obsolete">Các cập nhật về bản dịch.</translation>
     </message>
     <message>
         <source>Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.</source>
-        <translation>Các cải thiện và &apos;tinh chỉnh&apos; lại trình cài đặt phần mở rộng Python. Chuyển qua kho chứa QGIS mới chính thức.</translation>
+        <translation type="obsolete">Các cải thiện và &apos;tinh chỉnh&apos; lại trình cài đặt phần mở rộng Python. Chuyển qua kho chứa QGIS mới chính thức.</translation>
     </message>
     <message>
         <source>Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.</source>
-        <translation>Các cải tiến về sắc thái nhờ đó các phần mở rộng và các phần khác của GUI được hỗ trợ tốt hơn khi chuyển đổi sắc thái. Bổ sung sắc thái biểu tượng GIS mới.</translation>
+        <translation type="obsolete">Các cải tiến về sắc thái nhờ đó các phần mở rộng và các phần khác của GUI được hỗ trợ tốt hơn khi chuyển đổi sắc thái. Bổ sung sắc thái biểu tượng GIS mới.</translation>
     </message>
     <message>
         <source>Improvements to Debian packaging to better support Debian standard requirements.</source>
-        <translation>Các cải tiến đối với việc &apos;đóng gói&apos; Debian để hỗ trợ tốt hơn các yêu cầu chuẩn của Debian.</translation>
+        <translation type="obsolete">Các cải tiến đối với việc &apos;đóng gói&apos; Debian để hỗ trợ tốt hơn các yêu cầu chuẩn của Debian.</translation>
     </message>
     <message>
         <source>Support usb: as a GPS device under Linux.</source>
-        <translation>Hỗ trợ usb: dưới dạng thiết bị GPS trong Linux.</translation>
+        <translation type="obsolete">Hỗ trợ usb: dưới dạng thiết bị GPS trong Linux.</translation>
     </message>
     <message>
         <source>WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.</source>
-        <translation>Phần mở rộng WMS bây giờ hỗ trợ phân loại và hiển thị các lớp lồng (nested layer) dưới dạng cây. Trình cung cấp WMS hiện tại cũng hỗ trợ các ảnh png 24bit. Phần mở rộng WMS hiện giờ cũng cung cấp một giao diện tìm kiếm để tìm các server WMS.</translation>
+        <translation type="obsolete">Phần mở rộng WMS bây giờ hỗ trợ phân loại và hiển thị các lớp lồng (nested layer) dưới dạng cây. Trình cung cấp WMS hiện tại cũng hỗ trợ các ảnh png 24bit. Phần mở rộng WMS hiện giờ cũng cung cấp một giao diện tìm kiếm để tìm các server WMS.</translation>
     </message>
     <message>
         <source>Added svg point symbols from Matt Amos (with his permission).</source>
-        <translation>Các biểu tượng điểm svg của Matt Amos được thêm vào (có sự đồng ý của ông).</translation>
+        <translation type="obsolete">Các biểu tượng điểm svg của Matt Amos được thêm vào (có sự đồng ý của ông).</translation>
     </message>
     <message>
         <source>Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.</source>
-        <translation>Các cải tiến với hỗ trợ proxy và hỗ trợ proxy của trình cung cấp WFS. Trình cung cấp WFS bây giờ cũng hiển thị tiến trình khi nó tìm dữ liệu.</translation>
+        <translation type="obsolete">Các cải tiến với hỗ trợ proxy và hỗ trợ proxy của trình cung cấp WFS. Trình cung cấp WFS bây giờ cũng hiển thị tiến trình khi nó tìm dữ liệu.</translation>
     </message>
     <message>
         <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
-        <translation>Các cải tiến về hỗ trợ client PostGIS. Việc tăng tốc rất cao khi vẽ lại lớp PostGIS có thể đạt được bằng cách  bất hoạt SSL trong trình biên tập kết nối. Hỗ trợ cho việc sử dụng cột ctid làm khoá chính (primary key) (làm &apos;nhẹ bớt&apos; các yêu cầu về các khoá chính kiểu số nguyên)</translation>
+        <translation type="obsolete">Các cải tiến về hỗ trợ client PostGIS. Việc tăng tốc rất cao khi vẽ lại lớp PostGIS có thể đạt được bằng cách  bất hoạt SSL trong trình biên tập kết nối. Hỗ trợ cho việc sử dụng cột ctid làm khoá chính (primary key) (làm &apos;nhẹ bớt&apos; các yêu cầu về các khoá chính kiểu số nguyên)</translation>
     </message>
     <message>
         <source>Mapserver Export improvements for continuous color support.</source>
-        <translation>Các cải thiện về xuất ra Mapserver đối với việc hỗ trợ màu liên tục.</translation>
+        <translation type="obsolete">Các cải thiện về xuất ra Mapserver đối với việc hỗ trợ màu liên tục.</translation>
     </message>
     <message>
         <source>Added tools menu - the fTools plugin is now part of the core QGIS plugins and will always be installed by default.</source>
-        <translation>Trình đơn các công cụ được thêm vào - Phần mở rộng fTools bây giờ là một phần của các phần mở rộng lõi của QGIS và luôn được cài đặt theo mặc định.</translation>
+        <translation type="obsolete">Trình đơn các công cụ được thêm vào - Phần mở rộng fTools bây giờ là một phần của các phần mở rộng lõi của QGIS và luôn được cài đặt theo mặc định.</translation>
     </message>
     <message>
         <source>Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.</source>
-        <translation>Các cải tiến đối với trình in ấn bao gồm các tùy chọn canh thẳng các đối tượng. Bây giờ ta cũng có thể in các bản đồ dưới dạng postscript raster hoặc vector. Đối với các nhà lập trình Python, các lớp biên tập (composer) bây giờ đã có gắn kết python.</translation>
+        <translation type="obsolete">Các cải tiến đối với trình in ấn bao gồm các tùy chọn canh thẳng các đối tượng. Bây giờ ta cũng có thể in các bản đồ dưới dạng postscript raster hoặc vector. Đối với các nhà lập trình Python, các lớp biên tập (composer) bây giờ đã có gắn kết python.</translation>
     </message>
     <message>
         <source>When using File - Save as image, the saved image is now georeferenced.</source>
-        <translation>Khi dùng Tập tin - Lưu thành ảnh, ảnh được lưu bây giờ đã có tham chiếu địa lý.</translation>
+        <translation type="obsolete">Khi dùng Tập tin - Lưu thành ảnh, ảnh được lưu bây giờ đã có tham chiếu địa lý.</translation>
     </message>
     <message>
         <source>Projection selector now includes quick selection of recently used CRS&apos;s.</source>
-        <translation>Trình chọn phép chiếu bây giờ bao gồm các phép chọn nhanhh các HTĐ mới được dùng gần đây.</translation>
+        <translation type="obsolete">Trình chọn phép chiếu bây giờ bao gồm các phép chọn nhanhh các HTĐ mới được dùng gần đây.</translation>
     </message>
     <message>
         <source>Continuous color renderer supports point symbols now too.</source>
-        <translation>Hỗ trợ cả trình bày màu liên tục cho các biểu tượng điểm.</translation>
+        <translation type="obsolete">Hỗ trợ cả trình bày màu liên tục cho các biểu tượng điểm.</translation>
     </message>
     <message>
         <source>Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX.</source>
-        <translation>Hỗ trợ CMake được cải thiện để xây dựng theo các gói phụ thuộc từ OSGEO4W (chỉ áp dụng cho Windows). Bổ sung một dự án XCode của các nhà phát triển xây dựng trong môi trường OSX.</translation>
+        <translation type="obsolete">Hỗ trợ CMake được cải thiện để xây dựng theo các gói phụ thuộc từ OSGEO4W (chỉ áp dụng cho Windows). Bổ sung một dự án XCode của các nhà phát triển xây dựng trong môi trường OSX.</translation>
     </message>
     <message>
         <source>Updates and cleanups to the GRASS toolbox.</source>
-        <translation>Các cập nhật và &apos;làm sạch&apos; cho hộp công cụ của GRASS.</translation>
+        <translation type="obsolete">Các cập nhật và &apos;làm sạch&apos; cho hộp công cụ của GRASS.</translation>
     </message>
     <message>
         <source>Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.</source>
-        <translation>Các thay đổi trong hộp thoại mở vector  để hỗ trợ tất cả các trình điều khiển có trong OGR, bao gồm cả các trình điều khiển CSDL và Nghi thức (protocol). Điều này đưa đến việc hỗ trợ SDE, OraceSpatial, CSDL địa lý cá nhân ESRI và nhiều dạng lưu trữ dữ liệu khác được OGR hỗ trợ. Lưu ý rằng trong một số trường hợp điều này có thể đòi hỏi phải có các thư viện của bên thứ ba trên hệ thống của bạn.</translation>
+        <translation type="obsolete">Các thay đổi trong hộp thoại mở vector  để hỗ trợ tất cả các trình điều khiển có trong OGR, bao gồm cả các trình điều khiển CSDL và Nghi thức (protocol). Điều này đưa đến việc hỗ trợ SDE, OraceSpatial, CSDL địa lý cá nhân ESRI và nhiều dạng lưu trữ dữ liệu khác được OGR hỗ trợ. Lưu ý rằng trong một số trường hợp điều này có thể đòi hỏi phải có các thư viện của bên thứ ba trên hệ thống của bạn.</translation>
     </message>
     <message>
         <source>The middle mouse button can now be used for panning. </source>
-        <translation>Nút giữa của chuột bây giờ có thể dùng để di chuyển bản đồ.</translation>
+        <translation type="obsolete">Nút giữa của chuột bây giờ có thể dùng để di chuyển bản đồ.</translation>
     </message>
     <message>
         <source>A new, faster attribute table implementation.</source>
-        <translation>Khả năng thực thi bảng thuộc tính mới, nhanh hơn.</translation>
+        <translation type="obsolete">Khả năng thực thi bảng thuộc tính mới, nhanh hơn.</translation>
     </message>
     <message>
         <source>Numerous cleanups to the user interface.</source>
-        <translation>Nhiều phần được &apos;làm sạch&apos; cho giao diện người dùng.</translation>
+        <translation type="obsolete">Nhiều phần được &apos;làm sạch&apos; cho giao diện người dùng.</translation>
     </message>
     <message>
         <source>A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database.</source>
-        <translation>Một trình cung cấp mới được thêm vào đối với SpatialLite - một dạng thực thi CSDL-địa-lý-trong-một-tập-tin dựa trên CSDL SQLITE.</translation>
+        <translation type="obsolete">Một trình cung cấp mới được thêm vào đối với SpatialLite - một dạng thực thi CSDL-địa-lý-trong-một-tập-tin dựa trên CSDL SQLITE.</translation>
     </message>
     <message>
         <source>Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.</source>
-        <translation>Hỗ trợ chồng vector để có thể vẽ các biểu đồ tròn và biểu đồ cột trên lớp vector dựa theo dự liệu thuộc tính.</translation>
+        <translation type="obsolete">Hỗ trợ chồng vector để có thể vẽ các biểu đồ tròn và biểu đồ cột trên lớp vector dựa theo dự liệu thuộc tính.</translation>
     </message>
     <message>
         <source>&amp;Redo</source>
@@ -6007,6 +6074,121 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
     </message>
     <message>
         <source>Features pasted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whats new in Version 1.2.0?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.1.0. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release includes over 140 bug fixes and enhancements over the QGIS 1.1.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Editing:
+
+Editing functionality in QGIS has had a major update in this release. This
+includes the addition of new vector editing tools:
+- delete part of multipart feature
+- delete hole from polygon
+- simplify feature
+- Added a new node tool (in advanced digitizing toolbar).
+- New functionality for merging features
+- Added undo/redo functionality for vector layer editing.
+- Added option to show only markers of selected features in editing mode.
+- Change layer&apos;s icon in legend to reflext that the layer is editable.
+
+In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar
+and there is a new dock widget displaying undo stack of active layer.
+
+About the node tool: It resembles a tool for editing paths by nodes that is
+present in every vector editor. How does it work (in QGIS)? Click on a
+feature, its nodes will be marked by small rectangles. Clicking and dragging a
+node moves it. Double clicking a segment will add a new node. Pressing delete
+key will remove active node. It&apos;s possible to select more active nodes at
+once: by clicking and dragging a rectangle. It&apos;s possible to select a segment&apos;s
+adjacent nodes by clicking on the segment. It&apos;s possible to add/remove active
+nodes by using Ctrl when clicking a node or dragging a rectangle
+
+We recommend that you turn off vertex markers in QGIS options when working with
+this tool: the redraws are much faster and the map is not cluttered with
+markers. 
+
+Keyboard shortcuts:
+
+New feature: configure shortcuts for actions within main window of qgis!
+See menu Setting-&gt;Configure shortcuts
+
+Map Composer:
+
+It is now possible to lock/unlock composer item positions by right mouse click.
+The width and height of the composer map will now remain fixed if user sets the
+composer map extent to the map canvas extent. possibility to display
+current date in composer label by typing (d &apos;June&apos; yyyy) or similar.
+It is now possible to keep the current layers in a composer map even if further
+layers are added to the main map. Export to PDF in composer is now possible.
+
+Attribute tables:
+
+It is now possible to search the attribute table within selected records only.
+General speedups have been made on the attribute table. Setting of field width
+and precision when adding attributes is now possible. Handling of attribute
+types in WFS provider has bee improved.
+
+Attribute aliases for vector layers are now available. The aliases are shown
+instead of the original field names in the info tool and attribute table to
+make things easier for end users. There is now a GUI for setting edit widgets
+for layer attributes.  A new dialog allows loading a value map from a layer
+(could be non-spatial table too!).  The edit widgets settings will also now
+be respected in the attribute table.
+
+Plugins:
+
+- The order of layers in the WMS dialog can now be changed.
+- The eVis plugin, version 1.1.0, has been added to the QGIS project and
+  included as a standard plugin. More information about eVis can be found here:
+  http://biodiversityinformatics.amnh.org/open_source/evis/documentation.php .
+- The interpolation plugin now has the ability to use line layers as constrains
+  for triangulation in interpolation plugin. You can also now save the
+  triangulation to shape file.
+- An new OpenStreetMap provider and plugin have been added to QGIS.
+
+Projects Management:
+
+QGIS now includes support for  project relative position of file data sources
+and svgs. The saving of relative paths of file data sources is optional.
+
+PostGIS &amp; the PostgreSQL Provider:
+
+You can now select the SSL mode when adding a new DB connection. Turning off
+SSL encryption can greatly improve performance of PostGIS data loading where
+connection security is not required. Support has been added for more native
+types and for setting of column comments.
+
+Symbology enhancements:
+
+- allow refresh of symbols via popup menu on the renderer&apos;s symbol selection
+- add support for data defined symbol(name)s
+- add support for font symbol markers (only data defined - no gui yet)
+- add symbol size in map units (ie. symbols that keep the size in mapunits
+  independant of the mapscale)
+
+Command line arguments:
+
+Added command line argument support on windows.
+Enhancement of command line arguments:
+- allow given snapshot sizes
+- allow suppression of splash screen
+- capture map decorations from plugins on snapshots
+
+Grass:
+
+There is a new GRASS shell. Also there have been many cleanups and consistency
+updates.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7124,7 +7306,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
-        <translation>Nhập hành động tại đây. Hành động có thể là bất kỳ chương trình, vĩ lệnh (script) hoặc lệnh nào có trên hệ thống của bạn. Khi hành động được kích hoạt, bất kỳ tập hợp ký tự nào bắt đầu bằng a% và sau đó có tên của một trường sẽ được thay thế bởi giá trị của trường đó. Các ký tự đặc biệt %% sẽ được thay thế bởi giá trị của trường được chọn. Dấu nháy kép gộp các chữ thành các đối số duy nhất đối với chương trình, vĩ lệnh hoặc lệnh. Dấu nháy kép sẽ bị bỏ qua nếu trước nó là dấu xuyệc ngược</translation>
+        <translation type="obsolete">Nhập hành động tại đây. Hành động có thể là bất kỳ chương trình, vĩ lệnh (script) hoặc lệnh nào có trên hệ thống của bạn. Khi hành động được kích hoạt, bất kỳ tập hợp ký tự nào bắt đầu bằng a% và sau đó có tên của một trường sẽ được thay thế bởi giá trị của trường đó. Các ký tự đặc biệt %% sẽ được thay thế bởi giá trị của trường được chọn. Dấu nháy kép gộp các chữ thành các đối số duy nhất đối với chương trình, vĩ lệnh hoặc lệnh. Dấu nháy kép sẽ bị bỏ qua nếu trước nó là dấu xuyệc ngược</translation>
     </message>
     <message>
         <source>Attribute Actions</source>
@@ -7149,6 +7331,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Clicking the button will let you select an application to use as the action</source>
         <translation>Nhắp chuột vào nút này sẽ cho phép bạn chọn một ứng dụng dùng làm hành động</translation>
+    </message>
+    <message>
+        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9242,7 +9428,7 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     </message>
     <message>
         <source>Letter (8.5x11 inches)</source>
-        <translation type="unfinished">Giấy viết thư (8.5x11 inch)</translation>
+        <translation type="obsolete">Giấy viết thư (8.5x11 inch)</translation>
     </message>
     <message>
         <source>Legal (8.5x14 inches)</source>
@@ -9259,6 +9445,58 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     <message>
         <source>Crosses</source>
         <translation type="unfinished">Cắt chéo</translation>
+    </message>
+    <message>
+        <source>mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>inch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI A (Letter; 8.5x11 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI B (Tabloid; 11x17 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI C (17x22 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI D (22x34 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI E (34x44 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch A (9x12 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch B (12x18 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch C (18x24 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch D (24x36 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch E (36x48 inches)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch E1 (30x42 inches)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13771,6 +14009,10 @@ tại dòng %2 cột %3</translation>
         <source>%1:&amp;nbsp;no input</source>
         <translation>%1:&amp;nbsp;không có đầu vào</translation>
     </message>
+    <message>
+        <source>Select a layer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassModuleInput</name>
@@ -13829,6 +14071,10 @@ tại dòng %2 cột %3</translation>
     <message>
         <source>Input</source>
         <translation type="unfinished">Đầu vào</translation>
+    </message>
+    <message>
+        <source>Select a layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15252,6 +15498,14 @@ p, li { white-space: pre-wrap; }
         <source>Identify Results - %1</source>
         <translation>Kết quả nhận diện - %1</translation>
     </message>
+    <message>
+        <source>Copy attribute value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy feature attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsIdentifyResultsBase</name>
@@ -15983,6 +16237,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
         <translation>Để mở một bảng thuộc tính, bạn phải chọn một lớp vector trong phần Chú giải</translation>
+    </message>
+    <message>
+        <source>Stop editing</source>
+        <translation type="unfinished">Ngừng chỉnh sửa</translation>
+    </message>
+    <message>
+        <source>Do you want to save the changes to layer %1?</source>
+        <translation type="unfinished">Bạn có muốn lưu các thay đổi của lớp %1 không?</translation>
     </message>
 </context>
 <context>
@@ -17830,7 +18092,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;The layer name is format dependant. Consult the OGR documentation or the documentation of your data format to determine the nature of the included information.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Be advised: &lt;/span&gt;selecting an already opened layer will not generate an error message and the layer will end up loaded twice!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Đây là danh sách của tất cả các lớp có trong nguôn dữ liệu của lớp kích hoạt. Bạn có thể chọn các lớp để nạp. Các lớp sẽ được nạp khi bạn bấm &quot;Đồng ý&quot;.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Tên của lớp phụ thuộc vào định dạng. Hãy xem tài liệu về OGR hoặc tài liệu về định dạng dữ liệu của bạn để xác định bản chất của thông tin đưa vào.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Lưu ý: &lt;/span&gt;chọn một lớp đã mở sẽ không sinh ra lỗi và lớp đó sẽ được nạp hai lần!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -17838,6 +18100,17 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <source>1</source>
         <translation>1</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;This is the list of all layers available in the datasource of the active layer. You can select the layers to load. The layers will be loaded when you press &quot;OK&quot;.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;The layer name is format dependent. Consult the OGR documentation or the documentation of your data format to determine the nature of the included information.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Be advised: &lt;/span&gt;selecting an already opened layer will not generate an error message and the layer will end up loaded twice!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18817,6 +19090,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Add PostGIS layers with double click and select in extended mode</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preferred measurements units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meters</source>
+        <translation type="unfinished">Mét</translation>
+    </message>
+    <message>
+        <source>Feet</source>
+        <translation type="unfinished">Bộ Anh</translation>
     </message>
 </context>
 <context>
@@ -21000,7 +21285,7 @@ Vui lòng cài đặt PostGIS có hỗ trợ GEOS (http://geos.refractions.net)<
     </message>
     <message>
         <source>Map units</source>
-        <translation>Đơn vị bản đồ</translation>
+        <translation type="obsolete">Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Enable topological editing</source>
@@ -21024,6 +21309,10 @@ Vui lòng cài đặt PostGIS có hỗ trợ GEOS (http://geos.refractions.net)<
     </message>
     <message>
         <source>save absolute paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer units (only used when CRS transformation is disabled)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21121,16 +21410,8 @@ Vì lý do này trình chọn phép chiếu sẽ không chạy được...</tran
         <translation type="unfinished">ID</translation>
     </message>
     <message>
-        <source>CRS ID : 100000</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CRS ID : 3344</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>CRS ID : whatever</source>
-        <translation>ID HTĐ: bất kỳ hệ nào</translation>
+        <translation type="obsolete">ID HTĐ: bất kỳ hệ nào</translation>
     </message>
 </context>
 <context>
@@ -25053,6 +25334,38 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     </message>
     <message>
         <source>Immutable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique values editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slider range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

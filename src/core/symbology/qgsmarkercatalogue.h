@@ -43,7 +43,7 @@ class CORE_EXPORT QgsMarkerCatalogue : public QObject
     /** Returns pixmap of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg
      */
-    QImage imageMarker( QString fullName, double size, QPen pen, QBrush brush, double opacity = 1.0);
+    QImage imageMarker( QString fullName, double size, QPen pen, QBrush brush, double opacity = 1.0 );
 
     /** Returns qpicture of the marker
      * \param fullName full name, e.g. hard:circle, svg:/home/usr1/marker1.svg

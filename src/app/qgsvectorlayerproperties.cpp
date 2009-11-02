@@ -205,7 +205,7 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
 {
   int index = -1;
   QMap<int, QPushButton*>::iterator it = mButtonMap.begin();
-  for ( ; it != mButtonMap.end() ;it++ )
+  for ( ; it != mButtonMap.end() ; it++ )
   {
     if ( it.value()->isDown() )
     {

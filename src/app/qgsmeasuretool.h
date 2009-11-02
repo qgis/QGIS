@@ -66,10 +66,11 @@ class QgsMeasureTool : public QgsMapTool
     //! called when map tool is being deactivated
     virtual void deactivate();
 
-  protected:
-
+  public slots:
     //! updates the projections we're using
-    void updateProjection();
+    void updateSettings();
+
+  protected:
 
     QList<QgsPoint> mPoints;
 

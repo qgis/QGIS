@@ -14,8 +14,6 @@
 
 #include "osmrenderer.h"
 
-#include <iostream>
-
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
@@ -87,14 +85,12 @@ QMap<QString, QString> OsmRenderer::parse_tags( QString tags )
 
 bool OsmRenderer::willRenderFeature( QgsFeature *f )
 {
-  // todo: return what?
   return true;
 }
 
 
 void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity )
 {
-//    QgsDebugMsg("RENDERING FEAT:" + f.id());
   QPainter* p = renderContext.painter();
   QgsAttributeMap attr_map = f.attributeMap();
   QMap<QString, QString> tags = parse_tags( attr_map[2].toString() );
@@ -102,7 +98,6 @@ void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f,
   if ( mGeomType == QGis::Line )
   {
     QPen pen = osmstyle.get_pen( tags );
-    QColor penColor = pen.color();
     p->setPen( osmstyle.get_pen( tags ) );
     p->setOpacity( opacity );
   }
@@ -117,7 +112,7 @@ void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f,
   else if ( mGeomType == QGis::Point )
   {
     *pic = osmstyle.get_image( tags );
-    p->setOpacity( opacity  );
+    p->setOpacity( opacity );
   }
 }
 

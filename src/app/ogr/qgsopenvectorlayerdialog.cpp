@@ -59,7 +59,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
   QgsDebugMsg( "Database drivers :" + QgsProviderRegistry::instance()->databaseDrivers() );
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ";" );
 
-  for ( int i = 0;i < dbDrivers.count();i++ )
+  for ( int i = 0; i < dbDrivers.count(); i++ )
   {
     QString dbDriver = dbDrivers.at( i );
     if (( !dbDriver.isEmpty() ) && ( !dbDriver.isNull() ) )
@@ -68,7 +68,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
 
   //add directory drivers
   QStringList dirDrivers = QgsProviderRegistry::instance()->directoryDrivers().split( ";" );
-  for ( int i = 0;i < dirDrivers.count();i++ )
+  for ( int i = 0; i < dirDrivers.count(); i++ )
   {
     QString dirDriver = dirDrivers.at( i );
     if (( !dirDriver.isEmpty() ) && ( !dirDriver.isNull() ) )
@@ -77,7 +77,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
 
   //add protocol drivers
   QStringList proDrivers = QgsProviderRegistry::instance()->protocolDrivers().split( ";" );
-  for ( int i = 0;i < proDrivers.count();i++ )
+  for ( int i = 0; i < proDrivers.count(); i++ )
   {
     QString proDriver = proDrivers.at( i );
     if (( !proDriver.isEmpty() ) && ( !proDriver.isNull() ) )
@@ -284,7 +284,7 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
     //mType="file";
     mDataSources = openFile();
     filepath = "";
-    for ( int i = 0;i < mDataSources.count();i++ )
+    for ( int i = 0; i < mDataSources.count(); i++ )
       filepath += mDataSources.at( i ) + ";";
     inputSrcDataset->setText( filepath );
   }

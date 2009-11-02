@@ -216,7 +216,6 @@ int QgsCentralPointPositionManager::findObjectPosition( const unsigned char* wkb
     default:
       return 6;
   }
-  return 0;
 }
 
 int QgsCentralPointPositionManager::calculatePolygonCentroid( double x[], double y[], int numberOfPoints, double& centroidX, double& centroidY ) const

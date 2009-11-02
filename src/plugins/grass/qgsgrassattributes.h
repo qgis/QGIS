@@ -107,7 +107,7 @@ class QgsGrassAttributes: public QDialog, private Ui::QgsGrassAttributesBase
     void clear();
 
     //! Enable/disable buttons depending on the category mode
-    void setCategoryMode(QgsGrassEdit::CatMode mode, const QString &cat);
+    void setCategoryMode( QgsGrassEdit::CatMode mode, const QString &cat );
 
   private:
     //! Pointer to vector provider

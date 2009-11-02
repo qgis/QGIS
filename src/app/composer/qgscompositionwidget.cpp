@@ -260,12 +260,12 @@ void QgsCompositionWidget::setSize( QLineEdit *le, double v )
   if ( mPaperUnitsComboBox->currentIndex() == 0 )
   {
     // mm
-    le->setText( QString("%1").arg( v ) );
+    le->setText( QString( "%1" ).arg( v ) );
   }
   else
   {
     // inch (show width in inch)
-    le->setText( QString("%1").arg( v / 25.4 ) );
+    le->setText( QString( "%1" ).arg( v / 25.4 ) );
   }
 }
 

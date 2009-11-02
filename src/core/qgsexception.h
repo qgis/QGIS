@@ -23,6 +23,7 @@
 #include <list>
 
 #include <QDomNode>
+#include <QDomDocument>
 
 /** \ingroup core
   * Defines a qgis exception class.
@@ -83,9 +84,10 @@ class QgsProjectBadLayerException : public QgsException
 {
   public:
 
-    QgsProjectBadLayerException( std::list<QDomNode> const & layers )
+    QgsProjectBadLayerException( std::list<QDomNode> const & layers, QDomDocument const & doc = QDomDocument() )
         : QgsException( std::string( msg_ ) ),
-        mBrokenLayers( layers )
+        mBrokenLayers( layers ),
+        mProjectDom( doc )
     {}
 
     ~QgsProjectBadLayerException() throw()
@@ -96,6 +98,10 @@ class QgsProjectBadLayerException : public QgsException
       return mBrokenLayers;
     }
 
+    QDomDocument const & document() const
+    {
+      return mProjectDom;
+    }
   private:
 
     /** QDomNodes representing the state of a layer that couldn't be loaded
@@ -105,6 +111,9 @@ class QgsProjectBadLayerException : public QgsException
 
      */
     std::list<QDomNode> mBrokenLayers;
+
+    // A default empty document does not contain any extra information
+    QDomDocument mProjectDom;
 
     static const char * msg_;
 

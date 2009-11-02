@@ -727,7 +727,7 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
       unsigned char* ptr = mGeometry + 5;
       int* npoints = ( int* )ptr;
       ptr += sizeof( int );
-      for ( int index = 0;index < *npoints;++index )
+      for ( int index = 0; index < *npoints; ++index )
       {
         tempx = ( double* )ptr;
         ptr += sizeof( double );
@@ -770,11 +770,11 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
       int* nrings = ( int* )( mGeometry + 5 );
       int* npoints;
       unsigned char* ptr = mGeometry + 9;
-      for ( int index = 0;index < *nrings;++index )
+      for ( int index = 0; index < *nrings; ++index )
       {
         npoints = ( int* )ptr;
         ptr += sizeof( int );
-        for ( int index2 = 0;index2 < *npoints;++index2 )
+        for ( int index2 = 0; index2 < *npoints; ++index2 )
         {
           tempx = ( double* )ptr;
           ptr += sizeof( double );
@@ -819,7 +819,7 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
       unsigned char* ptr = mGeometry + 5;
       int* npoints = ( int* )ptr;
       ptr += sizeof( int );
-      for ( int index = 0;index < *npoints;++index )
+      for ( int index = 0; index < *npoints; ++index )
       {
         ptr += ( 1 + sizeof( int ) ); //skip endian and point type
         tempx = ( double* )ptr;
@@ -847,12 +847,12 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
       int* nlines = ( int* )ptr;
       int* npoints = 0;
       ptr += sizeof( int );
-      for ( int index = 0;index < *nlines;++index )
+      for ( int index = 0; index < *nlines; ++index )
       {
         ptr += ( sizeof( int ) + 1 );
         npoints = ( int* )ptr;
         ptr += sizeof( int );
-        for ( int index2 = 0;index2 < *npoints;++index2 )
+        for ( int index2 = 0; index2 < *npoints; ++index2 )
         {
           tempx = ( double* )ptr;
           ptr += sizeof( double );
@@ -900,16 +900,16 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
       int* nrings;
       int* npoints;
       ptr += sizeof( int );
-      for ( int index = 0;index < *npolys;++index )
+      for ( int index = 0; index < *npolys; ++index )
       {
         ptr += ( 1 + sizeof( int ) ); //skip endian and polygon type
         nrings = ( int* )ptr;
         ptr += sizeof( int );
-        for ( int index2 = 0;index2 < *nrings;++index2 )
+        for ( int index2 = 0; index2 < *nrings; ++index2 )
         {
           npoints = ( int* )ptr;
           ptr += sizeof( int );
-          for ( int index3 = 0;index3 < *npoints;++index3 )
+          for ( int index3 = 0; index3 < *npoints; ++index3 )
           {
             tempx = ( double* )ptr;
             ptr += sizeof( double );
@@ -2932,7 +2932,7 @@ int QgsGeometry::translate( double dx, double dy )
     {
       int* npoints = ( int* )( &mGeometry[wkbPosition] );
       wkbPosition += sizeof( int );
-      for ( int index = 0;index < *npoints;++index )
+      for ( int index = 0; index < *npoints; ++index )
       {
         translateVertex( wkbPosition, dx, dy, hasZValue );
       }
@@ -2947,11 +2947,11 @@ int QgsGeometry::translate( double dx, double dy )
       wkbPosition += sizeof( int );
       int* npoints;
 
-      for ( int index = 0;index < *nrings;++index )
+      for ( int index = 0; index < *nrings; ++index )
       {
         npoints = ( int* )( &( mGeometry[wkbPosition] ) );
         wkbPosition += sizeof( int );
-        for ( int index2 = 0;index2 < *npoints;++index2 )
+        for ( int index2 = 0; index2 < *npoints; ++index2 )
         {
           translateVertex( wkbPosition, dx, dy, hasZValue );
         }
@@ -2965,7 +2965,7 @@ int QgsGeometry::translate( double dx, double dy )
     {
       int* npoints = ( int* )( &( mGeometry[wkbPosition] ) );
       wkbPosition += sizeof( int );
-      for ( int index = 0;index < *npoints;++index )
+      for ( int index = 0; index < *npoints; ++index )
       {
         wkbPosition += ( sizeof( int ) + 1 );
         translateVertex( wkbPosition, dx, dy, hasZValue );
@@ -2980,7 +2980,7 @@ int QgsGeometry::translate( double dx, double dy )
       int* nlines = ( int* )( &( mGeometry[wkbPosition] ) );
       int* npoints = 0;
       wkbPosition += sizeof( int );
-      for ( int index = 0;index < *nlines;++index )
+      for ( int index = 0; index < *nlines; ++index )
       {
         wkbPosition += ( sizeof( int ) + 1 );
         npoints = ( int* )( &( mGeometry[wkbPosition] ) );
@@ -3001,16 +3001,16 @@ int QgsGeometry::translate( double dx, double dy )
       int* nrings;
       int* npoints;
       wkbPosition += sizeof( int );
-      for ( int index = 0;index < *npolys;++index )
+      for ( int index = 0; index < *npolys; ++index )
       {
         wkbPosition += ( 1 + sizeof( int ) ); //skip endian and polygon type
         nrings = ( int* )( &( mGeometry[wkbPosition] ) );
         wkbPosition += sizeof( int );
-        for ( int index2 = 0;index2 < *nrings;++index2 )
+        for ( int index2 = 0; index2 < *nrings; ++index2 )
         {
           npoints = ( int* )( &( mGeometry[wkbPosition] ) );
           wkbPosition += sizeof( int );
-          for ( int index3 = 0;index3 < *npoints;++index3 )
+          for ( int index3 = 0; index3 < *npoints; ++index3 )
           {
             translateVertex( wkbPosition, dx, dy, hasZValue );
           }
@@ -3058,7 +3058,7 @@ int QgsGeometry::transform( const QgsCoordinateTransform& ct )
     {
       int* npoints = ( int* )( &mGeometry[wkbPosition] );
       wkbPosition += sizeof( int );
-      for ( int index = 0;index < *npoints;++index )
+      for ( int index = 0; index < *npoints; ++index )
       {
         transformVertex( wkbPosition, ct, hasZValue );
       }
@@ -3073,11 +3073,11 @@ int QgsGeometry::transform( const QgsCoordinateTransform& ct )
       wkbPosition += sizeof( int );
       int* npoints;
 
-      for ( int index = 0;index < *nrings;++index )
+      for ( int index = 0; index < *nrings; ++index )
       {
         npoints = ( int* )( &( mGeometry[wkbPosition] ) );
         wkbPosition += sizeof( int );
-        for ( int index2 = 0;index2 < *npoints;++index2 )
+        for ( int index2 = 0; index2 < *npoints; ++index2 )
         {
           transformVertex( wkbPosition, ct, hasZValue );
         }
@@ -3091,7 +3091,7 @@ int QgsGeometry::transform( const QgsCoordinateTransform& ct )
     {
       int* npoints = ( int* )( &( mGeometry[wkbPosition] ) );
       wkbPosition += sizeof( int );
-      for ( int index = 0;index < *npoints;++index )
+      for ( int index = 0; index < *npoints; ++index )
       {
         wkbPosition += ( sizeof( int ) + 1 );
         transformVertex( wkbPosition, ct, hasZValue );
@@ -3106,7 +3106,7 @@ int QgsGeometry::transform( const QgsCoordinateTransform& ct )
       int* nlines = ( int* )( &( mGeometry[wkbPosition] ) );
       int* npoints = 0;
       wkbPosition += sizeof( int );
-      for ( int index = 0;index < *nlines;++index )
+      for ( int index = 0; index < *nlines; ++index )
       {
         wkbPosition += ( sizeof( int ) + 1 );
         npoints = ( int* )( &( mGeometry[wkbPosition] ) );
@@ -3127,16 +3127,16 @@ int QgsGeometry::transform( const QgsCoordinateTransform& ct )
       int* nrings;
       int* npoints;
       wkbPosition += sizeof( int );
-      for ( int index = 0;index < *npolys;++index )
+      for ( int index = 0; index < *npolys; ++index )
       {
         wkbPosition += ( 1 + sizeof( int ) ); //skip endian and polygon type
         nrings = ( int* )( &( mGeometry[wkbPosition] ) );
         wkbPosition += sizeof( int );
-        for ( int index2 = 0;index2 < *nrings;++index2 )
+        for ( int index2 = 0; index2 < *nrings; ++index2 )
         {
           npoints = ( int* )( &( mGeometry[wkbPosition] ) );
           wkbPosition += sizeof( int );
-          for ( int index3 = 0;index3 < *npoints;++index3 )
+          for ( int index3 = 0; index3 < *npoints; ++index3 )
           {
             transformVertex( wkbPosition, ct, hasZValue );
           }
@@ -3736,7 +3736,7 @@ QString QgsGeometry::exportToWkt()
         ringNumPoints[idx] = *nPoints;
         ptr += 4;
 
-        for ( jdx = 0;jdx < *nPoints;jdx++ )
+        for ( jdx = 0; jdx < *nPoints; jdx++ )
         {
           if ( jdx != 0 )
           {
@@ -3773,7 +3773,7 @@ QString QgsGeometry::exportToWkt()
       mWkt += "MULTIPOINT(";
       nPoints = ( int* )( mGeometry + 5 );
       ptr = mGeometry + 5 + sizeof( int );
-      for ( idx = 0;idx < *nPoints;++idx )
+      for ( idx = 0; idx < *nPoints; ++idx )
       {
         ptr += ( 1 + sizeof( int ) );
         if ( idx != 0 )
@@ -4582,8 +4582,8 @@ double QgsGeometry::distanceSquaredPointToSegment(
   }
   else
   {
-    minDistPoint.setX( *x1 + t * ( *x2 - *x1 ) );
-    minDistPoint.setY( *y1 + t * ( *y2 - *y1 ) );
+    minDistPoint.setX( *x1 + t *( *x2 - *x1 ) );
+    minDistPoint.setY( *y1 + t *( *y2 - *y1 ) );
   }
 
   return ( minDistPoint.sqrDist( point ) );
@@ -4642,8 +4642,8 @@ double QgsGeometry::distanceSquaredPointToSegment(
   minDistPoint.set( xn, yn );
 
   return (
-           ( xn - point.x() ) * ( xn - point.x() ) +
-           ( yn - point.y() ) * ( yn - point.y() )
+           ( xn - point.x() ) *( xn - point.x() ) +
+           ( yn - point.y() ) *( yn - point.y() )
          );
 #endif //0
 }

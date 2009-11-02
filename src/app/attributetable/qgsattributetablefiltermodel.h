@@ -23,6 +23,8 @@
 //QGIS Includes
 #include "qgsvectorlayer.h" //QgsAttributeList
 
+class QgsAttributeTableModel;
+
 class QgsAttributeTableFilterModel: public QSortFilterProxyModel
 {
   public:
@@ -42,6 +44,7 @@ class QgsAttributeTableFilterModel: public QSortFilterProxyModel
     //QModelIndex mapFromSource ( const QModelIndex & sourceIndex ) const;
 
     QgsVectorLayer *layer() const { return mLayer; }
+    QgsAttributeTableModel *tableModel() const { return reinterpret_cast<QgsAttributeTableModel*>( sourceModel() ); }
 
   protected:
     /**

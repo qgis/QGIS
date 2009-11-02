@@ -638,7 +638,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
 
     //! Uses region
     bool mUsesRegion;
-    
+
     //! Required field
     bool mRequired;
 };

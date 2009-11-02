@@ -1,5 +1,5 @@
-"""@package DlgAddRelation
-The main class of this module (DlgAddRelation) is descendant of "Create OSM Relation" dialog.
+"""@package OsmAddRelationDlg
+The main class of this module (OsmAddRelationDlg) is descendant of "Create OSM Relation" dialog.
 
 The dialog either shows detail info on existing relation or is empty when no relation id is passed to constructor.
 In brief this module (and its main class) just provides easy way to create or change OSM relation.
@@ -7,8 +7,8 @@ In brief this module (and its main class) just provides easy way to create or ch
 """
 
 
-from DlgAddRelation_ui import Ui_DlgAddRelation
-from map_tools.IdentifyMapTool import IdentifyMapTool
+from OsmAddRelationDlg_ui import Ui_OsmAddRelationDlg
+from map_tools.OsmIdentifyMT import OsmIdentifyMT
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -21,11 +21,11 @@ import sqlite3
 
 
 
-class DlgAddRelation(QDialog, Ui_DlgAddRelation):
+class OsmAddRelationDlg(QDialog, Ui_OsmAddRelationDlg):
     """This class is direct descendant of "Create OSM Relation" dialog. It provides easy way to create
-    or change OSM relation. Methods of DlgAddRelation class catch signals emitted when changing relations
+    or change OSM relation. Methods of OsmAddRelationDlg class catch signals emitted when changing relations
     type, tags or members, submitting or rejecting the whole dialog. After catching signal, methods must
-    perform appropriate operation using methods of DatabaseManager. The other methods serve to initialize
+    perform appropriate operation using methods of OsmDatabaseManager. The other methods serve to initialize
     dialog when displaying info on existing relation."""
 
 
@@ -208,7 +208,7 @@ class DlgAddRelation(QDialog, Ui_DlgAddRelation):
         """
 
         if self.chooseMemberButton.isChecked():
-            self.mapTool=IdentifyMapTool(self.canvas, self.dockWidget, self.dbm)
+            self.mapTool=OsmIdentifyMT(self.canvas, self.dockWidget, self.dbm)
             self.canvas.setMapTool(self.mapTool)
             self.canvas.setCursor(QCursor(Qt.ArrowCursor))
             self.canvas.setFocus(Qt.OtherFocusReason)

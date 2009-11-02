@@ -124,8 +124,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   bool layerIdListOk, enabledListOk, toleranceListOk, toleranceUnitListOk, snapToListOk;
   QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &layerIdListOk );
   QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &enabledListOk );
-  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", & toleranceListOk);
-  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", & toleranceUnitListOk);
+  QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", & toleranceListOk );
+  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", & toleranceUnitListOk );
   QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &snapToListOk );
 
   QStringList::const_iterator idIter = layerIdList.constBegin();
@@ -139,7 +139,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   //create the new layer entries
   for ( ; idIter != layerIdList.constEnd(); ++idIter, ++enabledIter, ++tolIter, ++tolUnitIter, ++snapToIter )
   {
-    if(layerIdListOk)
+    if ( layerIdListOk )
     {
       currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
     }
@@ -154,7 +154,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       newEntry.layerName = currentLayer->name();
 
       newEntry.checked = false;
-      if(enabledListOk && enabledIter != enabledList.constEnd())
+      if ( enabledListOk && enabledIter != enabledList.constEnd() )
       {
         if (( *enabledIter ) == "enabled" )
         {
@@ -163,7 +163,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       }
 
       //snap to vertex / segment / vertex and segment
-      if(snapToListOk &&snapToIter != snapToList.constEnd())
+      if ( snapToListOk && snapToIter != snapToList.constEnd() )
       {
         if (( *snapToIter ) == "to_vertex" )
         {
@@ -184,7 +184,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       }
 
       //snap tolerance
-      if(toleranceListOk && tolIter != toleranceList.constEnd())
+      if ( toleranceListOk && tolIter != toleranceList.constEnd() )
       {
         newEntry.tolerance = tolIter->toDouble();
       }
@@ -194,7 +194,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       }
 
       //snap tolerance unit
-      if (toleranceUnitListOk && tolUnitIter != toleranceUnitList.constEnd())
+      if ( toleranceUnitListOk && tolUnitIter != toleranceUnitList.constEnd() )
       {
         newEntry.toleranceUnit = tolUnitIter->toInt();
       }
@@ -291,7 +291,7 @@ void QgsProjectProperties::apply()
   {
     QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
     myRender->setDestinationSrs( srs );
-
+    QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
     // write the currently selected projections _proj string_ to project settings
     QgsDebugMsg( QString( "SpatialRefSys/ProjectCRSProj4String: %1" ).arg( projectionSelector->selectedProj4String() ) );
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projectionSelector->selectedProj4String() );
@@ -432,7 +432,7 @@ void QgsProjectProperties::on_mSnappingOptionsPushButton_clicked()
   }
 }
 
-void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged(int state)
+void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
 {
   btnGrpMapUnits->setEnabled( state == Qt::Unchecked );
 }

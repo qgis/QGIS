@@ -166,7 +166,7 @@ void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext,
       theSymbol->setNamedPointSymbol( name );
     }
     *img = theSymbol->getPointSymbolAsImage( renderContext.scaleFactor(), selected, mSelectionColor, fieldScale,
-                                             rotation, renderContext.rasterScaleFactor(), opacity );
+           rotation, renderContext.rasterScaleFactor(), opacity );
 
     if ( !oldName.isNull() )
     {

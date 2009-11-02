@@ -28,7 +28,7 @@
 #include "qgsattributetablemodel.h"
 #include "qgsattributetableidcolumnpair.h"
 
-class QgsAttributeTableMemoryModel: public QgsAttributeTableModel
+class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
 {
     Q_OBJECT;
 

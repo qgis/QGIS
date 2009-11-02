@@ -25,7 +25,7 @@ class QgsVertexMarker;
 
 class QgsMapToolDeleteVertex: public QgsMapToolVertexEdit
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     QgsMapToolDeleteVertex( QgsMapCanvas* canvas );

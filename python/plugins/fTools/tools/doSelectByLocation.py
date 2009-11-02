@@ -1,4 +1,4 @@
-from PyQt4.QtCore import *
+﻿from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from qgis.core import *
@@ -21,7 +21,7 @@ class Dialog(QDialog, Ui_Dialog):
 				self.inPolygon.addItem(layer.name())
 				self.inPoint.addItem(layer.name())
 		self.updateUI()
-		self.cmbModify.addItems(["creating new selection", "adding to current selection", "removing from current selection"])
+		self.cmbModify.addItems([self.tr("creating new selection"), self.tr("adding to current selection"), self.tr("removing from current selection")])
 
 	def updateUI(self):
 		self.label_5.setVisible(False)
@@ -29,12 +29,12 @@ class Dialog(QDialog, Ui_Dialog):
 		self.outShape.setVisible(False)
 		self.toolOut.setVisible(False)
 		self.label_2.setVisible(False)
-		self.setWindowTitle("Select by location")
-		self.label_3.setText("Select features in:")
-		self.label_4.setText("that intersect features in:")
+		self.setWindowTitle(self.tr("Select by location"))
+		self.label_3.setText(self.tr("Select features in:"))
+		self.label_4.setText(self.tr("that intersect features in:"))
 		self.label_mod = QLabel(self)
 		self.label_mod.setObjectName("label_mod")
-		self.label_mod.setText("Modify current selection by:")
+		self.label_mod.setText(self.tr("Modify current selection by:"))
 		self.cmbModify = QComboBox(self)
 		self.cmbModify.setObjectName("cmbModify")
 		self.gridlayout.addWidget(self.label_mod,2,0,1,1)
@@ -43,9 +43,9 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.inPolygon.currentText() == "":
-			QMessageBox.information(self, "Select by location", "Please specify input layer")
+			QMessageBox.information(self, "Select by location", self.tr( "Please specify input layer"))
 		elif self.inPoint.currentText() == "":
-			QMessageBox.information(self, "Select by location", "Please specify select layer")
+			QMessageBox.information(self, "Select by location", self.tr("Please specify select layer"))
 		else:
 			inPoly = self.inPolygon.currentText()
 			inPts = self.inPoint.currentText()

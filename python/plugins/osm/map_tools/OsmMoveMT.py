@@ -1,4 +1,4 @@
-"""@package MoveMapTool
+"""@package OsmMoveMT
 This module holds all structures and methods required to perform move operation on OSM data.
 
 Snapping to existing features is supported when moving a feature.
@@ -17,7 +17,7 @@ from qgis.gui import *
 from math import *
 
 
-class MoveMapTool(QgsMapTool):
+class OsmMoveMT(QgsMapTool):
     """This class represents map tool for feature moving (see QgsMapTool from Quantum GIS API).
 
     It enables to move any OSM feature. User is expected to left click, select and move... The second phase (selecting)

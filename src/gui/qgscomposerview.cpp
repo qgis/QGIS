@@ -310,9 +310,12 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
-      composition()->removeItem( *itemIt );
-      delete( *itemIt );
-      emit itemRemoved( *itemIt );
+      QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( *itemIt );
+      if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
+      {
+        composition()->removeItem( *itemIt );
+        emit itemRemoved( *itemIt );
+      }
     }
   }
 

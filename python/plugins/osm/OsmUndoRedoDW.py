@@ -1,4 +1,4 @@
-"""@package DockUndoRedo
+"""@package OsmUndoRedoDW
 This module holds evidence of user edit actions.
 
 Such evidence exists for each loaded OSM data.
@@ -11,8 +11,8 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from DockUndoRedo_ui import Ui_OsmUndoRedoDockWidget
-from DatabaseManager import DatabaseManager
+from OsmUndoRedoDW_ui import Ui_OsmUndoRedoDW
+from OsmDatabaseManager import OsmDatabaseManager
 
 import sqlite3
 from math import *
@@ -20,8 +20,8 @@ from time import *
 
 
 
-class DockUndoRedo(QDockWidget, Ui_OsmUndoRedoDockWidget, object):
-    """This class extends functionality of Ui_UndoRedo dialog which displays history of user edit actions.
+class OsmUndoRedoDW(QDockWidget, Ui_OsmUndoRedoDW, object):
+    """This class extends functionality of Ui_OsmUndoRedoDW dialog which displays history of user edit actions.
     Such history exists for each loaded OSM data.
 
     This class provides easy way how to call undo/redo actions.

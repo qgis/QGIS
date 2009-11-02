@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>DlgDownloadOSM</class>
- <widget class="QDialog" name="DlgDownloadOSM" >
+ <class>OsmDownloadDlg</class>
+ <widget class="QDialog" name="OsmDownloadDlg" >
   <property name="windowModality" >
    <enum>Qt::ApplicationModal</enum>
   </property>

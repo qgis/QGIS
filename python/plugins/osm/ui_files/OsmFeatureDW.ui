@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>OsmDockWidget</class>
- <widget class="QDockWidget" name="OsmDockWidget" >
+ <class>OsmFeatureDW</class>
+ <widget class="QDockWidget" name="OsmFeatureDW" >
   <property name="windowModality" >
    <enum>Qt::NonModal</enum>
   </property>
@@ -12,7 +12,7 @@
     <x>0</x>
     <y>0</y>
     <width>265</width>
-    <height>776</height>
+    <height>736</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -404,6 +404,15 @@
              <height>25</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Remove feature</string>
+           </property>
+           <property name="statusTip" >
+            <string>Remove feature</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Remove feature</string>
+           </property>
            <property name="text" >
             <string>...</string>
            </property>
@@ -427,6 +436,15 @@
         <width>16777215</width>
         <height>16777215</height>
        </size>
+      </property>
+      <property name="toolTip" >
+       <string/>
+      </property>
+      <property name="statusTip" >
+       <string/>
+      </property>
+      <property name="whatsThis" >
+       <string/>
       </property>
       <property name="tabPosition" >
        <enum>QTabWidget::North</enum>
@@ -484,6 +502,15 @@
           </item>
           <item>
            <widget class="QToolButton" name="deleteTagsButton" >
+            <property name="toolTip" >
+             <string>Remove selected tags</string>
+            </property>
+            <property name="statusTip" >
+             <string>Remove selected tags</string>
+            </property>
+            <property name="whatsThis" >
+             <string>Remove selected tags</string>
+            </property>
             <property name="text" >
              <string>...</string>
             </property>
@@ -525,95 +552,50 @@
           <item>
            <layout class="QVBoxLayout" >
             <item>
-             <widget class="QPushButton" name="addRelationButton" >
-              <property name="enabled" >
-               <bool>false</bool>
-              </property>
-              <property name="minimumSize" >
-               <size>
-                <width>26</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize" >
-               <size>
-                <width>26</width>
-                <height>25</height>
-               </size>
-              </property>
+             <widget class="QToolButton" name="addRelationButton" >
               <property name="toolTip" >
-               <string>Add new relation</string>
+               <string>Add relation</string>
               </property>
               <property name="statusTip" >
-               <string>Add new relation</string>
+               <string>Add relation</string>
               </property>
               <property name="whatsThis" >
-               <string>Add new relation</string>
+               <string>Add relation</string>
               </property>
               <property name="text" >
-               <string>A</string>
+               <string>...</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="editRelationButton" >
-              <property name="enabled" >
-               <bool>false</bool>
-              </property>
-              <property name="minimumSize" >
-               <size>
-                <width>26</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize" >
-               <size>
-                <width>26</width>
-                <height>25</height>
-               </size>
-              </property>
+             <widget class="QToolButton" name="editRelationButton" >
               <property name="toolTip" >
-               <string>Edit selected relation</string>
+               <string>Edit relation</string>
               </property>
               <property name="statusTip" >
-               <string>Edit selected relation</string>
+               <string>Edit relation</string>
               </property>
               <property name="whatsThis" >
-               <string>Edit selected relation</string>
+               <string>Edit relation</string>
               </property>
               <property name="text" >
-               <string>E</string>
+               <string>...</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="removeRelationButton" >
-              <property name="enabled" >
-               <bool>false</bool>
-              </property>
-              <property name="minimumSize" >
-               <size>
-                <width>26</width>
-                <height>25</height>
-               </size>
-              </property>
-              <property name="maximumSize" >
-               <size>
-                <width>26</width>
-                <height>25</height>
-               </size>
-              </property>
+             <widget class="QToolButton" name="removeRelationButton" >
               <property name="toolTip" >
-               <string>Remove selected relation</string>
+               <string>Remove relation</string>
               </property>
               <property name="statusTip" >
-               <string>Remove selected relation</string>
+               <string>Remove relation</string>
               </property>
               <property name="whatsThis" >
-               <string>Remove selected relation</string>
+               <string>Remove relation</string>
               </property>
               <property name="text" >
-               <string>R</string>
+               <string>...</string>
               </property>
              </widget>
             </item>

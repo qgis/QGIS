@@ -637,6 +637,7 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
+      Q_UNUSED( cse );
       QgsDebugMsg( QString( "Transform error caught:%s" ).arg( cse.what() ) );
     }
   }

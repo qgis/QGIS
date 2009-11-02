@@ -1,4 +1,4 @@
-"""@package IdentifyMapTool
+"""@package OsmIdentifyMT
 This module holds all structures and methods required to perform
 "identify feature" operation on current OSM data.
 
@@ -28,7 +28,7 @@ from qgis.core import *
 from qgis.gui import *
 
 
-class IdentifyMapTool(QgsMapTool):
+class OsmIdentifyMT(QgsMapTool):
     """This class holds all structures and methods required to perform
     "identify feature" operation on current OSM data.
 
@@ -58,7 +58,7 @@ class IdentifyMapTool(QgsMapTool):
 
         @param canvas map canvas
         @param dockWidget pointer to the main widget (OSM Feature widget) of OSM Plugin
-        @param dbManager pointer to instance of DatabaseManager; for communication with sqlite3 database
+        @param dbManager pointer to instance of OsmDatabaseManager; for communication with sqlite3 database
         """
 
         QgsMapTool.__init__(self,canvas)

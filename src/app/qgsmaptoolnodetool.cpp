@@ -757,14 +757,14 @@ void QgsMapToolNodeTool::removeRubberBands()
 {
   //cleanup rubber bands and list
   QList<QgsRubberBand*>::iterator rb_it = mQgsRubberBands.begin();
-  for ( ;rb_it != mQgsRubberBands.end(); ++rb_it )
+  for ( ; rb_it != mQgsRubberBands.end(); ++rb_it )
   {
     delete *rb_it;
   }
   mQgsRubberBands.clear();
 
   rb_it = mTopologyRubberBand.begin();
-  for ( ;rb_it != mTopologyRubberBand.end(); ++rb_it )
+  for ( ; rb_it != mTopologyRubberBand.end(); ++rb_it )
   {
     delete *rb_it;
   }
@@ -1302,7 +1302,7 @@ void SelectionFeature::deselectVertex( int vertexNr )
 
 void SelectionFeature::deselectAllVertexes()
 {
-  for ( int i = 0; i < mVertexMap.size() ;i++ )
+  for ( int i = 0; i < mVertexMap.size() ; i++ )
   {
     mVertexMap[i].selected = false;
     mVertexMap[i].vertexMarker->setColor( Qt::red );
@@ -1345,7 +1345,7 @@ void SelectionFeature::invertVertexSelection( int vertexNr, bool invert )
 void SelectionFeature::updateVertexMarkersPosition( QgsMapCanvas* canvas )
 {
   //function for on-line updating vertex markers without refresh of canvas
-  for ( int i = 0; i < mVertexMap.size() ;i++ )
+  for ( int i = 0; i < mVertexMap.size() ; i++ )
   {
     mVertexMap[i].vertexMarker->setCenter( mCanvas->mapRenderer()->layerToMapCoordinates( mVlayer, mVertexMap[i].point ) );
     mVertexMap[i].vertexMarker->update();

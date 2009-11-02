@@ -242,7 +242,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     mDrawing = false;
   }
 
-  painter->setClipRect( thisPaintRect , Qt::NoClip);
+  painter->setClipRect( thisPaintRect , Qt::NoClip );
 
   drawFrame( painter );
   if ( isSelected() )
