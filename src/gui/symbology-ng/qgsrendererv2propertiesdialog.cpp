@@ -7,6 +7,11 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgsstylev2.h"
 
+#include "qgssinglesymbolrendererv2.h"
+#include "qgscategorizedsymbolrendererv2.h"
+#include "qgsgraduatedsymbolrendererv2.h"
+
+
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollevelsv2dialog.h"
 

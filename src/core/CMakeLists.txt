@@ -13,6 +13,9 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsmarkersymbollayerv2.cpp
   symbology-ng/qgsfillsymbollayerv2.cpp
   symbology-ng/qgsrendererv2.cpp
+  symbology-ng/qgssinglesymbolrendererv2.cpp
+  symbology-ng/qgscategorizedsymbolrendererv2.cpp
+  symbology-ng/qgsgraduatedsymbolrendererv2.cpp
   symbology-ng/qgsvectorcolorrampv2.cpp
   symbology-ng/qgsstylev2.cpp
 

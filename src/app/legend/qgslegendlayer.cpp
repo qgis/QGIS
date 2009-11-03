@@ -39,6 +39,10 @@
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 
+#include "qgssinglesymbolrendererv2.h"
+#include "qgscategorizedsymbolrendererv2.h"
+#include "qgsgraduatedsymbolrendererv2.h"
+
 #include <iostream>
 #include <QAction>
 #include <QCoreApplication>

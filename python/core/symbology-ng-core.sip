@@ -78,7 +78,7 @@ protected:
 class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
 {
 %TypeHeaderCode
-#include <qgsrendererv2.h>
+#include <qgssinglesymbolrendererv2.h>
 %End
 
 public:
@@ -108,7 +108,7 @@ public:
 class QgsRendererCategoryV2
 {
 %TypeHeaderCode
-#include <qgsrendererv2.h>
+#include <qgscategorizedsymbolrendererv2.h>
 %End
 
 public:
@@ -135,7 +135,7 @@ typedef QList<QgsRendererCategoryV2> QgsCategoryList;
 class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 {
 %TypeHeaderCode
-#include <qgsrendererv2.h>
+#include <qgscategorizedsymbolrendererv2.h>
 %End
 
 public:
@@ -180,7 +180,7 @@ protected:
 class QgsRendererRangeV2
 {
 %TypeHeaderCode
-#include <qgsrendererv2.h>
+#include <qgsgraduatedsymbolrendererv2.h>
 %End
 
 public:
@@ -206,7 +206,7 @@ typedef QList<QgsRendererRangeV2> QgsRangeList;
 class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 {
 %TypeHeaderCode
-#include <qgsrendererv2.h>
+#include <qgsgraduatedsymbolrendererv2.h>
 %End
 
 public:
