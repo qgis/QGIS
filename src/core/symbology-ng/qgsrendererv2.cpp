@@ -285,6 +285,16 @@ QDomElement QgsFeatureRendererV2::save(QDomDocument& doc)
   return doc.createElement(RENDERER_TAG_NAME);
 }
 
+int QgsFeatureRendererV2::fieldNameIndex( const QgsFieldMap& fields, const QString& fieldName )
+{
+  for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
+  {
+    if ( it->name() == fieldName )
+      return it.key();
+  }
+  return -1;
+}
+
 ///////////////////
 
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2(QgsSymbolV2* symbol)
@@ -303,7 +313,7 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature(QgsFeature& feature)
 	return mSymbol;
 }
 	
-void QgsSingleSymbolRendererV2::startRender(QgsRenderContext& context)
+void QgsSingleSymbolRendererV2::startRender(QgsRenderContext& context, const QgsFieldMap& fields)
 {
 	mSymbol->startRender(context);
 }
@@ -313,9 +323,9 @@ void QgsSingleSymbolRendererV2::stopRender(QgsRenderContext& context)
 	mSymbol->stopRender(context);
 }
 
-QList<int> QgsSingleSymbolRendererV2::usedAttributes()
+QList<QString> QgsSingleSymbolRendererV2::usedAttributes()
 {
-	return QList<int>();
+  return QList<QString>();
 }
 
 QgsSymbolV2* QgsSingleSymbolRendererV2::symbol() const
@@ -435,8 +445,8 @@ QString QgsRendererCategoryV2::dump()
 
 ///////////////////
 
-QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2(int attrNum, QgsCategoryList categories)
-  : QgsFeatureRendererV2(RendererCategorizedSymbol), mAttrNum(attrNum), mCategories(categories)
+QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2(QString attrName, QgsCategoryList categories)
+  : QgsFeatureRendererV2(RendererCategorizedSymbol), mAttrName(attrName), mCategories(categories)
 {
   for (int i = 0; i < mCategories.count(); ++i)
   {
@@ -489,7 +499,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature(QgsFeature& featur
   QgsAttributeMap::const_iterator ita = attrMap.find(mAttrNum);
   if (ita == attrMap.end())
   {
-    QgsDebugMsg("attribute required by renderer not found: "+QString::number(mAttrNum));
+    QgsDebugMsg("attribute '"+mAttrName+"' (index "+QString::number(mAttrNum)+") required by renderer not found");
     return NULL;
   }
   
@@ -537,10 +547,13 @@ void QgsCategorizedSymbolRendererV2::deleteAllCategories()
   mCategories.clear();
 }
 
-void QgsCategorizedSymbolRendererV2::startRender(QgsRenderContext& context)
+void QgsCategorizedSymbolRendererV2::startRender(QgsRenderContext& context, const QgsFieldMap& fields)
 {
   // make sure that the hash table is up to date
   rebuildHash();
+
+  // find out classification attribute index from name
+  mAttrNum = fieldNameIndex(fields, mAttrName);
 
   QgsCategoryList::iterator it = mCategories.begin();
   for ( ; it != mCategories.end(); ++it)
@@ -554,16 +567,16 @@ void QgsCategorizedSymbolRendererV2::stopRender(QgsRenderContext& context)
     it->symbol()->stopRender(context);
 }
 
-QList<int> QgsCategorizedSymbolRendererV2::usedAttributes()
+QList<QString> QgsCategorizedSymbolRendererV2::usedAttributes()
 {
-  QList<int> lst;
-  lst.append(mAttrNum);
+  QList<QString> lst;
+  lst.append(mAttrName);
   return lst;
 }
 
 QString QgsCategorizedSymbolRendererV2::dump()
 {
-  QString s = QString("CATEGORIZED: idx %1\n").arg(mAttrNum);
+  QString s = QString("CATEGORIZED: idx %1\n").arg(mAttrName);
   for (int i=0; i<mCategories.count();i++)
     s += mCategories[i].dump();
   return s;
@@ -571,7 +584,7 @@ QString QgsCategorizedSymbolRendererV2::dump()
 
 QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
 {
-  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( mAttrNum, mCategories );
+  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( mAttrName, mCategories );
   r->setUsingSymbolLevels( usingSymbolLevels() );
   return r;
 }
@@ -614,9 +627,9 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create(QDomElement& elemen
     catElem = catElem.nextSiblingElement();
   }
 
-  int attrNum = element.attribute("attr").toInt();
+  QString attrName = element.attribute("attr");
 
-  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2(attrNum, cats);
+  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2(attrName, cats);
 
   // delete symbols if there are any more
   QgsSymbolLayerV2Utils::clearSymbolMap(symbolMap);
@@ -629,7 +642,7 @@ QDomElement QgsCategorizedSymbolRendererV2::save(QDomDocument& doc)
 {
   QDomElement rendererElem = doc.createElement(RENDERER_TAG_NAME);
   rendererElem.setAttribute("type", "categorizedSymbol");
-  rendererElem.setAttribute("attr", mAttrNum);
+  rendererElem.setAttribute("attr", mAttrName);
 
   // categories
   int i = 0;
@@ -720,8 +733,8 @@ QString QgsRendererRangeV2::dump()
 ///////////
 
 
-QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2(int attrNum, QgsRangeList ranges)
-  : QgsFeatureRendererV2(RendererGraduatedSymbol), mAttrNum(attrNum), mRanges(ranges), mMode(Custom)
+QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2(QString attrName, QgsRangeList ranges)
+  : QgsFeatureRendererV2(RendererGraduatedSymbol), mAttrName(attrName), mRanges(ranges), mMode(Custom)
 {
   // TODO: check ranges for sanity (NULL symbols, invalid ranges)
 }
@@ -748,7 +761,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature(QgsFeature& feature)
   QgsAttributeMap::const_iterator ita = attrMap.find(mAttrNum);
   if (ita == attrMap.end())
   {
-    QgsDebugMsg("attribute required by renderer not found: "+QString::number(mAttrNum));
+    QgsDebugMsg("attribute required by renderer not found: "+mAttrName+"(index "+QString::number(mAttrNum)+")");
     return NULL;
   }
   
@@ -757,8 +770,11 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature(QgsFeature& feature)
 
 }
 
-void QgsGraduatedSymbolRendererV2::startRender(QgsRenderContext& context)
+void QgsGraduatedSymbolRendererV2::startRender(QgsRenderContext& context, const QgsFieldMap& fields)
 {
+  // find out classification attribute index from name
+  mAttrNum = fieldNameIndex(fields, mAttrName);
+
   QgsRangeList::iterator it = mRanges.begin();
   for ( ; it != mRanges.end(); ++it)
     it->symbol()->startRender(context);
@@ -771,10 +787,10 @@ void QgsGraduatedSymbolRendererV2::stopRender(QgsRenderContext& context)
     it->symbol()->startRender(context);
 }
 
-QList<int> QgsGraduatedSymbolRendererV2::usedAttributes()
+QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
 {
-  QList<int> lst;
-  lst.append(mAttrNum);
+  QList<QString> lst;
+  lst.append( mAttrName );
   return lst;
 }
 
@@ -796,7 +812,7 @@ bool QgsGraduatedSymbolRendererV2::updateRangeLabel(int rangeIndex, QString labe
 
 QString QgsGraduatedSymbolRendererV2::dump()
 {
-  QString s = QString("GRADUATED: idx %1\n").arg(mAttrNum);
+  QString s = QString("GRADUATED: attr %1\n").arg(mAttrName);
   for (int i=0; i<mRanges.count();i++)
     s += mRanges[i].dump();
   return s;
@@ -804,7 +820,7 @@ QString QgsGraduatedSymbolRendererV2::dump()
 
 QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
 {
-  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( mAttrNum, mRanges );
+  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( mAttrName, mRanges );
   r->setUsingSymbolLevels( usingSymbolLevels() );
   return r;
 }
@@ -870,7 +886,7 @@ static QList<double> _calcQuantileBreaks(QList<double> values, int classes)
 
 QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
          QgsVectorLayer* vlayer,
-         int attrNum,
+         QString attrName,
          int classes,
          Mode mode,
          QgsSymbolV2* symbol,
@@ -878,8 +894,11 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
 {
   QgsVectorDataProvider* provider = vlayer->dataProvider();
 
+  int attrNum = fieldNameIndex(vlayer->pendingFields(), attrName);
+
   double minimum = provider->minimumValue( attrNum ).toDouble();
   double maximum = provider->maximumValue( attrNum ).toDouble();
+  QgsDebugMsg(QString("min %1 // max %2").arg(minimum).arg(maximum));
 
   QList<double> breaks;
   if (mode == EqualInterval)
@@ -922,7 +941,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     ranges.append( QgsRendererRangeV2(lower, upper, newSymbol, label) );
   }
   
-  return new QgsGraduatedSymbolRendererV2( attrNum, ranges );
+  return new QgsGraduatedSymbolRendererV2( attrName, ranges );
 }
 
 
@@ -958,9 +977,9 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create(QDomElement& element)
     rangeElem = rangeElem.nextSiblingElement();
   }
 
-  int attrNum = element.attribute("attr").toInt();
+  QString attrName = element.attribute("attr");
 
-  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2(attrNum, ranges);
+  QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2(attrName, ranges);
 
   // delete symbols if there are any more
   QgsSymbolLayerV2Utils::clearSymbolMap(symbolMap);
@@ -973,7 +992,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save(QDomDocument& doc)
 {
   QDomElement rendererElem = doc.createElement(RENDERER_TAG_NAME);
   rendererElem.setAttribute("type", "graduatedSymbol");
-  rendererElem.setAttribute("attr", mAttrNum);
+  rendererElem.setAttribute("attr", mAttrName);
 
   // ranges
   int i = 0;

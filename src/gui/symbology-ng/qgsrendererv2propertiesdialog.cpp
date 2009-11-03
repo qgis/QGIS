@@ -150,9 +150,9 @@ void QgsRendererV2PropertiesDialog::updateRenderer()
   if (radSingleSymbol->isChecked())
     mRenderer = new QgsSingleSymbolRendererV2( mSingleSymbol->clone() );
   else if (radCategorized->isChecked())
-    mRenderer = new QgsCategorizedSymbolRendererV2(-1, QgsCategoryList());
+    mRenderer = new QgsCategorizedSymbolRendererV2(QString(), QgsCategoryList());
   else if (radGraduated->isChecked())
-    mRenderer = new QgsGraduatedSymbolRendererV2(-1, QgsRangeList());
+    mRenderer = new QgsGraduatedSymbolRendererV2(QString(), QgsRangeList());
   else
     Q_ASSERT(false);
     
@@ -178,7 +178,8 @@ void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
 
       disconnect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
       {
-        int idx = rendererCategorized()->attributeIndex();
+        QString attrName = rendererCategorized()->classAttribute();
+        int idx = cboCategorizedColumn->findText(attrName, Qt::MatchExactly);
         cboCategorizedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
       }
       connect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
@@ -201,17 +202,11 @@ void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
           spinGraduatedClasses->setValue( r->ranges().count() );
         
         // set column
-        int attrNum = r->attributeIndex();
-        const QgsFieldMap& flds = mLayer->dataProvider()->fields();
-        if (flds.contains(attrNum))
-        {
-          QString fldName = flds[ attrNum ].name();
-          for (int i=0; i < cboGraduatedColumn->count(); i++)
-          {
-            if (cboGraduatedColumn->itemText(i) == fldName)
-              cboGraduatedColumn->setCurrentIndex(i);
-          }
-        }
+        //disconnect(cboGraduatedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(graduatedColumnChanged()));
+        QString attrName = r->classAttribute();
+        int idx = cboGraduatedColumn->findText(attrName, Qt::MatchExactly);
+        cboGraduatedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
+        //connect(cboGraduatedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(graduatedColumnChanged()));
       }
       break;
       
@@ -337,7 +332,8 @@ void createCategories(QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV
 
 void QgsRendererV2PropertiesDialog::addCategories()
 {
-  int idx = mLayer->dataProvider()->fieldNameIndex(cboCategorizedColumn->currentText());
+  QString attrName = cboCategorizedColumn->currentText();
+  int idx = QgsFeatureRendererV2::fieldNameIndex(mLayer->pendingFields(), attrName);
   QList<QVariant> unique_vals;
   mLayer->dataProvider()->uniqueValues(idx, unique_vals);
   
@@ -366,7 +362,7 @@ void QgsRendererV2PropertiesDialog::addCategories()
       
   // recreate renderer
   delete mRenderer;
-  mRenderer = new QgsCategorizedSymbolRendererV2(idx, cats);
+  mRenderer = new QgsCategorizedSymbolRendererV2(attrName, cats);
   
   populateCategories();
 }
@@ -438,7 +434,7 @@ void QgsRendererV2PropertiesDialog::populateColorRamps()
 
 void QgsRendererV2PropertiesDialog::classifyGraduated()
 {
-  int idx = mLayer->dataProvider()->fieldNameIndex(cboGraduatedColumn->currentText());
+  QString attrName = cboGraduatedColumn->currentText();
   
   int classes = spinGraduatedClasses->value();
   
@@ -452,7 +448,7 @@ void QgsRendererV2PropertiesDialog::classifyGraduated()
   
   // create and set new renderer
   QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
-      mLayer, idx, classes, mode, mGraduatedSymbol, ramp);
+      mLayer, attrName, classes, mode, mGraduatedSymbol, ramp);
   r->setMode(mode);
   
   delete mRenderer;

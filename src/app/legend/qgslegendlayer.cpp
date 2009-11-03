@@ -428,9 +428,7 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
         QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>(renderer);
         if (showClassifiers)
         {
-          const QgsFieldMap& fields = layer->dataProvider()->fields();
-          QString fieldName = fields[r->attributeIndex()].name();
-          itemList.push_back( std::make_pair( fieldName, QPixmap() ) );
+          itemList.push_back( std::make_pair( r->classAttribute(), QPixmap() ) );
         }
 
         int count = r->categories().count();
@@ -447,9 +445,7 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
         QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>(renderer);
         if (showClassifiers)
         {
-          const QgsFieldMap& fields = layer->dataProvider()->fields();
-          QString fieldName = fields[r->attributeIndex()].name();
-          itemList.push_back( std::make_pair( fieldName, QPixmap() ) );
+          itemList.push_back( std::make_pair( r->classAttribute(), QPixmap() ) );
         }
 
         int count = r->ranges().count();

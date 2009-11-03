@@ -49,11 +49,11 @@ public:
 
 	virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature)=0;
 	
-	virtual void startRender(QgsRenderContext& context)=0;
+  virtual void startRender(QgsRenderContext& context, const QMap<int, QgsField>& fields)=0;
 	
 	virtual void stopRender(QgsRenderContext& context)=0;
 	
-	virtual QList<int> usedAttributes()=0;
+  virtual QList<QString> usedAttributes()=0;
 	
 	virtual ~QgsFeatureRendererV2();
 	
@@ -89,11 +89,11 @@ public:
 	
 	virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature);
 	
-	virtual void startRender(QgsRenderContext& context);
+  virtual void startRender(QgsRenderContext& context, const QMap<int, QgsField>& fields);
 	
 	virtual void stopRender(QgsRenderContext& context);
 	
-	virtual QList<int> usedAttributes();
+  virtual QList<QString> usedAttributes();
 
   QgsSymbolV2* symbol() const;
   void setSymbol(QgsSymbolV2* s /Transfer/);
@@ -140,17 +140,17 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
 public:
 	
-  QgsCategorizedSymbolRendererV2(int attrNum = -1, QgsCategoryList categories = QgsCategoryList());
+  QgsCategorizedSymbolRendererV2(QString attrName = QString(), QgsCategoryList categories = QgsCategoryList());
 	
 	virtual ~QgsCategorizedSymbolRendererV2();
 	
 	virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature);
 	
-	virtual void startRender(QgsRenderContext& context);
+  virtual void startRender(QgsRenderContext& context, const QMap<int, QgsField>& fields);
 	
 	virtual void stopRender(QgsRenderContext& context);
 	
-	virtual QList<int> usedAttributes();
+  virtual QList<QString> usedAttributes();
   
   virtual QString dump();
 
@@ -167,8 +167,8 @@ public:
   bool deleteCategory(int catIndex);
   void deleteAllCategories();
   
-  int attributeIndex() const;
-  void setAttributeIndex(int attr);
+  QString classAttribute() const;
+  void setClassAttribute(QString attr);
 
 protected:
   
@@ -210,24 +210,24 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 %End
 
 public:
-  QgsGraduatedSymbolRendererV2(int attrNum = -1, QgsRangeList ranges = QgsRangeList());
+  QgsGraduatedSymbolRendererV2(QString attrNum = QString(), QgsRangeList ranges = QgsRangeList());
 
   virtual ~QgsGraduatedSymbolRendererV2();
 
   virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature);
 
-  virtual void startRender(QgsRenderContext& context);
+  virtual void startRender(QgsRenderContext& context, const QMap<int, QgsField>& fields);
 
   virtual void stopRender(QgsRenderContext& context);
 
-  virtual QList<int> usedAttributes();
+  virtual QList<QString> usedAttributes();
 
   virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone() /Factory/;
 
-  int attributeIndex() const;
-  void setAttributeIndex(int attr);
+  QString classAttribute() const;
+  void setClassAttribute(QString attr);
 
   const QgsRangeList& ranges();
 
@@ -246,7 +246,7 @@ public:
 
   static QgsGraduatedSymbolRendererV2* createRenderer(
                   QgsVectorLayer* vlayer,
-                  int attrNum,
+                  QString attrName,
                   int classes,
                   Mode mode,
                   QgsSymbolV2* symbol,

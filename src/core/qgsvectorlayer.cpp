@@ -666,7 +666,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
 
 void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool labeling )
 {
-  mRendererV2->startRender(rendererContext);
+  mRendererV2->startRender(rendererContext, pendingFields());
 
   QgsFeature fet;
   while ( nextFeature( fet ) )
@@ -685,7 +685,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
   QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
   // startRender must be called before symbolForFeature() calls to make sure renderer is ready
-  mRendererV2->startRender(rendererContext);
+  mRendererV2->startRender(rendererContext, pendingFields());
 
   // 1. fetch features
   QgsFeature fet;
@@ -755,9 +755,13 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     int totalFeatures = pendingFeatureCount();
     int featureCount = 0;
     
-    QgsAttributeList attributes = mRendererV2->usedAttributes();
-    if (attributes.count() > 0)
-      QgsDebugMsg("attrs: " + QString::number(attributes[0]));
+    QgsAttributeList attributes;
+    foreach (QString attrName, mRendererV2->usedAttributes())
+    {
+      int attrNum = QgsFeatureRendererV2::fieldNameIndex(pendingFields(), attrName);
+      attributes.append( attrNum );
+      QgsDebugMsg("attrs: "+ attrName + " - " + QString::number(attrNum));
+    }
 
     bool labeling = FALSE;
     if ( mLabelingEngine )
