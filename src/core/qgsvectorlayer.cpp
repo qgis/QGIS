@@ -123,33 +123,36 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     // Always set crs
     setCoordinateSystem();
 
-    // check if there is a default style / propertysheet defined
-    // for this layer and if so apply it
-    //
     QSettings settings;
     if ( settings.value( "/qgis/use_symbology_ng", false ).toBool() )
     {
       // using symbology-ng!
       setUsingRendererV2(true);
-      setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
     }
-    else if ( loadDefaultStyleFlag )
+
+    // check if there is a default style / propertysheet defined
+    // for this layer and if so apply it
+    bool defaultLoadedFlag = false;
+    if ( loadDefaultStyleFlag )
     {
-      bool defaultLoadedFlag = false;
       loadDefaultStyle( defaultLoadedFlag );
-      if ( !defaultLoadedFlag )
+    }
+
+    // if the default style failed to load or was disabled use some very basic defaults
+    if ( !defaultLoadedFlag )
+    {
+      // add single symbol renderer
+      if (mUsingRendererV2)
       {
-        // add single symbol renderer as default
+        setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
+      }
+      else
+      {
         QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
         setRenderer( renderer );
       }
     }
-    else  // Otherwise use some very basic defaults
-    {
-      // add single symbol renderer as default
-      QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
-      setRenderer( renderer );
-    }
+
     // Get the update threshold from user settings. We
     // do this only on construction to avoid the penality of
     // fetching this each time the layer is drawn. If the user
@@ -2301,27 +2304,10 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
     }
   }
 
-  QDomElement rendererElement = layer_node.firstChildElement(RENDERER_TAG_NAME);
-  if (!rendererElement.isNull())
+  QString errorMsg;
+  if ( !readSymbology( layer_node, errorMsg ) )
   {
-    // using renderer v2
-    setUsingRendererV2(true);
-
-    QgsFeatureRendererV2* r = QgsFeatureRendererV2::load(rendererElement);
-    if (r == NULL)
-      return false;
-    setRendererV2(r);
-  }
-  else
-  {
-    // using renderer v1
-    setUsingRendererV2(false);
-
-    QString errorMsg;
-    if ( !readSymbology( layer_node, errorMsg ) )
-    {
-      return false;
-    }
+    return false;
   }
 
   return mValid;               // should be true if read successfully
@@ -2457,18 +2443,10 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   }
 
   // renderer specific settings
-  if (mUsingRendererV2)
+  QString errorMsg;
+  if ( !writeSymbology( layer_node, document, errorMsg ) )
   {
-    QDomElement rendererElement = mRendererV2->save(document);
-    layer_node.appendChild(rendererElement);
-  }
-  else
-  {
-    QString errorMsg;
-    if ( !writeSymbology( layer_node, document, errorMsg ) )
-    {
-      return false;
-    }
+    return false;
   }
 
   return true;
@@ -2476,8 +2454,73 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
-  // TODO: load symbology-ng renderers
-  setUsingRendererV2(false);
+  // try renderer v2 first
+  QDomElement rendererElement = node.firstChildElement(RENDERER_TAG_NAME);
+  if (!rendererElement.isNull())
+  {
+    // using renderer v2
+    setUsingRendererV2(true);
+
+    QgsFeatureRendererV2* r = QgsFeatureRendererV2::load(rendererElement);
+    if (r == NULL)
+      return false;
+
+    setRendererV2(r);
+  }
+  else
+  {
+    // using renderer v1
+    setUsingRendererV2(false);
+
+    // create and bind a renderer to this layer
+
+    QDomNode singlenode = node.namedItem( "singlesymbol" );
+    QDomNode graduatednode = node.namedItem( "graduatedsymbol" );
+    QDomNode continuousnode = node.namedItem( "continuoussymbol" );
+    QDomNode uniquevaluenode = node.namedItem( "uniquevalue" );
+
+    QgsRenderer * renderer = 0;
+    int returnCode = 1;
+
+    if ( !singlenode.isNull() )
+    {
+      renderer = new QgsSingleSymbolRenderer( geometryType() );
+      returnCode = renderer->readXML( singlenode, *this );
+    }
+    else if ( !graduatednode.isNull() )
+    {
+      renderer = new QgsGraduatedSymbolRenderer( geometryType() );
+      returnCode = renderer->readXML( graduatednode, *this );
+    }
+    else if ( !continuousnode.isNull() )
+    {
+      renderer = new QgsContinuousColorRenderer( geometryType() );
+      returnCode = renderer->readXML( continuousnode, *this );
+    }
+    else if ( !uniquevaluenode.isNull() )
+    {
+      renderer = new QgsUniqueValueRenderer( geometryType() );
+      returnCode = renderer->readXML( uniquevaluenode, *this );
+    }
+
+    if ( !renderer )
+    {
+      errorMessage = tr( "Unknown renderer" );
+      return false;
+    }
+
+    if ( returnCode == 1 )
+    {
+      errorMessage = tr( "No renderer object" ); delete renderer; return false;
+    }
+    else if ( returnCode == 2 )
+    {
+      errorMessage = tr( "Classification field not found" ); delete renderer; return false;
+    }
+
+    mRenderer = renderer;
+
+  }
 
   // process the attribute actions
   mActions->readXML( node );
@@ -2552,54 +2595,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
-  // create and bind a renderer to this layer
-
-  QDomNode singlenode = node.namedItem( "singlesymbol" );
-  QDomNode graduatednode = node.namedItem( "graduatedsymbol" );
-  QDomNode continuousnode = node.namedItem( "continuoussymbol" );
-  QDomNode uniquevaluenode = node.namedItem( "uniquevalue" );
-
-  QgsRenderer * renderer = 0;
-  int returnCode = 1;
-
-  if ( !singlenode.isNull() )
-  {
-    renderer = new QgsSingleSymbolRenderer( geometryType() );
-    returnCode = renderer->readXML( singlenode, *this );
-  }
-  else if ( !graduatednode.isNull() )
-  {
-    renderer = new QgsGraduatedSymbolRenderer( geometryType() );
-    returnCode = renderer->readXML( graduatednode, *this );
-  }
-  else if ( !continuousnode.isNull() )
-  {
-    renderer = new QgsContinuousColorRenderer( geometryType() );
-    returnCode = renderer->readXML( continuousnode, *this );
-  }
-  else if ( !uniquevaluenode.isNull() )
-  {
-    renderer = new QgsUniqueValueRenderer( geometryType() );
-    returnCode = renderer->readXML( uniquevaluenode, *this );
-  }
-
-  if ( !renderer )
-  {
-    errorMessage = tr( "Unknown renderer" );
-    return false;
-  }
-
-  if ( returnCode == 1 )
-  {
-    errorMessage = tr( "No renderer object" ); delete renderer; return false;
-  }
-  else if ( returnCode == 2 )
-  {
-    errorMessage = tr( "Classification field not found" ); delete renderer; return false;
-  }
-
-  mRenderer = renderer;
-
   // Test if labeling is on or off
   QDomNode labelnode = node.namedItem( "label" );
   QDomElement element = labelnode.toElement();
@@ -2626,22 +2621,47 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
+  if (mUsingRendererV2)
+  {
+    QDomElement rendererElement = mRendererV2->save(doc);
+    node.appendChild(rendererElement);
+  }
+  else
+  {
+    //classification field(s)
+    QgsAttributeList attributes = mRenderer->classificationAttributes();
+    const QgsFieldMap providerFields = mDataProvider->fields();
+    for ( QgsAttributeList::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+    {
+      QDomElement classificationElement = doc.createElement( "classificationattribute" );
+      QDomText classificationText = doc.createTextNode( providerFields[*it].name() );
+      classificationElement.appendChild( classificationText );
+      node.appendChild( classificationElement );
+    }
+
+    // renderer settings
+    const QgsRenderer * myRenderer = renderer();
+    if ( myRenderer )
+    {
+      if ( !myRenderer->writeXML( node, doc, *this ) )
+      {
+        errorMessage = "renderer failed to save";
+        return false;
+      }
+    }
+    else
+    {
+      QgsDebugMsg( "no renderer" );
+      errorMessage = "no renderer";
+      return false;
+    }
+  }
+
   // use scale dependent visibility flag
   QDomElement mapLayerNode = node.toElement();
   mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", label()->scaleBasedVisibility() ? 1 : 0 );
   mapLayerNode.setAttribute( "minLabelScale", label()->minScale() );
   mapLayerNode.setAttribute( "maxLabelScale", label()->maxScale() );
-
-  //classification field(s)
-  QgsAttributeList attributes = mRenderer->classificationAttributes();
-  const QgsFieldMap providerFields = mDataProvider->fields();
-  for ( QgsAttributeList::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
-  {
-    QDomElement classificationElement = doc.createElement( "classificationattribute" );
-    QDomText classificationText = doc.createTextNode( providerFields[*it].name() );
-    classificationElement.appendChild( classificationText );
-    node.appendChild( classificationElement );
-  }
 
   //edit types
   if ( mEditTypes.size() > 0 )
@@ -2724,22 +2744,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
   // add attribute actions
   mActions->writeXML( node, doc );
-
-  const QgsRenderer * myRenderer = renderer();
-  if ( myRenderer )
-  {
-    if ( !myRenderer->writeXML( node, doc, *this ) )
-    {
-      errorMessage = "renderer failed to save";
-      return false;
-    }
-  }
-  else
-  {
-    QgsDebugMsg( "no renderer" );
-    errorMessage = "no renderer";
-    return false;
-  }
 
   // Now we get to do all that all over again for QgsLabel
 
