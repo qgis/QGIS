@@ -1869,13 +1869,13 @@ QVariant QgsPostgresProvider::maximumValue( int index )
     if ( sqlWhereClause.isEmpty() )
     {
       sql = QString( "select max(%1) from %2" )
-            .arg( fieldExpression( fld ) )
+            .arg( quotedIdentifier( fld.name() ) )
             .arg( mSchemaTableName );
     }
     else
     {
       sql = QString( "select max(%1) from %2 where %3" )
-            .arg( fieldExpression( fld ) )
+            .arg( quotedIdentifier( fld.name() ) )
             .arg( mSchemaTableName )
             .arg( sqlWhereClause );
     }
