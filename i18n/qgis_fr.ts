@@ -3442,7 +3442,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/core/qgslabelattributes.cpp" line="61"/>
         <source>Label</source>
-        <translation>Etiquette</translation>
+        <translation>Étiquette</translation>
     </message>
     <message>
         <source>Length</source>
@@ -5211,7 +5211,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="912"/>
         <source>Remove Layer</source>
-        <translation>Supprimer la Couche</translation>
+        <translation>Supprimer la couche</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="914"/>
@@ -5426,7 +5426,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="779"/>
         <source>Measure Line </source>
-        <translation>Mesurer la longueur</translation>
+        <translation>Mesurer une longueur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="781"/>
@@ -6470,7 +6470,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="814"/>
         <source>Zoom Actual Size</source>
-        <translation>Zoomer taille réelle</translation>
+        <translation>Zoome taille réelle</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="816"/>
@@ -6845,7 +6845,7 @@ Erreurs : %2
         <location filename="../src/app/qgisapp.cpp" line="666"/>
         <location filename="../src/app/qgisapp.cpp" line="668"/>
         <source>Reshape Features</source>
-        <translation>Remodeler les entitées</translation>
+        <translation>Remodeler les entités</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="744"/>
@@ -7461,7 +7461,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/app/qgisapp.cpp" line="720"/>
         <location filename="../src/app/qgisapp.cpp" line="722"/>
         <source>Delete Ring</source>
-        <translation>Effacer l&apos;anneau</translation>
+        <translation>Effacer Anneau</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="726"/>
@@ -9499,7 +9499,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="19"/>
         <source>Composer item properties</source>
-        <translation>Editeur de propriétés d&apos;objet</translation>
+        <translation>Éditeur de propriétés d&apos;objet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="25"/>
@@ -9524,7 +9524,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="63"/>
         <source>Outline width: </source>
-        <translation>Largeur de bordure externe:</translation>
+        <translation>Largeur de bordure externe :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="80"/>
@@ -9616,7 +9616,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="60"/>
         <source>Title...</source>
-        <translation>Titre</translation>
+        <translation>Titre...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="67"/>
@@ -9626,7 +9626,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="74"/>
         <source>Item...</source>
-        <translation>Objet</translation>
+        <translation>Objet...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="85"/>
@@ -10112,12 +10112,12 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="25"/>
         <source>Segment size (map units):</source>
-        <translation>Taille des segments (unitées de la carte)</translation>
+        <translation>Taille des segments (unités de la carte) :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="45"/>
         <source>Map units per bar unit:</source>
-        <translation>Unitées de la carte par unitée de l&apos;échelle</translation>
+        <translation>Unités de la carte par unité de l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="62"/>
@@ -10162,7 +10162,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="189"/>
         <source>Unit label:</source>
-        <translation>Etiquette des unités</translation>
+        <translation>Étiquette des unités :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="211"/>
@@ -10689,7 +10689,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="282"/>
         <source>Print as raster</source>
-        <translation>Imprimer en tant que raster</translation>
+        <translation>Imprimession raster</translation>
     </message>
 </context>
 <context>
@@ -10968,7 +10968,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="79"/>
         <source>&amp;Copyright Label</source>
-        <translation>Etiquette de Copyright</translation>
+        <translation>Étiquette de Copyright</translation>
     </message>
 </context>
 <context>
@@ -12104,12 +12104,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="96"/>
         <source>Heading Label</source>
-        <translation>Etiquette d&apos;en-tête</translation>
+        <translation>Étiquette d&apos;en-tête</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="117"/>
         <source>Detail label</source>
-        <translation>Etiquette détaillée</translation>
+        <translation>Étiquette détaillée</translation>
     </message>
 </context>
 <context>
@@ -12549,7 +12549,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="19"/>
         <source>GPS Device Editor</source>
-        <translation>Editeur de périphérique GPS</translation>
+        <translation>Éditeur de périphérique GPS</translation>
     </message>
     <message>
         <source>Device name:</source>
@@ -17540,7 +17540,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="53"/>
         <source>Default label</source>
-        <translation>Etiquette par défaut</translation>
+        <translation>Étiquette par défaut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="100"/>
@@ -17634,7 +17634,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="773"/>
         <source>Size units</source>
-        <translation>Unitées de taille </translation>
+        <translation>Unités de taille </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="976"/>
@@ -17649,7 +17649,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="423"/>
         <source>Multiline labels?</source>
-        <translation>Etiquettes multi-lignes?</translation>
+        <translation>Étiquettes multi-lignes?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="85"/>
@@ -18131,7 +18131,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="52"/>
         <source>Size unit: </source>
-        <translation>Unitées de taille :</translation>
+        <translation>Unités de taille :</translation>
     </message>
 </context>
 <context>
@@ -20885,7 +20885,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="358"/>
         <source>Fix problems with incorrectly filled polygons</source>
-        <translation>Corriger les polygones remplis de manière erronées</translation>
+        <translation>Corriger les polygones remplis de manière erronée</translation>
     </message>
     <message>
         <source>Continuously redraw the map when dragging the legend/map divider</source>
@@ -20973,7 +20973,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="355"/>
         <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
-        <translation>Sélectionner ceci désactivera l&apos;effet attéunant le déchiquetage des lignes</translation>
+        <translation>Sélectionner cette option désactivera l&apos;option atténuant le déchiquetage des lignes</translation>
     </message>
     <message>
         <source>(Specify the search radius as a percentage of the map width)</source>
@@ -21036,12 +21036,12 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="68"/>
         <source>Prompt to save project changes when required</source>
-        <translation>Demander à sauvegarder les changements apportés au projet si requis</translation>
+        <translation>Demander à sauvegarder si des changements ont été apportés au projet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="75"/>
         <source>Warn when opening a project file saved with an older version of QGIS</source>
-        <translation>M&apos;avertir lors de l&apos;ouverture d&apos;un fichier projet sauvegardé avec une version précédente de QGIS</translation>
+        <translation>Avertir lors de l&apos;ouverture d&apos;un fichier projet sauvegardé dans une version précédente de QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="85"/>
@@ -24667,17 +24667,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="811"/>
         <source>Columns: </source>
-        <translation>Colonnes : </translation>
+        <translation>Colonnes :</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="812"/>
         <source>Rows: </source>
-        <translation>Lignes : </translation>
+        <translation>Lignes :</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="813"/>
         <source>No-Data Value: </source>
-        <translation>Valeur No-Data : </translation>
+        <translation>Valeur No-Data :</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="811"/>
@@ -26123,7 +26123,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="44"/>
         <source>Add...</source>
-        <translation>Ajouter...</translation>
+        <translation>Ajouter</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="51"/>
@@ -27008,7 +27008,7 @@ M&apos;erreur était :
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="48"/>
         <source>Label</source>
-        <translation>Etiquette</translation>
+        <translation>Étiquette</translation>
     </message>
 </context>
 <context>
@@ -28935,7 +28935,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="421"/>
         <source>Labels</source>
-        <translation>Etiquettes</translation>
+        <translation>Étiquettes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="433"/>
