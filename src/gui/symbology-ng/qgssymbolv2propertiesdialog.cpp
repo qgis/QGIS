@@ -3,6 +3,7 @@
 
 #include <QFile>
 #include <QStandardItem>
+#include <QKeyEvent>
 
 #include "qgssymbollayerv2.h"
 #include "qgssymbolv2.h"
@@ -366,4 +367,19 @@ void QgsSymbolV2PropertiesDialog::lockLayer()
   if (layer == NULL) return;
   
   layer->setLocked( btnLock->isChecked() );
+}
+
+#include "qgslogger.h"
+
+void QgsSymbolV2PropertiesDialog::keyPressEvent( QKeyEvent * e )
+{
+  // Ignore the ESC key to avoid close the dialog without the properties window
+  if ( !isWindow() && e->key() == Qt::Key_Escape )
+  {
+    e->ignore();
+  }
+  else
+  {
+    QDialog::keyPressEvent(e);
+  }
 }

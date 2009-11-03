@@ -21,6 +21,7 @@
 
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QKeyEvent>
 
 QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent, bool embedded)
   : QDialog(parent), mStyle(style)
@@ -554,5 +555,18 @@ void QgsRendererV2PropertiesDialog::symbolLevels()
   if (dlg.exec())
   {
     mRenderer->setUsingSymbolLevels( dlg.usingLevels() );
+  }
+}
+
+void QgsRendererV2PropertiesDialog::keyPressEvent( QKeyEvent * e )
+{
+  // Ignore the ESC key to avoid close the dialog without the properties window
+  if ( !isWindow() && e->key() == Qt::Key_Escape )
+  {
+    e->ignore();
+  }
+  else
+  {
+    QDialog::keyPressEvent(e);
   }
 }

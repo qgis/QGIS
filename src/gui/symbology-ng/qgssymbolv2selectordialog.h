@@ -22,6 +22,8 @@ protected:
   void updateSymbolColor();
   void updateSymbolInfo();
   
+  //! Reimplements dialog keyPress event so we can ignore it
+  void keyPressEvent( QKeyEvent * event );
 
 public slots:
   void changeSymbolProperties();

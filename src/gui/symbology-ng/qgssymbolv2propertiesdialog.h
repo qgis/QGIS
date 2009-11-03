@@ -39,6 +39,9 @@ public slots:
   
 protected:
   
+  //! Reimplements dialog keyPress event so we can ignore it
+  void keyPressEvent( QKeyEvent * event );
+
   void loadSymbol();
   
   void populateLayerTypes();

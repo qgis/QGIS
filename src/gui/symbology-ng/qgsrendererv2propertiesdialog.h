@@ -42,7 +42,10 @@ public slots:
   void apply();
 
 protected:
-  
+
+  //! Reimplements dialog keyPress event so we can ignore it
+  void keyPressEvent( QKeyEvent * event );
+
   //! update UI to reflect changes in renderer
   void updateUiFromRenderer();
   

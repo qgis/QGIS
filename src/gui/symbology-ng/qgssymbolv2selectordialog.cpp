@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QStandardItemModel>
 #include <QInputDialog>
+#include <QKeyEvent>
 
 QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent, bool embedded)
   : QDialog(parent)
@@ -201,4 +202,17 @@ void QgsSymbolV2SelectorDialog::addSymbolToStyle()
   mStyle->addSymbol(name, mSymbol->clone());
 
   populateSymbolView();
+}
+
+void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent * e )
+{
+  // Ignore the ESC key to avoid close the dialog without the properties window
+  if ( !isWindow() && e->key() == Qt::Key_Escape )
+  {
+    e->ignore();
+  }
+  else
+  {
+    QDialog::keyPressEvent(e);
+  }
 }
