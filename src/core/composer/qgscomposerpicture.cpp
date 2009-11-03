@@ -73,10 +73,6 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
     double boundRectWidthMM = boundRect.width() / newDpi * 25.4;
     double boundRectHeightMM = boundRect.height() / newDpi * 25.4;
-    double unrotatedBoundImageWidth = boundRect.width();
-    double unrotatedBoundImageHeight = boundRect.height();
-    double unrotatedBoundImageWidthMM = unrotatedBoundImageWidth / newDpi * 25.4;
-    double unrotatedBoundImageHeightMM = unrotatedBoundImageHeight / newDpi * 25.4;
     double rotatedBoundImageWidth = boundRect.width();
     double rotatedBoundImageHeight = boundRect.height();
     imageSizeConsideringRotation( rotatedBoundImageWidth, rotatedBoundImageHeight );
@@ -211,8 +207,10 @@ bool QgsComposerPicture::imageSizeConsideringRotation( double& width, double& he
   double y2 = 0;
   double x3 = width;
   double y3 = height;
+#if 0
   double x4 = 0;
   double y4 = height;
+#endif
 
   if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height ) )
   {
@@ -226,11 +224,12 @@ bool QgsComposerPicture::imageSizeConsideringRotation( double& width, double& he
   {
     return false;
   }
-  /*
+#if 0
   if(!cornerPointOnRotatedAndScaledRect(x4, y4, width, height))
   {
     return false;
-  }*/
+  }
+#endif
 
   width = sqrt(( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) );
   height = sqrt(( x3 - x2 ) * ( x3 - x2 ) + ( y3 - y2 ) * ( y3 - y2 ) );
