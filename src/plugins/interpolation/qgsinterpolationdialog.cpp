@@ -309,7 +309,7 @@ void QgsInterpolationDialog::on_mOutputFileButton_clicked()
 
 void QgsInterpolationDialog::on_mOutputFileLineEdit_textChanged()
 {
-  if ( mOutputFileLineEdit->text().endsWith(".asc"))
+  if ( mOutputFileLineEdit->text().endsWith( ".asc" ) )
   {
     enableOrDisableOkButton();
   }
@@ -405,6 +405,7 @@ void QgsInterpolationDialog::on_mBBoxToCurrentExtent_clicked()
       mXMaxLineEdit->setText( QString::number( extent.xMaximum() ) );
       mYMinLineEdit->setText( QString::number( extent.yMinimum() ) );
       mYMaxLineEdit->setText( QString::number( extent.yMaximum() ) );
+      setNewCellsizeOnBoundingBoxChange();
     }
   }
 }
