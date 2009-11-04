@@ -1119,6 +1119,7 @@
 		72779E9C104060DC00CA9DE5 /* 985715179_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E94104060CF00CA9DE5 /* 985715179_pl_PL */; };
 		72779E9F1040615000CA9DE5 /* mActionAddImage.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72779E9E1040614100CA9DE5 /* mActionAddImage.png */; };
 		72779EA01040615000CA9DE5 /* mActionAddMap.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72779E9D1040614100CA9DE5 /* mActionAddMap.png */; };
+		727903F410A1EC48006254DF /* mActionNewComposer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 727903F310A1EC29006254DF /* mActionNewComposer.png */; };
 		727CEC220FBAFFA200F5B88C /* mIconLock.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 727CEC210FBAFF6000F5B88C /* mIconLock.png */; };
 		727E6AF10FEA90E200DF6F64 /* x_sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */; };
 		727E6B040FEA9BC000DF6F64 /* x_spatialite.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B030FEA9BC000DF6F64 /* x_spatialite.c */; };
@@ -3086,6 +3087,7 @@
 				7256F45A0F41C4DD0022BE1F /* mActionMoveVertex.png in Copy - theme-default */,
 				7256F45B0F41C4DD0022BE1F /* mActionNewAttribute.png in Copy - theme-default */,
 				7256F45C0F41C4DD0022BE1F /* mActionNewBookmark.png in Copy - theme-default */,
+				727903F410A1EC48006254DF /* mActionNewComposer.png in Copy - theme-default */,
 				7256F45D0F41C4DD0022BE1F /* mActionNewFolder.png in Copy - theme-default */,
 				7256F45E0F41C4DD0022BE1F /* mActionNewVectorLayer.png in Copy - theme-default */,
 				72F22FB90FDAC249000E8CB0 /* mActionNodeTool.png in Copy - theme-default */,
@@ -5951,6 +5953,7 @@
 		72779E94104060CF00CA9DE5 /* 985715179_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 985715179_pl_PL; path = ../../resources/context_help/985715179_pl_PL; sourceTree = SOURCE_ROOT; };
 		72779E9D1040614100CA9DE5 /* mActionAddMap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddMap.png; path = ../../images/themes/default/mActionAddMap.png; sourceTree = SOURCE_ROOT; };
 		72779E9E1040614100CA9DE5 /* mActionAddImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddImage.png; path = ../../images/themes/default/mActionAddImage.png; sourceTree = SOURCE_ROOT; };
+		727903F310A1EC29006254DF /* mActionNewComposer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNewComposer.png; path = ../../images/themes/default/mActionNewComposer.png; sourceTree = SOURCE_ROOT; };
 		727CEC210FBAFF6000F5B88C /* mIconLock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconLock.png; path = ../../images/themes/default/mIconLock.png; sourceTree = SOURCE_ROOT; };
 		727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_sqlite3.c; sourceTree = "<group>"; };
 		727E6B030FEA9BC000DF6F64 /* x_spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_spatialite.c; sourceTree = "<group>"; };
@@ -10197,6 +10200,7 @@
 				7209EF240F39E5D9003DC336 /* mActionMoveVertex.png */,
 				7209EF250F39E5D9003DC336 /* mActionNewAttribute.png */,
 				7209EF260F39E5D9003DC336 /* mActionNewBookmark.png */,
+				727903F310A1EC29006254DF /* mActionNewComposer.png */,
 				7209EF270F39E5D9003DC336 /* mActionNewFolder.png */,
 				7209EF280F39E5D9003DC336 /* mActionNewVectorLayer.png */,
 				72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */,
