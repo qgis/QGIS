@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsDiagramDialogBase</class>
- <widget class="QDialog" name="QgsDiagramDialogBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsDiagramDialogBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,95 +10,74 @@
     <height>441</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QCheckBox" name="mDisplayDiagramsCheckBox" >
-     <property name="text" >
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="mDisplayDiagramsCheckBox">
+     <property name="text">
       <string>Display diagrams</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
+   <item row="1" column="0">
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QLabel" name="mTypeLabel" >
-       <property name="text" >
-        <string>Diagram type:</string>
+      <widget class="QLabel" name="mTypeLabel">
+       <property name="text">
+        <string>Diagram type</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mDiagramTypeComboBox" />
+      <widget class="QComboBox" name="mDiagramTypeComboBox"/>
      </item>
     </layout>
    </item>
-   <item row="2" column="0" >
-    <widget class="QStackedWidget" name="mDiagramFactoryStackedWidget" >
-     <widget class="QWidget" name="page_3" />
-     <widget class="QWidget" name="page_4" />
+   <item row="2" column="0">
+    <widget class="QStackedWidget" name="mDiagramFactoryStackedWidget">
+     <widget class="QWidget" name="page_3"/>
+     <widget class="QWidget" name="page_4"/>
     </widget>
    </item>
-   <item row="3" column="0" >
-    <layout class="QGridLayout" >
-     <property name="leftMargin" >
+   <item row="3" column="0">
+    <layout class="QGridLayout">
+     <property name="margin">
       <number>0</number>
      </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
-      <number>0</number>
-     </property>
-     <property name="horizontalSpacing" >
+     <property name="spacing">
       <number>6</number>
      </property>
-     <property name="verticalSpacing" >
-      <number>6</number>
-     </property>
-     <item row="0" column="1" >
-      <widget class="QComboBox" name="mClassificationTypeComboBox" />
+     <item row="0" column="1">
+      <widget class="QComboBox" name="mClassificationTypeComboBox"/>
      </item>
-     <item row="2" column="0" colspan="2" >
-      <widget class="QStackedWidget" name="mWidgetStackRenderers" >
-       <widget class="QWidget" name="page" />
-       <widget class="QWidget" name="page_2" />
+     <item row="2" column="0" colspan="2">
+      <widget class="QStackedWidget" name="mWidgetStackRenderers">
+       <widget class="QWidget" name="page"/>
+       <widget class="QWidget" name="page_2"/>
       </widget>
      </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="mClassificationLabel" >
-       <property name="text" >
-        <string>Classification attribute:</string>
+     <item row="1" column="0">
+      <widget class="QLabel" name="mClassificationLabel">
+       <property name="text">
+        <string>Classification attribute</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QComboBox" name="mClassificationComboBox" />
+     <item row="1" column="1">
+      <widget class="QComboBox" name="mClassificationComboBox"/>
      </item>
-     <item row="0" column="0" >
-      <widget class="QLabel" name="mClassificationTypeLabel" >
-       <property name="text" >
-        <string>Classification type:</string>
+     <item row="0" column="0">
+      <widget class="QLabel" name="mClassificationTypeLabel">
+       <property name="text">
+        <string>Classification type</string>
        </property>
       </widget>
      </item>
