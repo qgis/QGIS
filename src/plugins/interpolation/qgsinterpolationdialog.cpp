@@ -307,6 +307,14 @@ void QgsInterpolationDialog::on_mOutputFileButton_clicked()
   enableOrDisableOkButton();
 }
 
+void QgsInterpolationDialog::on_mOutputFileLineEdit_textChanged()
+{
+  if ( mOutputFileLineEdit->text().endsWith(".asc"))
+  {
+    enableOrDisableOkButton();
+  }
+}
+
 void QgsInterpolationDialog::on_mConfigureInterpolationButton_clicked()
 {
   if ( mInterpolatorDialog )
