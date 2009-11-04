@@ -515,9 +515,9 @@ QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols(QDomElement& element)
   return symbols;
 }
 
-QDomElement QgsSymbolLayerV2Utils::saveSymbols(QgsSymbolV2Map& symbols, QDomDocument& doc)
+QDomElement QgsSymbolLayerV2Utils::saveSymbols(QgsSymbolV2Map& symbols, QString tagName, QDomDocument& doc)
 {
-  QDomElement symbolsElem = doc.createElement("symbols");
+  QDomElement symbolsElem = doc.createElement(tagName);
 
   QMap<QString, QgsSymbolV2*> subSymbols;
 
@@ -543,4 +543,34 @@ void QgsSymbolLayerV2Utils::clearSymbolMap(QgsSymbolV2Map& symbols)
   foreach (QString name, symbols.keys())
     delete symbols.value(name);
   symbols.clear();
+}
+
+
+QgsVectorColorRampV2* QgsSymbolLayerV2Utils::loadColorRamp(QDomElement& element)
+{
+  QString rampType = element.attribute("type");
+
+  // parse properties
+  QgsStringMap props = QgsSymbolLayerV2Utils::parseProperties(element);
+
+  if (rampType == "gradient")
+    return QgsVectorGradientColorRampV2::create(props);
+  else if (rampType == "random")
+    return QgsVectorRandomColorRampV2::create(props);
+  else
+  {
+    QgsDebugMsg("unknown colorramp type " + rampType);
+    return NULL;
+  }
+}
+
+
+QDomElement QgsSymbolLayerV2Utils::saveColorRamp(QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc)
+{
+  QDomElement rampEl = doc.createElement("colorramp");
+  rampEl.setAttribute("type", ramp->type());
+  rampEl.setAttribute("name", name);
+
+  QgsSymbolLayerV2Utils::saveProperties(ramp->properties(), doc, rampEl);
+  return rampEl;
 }

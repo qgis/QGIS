@@ -205,7 +205,7 @@ bool QgsStyleV2::load(QString filename)
   {
     if (e.tagName() == "colorramp")
     {
-      QgsVectorColorRampV2* ramp = loadColorRamp(e);
+      QgsVectorColorRampV2* ramp = QgsSymbolLayerV2Utils::loadColorRamp(e);
       if (ramp != NULL)
         addColorRamp(e.attribute("name"), ramp);
     }
@@ -217,25 +217,6 @@ bool QgsStyleV2::load(QString filename)
   }
 
   return true;
-}
-
-
-QgsVectorColorRampV2* QgsStyleV2::loadColorRamp(QDomElement& element)
-{
-  QString rampType = element.attribute("type");
-  
-  // parse properties
-  QgsStringMap props = QgsSymbolLayerV2Utils::parseProperties(element);
-  
-  if (rampType == "gradient")
-    return QgsVectorGradientColorRampV2::create(props);
-  else if (rampType == "random")
-    return QgsVectorRandomColorRampV2::create(props);
-  else
-  {
-    QgsDebugMsg("unknown colorramp type " + rampType);
-    return NULL;
-  }
 }
 
 
@@ -251,14 +232,14 @@ bool QgsStyleV2::save(QString filename)
   root.setAttribute("version", STYLE_CURRENT_VERSION);
   doc.appendChild(root);
 
-  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(mSymbols, doc);
+  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(mSymbols, "symbols", doc);
 
   QDomElement rampsElem = doc.createElement("colorramps");
   
   // save color ramps
   for (QMap<QString, QgsVectorColorRampV2*>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr)
   {
-    QDomElement rampEl = saveColorRamp(itr.key(), itr.value(), doc);
+    QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp(itr.key(), itr.value(), doc);
     rampsElem.appendChild(rampEl);
   }
 
@@ -277,14 +258,4 @@ bool QgsStyleV2::save(QString filename)
   f.close();
   
   return true;
-}
-
-QDomElement QgsStyleV2::saveColorRamp(QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc)
-{
-  QDomElement rampEl = doc.createElement("colorramp");
-  rampEl.setAttribute("type", ramp->type());
-  rampEl.setAttribute("name", name);
-  
-  QgsSymbolLayerV2Utils::saveProperties(ramp->properties(), doc, rampEl);
-  return rampEl;
 }

@@ -78,10 +78,6 @@ public:
   
 protected:
 
-  QgsVectorColorRampV2* loadColorRamp(QDomElement& element);
-  
-  QDomElement saveColorRamp(QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc);
-
   QgsSymbolV2Map mSymbols;
   QgsVectorColorRampV2Map mColorRamps;
   

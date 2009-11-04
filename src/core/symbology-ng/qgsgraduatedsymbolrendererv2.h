@@ -87,10 +87,18 @@ public:
   //! store renderer info to XML element
   virtual QDomElement save(QDomDocument& doc);
 
+  QgsSymbolV2* sourceSymbol();
+  void setSourceSymbol(QgsSymbolV2* sym);
+
+  QgsVectorColorRampV2* sourceColorRamp();
+  void setSourceColorRamp(QgsVectorColorRampV2* ramp);
+
 protected:
   QgsRangeList mRanges;
   QString mAttrName;
   Mode mMode;
+  QgsSymbolV2* mSourceSymbol;
+  QgsVectorColorRampV2* mSourceColorRamp;
 
   //! attribute index (derived from attribute name in startRender)
   int mAttrNum;

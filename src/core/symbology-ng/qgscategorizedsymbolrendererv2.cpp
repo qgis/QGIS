@@ -3,6 +3,7 @@
 
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsvectorcolorrampv2.h"
 
 #include "qgsfeature.h"
 #include "qgslogger.h"
@@ -63,7 +64,11 @@ QString QgsRendererCategoryV2::dump()
 ///////////////////
 
 QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2(QString attrName, QgsCategoryList categories)
-  : QgsFeatureRendererV2(RendererCategorizedSymbol), mAttrName(attrName), mCategories(categories)
+  : QgsFeatureRendererV2(RendererCategorizedSymbol),
+    mAttrName(attrName),
+    mCategories(categories),
+    mSourceSymbol(NULL),
+    mSourceColorRamp(NULL)
 {
   for (int i = 0; i < mCategories.count(); ++i)
   {
@@ -80,6 +85,8 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2(QString attrName,
 QgsCategorizedSymbolRendererV2::~QgsCategorizedSymbolRendererV2()
 {
   mCategories.clear(); // this should also call destructors of symbols
+  delete mSourceSymbol;
+  delete mSourceColorRamp;
 }
 
 void QgsCategorizedSymbolRendererV2::rebuildHash()
@@ -202,6 +209,10 @@ QString QgsCategorizedSymbolRendererV2::dump()
 QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
 {
   QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2( mAttrName, mCategories );
+  if (mSourceSymbol)
+    r->setSourceSymbol(mSourceSymbol->clone());
+  if (mSourceColorRamp)
+    r->setSourceColorRamp(mSourceColorRamp->clone());
   r->setUsingSymbolLevels( usingSymbolLevels() );
   return r;
 }
@@ -251,6 +262,25 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create(QDomElement& elemen
   // delete symbols if there are any more
   QgsSymbolLayerV2Utils::clearSymbolMap(symbolMap);
 
+  // try to load source symbol (optional)
+  QDomElement sourceSymbolElem = element.firstChildElement("source-symbol");
+  if (!sourceSymbolElem.isNull())
+  {
+    QgsSymbolV2Map sourceSymbolMap = QgsSymbolLayerV2Utils::loadSymbols(sourceSymbolElem);
+    if (sourceSymbolMap.contains("0"))
+    {
+      r->setSourceSymbol( sourceSymbolMap.take("0") );
+    }
+    QgsSymbolLayerV2Utils::clearSymbolMap(sourceSymbolMap);
+  }
+
+  // try to load color ramp (optional)
+  QDomElement sourceColorRampElem = element.firstChildElement("colorramp");
+  if (!sourceColorRampElem.isNull() && sourceColorRampElem.attribute("name") == "[source]")
+  {
+    r->setSourceColorRamp( QgsSymbolLayerV2Utils::loadColorRamp(sourceColorRampElem) );
+  }
+
   // TODO: symbol levels
   return r;
 }
@@ -283,8 +313,44 @@ QDomElement QgsCategorizedSymbolRendererV2::save(QDomDocument& doc)
   rendererElem.appendChild(catsElem);
 
   // save symbols
-  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(symbols, doc);
+  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(symbols, "symbols", doc);
   rendererElem.appendChild(symbolsElem);
 
+  // save source symbol
+  if (mSourceSymbol)
+  {
+    QgsSymbolV2Map sourceSymbols;
+    sourceSymbols.insert("0", mSourceSymbol);
+    QDomElement sourceSymbolElem = QgsSymbolLayerV2Utils::saveSymbols(sourceSymbols, "source-symbol", doc);
+    rendererElem.appendChild(sourceSymbolElem);
+  }
+
+  // save source color ramp
+  if (mSourceColorRamp)
+  {
+    QDomElement colorRampElem = QgsSymbolLayerV2Utils::saveColorRamp("[source]", mSourceColorRamp, doc);
+    rendererElem.appendChild(colorRampElem);
+  }
+
   return rendererElem;
+}
+
+QgsSymbolV2* QgsCategorizedSymbolRendererV2::sourceSymbol()
+{
+  return mSourceSymbol;
+}
+void QgsCategorizedSymbolRendererV2::setSourceSymbol(QgsSymbolV2* sym)
+{
+  delete mSourceSymbol;
+  mSourceSymbol = sym;
+}
+
+QgsVectorColorRampV2* QgsCategorizedSymbolRendererV2::sourceColorRamp()
+{
+  return mSourceColorRamp;
+}
+void QgsCategorizedSymbolRendererV2::setSourceColorRamp(QgsVectorColorRampV2* ramp)
+{
+  delete mSourceColorRamp;
+  mSourceColorRamp = ramp;
 }

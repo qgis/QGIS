@@ -5,6 +5,7 @@
 
 #include <QHash>
 
+class QgsVectorColorRampV2;
 
 class QgsRendererCategoryV2
 {
@@ -78,9 +79,17 @@ public:
   //! store renderer info to XML element
   virtual QDomElement save(QDomDocument& doc);
 
+  QgsSymbolV2* sourceSymbol();
+  void setSourceSymbol(QgsSymbolV2* sym);
+
+  QgsVectorColorRampV2* sourceColorRamp();
+  void setSourceColorRamp(QgsVectorColorRampV2* ramp);
+
 protected:
   QgsCategoryList mCategories;
   QString mAttrName;
+  QgsSymbolV2* mSourceSymbol;
+  QgsVectorColorRampV2* mSourceColorRamp;
 
   //! attribute index (derived from attribute name in startRender)
   int mAttrNum;

@@ -95,7 +95,7 @@ QDomElement QgsSingleSymbolRendererV2::save(QDomDocument& doc)
 
   QgsSymbolV2Map symbols;
   symbols["0"] = mSymbol;
-  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(symbols, doc);
+  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols(symbols, "symbols", doc);
   rendererElem.appendChild(symbolsElem);
 
   return rendererElem;

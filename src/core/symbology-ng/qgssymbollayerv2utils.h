@@ -57,9 +57,12 @@ public:
   static void saveProperties(QgsStringMap props, QDomDocument& doc, QDomElement& element);
 
   static QgsSymbolV2Map loadSymbols(QDomElement& element);
-  static QDomElement saveSymbols(QgsSymbolV2Map& symbols, QDomDocument& doc);
+  static QDomElement saveSymbols(QgsSymbolV2Map& symbols, QString tagName, QDomDocument& doc);
 
   static void clearSymbolMap(QgsSymbolV2Map& symbols);
+
+  static QgsVectorColorRampV2* loadColorRamp(QDomElement& element);
+  static QDomElement saveColorRamp(QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc);
 };
 
 class QPolygonF;

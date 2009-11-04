@@ -181,15 +181,39 @@ void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
     
       stackedWidget->setCurrentWidget(pageCategorized);
       updateCategorizedSymbolIcon();
+      populateCategories();
 
-      disconnect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
       {
-        QString attrName = rendererCategorized()->classAttribute();
+        QgsCategorizedSymbolRendererV2* r = rendererCategorized();
+
+        // set column
+        disconnect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
+        QString attrName = r->classAttribute();
         int idx = cboCategorizedColumn->findText(attrName, Qt::MatchExactly);
         cboCategorizedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
+        connect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
+
+        // set source symbol
+        if (r->sourceSymbol())
+        {
+          delete mCategorizedSymbol;
+          mCategorizedSymbol = r->sourceSymbol()->clone();
+          updateCategorizedSymbolIcon();
+        }
+
+        // set source color ramp
+        if (r->sourceColorRamp())
+        {
+          QSize rampIconSize(50,16);
+          QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon(r->sourceColorRamp(), rampIconSize);
+          if (cboCategorizedColorRamp->itemText(0) == "[source]")
+            cboCategorizedColorRamp->setItemIcon(0, icon);
+          else
+            cboCategorizedColorRamp->insertItem(0, icon, "[source]");
+          cboCategorizedColorRamp->setCurrentIndex(0);
+        }
       }
-      connect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
-      populateCategories();
+
       break;
   
     case QgsFeatureRendererV2::RendererGraduatedSymbol:
@@ -213,6 +237,26 @@ void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
         int idx = cboGraduatedColumn->findText(attrName, Qt::MatchExactly);
         cboGraduatedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
         //connect(cboGraduatedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(graduatedColumnChanged()));
+
+        // set source symbol
+        if (r->sourceSymbol())
+        {
+          delete mGraduatedSymbol;
+          mGraduatedSymbol = r->sourceSymbol()->clone();
+          updateGraduatedSymbolIcon();
+        }
+
+        // set source color ramp
+        if (r->sourceColorRamp())
+        {
+          QSize rampIconSize(50,16);
+          QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon(r->sourceColorRamp(), rampIconSize);
+          if (cboGraduatedColorRamp->itemText(0) == "[source]")
+            cboGraduatedColorRamp->setItemIcon(0, icon);
+          else
+            cboGraduatedColorRamp->insertItem(0, icon, "[source]");
+          cboGraduatedColorRamp->setCurrentIndex(0);
+        }
       }
       break;
       
@@ -346,8 +390,13 @@ void QgsRendererV2PropertiesDialog::addCategories()
   //DlgAddCategories dlg(mStyle, createDefaultSymbol(), unique_vals, this);
   //if (!dlg.exec())
   //  return;
-  
-  QgsVectorColorRampV2* ramp = mStyle->colorRamp( cboCategorizedColorRamp->currentText() );
+
+  QgsVectorColorRampV2* ramp = NULL;
+  QString rampName = cboCategorizedColorRamp->currentText();
+  if (rampName == "[source]" && rendererCategorized())
+    ramp = rendererCategorized()->sourceColorRamp()->clone();
+  else
+    ramp = mStyle->colorRamp( rampName );
   
   QgsCategoryList cats;
   ::createCategories(cats, unique_vals, mCategorizedSymbol, ramp );
@@ -368,8 +417,11 @@ void QgsRendererV2PropertiesDialog::addCategories()
       
   // recreate renderer
   delete mRenderer;
-  mRenderer = new QgsCategorizedSymbolRendererV2(attrName, cats);
-  
+  QgsCategorizedSymbolRendererV2* r = new QgsCategorizedSymbolRendererV2(attrName, cats);
+  r->setSourceSymbol(mCategorizedSymbol->clone());
+  r->setSourceColorRamp(ramp->clone());
+  mRenderer = r;
+
   populateCategories();
 }
 
@@ -444,8 +496,13 @@ void QgsRendererV2PropertiesDialog::classifyGraduated()
   
   int classes = spinGraduatedClasses->value();
   
-  QgsVectorColorRampV2* ramp = mStyle->colorRamp( cboGraduatedColorRamp->currentText() );
-  
+  QgsVectorColorRampV2* ramp = NULL;
+  QString rampName = cboGraduatedColorRamp->currentText();
+  if (rampName == "[source]" && rendererGraduated())
+    ramp = rendererGraduated()->sourceColorRamp()->clone();
+  else
+    ramp = mStyle->colorRamp( rampName );
+
   QgsGraduatedSymbolRendererV2::Mode mode;
   if (cboGraduatedMode->currentIndex() == 0)
     mode = QgsGraduatedSymbolRendererV2::EqualInterval;
@@ -455,7 +512,6 @@ void QgsRendererV2PropertiesDialog::classifyGraduated()
   // create and set new renderer
   QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
       mLayer, attrName, classes, mode, mGraduatedSymbol, ramp);
-  r->setMode(mode);
   
   delete mRenderer;
   mRenderer = r;
