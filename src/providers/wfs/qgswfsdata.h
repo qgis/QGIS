@@ -16,6 +16,7 @@
 #define QGSWFSDATA_H
 
 #include <QHttp>
+#include <QTimer>
 #include <expat.h>
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -56,7 +57,7 @@ class QgsWFSData: public QObject
     const QHttp* http() const {return &mHttp;}
 
   private slots:
-    void setFinished( bool error );
+    void setFinished( bool error = true );
 
     /**Takes progress value and total steps and emit signals 'dataReadProgress' and 'totalStepUpdate'*/
     void handleProgressEvent( int progress, int totalSteps );
@@ -178,6 +179,8 @@ class QgsWFSData: public QObject
     QString mCoordinateSeparator;
     /**Tuple separator for coordinate strings. Usually " " */
     QString mTupleSeparator;
+    int mNetworkTimeoutMsec;
+    QTimer mNetworkTimeoutTimer;
 };
 
 #endif

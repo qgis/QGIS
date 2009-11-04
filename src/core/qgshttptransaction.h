@@ -96,6 +96,11 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
 
     void setCredentials( const QString& username, const QString &password );
 
+    /**Returns the network timeout in msec*/
+    int networkTimeout() const { return mNetworkTimeoutMsec;}
+    /**Sets the network timeout in milliseconds*/
+    void setNetworkTimeout( int msec ) { mNetworkTimeoutMsec = msec;}
+
 
   public slots:
 
@@ -133,6 +138,9 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
 
 
   private:
+
+    /**Default constructor is forbidden*/
+    QgsHttpTransaction();
 
     /**
      * Indicates the associated QHttp object
@@ -207,6 +215,9 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
      * Password
      */
     QString mPassword;
+
+    /**Network timeout in milliseconds*/
+    int mNetworkTimeoutMsec;
 };
 
 #endif

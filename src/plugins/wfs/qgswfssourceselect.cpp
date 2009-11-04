@@ -143,7 +143,10 @@ int QgsWFSSourceSelect::getCapabilitiesGET( QString uri, std::list<QString>& typ
 
   QByteArray result;
   QgsHttpTransaction http( request );
-  http.getSynchronously( result );
+  if ( !http.getSynchronously( result ) )
+  {
+    QMessageBox::critical( 0, tr( "Error" ), tr( "The capabilities document could not be retrieved from the server" ) );
+  }
 
   QDomDocument capabilitiesDocument;
   if ( !capabilitiesDocument.setContent( result, true ) )
