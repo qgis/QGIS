@@ -38,6 +38,7 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
     void on_buttonBox_accepted();
     void on_mInputLayerComboBox_currentIndexChanged( const QString& text );
     void on_mOutputFileButton_clicked();
+    void on_mOutputFileLineEdit_textChanged();
     void on_mConfigureInterpolationButton_clicked();
     void on_mInterpolationMethodComboBox_currentIndexChanged( const QString &text );
     void on_mAddPushButton_clicked();
