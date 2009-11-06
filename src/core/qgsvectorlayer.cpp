@@ -76,7 +76,7 @@
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
-
+#include "qgssinglesymbolrendererv2.h"
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -668,16 +668,33 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 {
   mRendererV2->startRender(rendererContext, pendingFields());
 
+  QgsSingleSymbolRendererV2* selRenderer = NULL;
+  if (!mSelectedFeatureIds.isEmpty())
+  {
+    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol(geometryType()) );
+    selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
+    selRenderer->startRender(rendererContext, pendingFields());
+  }
+
   QgsFeature fet;
   while ( nextFeature( fet ) )
   {
-    mRendererV2->renderFeature(fet, rendererContext);
+    if (mSelectedFeatureIds.contains( fet.id() ))
+      selRenderer->renderFeature(fet, rendererContext);
+    else
+      mRendererV2->renderFeature(fet, rendererContext);
 
     if ( labeling )
       mLabelingEngine->registerFeature(this, fet);
   }
 
   mRendererV2->stopRender(rendererContext);
+
+  if (selRenderer)
+  {
+    selRenderer->stopRender(rendererContext);
+    delete selRenderer;
+  }
 }
 
 void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
@@ -686,6 +703,14 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
 
   // startRender must be called before symbolForFeature() calls to make sure renderer is ready
   mRendererV2->startRender(rendererContext, pendingFields());
+
+  QgsSingleSymbolRendererV2* selRenderer = NULL;
+  if (!mSelectedFeatureIds.isEmpty())
+  {
+    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol(geometryType()) );
+    selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
+    selRenderer->startRender(rendererContext, pendingFields());
+  }
 
   // 1. fetch features
   QgsFeature fet;
@@ -734,11 +759,22 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
       QList<QgsFeature>& lst = features[item.symbol()];
       QList<QgsFeature>::iterator fit;
       for ( fit = lst.begin(); fit != lst.end(); ++fit )
-        mRendererV2->renderFeature(*fit, rendererContext, layer);
+      {
+        if (mSelectedFeatureIds.contains( fit->id() ))
+          selRenderer->renderFeature(*fit, rendererContext);
+        else
+          mRendererV2->renderFeature(*fit, rendererContext, layer);
+      }
     }
   }
 
   mRendererV2->stopRender(rendererContext);
+
+  if (selRenderer)
+  {
+    selRenderer->stopRender(rendererContext);
+    delete selRenderer;
+  }
 }
 
 bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
