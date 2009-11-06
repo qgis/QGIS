@@ -7,7 +7,7 @@
       <prop k="color" v="85,170,255" />
       <prop k="color_border" v="0,0,255" />
       <prop k="name" v="rectangle" />
-      <prop k="size" v="10" />
+      <prop k="size" v="9" />
     </layer>
   </symbol>
   <symbol type="marker" name="car" >
@@ -39,7 +39,7 @@
     </layer>
   </symbol>
   <symbol type="line" name="highway" >
-    <layer class="SimpleLine" locked="0" >
+    <layer class="SimpleLine" locked="1" >
       <prop k="color" v="0,0,0" />
       <prop k="penstyle" v="solid" />
       <prop k="width" v="5" />
@@ -49,7 +49,7 @@
       <prop k="penstyle" v="solid" />
       <prop k="width" v="3" />
     </layer>
-    <layer class="SimpleLine" locked="0" >
+    <layer class="SimpleLine" locked="1" >
       <prop k="color" v="0,0,0" />
       <prop k="penstyle" v="solid" />
       <prop k="width" v="1" />
@@ -70,7 +70,7 @@
       <prop k="penstyle" v="solid" />
       <prop k="width" v="3" />
     </layer>
-    <layer class="SimpleLine" locked="0" >
+    <layer class="SimpleLine" locked="1" >
       <prop k="color" v="255,255,255" />
       <prop k="penstyle" v="dot" />
       <prop k="width" v="2" />
