@@ -34,6 +34,9 @@ public:
   //! store renderer info to XML element
   virtual QDomElement save(QDomDocument& doc);
 
+  //! return a list of symbology items for the legend
+  virtual QgsLegendSymbologyList legendSymbologyItems(QSize iconSize);
+
 protected:
   QgsSymbolV2* mSymbol;
 };

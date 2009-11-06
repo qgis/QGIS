@@ -47,6 +47,7 @@ public:
   static QIcon symbolLayerPreviewIcon(QgsSymbolLayerV2* layer, QSize size);
   static QIcon colorRampPreviewIcon(QgsVectorColorRampV2* ramp, QSize size);
 
+  static QPixmap symbolPreviewPixmap(QgsSymbolV2* symbol, QSize size);
   static QPixmap colorRampPreviewPixmap(QgsVectorColorRampV2* ramp, QSize size);
 
   static QgsSymbolV2* loadSymbol(QDomElement& element);

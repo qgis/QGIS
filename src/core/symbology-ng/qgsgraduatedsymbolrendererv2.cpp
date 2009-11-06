@@ -10,6 +10,7 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QSettings> // for legend
 
 QgsRendererRangeV2::QgsRendererRangeV2(double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label)
   : mLowerValue(lowerValue), mUpperValue(upperValue), mSymbol(symbol), mLabel(label)
@@ -430,6 +431,27 @@ QDomElement QgsGraduatedSymbolRendererV2::save(QDomDocument& doc)
   }
 
   return rendererElem;
+}
+
+QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems(QSize iconSize)
+{
+  QSettings settings;
+  bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
+
+  QgsLegendSymbologyList lst;
+  if (showClassifiers)
+  {
+    lst << qMakePair( classAttribute(), QPixmap() );
+  }
+
+  int count = ranges().count();
+  for (int i = 0; i < count; i++)
+  {
+    const QgsRendererRangeV2& range = ranges()[i];
+    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( range.symbol(), iconSize );
+    lst << qMakePair( range.label(), pix );
+  }
+  return lst;
 }
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::sourceSymbol()

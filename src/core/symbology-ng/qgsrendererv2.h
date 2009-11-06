@@ -8,6 +8,8 @@
 #include <QList>
 #include <QString>
 #include <QVariant>
+#include <QPair>
+#include <QPixmap>
 
 class QDomDocument;
 class QDomElement;
@@ -18,6 +20,8 @@ class QgsFeature;
 
 typedef QList<QgsSymbolV2*> QgsSymbolV2List;
 typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
+
+typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
 
 #define RENDERER_TAG_NAME   "renderer-v2"
 
@@ -84,6 +88,9 @@ public:
 
   //! store renderer info to XML element
   virtual QDomElement save(QDomDocument& doc);
+
+  //! return a list of symbology items for the legend
+  virtual QgsLegendSymbologyList legendSymbologyItems(QSize iconSize);
   
   /** Returns the index of a field name or -1 if the field does not exist
     * copied from QgsVectorDataProvider... d'oh... probably should be elsewhere

@@ -87,6 +87,9 @@ public:
   //! store renderer info to XML element
   virtual QDomElement save(QDomDocument& doc);
 
+  //! return a list of symbology items for the legend
+  virtual QgsLegendSymbologyList legendSymbologyItems(QSize iconSize);
+
   QgsSymbolV2* sourceSymbol();
   void setSourceSymbol(QgsSymbolV2* sym);
 

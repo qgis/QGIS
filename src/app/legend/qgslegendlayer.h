@@ -33,7 +33,7 @@ class QgsVectorLayer;
 
 class QTreeWidget;
 
-typedef std::list< std::pair<QString, QPixmap> > SymbologyList;
+typedef QList< QPair<QString, QPixmap> > SymbologyList;
 
 /**
 Container for layer, including layer file(s), symbology class breaks and properties

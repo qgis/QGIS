@@ -369,7 +369,7 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
     }
 
     QPixmap pix = QPixmap::fromImage( img ); // convert to pixmap
-    itemList.push_back( std::make_pair( values, pix ) );
+    itemList.append( qMakePair( values, pix ) );
   }
 
 
@@ -388,7 +388,7 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
         {
           classfieldname = fields[*it].name();
         }
-        itemList.push_front( std::make_pair( classfieldname, QPixmap() ) );
+        itemList.append( qMakePair( classfieldname, QPixmap() ) );
       }
     }
   }
@@ -396,72 +396,15 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
   changeSymbologySettings( layer, itemList );
 }
 
-static QPixmap _symbolPreviewPixmap(QgsSymbolV2* sym, QSize iconSize)
-{
-  QPainter p;
-  QPixmap pix(iconSize);
-  pix.fill(Qt::white);
-  p.begin(&pix);
-  p.setRenderHint(QPainter::Antialiasing);
-  sym->drawPreviewIcon(&p, iconSize);
-  p.end();
-  return pix;
-}
 
 void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
 {
-  SymbologyList itemList;
-
   QSize iconSize(16,16);
 
   QSettings settings;
   bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
 
-  QgsFeatureRendererV2* renderer = layer->rendererV2();
-  QString rendererType = renderer->type();
-  if (rendererType == "singleSymbol")
-  {
-   QgsSingleSymbolRendererV2* r = static_cast<QgsSingleSymbolRendererV2*>(renderer);
-    QPixmap pix = _symbolPreviewPixmap(r->symbol(), iconSize);
-
-    itemList.push_back( std::make_pair( "", pix ) );
-  }
-  else if (rendererType == "categorizedSymbol")
-  {
-    QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>(renderer);
-    if (showClassifiers)
-    {
-      itemList.push_back( std::make_pair( r->classAttribute(), QPixmap() ) );
-    }
-
-    int count = r->categories().count();
-    for (int i = 0; i < count; i++)
-    {
-      const QgsRendererCategoryV2& cat = r->categories()[i];
-      QPixmap pix = _symbolPreviewPixmap( cat.symbol(), iconSize );
-      itemList.push_back( std::make_pair( cat.label(), pix ) );
-    }
-  }
-  else if (rendererType == "graduatedSymbol")
-  {
-    QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>(renderer);
-    if (showClassifiers)
-    {
-      itemList.push_back( std::make_pair( r->classAttribute(), QPixmap() ) );
-    }
-
-    int count = r->ranges().count();
-    for (int i = 0; i < count; i++)
-    {
-      const QgsRendererRangeV2& range = r->ranges()[i];
-      QPixmap pix = _symbolPreviewPixmap( range.symbol(), iconSize );
-      itemList.push_back( std::make_pair( range.label(), pix ) );
-    }
-  }
-  else
-  {
-    // nothing for unknown renderers
-  }
+  SymbologyList itemList = layer->rendererV2()->legendSymbologyItems(iconSize);
 
   changeSymbologySettings( layer, itemList );
 }
@@ -470,7 +413,7 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
 {
   SymbologyList itemList;
   QPixmap legendpixmap = layer->legendAsPixmap( true ).scaled( 20, 20, Qt::KeepAspectRatio );
-  itemList.push_back( std::make_pair( "", legendpixmap ) );
+  itemList.append( qMakePair( QString(), legendpixmap ) );
 
   changeSymbologySettings( layer, itemList );
 

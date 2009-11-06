@@ -100,3 +100,12 @@ QDomElement QgsSingleSymbolRendererV2::save(QDomDocument& doc)
 
   return rendererElem;
 }
+
+QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems(QSize iconSize)
+{
+  QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap(mSymbol, iconSize);
+
+  QgsLegendSymbologyList lst;
+  lst << qMakePair( QString(), pix );
+  return lst;
+}

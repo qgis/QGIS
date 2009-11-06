@@ -281,6 +281,13 @@ QDomElement QgsFeatureRendererV2::save(QDomDocument& doc)
   return doc.createElement(RENDERER_TAG_NAME);
 }
 
+QgsLegendSymbologyList QgsFeatureRendererV2::legendSymbologyItems(QSize iconSize)
+{
+  // empty list by default
+  return QgsLegendSymbologyList();
+}
+
+
 int QgsFeatureRendererV2::fieldNameIndex( const QgsFieldMap& fields, const QString& fieldName )
 {
   for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )

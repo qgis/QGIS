@@ -146,6 +146,11 @@ QPointF QgsSymbolLayerV2Utils::decodePoint(QString str)
 
 QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon(QgsSymbolV2* symbol, QSize size)
 {
+  return QIcon(symbolPreviewPixmap(symbol, size));
+}
+
+QPixmap QgsSymbolLayerV2Utils::symbolPreviewPixmap(QgsSymbolV2* symbol, QSize size)
+{
   QPixmap pixmap(size);
   QPainter painter;
   painter.begin(&pixmap);
@@ -153,8 +158,9 @@ QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon(QgsSymbolV2* symbol, QSize size)
   painter.eraseRect(QRect(QPoint(0,0),size));
   symbol->drawPreviewIcon(&painter, size);
   painter.end();
-  return QIcon(pixmap);
+  return pixmap;
 }
+
 
 QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon(QgsSymbolLayerV2* layer, QSize size)
 {

@@ -1,6 +1,8 @@
 
 typedef QList<QgsSymbolV2*> QgsSymbolV2List;
 
+typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
+
 ///////////////
 
 /*
@@ -60,6 +62,15 @@ public:
   bool usingSymbolLevels() const;
   void setUsingSymbolLevels(bool usingSymbolLevels);
 
+  //! create a renderer from XML element
+  static QgsFeatureRendererV2* load(QDomElement& symbologyElem);
+
+  //! store renderer info to XML element
+  virtual QDomElement save(QDomDocument& doc);
+
+  //! return a list of symbology items for the legend
+  virtual QgsLegendSymbologyList legendSymbologyItems(QSize iconSize);
+
 protected:
   QgsFeatureRendererV2(QString type);
 
@@ -93,6 +104,16 @@ public:
   virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone() /Factory/;
+
+  //! create a renderer from XML element
+  static QgsFeatureRendererV2* load(QDomElement& symbologyElem) /Factory/;
+
+  //! store renderer info to XML element
+  virtual QDomElement save(QDomDocument& doc);
+
+  //! return a list of symbology items for the legend
+  virtual QgsLegendSymbologyList legendSymbologyItems(QSize iconSize);
+
 };
 
 //////////
@@ -159,8 +180,23 @@ public:
   bool deleteCategory(int catIndex);
   void deleteAllCategories();
   
+  //! create a renderer from XML element
+  static QgsFeatureRendererV2* load(QDomElement& symbologyElem) /Factory/;
+
+  //! store renderer info to XML element
+  virtual QDomElement save(QDomDocument& doc);
+
+  //! return a list of symbology items for the legend
+  virtual QgsLegendSymbologyList legendSymbologyItems(QSize iconSize);
+
   QString classAttribute() const;
   void setClassAttribute(QString attr);
+
+  QgsSymbolV2* sourceSymbol();
+  void setSourceSymbol(QgsSymbolV2* sym /Transfer/);
+
+  QgsVectorColorRampV2* sourceColorRamp();
+  void setSourceColorRamp(QgsVectorColorRampV2* ramp /Transfer/);
 
 protected:
   
@@ -243,6 +279,21 @@ public:
                   Mode mode,
                   QgsSymbolV2* symbol,
                   QgsVectorColorRampV2* ramp);
+
+  //! create a renderer from XML element
+  static QgsFeatureRendererV2* load(QDomElement& symbologyElem) /Factory/;
+
+  //! store renderer info to XML element
+  virtual QDomElement save(QDomDocument& doc);
+
+  //! return a list of symbology items for the legend
+  virtual QgsLegendSymbologyList legendSymbologyItems(QSize iconSize);
+
+  QgsSymbolV2* sourceSymbol();
+  void setSourceSymbol(QgsSymbolV2* sym /Transfer/);
+
+  QgsVectorColorRampV2* sourceColorRamp();
+  void setSourceColorRamp(QgsVectorColorRampV2* ramp /Transfer/);
 
 protected:
   QgsSymbolV2* symbolForValue(double value);
