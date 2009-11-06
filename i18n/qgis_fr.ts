@@ -5961,7 +5961,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="636"/>
         <source>Cut Features</source>
-        <translation>Couper Entités</translation>
+        <translation>Couper l&apos;entité</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="638"/>
@@ -5971,7 +5971,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="642"/>
         <source>Copy Features</source>
-        <translation>Copier Entités</translation>
+        <translation>Copier l&apos;entités</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="644"/>
@@ -5981,7 +5981,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="648"/>
         <source>Paste Features</source>
-        <translation>Coller Entités</translation>
+        <translation>Coller l&apos;entités</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="650"/>
@@ -6060,17 +6060,17 @@ Compilé avec Qt </translation>
         <location filename="../src/app/qgisapp.cpp" line="714"/>
         <location filename="../src/app/qgisapp.cpp" line="716"/>
         <source>Add Ring</source>
-        <translation>Ajouter Anneau</translation>
+        <translation>Ajouter l&apos;anneau</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="720"/>
         <source>Add Island</source>
-        <translation>Ajouter Île</translation>
+        <translation>Ajouter une île</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="722"/>
         <source>Add Island to multipolygon</source>
-        <translation>Ajouter une île au mutlipolygone</translation>
+        <translation>Ajouter une île au multipolygone</translation>
     </message>
     <message>
         <source>Toolbar Visibility...</source>
@@ -6123,7 +6123,7 @@ Compilé avec Qt </translation>
         <location filename="../src/app/qgisapp.cpp" line="672"/>
         <location filename="../src/app/qgisapp.cpp" line="674"/>
         <source>Move Feature</source>
-        <translation>Déplacer entités</translation>
+        <translation>Déplacer l&apos;entité</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="684"/>
@@ -32228,7 +32228,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation>Outils d&apos;&amp;analyse</translation>
+        <translation>&amp;Analyse</translation>
     </message>
     <message>
         <source>Distance matrix</source>
@@ -32288,7 +32288,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation>Outils de &amp;géotraitement</translation>
+        <translation>&amp;Géotraitement</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
@@ -32324,7 +32324,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation>Outils géométriqu&amp;e</translation>
+        <translation>Géométri&amp;e</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
@@ -32360,7 +32360,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation>Outil de gestion de &amp;données</translation>
+        <translation>Gestion de &amp;données</translation>
     </message>
     <message>
         <source>Export to new projection</source>
@@ -32390,7 +32390,7 @@ L&apos;extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation>Outils de &amp;recherche</translation>
+        <translation>&amp;Recherche</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
