@@ -4604,11 +4604,15 @@ void QgisApp::toggleEditing()
 void QgisApp::toggleEditing( QgsMapLayer *layer )
 {
   if ( !layer )
+  {
     return;
+  }
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
+  {
     return;
+  }
 
   if ( !vlayer->isEditable() )
   {
