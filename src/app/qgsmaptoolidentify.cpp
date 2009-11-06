@@ -72,6 +72,10 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
 
+  if ( !mResults )
+  {
+    mResults = new QgsIdentifyResults( mCanvas, mCanvas->window() );
+  }
   mResults->clear();
 
   QSettings settings;
@@ -147,6 +151,10 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
 
 void QgsMapToolIdentify::activate()
 {
+  if ( !mResults ) 
+  {
+    mResults = new QgsIdentifyResults( mCanvas, mCanvas->window() );
+  }
   mResults->activate();
   QgsMapTool::activate();
 }
