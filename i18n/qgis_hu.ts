@@ -226,14 +226,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS modul sablon</translation>
+        <translation type="obsolete">QGIS modul sablon</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>Modul sablon</translation>
+        <translation type="obsolete">Modul sablon</translation>
     </message>
 </context>
 <context>

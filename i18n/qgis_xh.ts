@@ -52,17 +52,6 @@
     </message>
 </context>
 <context>
-    <name>CoordinateCaptureGuiBase</name>
-    <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin Template</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Dialog</name>
     <message>
         <source>fTools About</source>

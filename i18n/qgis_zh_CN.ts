@@ -445,11 +445,11 @@
     <name>CoordinateCaptureGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished">QGIS插件模板</translation>
+        <translation type="obsolete">QGIS插件模板</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation type="unfinished">插件模板</translation>
+        <translation type="obsolete">插件模板</translation>
     </message>
 </context>
 <context>

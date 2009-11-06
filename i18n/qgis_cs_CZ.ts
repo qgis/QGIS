@@ -562,14 +562,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS šablona zásuvného modulu</translation>
+        <translation type="obsolete">QGIS šablona zásuvného modulu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>Šablona zásuvného modulu</translation>
+        <translation type="obsolete">Šablona zásuvného modulu</translation>
     </message>
 </context>
 <context>

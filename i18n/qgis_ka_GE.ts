@@ -258,14 +258,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS-ის ჩანართის შაბლონი</translation>
+        <translation type="obsolete">QGIS-ის ჩანართის შაბლონი</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>ჩანართის შაბლონი</translation>
+        <translation type="obsolete">ჩანართის შაბლონი</translation>
     </message>
 </context>
 <context>

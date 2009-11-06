@@ -256,14 +256,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>Modelo de Plugin para o QGIS</translation>
+        <translation type="obsolete">Modelo de Plugin para o QGIS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>Modelo do Plugin</translation>
+        <translation type="obsolete">Modelo do Plugin</translation>
     </message>
 </context>
 <context>

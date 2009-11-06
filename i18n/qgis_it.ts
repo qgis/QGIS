@@ -551,14 +551,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>Modello plugin QGIS</translation>
+        <translation type="obsolete">Modello plugin QGIS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>Modello plugin</translation>
+        <translation type="obsolete">Modello plugin</translation>
     </message>
 </context>
 <context>

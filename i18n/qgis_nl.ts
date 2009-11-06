@@ -289,14 +289,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS Plugin Template</translation>
+        <translation type="obsolete">QGIS Plugin Template</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>Plugin Template</translation>
+        <translation type="obsolete">Plugin Template</translation>
     </message>
 </context>
 <context>
