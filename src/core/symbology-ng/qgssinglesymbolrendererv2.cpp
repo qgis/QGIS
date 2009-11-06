@@ -8,7 +8,7 @@
 #include <QDomElement>
 
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2(QgsSymbolV2* symbol)
-  : QgsFeatureRendererV2(RendererSingleSymbol)
+  : QgsFeatureRendererV2("singleSymbol")
 {
   mSymbol = symbol;
 }

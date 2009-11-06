@@ -64,7 +64,7 @@ QString QgsRendererCategoryV2::dump()
 ///////////////////
 
 QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2(QString attrName, QgsCategoryList categories)
-  : QgsFeatureRendererV2(RendererCategorizedSymbol),
+  : QgsFeatureRendererV2("categorizedSymbol"),
     mAttrName(attrName),
     mCategories(categories),
     mSourceSymbol(NULL),

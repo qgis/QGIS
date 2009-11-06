@@ -402,6 +402,7 @@ static QPixmap _symbolPreviewPixmap(QgsSymbolV2* sym, QSize iconSize)
   QPixmap pix(iconSize);
   pix.fill(Qt::white);
   p.begin(&pix);
+  p.setRenderHint(QPainter::Antialiasing);
   sym->drawPreviewIcon(&p, iconSize);
   p.end();
   return pix;
@@ -417,53 +418,49 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
   bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
 
   QgsFeatureRendererV2* renderer = layer->rendererV2();
-  switch (renderer->type())
+  QString rendererType = renderer->type();
+  if (rendererType == "singleSymbol")
   {
-    case QgsFeatureRendererV2::RendererSingleSymbol:
-      {
-        QgsSingleSymbolRendererV2* r = static_cast<QgsSingleSymbolRendererV2*>(renderer);
-        QPixmap pix = _symbolPreviewPixmap(r->symbol(), iconSize);
+   QgsSingleSymbolRendererV2* r = static_cast<QgsSingleSymbolRendererV2*>(renderer);
+    QPixmap pix = _symbolPreviewPixmap(r->symbol(), iconSize);
 
-        itemList.push_back( std::make_pair( "", pix ) );
-      }
-      break;
-    case QgsFeatureRendererV2::RendererCategorizedSymbol:
-      {
-        QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>(renderer);
-        if (showClassifiers)
-        {
-          itemList.push_back( std::make_pair( r->classAttribute(), QPixmap() ) );
-        }
+    itemList.push_back( std::make_pair( "", pix ) );
+  }
+  else if (rendererType == "categorizedSymbol")
+  {
+    QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>(renderer);
+    if (showClassifiers)
+    {
+      itemList.push_back( std::make_pair( r->classAttribute(), QPixmap() ) );
+    }
 
-        int count = r->categories().count();
-        for (int i = 0; i < count; i++)
-        {
-          const QgsRendererCategoryV2& cat = r->categories()[i];
-          QPixmap pix = _symbolPreviewPixmap( cat.symbol(), iconSize );
-          itemList.push_back( std::make_pair( cat.label(), pix ) );
-        }
-      }
-      break;
-    case QgsFeatureRendererV2::RendererGraduatedSymbol:
-      {
-        QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>(renderer);
-        if (showClassifiers)
-        {
-          itemList.push_back( std::make_pair( r->classAttribute(), QPixmap() ) );
-        }
+    int count = r->categories().count();
+    for (int i = 0; i < count; i++)
+    {
+      const QgsRendererCategoryV2& cat = r->categories()[i];
+      QPixmap pix = _symbolPreviewPixmap( cat.symbol(), iconSize );
+      itemList.push_back( std::make_pair( cat.label(), pix ) );
+    }
+  }
+  else if (rendererType == "graduatedSymbol")
+  {
+    QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>(renderer);
+    if (showClassifiers)
+    {
+      itemList.push_back( std::make_pair( r->classAttribute(), QPixmap() ) );
+    }
 
-        int count = r->ranges().count();
-        for (int i = 0; i < count; i++)
-        {
-          const QgsRendererRangeV2& range = r->ranges()[i];
-          QPixmap pix = _symbolPreviewPixmap( range.symbol(), iconSize );
-          itemList.push_back( std::make_pair( range.label(), pix ) );
-        }
-      }
-      break;
-    default:
-      // nothing for unknown renderers
-      break;
+    int count = r->ranges().count();
+    for (int i = 0; i < count; i++)
+    {
+      const QgsRendererRangeV2& range = r->ranges()[i];
+      QPixmap pix = _symbolPreviewPixmap( range.symbol(), iconSize );
+      itemList.push_back( std::make_pair( range.label(), pix ) );
+    }
+  }
+  else
+  {
+    // nothing for unknown renderers
   }
 
   changeSymbologySettings( layer, itemList );

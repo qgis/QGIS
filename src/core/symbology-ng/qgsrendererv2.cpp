@@ -5,9 +5,7 @@
 
 #include "qgssinglesymbolrendererv2.h" // for default renderer
 
-// TODO: to be removed once renderer registry is in place
-#include "qgscategorizedsymbolrendererv2.h"
-#include "qgsgraduatedsymbolrendererv2.h"
+#include "qgsrendererv2registry.h"
 
 #include "qgsrendercontext.h"
 #include "qgsgeometry.h"
@@ -121,7 +119,7 @@ static unsigned char* _getPolygon(QPolygonF& pts, QList<QPolygonF>& holes, const
 }
 
 
-QgsFeatureRendererV2::QgsFeatureRendererV2(RendererType type)
+QgsFeatureRendererV2::QgsFeatureRendererV2(QString type)
   : mType(type), mUsingSymbolLevels(false)
 {
 }
@@ -268,22 +266,13 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load(QDomElement& element)
   // load renderer
   QString rendererType = element.attribute("type");
 
-  // TODO: use renderer registry
-  if (rendererType == "singleSymbol")
-  {
-    return QgsSingleSymbolRendererV2::create(element);
-  }
-  else if (rendererType == "categorizedSymbol")
-  {
-    return QgsCategorizedSymbolRendererV2::create(element);
-  }
-  else if (rendererType == "graduatedSymbol")
-  {
-    return QgsGraduatedSymbolRendererV2::create(element);
-  }
+  QgsRendererV2CreateFunc pfCreate = QgsRendererV2Registry::instance()->rendererCreateFunction(rendererType);
 
-  // unknown renderer type
-  return NULL;
+  // unknown renderer type?
+  if (pfCreate == NULL)
+    return NULL;
+
+  return pfCreate(element);
 }
 
 QDomElement QgsFeatureRendererV2::save(QDomDocument& doc)

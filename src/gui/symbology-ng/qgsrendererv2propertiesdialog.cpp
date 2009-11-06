@@ -54,7 +54,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   connect(radGraduated, SIGNAL(clicked()), this, SLOT(updateRenderer()));
   
   // simple symbol page
-  if (mRenderer->type() == QgsFeatureRendererV2::RendererSingleSymbol)
+  if (mRenderer->type() == "singleSymbol")
     mSingleSymbol = ((QgsSingleSymbolRendererV2*)mRenderer)->symbol()->clone();
   else
     mSingleSymbol = QgsSymbolV2::defaultSymbol(mLayer->geometryType());
@@ -127,19 +127,19 @@ void QgsRendererV2PropertiesDialog::onOK()
 
 QgsSingleSymbolRendererV2* QgsRendererV2PropertiesDialog::rendererSingle()
 {
-  Q_ASSERT(mRenderer != NULL && mRenderer->type() == QgsFeatureRendererV2::RendererSingleSymbol);
+  Q_ASSERT(mRenderer != NULL && mRenderer->type() == "singleSymbol");
   return static_cast<QgsSingleSymbolRendererV2*>(mRenderer);
 }
 
 QgsCategorizedSymbolRendererV2* QgsRendererV2PropertiesDialog::rendererCategorized()
 {
-  Q_ASSERT(mRenderer != NULL && mRenderer->type() == QgsFeatureRendererV2::RendererCategorizedSymbol);
+  Q_ASSERT(mRenderer != NULL && mRenderer->type() == "categorizedSymbol");
   return static_cast<QgsCategorizedSymbolRendererV2*>(mRenderer);
 }
 
 QgsGraduatedSymbolRendererV2* QgsRendererV2PropertiesDialog::rendererGraduated()
 {
-  Q_ASSERT(mRenderer != NULL && mRenderer->type() == QgsFeatureRendererV2::RendererGraduatedSymbol);
+  Q_ASSERT(mRenderer != NULL && mRenderer->type() == "graduatedSymbol");
   return static_cast<QgsGraduatedSymbolRendererV2*>(mRenderer);
 }
 
@@ -167,101 +167,93 @@ void QgsRendererV2PropertiesDialog::updateRenderer()
 
 void QgsRendererV2PropertiesDialog::updateUiFromRenderer()
 {
-  switch (mRenderer->type())
+  QString rendererType = mRenderer->type();
+
+  if (rendererType == "singleSymbol")
   {
-    case QgsFeatureRendererV2::RendererSingleSymbol:
-      radSingleSymbol->setChecked(true);
-    
-      stackedWidget->setCurrentWidget(pageSingleSymbol);
-      //updateSingleSymbolIcon();
-      break;
-      
-    case QgsFeatureRendererV2::RendererCategorizedSymbol:
-      radCategorized->setChecked(true);
-    
-      stackedWidget->setCurrentWidget(pageCategorized);
+    radSingleSymbol->setChecked(true);
+
+    stackedWidget->setCurrentWidget(pageSingleSymbol);
+    //updateSingleSymbolIcon();
+  }
+  else if (rendererType == "categorizedSymbol")
+  {
+    radCategorized->setChecked(true);
+
+    stackedWidget->setCurrentWidget(pageCategorized);
+    updateCategorizedSymbolIcon();
+    populateCategories();
+
+    QgsCategorizedSymbolRendererV2* r = rendererCategorized();
+
+    // set column
+    disconnect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
+    QString attrName = r->classAttribute();
+    int idx = cboCategorizedColumn->findText(attrName, Qt::MatchExactly);
+    cboCategorizedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
+    connect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
+
+    // set source symbol
+    if (r->sourceSymbol())
+    {
+      delete mCategorizedSymbol;
+      mCategorizedSymbol = r->sourceSymbol()->clone();
       updateCategorizedSymbolIcon();
-      populateCategories();
+    }
 
-      {
-        QgsCategorizedSymbolRendererV2* r = rendererCategorized();
+    // set source color ramp
+    if (r->sourceColorRamp())
+    {
+      QSize rampIconSize(50,16);
+      QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon(r->sourceColorRamp(), rampIconSize);
+      if (cboCategorizedColorRamp->itemText(0) == "[source]")
+        cboCategorizedColorRamp->setItemIcon(0, icon);
+      else
+        cboCategorizedColorRamp->insertItem(0, icon, "[source]");
+      cboCategorizedColorRamp->setCurrentIndex(0);
+    }
+  }
+  else if (rendererType == "graduatedSymbol")
+  {
+    radGraduated->setChecked(true);
 
-        // set column
-        disconnect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
-        QString attrName = r->classAttribute();
-        int idx = cboCategorizedColumn->findText(attrName, Qt::MatchExactly);
-        cboCategorizedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
-        connect(cboCategorizedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(categoryColumnChanged()));
+    stackedWidget->setCurrentWidget(pageGraduated);
+    updateGraduatedSymbolIcon();
+    populateRanges();
 
-        // set source symbol
-        if (r->sourceSymbol())
-        {
-          delete mCategorizedSymbol;
-          mCategorizedSymbol = r->sourceSymbol()->clone();
-          updateCategorizedSymbolIcon();
-        }
+    // update UI from the graduated renderer (update combo boxes, view)
+    QgsGraduatedSymbolRendererV2* r = rendererGraduated();
+    if (r->mode() < cboGraduatedMode->count())
+      cboGraduatedMode->setCurrentIndex( r->mode() );
+    if (r->ranges().count())
+      spinGraduatedClasses->setValue( r->ranges().count() );
 
-        // set source color ramp
-        if (r->sourceColorRamp())
-        {
-          QSize rampIconSize(50,16);
-          QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon(r->sourceColorRamp(), rampIconSize);
-          if (cboCategorizedColorRamp->itemText(0) == "[source]")
-            cboCategorizedColorRamp->setItemIcon(0, icon);
-          else
-            cboCategorizedColorRamp->insertItem(0, icon, "[source]");
-          cboCategorizedColorRamp->setCurrentIndex(0);
-        }
-      }
+    // set column
+    //disconnect(cboGraduatedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(graduatedColumnChanged()));
+    QString attrName = r->classAttribute();
+    int idx = cboGraduatedColumn->findText(attrName, Qt::MatchExactly);
+    cboGraduatedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
+    //connect(cboGraduatedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(graduatedColumnChanged()));
 
-      break;
-  
-    case QgsFeatureRendererV2::RendererGraduatedSymbol:
-      radGraduated->setChecked(true);
-      
-      stackedWidget->setCurrentWidget(pageGraduated);
+    // set source symbol
+    if (r->sourceSymbol())
+    {
+      delete mGraduatedSymbol;
+      mGraduatedSymbol = r->sourceSymbol()->clone();
       updateGraduatedSymbolIcon();
-      populateRanges();
-      
-      {
-        // update UI from the graduated renderer (update combo boxes, view)
-        QgsGraduatedSymbolRendererV2* r = rendererGraduated();
-        if (r->mode() < cboGraduatedMode->count())
-          cboGraduatedMode->setCurrentIndex( r->mode() );
-        if (r->ranges().count())
-          spinGraduatedClasses->setValue( r->ranges().count() );
-        
-        // set column
-        //disconnect(cboGraduatedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(graduatedColumnChanged()));
-        QString attrName = r->classAttribute();
-        int idx = cboGraduatedColumn->findText(attrName, Qt::MatchExactly);
-        cboGraduatedColumn->setCurrentIndex(idx >= 0 ? idx : 0);
-        //connect(cboGraduatedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(graduatedColumnChanged()));
+    }
 
-        // set source symbol
-        if (r->sourceSymbol())
-        {
-          delete mGraduatedSymbol;
-          mGraduatedSymbol = r->sourceSymbol()->clone();
-          updateGraduatedSymbolIcon();
-        }
-
-        // set source color ramp
-        if (r->sourceColorRamp())
-        {
-          QSize rampIconSize(50,16);
-          QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon(r->sourceColorRamp(), rampIconSize);
-          if (cboGraduatedColorRamp->itemText(0) == "[source]")
-            cboGraduatedColorRamp->setItemIcon(0, icon);
-          else
-            cboGraduatedColorRamp->insertItem(0, icon, "[source]");
-          cboGraduatedColorRamp->setCurrentIndex(0);
-        }
-      }
-      break;
-      
-    default: // custom renderer
-      break;
+    // set source color ramp
+    if (r->sourceColorRamp())
+    {
+      QSize rampIconSize(50,16);
+      QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon(r->sourceColorRamp(), rampIconSize);
+      if (cboGraduatedColorRamp->itemText(0) == "[source]")
+        cboGraduatedColorRamp->setItemIcon(0, icon);
+      else
+        cboGraduatedColorRamp->insertItem(0, icon, "[source]");
+      cboGraduatedColorRamp->setCurrentIndex(0);
+    }
   }
 }
 

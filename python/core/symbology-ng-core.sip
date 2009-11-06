@@ -34,18 +34,10 @@ class QgsFeatureRendererV2
 
 public:
 
-  enum RendererType
-  {
-    RendererSingleSymbol,
-    RendererCategorizedSymbol,
-    RendererGraduatedSymbol
-    // TODO: user type?
-  };
-
   //! return a new renderer - used by default in vector layers
   static QgsFeatureRendererV2* defaultRenderer(QGis::GeometryType geomType) /Factory/;
 
-  RendererType type() const;
+  QString type() const;
 
 	virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature)=0;
 	
@@ -69,7 +61,7 @@ public:
   void setUsingSymbolLevels(bool usingSymbolLevels);
 
 protected:
-  QgsFeatureRendererV2(RendererType type);
+  QgsFeatureRendererV2(QString type);
 
 };
 

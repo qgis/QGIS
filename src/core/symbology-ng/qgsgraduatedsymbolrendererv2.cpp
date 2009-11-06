@@ -69,7 +69,7 @@ QString QgsRendererRangeV2::dump()
 
 
 QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2(QString attrName, QgsRangeList ranges)
-  : QgsFeatureRendererV2(RendererGraduatedSymbol),
+  : QgsFeatureRendererV2("graduatedSymbol"),
     mAttrName(attrName),
     mRanges(ranges),
     mMode(Custom),
