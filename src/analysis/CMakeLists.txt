@@ -25,6 +25,7 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsaspectfilter.cpp
   raster/qgstotalcurvaturefilter.cpp
   vector/qgsgeometryanalyzer.cpp
+  vector/qgszonalstatistics.cpp
 )
 
 SET(QGIS_ANALYSIS_MOC_HDRS
@@ -93,7 +94,7 @@ INSTALL(TARGETS qgis_analysis
 
 # Added by Tim to install headers
 
-SET(QGIS_ANALYSIS_HDRS vector/qgsgeometryanalyzer.h
+SET(QGIS_ANALYSIS_HDRS vector/qgsgeometryanalyzer.h vector/qgszonalstatistics.h
 )
 
 INSTALL(CODE "MESSAGE(\"Installing ANALYSIS headers...\")")
