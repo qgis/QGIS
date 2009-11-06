@@ -24,6 +24,7 @@
 #include "qgsdistancearea.h"
 
 #include <QObject>
+#include <QPointer>
 
 class QgsIdentifyResults;
 class QgsMapLayer;
@@ -71,7 +72,7 @@ class QgsMapToolIdentify : public QgsMapTool
     bool identifyVectorLayer( QgsVectorLayer *layer, int x, int y );
 
     //! Pointer to the identify results dialog for name/value pairs
-    QgsIdentifyResults *mResults;
+    QPointer<QgsIdentifyResults> mResults;
 
     //! Private helper
     void convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea );
