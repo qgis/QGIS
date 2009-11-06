@@ -514,15 +514,15 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
       theMenu.addAction( toggleEditingAction );
     }
 
-    QgsVectorLayer* theVectorLayer = qobject_cast<QgsVectorLayer *>( firstLayer );
+    QgsVectorLayer* mypVectorLayer = qobject_cast<QgsVectorLayer *>( firstLayer );
 
     if ( files.size() != 1 )
     {
       toggleEditingAction->setEnabled( false );
     }
-    if ( theVectorLayer )
+    if ( mypVectorLayer )
     {
-      toggleEditingAction->setChecked( theVectorLayer->isEditable() );
+      toggleEditingAction->setChecked( mypVectorLayer->isEditable() );
     }
 
     // save as shapefile
@@ -534,7 +534,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
 
     // save selection as shapefile
     QAction* saveSelectionAction = theMenu.addAction( tr( "Save selection as shapefile..." ), this, SLOT( saveSelectionAsShapefile() ) );
-    if ( files.size() != 1 || theVectorLayer->selectedFeatureCount() == 0 )
+    if ( files.size() != 1 || mypVectorLayer->selectedFeatureCount() == 0 )
     {
       saveSelectionAction->setEnabled( false );
     }
