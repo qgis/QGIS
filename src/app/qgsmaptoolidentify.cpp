@@ -144,7 +144,16 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
   }
   else
   {
-    mResults->hide();
+    QSettings mySettings;
+    bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
+    if ( !myDockFlag )
+    {
+      mResults->hide();
+    }
+    else
+    {
+      mResults->clear();
+    }
     QMessageBox::information( 0, tr( "Identify results" ), tr( "No features at this position found." ) );
   }
 }
