@@ -23461,7 +23461,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="160"/>
         <source>edit widget</source>
-        <translation>edytuj widżet</translation>
+        <translation type="unfinished">rodzaj pola</translation>
     </message>
     <message>
         <source>values</source>
