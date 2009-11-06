@@ -60,7 +60,13 @@ const int AUTOSCROLL_MARGIN = 16;
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend( QWidget * parent, const char *name )
-    : QTreeWidget( parent ), mMousePressedFlag( false ), mItemBeingMoved( 0 ), mShowLegendLayerFiles( false ), mToggleEditingAction( 0 ), mMapCanvas( 0 ), mMinimumIconSize( 20, 20 )
+    : QTreeWidget( parent ), 
+    mMousePressedFlag( false ), 
+    mItemBeingMoved( 0 ),
+    mShowLegendLayerFiles( false ), 
+    mToggleEditingAction( 0 ), 
+    mMapCanvas( 0 ), 
+    mMinimumIconSize( 20, 20 )
 {
   connect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
            this, SLOT( handleItemChange( QTreeWidgetItem*, int ) ) );
