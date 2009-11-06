@@ -449,11 +449,11 @@
     <name>CoordinateCaptureGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished">QGIS附加元件範本</translation>
+        <translation type="obsolete">QGIS附加元件範本</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation type="unfinished">附加元件範本</translation>
+        <translation type="obsolete">附加元件範本</translation>
     </message>
 </context>
 <context>

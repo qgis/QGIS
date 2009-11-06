@@ -141,14 +141,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>Plantilla de complementos de QGIS</translation>
+        <translation type="obsolete">Plantilla de complementos de QGIS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>Plantilla de complementos</translation>
+        <translation type="obsolete">Plantilla de complementos</translation>
     </message>
 </context>
 <context>

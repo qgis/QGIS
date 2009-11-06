@@ -260,14 +260,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished">Templet Plugin QGIS</translation>
+        <translation type="obsolete">Templet Plugin QGIS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation type="unfinished">Templet Plugin</translation>
+        <translation type="obsolete">Templet Plugin</translation>
     </message>
 </context>
 <context>

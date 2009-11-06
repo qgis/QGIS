@@ -455,14 +455,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished">QGIS Өргөтгөлийн Загвар</translation>
+        <translation type="obsolete">QGIS Өргөтгөлийн Загвар</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation type="unfinished">Өргөтгөлийн Загвар</translation>
+        <translation type="obsolete">Өргөтгөлийн Загвар</translation>
     </message>
 </context>
 <context>

@@ -452,14 +452,12 @@ Măsurare suprafaţă</translation>
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished">Matriţă pentru QGIS Plugin</translation>
+        <translation type="obsolete">Matriţă pentru QGIS Plugin</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation type="unfinished">Matriţă Plugin</translation>
+        <translation type="obsolete">Matriţă Plugin</translation>
     </message>
 </context>
 <context>

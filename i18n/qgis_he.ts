@@ -73,19 +73,6 @@
     </message>
 </context>
 <context>
-    <name>CoordinateCaptureGuiBase</name>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
-        <source>QGIS Plugin Template</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
-        <source>Plugin Template</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Dialog</name>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="13"/>

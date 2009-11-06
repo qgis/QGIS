@@ -481,11 +481,11 @@
     <name>CoordinateCaptureGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation>Mẫu phần mở rộng của QGIS</translation>
+        <translation type="obsolete">Mẫu phần mở rộng của QGIS</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation>Mẫu phần mở rộng</translation>
+        <translation type="obsolete">Mẫu phần mở rộng</translation>
     </message>
 </context>
 <context>

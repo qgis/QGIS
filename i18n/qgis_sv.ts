@@ -540,14 +540,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS mall för insticksprogram</translation>
+        <translation type="obsolete">QGIS mall för insticksprogram</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>Mall för insticksprogram</translation>
+        <translation type="obsolete">Mall för insticksprogram</translation>
     </message>
 </context>
 <context>

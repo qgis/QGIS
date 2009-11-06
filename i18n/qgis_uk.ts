@@ -67,14 +67,12 @@
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>Шаблон плагіну QGIS</translation>
+        <translation type="obsolete">Шаблон плагіну QGIS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecaptureguibase.ui" line="49"/>
         <source>Plugin Template</source>
-        <translation>Шаблон плагіну</translation>
+        <translation type="obsolete">Шаблон плагіну</translation>
     </message>
 </context>
 <context>
