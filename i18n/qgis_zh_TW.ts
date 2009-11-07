@@ -1777,19 +1777,19 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>X:</source>
-        <translation>X:</translation>
+        <translation type="obsolete">X:</translation>
     </message>
     <message>
         <source>Y:</source>
-        <translation>Y:</translation>
+        <translation type="obsolete">Y:</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>確定(&amp;O)</translation>
+        <translation type="obsolete">確定(&amp;O)</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>取消(&amp;C)</translation>
+        <translation type="obsolete">取消(&amp;C)</translation>
     </message>
     <message>
         <source>Enter X and Y coordinates which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
@@ -1798,6 +1798,14 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <source> from map canvas</source>
         <translation>從地圖上取得座標</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1940,15 +1948,15 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">確定</translation>
+        <translation type="obsolete">確定</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished">連接資訊</translation>
+        <translation type="obsolete">連接資訊</translation>
     </message>
     <message>
         <source>Name</source>
@@ -7079,11 +7087,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name:</source>
-        <translation>名稱:</translation>
+        <translation type="obsolete">名稱:</translation>
     </message>
     <message>
         <source>Type:</source>
-        <translation>類型:</translation>
+        <translation type="obsolete">類型:</translation>
     </message>
     <message>
         <source>OK</source>
@@ -7095,7 +7103,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Comment:</source>
-        <translation>註解:</translation>
+        <translation type="obsolete">註解:</translation>
     </message>
     <message>
         <source>Width</source>
@@ -7104,6 +7112,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Precision</source>
         <translation>精確度</translation>
+    </message>
+    <message>
+        <source>N&amp;ame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comment</source>
+        <translation type="unfinished">註解</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">類型</translation>
     </message>
 </context>
 <context>
@@ -8698,7 +8718,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Frame</source>
-        <translation>顯示框線</translation>
+        <translation type="obsolete">顯示框線</translation>
     </message>
     <message>
         <source>Position...</source>
@@ -8715,6 +8735,10 @@ Error was:%2</source>
     <message>
         <source>Outline width</source>
         <translation type="unfinished">框線寬度</translation>
+    </message>
+    <message>
+        <source>Show frame</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9076,10 +9100,6 @@ Error was:%2</source>
         <translation type="obsolete">比例:</translation>
     </message>
     <message>
-        <source>1:</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Map extent</source>
         <translation>地圖範圍</translation>
     </message>
@@ -9125,7 +9145,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Rotation:</source>
-        <translation type="unfinished">旋轉:</translation>
+        <translation type="obsolete">旋轉:</translation>
     </message>
     <message>
         <source>X min</source>
@@ -9152,59 +9172,11 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Show composer grid widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Grid type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cross width:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Interval X:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Interval Y:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Offset X:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Offset Y:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Line width:</source>
-        <translation type="unfinished">線寬:</translation>
-    </message>
-    <message>
-        <source>Line color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">線寬:</translation>
     </message>
     <message>
         <source>Draw annotation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Annotation position:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Annotation direction:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Distance to map frame:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -9213,6 +9185,58 @@ Error was:%2</source>
     </message>
     <message>
         <source>Coordinate precision</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show grid?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid &amp;type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interval X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annotation position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annotation direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance to map frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interval Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cross width</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9868,31 +9892,55 @@ Error was:%2</source>
     </message>
     <message>
         <source>Grid resolution:</source>
-        <translation>格線解析度:</translation>
+        <translation type="obsolete">格線解析度:</translation>
     </message>
     <message>
         <source>Offset x:</source>
-        <translation>x偏移量:</translation>
+        <translation type="obsolete">x偏移量:</translation>
     </message>
     <message>
         <source>Offset y:</source>
-        <translation>y偏移量:</translation>
+        <translation type="obsolete">y偏移量:</translation>
     </message>
     <message>
         <source>Pen width:</source>
-        <translation>筆寬:</translation>
+        <translation type="obsolete">筆寬:</translation>
     </message>
     <message>
         <source>Grid color:</source>
-        <translation>格線顏色:</translation>
+        <translation type="obsolete">格線顏色:</translation>
     </message>
     <message>
         <source>Grid style:</source>
-        <translation>格線樣式:</translation>
+        <translation type="obsolete">格線樣式:</translation>
     </message>
     <message>
         <source>Print as raster</source>
         <translation>以影像列印</translation>
+    </message>
+    <message>
+        <source>Grid resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pen width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid style</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10200,7 +10248,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Placement</source>
-        <translation>位置</translation>
+        <translation type="obsolete">位置</translation>
     </message>
     <message>
         <source>Bottom Left</source>
@@ -10220,7 +10268,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Orientation</source>
-        <translation>方位</translation>
+        <translation type="obsolete">方位</translation>
     </message>
     <message>
         <source>Horizontal</source>
@@ -10256,7 +10304,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Color</source>
-        <translation>顏色</translation>
+        <translation type="obsolete">顏色</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -10279,27 +10327,32 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(注意: &amp;amp;copy; 是一個版權符號)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;b&amp;gt; Bold text &amp;lt;/b&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;i&amp;gt; Italics &amp;lt;/i&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Enable copyright label</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Enter your copyright label here:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Placement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Color</source>
+        <translation type="unfinished">顏色(&amp;C)</translation>
     </message>
 </context>
 <context>
@@ -10860,15 +10913,15 @@ has failed. The database said:
     </message>
     <message>
         <source>Description</source>
-        <translation>說明</translation>
+        <translation type="obsolete">說明</translation>
     </message>
     <message>
         <source>Select a delimited text file containing a header row and one or more rows of x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</source>
-        <translation>請選擇包含分隔符號的純文字檔(CSV)。第一列須為欄位名稱且有X與Y座標的點資料，此附加元件會協助您把資料加入點圖層!</translation>
+        <translation type="obsolete">請選擇包含分隔符號的純文字檔(CSV)。第一列須為欄位名稱且有X與Y座標的點資料，此附加元件會協助您把資料加入點圖層!</translation>
     </message>
     <message>
         <source>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.</source>
-        <translation>使用圖層名稱文字方塊可以設定新圖層的圖例名稱。使用分隔符號文字方塊來指定您純文字檔案中的分隔符號(例如：空白、逗號、Tab或者是Perl的正規化表示式)。當您指定分隔符號後請按下分析按鈕，之後選擇包含圖層X,Y值的欄位。</translation>
+        <translation type="obsolete">使用圖層名稱文字方塊可以設定新圖層的圖例名稱。使用分隔符號文字方塊來指定您純文字檔案中的分隔符號(例如：空白、逗號、Tab或者是Perl的正規化表示式)。當您指定分隔符號後請按下分析按鈕，之後選擇包含圖層X,Y值的欄位。</translation>
     </message>
 </context>
 <context>
@@ -10995,7 +11048,7 @@ has failed. The database said:
     </message>
     <message>
         <source>Delimited Text Layer</source>
-        <translation type="unfinished">CSV純文字檔圖層</translation>
+        <translation type="obsolete">CSV純文字檔圖層</translation>
     </message>
     <message>
         <source>Delimited text file</source>
@@ -11060,19 +11113,16 @@ has failed. The database said:
         <translation type="unfinished">正規化表示式(regular expression)</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Verdana&apos;;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delimiter type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Geometry</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimiter string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">類型</translation>
     </message>
 </context>
 <context>
@@ -11790,15 +11840,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Update device</source>
-        <translation>更新設備</translation>
+        <translation type="obsolete">更新設備</translation>
     </message>
     <message>
         <source>Delete device</source>
-        <translation>刪除設備</translation>
+        <translation type="obsolete">刪除設備</translation>
     </message>
     <message>
         <source>New device</source>
-        <translation>新設備</translation>
+        <translation type="obsolete">新設備</translation>
     </message>
     <message>
         <source>Close</source>
@@ -11810,23 +11860,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Waypoint download:</source>
-        <translation>路線點下載:</translation>
+        <translation type="obsolete">路線點下載:</translation>
     </message>
     <message>
         <source>Waypoint upload:</source>
-        <translation>路線點上載:</translation>
+        <translation type="obsolete">路線點上載:</translation>
     </message>
     <message>
         <source>Route download:</source>
-        <translation>路徑下載:</translation>
+        <translation type="obsolete">路徑下載:</translation>
     </message>
     <message>
         <source>Route upload:</source>
-        <translation>路徑上載:</translation>
+        <translation type="obsolete">路徑上載:</translation>
     </message>
     <message>
         <source>Track download:</source>
-        <translation>軌跡下載:</translation>
+        <translation type="obsolete">軌跡下載:</translation>
     </message>
     <message>
         <source>The command that is used to upload tracks to the device</source>
@@ -11834,7 +11884,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Track upload:</source>
-        <translation>軌跡上載:</translation>
+        <translation type="obsolete">軌跡上載:</translation>
     </message>
     <message>
         <source>The command that is used to download tracks from the device</source>
@@ -11861,10 +11911,51 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <source>Devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">刪除</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation type="unfinished">新增</translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation type="unfinished">更新</translation>
+    </message>
+    <message>
+        <source>Track download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Route upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waypoint download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Route download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Track upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waypoint upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=&quot; font-style:italic;&quot;&gt;%babel&lt;/span&gt; - the path to GPSBabel&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%in&lt;/span&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%out&lt;/span&gt; - the port when uploading or the GPX filename when downloading&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%babel&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the path to GPSBabel&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%in&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%out&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the port when uploading or the GPX filename when downloading&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12055,55 +12146,55 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions.</source>
-        <translation>QGIS使用GPSBabel (%1)工具轉換各種GPX內容。</translation>
+        <translation type="obsolete">QGIS使用GPSBabel (%1)工具轉換各種GPX內容。</translation>
     </message>
     <message>
         <source>This requires that you have GPSBabel installed where QGIS can find it.</source>
-        <translation>這需要您有安裝GPSBabel軟體，您在QGIS中目錄可以找得到。</translation>
+        <translation type="obsolete">這需要您有安裝GPSBabel軟體，您在QGIS中目錄可以找得到。</translation>
     </message>
     <message>
         <source>GPX is the %1, which is used to store information about waypoints, routes, and tracks.</source>
-        <translation>GPX原文為%1，它可以用來儲存路線點、路徑及軌跡的資訊。</translation>
+        <translation type="obsolete">GPX原文為%1，它可以用來儲存路線點、路徑及軌跡的資訊。</translation>
     </message>
     <message>
         <source>GPS eXchange file format</source>
-        <translation>GPS交換檔案格式</translation>
+        <translation type="obsolete">GPS交換檔案格式</translation>
     </message>
     <message>
         <source>Select a GPX file and then select the feature types that you want to load.</source>
-        <translation>選擇一個GPX檔案，然後再選擇您要載入圖徵的型態。</translation>
+        <translation type="obsolete">選擇一個GPX檔案，然後再選擇您要載入圖徵的型態。</translation>
     </message>
     <message>
         <source>This tool will help you download data from a GPS device.</source>
-        <translation>這個工具會幫助您從GPS裝置下載資料。</translation>
+        <translation type="obsolete">這個工具會幫助您從GPS裝置下載資料。</translation>
     </message>
     <message>
         <source>Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data.</source>
-        <translation>請選擇您的GPS設備、連接埠、欲下載的圖徵型態、新圖新的名稱及輸出的GPX檔案。</translation>
+        <translation type="obsolete">請選擇您的GPS設備、連接埠、欲下載的圖徵型態、新圖新的名稱及輸出的GPX檔案。</translation>
     </message>
     <message>
         <source>If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.</source>
-        <translation>如果未列出您的GPS設備或者您想改變設定，您可以自己編輯設備。</translation>
+        <translation type="obsolete">如果未列出您的GPS設備或者您想改變設定，您可以自己編輯設備。</translation>
     </message>
     <message>
         <source>This tool uses the program GPSBabel (%1) to transfer the data.</source>
-        <translation>這個工具使用GPSBabel (%1)來轉換資料。</translation>
+        <translation type="obsolete">這個工具使用GPSBabel (%1)來轉換資料。</translation>
     </message>
     <message>
         <source>This tool will help you upload data from a GPX layer to a GPS device.</source>
-        <translation>此工具會協助您上傳GPX圖層資料至GPS裝置。</translation>
+        <translation type="obsolete">此工具會協助您上傳GPX圖層資料至GPS裝置。</translation>
     </message>
     <message>
         <source>Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to.</source>
-        <translation>請選擇您要上傳的圖層、GPS設備及連接埠號。</translation>
+        <translation type="obsolete">請選擇您要上傳的圖層、GPS設備及連接埠號。</translation>
     </message>
     <message>
         <source>QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (%1).</source>
-        <translation>QGIS可以載入GPX，但是許多其它格式的檔案都可以使用 GPSBabel (%1)轉換成GPX。</translation>
+        <translation type="obsolete">QGIS可以載入GPX，但是許多其它格式的檔案都可以使用 GPSBabel (%1)轉換成GPX。</translation>
     </message>
     <message>
         <source>All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.</source>
-        <translation>不是所有的檔案格式都可以儲存成路線點、路徑及軌跡。</translation>
+        <translation type="obsolete">不是所有的檔案格式都可以儲存成路線點、路徑及軌跡。</translation>
     </message>
     <message>
         <source>Choose a file name to save under</source>
@@ -12111,11 +12202,11 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX file name that you want to save the converted file as, and a name for the new layer.</source>
-        <translation>選擇您想匯入的GPS檔案格式、檔案、圖徵型態、GPX檔案名稱與圖層名稱。</translation>
+        <translation type="obsolete">選擇您想匯入的GPS檔案格式、檔案、圖徵型態、GPX檔案名稱與圖層名稱。</translation>
     </message>
     <message>
         <source>Select a GPX input file name, the type of conversion you want to perform, a GPX file name that you want to save the converted file as, and a name for the new layer created from the result.</source>
-        <translation>選取輸入GPX的檔名、欲轉換的類型、GPX的檔名稱及建立新圖層名稱。</translation>
+        <translation type="obsolete">選取輸入GPX的檔名、欲轉換的類型、GPX的檔名稱及建立新圖層名稱。</translation>
     </message>
 </context>
 <context>
@@ -12144,11 +12235,11 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>File:</source>
-        <translation>文件:</translation>
+        <translation type="obsolete">文件:</translation>
     </message>
     <message>
         <source>Feature types:</source>
-        <translation>圖徵類型:</translation>
+        <translation type="obsolete">圖徵類型:</translation>
     </message>
     <message>
         <source>Waypoints</source>
@@ -12172,19 +12263,19 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>File to import:</source>
-        <translation>要匯入的文件:</translation>
+        <translation type="obsolete">要匯入的文件:</translation>
     </message>
     <message>
         <source>Feature type:</source>
-        <translation>圖徵類型:</translation>
+        <translation type="obsolete">圖徵類型:</translation>
     </message>
     <message>
         <source>GPX output file:</source>
-        <translation>GPX輸出檔:</translation>
+        <translation type="obsolete">GPX輸出檔:</translation>
     </message>
     <message>
         <source>Layer name:</source>
-        <translation>圖層名稱:</translation>
+        <translation type="obsolete">圖層名稱:</translation>
     </message>
     <message>
         <source>Download from GPS</source>
@@ -12196,15 +12287,15 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>GPS device:</source>
-        <translation>GPS設備:</translation>
+        <translation type="obsolete">GPS設備:</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation>輸出檔案:</translation>
+        <translation type="obsolete">輸出檔案:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation>埠:</translation>
+        <translation type="obsolete">埠:</translation>
     </message>
     <message>
         <source>Upload to GPS</source>
@@ -12212,7 +12303,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Data layer:</source>
-        <translation>資料圖層:</translation>
+        <translation type="obsolete">資料圖層:</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -12252,18 +12343,11 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Conversion:</source>
-        <translation>轉換:</translation>
+        <translation type="obsolete">轉換:</translation>
     </message>
     <message>
         <source>GPX input file:</source>
-        <translation>GPX輸入檔案:</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
+        <translation type="obsolete">GPX輸入檔案:</translation>
     </message>
     <message>
         <source>Edit devices...</source>
@@ -12272,6 +12356,54 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Refresh</source>
         <translation>重新整理</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File to import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="unfinished">圖層名稱</translation>
+    </message>
+    <message>
+        <source>GPX output file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPX input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Conversion</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12565,7 +12697,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Resampling method:</source>
-        <translation>重採樣方法:</translation>
+        <translation type="obsolete">重採樣方法:</translation>
     </message>
     <message>
         <source>Nearest neighbour</source>
@@ -12581,14 +12713,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OK</source>
-        <translation>確定</translation>
+        <translation type="obsolete">確定</translation>
     </message>
     <message>
         <source>Use 0 for transparency when needed</source>
         <translation>需要時使用0表示透明</translation>
     </message>
     <message>
-        <source>Compression:</source>
+        <source>Resampling method</source>
+        <translation type="unfinished">重新取樣方式</translation>
+    </message>
+    <message>
+        <source>Compression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15254,15 +15390,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished">對話方塊</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Inverse Distance Weighting&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;The only parameter for the IDW interpolation method is the coefficient that describes the decrease of weights with distance.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Distance coefficient P:</source>
+        <source>Distance coefficient P</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15451,11 +15579,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Vector layers:</source>
-        <translation>向量圖層:</translation>
+        <translation type="obsolete">向量圖層:</translation>
     </message>
     <message>
         <source>Interpolation attribute:</source>
-        <translation>內插屬性:</translation>
+        <translation type="obsolete">內插屬性:</translation>
     </message>
     <message>
         <source>Add</source>
@@ -15478,31 +15606,39 @@ p, li { white-space: pre-wrap; }
         <translation>類型</translation>
     </message>
     <message>
-        <source>Cellsize X:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cellsize Y:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>X Min:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>X Max:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y Min:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y Max:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Set to current extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolation attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cellsize X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cellsize Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y max</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15528,20 +15664,20 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>x:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>y:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Set Position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Close</source>
         <translation type="unfinished">關閉</translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17220,6 +17356,77 @@ Do you want to overwrite it?</source>
         <source>Save As...</source>
         <translation type="unfinished">存檔為...</translation>
     </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">選項</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Forces labels on, regardless of collisions. Available only for cached labels.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Force</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Anti-alias</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can text run off the edge of the map?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Partials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dump</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MapServer url</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The URL to the mapserver executable.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;For example: &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;http://my.host.com/cgi-bin/mapserv.exe&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fontset path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbolset path</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMarkerDialogBase</name>
@@ -17287,11 +17494,15 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Total:</source>
-        <translation>總計:</translation>
+        <translation type="obsolete">總計:</translation>
     </message>
     <message>
         <source>Segments</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total</source>
+        <translation type="unfinished">總計</translation>
     </message>
 </context>
 <context>
@@ -20646,7 +20857,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Transform type:</source>
-        <translation>轉換類型:</translation>
+        <translation type="obsolete">轉換類型:</translation>
     </message>
     <message>
         <source>Linear</source>
@@ -20690,7 +20901,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>World file:</source>
-        <translation>World文件:</translation>
+        <translation type="obsolete">World文件:</translation>
     </message>
     <message>
         <source>...</source>
@@ -20698,7 +20909,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Modified raster:</source>
-        <translation>修改後的影像:</translation>
+        <translation type="obsolete">修改後的影像:</translation>
     </message>
     <message>
         <source>Reference points</source>
@@ -20714,7 +20925,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Raster file:</source>
-        <translation>影像檔案:</translation>
+        <translation type="obsolete">影像檔案:</translation>
     </message>
     <message>
         <source>Close</source>
@@ -20727,6 +20938,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Load GCPs</source>
         <translation>載入GCPs</translation>
+    </message>
+    <message>
+        <source>Raster file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modified raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>World file</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22932,27 +23159,27 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Analysis:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output layer:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output format:</source>
+        <source>Add result to project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Add result to project</source>
+        <source>Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output format</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23274,7 +23501,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Size of bar:</source>
-        <translation>比例尺的大小:</translation>
+        <translation type="obsolete">比例尺的大小:</translation>
     </message>
     <message>
         <source>Select Colour</source>
@@ -23282,7 +23509,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Placement:</source>
-        <translation>位置:</translation>
+        <translation type="obsolete">位置:</translation>
     </message>
     <message>
         <source>Tick Down</source>
@@ -23306,11 +23533,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Colour of bar:</source>
-        <translation>比例尺的顏色:</translation>
+        <translation type="obsolete">比例尺的顏色:</translation>
     </message>
     <message>
         <source>Scale bar style:</source>
-        <translation>比例尺的樣式:</translation>
+        <translation type="obsolete">比例尺的樣式:</translation>
     </message>
     <message>
         <source>Enable scale bar</source>
@@ -23325,7 +23552,19 @@ p, li { white-space: pre-wrap; }
         <translation>點擊選擇顏色</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Placement</source>
+        <translation type="unfinished">位置</translation>
+    </message>
+    <message>
+        <source>Scale bar style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colour of bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size of bar</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -24430,7 +24669,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Global Schema</source>
-        <translation>全域Schema</translation>
+        <translation type="obsolete">全域Schema</translation>
     </message>
     <message>
         <source>Set the SRID to the default value</source>
@@ -24450,7 +24689,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>PostgreSQL Connections</source>
-        <translation>PostgreSQL連接</translation>
+        <translation type="obsolete">PostgreSQL連接</translation>
     </message>
     <message>
         <source>New</source>
@@ -24482,19 +24721,47 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Use Default SRID or specify here</source>
-        <translation>使用預設的SRID或指定為</translation>
+        <translation type="obsolete">使用預設的SRID或指定為</translation>
     </message>
     <message>
         <source>Use Default Geometry Column Name or specify here</source>
-        <translation>使用預設的[幾何欄位]或指定為</translation>
+        <translation type="obsolete">使用預設的[幾何欄位]或指定為</translation>
     </message>
     <message>
         <source>Primary Key Column Name</source>
-        <translation>主鍵(PK)欄位名稱</translation>
+        <translation type="obsolete">主鍵(PK)欄位名稱</translation>
     </message>
     <message>
         <source>Connect to PostGIS</source>
         <translation>連連至PostGIS</translation>
+    </message>
+    <message>
+        <source>PostgreSQL connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry column name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use default geometry column name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use default SRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Primary key column name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Global schema</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24539,15 +24806,7 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
     <message>
         <source>Interpolation method:</source>
-        <translation type="unfinished">內插方法:</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:12pt;&quot;&gt;This interpolator provides different methods for interpolation in a triangular irregular network (TIN).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">內插方法:</translation>
     </message>
     <message>
         <source>Export triangulation to shapefile after interpolation</source>
@@ -24555,6 +24814,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolation method</source>
+        <translation type="unfinished">內插方法</translation>
+    </message>
+    <message>
+        <source>Output file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -25557,7 +25824,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>座標參考系統</translation>
+        <translation type="obsolete">座標參考系統</translation>
     </message>
     <message>
         <source>Change ...</source>
@@ -25589,7 +25856,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Server Connections</source>
-        <translation>伺服器連接</translation>
+        <translation type="obsolete">伺服器連接</translation>
     </message>
     <message>
         <source>&amp;New</source>
@@ -25610,6 +25877,14 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Add WFS Layer from a Server</source>
         <translation>從伺服器上新增WFS圖層</translation>
+    </message>
+    <message>
+        <source>Coordinate reference system</source>
+        <translation type="unfinished">座標參考系統(CRS)</translation>
+    </message>
+    <message>
+        <source>Server connections</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26159,15 +26434,15 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Quick Print</source>
-        <translation>PDF列印</translation>
+        <translation type="obsolete">PDF列印</translation>
     </message>
     <message>
         <source>Map Title e.g. ACME inc.</source>
-        <translation>地圖主題 例如 ACME inc.</translation>
+        <translation type="obsolete">地圖主題 例如 ACME inc.</translation>
     </message>
     <message>
         <source>Map Name e.g. Water Features</source>
-        <translation>地圖名稱 例如 水文圖徵</translation>
+        <translation type="obsolete">地圖名稱 例如 水文圖徵</translation>
     </message>
     <message>
         <source>Copyright</source>
@@ -26195,7 +26470,19 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Page Size</source>
-        <translation>紙張大小</translation>
+        <translation type="obsolete">紙張大小</translation>
+    </message>
+    <message>
+        <source>Map title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map name</source>
+        <translation type="unfinished">地圖名稱</translation>
+    </message>
+    <message>
+        <source>Page size</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26263,12 +26550,8 @@ Tried URL: %1</source>
         <translation type="unfinished">我準備好了</translation>
     </message>
     <message>
-        <source>&amp;Select</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Alt+A</source>
-        <translation type="unfinished">Alt+A</translation>
+        <translation type="obsolete">Alt+A</translation>
     </message>
     <message>
         <source>Subdatasets</source>
@@ -26276,19 +26559,19 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">說明</translation>
+        <translation type="obsolete">說明</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>C&amp;lose</source>
-        <translation type="unfinished">關閉(&amp;l)</translation>
+        <translation type="obsolete">關閉(&amp;l)</translation>
     </message>
     <message>
         <source>Alt+L</source>
-        <translation type="unfinished">Alt+L</translation>
+        <translation type="obsolete">Alt+L</translation>
     </message>
 </context>
 <context>
