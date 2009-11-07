@@ -474,18 +474,18 @@
     <name>CoordinateCaptureGui</name>
     <message>
         <source>Coordinate Capture Plugin</source>
-        <translation>Phần mở rộng Bắt tọa độ</translation>
+        <translation type="obsolete">Phần mở rộng Bắt tọa độ</translation>
     </message>
 </context>
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="obsolete">Mẫu phần mở rộng của QGIS</translation>
+        <translation type="unfinished">Mẫu phần mở rộng của QGIS</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation type="obsolete">Mẫu phần mở rộng</translation>
+        <translation type="unfinished">Mẫu phần mở rộng</translation>
     </message>
 </context>
 <context>
@@ -3859,7 +3859,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     </message>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation>Một lỗi đã xảy ra khi thực thi mã Python:</translation>
+        <translation type="obsolete">Một lỗi đã xảy ra khi thực thi mã Python:</translation>
     </message>
     <message>
         <source>Python version:</source>
@@ -3985,19 +3985,19 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation>Không thể nạp phần mở rộng %1</translation>
+        <translation type="obsolete">Không thể nạp phần mở rộng %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation>%1 do một lỗi khi gọi phương pháp classFactory() của nó</translation>
+        <translation type="obsolete">%1 do một lỗi khi gọi phương pháp classFactory() của nó</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation>%1 do một lỗi khi gọi phương pháp initGui() của nó</translation>
+        <translation type="obsolete">%1 do một lỗi khi gọi phương pháp initGui() của nó</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation>Lỗi khi gỡ phần mở rộng %1</translation>
+        <translation type="obsolete">Lỗi khi gỡ phần mở rộng %1</translation>
     </message>
     <message>
         <source>Georeferencer GDAL</source>
@@ -4134,6 +4134,10 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     </message>
     <message>
         <source>N</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load QGIS utils.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26329,10 +26333,18 @@ Bạn có muốn ghi đè mối liên hệ [%2]</translation>
     <name>QgsTINInterpolatorDialog</name>
     <message>
         <source>Linear interpolation</source>
-        <translation>Nội suy tuyến tính</translation>
+        <translation type="obsolete">Nội suy tuyến tính</translation>
     </message>
     <message>
         <source>Save triangulation to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation type="unfinished">Tuyến tính</translation>
+    </message>
+    <message>
+        <source>Clough-Toucher (cubic)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -28427,7 +28439,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Output file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Tập tin đầu ra&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -28475,6 +28487,14 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
     <message>
         <source>Choose a file name to save to</source>
         <translation>Chọn tên tập tin để lưu</translation>
+    </message>
+    <message>
+        <source>Input and output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29054,7 +29074,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation type="unfinished">&amp;Các công cụ</translation>
+        <translation type="obsolete">&amp;Các công cụ</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
@@ -29239,6 +29259,10 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>fTools Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Vector</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

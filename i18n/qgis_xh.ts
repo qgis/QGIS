@@ -45,9 +45,13 @@
     </message>
 </context>
 <context>
-    <name>CoordinateCaptureGui</name>
+    <name>CoordinateCaptureGuiBase</name>
     <message>
-        <source>Coordinate Capture Plugin</source>
+        <source>QGIS Plugin Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin Template</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2183,10 +2187,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Python version:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2196,22 +2196,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>An error occured during execution of following code:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error while unloading plugin %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2329,6 +2313,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>N</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load QGIS utils.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15746,11 +15734,15 @@ Do you want to overwrite the [%2] relation?</source>
 <context>
     <name>QgsTINInterpolatorDialog</name>
     <message>
-        <source>Linear interpolation</source>
+        <source>Save triangulation to file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save triangulation to file</source>
+        <source>Linear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clough-Toucher (cubic)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17193,13 +17185,6 @@ For support send a mail to scala@itc.cnr.it
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Output file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Output file type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17217,6 +17202,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Export text labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input and output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17793,10 +17786,6 @@ Plugin will not be enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Analysis Tools</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17966,6 +17955,10 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>fTools Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Vector</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
