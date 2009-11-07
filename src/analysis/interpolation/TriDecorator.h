@@ -17,8 +17,6 @@
 #ifndef TRIDECORATOR_H
 #define TRIDECORATOR_H
 
-using namespace std;
-
 #include "Triangulation.h"
 
 /**Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
@@ -82,5 +80,3 @@ inline void TriDecorator::addTriangulation( Triangulation* t )
 }
 
 #endif
-
-
