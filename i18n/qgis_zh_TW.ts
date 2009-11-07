@@ -9856,7 +9856,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Paper</source>
-        <translation>紙張</translation>
+        <translation type="obsolete">紙張</translation>
     </message>
     <message>
         <source>Orientation</source>
@@ -9940,6 +9940,10 @@ Error was:%2</source>
     </message>
     <message>
         <source>Grid style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paper and quality</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

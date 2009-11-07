@@ -10082,7 +10082,7 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     </message>
     <message>
         <source>Paper</source>
-        <translation>Giấy</translation>
+        <translation type="obsolete">Giấy</translation>
     </message>
     <message>
         <source>Orientation</source>
@@ -10166,6 +10166,10 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     </message>
     <message>
         <source>Grid style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paper and quality</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -5457,10 +5457,6 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Paper</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Orientation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5518,6 +5514,10 @@ Error was:%2</source>
     </message>
     <message>
         <source>Grid style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paper and quality</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

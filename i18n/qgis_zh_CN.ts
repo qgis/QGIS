@@ -8979,7 +8979,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Paper</source>
-        <translation type="unfinished">纸张</translation>
+        <translation type="obsolete">纸张</translation>
     </message>
     <message>
         <source>Orientation</source>
@@ -9039,6 +9039,10 @@ Error was:%2</source>
     </message>
     <message>
         <source>Grid style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paper and quality</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -8937,17 +8937,17 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
         <translation type="unfinished">Colore</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="53"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="56"/>
         <source>Opacity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="79"/>
         <source>Outline width</source>
         <translation type="unfinished">Dimensione stile esterno</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="93"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="102"/>
         <source>Show frame</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8956,12 +8956,12 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
         <translation type="obsolete">Colore:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="39"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="42"/>
         <source>Frame...</source>
         <translation>Cornice...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="46"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="49"/>
         <source>Background...</source>
         <translation>Sfondo...</translation>
     </message>
@@ -8978,7 +8978,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
         <translation type="obsolete">Cornice</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="86"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="95"/>
         <source>Position...</source>
         <translation>Posizone...</translation>
     </message>
@@ -9001,17 +9001,17 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
 <context>
     <name>QgsComposerLabelWidgetBase</name>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="19"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="20"/>
         <source>Label Options</source>
         <translation>Opzioni etichetta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="42"/>
         <source>Font</source>
         <translation>Carattere</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="45"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="49"/>
         <source>Margin (mm)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10140,37 +10140,37 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
 <context>
     <name>QgsCompositionBase</name>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="19"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="20"/>
         <source>Composition</source>
         <translation>Composizione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="43"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="32"/>
         <source>Paper</source>
         <translation>Carta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="182"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="47"/>
         <source>Size</source>
         <translation>Dimensione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="166"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="79"/>
         <source>Units</source>
         <translation>Unità</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="150"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="111"/>
         <source>Width</source>
         <translation>Larghezza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="134"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="133"/>
         <source>Height</source>
         <translation>Altezza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="118"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="155"/>
         <source>Orientation</source>
         <translation>Direzione</translation>
     </message>
@@ -10364,77 +10364,81 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
         <translation>Composizione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="32"/>
         <source>Paper</source>
-        <translation>Carta</translation>
+        <translation type="obsolete">Carta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="95"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="164"/>
         <source>Orientation</source>
         <translation>Direzione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="111"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="142"/>
         <source>Height</source>
         <translation>Altezza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="127"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="120"/>
         <source>Width</source>
         <translation>Larghezza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="143"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="88"/>
         <source>Units</source>
         <translation>Unità</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="159"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="44"/>
+        <source>Paper and quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="56"/>
         <source>Size</source>
         <translation>Dimensione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="191"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="241"/>
         <source>Grid resolution</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="207"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="260"/>
         <source>Offset x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="217"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="273"/>
         <source>Offset y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="227"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="286"/>
         <source>Pen width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="237"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="299"/>
         <source>Grid color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="257"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="322"/>
         <source>Grid style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="276"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="196"/>
         <source>Print quality (dpi)</source>
         <translation>Qualità di stampa (dpi)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="172"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="222"/>
         <source>Snapping</source>
         <translation>Snapping</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="178"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="228"/>
         <source>Snap to grid</source>
         <translation>Snap alla griglia</translation>
     </message>
@@ -10463,7 +10467,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
         <translation type="obsolete">Stile griglia:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="289"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="212"/>
         <source>Print as raster</source>
         <translation>Stampa come raster</translation>
     </message>

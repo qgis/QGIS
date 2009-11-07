@@ -1,310 +1,311 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsOpenVectorLayerDialogBase</class>
- <widget class="QDialog" name="QgsOpenVectorLayerDialogBase" >
-  <property name="windowModality" >
+ <widget class="QDialog" name="QgsOpenVectorLayerDialogBase">
+  <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
-  <property name="geometry" >
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>930</width>
-    <height>635</height>
+    <width>500</width>
+    <height>709</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="minimumSize" >
+  <property name="minimumSize">
    <size>
     <width>500</width>
     <height>150</height>
    </size>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Add vector layer</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <layout class="QGridLayout" name="gridLayout_5" >
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="srcGroupBox_2" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <layout class="QGridLayout" name="gridLayout_5">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="srcGroupBox_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Source type</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" >
-       <widget class="QRadioButton" name="radioSrcFile" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="radioSrcFile">
+        <property name="text">
          <string>File</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QRadioButton" name="radioSrcDirectory" >
-        <property name="text" >
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="radioSrcDirectory">
+        <property name="text">
          <string>Directory</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" >
-       <widget class="QRadioButton" name="radioSrcDatabase" >
-        <property name="text" >
+      <item row="0" column="2">
+       <widget class="QRadioButton" name="radioSrcDatabase">
+        <property name="text">
          <string>Database</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3" >
-       <widget class="QRadioButton" name="radioSrcProtocol" >
-        <property name="text" >
+      <item row="0" column="3">
+       <widget class="QRadioButton" name="radioSrcProtocol">
+        <property name="text">
          <string>Protocol</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
          <string>Encoding :</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="3" >
-       <widget class="QComboBox" name="cmbEncodings" >
-        <property name="minimumSize" >
+      <item row="1" column="1" colspan="3">
+       <widget class="QComboBox" name="cmbEncodings">
+        <property name="minimumSize">
          <size>
           <width>380</width>
           <height>0</height>
          </size>
         </property>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>BIG5</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>BIG5-HKSCS</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>EUCJP</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>EUCKR</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>GB2312</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>GBK</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>GB18030</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>JIS7</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>SHIFT-JIS</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>TSCII</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>UTF-8</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>UTF-16</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>KOI8-R</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>KOI8-U</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-1</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-2</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-3</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-4</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-5</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-6</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-7</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-8</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-8-I</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-9</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-10</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-11</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-12</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-13</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-14</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>ISO8859-15</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>IBM 850</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>IBM 866</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP874</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP1250</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP1251</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP1252</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP1253</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP1254</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP1255</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP1256</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP1257</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>CP1258</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>Apple Roman</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>TIS-620</string>
          </property>
         </item>
@@ -313,82 +314,85 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="protocolGroupBox" >
-     <property name="minimumSize" >
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="protocolGroupBox">
+     <property name="minimumSize">
       <size>
        <width>0</width>
        <height>0</height>
       </size>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Protocol</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
          <string>Type</string>
         </property>
        </widget>
       </item>
-      <item rowspan="2" row="0" column="1" >
-       <widget class="QComboBox" name="cmbProtocolTypes" />
+      <item row="0" column="1" rowspan="2">
+       <widget class="QComboBox" name="cmbProtocolTypes"/>
       </item>
-      <item rowspan="2" row="1" column="0" >
-       <widget class="QLabel" name="label" >
-        <property name="text" >
+      <item row="1" column="0" rowspan="2">
+       <widget class="QLabel" name="label">
+        <property name="text">
          <string>URI</string>
+        </property>
+        <property name="buddy">
+         <cstring>protocolURI</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <widget class="QLineEdit" name="protocolURI" />
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="protocolURI"/>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QGroupBox" name="fileGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="fileGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize" >
+     <property name="minimumSize">
       <size>
        <width>0</width>
        <height>0</height>
       </size>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Source</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="labelDirectoryType" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelDirectoryType">
+        <property name="text">
          <string>Type</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" colspan="2" >
-       <widget class="QComboBox" name="cmbDirectoryTypes" />
+      <item row="0" column="2" colspan="2">
+       <widget class="QComboBox" name="cmbDirectoryTypes"/>
       </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QLabel" name="labelSrcDataset" >
-        <property name="text" >
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="labelSrcDataset">
+        <property name="text">
          <string>Dataset</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>inputSrcDataset</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="2" >
-       <widget class="QLineEdit" name="inputSrcDataset" >
-        <property name="minimumSize" >
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="inputSrcDataset">
+        <property name="minimumSize">
          <size>
           <width>200</width>
           <height>0</height>
@@ -396,9 +400,9 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3" >
-       <widget class="QPushButton" name="buttonSelectSrc" >
-        <property name="text" >
+      <item row="1" column="3">
+       <widget class="QPushButton" name="buttonSelectSrc">
+        <property name="text">
          <string>Browse</string>
         </property>
        </widget>
@@ -406,89 +410,85 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="standardButtons" >
+   <item row="4" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" >
-    <widget class="QGroupBox" name="dbGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+   <item row="3" column="0">
+    <widget class="QGroupBox" name="dbGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize" >
+     <property name="minimumSize">
       <size>
        <width>0</width>
        <height>0</height>
       </size>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Database</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_6" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_4" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout_6">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
          <string>Type</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QComboBox" name="cmbDatabaseTypes" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cmbDatabaseTypes">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QGroupBox" name="groupBox" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+      <item row="1" column="0" colspan="2">
+       <widget class="QGroupBox" name="groupBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="title" >
+        <property name="title">
          <string>Connections</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout_4" >
-         <item row="1" column="0" >
-          <widget class="QPushButton" name="btnNew" >
-           <property name="text" >
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="1" column="0">
+          <widget class="QPushButton" name="btnNew">
+           <property name="text">
             <string>New</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1" >
-          <widget class="QPushButton" name="btnEdit" >
-           <property name="text" >
+         <item row="1" column="1">
+          <widget class="QPushButton" name="btnEdit">
+           <property name="text">
             <string>Edit</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="2" >
-          <widget class="QPushButton" name="btnDelete" >
-           <property name="text" >
+         <item row="1" column="2">
+          <widget class="QPushButton" name="btnDelete">
+           <property name="text">
             <string>Delete</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="0" colspan="3" >
-          <widget class="QComboBox" name="cmbConnections" />
+         <item row="0" column="0" colspan="3">
+          <widget class="QComboBox" name="cmbConnections"/>
          </item>
         </layout>
-        <zorder>btnNew</zorder>
-        <zorder>btnEdit</zorder>
-        <zorder>btnDelete</zorder>
-        <zorder>cmbConnections</zorder>
        </widget>
       </item>
      </layout>
@@ -496,10 +496,24 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>inputSrcDataset</tabstop>
   <tabstop>buttonSelectSrc</tabstop>
+  <tabstop>radioSrcFile</tabstop>
+  <tabstop>radioSrcDirectory</tabstop>
+  <tabstop>radioSrcDatabase</tabstop>
+  <tabstop>radioSrcProtocol</tabstop>
+  <tabstop>cmbEncodings</tabstop>
+  <tabstop>cmbProtocolTypes</tabstop>
+  <tabstop>protocolURI</tabstop>
+  <tabstop>cmbDirectoryTypes</tabstop>
+  <tabstop>inputSrcDataset</tabstop>
+  <tabstop>cmbDatabaseTypes</tabstop>
+  <tabstop>cmbConnections</tabstop>
+  <tabstop>btnNew</tabstop>
+  <tabstop>btnEdit</tabstop>
+  <tabstop>btnDelete</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -509,11 +523,11 @@
    <receiver>QgsOpenVectorLayerDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>433</x>
-     <y>585</y>
+    <hint type="sourcelabel">
+     <x>442</x>
+     <y>673</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>481</x>
      <y>297</y>
     </hint>
@@ -525,11 +539,11 @@
    <receiver>QgsOpenVectorLayerDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>374</x>
-     <y>585</y>
+    <hint type="sourcelabel">
+     <x>383</x>
+     <y>673</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>281</x>
      <y>339</y>
     </hint>
@@ -541,13 +555,13 @@
    <receiver>dbGroupBox</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>362</x>
-     <y>41</y>
+    <hint type="sourcelabel">
+     <x>352</x>
+     <y>75</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>245</x>
-     <y>408</y>
+     <y>511</y>
     </hint>
    </hints>
   </connection>
