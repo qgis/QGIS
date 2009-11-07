@@ -8,15 +8,20 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/qgsidwinterpolator.cpp
   interpolation/qgsinterpolator.cpp
   interpolation/qgstininterpolator.cpp
+  interpolation/Bezier3D.cc
+  interpolation/CloughTocherInterpolator.cc
   interpolation/DualEdgeTriangulation.cc
   interpolation/HalfEdge.cc
   interpolation/Line3D.cc
   interpolation/LinTriangleInterpolator.cc
   interpolation/MathUtils.cc
+  interpolation/NormVecDecorator.cc
   interpolation/Node.cc
+  interpolation/ParametricLine.cc
   interpolation/Point3D.cc
   interpolation/TriangleInterpolator.cc
   interpolation/Triangulation.cc
+  interpolation/TriDecorator.cc
   interpolation/Vector3D.cc
   raster/qgsninecellfilter.cpp
   raster/qgsruggednessfilter.cpp

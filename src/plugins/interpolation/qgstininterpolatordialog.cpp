@@ -30,8 +30,8 @@ QgsTINInterpolatorDialog::QgsTINInterpolatorDialog( QWidget* parent, QgisInterfa
   mTriangulationFileButton->setEnabled( false );
 
   //enter available interpolation methods
-  mInterpolationComboBox->insertItem( 0, tr( "Linear interpolation" ) );
-  //mInterpolationComboBox->insertItem(1, tr("Clough-Toucher interpolation")); //to come...
+  mInterpolationComboBox->insertItem( 0, tr( "Linear" ) );
+  mInterpolationComboBox->insertItem( 1, tr( "Clough-Toucher (cubic)" ) );
 }
 
 QgsTINInterpolatorDialog::~QgsTINInterpolatorDialog()
@@ -41,7 +41,17 @@ QgsTINInterpolatorDialog::~QgsTINInterpolatorDialog()
 
 QgsInterpolator* QgsTINInterpolatorDialog::createInterpolator() const
 {
-  QgsTINInterpolator* theInterpolator = new QgsTINInterpolator( mInputData, true );
+  QgsTINInterpolator* theInterpolator = 0;
+
+  if ( mInterpolationComboBox->currentText() == tr( "Clough-Toucher (cubic)" ) )
+  {
+    theInterpolator = new QgsTINInterpolator( mInputData, QgsTINInterpolator::CloughTocher, true );
+  }
+  else //linear is the default
+  {
+    theInterpolator = new QgsTINInterpolator( mInputData, QgsTINInterpolator::Linear, true );
+  }
+
   if ( mExportTriangulationCheckBox->checkState() == Qt::Checked )
   {
     theInterpolator->setExportTriangulationToFile( true );
