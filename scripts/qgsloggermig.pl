@@ -60,7 +60,7 @@ for my $file (@ARGV) {
 			$lastinclude = scalar(@file)+1;
 		}
 
-		if(/std::(cout|cerr)/) {
+		if(/(std::)?(cout|cerr)/) {
 			die "nested? [$file]" if defined $output;
 			$output = "";
 		}
@@ -72,7 +72,7 @@ for my $file (@ARGV) {
 				$output =~ s/$le/\n/g;
 
 				my $level = 0;
-				if($output =~ /^\s*\/\/\s*(std::(cout|cerr))/) {
+				if($output =~ /^\s*\/\/\s*((std::)?(cout|cerr))/) {
 					$level = 3;
 					$output =~ s/^\s*\/\///;
 					$output =~ s/\n\s*\/\//\n /g;
@@ -89,7 +89,7 @@ for my $file (@ARGV) {
 					next;
 				}
 
-				unless( $arr[0] =~ /^std::(cout|cerr)$/ ) {
+				unless( $arr[0] =~ /^(std::)?(cout|cerr)$/ ) {
 					die "std::(cerr|cout) expected [$file]: |" . $arr[0] . "|";
 				}
 
@@ -102,14 +102,14 @@ for my $file (@ARGV) {
 					$arr[-1] = "std::endl;";
 				}
 
-				if( $arr[-1] =~ /^std::flush;$/ &&
-				    $arr[-2] =~ /^std::endl$/ ) {
+				if( $arr[-1] =~ /^(std::)?flush;$/ &&
+				    $arr[-2] =~ /^(std::)?endl$/ ) {
 					pop @arr;
 					pop @arr;
 					push @arr, "std::endl;";
 				}
 
-				unless( $arr[-1] =~ /^std::endl;$/ ) {
+				unless( $arr[-1] =~ /^(std::)?endl;$/ ) {
 					die "std::endl; expected [$file]: |" . $arr[-1] . "|";
 				} 
 
