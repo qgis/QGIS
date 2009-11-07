@@ -1,110 +1,130 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>dxf2shpConverterGui</class>
- <widget class="QDialog" name="dxf2shpConverterGui" >
-  <property name="geometry" >
+ <widget class="QDialog" name="dxf2shpConverterGui">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>220</height>
+    <width>350</width>
+    <height>250</height>
    </rect>
   </property>
-  <property name="minimumSize" >
+  <property name="minimumSize">
    <size>
     <width>350</width>
     <height>220</height>
    </size>
   </property>
-  <property name="maximumSize" >
+  <property name="maximumSize">
    <size>
     <width>500</width>
     <height>300</height>
    </size>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Dxf Importer</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QLabel" name="label" >
-     <property name="text" >
-      <string>Input Dxf file</string>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Input and output</string>
      </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Input Dxf file</string>
+        </property>
+        <property name="buddy">
+         <cstring>name</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="name"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QToolButton" name="btnBrowseForFile">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Output file</string>
+        </property>
+        <property name="buddy">
+         <cstring>dirout</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="dirout"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QToolButton" name="btnBrowseOutputDir">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3">
+       <widget class="QCheckBox" name="convertTextCheck">
+        <property name="text">
+         <string>Export text labels</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2" >
-    <widget class="QLineEdit" name="name" />
-   </item>
-   <item row="0" column="3" >
-    <widget class="QToolButton" name="btnBrowseForFile" >
-     <property name="text" >
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="label_2" >
-     <property name="text" >
-      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;">&lt;span style=" font-size:10pt;">Output file&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="2" >
-    <widget class="QLineEdit" name="dirout" />
-   </item>
-   <item row="1" column="3" >
-    <widget class="QToolButton" name="btnBrowseOutputDir" >
-     <property name="text" >
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="4" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize" >
+     <property name="minimumSize">
       <size>
        <width>0</width>
        <height>50</height>
       </size>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Output file type</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QRadioButton" name="polyline" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="polyline">
+        <property name="text">
          <string>Polyline</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QRadioButton" name="polygon" >
-        <property name="text" >
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="polygon">
+        <property name="text">
          <string>Polygon</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" >
-       <widget class="QRadioButton" name="point" >
-        <property name="text" >
+      <item row="0" column="2">
+       <widget class="QRadioButton" name="point">
+        <property name="text">
          <string>Point</string>
         </property>
        </widget>
@@ -112,67 +132,42 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2" >
-    <widget class="QCheckBox" name="convertTextCheck" >
-     <property name="text" >
-      <string>Export text labels</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="4" column="0" colspan="4" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>btnBrowseForFile</tabstop>
+  <tabstop>dirout</tabstop>
+  <tabstop>btnBrowseOutputDir</tabstop>
+  <tabstop>convertTextCheck</tabstop>
+  <tabstop>polyline</tabstop>
+  <tabstop>polygon</tabstop>
+  <tabstop>point</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>dxf2shpConverterGui</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>331</x>
-     <y>180</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>451</x>
-     <y>148</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>dxf2shpConverterGui</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>415</x>
-     <y>182</y>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>223</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>427</x>
-     <y>201</y>
+    <hint type="destinationlabel">
+     <x>349</x>
+     <y>194</y>
     </hint>
    </hints>
   </connection>
