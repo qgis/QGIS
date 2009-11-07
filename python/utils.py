@@ -71,6 +71,9 @@ class QgisOutputCatcher:
     tmp = self.data
     self.data = ''
     return tmp
+  def flush(self):
+    pass
+  
 
 def installConsoleHooks():
   sys.displayhook = console_displayhook

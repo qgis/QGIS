@@ -60,7 +60,7 @@
         </size>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -445,9 +445,9 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>mOptionsTabWidget</tabstop>
+  <tabstop>buttonBox</tabstop>
   <tabstop>mCompositionNameComboBox</tabstop>
-  <tabstop>mSplitter</tabstop>
+  <tabstop>mOptionsTabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections>

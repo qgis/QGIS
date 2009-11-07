@@ -1,60 +1,64 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsComposerLabelWidgetBase</class>
- <widget class="QWidget" name="QgsComposerLabelWidgetBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QgsComposerLabelWidgetBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>217</width>
-    <height>274</height>
+    <height>302</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Label Options</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" colspan="2" >
-    <widget class="QTextEdit" name="mTextEdit" >
-     <property name="lineWrapMode" >
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QTextEdit" name="mTextEdit">
+     <property name="lineWrapMode">
       <enum>QTextEdit::NoWrap</enum>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QPushButton" name="mFontButton" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+   <item row="1" column="0">
+    <widget class="QPushButton" name="mFontButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="text" >
+     <property name="text">
       <string>Font</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="mMarginTextLabel" >
-     <property name="text" >
+   <item row="2" column="0">
+    <widget class="QLabel" name="mMarginTextLabel">
+     <property name="text">
       <string>Margin (mm)</string>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>mMarginDoubleSpinBox</cstring>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" >
-    <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox" />
+   <item row="3" column="0">
+    <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox"/>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>mTextEdit</tabstop>
   <tabstop>mFontButton</tabstop>
