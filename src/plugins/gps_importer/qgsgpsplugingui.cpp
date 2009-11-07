@@ -37,11 +37,6 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
   populatePortComboBoxes();
   populateULLayerComboBox();
   populateIMPBabelFormats();
-  populateLoadDialog();
-  populateULDialog();
-  populateDLDialog();
-  populateIMPDialog();
-  populateCONVDialog();
 
   connect( pbULEditDevices, SIGNAL( clicked() ), this, SLOT( openDeviceEditor() ) );
   connect( pbDLEditDevices, SIGNAL( clicked() ), this, SLOT( openDeviceEditor() ) );

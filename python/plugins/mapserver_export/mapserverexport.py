@@ -24,7 +24,7 @@ from PyQt4.QtGui import *
 from xml.dom import minidom
 from qgis.core import *
 # Initialize Qt resources from file resources.py
-import resources
+import resources_rc
 # Import the code for the dialog
 from mapserverexportdialog import MapServerExportDialog
 # Import the ms_export script that does the real work
@@ -133,6 +133,7 @@ class MapServerExport:
       print "Creating exporter using %s and %s" % (self.dlg.ui.txtQgisFilePath.text(), self.dlg.ui.txtMapFilePath.text())
       exporter = Qgis2Map(unicode(self.dlg.ui.txtQgisFilePath.text()), unicode(self.dlg.ui.txtMapFilePath.text()))
       print "Setting options"
+
       exporter.setOptions(
           unicode(self.dlg.ui.txtMapServerUrl.text()),
           unicode(self.dlg.ui.cmbMapUnits.itemData( self.dlg.ui.cmbMapUnits.currentIndex() ).toString()),
@@ -147,6 +148,7 @@ class MapServerExport:
           self.dlg.ui.checkBoxForce.isChecked(),
           self.dlg.ui.checkBoxAntiAlias.isChecked(),
           self.dlg.ui.checkBoxPartials.isChecked(),
+          self.dlg.ui.chkExpLayersOnly.isChecked(),
           unicode(self.dlg.ui.txtFontsetPath.text()),
           unicode(self.dlg.ui.txtSymbolsetPath.text())
           )
@@ -199,6 +201,9 @@ class MapServerExport:
     self.dlg.ui.txtMapHeight.setEnabled(not isChecked)
     self.dlg.ui.cmbMapUnits.setEnabled(not isChecked)
     self.dlg.ui.cmbMapImageType.setEnabled(not isChecked)
+    self.dlg.ui.txtMapServerUrl.setEnabled(not isChecked)
+    self.dlg.ui.txtFontsetPath.setEnabled(not isChecked)
+    self.dlg.ui.txtSymbolsetPath.setEnabled(not isChecked)
     self.dlg.ui.txtWebTemplate.setEnabled(not isChecked)
     self.dlg.ui.txtWebHeader.setEnabled(not isChecked)
     self.dlg.ui.txtWebFooter.setEnabled(not isChecked)

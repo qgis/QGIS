@@ -1110,6 +1110,61 @@
 		72745A130F770319007F4218 /* spit.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A030F770252007F4218 /* spit.png */; };
 		72745A140F770319007F4218 /* wfs.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A040F770252007F4218 /* wfs.png */; };
 		72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */ = {isa = PBXBuildFile; fileRef = 727459F80F770252007F4218 /* coordinate_capture.png */; };
+		7276104210A609D300C89AF0 /* Bezier3D.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103810A6099D00C89AF0 /* Bezier3D.cc */; };
+		7276104310A609D300C89AF0 /* CloughTocherInterpolator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103A10A6099D00C89AF0 /* CloughTocherInterpolator.cc */; };
+		7276104410A609D300C89AF0 /* NormVecDecorator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103C10A6099D00C89AF0 /* NormVecDecorator.cc */; };
+		7276104510A609D300C89AF0 /* ParametricLine.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103E10A6099D00C89AF0 /* ParametricLine.cc */; };
+		7276104610A609D300C89AF0 /* TriDecorator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276104010A6099D00C89AF0 /* TriDecorator.cc */; };
+		7276109A10A615C000C89AF0 /* 01.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276106710A6158A00C89AF0 /* 01.svg */; };
+		7276109B10A615C000C89AF0 /* 02.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276106810A6158A00C89AF0 /* 02.svg */; };
+		7276109C10A615C000C89AF0 /* 03.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276106910A6158A00C89AF0 /* 03.svg */; };
+		7276109D10A615C000C89AF0 /* 04.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276106A10A6158A00C89AF0 /* 04.svg */; };
+		7276109E10A615C000C89AF0 /* 05.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276106B10A6158A00C89AF0 /* 05.svg */; };
+		7276109F10A615C000C89AF0 /* 06.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276106C10A6158A00C89AF0 /* 06.svg */; };
+		727610A010A615C000C89AF0 /* 07.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276106D10A6158A00C89AF0 /* 07.svg */; };
+		727610A110A615C000C89AF0 /* 08.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276106E10A6158A00C89AF0 /* 08.svg */; };
+		727610A210A615C000C89AF0 /* 09.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276106F10A6158A00C89AF0 /* 09.svg */; };
+		727610A310A615C000C89AF0 /* 10.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107010A6158A00C89AF0 /* 10.svg */; };
+		727610A410A615C000C89AF0 /* 11.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107110A6158A00C89AF0 /* 11.svg */; };
+		727610A510A615C000C89AF0 /* 12.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107210A6158A00C89AF0 /* 12.svg */; };
+		727610A610A615C000C89AF0 /* 13.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107310A6158A00C89AF0 /* 13.svg */; };
+		727610A710A615C000C89AF0 /* 14.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107410A6158A00C89AF0 /* 14.svg */; };
+		727610A810A615C000C89AF0 /* 15.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107510A6158A00C89AF0 /* 15.svg */; };
+		727610A910A615C000C89AF0 /* 16.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107610A6158A00C89AF0 /* 16.svg */; };
+		727610AA10A615C000C89AF0 /* 17.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107710A6158A00C89AF0 /* 17.svg */; };
+		727610AB10A615C000C89AF0 /* 18.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107810A6158A00C89AF0 /* 18.svg */; };
+		727610AC10A615C000C89AF0 /* 19.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107910A6158A00C89AF0 /* 19.svg */; };
+		727610AD10A615C000C89AF0 /* 20.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107A10A6158A00C89AF0 /* 20.svg */; };
+		727610AE10A615C000C89AF0 /* 21.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107B10A6158A00C89AF0 /* 21.svg */; };
+		727610AF10A615C000C89AF0 /* 22.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107C10A6158A00C89AF0 /* 22.svg */; };
+		727610B010A615C000C89AF0 /* 23.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107D10A6158A00C89AF0 /* 23.svg */; };
+		727610B110A615C000C89AF0 /* 24.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107E10A6158A00C89AF0 /* 24.svg */; };
+		727610B210A615C000C89AF0 /* 25.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276107F10A6158A00C89AF0 /* 25.svg */; };
+		727610B310A615C000C89AF0 /* 26.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108010A6158A00C89AF0 /* 26.svg */; };
+		727610B410A615C000C89AF0 /* 27.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108110A6158A00C89AF0 /* 27.svg */; };
+		727610B510A615C000C89AF0 /* 28.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108210A6158A00C89AF0 /* 28.svg */; };
+		727610B610A615C000C89AF0 /* 29.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108310A6158A00C89AF0 /* 29.svg */; };
+		727610B710A615C000C89AF0 /* 30.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108410A6158A00C89AF0 /* 30.svg */; };
+		727610B810A615C000C89AF0 /* 31.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108510A6158A00C89AF0 /* 31.svg */; };
+		727610B910A615C000C89AF0 /* 32.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108610A6158A00C89AF0 /* 32.svg */; };
+		727610BA10A615C000C89AF0 /* 33.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108710A6158A00C89AF0 /* 33.svg */; };
+		727610BB10A615C000C89AF0 /* 34.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108810A6158A00C89AF0 /* 34.svg */; };
+		727610BC10A615C000C89AF0 /* 35.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108910A6158A00C89AF0 /* 35.svg */; };
+		727610BD10A615C000C89AF0 /* 36.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108A10A6158A00C89AF0 /* 36.svg */; };
+		727610BE10A615C000C89AF0 /* 37.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108B10A6158A00C89AF0 /* 37.svg */; };
+		727610BF10A615C000C89AF0 /* 38.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108C10A6158A00C89AF0 /* 38.svg */; };
+		727610C010A615C000C89AF0 /* 39.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108D10A6158A00C89AF0 /* 39.svg */; };
+		727610C110A615C000C89AF0 /* 40.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108E10A6158A00C89AF0 /* 40.svg */; };
+		727610C210A615C000C89AF0 /* 41.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276108F10A6158A00C89AF0 /* 41.svg */; };
+		727610C310A615C000C89AF0 /* 42.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276109010A6158A00C89AF0 /* 42.svg */; };
+		727610C410A615C000C89AF0 /* 43.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276109110A6158A00C89AF0 /* 43.svg */; };
+		727610C510A615C000C89AF0 /* 44.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276109210A6158A00C89AF0 /* 44.svg */; };
+		727610C610A615C000C89AF0 /* 45.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276109310A6158A00C89AF0 /* 45.svg */; };
+		727610C710A615C000C89AF0 /* 46.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276109410A6158A00C89AF0 /* 46.svg */; };
+		727610C810A615C000C89AF0 /* 47.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276109510A6158A00C89AF0 /* 47.svg */; };
+		727610C910A615C000C89AF0 /* 48.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276109610A6158A00C89AF0 /* 48.svg */; };
+		727610CA10A615C000C89AF0 /* 49.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276109710A6158A00C89AF0 /* 49.svg */; };
+		727610CB10A615C000C89AF0 /* 50.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 7276109810A6158A00C89AF0 /* 50.svg */; };
 		72779E95104060DC00CA9DE5 /* 361087368_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E8D104060CF00CA9DE5 /* 361087368_pl_PL */; };
 		72779E96104060DC00CA9DE5 /* 687883780_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E92104060CF00CA9DE5 /* 687883780_pl_PL */; };
 		72779E97104060DC00CA9DE5 /* 689216579_pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72779E93104060CF00CA9DE5 /* 689216579_pl_PL */; };
@@ -2871,6 +2926,56 @@
 			dstPath = "$(QGIS_DATA_SUBDIR)/svg/north_arrows";
 			dstSubfolderSpec = 6;
 			files = (
+				7276109A10A615C000C89AF0 /* 01.svg in Copy - svg-n_arrow */,
+				7276109B10A615C000C89AF0 /* 02.svg in Copy - svg-n_arrow */,
+				7276109C10A615C000C89AF0 /* 03.svg in Copy - svg-n_arrow */,
+				7276109D10A615C000C89AF0 /* 04.svg in Copy - svg-n_arrow */,
+				7276109E10A615C000C89AF0 /* 05.svg in Copy - svg-n_arrow */,
+				7276109F10A615C000C89AF0 /* 06.svg in Copy - svg-n_arrow */,
+				727610A010A615C000C89AF0 /* 07.svg in Copy - svg-n_arrow */,
+				727610A110A615C000C89AF0 /* 08.svg in Copy - svg-n_arrow */,
+				727610A210A615C000C89AF0 /* 09.svg in Copy - svg-n_arrow */,
+				727610A310A615C000C89AF0 /* 10.svg in Copy - svg-n_arrow */,
+				727610A410A615C000C89AF0 /* 11.svg in Copy - svg-n_arrow */,
+				727610A510A615C000C89AF0 /* 12.svg in Copy - svg-n_arrow */,
+				727610A610A615C000C89AF0 /* 13.svg in Copy - svg-n_arrow */,
+				727610A710A615C000C89AF0 /* 14.svg in Copy - svg-n_arrow */,
+				727610A810A615C000C89AF0 /* 15.svg in Copy - svg-n_arrow */,
+				727610A910A615C000C89AF0 /* 16.svg in Copy - svg-n_arrow */,
+				727610AA10A615C000C89AF0 /* 17.svg in Copy - svg-n_arrow */,
+				727610AB10A615C000C89AF0 /* 18.svg in Copy - svg-n_arrow */,
+				727610AC10A615C000C89AF0 /* 19.svg in Copy - svg-n_arrow */,
+				727610AD10A615C000C89AF0 /* 20.svg in Copy - svg-n_arrow */,
+				727610AE10A615C000C89AF0 /* 21.svg in Copy - svg-n_arrow */,
+				727610AF10A615C000C89AF0 /* 22.svg in Copy - svg-n_arrow */,
+				727610B010A615C000C89AF0 /* 23.svg in Copy - svg-n_arrow */,
+				727610B110A615C000C89AF0 /* 24.svg in Copy - svg-n_arrow */,
+				727610B210A615C000C89AF0 /* 25.svg in Copy - svg-n_arrow */,
+				727610B310A615C000C89AF0 /* 26.svg in Copy - svg-n_arrow */,
+				727610B410A615C000C89AF0 /* 27.svg in Copy - svg-n_arrow */,
+				727610B510A615C000C89AF0 /* 28.svg in Copy - svg-n_arrow */,
+				727610B610A615C000C89AF0 /* 29.svg in Copy - svg-n_arrow */,
+				727610B710A615C000C89AF0 /* 30.svg in Copy - svg-n_arrow */,
+				727610B810A615C000C89AF0 /* 31.svg in Copy - svg-n_arrow */,
+				727610B910A615C000C89AF0 /* 32.svg in Copy - svg-n_arrow */,
+				727610BA10A615C000C89AF0 /* 33.svg in Copy - svg-n_arrow */,
+				727610BB10A615C000C89AF0 /* 34.svg in Copy - svg-n_arrow */,
+				727610BC10A615C000C89AF0 /* 35.svg in Copy - svg-n_arrow */,
+				727610BD10A615C000C89AF0 /* 36.svg in Copy - svg-n_arrow */,
+				727610BE10A615C000C89AF0 /* 37.svg in Copy - svg-n_arrow */,
+				727610BF10A615C000C89AF0 /* 38.svg in Copy - svg-n_arrow */,
+				727610C010A615C000C89AF0 /* 39.svg in Copy - svg-n_arrow */,
+				727610C110A615C000C89AF0 /* 40.svg in Copy - svg-n_arrow */,
+				727610C210A615C000C89AF0 /* 41.svg in Copy - svg-n_arrow */,
+				727610C310A615C000C89AF0 /* 42.svg in Copy - svg-n_arrow */,
+				727610C410A615C000C89AF0 /* 43.svg in Copy - svg-n_arrow */,
+				727610C510A615C000C89AF0 /* 44.svg in Copy - svg-n_arrow */,
+				727610C610A615C000C89AF0 /* 45.svg in Copy - svg-n_arrow */,
+				727610C710A615C000C89AF0 /* 46.svg in Copy - svg-n_arrow */,
+				727610C810A615C000C89AF0 /* 47.svg in Copy - svg-n_arrow */,
+				727610C910A615C000C89AF0 /* 48.svg in Copy - svg-n_arrow */,
+				727610CA10A615C000C89AF0 /* 49.svg in Copy - svg-n_arrow */,
+				727610CB10A615C000C89AF0 /* 50.svg in Copy - svg-n_arrow */,
 				7256F3740F414AE40022BE1F /* default.svg in Copy - svg-n_arrow */,
 				7256F3750F414AE40022BE1F /* NorthArrow1.svg in Copy - svg-n_arrow */,
 				7256F3760F414AE40022BE1F /* NorthArrow10.svg in Copy - svg-n_arrow */,
@@ -5179,9 +5284,7 @@
 		7209EDD70F39E5D9003DC336 /* mapserverexportdialog.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = mapserverexportdialog.py; path = ../../python/plugins/mapserver_export/mapserverexportdialog.py; sourceTree = SOURCE_ROOT; };
 		7209EDD80F39E5D9003DC336 /* ms_export.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ms_export.py; path = ../../python/plugins/mapserver_export/ms_export.py; sourceTree = SOURCE_ROOT; };
 		7209EDD90F39E5D9003DC336 /* qgsmapserverexportbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsmapserverexportbase.ui; path = ../../python/plugins/mapserver_export/qgsmapserverexportbase.ui; sourceTree = SOURCE_ROOT; };
-		7209EDDA0F39E5D9003DC336 /* resources.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = resources.py; path = ../../python/plugins/mapserver_export/resources.py; sourceTree = SOURCE_ROOT; };
 		7209EDDB0F39E5D9003DC336 /* resources.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resources.qrc; path = ../../python/plugins/mapserver_export/resources.qrc; sourceTree = SOURCE_ROOT; };
-		7209EDDC0F39E5D9003DC336 /* ui_mapserverexport.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ui_mapserverexport.py; path = ../../python/plugins/mapserver_export/ui_mapserverexport.py; sourceTree = SOURCE_ROOT; };
 		7209EDDE0F39E5D9003DC336 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = ../../python/plugins/plugin_installer/__init__.py; sourceTree = SOURCE_ROOT; };
 		7209EDDF0F39E5D9003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../python/plugins/plugin_installer/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		7209EDE10F39E5D9003DC336 /* installer_data.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = installer_data.py; path = ../../python/plugins/plugin_installer/installer_data.py; sourceTree = SOURCE_ROOT; };
@@ -5954,6 +6057,68 @@
 		72745A020F770252007F4218 /* scale_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = scale_bar.png; path = ../../images/themes/gis/plugins/scale_bar.png; sourceTree = SOURCE_ROOT; };
 		72745A030F770252007F4218 /* spit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit.png; path = ../../images/themes/gis/plugins/spit.png; sourceTree = SOURCE_ROOT; };
 		72745A040F770252007F4218 /* wfs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wfs.png; path = ../../images/themes/gis/plugins/wfs.png; sourceTree = SOURCE_ROOT; };
+		7276103810A6099D00C89AF0 /* Bezier3D.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Bezier3D.cc; path = ../../src/analysis/interpolation/Bezier3D.cc; sourceTree = SOURCE_ROOT; };
+		7276103910A6099D00C89AF0 /* Bezier3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bezier3D.h; path = ../../src/analysis/interpolation/Bezier3D.h; sourceTree = SOURCE_ROOT; };
+		7276103A10A6099D00C89AF0 /* CloughTocherInterpolator.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CloughTocherInterpolator.cc; path = ../../src/analysis/interpolation/CloughTocherInterpolator.cc; sourceTree = SOURCE_ROOT; };
+		7276103B10A6099D00C89AF0 /* CloughTocherInterpolator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CloughTocherInterpolator.h; path = ../../src/analysis/interpolation/CloughTocherInterpolator.h; sourceTree = SOURCE_ROOT; };
+		7276103C10A6099D00C89AF0 /* NormVecDecorator.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NormVecDecorator.cc; path = ../../src/analysis/interpolation/NormVecDecorator.cc; sourceTree = SOURCE_ROOT; };
+		7276103D10A6099D00C89AF0 /* NormVecDecorator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormVecDecorator.h; path = ../../src/analysis/interpolation/NormVecDecorator.h; sourceTree = SOURCE_ROOT; };
+		7276103E10A6099D00C89AF0 /* ParametricLine.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ParametricLine.cc; path = ../../src/analysis/interpolation/ParametricLine.cc; sourceTree = SOURCE_ROOT; };
+		7276103F10A6099D00C89AF0 /* ParametricLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParametricLine.h; path = ../../src/analysis/interpolation/ParametricLine.h; sourceTree = SOURCE_ROOT; };
+		7276104010A6099D00C89AF0 /* TriDecorator.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TriDecorator.cc; path = ../../src/analysis/interpolation/TriDecorator.cc; sourceTree = SOURCE_ROOT; };
+		7276104110A6099D00C89AF0 /* TriDecorator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TriDecorator.h; path = ../../src/analysis/interpolation/TriDecorator.h; sourceTree = SOURCE_ROOT; };
+		7276104A10A60AC300C89AF0 /* analysis.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = analysis.sip; path = ../../python/analysis/analysis.sip; sourceTree = SOURCE_ROOT; };
+		7276104B10A60AC300C89AF0 /* qgsgeometryanalyzer.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgeometryanalyzer.sip; path = ../../python/analysis/qgsgeometryanalyzer.sip; sourceTree = SOURCE_ROOT; };
+		7276106710A6158A00C89AF0 /* 01.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 01.svg; path = ../../images/svg/north_arrows/01.svg; sourceTree = SOURCE_ROOT; };
+		7276106810A6158A00C89AF0 /* 02.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 02.svg; path = ../../images/svg/north_arrows/02.svg; sourceTree = SOURCE_ROOT; };
+		7276106910A6158A00C89AF0 /* 03.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 03.svg; path = ../../images/svg/north_arrows/03.svg; sourceTree = SOURCE_ROOT; };
+		7276106A10A6158A00C89AF0 /* 04.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 04.svg; path = ../../images/svg/north_arrows/04.svg; sourceTree = SOURCE_ROOT; };
+		7276106B10A6158A00C89AF0 /* 05.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 05.svg; path = ../../images/svg/north_arrows/05.svg; sourceTree = SOURCE_ROOT; };
+		7276106C10A6158A00C89AF0 /* 06.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 06.svg; path = ../../images/svg/north_arrows/06.svg; sourceTree = SOURCE_ROOT; };
+		7276106D10A6158A00C89AF0 /* 07.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 07.svg; path = ../../images/svg/north_arrows/07.svg; sourceTree = SOURCE_ROOT; };
+		7276106E10A6158A00C89AF0 /* 08.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 08.svg; path = ../../images/svg/north_arrows/08.svg; sourceTree = SOURCE_ROOT; };
+		7276106F10A6158A00C89AF0 /* 09.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 09.svg; path = ../../images/svg/north_arrows/09.svg; sourceTree = SOURCE_ROOT; };
+		7276107010A6158A00C89AF0 /* 10.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 10.svg; path = ../../images/svg/north_arrows/10.svg; sourceTree = SOURCE_ROOT; };
+		7276107110A6158A00C89AF0 /* 11.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 11.svg; path = ../../images/svg/north_arrows/11.svg; sourceTree = SOURCE_ROOT; };
+		7276107210A6158A00C89AF0 /* 12.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 12.svg; path = ../../images/svg/north_arrows/12.svg; sourceTree = SOURCE_ROOT; };
+		7276107310A6158A00C89AF0 /* 13.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 13.svg; path = ../../images/svg/north_arrows/13.svg; sourceTree = SOURCE_ROOT; };
+		7276107410A6158A00C89AF0 /* 14.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 14.svg; path = ../../images/svg/north_arrows/14.svg; sourceTree = SOURCE_ROOT; };
+		7276107510A6158A00C89AF0 /* 15.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 15.svg; path = ../../images/svg/north_arrows/15.svg; sourceTree = SOURCE_ROOT; };
+		7276107610A6158A00C89AF0 /* 16.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 16.svg; path = ../../images/svg/north_arrows/16.svg; sourceTree = SOURCE_ROOT; };
+		7276107710A6158A00C89AF0 /* 17.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 17.svg; path = ../../images/svg/north_arrows/17.svg; sourceTree = SOURCE_ROOT; };
+		7276107810A6158A00C89AF0 /* 18.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 18.svg; path = ../../images/svg/north_arrows/18.svg; sourceTree = SOURCE_ROOT; };
+		7276107910A6158A00C89AF0 /* 19.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 19.svg; path = ../../images/svg/north_arrows/19.svg; sourceTree = SOURCE_ROOT; };
+		7276107A10A6158A00C89AF0 /* 20.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 20.svg; path = ../../images/svg/north_arrows/20.svg; sourceTree = SOURCE_ROOT; };
+		7276107B10A6158A00C89AF0 /* 21.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 21.svg; path = ../../images/svg/north_arrows/21.svg; sourceTree = SOURCE_ROOT; };
+		7276107C10A6158A00C89AF0 /* 22.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 22.svg; path = ../../images/svg/north_arrows/22.svg; sourceTree = SOURCE_ROOT; };
+		7276107D10A6158A00C89AF0 /* 23.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 23.svg; path = ../../images/svg/north_arrows/23.svg; sourceTree = SOURCE_ROOT; };
+		7276107E10A6158A00C89AF0 /* 24.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 24.svg; path = ../../images/svg/north_arrows/24.svg; sourceTree = SOURCE_ROOT; };
+		7276107F10A6158A00C89AF0 /* 25.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 25.svg; path = ../../images/svg/north_arrows/25.svg; sourceTree = SOURCE_ROOT; };
+		7276108010A6158A00C89AF0 /* 26.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 26.svg; path = ../../images/svg/north_arrows/26.svg; sourceTree = SOURCE_ROOT; };
+		7276108110A6158A00C89AF0 /* 27.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 27.svg; path = ../../images/svg/north_arrows/27.svg; sourceTree = SOURCE_ROOT; };
+		7276108210A6158A00C89AF0 /* 28.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 28.svg; path = ../../images/svg/north_arrows/28.svg; sourceTree = SOURCE_ROOT; };
+		7276108310A6158A00C89AF0 /* 29.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 29.svg; path = ../../images/svg/north_arrows/29.svg; sourceTree = SOURCE_ROOT; };
+		7276108410A6158A00C89AF0 /* 30.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 30.svg; path = ../../images/svg/north_arrows/30.svg; sourceTree = SOURCE_ROOT; };
+		7276108510A6158A00C89AF0 /* 31.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 31.svg; path = ../../images/svg/north_arrows/31.svg; sourceTree = SOURCE_ROOT; };
+		7276108610A6158A00C89AF0 /* 32.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 32.svg; path = ../../images/svg/north_arrows/32.svg; sourceTree = SOURCE_ROOT; };
+		7276108710A6158A00C89AF0 /* 33.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 33.svg; path = ../../images/svg/north_arrows/33.svg; sourceTree = SOURCE_ROOT; };
+		7276108810A6158A00C89AF0 /* 34.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 34.svg; path = ../../images/svg/north_arrows/34.svg; sourceTree = SOURCE_ROOT; };
+		7276108910A6158A00C89AF0 /* 35.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 35.svg; path = ../../images/svg/north_arrows/35.svg; sourceTree = SOURCE_ROOT; };
+		7276108A10A6158A00C89AF0 /* 36.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 36.svg; path = ../../images/svg/north_arrows/36.svg; sourceTree = SOURCE_ROOT; };
+		7276108B10A6158A00C89AF0 /* 37.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 37.svg; path = ../../images/svg/north_arrows/37.svg; sourceTree = SOURCE_ROOT; };
+		7276108C10A6158A00C89AF0 /* 38.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 38.svg; path = ../../images/svg/north_arrows/38.svg; sourceTree = SOURCE_ROOT; };
+		7276108D10A6158A00C89AF0 /* 39.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 39.svg; path = ../../images/svg/north_arrows/39.svg; sourceTree = SOURCE_ROOT; };
+		7276108E10A6158A00C89AF0 /* 40.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 40.svg; path = ../../images/svg/north_arrows/40.svg; sourceTree = SOURCE_ROOT; };
+		7276108F10A6158A00C89AF0 /* 41.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 41.svg; path = ../../images/svg/north_arrows/41.svg; sourceTree = SOURCE_ROOT; };
+		7276109010A6158A00C89AF0 /* 42.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 42.svg; path = ../../images/svg/north_arrows/42.svg; sourceTree = SOURCE_ROOT; };
+		7276109110A6158A00C89AF0 /* 43.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 43.svg; path = ../../images/svg/north_arrows/43.svg; sourceTree = SOURCE_ROOT; };
+		7276109210A6158A00C89AF0 /* 44.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 44.svg; path = ../../images/svg/north_arrows/44.svg; sourceTree = SOURCE_ROOT; };
+		7276109310A6158A00C89AF0 /* 45.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 45.svg; path = ../../images/svg/north_arrows/45.svg; sourceTree = SOURCE_ROOT; };
+		7276109410A6158A00C89AF0 /* 46.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 46.svg; path = ../../images/svg/north_arrows/46.svg; sourceTree = SOURCE_ROOT; };
+		7276109510A6158A00C89AF0 /* 47.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 47.svg; path = ../../images/svg/north_arrows/47.svg; sourceTree = SOURCE_ROOT; };
+		7276109610A6158A00C89AF0 /* 48.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 48.svg; path = ../../images/svg/north_arrows/48.svg; sourceTree = SOURCE_ROOT; };
+		7276109710A6158A00C89AF0 /* 49.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 49.svg; path = ../../images/svg/north_arrows/49.svg; sourceTree = SOURCE_ROOT; };
+		7276109810A6158A00C89AF0 /* 50.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = 50.svg; path = ../../images/svg/north_arrows/50.svg; sourceTree = SOURCE_ROOT; };
 		72779E8D104060CF00CA9DE5 /* 361087368_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 361087368_pl_PL; path = ../../resources/context_help/361087368_pl_PL; sourceTree = SOURCE_ROOT; };
 		72779E8E104060CF00CA9DE5 /* 831088384_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 831088384_pl_PL; path = ../../resources/context_help/831088384_pl_PL; sourceTree = SOURCE_ROOT; };
 		72779E8F104060CF00CA9DE5 /* 939347163_pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 939347163_pl_PL; path = ../../resources/context_help/939347163_pl_PL; sourceTree = SOURCE_ROOT; };
@@ -9611,6 +9776,7 @@
 				7209ED880F39E5D9003DC336 /* configure.py.in */,
 				7209ED890F39E5D9003DC336 /* core */,
 				7209EDBD0F39E5D9003DC336 /* gui */,
+				7276104910A60AC300C89AF0 /* analysis */,
 				7209EDD00F39E5D9003DC336 /* plugins */,
 				7209EDF80F39E5D9003DC336 /* qgisconfig.py.in */,
 				72C83D4F10A5D08E00B97B43 /* utils.py */,
@@ -9743,9 +9909,7 @@
 				7209EDD70F39E5D9003DC336 /* mapserverexportdialog.py */,
 				7209EDD80F39E5D9003DC336 /* ms_export.py */,
 				7209EDD90F39E5D9003DC336 /* qgsmapserverexportbase.ui */,
-				7209EDDA0F39E5D9003DC336 /* resources.py */,
 				7209EDDB0F39E5D9003DC336 /* resources.qrc */,
-				7209EDDC0F39E5D9003DC336 /* ui_mapserverexport.py */,
 			);
 			name = mapserver_export;
 			path = ../../python/plugins/mapserver_export;
@@ -9990,6 +10154,56 @@
 				7209EE720F39E5D9003DC336 /* NorthArrow4.svg */,
 				7209EE730F39E5D9003DC336 /* NorthArrow5.svg */,
 				7209EE740F39E5D9003DC336 /* NorthArrow6.svg */,
+				7276106710A6158A00C89AF0 /* 01.svg */,
+				7276106810A6158A00C89AF0 /* 02.svg */,
+				7276106910A6158A00C89AF0 /* 03.svg */,
+				7276106A10A6158A00C89AF0 /* 04.svg */,
+				7276106B10A6158A00C89AF0 /* 05.svg */,
+				7276106C10A6158A00C89AF0 /* 06.svg */,
+				7276106D10A6158A00C89AF0 /* 07.svg */,
+				7276106E10A6158A00C89AF0 /* 08.svg */,
+				7276106F10A6158A00C89AF0 /* 09.svg */,
+				7276107010A6158A00C89AF0 /* 10.svg */,
+				7276107110A6158A00C89AF0 /* 11.svg */,
+				7276107210A6158A00C89AF0 /* 12.svg */,
+				7276107310A6158A00C89AF0 /* 13.svg */,
+				7276107410A6158A00C89AF0 /* 14.svg */,
+				7276107510A6158A00C89AF0 /* 15.svg */,
+				7276107610A6158A00C89AF0 /* 16.svg */,
+				7276107710A6158A00C89AF0 /* 17.svg */,
+				7276107810A6158A00C89AF0 /* 18.svg */,
+				7276107910A6158A00C89AF0 /* 19.svg */,
+				7276107A10A6158A00C89AF0 /* 20.svg */,
+				7276107B10A6158A00C89AF0 /* 21.svg */,
+				7276107C10A6158A00C89AF0 /* 22.svg */,
+				7276107D10A6158A00C89AF0 /* 23.svg */,
+				7276107E10A6158A00C89AF0 /* 24.svg */,
+				7276107F10A6158A00C89AF0 /* 25.svg */,
+				7276108010A6158A00C89AF0 /* 26.svg */,
+				7276108110A6158A00C89AF0 /* 27.svg */,
+				7276108210A6158A00C89AF0 /* 28.svg */,
+				7276108310A6158A00C89AF0 /* 29.svg */,
+				7276108410A6158A00C89AF0 /* 30.svg */,
+				7276108510A6158A00C89AF0 /* 31.svg */,
+				7276108610A6158A00C89AF0 /* 32.svg */,
+				7276108710A6158A00C89AF0 /* 33.svg */,
+				7276108810A6158A00C89AF0 /* 34.svg */,
+				7276108910A6158A00C89AF0 /* 35.svg */,
+				7276108A10A6158A00C89AF0 /* 36.svg */,
+				7276108B10A6158A00C89AF0 /* 37.svg */,
+				7276108C10A6158A00C89AF0 /* 38.svg */,
+				7276108D10A6158A00C89AF0 /* 39.svg */,
+				7276108E10A6158A00C89AF0 /* 40.svg */,
+				7276108F10A6158A00C89AF0 /* 41.svg */,
+				7276109010A6158A00C89AF0 /* 42.svg */,
+				7276109110A6158A00C89AF0 /* 43.svg */,
+				7276109210A6158A00C89AF0 /* 44.svg */,
+				7276109310A6158A00C89AF0 /* 45.svg */,
+				7276109410A6158A00C89AF0 /* 46.svg */,
+				7276109510A6158A00C89AF0 /* 47.svg */,
+				7276109610A6158A00C89AF0 /* 48.svg */,
+				7276109710A6158A00C89AF0 /* 49.svg */,
+				7276109810A6158A00C89AF0 /* 50.svg */,
 			);
 			name = north_arrows;
 			path = ../../images/svg/north_arrows;
@@ -10654,6 +10868,16 @@
 				721597D51052B2B0003D1610 /* Triangulation.h */,
 				721597D61052B2B0003D1610 /* Vector3D.cc */,
 				721597D71052B2B0003D1610 /* Vector3D.h */,
+				7276103810A6099D00C89AF0 /* Bezier3D.cc */,
+				7276103910A6099D00C89AF0 /* Bezier3D.h */,
+				7276103A10A6099D00C89AF0 /* CloughTocherInterpolator.cc */,
+				7276103B10A6099D00C89AF0 /* CloughTocherInterpolator.h */,
+				7276103C10A6099D00C89AF0 /* NormVecDecorator.cc */,
+				7276103D10A6099D00C89AF0 /* NormVecDecorator.h */,
+				7276103E10A6099D00C89AF0 /* ParametricLine.cc */,
+				7276103F10A6099D00C89AF0 /* ParametricLine.h */,
+				7276104010A6099D00C89AF0 /* TriDecorator.cc */,
+				7276104110A6099D00C89AF0 /* TriDecorator.h */,
 			);
 			name = interpolation;
 			path = ../../src/analysis/interpolation;
@@ -10859,6 +11083,16 @@
 			);
 			name = coordinate_capture;
 			path = ../../images/themes/gis/plugins/coordinate_capture;
+			sourceTree = SOURCE_ROOT;
+		};
+		7276104910A60AC300C89AF0 /* analysis */ = {
+			isa = PBXGroup;
+			children = (
+				7276104A10A60AC300C89AF0 /* analysis.sip */,
+				7276104B10A60AC300C89AF0 /* qgsgeometryanalyzer.sip */,
+			);
+			name = analysis;
+			path = ../../python/analysis;
 			sourceTree = SOURCE_ROOT;
 		};
 		727E6AED0FEA909E00DF6F64 /* src */ = {
@@ -13244,7 +13478,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# generate and run configure.py\n\nif [ ! -f \"$TARGET_TEMP_DIR/python/python/configure.py\" ] || [ ../../python/configure.py.in -nt \"$TARGET_TEMP_DIR/python/python/configure.py\" ] ; then\n\nif [ \"$GDAL_FORM\" = \"fw\" ] ; then\n\tGDALPATH=\"$GDAL_PREFIX/unix/lib\"\nelse\n\tGDALPATH=\"$GDAL_PREFIX/lib\"\nfi\n\nif [ \"$GEOS_FORM\" = \"fw\" ] ; then\n\tGEOSPATH=\"$GEOS_PREFIX/unix/lib\"\nelse\n\tGEOSPATH=\"$GEOS_PREFIX/lib\"\nfi\n\nsed -e \"s,@CMAKE_SOURCE_DIR@,$PROJECT_DIR/../..,\" \\\n\t-e \"s,@CMAKE_BINARY_DIR@,$TARGET_TEMP_DIR/python,\" \\\n\t-e \"s,@GDAL_INCLUDE_DIR@,$GDAL_INC,\" \\\n\t-e \"s,@GEOS_INCLUDE_DIR@,$GEOS_INC,\" \\\n\t-e \"s,@GEOS_LIB_NAME@,geos,\" \\\n\t-e \"s,@GEOS_LIB_PATH@,$GEOSPATH,\" \\\n\t-e \"s,@GDAL_LIB_NAME@,gdal,\" \\\n\t-e \"s,@GDAL_LIB_PATH@,$GDALPATH,\" \\\n\t-e \"s,@CMAKE_OSX_ARCHITECTURES@,$ARCHS_P,\" \\\n\t-e \"s,@CMAKE_OSX_SYSROOT@,$SDKROOT,\" \\\n\t-e \"s,@CMAKE_MODULE_LINKER_FLAGS@,,\" \\\n\t../../python/configure.py.in > \"$TARGET_TEMP_DIR/python/python/configure.py\"\n\nfi\n\ncd \"$TARGET_TEMP_DIR/python/python\"\nif [ ! -f core/Makefile ] || [ ! -f gui/Makefile ] || [ configure.py -nt core/Makefile ] || [ configure.py -nt gui/Makefile ] ; then\n\t$PYTHON configure.py .\nfi\n\nif [ -f core/Makefile ] && [ -f gui/Makefile ] ; then\n\texit 0\nelse\n\texit 1\nfi\n";
+			shellScript = "# generate and run configure.py\n\nif [ ! -f \"$TARGET_TEMP_DIR/python/python/configure.py\" ] || [ ../../python/configure.py.in -nt \"$TARGET_TEMP_DIR/python/python/configure.py\" ] ; then\n\nif [ \"$GDAL_FORM\" = \"fw\" ] ; then\n\tGDALPATH=\"$GDAL_PREFIX/unix/lib\"\nelse\n\tGDALPATH=\"$GDAL_PREFIX/lib\"\nfi\n\nif [ \"$GEOS_FORM\" = \"fw\" ] ; then\n\tGEOSPATH=\"$GEOS_PREFIX/unix/lib\"\nelse\n\tGEOSPATH=\"$GEOS_PREFIX/lib\"\nfi\n\nsed -e \"s,@CMAKE_SOURCE_DIR@,$PROJECT_DIR/../..,\" \\\n\t-e \"s,@CMAKE_BINARY_DIR@,$TARGET_TEMP_DIR/python,\" \\\n\t-e \"s,@GDAL_INCLUDE_DIR@,$GDAL_INC,\" \\\n\t-e \"s,@GEOS_INCLUDE_DIR@,$GEOS_INC,\" \\\n\t-e \"s,@GEOS_LIB_NAME@,geos,\" \\\n\t-e \"s,@GEOS_LIB_PATH@,$GEOSPATH,\" \\\n\t-e \"s,@GDAL_LIB_NAME@,gdal,\" \\\n\t-e \"s,@GDAL_LIB_PATH@,$GDALPATH,\" \\\n\t-e \"s,@CMAKE_OSX_ARCHITECTURES@,$ARCHS_P,\" \\\n\t-e \"s,@CMAKE_OSX_SYSROOT@,$SDKROOT,\" \\\n\t-e \"s,@CMAKE_MODULE_LINKER_FLAGS@,,\" \\\n\t../../python/configure.py.in > \"$TARGET_TEMP_DIR/python/python/configure.py\"\n\nfi\n\ncd \"$TARGET_TEMP_DIR/python/python\"\nif [ ! -f core/Makefile ] || [ ! -f gui/Makefile ] || [ configure.py -nt core/Makefile ] || [ configure.py -nt gui/Makefile ] ; then\n\t$PYTHON configure.py .\nfi\n\nif [ -f core/Makefile ] && [ -f gui/Makefile ] && [ -f analysis/Makefile ] ; then\n\texit 0\nelse\n\texit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		7256F23F0F41370A0022BE1F /* setup */ = {
@@ -13259,7 +13493,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"Setting up Python target...\"\n\n# setup dirs\n\nmkdir -p \"$TARGET_TEMP_DIR/python/python/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/python/gui\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/gui\"\n\n# setup some symlinks to make compilation happy\n\nln -sf \"$PROJECT_TARGET_DIR/include/qgsconfig.h\" \"$TARGET_TEMP_DIR/python/\"\nln -sf \"$PROJECT_TARGET_DIR/include/qgssvnversion.h\" \"$TARGET_TEMP_DIR/python/\"\n\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_core.dylib\" \"$TARGET_TEMP_DIR/python/src/core/\"\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_gui.dylib\" \"$TARGET_TEMP_DIR/python/src/gui/\"\n\ncd \"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\nuih=`ls ui_*.h`\ncd \"$TARGET_TEMP_DIR/python/src/gui\"\nfor h in $uih\ndo\n\tln -sf ../../../../qgis_gui.build/DerivedSources/$h $h\ndone\n\n# workaround for broken arch command on Snow - we need to run python 32bit (from pyuic4)\n\nif [ \"$SDKSYS\" = \"snow\" ] && [ \"$PYTHON_FORM\" = \"system\" ] ; then\n\tmkdir -p \"$TARGET_TEMP_DIR/python/bin/\"\n\tditto -arch i386 /System/Library/Frameworks/Python.framework/Versions/2.6/bin/pythonw2.6 \"$TARGET_TEMP_DIR/python/bin/pythonw\"\nfi\n\nexit 0\n";
+			shellScript = "echo \"Setting up Python target...\"\n\n# setup dirs\n\nmkdir -p \"$TARGET_TEMP_DIR/python/python/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/python/gui\"\nmkdir -p \"$TARGET_TEMP_DIR/python/python/analysis\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/gui\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/analysis\"\n\n# setup some symlinks to make compilation happy\n\nln -sf \"$PROJECT_TARGET_DIR/include/qgsconfig.h\" \"$TARGET_TEMP_DIR/python/\"\nln -sf \"$PROJECT_TARGET_DIR/include/qgssvnversion.h\" \"$TARGET_TEMP_DIR/python/\"\n\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_core.dylib\" \"$TARGET_TEMP_DIR/python/src/core/\"\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_gui.dylib\" \"$TARGET_TEMP_DIR/python/src/gui/\"\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_analysis.dylib\" \"$TARGET_TEMP_DIR/python/src/analysis/\"\n\ncd \"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\nuih=`ls ui_*.h`\ncd \"$TARGET_TEMP_DIR/python/src/gui\"\nfor h in $uih\ndo\n\tln -sf ../../../../qgis_gui.build/DerivedSources/$h $h\ndone\n\n# workaround for broken arch command on Snow - we need to run python 32bit (from pyuic4)\n\nif [ \"$SDKSYS\" = \"snow\" ] && [ \"$PYTHON_FORM\" = \"system\" ] ; then\n\tmkdir -p \"$TARGET_TEMP_DIR/python/bin/\"\n\tditto -arch i386 /System/Library/Frameworks/Python.framework/Versions/2.6/bin/pythonw2.6 \"$TARGET_TEMP_DIR/python/bin/pythonw\"\nfi\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		7256F2760F413B400022BE1F /* make */ = {
@@ -13274,7 +13508,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$TARGET_TEMP_DIR/python/python/core\"\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f core.so ] ; then\n\texit 1\nfi\n\ncd ../gui\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f gui.so ] ; then\n\texit 1\nfi\n\nexit 0\n";
+			shellScript = "cd \"$TARGET_TEMP_DIR/python/python/core\"\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f core.so ] ; then\n\texit 1\nfi\n\ncd ../gui\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f gui.so ] ; then\n\texit 1\nfi\n\ncd ../analysis\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f analysis.so ] ; then\n\texit 1\nfi\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		7256FA100F41D03B0022BE1F /* Script - qt.conf */ = {
@@ -13334,7 +13568,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nif [ -f \"$TARGET_TEMP_DIR/python/python/core/core.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/core/core.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/gui/gui.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/gui/gui.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/qgisconfig.py\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/qgisconfig.py\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\n";
+			shellScript = "mkdir -p \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nif [ -f \"$TARGET_TEMP_DIR/python/python/core/core.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/core/core.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/gui/gui.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/gui/gui.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/analysis/analysis.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/analysis/analysis.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/qgisconfig.py\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/qgisconfig.py\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		727E6B3D0FEAAD0D00DF6F64 /* Script - optional moc */ = {
@@ -13708,7 +13942,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# qt arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\n# copy Qt frameworks\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tditto $QARCHS \"/Library/Frameworks/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$q\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tditto $QARCHS \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$qd\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"/Library/Frameworks/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tditto $QARCHS \"/Library/Frameworks/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tditto $QARCHS \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tditto $QARCHS \"$PYSITE/sip.so\" \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tditto $QARCHS \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls *.dylib`\n\n# main Qt framework loop\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tqq=\"$q.framework/Versions/$QT_FWVER/$q\"\n\t# app\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/Qgis\"\n\t# bin\n\t# qgis_help qt linking done with symlinks\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t# libs\n\tfor ql in $qgliblist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\tdone\n\t# plugins\n\tfor qp in $pluglist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\tdone\n\t# qt fw\n\tfor qf in $QTLISTQG\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\tdone\n\t# qt plugs\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t# PyQt\n\tif [ \"$PYSITE\" ] ; then\n\tfor pq in $PYQTLIST\n\t\tdo\n\t\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\tdone\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/core.so\"\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/gui.so\"\n\tfi\ndone\n";
+			shellScript = "# Note: assumes default Qt binary framework install\n\nAPPDIRC=\"$QGIS_BUILD_PATH\" # app contents\nAPPDIR=\"$APPDIRC/MacOS\"\nFWDIR=\"$APPDIR/$QGIS_FW_SUBDIR\"\nLIBDIR=\"$APPDIR/$QGIS_LIB_SUBDIR\"\nQGISPYDIR=\"$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# qt arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\n# copy Qt frameworks\nmkdir -p \"$FWDIR\"\nfor q in $QTLISTQG\ndo\n\tif [ ! -d \"$FWDIR/$q.framework\" ] ; then\n\t\t# reconstruct framework to avoid excessive copying, then deleting\n\t\t#   especially when debug variants are present\n\t\tmkdir -p \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\tln -sfh $QT_FWVER \"$FWDIR/$q.framework/Versions/Current\"\n\t\tditto $QARCHS \"/Library/Frameworks/$q.framework/$q\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$q\"\n\t\tln -sf Versions/Current/$q \"$FWDIR/$q.framework/$q\"\n\t\tif [ -d \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" ] ; then\n\t\t\tcp -Rfp \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/Resources\" \"$FWDIR/$q.framework/Versions/$QT_FWVER\"\n\t\t\tln -sfh Versions/Current/Resources \"$FWDIR/$q.framework/Resources\"\n\t\tfi\n\t\t# debug variants\n\t\tqd=$q\"_debug\"\n\t\tif [ \"$CONFIGURATION\" = \"Debug\" ] && [ -f \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" ] ; then\n\t\t\tditto $QARCHS \"/Library/Frameworks/$q.framework/Versions/$QT_FWVER/$qd\" \"$FWDIR/$q.framework/Versions/$QT_FWVER/$qd\"\n\t\t\tln -sf Versions/Current/$qd \"$FWDIR/$q.framework/$qd\"\n\t\t\tif [ -d \"/Library/Frameworks/$q.framework/$qd.dSYM\" ] ; then\n\t\t\t\tditto $QARCHS \"/Library/Frameworks/$q.framework/$qd.dSYM\" \"$FWDIR/$q.framework\"\n\t\t\tfi\n\t\tfi\n\tfi\ndone\n\n# copy Qt plugins\nmkdir -p \"$APPDIRC/PlugIns/imageformats\"\nif [ ! -f \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\" ] ; then\n\tditto $QARCHS \"$QT_PLUGINS_DIR/imageformats/libqjpeg.dylib\" \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\nfi\n\n# PyQt path based on PYTHON_FORM\n\nif [ \"$PYSITE\" ] ; then\n\tmkdir -p \"$QGISPYDIR/PyQt$QT_FWVER\"\n\tif [ ! -f \"$QGISPYDIR/sip.so\" ] ; then\n\t\tditto $QARCHS \"$PYSITE/sip.so\" \"$PYSITE/sipconfig.py\" \"$QGISPYDIR/\"\n\tfi\n\tfor q in $PYQTLIST\n\tdo\n\t\tif [ ! -f \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\" ] ; then\n\t\t\tditto $QARCHS \"$PYSITE/PyQt$QT_FWVER/$q.so\" \"$QGISPYDIR/PyQt$QT_FWVER/$q.so\"\n\t\tfi\n\tdone\n\tcp -fp \"$PYSITE/PyQt$QT_FWVER/\"*.py \"$QGISPYDIR/PyQt$QT_FWVER/\"\nfi\n\n# just in case no plugins were compiled\nmkdir -p \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\n# list plugins & libs\ncd \"$APPDIR/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls`\ncd \"$APPDIR/$QGIS_LIB_SUBDIR\"\nqgliblist=`ls *.dylib`\nif [ \"$PYSITE\" ] ; then\n\tcd \"$QGISPYDIR/qgis\"\n\tqgpylist=`ls *.so`\nfi\n\n# main Qt framework loop\n\ncd \"$APPDIR\"\n\nfor q in $QTLISTQG\ndo\n\tqq=\"$q.framework/Versions/$QT_FWVER/$q\"\n\t# app\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/Qgis\"\n\t# bin\n\t# qgis_help qt linking done with symlinks\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_BIN_SUBDIR/qgis_help.app/Contents/MacOS/qgis_help\"\n\t# libs\n\tfor ql in $qgliblist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_LIB_SUBDIR/$ql\"\n\tdone\n\t# plugins\n\tfor qp in $pluglist\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_PLUGIN_SUBDIR/$qp\"\n\tdone\n\t# qt fw\n\tfor qf in $QTLISTQG\n\tdo\n\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIR/$QGIS_FW_SUBDIR/$qf.framework/Versions/$QT_FWVER/$qf\"\n\tdone\n\t# qt plugs\n\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$APPDIRC/PlugIns/imageformats/libqjpeg.dylib\"\n\t# PyQt\n\tif [ \"$PYSITE\" ] ; then\n\t\tfor pq in $PYQTLIST\n\t\tdo\n\t\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/PyQt$QT_FWVER/$pq.so\"\n\t\tdone\n\t\tfor pg in $qgpylist\n\t\tdo\n\t\t\tinstall_name_tool -change $qq @executable_path/$QGIS_FW_SUBDIR/$qq \"$QGISPYDIR/qgis/$pg\"\n\t\tdone\n\tfi\ndone\n";
 			showEnvVarsInLog = 0;
 		};
 		72FB0B4B0FFD680F0052360B /* Script - ui */ = {
@@ -13973,6 +14207,11 @@
 				7215983B1052B8F2003D1610 /* qgstotalcurvaturefilter.cpp in Sources */,
 				7215983C1052B8FC003D1610 /* qgsgeometryanalyzer.cpp in Sources */,
 				72BD9FE510A499D700FEA70F /* qgszonalstatistics.cpp in Sources */,
+				7276104210A609D300C89AF0 /* Bezier3D.cc in Sources */,
+				7276104310A609D300C89AF0 /* CloughTocherInterpolator.cc in Sources */,
+				7276104410A609D300C89AF0 /* NormVecDecorator.cc in Sources */,
+				7276104510A609D300C89AF0 /* ParametricLine.cc in Sources */,
+				7276104610A609D300C89AF0 /* TriDecorator.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

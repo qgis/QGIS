@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44.1"
+   sodipodi:docbase="F:\QGIS_N_ARROWS\NORD"
+   sodipodi:docname="FINALE.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="414.14341"
+     inkscape:cy="598.88116"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="744"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2608"
+       inkscape:export-filename="F:\QGIS_N_ARROWS\NORD\FINALE.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300">
+      <path
+         id="path1965"
+         d="M 391.34752,395.97405 L 391.34752,649.76343 L 412.5493,649.76343 L 412.5493,446.7319 L 428.2613,463.65123 L 391.34752,345.21606 L 391.34752,395.97405"
+         style="fill:black;fill-opacity:1;fill-rule:evenodd;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         transform="matrix(12.2222,0,0,15.88943,-3931.465,-7755.856)"
+         d="M 356.47322 530.55414 A 1.8973215 1.8973215 0 1 1  352.67858,530.55414 A 1.8973215 1.8973215 0 1 1  356.47322 530.55414 z"
+         sodipodi:ry="1.8973215"
+         sodipodi:rx="1.8973215"
+         sodipodi:cy="530.55414"
+         sodipodi:cx="354.5759"
+         id="path1967"
+         style="opacity:0.97000002;fill:black;fill-opacity:1;stroke-width:6.4000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <flowRoot
+         transform="matrix(2.006144,0,0,2.033494,-291.9793,-277.2286)"
+         style="font-size:56px;stroke:none;font-family:Arial Black"
+         id="flowRoot3224"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3226"><rect
+             style="font-size:56px;stroke:none;font-family:Arial Black"
+             y="270.93362"
+             x="321.42856"
+             height="74.285713"
+             width="68.571426"
+             id="rect3228" /></flowRegion><flowPara
+           id="flowPara3230">N</flowPara></flowRoot>    </g>
+  </g>
+</svg>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44.1"
+   sodipodi:docbase="F:\Qgis N_arrows"
+   sodipodi:docname="rosa40.svg"
+   inkscape:export-filename="F:\Qgis N_arrows\rosa40.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="375"
+     inkscape:cy="523.98705"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="744"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:white;fill-opacity:1;stroke:black;stroke-width:3.33699989;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1904"
+       width="2.1465743"
+       height="0"
+       x="-160.16536"
+       y="696.0271" />
+    <g
+       id="g2144"
+       transform="translate(147.4823,-135.3604)">
+      <flowRoot
+         transform="translate(62.99523,387.6155)"
+         style="font-size:56px;font-family:Arial Black"
+         id="flowRoot2798"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2800"><rect
+             style="font-size:56px;font-family:Arial Black"
+             y="270.93362"
+             x="321.42856"
+             height="74.285713"
+             width="68.571426"
+             id="rect2802" /></flowRegion><flowPara
+           id="flowPara2804">E</flowPara></flowRoot>      <flowRoot
+         transform="translate(-153.9441,221.7576)"
+         style="font-size:56px;font-family:Arial Black"
+         id="flowRoot2790"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2792"><rect
+             style="font-size:56px;font-family:Arial Black"
+             y="270.93362"
+             x="321.42856"
+             height="74.285713"
+             width="68.571426"
+             id="rect2794" /></flowRegion><flowPara
+           id="flowPara2796">N</flowPara></flowRoot>      <path
+         id="path2062"
+         d="M 176.84684,724.44699 L 176.84684,612.81612 L 137.59642,612.81612 L 195.62605,554.45354 L 255.34769,612.81612 L 216.09727,612.81612 L 216.09727,671.44638 L 294.59812,672.15116 L 294.59812,640.72384 L 373.09896,684.13235 L 294.59812,724.44699 L 294.59812,696.53927 L 216.09727,696.53927 L 216.09727,752.35469 L 176.84684,752.35469 L 176.84684,724.44699 z "
+         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:6.6193347px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>
