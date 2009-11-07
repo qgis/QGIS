@@ -58,19 +58,13 @@ MapCoordsDialog::~MapCoordsDialog()
 void MapCoordsDialog::updateOK()
 {
   bool enable = ( leXCoord->text().size() != 0 && leYCoord->text().size() != 0 );
-  buttonOk->setEnabled( enable );
+  buttonBox->button( QDialogButtonBox::Ok  )->setEnabled( enable );
 }
 
-void MapCoordsDialog::on_buttonOk_clicked()
+void MapCoordsDialog::accept()
 {
   QgsPoint mapCoords( leXCoord->text().toDouble(), leYCoord->text().toDouble() );
   emit pointAdded( mPixelCoords, mapCoords );
-  accept();
-}
-
-void MapCoordsDialog::on_buttonCancel_clicked()
-{
-  reject();
 }
 
 void MapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button )

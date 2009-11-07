@@ -1,197 +1,147 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <author>Gary Sherman</author>
  <class>QgsMapserverExportBase</class>
- <widget class="QDialog" name="QgsMapserverExportBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsMapserverExportBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>416</width>
-    <height>480</height>
+    <width>400</width>
+    <height>522</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Export to Mapserver</string>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <property name="leftMargin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>9</number>
    </property>
-   <property name="topMargin" >
-    <number>9</number>
-   </property>
-   <property name="rightMargin" >
-    <number>9</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>9</number>
-   </property>
-   <property name="horizontalSpacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <property name="verticalSpacing" >
-    <number>6</number>
-   </property>
-   <item row="4" column="0" colspan="3" >
-    <widget class="QGroupBox" name="grpWeb" >
-     <property name="title" >
+   <item row="5" column="0" colspan="3">
+    <widget class="QGroupBox" name="grpWeb">
+     <property name="title">
       <string>Web Interface Definition</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="leftMargin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>0</number>
       </property>
-      <property name="topMargin" >
+      <property name="spacing">
        <number>0</number>
       </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>0</number>
-      </property>
-      <property name="horizontalSpacing" >
-       <number>0</number>
-      </property>
-      <property name="verticalSpacing" >
-       <number>0</number>
-      </property>
-      <item row="0" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+      <item row="0" column="0">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>4</number>
-        </property>
-        <property name="topMargin" >
-         <number>4</number>
-        </property>
-        <property name="rightMargin" >
-         <number>4</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>4</number>
         </property>
         <item>
-         <widget class="QLabel" name="textLabel5_2" >
-          <property name="minimumSize" >
+         <widget class="QLabel" name="textLabel5_2">
+          <property name="minimumSize">
            <size>
             <width>60</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Template</string>
           </property>
-          <property name="buddy" >
+          <property name="buddy">
            <cstring>txtWebTemplate</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtWebTemplate" >
-          <property name="toolTip" >
+         <widget class="QLineEdit" name="txtWebTemplate">
+          <property name="toolTip">
            <string>Path to the MapServer template file</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnChooseTemplateFile" >
-          <property name="text" >
+         <widget class="QPushButton" name="btnChooseTemplateFile">
+          <property name="text">
            <string>Browse...</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+      <item row="1" column="0">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>4</number>
-        </property>
-        <property name="topMargin" >
-         <number>4</number>
-        </property>
-        <property name="rightMargin" >
-         <number>4</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>4</number>
         </property>
         <item>
-         <widget class="QLabel" name="textLabel5" >
-          <property name="minimumSize" >
+         <widget class="QLabel" name="textLabel5">
+          <property name="minimumSize">
            <size>
             <width>60</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Header</string>
           </property>
-          <property name="buddy" >
+          <property name="buddy">
            <cstring>txtWebHeader</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtWebHeader" />
+         <widget class="QLineEdit" name="txtWebHeader"/>
         </item>
         <item>
-         <widget class="QPushButton" name="btnChooseHeaderFile" >
-          <property name="text" >
+         <widget class="QPushButton" name="btnChooseHeaderFile">
+          <property name="text">
            <string>Browse...</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="2" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+      <item row="2" column="0">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>4</number>
-        </property>
-        <property name="topMargin" >
-         <number>4</number>
-        </property>
-        <property name="rightMargin" >
-         <number>4</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>4</number>
         </property>
         <item>
-         <widget class="QLabel" name="textLabel5_3" >
-          <property name="minimumSize" >
+         <widget class="QLabel" name="textLabel5_3">
+          <property name="minimumSize">
            <size>
             <width>60</width>
             <height>0</height>
            </size>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Footer</string>
           </property>
-          <property name="buddy" >
+          <property name="buddy">
            <cstring>txtWebFooter</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtWebFooter" />
+         <widget class="QLineEdit" name="txtWebFooter"/>
         </item>
         <item>
-         <widget class="QPushButton" name="btnChooseFooterFile" >
-          <property name="text" >
+         <widget class="QPushButton" name="btnChooseFooterFile">
+          <property name="text">
            <string>Browse...</string>
           </property>
          </widget>
@@ -201,111 +151,89 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3" >
-    <widget class="QGroupBox" name="grpMap" >
-     <property name="title" >
+   <item row="3" column="0" colspan="3">
+    <widget class="QGroupBox" name="grpMap">
+     <property name="title">
       <string>Map</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="leftMargin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>0</number>
       </property>
-      <property name="topMargin" >
+      <property name="spacing">
        <number>0</number>
       </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>0</number>
-      </property>
-      <property name="horizontalSpacing" >
-       <number>0</number>
-      </property>
-      <property name="verticalSpacing" >
-       <number>0</number>
-      </property>
-      <item row="2" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+      <item row="2" column="0">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>4</number>
-        </property>
-        <property name="topMargin" >
-         <number>4</number>
-        </property>
-        <property name="rightMargin" >
-         <number>4</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>4</number>
         </property>
         <item>
-         <widget class="QLabel" name="textLabel3" >
-          <property name="text" >
+         <widget class="QLabel" name="textLabel3">
+          <property name="text">
            <string>Units</string>
           </property>
-          <property name="alignment" >
+          <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-          <property name="buddy" >
+          <property name="buddy">
            <cstring>cmbMapUnits</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="cmbMapUnits" >
-         </widget>
+         <widget class="QComboBox" name="cmbMapUnits"/>
         </item>
         <item>
-         <widget class="QLabel" name="textLabel4" >
-          <property name="text" >
+         <widget class="QLabel" name="textLabel4">
+          <property name="text">
            <string>Image type</string>
           </property>
-          <property name="alignment" >
+          <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
-          <property name="buddy" >
+          <property name="buddy">
            <cstring>cmbMapImageType</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="cmbMapImageType" >
+         <widget class="QComboBox" name="cmbMapImageType">
           <item>
-           <property name="text" >
-            <string>gif</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>gtiff</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>jpeg</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
+           <property name="text">
             <string>png</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
+            <string>gif</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>gtiff</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>jpeg</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
             <string>swf</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>userdefined</string>
            </property>
           </item>
           <item>
-           <property name="text" >
+           <property name="text">
             <string>wbmp</string>
            </property>
           </item>
@@ -313,84 +241,66 @@
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+      <item row="1" column="0">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>4</number>
-        </property>
-        <property name="topMargin" >
-         <number>4</number>
-        </property>
-        <property name="rightMargin" >
-         <number>4</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>4</number>
         </property>
         <item>
-         <widget class="QLabel" name="textLabel2" >
-          <property name="text" >
+         <widget class="QLabel" name="textLabel2">
+          <property name="text">
            <string>Width</string>
           </property>
-          <property name="buddy" >
+          <property name="buddy">
            <cstring>txtMapWidth</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtMapWidth" />
+         <widget class="QLineEdit" name="txtMapWidth"/>
         </item>
         <item>
-         <widget class="QLabel" name="textLabel2_2" >
-          <property name="text" >
+         <widget class="QLabel" name="textLabel2_2">
+          <property name="text">
            <string>Height</string>
           </property>
-          <property name="buddy" >
+          <property name="buddy">
            <cstring>txtMapHeight</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtMapHeight" />
+         <widget class="QLineEdit" name="txtMapHeight"/>
         </item>
        </layout>
       </item>
-      <item row="0" column="0" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+      <item row="0" column="0">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>4</number>
-        </property>
-        <property name="topMargin" >
-         <number>4</number>
-        </property>
-        <property name="rightMargin" >
-         <number>4</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin">
          <number>4</number>
         </property>
         <item>
-         <widget class="QLabel" name="textLabel1" >
-          <property name="toolTip" >
+         <widget class="QLabel" name="textLabel1">
+          <property name="toolTip">
            <string/>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Name</string>
           </property>
-          <property name="buddy" >
+          <property name="buddy">
            <cstring>txtMapName</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtMapName" >
-          <property name="toolTip" >
+         <widget class="QLineEdit" name="txtMapName">
+          <property name="toolTip">
            <string>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</string>
           </property>
          </widget>
@@ -400,74 +310,300 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="textLabel7" >
-     <property name="text" >
+   <item row="0" column="0">
+    <widget class="QLabel" name="textLabel7">
+     <property name="text">
       <string>Map file</string>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>txtMapFilePath</cstring>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <widget class="QLineEdit" name="txtMapFilePath" >
-     <property name="toolTip" >
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="txtMapFilePath">
+     <property name="toolTip">
       <string>Name for the map file to be created from the QGIS project file</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="2" >
-    <widget class="QPushButton" name="btnChooseProjectFile" >
-     <property name="text" >
+   <item row="1" column="2">
+    <widget class="QPushButton" name="btnChooseProjectFile">
+     <property name="text">
       <string>Browse...</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" >
-    <widget class="QLineEdit" name="txtQgisFilePath" >
-     <property name="toolTip" >
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="txtQgisFilePath">
+     <property name="toolTip">
       <string>Full path to the QGIS project file to export to MapServer map format</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="textLabel7_2" >
-     <property name="text" >
+   <item row="1" column="0">
+    <widget class="QLabel" name="textLabel7_2">
+     <property name="text">
       <string>QGIS project file</string>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>txtQgisFilePath</cstring>
      </property>
     </widget>
    </item>
-   <item row="0" column="2" >
-    <widget class="QPushButton" name="btnChooseFile" >
-     <property name="text" >
+   <item row="0" column="2">
+    <widget class="QPushButton" name="btnChooseFile">
+     <property name="text">
       <string>Save As...</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2" >
-    <widget class="QCheckBox" name="chkExpLayersOnly" >
-     <property name="toolTip" >
+   <item row="2" column="1" colspan="2">
+    <widget class="QCheckBox" name="chkExpLayersOnly">
+     <property name="toolTip">
       <string>If checked, only the layer information will be processed</string>
      </property>
-     <property name="text" >
+     <property name="text">
       <string>Export LAYER information only</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="3" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+   <item row="7" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="3">
+    <widget class="QGroupBox" name="grpOptions">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout" rowstretch="0" rowminimumheight="0">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="optionsLayout" stretch="0,0,0,0">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
+        <property name="margin">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="checkBoxForce">
+          <property name="toolTip">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Forces labels on, regardless of collisions. Available only for cached labels.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Force</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBoxAntiAlias">
+          <property name="toolTip">
+           <string>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</string>
+          </property>
+          <property name="text">
+           <string>Anti-alias</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBoxPartials">
+          <property name="toolTip">
+           <string>Can text run off the edge of the map?</string>
+          </property>
+          <property name="text">
+           <string>Partials</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBoxDump">
+          <property name="toolTip">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Dump</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QGroupBox" name="grpPaths">
+     <property name="title">
+      <string>Paths</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="margin">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabelMapServerUrl">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>MapServer url</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtMapServerUrl</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="txtMapServerUrl">
+          <property name="toolTip">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The URL to the mapserver executable.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;For example: &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;http://my.host.com/cgi-bin/mapserv.exe&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="margin">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabelFontsetPath">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Fontset path</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtFontsetPath</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="txtFontsetPath">
+          <property name="toolTip">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The URL to the mapserver executable.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;For example: &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;http://my.host.com/cgi-bin/mapserv.exe&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="margin">
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabelSymbolsetPath">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Symbolset path</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtSymbolsetPath</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="txtSymbolsetPath">
+          <property name="toolTip">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The URL to the mapserver executable.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;For example: &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;http://my.host.com/cgi-bin/mapserv.exe&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <tabstops>
   <tabstop>txtMapFilePath</tabstop>
@@ -495,11 +631,11 @@
    <receiver>QgsMapserverExportBase</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>335</x>
      <y>422</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>240</x>
      <y>223</y>
     </hint>
@@ -511,11 +647,11 @@
    <receiver>QgsMapserverExportBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>426</x>
      <y>422</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>240</x>
      <y>223</y>
     </hint>

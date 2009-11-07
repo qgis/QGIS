@@ -66,7 +66,7 @@ QgsMapLayer * QgsMapLayerRegistry::mapLayer( QString theLayerId )
 QgsMapLayer *
 QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal )
 {
-  if ( !theMapLayer->isValid() )
+  if ( !theMapLayer || !theMapLayer->isValid() )
   {
     QgsDebugMsg( "cannot add invalid layers" );
     return 0;

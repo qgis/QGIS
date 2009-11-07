@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgstininterpolator.h"
+#include "CloughTocherInterpolator.h"
 #include "DualEdgeTriangulation.h"
+#include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
 #include "Point3D.h"
 #include "qgsfeature.h"
@@ -35,8 +37,8 @@
 #define isnan(f) _isnan(f)
 #endif
 
-QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, bool showProgressDialog ): QgsInterpolator( inputData ), mTriangulation( 0 ), \
-    mTriangleInterpolator( 0 ), mIsInitialized( false ), mShowProgressDialog( showProgressDialog ), mExportTriangulationToFile( false )
+QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation, bool showProgressDialog ): QgsInterpolator( inputData ), mTriangulation( 0 ), \
+    mTriangleInterpolator( 0 ), mIsInitialized( false ), mShowProgressDialog( showProgressDialog ), mExportTriangulationToFile( false ), mInterpolation( interpolation )
 {
 }
 
@@ -70,7 +72,16 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
 void QgsTINInterpolator::initialize()
 {
   DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( 100000, 0 );
-  mTriangulation = theDualEdgeTriangulation;
+  if ( mInterpolation == CloughTocher )
+  {
+    NormVecDecorator* dec = new NormVecDecorator();
+    dec->addTriangulation( theDualEdgeTriangulation );
+    mTriangulation = dec;
+  }
+  else
+  {
+    mTriangulation = theDualEdgeTriangulation;
+  }
 
   //get number of features if we use a progress bar
   int nFeatures = 0;
@@ -124,7 +135,23 @@ void QgsTINInterpolator::initialize()
   }
 
   delete theProgressDialog;
-  mTriangleInterpolator = new LinTriangleInterpolator( theDualEdgeTriangulation );
+
+  if ( mInterpolation == CloughTocher )
+  {
+    CloughTocherInterpolator* ctInterpolator = new CloughTocherInterpolator();
+    NormVecDecorator* dec = dynamic_cast<NormVecDecorator*>( mTriangulation );
+    if ( dec )
+    {
+      dec->estimateFirstDerivatives();
+      ctInterpolator->setTriangulation( dec );
+      dec->setTriangleInterpolator( ctInterpolator );
+      mTriangleInterpolator = ctInterpolator;
+    }
+  }
+  else //linear
+  {
+    mTriangleInterpolator = new LinTriangleInterpolator( theDualEdgeTriangulation );
+  }
   mIsInitialized = true;
 
   //debug

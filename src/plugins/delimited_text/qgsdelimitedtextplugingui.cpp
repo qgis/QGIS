@@ -56,19 +56,6 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
     delimiterRegexp->setChecked( true );
   }
 
-  QString format = QString( "<h2>%1</h2><p>%2</p><p>%3</p>" );
-  QString header = tr( "Description" );
-  QString paragraph1 = tr( "Select a delimited text file containing a header row"
-                           " and one or more rows of x and y coordinates that you"
-                           " would like to use as a point layer and this plugin will do the job for you!" );
-  QString paragraph2 = tr( "Use the layer name box to specify the legend name for the new layer."
-                           " Use the delimiter box to specify what delimeter is used in your file (e.g. space,"
-                           " comma, tab or a regular expression in Perl style). After choosing a delimiter,"
-                           " press the parse button and select the columns containing the x and y values for the layer." );
-  teInstructions->setHtml( format.arg( header )
-                           .arg( paragraph1 )
-                           .arg( paragraph2 ) );
-
   txtSample->setFixedHeight( 120 );
 }
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()

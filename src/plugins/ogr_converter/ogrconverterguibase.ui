@@ -1,220 +1,77 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>OgrConverterGuiBase</class>
- <widget class="QDialog" name="OgrConverterGuiBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="OgrConverterGuiBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>491</width>
-    <height>400</height>
+    <height>323</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="minimumSize" >
+  <property name="minimumSize">
    <size>
-    <width>400</width>
-    <height>400</height>
+    <width>0</width>
+    <height>0</height>
    </size>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>OGR Layer Converter</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="srcGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="srcGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Source</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="labelSrcFormat" >
-        <property name="minimumSize" >
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="5" column="0">
+       <widget class="QLabel" name="labelSrcLayer">
+        <property name="minimumSize">
          <size>
           <width>52</width>
           <height>22</height>
          </size>
         </property>
-        <property name="text" >
-         <string>Format</string>
-        </property>
-        <property name="buddy" >
-         <cstring>comboSrcFormats</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="5" >
-       <widget class="QComboBox" name="comboSrcFormats" >
-        <property name="minimumSize" >
-         <size>
-          <width>200</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maxCount" >
-         <number>200</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="2" >
-       <widget class="QRadioButton" name="radioSrcFile" >
-        <property name="text" >
-         <string>File</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3" >
-       <widget class="QRadioButton" name="radioSrcDirectory" >
-        <property name="text" >
-         <string>Directory</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4" colspan="2" >
-       <widget class="QRadioButton" name="radioSrcProtocol" >
-        <property name="text" >
-         <string>Remote source</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="labelSrcDataset" >
-        <property name="text" >
-         <string>Dataset</string>
-        </property>
-        <property name="buddy" >
-         <cstring>inputSrcDataset</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" colspan="4" >
-       <widget class="QLineEdit" name="inputSrcDataset" >
-        <property name="minimumSize" >
-         <size>
-          <width>200</width>
-          <height>25</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="5" >
-       <widget class="QPushButton" name="buttonSelectSrc" >
-        <property name="text" >
-         <string>Browse</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="labelSrcLayer" >
-        <property name="minimumSize" >
-         <size>
-          <width>52</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="text" >
+        <property name="text">
          <string>Layer</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>comboSrcLayer</cstring>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" colspan="5" >
-       <widget class="QComboBox" name="comboSrcLayer" >
-        <property name="minimumSize" >
-         <size>
-          <width>300</width>
-          <height>25</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="dstGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="title" >
-      <string>Target</string>
-     </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="labelDstFormat" >
-        <property name="minimumSize" >
-         <size>
-          <width>52</width>
-          <height>22</height>
-         </size>
-        </property>
-        <property name="text" >
-         <string>Format</string>
-        </property>
-        <property name="buddy" >
-         <cstring>comboDstFormats</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2" >
-       <widget class="QComboBox" name="comboDstFormats" >
-        <property name="minimumSize" >
-         <size>
-          <width>300</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="maxCount" >
-         <number>200</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="labelDstDataset" >
-        <property name="text" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelSrcDataset">
+        <property name="text">
          <string>Dataset</string>
         </property>
-        <property name="buddy" >
-         <cstring>inputDstDataset</cstring>
+        <property name="buddy">
+         <cstring>inputSrcDataset</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="QLineEdit" name="inputDstDataset" >
-        <property name="minimumSize" >
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="inputSrcDataset">
+        <property name="minimumSize">
          <size>
           <width>200</width>
           <height>25</height>
@@ -222,32 +79,195 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2" >
-       <widget class="QPushButton" name="buttonSelectDst" >
-        <property name="text" >
+      <item row="5" column="1" colspan="2">
+       <widget class="QComboBox" name="comboSrcLayer">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QPushButton" name="buttonSelectSrc">
+        <property name="text">
          <string>Browse</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="labelDstLayer" >
-        <property name="minimumSize" >
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="comboSrcFormats">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maxCount">
+         <number>200</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelSrcFormat">
+        <property name="minimumSize">
+         <size>
+          <width>52</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Format</string>
+        </property>
+        <property name="buddy">
+         <cstring>comboSrcFormats</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <layout class="QGridLayout" name="gridLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QRadioButton" name="radioSrcFile">
+          <property name="text">
+           <string>File</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QRadioButton" name="radioSrcProtocol">
+          <property name="text">
+           <string>Remote source</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QRadioButton" name="radioSrcDirectory">
+          <property name="text">
+           <string>Directory</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+     <zorder>radioSrcFile</zorder>
+     <zorder>radioSrcDirectory</zorder>
+     <zorder>radioSrcProtocol</zorder>
+     <zorder>radioSrcDirectory</zorder>
+     <zorder>labelSrcLayer</zorder>
+     <zorder>labelSrcDataset</zorder>
+     <zorder>inputSrcDataset</zorder>
+     <zorder>comboSrcLayer</zorder>
+     <zorder>buttonSelectSrc</zorder>
+     <zorder></zorder>
+     <zorder>comboSrcFormats</zorder>
+     <zorder>labelSrcFormat</zorder>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="dstGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Target</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelDstFormat">
+        <property name="minimumSize">
+         <size>
+          <width>52</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Format</string>
+        </property>
+        <property name="buddy">
+         <cstring>comboDstFormats</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="comboDstFormats">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="maxCount">
+         <number>200</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelDstDataset">
+        <property name="text">
+         <string>Dataset</string>
+        </property>
+        <property name="buddy">
+         <cstring>inputDstDataset</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="inputDstDataset">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="buttonSelectDst">
+        <property name="text">
+         <string>Browse</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelDstLayer">
+        <property name="minimumSize">
          <size>
           <width>52</width>
           <height>0</height>
          </size>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Layer</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>inputDstLayer</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2" >
-       <widget class="QLineEdit" name="inputDstLayer" >
-        <property name="minimumSize" >
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="inputDstLayer">
+        <property name="minimumSize">
          <size>
           <width>300</width>
           <height>25</height>
@@ -258,16 +278,16 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>comboSrcFormats</tabstop>
   <tabstop>radioSrcFile</tabstop>
@@ -290,11 +310,11 @@
    <receiver>OgrConverterGuiBase</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>424</x>
      <y>322</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>481</x>
      <y>297</y>
     </hint>
@@ -306,11 +326,11 @@
    <receiver>OgrConverterGuiBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>365</x>
      <y>323</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>281</x>
      <y>339</y>
     </hint>

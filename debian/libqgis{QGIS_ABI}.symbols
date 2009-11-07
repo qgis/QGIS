@@ -59,6 +59,13 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN18QgsTINInterpolatorD0Ev@Base 1.4.0
  _ZN18QgsTINInterpolatorD1Ev@Base 1.4.0
  _ZN18QgsTINInterpolatorD2Ev@Base 1.4.0
+ _ZN18QgsZonalStatistics19calculateStatisticsEP15QProgressDialog@Base 1.4.0
+ _ZN18QgsZonalStatisticsC1EP14QgsVectorLayerRK7QStringS4_i@Base 1.4.0
+ _ZN18QgsZonalStatisticsC1Ev@Base 1.4.0
+ _ZN18QgsZonalStatisticsC2EP14QgsVectorLayerRK7QStringS4_i@Base 1.4.0
+ _ZN18QgsZonalStatisticsC2Ev@Base 1.4.0
+ _ZN18QgsZonalStatisticsD1Ev@Base 1.4.0
+ _ZN18QgsZonalStatisticsD2Ev@Base 1.4.0
  _ZN19QgsDerivativeFilter13calcFirstDerXEPfS0_S0_S0_S0_S0_S0_S0_S0_@Base 1.4.0
  _ZN19QgsDerivativeFilter13calcFirstDerYEPfS0_S0_S0_S0_S0_S0_S0_S0_@Base 1.4.0
  _ZN19QgsDerivativeFilterC1ERK7QStringS2_S2_@Base 1.4.0
@@ -144,16 +151,23 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN4NodeC1ERKS_@Base 1.4.0
  _ZN4NodeC2ERKS_@Base 1.4.0
  _ZN4NodeaSERKS_@Base 1.4.0
+ _ZN4QMapIi8QVariantE13detach_helperEv@Base 1.4.0
+ _ZN4QMapIi8QVariantE6insertERKiRKS0_@Base 1.4.0
  _ZN4QMapIi8QVariantE8freeDataEP8QMapData@Base 1.4.0
  _ZN4QMapIi8QgsFieldE11node_createEP8QMapDataPPNS2_4NodeERKiRKS0_@Base 1.4.0
  _ZN4QMapIi8QgsFieldE6insertERKiRKS0_@Base 1.4.0
  _ZN4QMapIi8QgsFieldE8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QMapIiS_Ii8QVariantEE11node_createEP8QMapDataPPNS3_4NodeERKiRKS1_@Base 1.4.0
+ _ZN4QMapIiS_Ii8QVariantEE8freeDataEP8QMapData@Base 1.4.0
  _ZN5QHashIi15QHashDummyValueE13duplicateNodeEPN9QHashData4NodeEPv@Base 1.4.0
  _ZN5QHashIi15QHashDummyValueE8freeDataEP9QHashData@Base 1.4.0
+ _ZN5QListI8QgsFieldE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI8QgsFieldE6appendERKS0_@Base 1.4.0
  _ZN5QListIN15QgsInterpolator9LayerDataEE13detach_helperEv@Base 1.4.0
  _ZN5QListIN15QgsInterpolator9LayerDataEE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListIN15QgsInterpolator9LayerDataEED1Ev@Base 1.4.0
  _ZN5QListIdE13detach_helperEv@Base 1.4.0
+ _ZN5QListIdE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListIdE6appendERKd@Base 1.4.0
  _ZN5QListIdED1Ev@Base 1.4.0
  _ZN5QListIiE13detach_helperEv@Base 1.4.0
@@ -229,6 +243,7 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN9MathUtils8crossVecEP7Point3DP8Vector3DS1_S3_@Base 1.4.0
  _ZN9MathUtils8inCircleEP7Point3DS1_S1_S1_@Base 1.4.0
  _ZN9MathUtils9planeTestEP7Point3DS1_S1_S1_@Base 1.4.0
+ _ZNK18QgsZonalStatistics15cellInfoForBBoxERK12QgsRectangleS2_ddRiS3_S3_S3_@Base 1.4.0
  _ZNK21DualEdgeTriangulation12swapMinAngleEi@Base 1.4.0
  _ZNK21DualEdgeTriangulation15saveAsShapefileERK7QString@Base 1.4.0
  _ZNK21DualEdgeTriangulation17getNumberOfPointsEv@Base 1.4.0
@@ -289,6 +304,7 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV21DualEdgeTriangulation@Base 1.4.0
  _ZTV23LinTriangleInterpolator@Base 1.4.0
  _ZTV23QgsTotalCurvatureFilter@Base 1.4.0
+ _ZplRK7QStringPKc@Base 1.4.0
  leftOfTresh@Base 1.4.0
 libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _Z10yyget_lengv@Base 1.4.0
@@ -303,6 +319,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _Z13qvariant_castI7QStringET_RK8QVariant@Base 1.4.0
  _Z13yy_scan_bytesPKci@Base 1.4.0
  _Z13yylex_destroyv@Base 1.4.0
+ _Z14yy_scan_bufferPcj@Base 1.4.0
  _Z14yy_scan_bufferPcm@Base 1.4.0
  _Z14yy_scan_stringPKc@Base 1.4.0
  _Z15yy_flush_bufferP15yy_buffer_state@Base 1.4.0
@@ -319,12 +336,14 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _Z6choosemm@Base 1.4.0
  _Z6finderPKc@Base 1.4.0
  _Z6yyfreePv@Base 1.4.0
+ _Z7yyallocj@Base 1.4.0
  _Z7yyallocm@Base 1.4.0
  _Z7yyerrorPKc@Base 1.4.0
  _Z7yyparsev@Base 1.4.0
  _Z8yyget_inv@Base 1.4.0
  _Z8yyset_inP8_IO_FILE@Base 1.4.0
  _Z9yyget_outv@Base 1.4.0
+ _Z9yyreallocPvj@Base 1.4.0
  _Z9yyreallocPvm@Base 1.4.0
  _Z9yyrestartP8_IO_FILE@Base 1.4.0
  _Z9yyset_outP8_IO_FILE@Base 1.4.0
@@ -346,6 +365,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN10QgsFeature15deleteAttributeEi@Base 1.4.0
  _ZN10QgsFeature15setAttributeMapERK4QMapIi8QVariantE@Base 1.4.0
  _ZN10QgsFeature20geometryAndOwnershipEv@Base 1.4.0
+ _ZN10QgsFeature23setGeometryAndOwnershipEPhj@Base 1.4.0
  _ZN10QgsFeature23setGeometryAndOwnershipEPhm@Base 1.4.0
  _ZN10QgsFeature5cleanEv@Base 1.4.0
  _ZN10QgsFeature8geometryEv@Base 1.4.0
@@ -461,6 +481,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN11QgsGeometry7asPointERPhb@Base 1.4.0
  _ZN11QgsGeometry7asPointEv@Base 1.4.0
  _ZN11QgsGeometry7combineEPS_@Base 1.4.0
+ _ZN11QgsGeometry7fromWkbEPhj@Base 1.4.0
  _ZN11QgsGeometry7fromWkbEPhm@Base 1.4.0
  _ZN11QgsGeometry7fromWktE7QString@Base 1.4.0
  _ZN11QgsGeometry7wkbSizeEv@Base 1.4.0
@@ -517,6 +538,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN11QgsMapLayer23hasScaleBasedVisibilityEv@Base 1.4.0
  _ZN11QgsMapLayer26toggleScaleBasedVisibilityEb@Base 1.4.0
  _ZN11QgsMapLayer2trEPKcS1_@Base 1.4.0
+ _ZN11QgsMapLayer3crsEv@Base 1.4.0
  _ZN11QgsMapLayer3srsEv@Base 1.4.0
  _ZN11QgsMapLayer4drawER16QgsRenderContext@Base 1.4.0
  _ZN11QgsMapLayer6setCrsERK28QgsCoordinateReferenceSystem@Base 1.4.0
@@ -855,12 +877,14 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsComposerMap11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
  _ZN14QgsComposerMap11qt_metacastEPKc@Base 1.4.0
  _ZN14QgsComposerMap11setNewScaleEd@Base 1.4.0
+ _ZN14QgsComposerMap11setRotationEd@Base 1.4.0
  _ZN14QgsComposerMap11zoomContentEidd@Base 1.4.0
  _ZN14QgsComposerMap12setNewExtentERK12QgsRectangle@Base 1.4.0
  _ZN14QgsComposerMap12setSceneRectERK6QRectF@Base 1.4.0
  _ZN14QgsComposerMap12syncLayerSetEv@Base 1.4.0
  _ZN14QgsComposerMap13extentChangedEv@Base 1.4.0
  _ZN14QgsComposerMap14drawAnnotationEP8QPainterRK7QPointFiRK7QString@Base 1.4.0
+ _ZN14QgsComposerMap15rotationChangedEd@Base 1.4.0
  _ZN14QgsComposerMap15setCacheUpdatedEb@Base 1.4.0
  _ZN14QgsComposerMap15setGridPenColorERK6QColor@Base 1.4.0
  _ZN14QgsComposerMap15setGridPenWidthEd@Base 1.4.0
@@ -1160,6 +1184,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsVectorLayer11nextFeatureER10QgsFeature@Base 1.4.0
  _ZN14QgsVectorLayer11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
  _ZN14QgsVectorLayer11qt_metacastEPKc@Base 1.4.0
+ _ZN14QgsVectorLayer11setEditFormE7QString@Base 1.4.0
  _ZN14QgsVectorLayer11setEditTypeEiNS_8EditTypeE@Base 1.4.0
  _ZN14QgsVectorLayer11setModifiedEbb@Base 1.4.0
  _ZN14QgsVectorLayer11setRendererEP11QgsRenderer@Base 1.4.0
@@ -1244,6 +1269,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsVectorLayer7addRingERK5QListI8QgsPointE@Base 1.4.0
  _ZN14QgsVectorLayer7readXmlER8QDomNode@Base 1.4.0
  _ZN14QgsVectorLayer8deselectEib@Base 1.4.0
+ _ZN14QgsVectorLayer8editFormEv@Base 1.4.0
  _ZN14QgsVectorLayer8editTypeEi@Base 1.4.0
  _ZN14QgsVectorLayer8rollBackEv@Base 1.4.0
  _ZN14QgsVectorLayer8valueMapEi@Base 1.4.0
@@ -1297,6 +1323,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN15QgsDataProvider16setDataSourceUriERK7QString@Base 1.4.0
  _ZN15QgsDataProvider16staticMetaObjectE@Base 1.4.0
  _ZN15QgsDataProvider20fullExtentCalculatedEv@Base 1.4.0
+ _ZN15QgsDataProvider20supportsSubsetStringEv@Base 1.4.0
  _ZN15QgsDataProvider21setSubLayerVisibilityE7QStringb@Base 1.4.0
  _ZN15QgsDataProviderD0Ev@Base 1.4.0
  _ZN15QgsDataProviderD1Ev@Base 1.4.0
@@ -1455,8 +1482,10 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN17QgsProjectVersiongtERKS_@Base 1.4.0
  _ZN17QgsSearchTreeNode12checkAgainstERK4QMapIi8QgsFieldERKS0_Ii8QVariantE@Base 1.4.0
  _ZN17QgsSearchTreeNode12valueAgainstERK4QMapIi8QgsFieldERKS0_Ii8QVariantE@Base 1.4.0
+ _ZN17QgsSearchTreeNode12valueAgainstERK4QMapIi8QgsFieldERKS0_Ii8QVariantEP11QgsGeometry@Base 1.4.0
  _ZN17QgsSearchTreeNode16makeSearchStringEv@Base 1.4.0
  _ZN17QgsSearchTreeNode8getValueER18QgsSearchTreeValuePS_RK4QMapIi8QgsFieldERKS3_Ii8QVariantE@Base 1.4.0
+ _ZN17QgsSearchTreeNode8getValueER18QgsSearchTreeValuePS_RK4QMapIi8QgsFieldERKS3_Ii8QVariantEP11QgsGeometry@Base 1.4.0
  _ZN17QgsSearchTreeNode9stripTextEv@Base 1.4.0
  _ZN17QgsSearchTreeNodeC1E7QStringb@Base 1.4.0
  _ZN17QgsSearchTreeNodeC1ENS_8OperatorEPS_S1_@Base 1.4.0
@@ -1505,8 +1534,11 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN18QgsComposerPicture11qt_metacastEPKc@Base 1.4.0
  _ZN18QgsComposerPicture11setRotationEd@Base 1.4.0
  _ZN18QgsComposerPicture12setSceneRectERK6QRectF@Base 1.4.0
+ _ZN18QgsComposerPicture14boundedSVGRectEdd@Base 1.4.0
  _ZN18QgsComposerPicture14setPictureFileERK7QString@Base 1.4.0
+ _ZN18QgsComposerPicture14setRotationMapEi@Base 1.4.0
  _ZN18QgsComposerPicture15settingsChangedEv@Base 1.4.0
+ _ZN18QgsComposerPicture16boundedImageRectEdd@Base 1.4.0
  _ZN18QgsComposerPicture16staticMetaObjectE@Base 1.4.0
  _ZN18QgsComposerPicture18updateImageFromSvgEv@Base 1.4.0
  _ZN18QgsComposerPicture5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
@@ -1541,7 +1573,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN18QgsHttpTransaction19transactionFinishedEb@Base 1.4.0
  _ZN18QgsHttpTransaction5abortEv@Base 1.4.0
  _ZN18QgsHttpTransactionC1E7QStringS0_iS0_S0_N13QNetworkProxy9ProxyTypeES0_S0_@Base 1.4.0
+ _ZN18QgsHttpTransactionC1Ev@Base 1.4.0
  _ZN18QgsHttpTransactionC2E7QStringS0_iS0_S0_N13QNetworkProxy9ProxyTypeES0_S0_@Base 1.4.0
+ _ZN18QgsHttpTransactionC2Ev@Base 1.4.0
  _ZN18QgsHttpTransactionD0Ev@Base 1.4.0
  _ZN18QgsHttpTransactionD1Ev@Base 1.4.0
  _ZN18QgsHttpTransactionD2Ev@Base 1.4.0
@@ -2132,7 +2166,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal5Label11getRotationEv@Base 1.4.0
  _ZN3pal5Label12getFeatureIdEv@Base 1.4.0
  _ZN3pal5Label12getLayerNameEv@Base 1.4.0
+ _ZN3pal5Label4getXEj@Base 1.4.0
  _ZN3pal5Label4getXEm@Base 1.4.0
+ _ZN3pal5Label4getYEj@Base 1.4.0
  _ZN3pal5Label4getYEm@Base 1.4.0
  _ZN3pal5Label8getOrigXEv@Base 1.4.0
  _ZN3pal5Label8getOrigYEv@Base 1.4.0
@@ -2462,6 +2498,8 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI5QPairIddEE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI5QPairIddEE5clearEv@Base 1.4.0
  _ZN5QListI5QPairIddEED1Ev@Base 1.4.0
+ _ZN5QListI6QLineFE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI6QLineFE6appendERKS0_@Base 1.4.0
  _ZN5QListI7QPointFE13detach_helperEv@Base 1.4.0
  _ZN5QListI7QPointFE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI7QPointFE5clearEv@Base 1.4.0
@@ -2524,6 +2562,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListIP9QgsSymbolE6detachEv@Base 1.4.0
  _ZN5QListIP9QgsSymbolED1Ev@Base 1.4.0
  _ZN5QListIPK14QgsComposerMapED1Ev@Base 1.4.0
+ _ZN5QListIdE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListIiE13detach_helperEv@Base 1.4.0
  _ZN5QListIiE6appendERKi@Base 1.4.0
  _ZN5QListIiED1Ev@Base 1.4.0
@@ -2768,6 +2807,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN7QVectorIS_IS_I8QgsPointEEEixEi@Base 1.4.0
  _ZN7QVectorIiE7reallocEii@Base 1.4.0
  _ZN8GEOSInitD1Ev@Base 1.4.0
+ _ZN8QPainter8drawLineERK7QPointFS2_@Base 1.4.0
  _ZN8QPainter9drawImageEiiRK6QImageiiii6QFlagsIN2Qt19ImageConversionFlagEE@Base 1.4.0
  _ZN8QPainter9drawPointEii@Base 1.4.0
  _ZN8QgsField10setCommentERK7QString@Base 1.4.0
@@ -2782,6 +2822,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN8QgsFieldD1Ev@Base 1.4.0
  _ZN8QgsFieldD2Ev@Base 1.4.0
  _ZN8QgsLabel10fieldValueEiR10QgsFeature@Base 1.4.0
+ _ZN8QgsLabel10labelPointERNS_10labelpointEPhj@Base 1.4.0
  _ZN8QgsLabel10labelPointERNS_10labelpointEPhm@Base 1.4.0
  _ZN8QgsLabel10labelPointERSt6vectorINS_10labelpointESaIS1_EER10QgsFeature@Base 1.4.0
  _ZN8QgsLabel11renderLabelER16QgsRenderContext8QgsPoint7QString5QFont4QPeniidddiii@Base 1.4.0
@@ -2790,6 +2831,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN8QgsLabel11setMinScaleEf@Base 1.4.0
  _ZN8QgsLabel13setLabelFieldEii@Base 1.4.0
  _ZN8QgsLabel14readLabelFieldER11QDomElementi7QString@Base 1.4.0
+ _ZN8QgsLabel15labelAttributesEv@Base 1.4.0
  _ZN8QgsLabel15layerAttributesEv@Base 1.4.0
  _ZN8QgsLabel23setScaleBasedVisibilityEb@Base 1.4.0
  _ZN8QgsLabel6fieldsEv@Base 1.4.0
@@ -2975,6 +3017,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK14QgsMapRenderer6extentEv@Base 1.4.0
  _ZNK14QgsMapRenderer8mapUnitsEv@Base 1.4.0
  _ZNK14QgsPropertyKey10subkeyListER11QStringList@Base 1.4.0
+ _ZNK14QgsPropertyKey4dumpEj@Base 1.4.0
  _ZNK14QgsPropertyKey4dumpEm@Base 1.4.0
  _ZNK14QgsPropertyKey5isKeyEv@Base 1.4.0
  _ZNK14QgsPropertyKey5valueEv@Base 1.4.0
@@ -3052,6 +3095,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK16QgsDataSourceURI8usernameEv@Base 1.4.0
  _ZNK16QgsDataSourceURI9keyColumnEv@Base 1.4.0
  _ZNK16QgsOverlayObject8positionEv@Base 1.4.0
+ _ZNK16QgsPropertyValue4dumpEj@Base 1.4.0
  _ZNK16QgsPropertyValue4dumpEm@Base 1.4.0
  _ZNK16QgsPropertyValue5isKeyEv@Base 1.4.0
  _ZNK16QgsPropertyValue5valueEv@Base 1.4.0
@@ -3073,6 +3117,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK18QgsAttributeAction8writeXMLER8QDomNodeR12QDomDocument@Base 1.4.0
  _ZNK18QgsComposerPicture10metaObjectEv@Base 1.4.0
  _ZNK18QgsComposerPicture11pictureFileEv@Base 1.4.0
+ _ZNK18QgsComposerPicture11rotationMapEv@Base 1.4.0
+ _ZNK18QgsComposerPicture28imageSizeConsideringRotationERdS0_@Base 1.4.0
+ _ZNK18QgsComposerPicture33cornerPointOnRotatedAndScaledRectERdS0_dd@Base 1.4.0
  _ZNK18QgsComposerPicture8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZNK18QgsHttpTransaction10metaObjectEv@Base 1.4.0
  _ZNK18QgsLabelAttributes10angleIsSetEv@Base 1.4.0
@@ -3333,18 +3380,25 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK9QgsSymbol9pointSizeEv@Base 1.4.0
  _ZNSs12_S_constructIPcEES0_T_S1_RKSaIcESt20forward_iterator_tag@Base 1.4.0
  _ZNSt10_List_baseI8QDomNodeSaIS0_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIPN12SpatialIndex5RTree4NodeESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIPN12SpatialIndex5RTree4NodeESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIPN12SpatialIndex5RTree4NodeESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIPN5Tools8Geometry5PointESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry5PointESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry5PointESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIPN5Tools8Geometry6RegionESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry6RegionESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry6RegionESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIlSaIlEE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIlSaIlEE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIlSaIlEED2Ev@Base 1.4.0
  _ZNSt12out_of_rangeC1ERKS_@Base 1.4.0
@@ -3358,21 +3412,33 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNSt3mapIlPN12SpatialIndex14StorageManager18DiskStorageManager5EntryESt4lessIlESaISt4pairIKlS4_EEED1Ev@Base 1.4.0
  _ZNSt3mapIlPN12SpatialIndex14StorageManager6Buffer5EntryESt4lessIlESaISt4pairIKlS4_EEED1Ev@Base 1.4.0
  _ZNSt5dequeIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EE16_M_push_back_auxERKS3_@Base 1.4.0
+ _ZNSt5dequeIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EE17_M_reallocate_mapEjb@Base 1.4.0
  _ZNSt5dequeIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EE17_M_reallocate_mapEmb@Base 1.4.0
  _ZNSt5dequeIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EED1Ev@Base 1.4.0
+ _ZNSt5dequeIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EE17_M_reallocate_mapEjb@Base 1.4.0
  _ZNSt5dequeIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EE17_M_reallocate_mapEmb@Base 1.4.0
  _ZNSt5dequeIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EED1Ev@Base 1.4.0
+ _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE13_M_insert_auxISt15_Deque_iteratorIS3_RS3_PS3_EEEvSA_T_SB_j@Base 1.4.0
  _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE13_M_insert_auxISt15_Deque_iteratorIS3_RS3_PS3_EEEvSA_T_SB_m@Base 1.4.0
+ _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE17_M_reallocate_mapEjb@Base 1.4.0
  _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE17_M_reallocate_mapEmb@Base 1.4.0
  _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE19_M_range_insert_auxISt15_Deque_iteratorIS3_RS3_PS3_EEEvSA_T_SB_St20forward_iterator_tag@Base 1.4.0
+ _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE22_M_reserve_map_at_backEj@Base 1.4.0
  _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE22_M_reserve_map_at_backEm@Base 1.4.0
+ _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE23_M_new_elements_at_backEj@Base 1.4.0
  _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE23_M_new_elements_at_backEm@Base 1.4.0
+ _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE24_M_new_elements_at_frontEj@Base 1.4.0
  _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE24_M_new_elements_at_frontEm@Base 1.4.0
+ _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE28_M_reserve_elements_at_frontEj@Base 1.4.0
  _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE28_M_reserve_elements_at_frontEm@Base 1.4.0
  _ZNSt5dequeIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EED1Ev@Base 1.4.0
+ _ZNSt5dequeIPN12SpatialIndex5RTree4NodeESaIS3_EE17_M_reallocate_mapEjb@Base 1.4.0
  _ZNSt5dequeIPN12SpatialIndex5RTree4NodeESaIS3_EE17_M_reallocate_mapEmb@Base 1.4.0
+ _ZNSt5dequeIPN5Tools8Geometry5PointESaIS3_EE17_M_reallocate_mapEjb@Base 1.4.0
  _ZNSt5dequeIPN5Tools8Geometry5PointESaIS3_EE17_M_reallocate_mapEmb@Base 1.4.0
+ _ZNSt5dequeIPN5Tools8Geometry6RegionESaIS3_EE17_M_reallocate_mapEjb@Base 1.4.0
  _ZNSt5dequeIPN5Tools8Geometry6RegionESaIS3_EE17_M_reallocate_mapEmb@Base 1.4.0
+ _ZNSt5dequeIlSaIlEE17_M_reallocate_mapEjb@Base 1.4.0
  _ZNSt5dequeIlSaIlEE17_M_reallocate_mapEmb@Base 1.4.0
  _ZNSt6vectorI7QStringSaIS0_EED1Ev@Base 1.4.0
  _ZNSt6vectorIN5Tools12SmartPointerIN12SpatialIndex5IDataEEESaIS4_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS4_S6_EERKS4_@Base 1.4.0
@@ -3391,6 +3457,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNSt6vectorISsSaISsEED1Ev@Base 1.4.0
  _ZNSt6vectorIdSaIdEE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPdS1_EERKd@Base 1.4.0
  _ZNSt6vectorIdSaIdEED1Ev@Base 1.4.0
+ _ZNSt6vectorIiSaIiEE14_M_fill_insertEN9__gnu_cxx17__normal_iteratorIPiS1_EEjRKi@Base 1.4.0
  _ZNSt6vectorIiSaIiEE14_M_fill_insertEN9__gnu_cxx17__normal_iteratorIPiS1_EEmRKi@Base 1.4.0
  _ZNSt6vectorIlSaIlEE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPlS1_EERKl@Base 1.4.0
  _ZNSt6vectorIlSaIlEE9push_backERKl@Base 1.4.0
@@ -3401,6 +3468,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNSt8_Rb_treeI7QStringSt4pairIKS0_P19QgsProviderMetadataESt10_Select1stIS5_ESt4lessIS0_ESaIS5_EE17_M_insert_unique_ESt23_Rb_tree_const_iteratorIS5_ERKS5_@Base 1.4.0
  _ZNSt8_Rb_treeI7QStringSt4pairIKS0_P19QgsProviderMetadataESt10_Select1stIS5_ESt4lessIS0_ESaIS5_EE8_M_eraseEPSt13_Rb_tree_nodeIS5_E@Base 1.4.0
  _ZNSt8_Rb_treeISsSt4pairIKSsN5Tools7VariantEESt10_Select1stIS4_ESt4lessISsESaIS4_EE10_M_insert_EPKSt18_Rb_tree_node_baseSD_RKS4_@Base 1.4.0
+ _ZNSt8_Rb_treeISsSt4pairIKSsN5Tools7VariantEESt10_Select1stIS4_ESt4lessISsESaIS4_EE16_M_insert_uniqueERKS4_@Base 1.4.0
  _ZNSt8_Rb_treeISsSt4pairIKSsN5Tools7VariantEESt10_Select1stIS4_ESt4lessISsESaIS4_EE8_M_eraseEPSt13_Rb_tree_nodeIS4_E@Base 1.4.0
  _ZNSt8_Rb_treeIlSt4pairIKlPN12SpatialIndex14StorageManager18DiskStorageManager5EntryEESt10_Select1stIS7_ESt4lessIlESaIS7_EE10_M_insert_EPKSt18_Rb_tree_node_baseSG_RKS7_@Base 1.4.0
  _ZNSt8_Rb_treeIlSt4pairIKlPN12SpatialIndex14StorageManager18DiskStorageManager5EntryEESt10_Select1stIS7_ESt4lessIlESaIS7_EE8_M_eraseEPSt13_Rb_tree_nodeIS7_E@Base 1.4.0
@@ -3412,17 +3480,26 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNSt8_Rb_treeImSt4pairIKmmESt10_Select1stIS2_ESt4lessImESaIS2_EE8_M_eraseEPSt13_Rb_tree_nodeIS2_E@Base 1.4.0
  _ZNSt8auto_ptrI12QDomDocumentED1Ev@Base 1.4.0
  _ZNSt8auto_ptrIN10QgsProject3ImpEED1Ev@Base 1.4.0
+ _ZSt11__push_heapIN9__gnu_cxx17__normal_iteratorIPPN12SpatialIndex5RTree5RTree7NNEntryESt6vectorIS6_SaIS6_EEEEiS6_NS5_9ascendingEEvT_T0_SE_T1_T2_@Base 1.4.0
  _ZSt11__push_heapIN9__gnu_cxx17__normal_iteratorIPPN12SpatialIndex5RTree5RTree7NNEntryESt6vectorIS6_SaIS6_EEEElS6_NS5_9ascendingEEvT_T0_SE_T1_T2_@Base 1.4.0
+ _ZSt11__push_heapIN9__gnu_cxx17__normal_iteratorIPPN5Tools12ExternalSort7PQEntryESt6vectorIS5_SaIS5_EEEEiS5_NS4_19ascendingComparatorEEvT_T0_SD_T1_T2_@Base 1.4.0
  _ZSt11__push_heapIN9__gnu_cxx17__normal_iteratorIPPN5Tools12ExternalSort7PQEntryESt6vectorIS5_SaIS5_EEEElS5_NS4_19ascendingComparatorEEvT_T0_SD_T1_T2_@Base 1.4.0
+ _ZSt11__push_heapIN9__gnu_cxx17__normal_iteratorIPlSt6vectorIlSaIlEEEEilSt7greaterIlEEvT_T0_SA_T1_T2_@Base 1.4.0
  _ZSt11__push_heapIN9__gnu_cxx17__normal_iteratorIPlSt6vectorIlSaIlEEEEllSt7greaterIlEEvT_T0_SA_T1_T2_@Base 1.4.0
+ _ZSt13__adjust_heapIN9__gnu_cxx17__normal_iteratorIPPN12SpatialIndex5RTree5RTree7NNEntryESt6vectorIS6_SaIS6_EEEEiS6_NS5_9ascendingEEvT_T0_SE_T1_T2_@Base 1.4.0
  _ZSt13__adjust_heapIN9__gnu_cxx17__normal_iteratorIPPN12SpatialIndex5RTree5RTree7NNEntryESt6vectorIS6_SaIS6_EEEElS6_NS5_9ascendingEEvT_T0_SE_T1_T2_@Base 1.4.0
+ _ZSt13__adjust_heapIN9__gnu_cxx17__normal_iteratorIPPN5Tools12ExternalSort7PQEntryESt6vectorIS5_SaIS5_EEEEiS5_NS4_19ascendingComparatorEEvT_T0_SD_T1_T2_@Base 1.4.0
  _ZSt13__adjust_heapIN9__gnu_cxx17__normal_iteratorIPPN5Tools12ExternalSort7PQEntryESt6vectorIS5_SaIS5_EEEElS5_NS4_19ascendingComparatorEEvT_T0_SD_T1_T2_@Base 1.4.0
+ _ZSt13__adjust_heapIN9__gnu_cxx17__normal_iteratorIPlSt6vectorIlSaIlEEEEilSt7greaterIlEEvT_T0_SA_T1_T2_@Base 1.4.0
  _ZSt13__adjust_heapIN9__gnu_cxx17__normal_iteratorIPlSt6vectorIlSaIlEEEEllSt7greaterIlEEvT_T0_SA_T1_T2_@Base 1.4.0
  _ZSt22__uninitialized_copy_aISt15_Deque_iteratorIN5Tools12SmartPointerINS1_13TemporaryFileEEERS4_PS4_ES7_S4_ET0_T_S9_S8_RSaIT1_E@Base 1.4.0
  _ZSt22__uninitialized_move_aIPiS0_SaIiEET0_T_S3_S2_RT1_@Base 1.4.0
  _ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_@Base 1.4.0
+ _ZTCN5Tools8Geometry11LineSegmentE16_NS0_6IShapeE@Base 1.4.0
  _ZTCN5Tools8Geometry11LineSegmentE32_NS0_6IShapeE@Base 1.4.0
+ _ZTCN5Tools8Geometry5PointE12_NS0_6IShapeE@Base 1.4.0
  _ZTCN5Tools8Geometry5PointE24_NS0_6IShapeE@Base 1.4.0
+ _ZTCN5Tools8Geometry6RegionE16_NS0_6IShapeE@Base 1.4.0
  _ZTCN5Tools8Geometry6RegionE32_NS0_6IShapeE@Base 1.4.0
  _ZTI10QgsProject@Base 1.4.0
  _ZTI11QgisVisitor@Base 1.4.0
@@ -3864,6 +3941,22 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZThn16_NK18QgsComposerPicture8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZThn16_NK19QgsComposerScaleBar8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZThn16_NK20QgsComposerItemGroup8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
+ _ZThn4_N12SpatialIndex5INodeD0Ev@Base 1.4.0
+ _ZThn4_N12SpatialIndex5INodeD1Ev@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4Data16getByteArraySizeEv@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4Data16storeToByteArrayEPPhRm@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4Data17loadFromByteArrayEPKh@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4DataD0Ev@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4DataD1Ev@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4LeafD0Ev@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4LeafD1Ev@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4Node16getByteArraySizeEv@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4Node16storeToByteArrayEPPhRm@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4Node17loadFromByteArrayEPKh@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4NodeD0Ev@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree4NodeD1Ev@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree5IndexD0Ev@Base 1.4.0
+ _ZThn4_N12SpatialIndex5RTree5IndexD1Ev@Base 1.4.0
  _ZThn8_N12SpatialIndex5INodeD0Ev@Base 1.4.0
  _ZThn8_N12SpatialIndex5INodeD1Ev@Base 1.4.0
  _ZThn8_N12SpatialIndex5RTree4Data16getByteArraySizeEv@Base 1.4.0
@@ -3880,6 +3973,46 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZThn8_N12SpatialIndex5RTree4NodeD1Ev@Base 1.4.0
  _ZThn8_N12SpatialIndex5RTree5IndexD0Ev@Base 1.4.0
  _ZThn8_N12SpatialIndex5RTree5IndexD1Ev@Base 1.4.0
+ _ZThn8_N14QgsComposerMap11moveContentEdd@Base 1.4.0
+ _ZThn8_N14QgsComposerMap11zoomContentEidd@Base 1.4.0
+ _ZThn8_N14QgsComposerMap12setSceneRectERK6QRectF@Base 1.4.0
+ _ZThn8_N14QgsComposerMap5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
+ _ZThn8_N14QgsComposerMap7readXMLERK11QDomElementRK12QDomDocument@Base 1.4.0
+ _ZThn8_N14QgsComposerMapD0Ev@Base 1.4.0
+ _ZThn8_N14QgsComposerMapD1Ev@Base 1.4.0
+ _ZThn8_N17QgsComposerLegend5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
+ _ZThn8_N17QgsComposerLegend7readXMLERK11QDomElementRK12QDomDocument@Base 1.4.0
+ _ZThn8_N17QgsComposerLegendD0Ev@Base 1.4.0
+ _ZThn8_N17QgsComposerLegendD1Ev@Base 1.4.0
+ _ZThn8_N18QgsComposerPicture12setSceneRectERK6QRectF@Base 1.4.0
+ _ZThn8_N18QgsComposerPicture5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
+ _ZThn8_N18QgsComposerPicture7readXMLERK11QDomElementRK12QDomDocument@Base 1.4.0
+ _ZThn8_N18QgsComposerPictureD0Ev@Base 1.4.0
+ _ZThn8_N18QgsComposerPictureD1Ev@Base 1.4.0
+ _ZThn8_N19QgsComposerScaleBar5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
+ _ZThn8_N19QgsComposerScaleBar7readXMLERK11QDomElementRK12QDomDocument@Base 1.4.0
+ _ZThn8_N19QgsComposerScaleBarD0Ev@Base 1.4.0
+ _ZThn8_N19QgsComposerScaleBarD1Ev@Base 1.4.0
+ _ZThn8_N20QgsComposerItemGroup11removeItemsEv@Base 1.4.0
+ _ZThn8_N20QgsComposerItemGroup12setSceneRectERK6QRectF@Base 1.4.0
+ _ZThn8_N20QgsComposerItemGroup5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
+ _ZThn8_N20QgsComposerItemGroup7addItemEP15QgsComposerItem@Base 1.4.0
+ _ZThn8_N20QgsComposerItemGroup7readXMLERK11QDomElementRK12QDomDocument@Base 1.4.0
+ _ZThn8_N20QgsComposerItemGroup9drawFrameEP8QPainter@Base 1.4.0
+ _ZThn8_N20QgsComposerItemGroupD0Ev@Base 1.4.0
+ _ZThn8_N20QgsComposerItemGroupD1Ev@Base 1.4.0
+ _ZThn8_N23QgsMessageOutputConsole10setMessageERK7QStringN16QgsMessageOutput11MessageTypeE@Base 1.4.0
+ _ZThn8_N23QgsMessageOutputConsole11showMessageEb@Base 1.4.0
+ _ZThn8_N23QgsMessageOutputConsole13appendMessageERK7QString@Base 1.4.0
+ _ZThn8_N23QgsMessageOutputConsole8setTitleERK7QString@Base 1.4.0
+ _ZThn8_N23QgsMessageOutputConsoleD0Ev@Base 1.4.0
+ _ZThn8_N23QgsMessageOutputConsoleD1Ev@Base 1.4.0
+ _ZThn8_NK14QgsComposerMap12boundingRectEv@Base 1.4.0
+ _ZThn8_NK14QgsComposerMap8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
+ _ZThn8_NK17QgsComposerLegend8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
+ _ZThn8_NK18QgsComposerPicture8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
+ _ZThn8_NK19QgsComposerScaleBar8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
+ _ZThn8_NK20QgsComposerItemGroup8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZTv0_n104_NK5Tools8Geometry11LineSegment6getMBRERNS0_6RegionE@Base 1.4.0
  _ZTv0_n104_NK5Tools8Geometry5Point6getMBRERNS0_6RegionE@Base 1.4.0
  _ZTv0_n104_NK5Tools8Geometry6Region6getMBRERS1_@Base 1.4.0
@@ -3889,23 +4022,64 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTv0_n120_NK5Tools8Geometry11LineSegment18getMinimumDistanceERKNS0_6IShapeE@Base 1.4.0
  _ZTv0_n120_NK5Tools8Geometry5Point18getMinimumDistanceERKNS0_6IShapeE@Base 1.4.0
  _ZTv0_n120_NK5Tools8Geometry6Region18getMinimumDistanceERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n12_N5Tools8Geometry11LineSegmentD0Ev@Base 1.4.0
+ _ZTv0_n12_N5Tools8Geometry11LineSegmentD1Ev@Base 1.4.0
+ _ZTv0_n12_N5Tools8Geometry5PointD0Ev@Base 1.4.0
+ _ZTv0_n12_N5Tools8Geometry5PointD1Ev@Base 1.4.0
+ _ZTv0_n12_N5Tools8Geometry6IShapeD0Ev@Base 1.4.0
+ _ZTv0_n12_N5Tools8Geometry6IShapeD1Ev@Base 1.4.0
+ _ZTv0_n12_N5Tools8Geometry6RegionD0Ev@Base 1.4.0
+ _ZTv0_n12_N5Tools8Geometry6RegionD1Ev@Base 1.4.0
+ _ZTv0_n16_N5Tools8Geometry11LineSegment16getByteArraySizeEv@Base 1.4.0
+ _ZTv0_n16_N5Tools8Geometry5Point16getByteArraySizeEv@Base 1.4.0
+ _ZTv0_n16_N5Tools8Geometry6Region16getByteArraySizeEv@Base 1.4.0
+ _ZTv0_n20_N5Tools8Geometry11LineSegment17loadFromByteArrayEPKh@Base 1.4.0
+ _ZTv0_n20_N5Tools8Geometry5Point17loadFromByteArrayEPKh@Base 1.4.0
+ _ZTv0_n20_N5Tools8Geometry6Region17loadFromByteArrayEPKh@Base 1.4.0
+ _ZTv0_n24_N5Tools8Geometry11LineSegment16storeToByteArrayEPPhRm@Base 1.4.0
  _ZTv0_n24_N5Tools8Geometry11LineSegmentD0Ev@Base 1.4.0
  _ZTv0_n24_N5Tools8Geometry11LineSegmentD1Ev@Base 1.4.0
+ _ZTv0_n24_N5Tools8Geometry5Point16storeToByteArrayEPPhRm@Base 1.4.0
  _ZTv0_n24_N5Tools8Geometry5PointD0Ev@Base 1.4.0
  _ZTv0_n24_N5Tools8Geometry5PointD1Ev@Base 1.4.0
  _ZTv0_n24_N5Tools8Geometry6IShapeD0Ev@Base 1.4.0
  _ZTv0_n24_N5Tools8Geometry6IShapeD1Ev@Base 1.4.0
+ _ZTv0_n24_N5Tools8Geometry6Region16storeToByteArrayEPPhRm@Base 1.4.0
  _ZTv0_n24_N5Tools8Geometry6RegionD0Ev@Base 1.4.0
  _ZTv0_n24_N5Tools8Geometry6RegionD1Ev@Base 1.4.0
  _ZTv0_n32_N5Tools8Geometry11LineSegment16getByteArraySizeEv@Base 1.4.0
  _ZTv0_n32_N5Tools8Geometry5Point16getByteArraySizeEv@Base 1.4.0
  _ZTv0_n32_N5Tools8Geometry6Region16getByteArraySizeEv@Base 1.4.0
+ _ZTv0_n32_NK5Tools8Geometry11LineSegment15intersectsShapeERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n32_NK5Tools8Geometry5Point15intersectsShapeERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n32_NK5Tools8Geometry6Region15intersectsShapeERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n36_NK5Tools8Geometry11LineSegment13containsShapeERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n36_NK5Tools8Geometry5Point13containsShapeERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n36_NK5Tools8Geometry6Region13containsShapeERKNS0_6IShapeE@Base 1.4.0
  _ZTv0_n40_N5Tools8Geometry11LineSegment17loadFromByteArrayEPKh@Base 1.4.0
  _ZTv0_n40_N5Tools8Geometry5Point17loadFromByteArrayEPKh@Base 1.4.0
  _ZTv0_n40_N5Tools8Geometry6Region17loadFromByteArrayEPKh@Base 1.4.0
+ _ZTv0_n40_NK5Tools8Geometry11LineSegment12touchesShapeERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n40_NK5Tools8Geometry5Point12touchesShapeERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n40_NK5Tools8Geometry6Region12touchesShapeERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n44_NK5Tools8Geometry11LineSegment9getCenterERNS0_5PointE@Base 1.4.0
+ _ZTv0_n44_NK5Tools8Geometry5Point9getCenterERS1_@Base 1.4.0
+ _ZTv0_n44_NK5Tools8Geometry6Region9getCenterERNS0_5PointE@Base 1.4.0
  _ZTv0_n48_N5Tools8Geometry11LineSegment16storeToByteArrayEPPhRm@Base 1.4.0
  _ZTv0_n48_N5Tools8Geometry5Point16storeToByteArrayEPPhRm@Base 1.4.0
  _ZTv0_n48_N5Tools8Geometry6Region16storeToByteArrayEPPhRm@Base 1.4.0
+ _ZTv0_n48_NK5Tools8Geometry11LineSegment12getDimensionEv@Base 1.4.0
+ _ZTv0_n48_NK5Tools8Geometry5Point12getDimensionEv@Base 1.4.0
+ _ZTv0_n48_NK5Tools8Geometry6Region12getDimensionEv@Base 1.4.0
+ _ZTv0_n52_NK5Tools8Geometry11LineSegment6getMBRERNS0_6RegionE@Base 1.4.0
+ _ZTv0_n52_NK5Tools8Geometry5Point6getMBRERNS0_6RegionE@Base 1.4.0
+ _ZTv0_n52_NK5Tools8Geometry6Region6getMBRERS1_@Base 1.4.0
+ _ZTv0_n56_NK5Tools8Geometry11LineSegment7getAreaEv@Base 1.4.0
+ _ZTv0_n56_NK5Tools8Geometry5Point7getAreaEv@Base 1.4.0
+ _ZTv0_n56_NK5Tools8Geometry6Region7getAreaEv@Base 1.4.0
+ _ZTv0_n60_NK5Tools8Geometry11LineSegment18getMinimumDistanceERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n60_NK5Tools8Geometry5Point18getMinimumDistanceERKNS0_6IShapeE@Base 1.4.0
+ _ZTv0_n60_NK5Tools8Geometry6Region18getMinimumDistanceERKNS0_6IShapeE@Base 1.4.0
  _ZTv0_n64_NK5Tools8Geometry11LineSegment15intersectsShapeERKNS0_6IShapeE@Base 1.4.0
  _ZTv0_n64_NK5Tools8Geometry5Point15intersectsShapeERKNS0_6IShapeE@Base 1.4.0
  _ZTv0_n64_NK5Tools8Geometry6Region15intersectsShapeERKNS0_6IShapeE@Base 1.4.0
@@ -4988,12 +5162,40 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZThn16_N21QgsProjectionSelectorD1Ev@Base 1.4.0
  _ZThn16_N28QgsGenericProjectionSelectorD0Ev@Base 1.4.0
  _ZThn16_N28QgsGenericProjectionSelectorD1Ev@Base 1.4.0
+ _ZThn20_N16QgsMessageViewer10setMessageERK7QStringN16QgsMessageOutput11MessageTypeE@Base 1.4.0
+ _ZThn20_N16QgsMessageViewer11showMessageEb@Base 1.4.0
+ _ZThn20_N16QgsMessageViewer13appendMessageERK7QString@Base 1.4.0
+ _ZThn20_N16QgsMessageViewer8setTitleERK7QString@Base 1.4.0
+ _ZThn20_N16QgsMessageViewerD0Ev@Base 1.4.0
+ _ZThn20_N16QgsMessageViewerD1Ev@Base 1.4.0
  _ZThn40_N16QgsMessageViewer10setMessageERK7QStringN16QgsMessageOutput11MessageTypeE@Base 1.4.0
  _ZThn40_N16QgsMessageViewer11showMessageEb@Base 1.4.0
  _ZThn40_N16QgsMessageViewer13appendMessageERK7QString@Base 1.4.0
  _ZThn40_N16QgsMessageViewer8setTitleERK7QString@Base 1.4.0
  _ZThn40_N16QgsMessageViewerD0Ev@Base 1.4.0
  _ZThn40_N16QgsMessageViewerD1Ev@Base 1.4.0
+ _ZThn8_N12QgsMapCanvasD0Ev@Base 1.4.0
+ _ZThn8_N12QgsMapCanvasD1Ev@Base 1.4.0
+ _ZThn8_N14QgsColorButtonD0Ev@Base 1.4.0
+ _ZThn8_N14QgsColorButtonD1Ev@Base 1.4.0
+ _ZThn8_N15QgsComposerViewD0Ev@Base 1.4.0
+ _ZThn8_N15QgsComposerViewD1Ev@Base 1.4.0
+ _ZThn8_N15QgsFileDropEditD0Ev@Base 1.4.0
+ _ZThn8_N15QgsFileDropEditD1Ev@Base 1.4.0
+ _ZThn8_N16QgsMessageViewerD0Ev@Base 1.4.0
+ _ZThn8_N16QgsMessageViewerD1Ev@Base 1.4.0
+ _ZThn8_N16QgsPanningWidgetD0Ev@Base 1.4.0
+ _ZThn8_N16QgsPanningWidgetD1Ev@Base 1.4.0
+ _ZThn8_N20QgsMapOverviewCanvasD0Ev@Base 1.4.0
+ _ZThn8_N20QgsMapOverviewCanvasD1Ev@Base 1.4.0
+ _ZThn8_N21QgsDetailedItemWidgetD0Ev@Base 1.4.0
+ _ZThn8_N21QgsDetailedItemWidgetD1Ev@Base 1.4.0
+ _ZThn8_N21QgsEncodingFileDialogD0Ev@Base 1.4.0
+ _ZThn8_N21QgsEncodingFileDialogD1Ev@Base 1.4.0
+ _ZThn8_N21QgsProjectionSelectorD0Ev@Base 1.4.0
+ _ZThn8_N21QgsProjectionSelectorD1Ev@Base 1.4.0
+ _ZThn8_N28QgsGenericProjectionSelectorD0Ev@Base 1.4.0
+ _ZThn8_N28QgsGenericProjectionSelectorD1Ev@Base 1.4.0
  _ZZN11QMetaTypeIdI19QgsDetailedItemDataE14qt_metatype_idEvE11metatype_id@Base 1.4.0
  _ZplPKcRK7QString@Base 1.4.0
  _ZplRK7QStringPKc@Base 1.4.0

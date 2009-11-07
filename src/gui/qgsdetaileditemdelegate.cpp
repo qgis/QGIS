@@ -250,7 +250,7 @@ QFont QgsDetailedItemDelegate::titleFont( const QStyleOptionViewItem &theOption 
 {
   QFont myTitleFont = detailFont( theOption );
   myTitleFont.setBold( true );
-  myTitleFont.setPointSize( myTitleFont.pointSize() + 1 );
+  myTitleFont.setPointSize( myTitleFont.pointSize() );
   return myTitleFont;
 }
 

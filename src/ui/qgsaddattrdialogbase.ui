@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>356</width>
-    <height>207</height>
+    <height>235</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="textLabel1">
      <property name="text">
-      <string>Name:</string>
+      <string>N&amp;ame</string>
      </property>
      <property name="buddy">
       <cstring>mNameEdit</cstring>
@@ -33,7 +33,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="textLabel1_2">
      <property name="text">
-      <string>Comment:</string>
+      <string>Comment</string>
      </property>
      <property name="buddy">
       <cstring>mCommentEdit</cstring>
@@ -46,7 +46,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="textLabel2">
      <property name="text">
-      <string>Type:</string>
+      <string>Type</string>
      </property>
      <property name="buddy">
       <cstring>mTypeBox</cstring>
@@ -59,7 +59,7 @@
    <item row="3" column="1">
     <widget class="QLabel" name="mTypeName">
      <property name="text">
-      <string>Type:</string>
+      <string>Type</string>
      </property>
      <property name="buddy">
       <cstring>mTypeBox</cstring>
@@ -104,7 +104,11 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>mNameEdit</tabstop>
+  <tabstop>mCommentEdit</tabstop>
   <tabstop>mTypeBox</tabstop>
+  <tabstop>mLength</tabstop>
+  <tabstop>mPrec</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -115,8 +119,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>260</x>
-     <y>109</y>
+     <x>339</x>
+     <y>225</y>
     </hint>
     <hint type="destinationlabel">
      <x>307</x>
@@ -131,8 +135,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>196</x>
-     <y>106</y>
+     <x>275</x>
+     <y>225</y>
     </hint>
     <hint type="destinationlabel">
      <x>6</x>

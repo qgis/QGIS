@@ -1,72 +1,103 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsTINInterpolatorDialogBase</class>
- <widget class="QDialog" name="QgsTINInterpolatorDialogBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsTINInterpolatorDialogBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>394</width>
-    <height>240</height>
+    <height>124</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Triangle based interpolation</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="0" column="0" colspan="2" >
-    <widget class="QTextBrowser" name="mDescriptionTextBrowser" >
-     <property name="html" >
-      <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
-p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:12pt;">This interpolator provides different methods for interpolation in a triangular irregular network (TIN).&lt;/p>&lt;/body>&lt;/html></string>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="mInterpolationMethodLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Interpolation method</string>
+     </property>
+     <property name="buddy">
+      <cstring>mInterpolationComboBox</cstring>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
-     <item>
-      <widget class="QLabel" name="mInterpolationMethodLabel" >
-       <property name="text" >
-        <string>Interpolation method:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mInterpolationComboBox" />
-     </item>
-    </layout>
+   <item row="0" column="2" colspan="2">
+    <widget class="QComboBox" name="mInterpolationComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
-   <item row="2" column="0" colspan="2" >
-    <widget class="QCheckBox" name="mExportTriangulationCheckBox" >
-     <property name="text" >
+   <item row="1" column="0" colspan="3">
+    <widget class="QCheckBox" name="mExportTriangulationCheckBox">
+     <property name="text">
       <string>Export triangulation to shapefile after interpolation</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" >
-    <widget class="QLineEdit" name="mTriangulationFileEdit" />
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Output file</string>
+     </property>
+     <property name="buddy">
+      <cstring>mTriangulationFileEdit</cstring>
+     </property>
+    </widget>
    </item>
-   <item row="3" column="1" >
-    <widget class="QPushButton" name="mTriangulationFileButton" >
-     <property name="text" >
+   <item row="2" column="1" colspan="2">
+    <widget class="QLineEdit" name="mTriangulationFileEdit"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="mTriangulationFileButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+   <item row="3" column="0" colspan="4">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mInterpolationComboBox</tabstop>
+  <tabstop>mExportTriangulationCheckBox</tabstop>
+  <tabstop>mTriangulationFileEdit</tabstop>
+  <tabstop>mTriangulationFileButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -75,11 +106,11 @@ p, li { white-space: pre-wrap; }
    <receiver>QgsTINInterpolatorDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>248</x>
      <y>254</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -91,11 +122,11 @@ p, li { white-space: pre-wrap; }
    <receiver>QgsTINInterpolatorDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>316</x>
      <y>260</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>
