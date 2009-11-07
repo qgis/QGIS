@@ -6,8 +6,6 @@ __init__.py
 mapserverexportdialog.py
 mapserverexport.py
 ms_export.py
-resources.py
-ui_mapserverexport.py
 )
 PYQT4_WRAP_UI(PYUI_FILES qgsmapserverexportbase.ui) 
 	 	PYQT4_ADD_RESOURCES(PYRC_FILES resources.qrc) 
