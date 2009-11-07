@@ -47,7 +47,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
-    bool simplify( QgsVectorLayer* layer, const QString& shapefileName, double tolerance, \
+    bool simplify( QgsVectorLayer* layer, const QString& shapefileName, double tolerance,
                  bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
     /**Calculate the true centroids, or 'center of mass' for a vector layer and 
@@ -58,7 +58,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
-    bool centroids( QgsVectorLayer* layer, const QString& shapefileName, \
+    bool centroids( QgsVectorLayer* layer, const QString& shapefileName,
                  bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
     /**Create a polygon based on the extent of all (selected) features and write it to a new shape file
@@ -80,7 +80,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param bufferDistanceField index of the attribute field that contains the buffer distance (or -1 if all features have the same buffer distance)
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.3*/
-    bool buffer( QgsVectorLayer* layer, const QString& shapefileName, double bufferDistance, \
+    bool buffer( QgsVectorLayer* layer, const QString& shapefileName, double bufferDistance,
                  bool onlySelectedFeatures = false, bool dissolve = false, int bufferDistanceField = -1, QProgressDialog* p = 0 );
 
     /**Create convex hull(s) of a vector layer and write it to a new shape file
@@ -92,7 +92,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       all features have the same buffer distance)
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
-    bool convexHull( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false, \
+    bool convexHull( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                      int uniqueIdField = -1, QProgressDialog* p = 0 );
 
     /**Dissolve a vector layer and write it to a new shape file
@@ -104,7 +104,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       all features should be dissolved together)
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
-    bool dissolve( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false, \
+    bool dissolve( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                      int uniqueIdField = -1, QProgressDialog* p = 0 );
 
   private:
@@ -116,7 +116,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     /**Helper function to get the cetroid of an individual feature*/
     void centroidFeature( QgsFeature& f, QgsVectorFileWriter* vfw );
     /**Helper function to buffer an individual feature*/
-    void bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, QgsGeometry** dissolveGeometry, \
+    void bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, QgsGeometry** dissolveGeometry,
                         double bufferDistance, int bufferDistanceField );
     /**Helper function to get the convex hull of feature(s)*/
     void convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
