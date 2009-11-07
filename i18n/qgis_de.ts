@@ -6525,17 +6525,17 @@ Fehler war:%2</translation>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="53"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="56"/>
         <source>Opacity</source>
         <translation>Deckkraft</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="79"/>
         <source>Outline width</source>
         <translation>Umrandungsstärke</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="93"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="102"/>
         <source>Show frame</source>
         <translation>Zeige Rahmen
 </translation>
@@ -6545,12 +6545,12 @@ Fehler war:%2</translation>
         <translation type="obsolete">Farbe:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="39"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="42"/>
         <source>Frame...</source>
         <translation>Rahmen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="46"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="49"/>
         <source>Background...</source>
         <translation>Hintergrund...</translation>
     </message>
@@ -6567,7 +6567,7 @@ Fehler war:%2</translation>
         <translation type="obsolete">Rahmen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="86"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="95"/>
         <source>Position...</source>
         <translation>Position...</translation>
     </message>
@@ -6575,17 +6575,17 @@ Fehler war:%2</translation>
 <context>
     <name>QgsComposerLabelWidgetBase</name>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="19"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="20"/>
         <source>Label Options</source>
         <translation>Beschriftungsoption</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="42"/>
         <source>Font</source>
         <translation>Schrift</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="45"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="49"/>
         <source>Margin (mm)</source>
         <translation>Rand (mm)</translation>
     </message>
@@ -7430,37 +7430,37 @@ Fehler war:%2</translation>
 <context>
     <name>QgsCompositionBase</name>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="19"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="20"/>
         <source>Composition</source>
         <translation>Zusammenstellung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="43"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="32"/>
         <source>Paper</source>
         <translation>Papier</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="182"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="47"/>
         <source>Size</source>
         <translation>Grösse</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="166"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="79"/>
         <source>Units</source>
         <translation>Einheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="150"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="111"/>
         <source>Width</source>
         <translation>Breite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="134"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="133"/>
         <source>Height</source>
         <translation>Höhe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionbase.ui" line="118"/>
+        <location filename="../src/ui/qgscompositionbase.ui" line="155"/>
         <source>Orientation</source>
         <translation>Orientierung</translation>
     </message>
@@ -7645,77 +7645,81 @@ Fehler war:%2</translation>
         <translation>Zusammenstellung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="32"/>
         <source>Paper</source>
-        <translation>Papier</translation>
+        <translation type="obsolete">Papier</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="95"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="164"/>
         <source>Orientation</source>
         <translation>Orientierung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="111"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="142"/>
         <source>Height</source>
         <translation>Höhe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="127"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="120"/>
         <source>Width</source>
         <translation>Breite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="143"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="88"/>
         <source>Units</source>
         <translation>Einheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="159"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="44"/>
+        <source>Paper and quality</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="56"/>
         <source>Size</source>
         <translation>Grösse</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="191"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="241"/>
         <source>Grid resolution</source>
         <translation>Rasterauflösung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="207"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="260"/>
         <source>Offset x</source>
         <translation>X Versatz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="217"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="273"/>
         <source>Offset y</source>
         <translation>Y Versatz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="227"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="286"/>
         <source>Pen width</source>
         <translation>Stiftbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="237"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="299"/>
         <source>Grid color</source>
         <translation>Rasterfarbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="257"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="322"/>
         <source>Grid style</source>
         <translation>Rasterstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="276"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="196"/>
         <source>Print quality (dpi)</source>
         <translation>Druckqualität (dpi)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="172"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="222"/>
         <source>Snapping</source>
         <translation>Snapping</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="178"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="228"/>
         <source>Snap to grid</source>
         <translation>Am Raster ausrichten</translation>
     </message>
@@ -7744,7 +7748,7 @@ Fehler war:%2</translation>
         <translation type="obsolete">Rasterstil:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="289"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="212"/>
         <source>Print as raster</source>
         <translation>Als Raster drucken</translation>
     </message>

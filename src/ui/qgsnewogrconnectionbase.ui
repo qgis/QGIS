@@ -1,175 +1,156 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsNewOgrConnectionBase</class>
- <widget class="QDialog" name="QgsNewOgrConnectionBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsNewOgrConnectionBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>509</width>
-    <height>263</height>
+    <width>285</width>
+    <height>328</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Create a New OGR Database connection</string>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <property name="modal" >
+  <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="GroupBox1" >
-     <property name="title" >
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="GroupBox1">
+     <property name="title">
       <string>Connection Information</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>0</number>
       </property>
-      <property name="spacing" >
+      <property name="spacing">
        <number>5</number>
       </property>
-      <item rowspan="3" row="0" column="2" >
-       <widget class="QFrame" name="frame_2" >
-        <property name="frameShape" >
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Raised</enum>
-        </property>
-       </widget>
-      </item>
-      <item rowspan="3" row="0" column="0" >
-       <widget class="QFrame" name="frame" >
-        <property name="frameShape" >
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Raised</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+      <item row="1" column="0">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="margin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="chkStorePassword" >
-          <property name="text" >
+         <widget class="QCheckBox" name="chkStorePassword">
+          <property name="text">
            <string>Save Password</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnConnect" >
-          <property name="text" >
-           <string>Test Connect</string>
+         <widget class="QPushButton" name="btnConnect">
+          <property name="text">
+           <string>&amp;Test Connect</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="0" column="1" >
-       <layout class="QHBoxLayout" >
-        <property name="spacing" >
+      <item row="0" column="0">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
          <number>6</number>
         </property>
-        <property name="margin" >
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <layout class="QVBoxLayout" >
-          <property name="spacing" >
+         <layout class="QVBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="margin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="label" >
-            <property name="text" >
-             <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
-&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;">
-&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-size:8pt;">Type&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="TextLabel1_2" >
-            <property name="text" >
+           <widget class="QLabel" name="TextLabel1_2">
+            <property name="text">
              <string>Name</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>txtName</cstring>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="TextLabel1" >
-            <property name="text" >
+           <widget class="QLabel" name="TextLabel1">
+            <property name="text">
              <string>Host</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>txtHost</cstring>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="TextLabel2" >
-            <property name="text" >
+           <widget class="QLabel" name="TextLabel2">
+            <property name="text">
              <string>Database</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>txtDatabase</cstring>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="TextLabel2_2" >
-            <property name="text" >
+           <widget class="QLabel" name="TextLabel2_2">
+            <property name="text">
              <string>Port</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>txtPort</cstring>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="TextLabel3" >
-            <property name="text" >
+           <widget class="QLabel" name="TextLabel3">
+            <property name="text">
              <string>Username</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>txtUsername</cstring>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="TextLabel3_2" >
-            <property name="text" >
+           <widget class="QLabel" name="TextLabel3_2">
+            <property name="text">
              <string>Password</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>txtPassword</cstring>
             </property>
            </widget>
@@ -177,42 +158,42 @@ p, li { white-space: pre-wrap; }
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" >
-          <property name="spacing" >
+         <layout class="QVBoxLayout">
+          <property name="spacing">
            <number>6</number>
           </property>
-          <property name="margin" >
+          <property name="margin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QComboBox" name="cmbDatabaseTypes" />
+           <widget class="QComboBox" name="cmbDatabaseTypes"/>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtName" >
-            <property name="toolTip" >
+           <widget class="QLineEdit" name="txtName">
+            <property name="toolTip">
              <string>Name of the new connection</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtHost" />
+           <widget class="QLineEdit" name="txtHost"/>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtDatabase" />
+           <widget class="QLineEdit" name="txtDatabase"/>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtPort" >
-            <property name="text" >
+           <widget class="QLineEdit" name="txtPort">
+            <property name="text">
              <string/>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtUsername" />
+           <widget class="QLineEdit" name="txtUsername"/>
           </item>
           <item>
-           <widget class="QLineEdit" name="txtPassword" >
-            <property name="echoMode" >
+           <widget class="QLineEdit" name="txtPassword">
+            <property name="echoMode">
              <enum>QLineEdit::Password</enum>
             </property>
            </widget>
@@ -224,81 +205,18 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <layout class="QVBoxLayout" >
-     <property name="spacing" >
-      <number>6</number>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="btnOk" >
-       <property name="text" >
-        <string>OK</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-       <property name="default" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnCancel" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnHelp" >
-       <property name="enabled" >
-        <bool>true</bool>
-       </property>
-       <property name="text" >
-        <string>Help</string>
-       </property>
-       <property name="shortcut" >
-        <string>F1</string>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0" >
-        <size>
-         <width>87</width>
-         <height>150</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
+  <tabstop>cmbDatabaseTypes</tabstop>
   <tabstop>txtName</tabstop>
   <tabstop>txtHost</tabstop>
   <tabstop>txtDatabase</tabstop>
@@ -307,10 +225,41 @@ p, li { white-space: pre-wrap; }
   <tabstop>txtPassword</tabstop>
   <tabstop>chkStorePassword</tabstop>
   <tabstop>btnConnect</tabstop>
-  <tabstop>btnOk</tabstop>
-  <tabstop>btnCancel</tabstop>
-  <tabstop>btnHelp</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsNewOgrConnectionBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>246</x>
+     <y>309</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>283</x>
+     <y>278</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsNewOgrConnectionBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>155</x>
+     <y>318</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>283</x>
+     <y>250</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

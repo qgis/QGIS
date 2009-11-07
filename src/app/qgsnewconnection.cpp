@@ -33,6 +33,7 @@ QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt
     : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( buttonBox, SIGNAL( helpRequested() ),this,SLOT( help() ) );
 
   cbxSSLmode->insertItem( QgsDataSourceURI::SSLprefer, tr( "prefer" ) );
   cbxSSLmode->insertItem( QgsDataSourceURI::SSLrequire, tr( "require" ) );
@@ -77,12 +78,13 @@ QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt
   }
 }
 /** Autoconnected SLOTS **/
-void QgsNewConnection::on_btnOk_clicked()
+void QgsNewConnection::accept()
 {
   saveConnection();
+  QDialog::accept();
 }
 
-void QgsNewConnection::on_btnHelp_clicked()
+void QgsNewConnection::help()
 {
   helpInfo();
 }
@@ -90,12 +92,6 @@ void QgsNewConnection::on_btnHelp_clicked()
 void QgsNewConnection::on_btnConnect_clicked()
 {
   testConnection();
-}
-
-void QgsNewConnection::on_btnCancel_clicked()
-{
-  // cancel the dialog
-  reject();
 }
 
 void QgsNewConnection::on_cb_geometryColumnsOnly_clicked()
@@ -153,7 +149,6 @@ void QgsNewConnection::saveConnection()
   settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
   settings.setValue( baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentIndex() );
-  accept();
 }
 
 void QgsNewConnection::helpInfo()
