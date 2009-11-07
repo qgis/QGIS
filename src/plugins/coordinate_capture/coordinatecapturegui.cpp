@@ -19,9 +19,6 @@
 CoordinateCaptureGui::CoordinateCaptureGui( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
-  setupUi( this );
-
-  textBrowser->setHtml( tr( "Coordinate Capture Plugin" ) );
 }
 
 CoordinateCaptureGui::~CoordinateCaptureGui()
