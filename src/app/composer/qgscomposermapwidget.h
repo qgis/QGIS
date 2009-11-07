@@ -49,7 +49,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mYMinLineEdit_editingFinished();
     void on_mYMaxLineEdit_editingFinished();
 
-    void on_mGridCheckBox_stateChanged( int state );
+    void on_mGridCheckBox_toggled( bool state );
     void on_mIntervalXSpinBox_editingFinished();
     void on_mIntervalYSpinBox_editingFinished();
     void on_mOffsetXSpinBox_editingFinished();
@@ -63,7 +63,6 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mAnnotationPositionComboBox_currentIndexChanged( const QString& text );
     void on_mDrawAnnotationCheckBox_stateChanged( int state );
     void on_mAnnotationDirectionComboBox_currentIndexChanged( const QString& text );
-    void on_mShowGridDialogCheckBox_stateChanged( int state );
     void on_mCoordinatePrecisionSpinBox_valueChanged( int value );
 
     /**Updates width and height without notify the composer map (to avoid infinite recursion)*/

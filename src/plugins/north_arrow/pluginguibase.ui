@@ -1,190 +1,186 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsNorthArrowPluginGuiBase</class>
- <widget class="QDialog" name="QgsNorthArrowPluginGuiBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsNorthArrowPluginGuiBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>433</width>
-    <height>387</height>
+    <width>382</width>
+    <height>193</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>North Arrow Plugin</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" colspan="3" >
-    <widget class="QLabel" name="txtHeading" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="font" >
-      <font>
-       <family>Sans Serif</family>
-       <pointsize>24</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-      </font>
-     </property>
-     <property name="text" >
-      <string>North Arrow Plugin</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="3" >
-    <widget class="QLabel" name="pixmapLabel" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip" >
-      <string>Preview of north arrow</string>
-     </property>
-     <property name="frameShape" >
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="scaledContents" >
-      <bool>false</bool>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="textLabel6" >
-     <property name="text" >
-      <string>Angle</string>
-     </property>
-     <property name="buddy" >
-      <cstring>sliderRotation</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" >
-    <widget class="QSlider" name="sliderRotation" >
-     <property name="toolTip" >
-      <string/>
-     </property>
-     <property name="maximum" >
-      <number>360</number>
-     </property>
-     <property name="singleStep" >
-      <number>1</number>
-     </property>
-     <property name="pageStep" >
-      <number>10</number>
-     </property>
-     <property name="orientation" >
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-    </widget>
-   </item>
-   <item row="2" column="2" >
-    <widget class="QSpinBox" name="spinAngle" >
-     <property name="maximum" >
-      <number>360</number>
-     </property>
-     <property name="singleStep" >
-      <number>1</number>
-     </property>
-     <property name="value" >
-      <number>0</number>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" >
-    <widget class="QLabel" name="textLabel8" >
-     <property name="text" >
-      <string>Placement</string>
-     </property>
-     <property name="buddy" >
-      <cstring>cboPlacement</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="2" >
-    <widget class="QComboBox" name="cboPlacement" >
-     <property name="toolTip" >
-      <string>Placement on screen</string>
-     </property>
-     <item>
-      <property name="text" >
-       <string>Top Left</string>
+     <widget class="QLabel" name="pixmapLabel">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Top Right</string>
+      <property name="toolTip">
+       <string>Preview of north arrow</string>
       </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Bottom Left</string>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
       </property>
-     </item>
-     <item>
-      <property name="text" >
-       <string>Bottom Right</string>
+      <property name="scaledContents">
+       <bool>false</bool>
       </property>
-     </item>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QWidget" name="">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel6">
+         <property name="text">
+          <string>Angle</string>
+         </property>
+         <property name="buddy">
+          <cstring>sliderRotation</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QSlider" name="sliderRotation">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="maximum">
+          <number>360</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="pageStep">
+          <number>10</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QSpinBox" name="spinAngle">
+         <property name="maximum">
+          <number>360</number>
+         </property>
+         <property name="singleStep">
+          <number>1</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel8">
+         <property name="text">
+          <string>Placement</string>
+         </property>
+         <property name="buddy">
+          <cstring>cboPlacement</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QComboBox" name="cboPlacement">
+         <property name="toolTip">
+          <string>Placement on screen</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Top Left</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Top Right</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Bottom Left</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Bottom Right</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="3">
+        <widget class="QCheckBox" name="cboxShow">
+         <property name="text">
+          <string>Enable North Arrow</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="3">
+        <widget class="QCheckBox" name="cboxAutomatic">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Set direction automatically</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2" >
-    <widget class="QCheckBox" name="cboxShow" >
-     <property name="text" >
-      <string>Enable North Arrow</string>
-     </property>
-     <property name="checked" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2" >
-    <widget class="QCheckBox" name="cboxAutomatic" >
-     <property name="toolTip" >
-      <string/>
-     </property>
-     <property name="whatsThis" >
-      <string/>
-     </property>
-     <property name="text" >
-      <string>Set direction automatically</string>
-     </property>
-     <property name="checked" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="3" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>sliderRotation</tabstop>
   <tabstop>spinAngle</tabstop>
@@ -194,7 +190,7 @@
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="northarrow_plugin.qrc" />
+  <include location="northarrow_plugin.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -203,11 +199,11 @@
    <receiver>spinAngle</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>374</x>
      <y>257</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>527</x>
      <y>259</y>
     </hint>
@@ -219,11 +215,11 @@
    <receiver>sliderRotation</receiver>
    <slot>setValue(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>524</x>
      <y>244</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>351</x>
      <y>263</y>
     </hint>

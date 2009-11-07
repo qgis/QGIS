@@ -28,10 +28,6 @@ QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map<QString, QgsGPSDevice*>&
   setAttribute( Qt::WA_DeleteOnClose );
   // Manually set the relative size of the two main parts of the
   // device dialog box.
-  QList<int> split;
-  split.append( 120 );
-  split.append( 340 );
-  splitter->setSizes( split );
 
   QObject::connect( lbDeviceList, SIGNAL( currentItemChanged( QListWidgetItem*, QListWidgetItem* ) ),
                     this, SLOT( slotSelectionChanged( QListWidgetItem* ) ) );

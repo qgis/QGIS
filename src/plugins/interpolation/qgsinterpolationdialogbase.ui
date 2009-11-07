@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>748</width>
-    <height>409</height>
+    <height>382</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Interpolation plugin</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
+  <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
     <widget class="QGroupBox" name="mInputGroupBox">
      <property name="sizePolicy">
@@ -35,7 +35,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Vector layers:</string>
+         <string>Vector layers</string>
         </property>
         <property name="buddy">
          <cstring>mInputLayerComboBox</cstring>
@@ -55,7 +55,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="mInterpolationAttributeLabel">
         <property name="text">
-         <string>Interpolation attribute:</string>
+         <string>Interpolation attribute</string>
         </property>
         <property name="buddy">
          <cstring>mInterpolationAttributeComboBox</cstring>
@@ -126,8 +126,8 @@
      <property name="title">
       <string>Output</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0" colspan="2">
        <widget class="QLabel" name="mInterpolationLabel">
         <property name="text">
          <string>Interpolation method</string>
@@ -137,10 +137,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="0" column="2" colspan="4">
        <widget class="QComboBox" name="mInterpolationMethodComboBox"/>
       </item>
-      <item row="0" column="2">
+      <item row="0" column="6">
        <widget class="QToolButton" name="mConfigureInterpolationButton">
         <property name="text">
          <string>...</string>
@@ -151,7 +151,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="1" column="0" colspan="2">
        <widget class="QLabel" name="mNumberOfColumnsLabel">
         <property name="text">
          <string>Number of columns</string>
@@ -161,14 +161,14 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2">
+      <item row="1" column="2">
        <widget class="QSpinBox" name="mNumberOfColumnsSpinBox">
         <property name="maximum">
          <number>10000000</number>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="1" column="3" colspan="2">
        <widget class="QLabel" name="mNumberOfRowsLabel">
         <property name="text">
          <string>Number of rows</string>
@@ -178,133 +178,108 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="1" column="5" colspan="2">
        <widget class="QSpinBox" name="mNumberOfRowsSpinBox">
         <property name="maximum">
          <number>10000000</number>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="mCellsizeXLabel">
-          <property name="text">
-           <string>Cellsize X:</string>
-          </property>
-          <property name="buddy">
-           <cstring>mCellsizeXSpinBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="mCellsizeXSpinBox">
-          <property name="decimals">
-           <number>5</number>
-          </property>
-          <property name="maximum">
-           <double>999999.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="mCellsizeYLabel">
-          <property name="text">
-           <string>Cellsize Y:</string>
-          </property>
-          <property name="buddy">
-           <cstring>mCellSizeYSpinBox</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="mCellSizeYSpinBox">
-          <property name="decimals">
-           <number>5</number>
-          </property>
-          <property name="maximum">
-           <double>999999.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mCellsizeXLabel">
+        <property name="text">
+         <string>Cellsize X</string>
+        </property>
+        <property name="buddy">
+         <cstring>mCellsizeXSpinBox</cstring>
+        </property>
+       </widget>
       </item>
-      <item row="4" column="0" colspan="3">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
+      <item row="2" column="2">
+       <widget class="QDoubleSpinBox" name="mCellsizeXSpinBox">
+        <property name="decimals">
+         <number>5</number>
+        </property>
+        <property name="maximum">
+         <double>999999.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" colspan="2">
+       <widget class="QLabel" name="mCellsizeYLabel">
+        <property name="text">
+         <string>Cellsize Y</string>
+        </property>
+        <property name="buddy">
+         <cstring>mCellSizeYSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5" colspan="2">
+       <widget class="QDoubleSpinBox" name="mCellSizeYSpinBox">
+        <property name="decimals">
+         <number>5</number>
+        </property>
+        <property name="maximum">
+         <double>999999.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="7">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
          <widget class="QLabel" name="mXMinLabel">
           <property name="text">
-           <string>X Min:</string>
+           <string>X min</string>
           </property>
           <property name="buddy">
            <cstring>mXMinLineEdit</cstring>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QLineEdit" name="mXMinLineEdit"/>
         </item>
-        <item>
+        <item row="0" column="2">
          <widget class="QLabel" name="mXMaxLabel">
           <property name="text">
-           <string>X Max:</string>
+           <string>X max</string>
           </property>
           <property name="buddy">
            <cstring>mXMaxLineEdit</cstring>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="0" column="3">
          <widget class="QLineEdit" name="mXMaxLineEdit"/>
         </item>
-       </layout>
-      </item>
-      <item row="5" column="0" colspan="3">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
+        <item row="1" column="0">
          <widget class="QLabel" name="mYMinLabel">
           <property name="text">
-           <string>Y Min:</string>
+           <string>Y min</string>
           </property>
           <property name="buddy">
            <cstring>mYMinLineEdit</cstring>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="1" column="1">
          <widget class="QLineEdit" name="mYMinLineEdit"/>
         </item>
-        <item>
+        <item row="1" column="2">
          <widget class="QLabel" name="mYMaxLabel">
           <property name="text">
-           <string>Y Max:</string>
+           <string>Y max</string>
           </property>
           <property name="buddy">
            <cstring>mYMaxLineEdit</cstring>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="1" column="3">
          <widget class="QLineEdit" name="mYMaxLineEdit"/>
         </item>
-       </layout>
-      </item>
-      <item row="6" column="0" colspan="3">
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>298</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
+        <item row="2" column="3">
          <widget class="QPushButton" name="mBBoxToCurrentExtent">
           <property name="text">
            <string>Set to current extent</string>
@@ -313,7 +288,7 @@
         </item>
        </layout>
       </item>
-      <item row="7" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="mOutputFileLabel">
         <property name="text">
          <string>Output file </string>
@@ -323,15 +298,28 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="5" column="1" colspan="5">
        <widget class="QLineEdit" name="mOutputFileLineEdit"/>
       </item>
-      <item row="7" column="2">
+      <item row="5" column="6">
        <widget class="QToolButton" name="mOutputFileButton">
         <property name="text">
          <string>...</string>
         </property>
        </widget>
+      </item>
+      <item row="6" column="1">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>

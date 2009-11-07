@@ -1,60 +1,61 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsMeasureBase</class>
- <widget class="QDialog" name="QgsMeasureBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsMeasureBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>252</width>
+    <width>275</width>
     <height>272</height>
    </rect>
   </property>
-  <property name="baseSize" >
+  <property name="baseSize">
    <size>
     <width>150</width>
     <height>200</height>
    </size>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Measure</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="1" column="2" >
-    <widget class="QLineEdit" name="editTotal" >
-     <property name="font" >
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="editTotal">
+     <property name="font">
       <font>
        <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignRight</set>
      </property>
-     <property name="readOnly" >
+     <property name="readOnly">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="1" >
+   <item row="1" column="1">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeType" >
+     <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>41</width>
        <height>25</height>
@@ -62,58 +63,71 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="textLabel2" >
-     <property name="text" >
-      <string>Total:</string>
+   <item row="1" column="0">
+    <widget class="QLabel" name="textLabel2">
+     <property name="text">
+      <string>Total</string>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>editTotal</cstring>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="3" >
-    <widget class="QTreeWidget" name="mTable" >
-     <property name="editTriggers" >
+   <item row="0" column="0" colspan="3">
+    <widget class="QTreeWidget" name="mTable">
+     <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="rootIsDecorated" >
+     <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
-     <property name="columnCount" >
+     <property name="columnCount">
       <number>1</number>
      </property>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Segments</string>
       </property>
      </column>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>4</number>
-     </property>
-     <property name="spacing" >
+   <item row="2" column="0" colspan="3">
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
+     <property name="margin">
+      <number>4</number>
+     </property>
      <item>
-      <widget class="QPushButton" name="btnHelp" >
-       <property name="text" >
+      <widget class="QPushButton" name="btnHelp">
+       <property name="text">
         <string>Help</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer>
-       <property name="orientation" >
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>30</width>
          <height>26</height>
@@ -122,15 +136,15 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="mRestartButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="mRestartButton">
+       <property name="text">
         <string>New</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mCloseButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="mCloseButton">
+       <property name="text">
         <string>Cl&amp;ose</string>
        </property>
       </widget>
@@ -139,7 +153,7 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
 </ui>

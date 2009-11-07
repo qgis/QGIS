@@ -6,20 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>347</width>
-    <height>157</height>
+    <width>215</width>
+    <height>434</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout">
+  <layout class="QGridLayout" name="gridLayout_2">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QGroupBox" name="mComposerItemPropertiesGroupBox">
      <property name="title">
       <string>Composer item properties</string>
      </property>
-     <layout class="QGridLayout">
+     <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="mColorLabel">
         <property name="text">
@@ -30,21 +33,21 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2">
+      <item row="1" column="0">
        <widget class="QPushButton" name="mFrameColorButton">
         <property name="text">
          <string>Frame...</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="2" column="0">
        <widget class="QPushButton" name="mBackgroundColorButton">
         <property name="text">
          <string>Background...</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="3" column="0">
        <widget class="QLabel" name="mOpacityLabel">
         <property name="text">
          <string>Opacity</string>
@@ -54,7 +57,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2" colspan="2">
+      <item row="4" column="0">
        <widget class="QSlider" name="mOpacitySlider">
         <property name="maximum">
          <number>255</number>
@@ -64,7 +67,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="5" column="0">
        <widget class="QLabel" name="mOutlineWidthLabel">
         <property name="text">
          <string>Outline width</string>
@@ -74,20 +77,20 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2" colspan="2">
+      <item row="6" column="0">
        <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox"/>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="7" column="0">
        <widget class="QPushButton" name="mPositionButton">
         <property name="text">
          <string>Position...</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="3">
+      <item row="8" column="0">
        <widget class="QCheckBox" name="mFrameCheckBox">
         <property name="text">
-         <string>Frame</string>
+         <string>Show frame</string>
         </property>
        </widget>
       </item>

@@ -186,7 +186,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
 
   hDS = GDALOpenShared( identification.toAscii(), eAccess );
 
-  btnAdd->setEnabled( false );
+  buttonBox->button(QDialogButtonBox::Ok)->setEnabled( false );
   if ( hDS == NULL )
   {
     QMessageBox::information( this,
@@ -195,7 +195,7 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
                               .arg( identification ) );
     return;
   }
-  btnAdd->setEnabled( true );
+  buttonBox->button(QDialogButtonBox::Ok)->setEnabled( true );
 
   /*
    *  Get subdataset list
