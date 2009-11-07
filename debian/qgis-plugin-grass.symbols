@@ -7,6 +7,7 @@ libqgisgrass.so.1.4.0 qgis-plugin-grass #MINVER#
  _ZN15QgsDataProvider13updateExtentsEv@Base 1.4.0
  _ZN15QgsDataProvider15setSubsetStringE7QString@Base 1.4.0
  _ZN15QgsDataProvider16setDataSourceUriERK7QString@Base 1.4.0
+ _ZN15QgsDataProvider20supportsSubsetStringEv@Base 1.4.0
  _ZN15QgsDataProvider21setSubLayerVisibilityE7QStringb@Base 1.4.0
  _ZN16QgsGrassProvider10attributesEii@Base 1.4.0
  _ZN16QgsGrassProvider10closeLayerEi@Base 1.4.0

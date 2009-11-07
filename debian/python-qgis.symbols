@@ -43,5 +43,6 @@ libqgispython.so.1.4.0 python-qgis #MINVER#
  _ZTS18QgsPythonUtilsImpl@Base 1.4.0
  _ZTV14QgsPythonUtils@Base 1.4.0
  _ZTV18QgsPythonUtilsImpl@Base 1.4.0
+ _ZplPKcRK7QString@Base 1.4.0
  _ZplRK7QStringPKc@Base 1.4.0
  instance@Base 1.4.0
