@@ -442,18 +442,18 @@
     <name>CoordinateCaptureGui</name>
     <message>
         <source>Coordinate Capture Plugin</source>
-        <translation>座標擷取附加元件</translation>
+        <translation type="obsolete">座標擷取附加元件</translation>
     </message>
 </context>
 <context>
     <name>CoordinateCaptureGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS附加元件範本</translation>
+        <translation type="unfinished">QGIS附加元件範本</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation type="obsolete">附加元件範本</translation>
+        <translation type="unfinished">附加元件範本</translation>
     </message>
 </context>
 <context>
@@ -3787,10 +3787,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Python version:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3930,22 +3926,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error while unloading plugin %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Georeferencer GDAL</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4080,6 +4060,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>N</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load QGIS utils.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -24532,11 +24516,19 @@ Do you want to overwrite the [%2] relation?</source>
     <name>QgsTINInterpolatorDialog</name>
     <message>
         <source>Linear interpolation</source>
-        <translation>線性內插</translation>
+        <translation type="obsolete">線性內插</translation>
     </message>
     <message>
         <source>Save triangulation to file</source>
         <translation>儲存三角測量至檔案</translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation type="unfinished">線性</translation>
+    </message>
+    <message>
+        <source>Clough-Toucher (cubic)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26507,7 +26499,7 @@ Tried URL: %1</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Output file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;輸出檔案&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -26544,6 +26536,14 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input and output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -27112,7 +27112,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>&amp;Tools</source>
-        <translation type="unfinished">工具(&amp;T)</translation>
+        <translation type="obsolete">工具(&amp;T)</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
@@ -27293,6 +27293,10 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Split vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Vector</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
