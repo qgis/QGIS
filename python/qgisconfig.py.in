@@ -34,6 +34,7 @@ class QgisModuleMakefile(pyqtconfig.QtModuleMakefile):
         # Make sure our C++ library is linked.
         self.extra_libs.append("qgis_core")
         self.extra_libs.append("qgis_gui")
+        self.extra_libs.append("qgis_analysis")
 
         # Let the super-class do what it needs to.
         pyqtconfig.QtModuleMakefile.finalise(self)

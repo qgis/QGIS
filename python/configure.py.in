@@ -38,6 +38,8 @@ if not os.path.isdir("./core"):
   os.mkdir("./core")
 if not os.path.isdir("./gui"):
     os.mkdir("./gui")
+if not os.path.isdir("./analysis"):
+    os.mkdir("./analysis")
 
 ##########################################################################
 # SIP -> *.CPP + *.H
@@ -46,6 +48,7 @@ if not os.path.isdir("./gui"):
 # system.
 build_file_core = build_path + "/python/core/core.sbf"
 build_file_gui = build_path + "/python/gui/gui.sbf"
+build_file_analysis = build_path + "/python/analysis/analysis.sbf"
 
 # Get the SIP configuration information.
 config = PyQt4.pyqtconfig.Configuration()
@@ -61,6 +64,7 @@ mod_dir = os.path.join(config.default_mod_dir, "qgis")
 # directory where sip files will be installed
 sip_dir_core = os.path.join(config.default_sip_dir, "qgis/core")
 sip_dir_gui = os.path.join(config.default_sip_dir, "qgis/gui")
+sip_dir_analysis = os.path.join(config.default_sip_dir, "qgis/analysis")
   
 # Run SIP to generate the code.
 print "Parsing SIP files for 'core' library..."
@@ -70,6 +74,11 @@ os.system(cmd)
 
 print "Parsing SIP files for 'gui' library..."
 cmd = " ".join([config.sip_bin, "-c", "gui", "-b", build_file_gui, "-I", python_path, "-I", config.pyqt_sip_dir, qt_sip_flags, python_path + "/gui/gui.sip"])
+print cmd
+os.system(cmd)
+
+print "Parsing SIP files for 'analysis' library..."
+cmd = " ".join([config.sip_bin, "-c", "analysis", "-b", build_file_analysis, "-I", python_path, "-I", config.pyqt_sip_dir, qt_sip_flags, python_path + "/analysis/analysis.sip"])
 print cmd
 os.system(cmd)
 
@@ -83,12 +92,13 @@ print "Creating makefiles..."
 # its configuration module.
 installs = []
 
-# directories relative to core (gui) directories
+# directories relative to core (gui, analysis) directories
 installs.append([[python_path + "__init__.py", python_path + "qgisconfig.py"], mod_dir])
 
 
 installs_core = copy.copy(installs)
 installs_gui = copy.copy(installs)
+installs_analysis = copy.copy(installs)
 
 # install all sip files
 sips_core = glob.glob(python_path + "/core/*.sip")
@@ -98,6 +108,10 @@ for sip in sips_core:
 sips_gui = glob.glob(python_path + "/gui/*.sip")
 for sip in sips_gui:
   installs_gui.append([os.path.basename(sip), sip_dir_gui])
+  
+sips_analysis = glob.glob(python_path + "/analysis/*.sip")
+for sip in sips_analysis:
+  installs_analysis.append([os.path.basename(sip), sip_dir_analysis])
 
 
 # Create the Makefile.  The QtModuleMakefile class provided by the
@@ -120,9 +134,18 @@ makefile_gui = sipconfig.ModuleMakefile(
         install_dir=mod_dir,
         dir="gui",
         universal=osx_universal)
+        
+makefile_analysis = sipconfig.ModuleMakefile(
+        configuration=config,
+        qt=qt_libs,
+        build_file=build_file_analysis,
+        installs=installs_analysis,
+        install_dir=mod_dir,
+        dir="analysis",
+        universal=osx_universal)
 
-# common settings for both core and gui libs
-for mk in [ makefile_core, makefile_gui ]:
+# common settings for core, gui and analysis libs
+for mk in [ makefile_core, makefile_gui, makefile_analysis ]:
   mk.extra_lflags.extend( "@CMAKE_MODULE_LINKER_FLAGS@".strip(' ').split(' ') )
   mk.extra_libs = ["qgis_core"]
   mk.extra_lib_dirs = [build_path+"/src/core"+intdir]
@@ -145,9 +168,18 @@ makefile_gui.extra_include_dirs.append(build_path+"/src/ui")
 makefile_gui.extra_include_dirs.append(src_path+"/src/plugins") # because of qgisplugin.h TODO: sort out
 makefile_gui.extra_cxxflags.append("-DGUI_EXPORT="+export)
 
+# more settings for analysis lib
+makefile_analysis.extra_libs.append("qgis_analysis")
+makefile_analysis.extra_lib_dirs.append(build_path+"/src/analysis/vector"+intdir)
+makefile_analysis.extra_include_dirs.append(src_path+"/src/analysis/vector")
+makefile_analysis.extra_include_dirs.append(build_path+"/src/analysis/vector")
+makefile_analysis.extra_include_dirs.append(src_path+"/src/plugins") # because of qgisplugin.h TODO: sort out
+makefile_analysis.extra_cxxflags.append("-DANALYSIS_EXPORT="+export)
+
 # Generate the Makefile itself.
 makefile_core.generate()
 makefile_gui.generate()
+makefile_analysis.generate()
 
 ##########################################################################
 # QGIS CONFIG
