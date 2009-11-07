@@ -23885,7 +23885,7 @@ Unterstützung unter scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="63"/>
         <source>Output file</source>
-        <translation type="unfinished">Ausgabedatei</translation>
+        <translation>Ausgabedatei</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
