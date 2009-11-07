@@ -445,11 +445,11 @@
     <name>CoordinateCaptureGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished">QGIS插件模板</translation>
+        <translation type="obsolete">QGIS插件模板</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation type="unfinished">插件模板</translation>
+        <translation type="obsolete">插件模板</translation>
     </message>
 </context>
 <context>
@@ -3546,6 +3546,22 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <source>A plugin for raster based terrain analysis</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>W</source>
+        <translation type="unfinished">西</translation>
+    </message>
+    <message>
+        <source>E</source>
+        <translation type="unfinished">东</translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -5014,17 +5030,9 @@ Please contact the developers.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Print Composer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ctrl+P</source>
         <comment>Print Composer</comment>
-        <translation type="unfinished">Ctrl+P</translation>
-    </message>
-    <message>
-        <source>Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
@@ -5264,10 +5272,6 @@ Please contact the developers.
     </message>
     <message>
         <source>Maptips require an active layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Quantum GIS - %1 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5619,6 +5623,43 @@ This copy of QGIS has been built without SpatiaLite support.</source>
   &lt;li&gt;Added ability to select the primary key for views.&lt;/li&gt;
   &lt;li&gt;Zoom to a coordinate by entering it in the status bar coordinate display.&lt;/li&gt;
 &lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quantum GIS </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;New Print Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <comment>New Print Composer</comment>
+        <translation type="unfinished">Ctrl+P</translation>
+    </message>
+    <message>
+        <source>New Print Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print Composers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter id string for composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>id:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer id already exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The entered composer id &apos;%1&apos; already exists. Please enter a different id</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7024,6 +7065,38 @@ p, li { white-space: pre-wrap; }
         <source>Move selection to top</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Attribute added</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The attribute could not be added to the layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deleted attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The attribute(s) could not be deleted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open field calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
@@ -7127,13 +7200,6 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">
         
         </translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeTableMemoryModel</name>
-    <message>
-        <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7288,6 +7354,13 @@ Error was:%2</source>
     </message>
     <message>
         <source>A hidden attribute will be invisible - the user is not able to see it&apos;s contents.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAvoidIntersectionsDialogBase</name>
+    <message>
+        <source>Remove intersections of new polygons with layers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7480,10 +7553,6 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QGIS - print composer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Map 1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7513,51 +7582,23 @@ Error was:%2</source>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">关闭</translation>
-    </message>
-    <message>
-        <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">关闭</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">编辑</translation>
-    </message>
-    <message>
-        <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">编辑</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+X</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">删除</translation>
+        <translation type="obsolete">删除</translation>
     </message>
     <message>
         <source>View</source>
@@ -7633,6 +7674,14 @@ Error was:%2</source>
     </message>
     <message>
         <source>PDF Format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove composer?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to remove the composer instance &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7768,11 +7817,11 @@ Error was:%2</source>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">关闭</translation>
+        <translation type="obsolete">关闭</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">帮助</translation>
+        <translation type="obsolete">帮助</translation>
     </message>
     <message>
         <source>Zoom Full</source>
@@ -7922,6 +7971,18 @@ Error was:%2</source>
         <source>Export as PDF...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Q</source>
+        <translation type="unfinished">Ctrl+Q</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerItemWidgetBase</name>
@@ -7934,10 +7995,6 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Frame...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7946,19 +8003,23 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Opacity:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outline width: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Frame</source>
         <translation type="unfinished">框架</translation>
     </message>
     <message>
         <source>Position...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">颜色</translation>
+    </message>
+    <message>
+        <source>Opacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline width</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7988,7 +8049,7 @@ Error was:%2</source>
         <translation type="unfinished">字体</translation>
     </message>
     <message>
-        <source>Margin (mm):</source>
+        <source>Margin (mm)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8006,7 +8067,7 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Item text:</source>
+        <source>Item text</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8018,14 +8079,6 @@ Error was:%2</source>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Title:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Font:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8041,55 +8094,63 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Symbol width: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symbol height:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer space: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symbol space:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Icon label space:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Box space:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Legend items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>down</source>
+        <source>Title</source>
+        <translation type="unfinished">标题</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation type="unfinished">字体</translation>
+    </message>
+    <message>
+        <source>Symbol width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>up</source>
+        <source>Symbol height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>remove</source>
+        <source>Layer space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>edit...</source>
+        <source>Symbol space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>update</source>
+        <source>Icon label space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>update all</source>
+        <source>Box space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished">移除</translation>
+    </message>
+    <message>
+        <source>Edit...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation type="unfinished">更新</translation>
+    </message>
+    <message>
+        <source>Update all</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8201,6 +8262,38 @@ Error was:%2</source>
         <source>Render</source>
         <translation type="unfinished">着色</translation>
     </message>
+    <message>
+        <source>Solid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cross</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inside frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outside frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Horizontal</source>
+        <translation type="unfinished">水平</translation>
+    </message>
+    <message>
+        <source>Vertical</source>
+        <translation type="unfinished">垂直</translation>
+    </message>
+    <message>
+        <source>Horizontal and Vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boundary direction</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidgetBase</name>
@@ -8210,7 +8303,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>&lt;b&gt;Map&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;地图&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;地图&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Width</source>
@@ -8221,35 +8314,11 @@ Error was:%2</source>
         <translation type="unfinished">高度</translation>
     </message>
     <message>
-        <source>Scale:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Map extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>X min:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y min:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>X max:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y max:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>set to map canvas extent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8261,7 +8330,103 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Keep layer list</source>
+        <source>Map</source>
+        <translation type="unfinished">地图</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation type="unfinished">比例</translation>
+    </message>
+    <message>
+        <source>Rotation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set to map canvas extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lock layers for map item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show composer grid widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cross width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interval X:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interval Y:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset X:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset Y:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annotation position:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annotation direction:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance to map frame:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate precision</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8321,6 +8486,10 @@ Error was:%2</source>
         <source>Creating icon for file %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Map %1</source>
+        <translation type="unfinished">地图 %1</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerPictureWidgetBase</name>
@@ -8329,20 +8498,8 @@ Error was:%2</source>
         <translation type="unfinished">图片选项</translation>
     </message>
     <message>
-        <source>Browse...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Width:</source>
-        <translation type="unfinished">宽度:</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation:</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">宽度:</translation>
     </message>
     <message>
         <source>Search directories</source>
@@ -8359,6 +8516,30 @@ Error was:%2</source>
     <message>
         <source>Preview</source>
         <translation type="unfinished">预览</translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">宽度</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">高度</translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take rotation from composer map</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8399,56 +8580,56 @@ Error was:%2</source>
         <translation type="unfinished">比例尺选项</translation>
     </message>
     <message>
-        <source>Segment size (map units):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map units per bar unit:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of segments:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Segments left:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Style:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Height (mm):</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line width:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Label space:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Box space:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unit label:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Font...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Color...</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Segment size (map units)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map units per bar unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of segments</source>
+        <translation type="unfinished">片段的数目</translation>
+    </message>
+    <message>
+        <source>Segments left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map</source>
+        <translation type="unfinished">地图</translation>
+    </message>
+    <message>
+        <source>Height (mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished">线的宽度</translation>
+    </message>
+    <message>
+        <source>Label space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unit label</source>
+        <translation type="unfinished">单位标签</translation>
     </message>
 </context>
 <context>
@@ -9050,22 +9231,38 @@ Error was:%2</source>
     </message>
     <message>
         <source>Maximum Value:</source>
-        <translation>最大值:</translation>
+        <translation type="obsolete">最大值:</translation>
     </message>
     <message>
         <source>Outline Width:</source>
-        <translation>轮廓线的宽度:</translation>
+        <translation type="obsolete">轮廓线的宽度:</translation>
     </message>
     <message>
         <source>Minimum Value:</source>
-        <translation>最小值:</translation>
+        <translation type="obsolete">最小值:</translation>
     </message>
     <message>
         <source>Classification Field:</source>
-        <translation>分类字段:</translation>
+        <translation type="obsolete">分类字段:</translation>
     </message>
     <message>
         <source>Draw polygon outline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification field</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9193,7 +9390,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Enable Copyright Label</source>
-        <translation>显示版权标签</translation>
+        <translation type="obsolete">显示版权标签</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -9226,20 +9423,24 @@ Error was:%2</source>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;b&amp;gt; Bold text &amp;lt;/b&amp;gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;i&amp;gt; Italics &amp;lt;/i&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable copyright label</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9488,7 +9689,7 @@ Parameters:</source>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation>确认删除</translation>
+        <translation type="obsolete">确认删除</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -9500,7 +9701,7 @@ Parameters:</source>
     </message>
     <message>
         <source>Select Table</source>
-        <translation>选择表</translation>
+        <translation type="obsolete">选择表</translation>
     </message>
     <message>
         <source>You must select a table in order to add a Layer.</source>
@@ -9508,15 +9709,15 @@ Parameters:</source>
     </message>
     <message>
         <source>Password for </source>
-        <translation>密码</translation>
+        <translation type="obsolete">密码</translation>
     </message>
     <message>
         <source>Please enter your password:</source>
-        <translation>请输入您的密码:</translation>
+        <translation type="obsolete">请输入您的密码:</translation>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation>连接失败</translation>
+        <translation type="obsolete">连接失败</translation>
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
@@ -9536,7 +9737,7 @@ has failed. The database said:
     </message>
     <message>
         <source>Type</source>
-        <translation>类型</translation>
+        <translation type="obsolete">类型</translation>
     </message>
     <message>
         <source>Name</source>
@@ -9544,7 +9745,7 @@ has failed. The database said:
     </message>
     <message>
         <source>Sql</source>
-        <translation>Sql</translation>
+        <translation type="obsolete">Sql</translation>
     </message>
     <message>
         <source>Point layer</source>
@@ -9567,115 +9768,55 @@ has failed. The database said:
         <translation type="obsolete">未知的图层类型</translation>
     </message>
     <message>
-        <source>Wildcard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RegExp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>All</source>
-        <translation type="unfinished">所有</translation>
-    </message>
-    <message>
-        <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">所有</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">表</translation>
-    </message>
-    <message>
-        <source>Geometry column</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Accessible tables could not be determined</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Database connection was successful, but the accessible tables could not be determined.
-
-The error message from the database was:
-%1
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No accessible tables found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Database connection was successful, but no accessible tables were found.
-
-Please verify that you have SELECT privilege on a table carrying PostGIS
-geometry.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You must select a table in order to add a layer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.
-
-Check your username and password and try again.
-
-The database said:
-%3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">表</translation>
     </message>
 </context>
 <context>
     <name>QgsDbSourceSelectBase</name>
     <message>
         <source>Add PostGIS Table(s)</source>
-        <translation>添加PostGIS表</translation>
+        <translation type="obsolete">添加PostGIS表</translation>
     </message>
     <message>
         <source>PostgreSQL Connections</source>
-        <translation>PostgreSQL连接</translation>
+        <translation type="obsolete">PostgreSQL连接</translation>
     </message>
     <message>
         <source>Connect</source>
-        <translation>连接</translation>
+        <translation type="obsolete">连接</translation>
     </message>
     <message>
         <source>New</source>
-        <translation>新建</translation>
+        <translation type="obsolete">新建</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>编辑</translation>
+        <translation type="obsolete">编辑</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>删除</translation>
+        <translation type="obsolete">删除</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>帮助</translation>
+        <translation type="obsolete">帮助</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>添加</translation>
+        <translation type="obsolete">添加</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>关闭</translation>
+        <translation type="obsolete">关闭</translation>
     </message>
     <message>
         <source>Tables:</source>
@@ -9696,26 +9837,6 @@ The database said:
     <message>
         <source>Encoding:</source>
         <translation type="obsolete">编码:</translation>
-    </message>
-    <message>
-        <source>Search:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search mode:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search in columns:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search options...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Build query</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9990,7 +10111,7 @@ The database said:
     </message>
     <message>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <source>Browse to find the delimited text file to be processed</source>
@@ -10019,10 +10140,6 @@ The database said:
 </translation>
     </message>
     <message>
-        <source>Browse...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The delimiter is taken as is</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10041,8 +10158,16 @@ The database said:
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Verdana&apos;;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimiter type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10103,15 +10228,15 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Diagram type:</source>
+        <source>Diagram type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Classification attribute:</source>
+        <source>Classification attribute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Classification type:</source>
+        <source>Classification type</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10528,18 +10653,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsFieldCalculator</name>
     <message>
-        <source>Double</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Integer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Syntax error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10559,6 +10672,10 @@ p, li { white-space: pre-wrap; }
         <source>An error occured while evaluating the calculation string.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source> (not supported by provider)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsFieldCalculatorBase</name>
@@ -10576,22 +10693,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output field name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output field type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output field width:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output field precision:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10671,7 +10772,43 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Field calculator expression:</source>
+        <source>Output field name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output field precision</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to real</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to int</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field calculator expression</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15138,15 +15275,19 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>find maximum Value:</source>
+        <source>Size:</source>
+        <translation type="obsolete">大小:</translation>
+    </message>
+    <message>
+        <source>Find maximum value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Size:</source>
-        <translation type="unfinished">大小:</translation>
+        <source>Size</source>
+        <translation type="unfinished">大小</translation>
     </message>
     <message>
-        <source>Size unit: </source>
+        <source>Size unit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15374,11 +15515,15 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove polygon intersection</source>
+        <source>Feature added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Feature added</source>
+        <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error was reported during intersection removal</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16690,7 +16835,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Properties</source>
-        <translation>属性</translation>
+        <translation type="obsolete">属性</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -16734,7 +16879,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Icon</source>
-        <translation>图标</translation>
+        <translation type="obsolete">图标</translation>
     </message>
     <message>
         <source>...</source>
@@ -16759,10 +16904,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Alt+C</source>
         <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17086,18 +17227,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOptions</name>
     <message>
-        <source>to vertex</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to segment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to vertex and segment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Semi transparent circle</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17142,23 +17271,39 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>current layer</source>
+        <source>Current layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>top down, stop at first</source>
+        <source>Top down, stop at first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>top down</source>
+        <source>Top down</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To segment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To vertex and segment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a directory</source>
+        <translation type="unfinished">选择一个目录</translation>
     </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
     <message>
         <source>QGIS Options</source>
-        <translation>QGIS选项</translation>
+        <translation type="obsolete">QGIS选项</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
@@ -17198,7 +17343,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Rendering</source>
-        <translation>着色(&amp;R)</translation>
+        <translation type="obsolete">着色(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Update During Drawing</source>
@@ -17596,10 +17741,6 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Proxy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Use proxy for web access</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17653,10 +17794,6 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     </message>
     <message>
         <source>Proxy type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exclude URLs:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -17733,6 +17870,38 @@ QGIS的默认值是5。如果在不放大的情况下识别要素有困难，请
     </message>
     <message>
         <source>Search radius for vertex edits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">选项</translation>
+    </message>
+    <message>
+        <source>&amp;Rendering and SVG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use render caching where possible to speed up redraws</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network and Proxy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Timeout for network requests (ms):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exclude URLs (starting with):</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17929,11 +18098,11 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     <name>QgsPgQueryBuilder</name>
     <message>
         <source>Table &lt;b&gt;%1&lt;/b&gt; in database &lt;b&gt;%2&lt;/b&gt; on host &lt;b&gt;%3&lt;/b&gt;, user &lt;b&gt;%4&lt;/b&gt;</source>
-        <translation>表&lt;b&gt;%1&lt;/b&gt;在数据库&lt;b&gt;%2&lt;/b&gt;中，主机&lt;b&gt;%3&lt;/b&gt;，用户&lt;b&gt;%4&lt;/b&gt;</translation>
+        <translation type="obsolete">表&lt;b&gt;%1&lt;/b&gt;在数据库&lt;b&gt;%2&lt;/b&gt;中，主机&lt;b&gt;%3&lt;/b&gt;，用户&lt;b&gt;%4&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Connection Failed</source>
-        <translation>连接失败</translation>
+        <translation type="obsolete">连接失败</translation>
     </message>
     <message>
         <source>Connection to the database failed:</source>
@@ -17941,7 +18110,7 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     </message>
     <message>
         <source>Database error</source>
-        <translation>数据库错误</translation>
+        <translation type="obsolete">数据库错误</translation>
     </message>
     <message>
         <source>Failed to get sample of field values</source>
@@ -17949,7 +18118,7 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     </message>
     <message>
         <source>Query Result</source>
-        <translation>查询结果</translation>
+        <translation type="obsolete">查询结果</translation>
     </message>
     <message>
         <source>The where clause returned </source>
@@ -17961,7 +18130,7 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     </message>
     <message>
         <source>Query Failed</source>
-        <translation>查询失败</translation>
+        <translation type="obsolete">查询失败</translation>
     </message>
     <message>
         <source>An error occurred when executing the query:</source>
@@ -17969,85 +18138,59 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     </message>
     <message>
         <source>No Records</source>
-        <translation>没有记录</translation>
+        <translation type="obsolete">没有记录</translation>
     </message>
     <message>
         <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
-        <translation>您指定的查询返回了零条记录。有效的PostgreSQL图层至少应该有一个要素.</translation>
-    </message>
-    <message>
-        <source>No Query</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You must create a query before you can test it</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error in Query</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Connection to the database failed:
-%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Error message was: %2&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">您指定的查询返回了零条记录。有效的PostgreSQL图层至少应该有一个要素.</translation>
     </message>
     <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
+        <translation type="obsolete">
             <numerusform>
         
         </numerusform>
         </translation>
-    </message>
-    <message>
-        <source>An error occurred when executing the query:
-%1</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsPgQueryBuilderBase</name>
     <message>
         <source>PostgreSQL Query Builder</source>
-        <translation>PostgreSQL查询构建器</translation>
+        <translation type="obsolete">PostgreSQL查询构建器</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation>清除</translation>
+        <translation type="obsolete">清除</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>测试</translation>
+        <translation type="obsolete">测试</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation>确定</translation>
+        <translation type="obsolete">确定</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
     <message>
         <source>Values</source>
-        <translation>值</translation>
+        <translation type="obsolete">值</translation>
     </message>
     <message>
         <source>All</source>
-        <translation>所有</translation>
+        <translation type="obsolete">所有</translation>
     </message>
     <message>
         <source>Sample</source>
-        <translation>采样</translation>
+        <translation type="obsolete">采样</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation>字段</translation>
+        <translation type="obsolete">字段</translation>
     </message>
     <message>
         <source>Datasource:</source>
@@ -18055,98 +18198,228 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     </message>
     <message>
         <source>Operators</source>
-        <translation>操作符</translation>
+        <translation type="obsolete">操作符</translation>
     </message>
     <message>
         <source>=</source>
-        <translation>=</translation>
+        <translation type="obsolete">=</translation>
     </message>
     <message>
         <source>IN</source>
-        <translation>IN</translation>
+        <translation type="obsolete">IN</translation>
     </message>
     <message>
         <source>NOT IN</source>
-        <translation>NOT IN</translation>
+        <translation type="obsolete">NOT IN</translation>
     </message>
     <message>
         <source>&lt;</source>
-        <translation>&lt;</translation>
+        <translation type="obsolete">&lt;</translation>
     </message>
     <message>
         <source>&gt;</source>
-        <translation>&gt;</translation>
+        <translation type="obsolete">&gt;</translation>
     </message>
     <message>
         <source>%</source>
-        <translation>%</translation>
+        <translation type="obsolete">%</translation>
     </message>
     <message>
         <source>&lt;=</source>
-        <translation>&lt;=</translation>
+        <translation type="obsolete">&lt;=</translation>
     </message>
     <message>
         <source>&gt;=</source>
-        <translation>&gt;=</translation>
+        <translation type="obsolete">&gt;=</translation>
     </message>
     <message>
         <source>!=</source>
-        <translation>!=</translation>
+        <translation type="obsolete">!=</translation>
     </message>
     <message>
         <source>LIKE</source>
-        <translation>LIKE</translation>
+        <translation type="obsolete">LIKE</translation>
     </message>
     <message>
         <source>AND</source>
-        <translation>AND</translation>
+        <translation type="obsolete">AND</translation>
     </message>
     <message>
         <source>ILIKE</source>
-        <translation>ILIKE</translation>
+        <translation type="obsolete">ILIKE</translation>
     </message>
     <message>
         <source>OR</source>
-        <translation>OR</translation>
+        <translation type="obsolete">OR</translation>
     </message>
     <message>
         <source>NOT</source>
-        <translation>NOT</translation>
+        <translation type="obsolete">NOT</translation>
     </message>
     <message>
         <source>SQL where clause</source>
-        <translation>SQL where子句</translation>
+        <translation type="obsolete">SQL where子句</translation>
     </message>
+</context>
+<context>
+    <name>QgsPgSourceSelect</name>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Retrieve &lt;span style=&quot; font-weight:600;&quot;&gt;all&lt;/span&gt; the record in the vector file (&lt;span style=&quot; font-style:italic;&quot;&gt;if the table is big, the operation can consume some time&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Wildcard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Take a &lt;span style=&quot; font-weight:600;&quot;&gt;sample&lt;/span&gt; of records in the vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>RegExp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of values for the current field.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>All</source>
+        <translation type="unfinished">所有</translation>
+    </message>
+    <message>
+        <source>Schema</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of fields in this vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Table</source>
+        <translation type="unfinished">表</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">类型</translation>
+    </message>
+    <message>
+        <source>Geometry column</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Datasource</source>
+        <source>Primary key column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sql</source>
+        <translation type="unfinished">Sql</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confirm Delete</source>
+        <translation type="unfinished">确认删除</translation>
+    </message>
+    <message>
+        <source>Select Table</source>
+        <translation type="unfinished">选择表</translation>
+    </message>
+    <message>
+        <source>You must select a table in order to add a layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password for </source>
+        <translation type="unfinished">密码</translation>
+    </message>
+    <message>
+        <source>Please enter your password:</source>
+        <translation type="unfinished">请输入您的密码:</translation>
+    </message>
+    <message>
+        <source>Connection failed</source>
+        <translation type="unfinished">连接失败</translation>
+    </message>
+    <message>
+        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.
+
+Check your username and password and try again.
+
+The database said:
+%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accessible tables could not be determined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database connection was successful, but the accessible tables could not be determined.
+
+The error message from the database was:
+%1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No accessible tables found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database connection was successful, but no accessible tables were found.
+
+Please verify that you have SELECT privilege on a table carrying PostGIS
+geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPgSourceSelectBase</name>
+    <message>
+        <source>Add PostGIS Table(s)</source>
+        <translation type="unfinished">添加PostGIS表</translation>
+    </message>
+    <message>
+        <source>PostgreSQL Connections</source>
+        <translation type="unfinished">PostgreSQL连接</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">删除</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">编辑</translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation type="unfinished">新建</translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished">连接</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">帮助</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished">添加</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">关闭</translation>
+    </message>
+    <message>
+        <source>Search:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search in columns:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search options...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19398,11 +19671,6 @@ The view you selected has the following columns, none of which satisfy the above
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -19414,14 +19682,6 @@ column with a 16bit block number.
     </message>
     <message>
         <source>Whole number (smallint - 16bit)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Whole number (integer 32bit)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Whole number (integer 64bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -19445,11 +19705,24 @@ column with a 16bit block number.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Text, variable length (varchar)</source>
+        <source>Whole number (integer - 32bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Text (text)</source>
+        <source>Whole number (integer - 64bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text, limited variable length (varchar)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
+%3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19676,10 +19949,6 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Avoid intersections of new polygons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Project title</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19737,6 +20006,14 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Save paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Degrees, Minutes, Seconds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Avoid intersections of new polygons...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19880,6 +20157,189 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsQueryBuilder</name>
+    <message>
+        <source>Invalid Query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setting the query failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You must create a query before you can test it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Query Result</source>
+        <translation type="unfinished">查询结果</translation>
+    </message>
+    <message numerus="yes">
+        <source>The where clause returned %n row(s).</source>
+        <comment>returned test rows</comment>
+        <translation type="unfinished">
+            <numerusform>
+        
+        </numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Query Failed</source>
+        <translation type="unfinished">查询失败</translation>
+    </message>
+    <message>
+        <source>An error occurred when executing the query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error in Query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The subset string could not be set</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsQueryBuilderBase</name>
+    <message>
+        <source>Query Builder</source>
+        <translation type="unfinished">查询构建器</translation>
+    </message>
+    <message>
+        <source>Datasource</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fields</source>
+        <translation type="unfinished">字段</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of fields in this vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Values</source>
+        <translation type="unfinished">值</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of values for the current field.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Take a &lt;span style=&quot; font-weight:600;&quot;&gt;sample&lt;/span&gt; of records in the vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sample</source>
+        <translation type="unfinished">采样</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Retrieve &lt;span style=&quot; font-weight:600;&quot;&gt;all&lt;/span&gt; the record in the vector file (&lt;span style=&quot; font-style:italic;&quot;&gt;if the table is big, the operation can consume some time&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished">所有</translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation type="unfinished">操作符</translation>
+    </message>
+    <message>
+        <source>=</source>
+        <translation type="unfinished">=</translation>
+    </message>
+    <message>
+        <source>&lt;</source>
+        <translation type="unfinished">&lt;</translation>
+    </message>
+    <message>
+        <source>NOT</source>
+        <translation type="unfinished">NOT</translation>
+    </message>
+    <message>
+        <source>OR</source>
+        <translation type="unfinished">OR</translation>
+    </message>
+    <message>
+        <source>AND</source>
+        <translation type="unfinished">AND</translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>IN</source>
+        <translation type="unfinished">IN</translation>
+    </message>
+    <message>
+        <source>NOT IN</source>
+        <translation type="unfinished">NOT IN</translation>
+    </message>
+    <message>
+        <source>!=</source>
+        <translation type="unfinished">!=</translation>
+    </message>
+    <message>
+        <source>&gt;</source>
+        <translation type="unfinished">&gt;</translation>
+    </message>
+    <message>
+        <source>LIKE</source>
+        <translation type="unfinished">LIKE</translation>
+    </message>
+    <message>
+        <source>ILIKE</source>
+        <translation type="unfinished">ILIKE</translation>
+    </message>
+    <message>
+        <source>&gt;=</source>
+        <translation type="unfinished">&gt;=</translation>
+    </message>
+    <message>
+        <source>&lt;=</source>
+        <translation type="unfinished">&lt;=</translation>
+    </message>
+    <message>
+        <source>SQL where clause</source>
+        <translation type="unfinished">SQL where子句</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">清除</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation type="unfinished">测试</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">确定</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">取消</translation>
     </message>
 </context>
 <context>
@@ -20187,10 +20647,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 and all other files (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20212,6 +20668,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 retrieved using %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All other files (*)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21730,7 +22190,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation>确认删除</translation>
+        <translation type="obsolete">确认删除</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -21742,15 +22202,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>WMS Provider</source>
-        <translation>WMS源</translation>
+        <translation type="obsolete">WMS源</translation>
     </message>
     <message>
         <source>Could not open the WMS Provider</source>
-        <translation>无法打开WMS源</translation>
+        <translation type="obsolete">无法打开WMS源</translation>
     </message>
     <message>
         <source>Select Layer</source>
-        <translation>选择图层</translation>
+        <translation type="obsolete">选择图层</translation>
     </message>
     <message>
         <source>You must select at least one layer first.</source>
@@ -21768,87 +22228,44 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <source>WMS proxies</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">坐标参考系统</translation>
-    </message>
-    <message>
-        <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">坐标参考系统</translation>
     </message>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
+        <translation type="obsolete">
             <numerusform>
         
         </numerusform>
         </translation>
-    </message>
-    <message>
-        <source>Could not understand the response.  The %1 provider said:
-%2</source>
-        <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not understand the response.  The %1 provider said:
-%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You must select at least one leaf layer first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The %1 connection already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Confirm Overwrite</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>WMS Password for %1</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsServerSourceSelectBase</name>
     <message>
         <source>Add Layer(s) from a Server</source>
-        <translation>添加服务器上的图层</translation>
+        <translation type="obsolete">添加服务器上的图层</translation>
     </message>
     <message>
         <source>C&amp;lose</source>
-        <translation>关闭(&amp;l)</translation>
+        <translation type="obsolete">关闭(&amp;l)</translation>
     </message>
     <message>
         <source>Alt+L</source>
-        <translation>Alt+L</translation>
+        <translation type="obsolete">Alt+L</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>帮助</translation>
+        <translation type="obsolete">帮助</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>Image encoding</source>
-        <translation>影像编码</translation>
+        <translation type="obsolete">影像编码</translation>
     </message>
     <message>
         <source>Layers</source>
@@ -21856,27 +22273,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation type="obsolete">ID</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>名称</translation>
+        <translation type="obsolete">名称</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation>标题</translation>
+        <translation type="obsolete">标题</translation>
     </message>
     <message>
         <source>Abstract</source>
-        <translation>摘要</translation>
+        <translation type="obsolete">摘要</translation>
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation>增加 (&amp;A)</translation>
+        <translation type="obsolete">增加 (&amp;A)</translation>
     </message>
     <message>
         <source>Alt+A</source>
-        <translation>Alt+A</translation>
+        <translation type="obsolete">Alt+A</translation>
     </message>
     <message>
         <source>Server Connections</source>
@@ -21884,83 +22301,55 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;New</source>
-        <translation>新建(&amp;N)</translation>
+        <translation type="obsolete">新建(&amp;N)</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>删除</translation>
+        <translation type="obsolete">删除</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>编辑</translation>
+        <translation type="obsolete">编辑</translation>
     </message>
     <message>
         <source>C&amp;onnect</source>
-        <translation>连接 (&amp;o)</translation>
+        <translation type="obsolete">连接 (&amp;o)</translation>
     </message>
     <message>
         <source>Ready</source>
-        <translation>就绪</translation>
+        <translation type="obsolete">就绪</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>坐标参考系统</translation>
+        <translation type="obsolete">坐标参考系统</translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation>改变...</translation>
-    </message>
-    <message>
-        <source>Adds a few example WMS servers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add default servers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Servers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Server Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">改变...</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished">搜索</translation>
+        <translation type="obsolete">搜索</translation>
     </message>
     <message>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation type="obsolete">URL</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">描述</translation>
-    </message>
-    <message>
-        <source>Add selected row to WMS list</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer Order</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">描述</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">图层</translation>
-    </message>
-    <message>
-        <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">图层</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">选项</translation>
+        <translation type="obsolete">选项</translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished">图层名称</translation>
+        <translation type="obsolete">图层名称</translation>
     </message>
 </context>
 <context>
@@ -22074,88 +22463,12 @@ The error was:
 <context>
     <name>QgsSingleSymbolDialog</name>
     <message>
-        <source>Solid Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dash Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dot Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dash Dot Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dash Dot Dot Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Pen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Brush</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Solid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Horizontal</source>
-        <translation type="unfinished">水平</translation>
+        <translation type="obsolete">水平</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">垂直</translation>
-    </message>
-    <message>
-        <source>Cross</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>BDiagonal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FDiagonal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Diagonal X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dense7</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">垂直</translation>
     </message>
     <message>
         <source>Texture</source>
@@ -22164,6 +22477,10 @@ The error was:
     <message>
         <source>Refresh markers</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished">不透明</translation>
     </message>
 </context>
 <context>
@@ -22186,7 +22503,7 @@ The error was:
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="obsolete">符号</translation>
+        <translation type="unfinished">符号</translation>
     </message>
     <message>
         <source>Outline Width:</source>
@@ -22217,48 +22534,36 @@ The error was:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Area scale field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Style Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outline style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outline color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outline width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fill color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fill style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Label</source>
         <translation type="unfinished">标签</translation>
     </message>
     <message>
-        <source>Symbol field</source>
+        <source>In map units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Size in map units</source>
+        <source>Drawing by field</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Area scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">宽度</translation>
     </message>
 </context>
 <context>
@@ -23339,7 +23644,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation>这个按钮可以打开PostgreSQL查询构建器，它允许您创建一个图层要素的子集显示在地图上，而不是显示整个图层的所有要素</translation>
+        <translation type="obsolete">这个按钮可以打开PostgreSQL查询构建器，它允许您创建一个图层要素的子集显示在地图上，而不是显示整个图层的所有要素</translation>
     </message>
     <message>
         <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
@@ -23438,10 +23743,6 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QGIS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>id</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23526,10 +23827,6 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unknown style format: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save layer properties as style file (.qml)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23588,6 +23885,10 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Hidden</source>
         <translation type="unfinished">隐藏</translation>
+    </message>
+    <message>
+        <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23917,6 +24218,14 @@ Should the existing classes be deleted before classification?</source>
         <source>Modify WFS connection</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">错误</translation>
+    </message>
+    <message>
+        <source>The capabilities document could not be retrieved from the server</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsWFSSourceSelectBase</name>
@@ -23997,7 +24306,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Attributes:</source>
-        <translation type="unfinished">属性:</translation>
+        <translation type="obsolete">属性:</translation>
     </message>
     <message>
         <source>1</source>
@@ -24010,6 +24319,216 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Add attribute</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attributes</source>
+        <translation type="unfinished">属性</translation>
+    </message>
+</context>
+<context>
+    <name>QgsWMSSourceSelect</name>
+    <message>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confirm Delete</source>
+        <translation type="unfinished">确认删除</translation>
+    </message>
+    <message>
+        <source>WMS Password for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS Provider</source>
+        <translation type="unfinished">WMS源</translation>
+    </message>
+    <message>
+        <source>Could not open the WMS Provider</source>
+        <translation type="unfinished">无法打开WMS源</translation>
+    </message>
+    <message>
+        <source>Select Layer</source>
+        <translation type="unfinished">选择图层</translation>
+    </message>
+    <message>
+        <source>You must select at least one leaf layer first.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System</source>
+        <translation type="unfinished">坐标参考系统</translation>
+    </message>
+    <message>
+        <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Coordinate Reference System (%n available)</source>
+        <comment>crs count</comment>
+        <translation type="unfinished">
+            <numerusform>
+        
+        </numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Could not understand the response.  The %1 provider said:
+%2</source>
+        <comment>COMMENTED OUT</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not understand the response.  The %1 provider said:
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS proxies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The %1 connection already exists. Do you want to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confirm Overwrite</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWMSSourceSelectBase</name>
+    <message>
+        <source>Add Layer(s) from a Server</source>
+        <translation type="unfinished">添加服务器上的图层</translation>
+    </message>
+    <message>
+        <source>Servers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C&amp;onnect</source>
+        <translation type="unfinished">连接 (&amp;o)</translation>
+    </message>
+    <message>
+        <source>&amp;New</source>
+        <translation type="unfinished">新建(&amp;N)</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">编辑</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">删除</translation>
+    </message>
+    <message>
+        <source>Adds a few example WMS servers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add default servers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished">ID</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">名称</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation type="unfinished">标题</translation>
+    </message>
+    <message>
+        <source>Abstract</source>
+        <translation type="unfinished">摘要</translation>
+    </message>
+    <message>
+        <source>Layer Order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">图层</translation>
+    </message>
+    <message>
+        <source>Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation type="unfinished">搜索</translation>
+    </message>
+    <message>
+        <source>URL</source>
+        <translation type="unfinished">URL</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">描述</translation>
+    </message>
+    <message>
+        <source>Add selected row to WMS list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image encoding</source>
+        <translation type="unfinished">影像编码</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">选项</translation>
+    </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="unfinished">图层名称</translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System</source>
+        <translation type="unfinished">坐标参考系统</translation>
+    </message>
+    <message>
+        <source>Change ...</source>
+        <translation type="unfinished">改变...</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">帮助</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished">增加 (&amp;A)</translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <translation type="unfinished">Alt+A</translation>
+    </message>
+    <message>
+        <source>C&amp;lose</source>
+        <translation type="unfinished">关闭(&amp;l)</translation>
+    </message>
+    <message>
+        <source>Alt+L</source>
+        <translation type="unfinished">Alt+L</translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation type="unfinished">就绪</translation>
     </message>
 </context>
 <context>

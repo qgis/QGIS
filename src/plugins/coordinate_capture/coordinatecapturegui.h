@@ -13,12 +13,11 @@
 #define CoordinateCaptureGUI_H
 
 #include <QDialog>
-#include <ui_coordinatecaptureguibase.h>
 
 /**
 @author Tim Sutton
 */
-class CoordinateCaptureGui : public QDialog, private Ui::CoordinateCaptureGuiBase
+class CoordinateCaptureGui : public QDialog
 {
     Q_OBJECT
   public:

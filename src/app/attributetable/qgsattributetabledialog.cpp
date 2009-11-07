@@ -588,6 +588,8 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
       QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute could not be added to the layer" ) );
       mLayer->destroyEditCommand();
     }
+    // update model - a field has been added or updated
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
   }
 }
 
@@ -627,6 +629,8 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
       QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute(s) could not be deleted" ) );
       mLayer->destroyEditCommand();
     }
+    // update model - a field has been added or updated
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
   }
 }
 

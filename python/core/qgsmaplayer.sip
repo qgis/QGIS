@@ -198,7 +198,17 @@ public:
      */
     virtual QString lastError();
 
-    /** Returns layer's spatial reference system */
+    /** Returns layer's spatial reference system
+    @note This was introduced in QGIS 1.4
+    */
+    
+    const QgsCoordinateReferenceSystem& crs();
+
+    /** Returns layer's spatial reference system
+    @note This method is here for API compatibility
+    and will be deprecited in 2.0
+    @see crs()
+    */
     const QgsCoordinateReferenceSystem& srs();
     
     /** Sets layer's spatial reference system */

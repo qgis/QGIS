@@ -72,6 +72,10 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
 
+  if ( !mResults )
+  {
+    mResults = new QgsIdentifyResults( mCanvas, mCanvas->window() );
+  }
   mResults->clear();
 
   QSettings settings;
@@ -140,13 +144,26 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
   }
   else
   {
-    mResults->hide();
+    QSettings mySettings;
+    bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
+    if ( !myDockFlag )
+    {
+      mResults->hide();
+    }
+    else
+    {
+      mResults->clear();
+    }
     QMessageBox::information( 0, tr( "Identify results" ), tr( "No features at this position found." ) );
   }
 }
 
 void QgsMapToolIdentify::activate()
 {
+  if ( !mResults ) 
+  {
+    mResults = new QgsIdentifyResults( mCanvas, mCanvas->window() );
+  }
   mResults->activate();
   QgsMapTool::activate();
 }

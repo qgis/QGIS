@@ -8,7 +8,7 @@ SET (coordinatecapture_SRCS
      coordinatecapturemaptool.cpp
 )
 
-SET (coordinatecapture_UIS coordinatecaptureguibase.ui)
+SET (coordinatecapture_UIS coordinatecaptureguibase.ui) 
 
 SET (coordinatecapture_MOC_HDRS
      coordinatecapture.h
@@ -21,13 +21,13 @@ SET (coordinatecapture_RCCS  coordinatecapture.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (coordinatecapture_UIS_H  ${coordinatecapture_UIS})
+QT4_WRAP_UI (coordinatecapture_UIS_H  ${coordinatecapture_UIS}) 
 
 QT4_WRAP_CPP (coordinatecapture_MOC_SRCS  ${coordinatecapture_MOC_HDRS})
 
 QT4_ADD_RESOURCES(coordinatecapture_RCC_SRCS ${coordinatecapture_RCCS})
 
-ADD_LIBRARY (coordinatecaptureplugin MODULE ${coordinatecapture_SRCS} ${coordinatecapture_MOC_SRCS} ${coordinatecapture_RCC_SRCS} ${coordinatecapture_UIS_H})
+ADD_LIBRARY (coordinatecaptureplugin MODULE ${coordinatecapture_SRCS} ${coordinatecapture_MOC_SRCS} ${coordinatecapture_RCC_SRCS})
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}

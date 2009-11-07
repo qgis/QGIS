@@ -3117,9 +3117,12 @@ bool QgsVectorLayer::commitChanges()
       QgsAttributeMap dst;
 
       for ( QgsAttributeMap::const_iterator it = src.begin(); it != src.end(); it++ )
+      {
         if ( remap.contains( it.key() ) )
+        {
           dst[ remap[it.key()] ] = it.value();
-
+        }
+      }
       src = dst;
     }
 
@@ -3253,6 +3256,7 @@ bool QgsVectorLayer::commitChanges()
     undoStack()->clear();
     emit editingStopped();
   }
+
 
   mDataProvider->updateExtents();
   mDataProvider->updateFeatureCount();

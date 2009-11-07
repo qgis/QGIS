@@ -1702,13 +1702,13 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
     if ( sqlWhereClause.isEmpty() )
     {
       sql = QString( "select distinct %1 from %2 order by %1" )
-            .arg( fieldExpression( fld ) )
+            .arg( quotedIdentifier( fld.name() ) )
             .arg( mSchemaTableName );
     }
     else
     {
       sql = QString( "select distinct %1 from %2 where %3 order by %1" )
-            .arg( fieldExpression( fld ) )
+            .arg( quotedIdentifier( fld.name() ) )
             .arg( mSchemaTableName )
             .arg( sqlWhereClause );
     }
@@ -1777,7 +1777,7 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
 bool QgsPostgresProvider::parseEnumRange( QStringList& enumValues, const QString& attributeName ) const
 {
   enumValues.clear();
-  QString enumRangeSql = QString( "SELECT enum_range(%1) from %2 limit1" ).arg( quotedIdentifier( attributeName ) ).arg( mSchemaTableName );
+  QString enumRangeSql = QString( "SELECT enum_range(%1) from %2 limit 1" ).arg( quotedIdentifier( attributeName ) ).arg( mSchemaTableName );
   Result enumRangeRes = connectionRO->PQexec( enumRangeSql );
   if ( PQresultStatus( enumRangeRes ) == PGRES_TUPLES_OK && PQntuples( enumRangeRes ) > 0 )
   {
@@ -1869,13 +1869,13 @@ QVariant QgsPostgresProvider::maximumValue( int index )
     if ( sqlWhereClause.isEmpty() )
     {
       sql = QString( "select max(%1) from %2" )
-            .arg( fieldExpression( fld ) )
+            .arg( quotedIdentifier( fld.name() ) )
             .arg( mSchemaTableName );
     }
     else
     {
       sql = QString( "select max(%1) from %2 where %3" )
-            .arg( fieldExpression( fld ) )
+            .arg( quotedIdentifier( fld.name() ) )
             .arg( mSchemaTableName )
             .arg( sqlWhereClause );
     }

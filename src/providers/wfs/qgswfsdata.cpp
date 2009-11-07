@@ -23,6 +23,7 @@
 #include <QList>
 #include <QProgressDialog>
 #include <QSet>
+#include <QSettings>
 
 //just for a test
 //#include <QProgressDialog>
@@ -64,8 +65,12 @@ QgsWFSData::QgsWFSData(
     }
   }
 
+  QSettings s;
+  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt();
+
   mEndian = QgsApplication::endian();
   QObject::connect( &mHttp, SIGNAL( done( bool ) ), this, SLOT( setFinished( bool ) ) );
+  QObject::connect( &mNetworkTimeoutTimer, SIGNAL( timeout() ), this, SLOT( setFinished() ) );
 }
 
 QgsWFSData::~QgsWFSData()
@@ -115,7 +120,9 @@ int QgsWFSData::getWFSData()
     progressDialog->show();
   }
 
-  //mHttp.get( mUri );
+  //setup timer
+  mNetworkTimeoutTimer.setSingleShot( true );
+  mNetworkTimeoutTimer.start( mNetworkTimeoutMsec );
   mHttp.get( requestUrl.path() + "?" + QString( requestUrl.encodedQuery() ) );
 
 
@@ -169,6 +176,7 @@ void QgsWFSData::handleProgressEvent( int progress, int totalSteps )
 {
   emit dataReadProgress( progress );
   emit totalStepsUpdate( totalSteps );
+  mNetworkTimeoutTimer.start( mNetworkTimeoutMsec );
 }
 
 void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )

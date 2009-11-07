@@ -31,7 +31,6 @@
 #include <QTimer>
 #include "qgslogger.h"
 
-static int NETWORK_TIMEOUT_MSEC = ( 120 * 1000 );  // 120 seconds
 static int HTTP_PORT_DEFAULT = 80;
 
 //XXX Set the connection name when creating the provider instance
@@ -51,6 +50,13 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
     httphost( proxyHost ),
     mError( 0 )
 {
+  QSettings s;
+  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
+}
+
+QgsHttpTransaction::QgsHttpTransaction()
+{
+
 }
 
 QgsHttpTransaction::~QgsHttpTransaction()
@@ -175,7 +181,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
            this,     SLOT( networkTimedOut() ) );
 
   mWatchdogTimer->setSingleShot( TRUE );
-  mWatchdogTimer->start( NETWORK_TIMEOUT_MSEC );
+  mWatchdogTimer->start( mNetworkTimeoutMsec );
 
   QgsDebugMsg( "Starting get with id " + QString::number( httpid ) + "." );
   QgsDebugMsg( "Setting httpactive = TRUE" );
@@ -251,7 +257,7 @@ void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
                resp.value( "Content-Type" ) + "'." );
 
   // We saw something come back, therefore restart the watchdog timer
-  mWatchdogTimer->start( NETWORK_TIMEOUT_MSEC );
+  mWatchdogTimer->start( mNetworkTimeoutMsec );
 
   if ( resp.statusCode() == 302 ) // Redirect
   {
@@ -298,7 +304,7 @@ void QgsHttpTransaction::dataProgress( int done, int total )
 //  QgsDebugMsg("got " + QString::number(done) + " of " + QString::number(total));
 
   // We saw something come back, therefore restart the watchdog timer
-  mWatchdogTimer->start( NETWORK_TIMEOUT_MSEC );
+  mWatchdogTimer->start( mNetworkTimeoutMsec );
 
   emit dataReadProgress( done );
   emit totalSteps( total );
@@ -414,7 +420,7 @@ void QgsHttpTransaction::dataStateChanged( int state )
   QgsDebugMsg( "state " + QString::number( state ) + "." );
 
   // We saw something come back, therefore restart the watchdog timer
-  mWatchdogTimer->start( NETWORK_TIMEOUT_MSEC );
+  mWatchdogTimer->start( mNetworkTimeoutMsec );
 
   switch ( state )
   {
@@ -467,7 +473,7 @@ void QgsHttpTransaction::networkTimedOut()
   QgsDebugMsg( "entering." );
 
   mError = tr( "Network timed out after %n second(s) of inactivity.\n"
-               "This may be a problem in your network connection or at the WMS server.", "inactivity timeout", NETWORK_TIMEOUT_MSEC / 1000 );
+               "This may be a problem in your network connection or at the WMS server.", "inactivity timeout", mNetworkTimeoutMsec / 1000 );
 
   QgsDebugMsg( "Setting httpactive = FALSE" );
   httpactive = FALSE;

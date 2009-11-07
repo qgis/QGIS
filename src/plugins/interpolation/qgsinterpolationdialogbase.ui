@@ -1,108 +1,112 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsInterpolationDialogBase</class>
- <widget class="QDialog" name="QgsInterpolationDialogBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsInterpolationDialogBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>538</width>
-    <height>733</height>
+    <width>748</width>
+    <height>409</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Interpolation plugin</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3" >
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="mInputGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="mInputGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Input</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
          <string>Vector layers:</string>
+        </property>
+        <property name="buddy">
+         <cstring>mInputLayerComboBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2" >
-       <widget class="QComboBox" name="mInputLayerComboBox" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="mInputLayerComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="mInterpolationAttributeLabel" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="mInterpolationAttributeLabel">
+        <property name="text">
          <string>Interpolation attribute:</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mInterpolationAttributeComboBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2" >
-       <widget class="QComboBox" name="mInterpolationAttributeComboBox" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+      <item row="1" column="1" colspan="2">
+       <widget class="QComboBox" name="mInterpolationAttributeComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="3" >
-       <widget class="QCheckBox" name="mUseZCoordCheckBox" >
-        <property name="text" >
+      <item row="2" column="0" colspan="3">
+       <widget class="QCheckBox" name="mUseZCoordCheckBox">
+        <property name="text">
          <string>Use z-Coordinate for interpolation</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
-       <widget class="QPushButton" name="mAddPushButton" >
-        <property name="text" >
+      <item row="3" column="1">
+       <widget class="QPushButton" name="mAddPushButton">
+        <property name="text">
          <string>Add</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="2" >
-       <widget class="QPushButton" name="mRemovePushButton" >
-        <property name="text" >
+      <item row="3" column="2">
+       <widget class="QPushButton" name="mRemovePushButton">
+        <property name="text">
          <string>Remove</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="3" >
-       <widget class="QTreeWidget" name="mLayersTreeWidget" >
+      <item row="4" column="0" colspan="3">
+       <widget class="QTreeWidget" name="mLayersTreeWidget">
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Vector layer</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Attribute</string>
          </property>
         </column>
         <column>
-         <property name="text" >
+         <property name="text">
           <string>Type</string>
          </property>
         </column>
@@ -111,164 +115,188 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="mOutputGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+   <item row="0" column="1">
+    <widget class="QGroupBox" name="mOutputGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Output</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="mInterpolationLabel" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mInterpolationLabel">
+        <property name="text">
          <string>Interpolation method</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mInterpolationMethodComboBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QComboBox" name="mInterpolationMethodComboBox" />
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mInterpolationMethodComboBox"/>
       </item>
-      <item row="0" column="2" >
-       <widget class="QToolButton" name="mConfigureInterpolationButton" >
-        <property name="text" >
+      <item row="0" column="2">
+       <widget class="QToolButton" name="mConfigureInterpolationButton">
+        <property name="text">
          <string>...</string>
         </property>
-        <property name="icon" >
-         <iconset resource="interpolator.qrc" >
+        <property name="icon">
+         <iconset resource="interpolator.qrc">
           <normaloff>:/options.png</normaloff>:/options.png</iconset>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="mNumberOfColumnsLabel" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="mNumberOfColumnsLabel">
+        <property name="text">
          <string>Number of columns</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mNumberOfColumnsSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2" >
-       <widget class="QSpinBox" name="mNumberOfColumnsSpinBox" >
-        <property name="maximum" >
+      <item row="1" column="1" colspan="2">
+       <widget class="QSpinBox" name="mNumberOfColumnsSpinBox">
+        <property name="maximum">
          <number>10000000</number>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="mNumberOfRowsLabel" >
-        <property name="text" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="mNumberOfRowsLabel">
+        <property name="text">
          <string>Number of rows</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mNumberOfRowsSpinBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2" >
-       <widget class="QSpinBox" name="mNumberOfRowsSpinBox" >
-        <property name="maximum" >
+      <item row="2" column="1" colspan="2">
+       <widget class="QSpinBox" name="mNumberOfRowsSpinBox">
+        <property name="maximum">
          <number>10000000</number>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3" >
-       <layout class="QHBoxLayout" name="horizontalLayout_3" >
+      <item row="3" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QLabel" name="mCellsizeXLabel" >
-          <property name="text" >
+         <widget class="QLabel" name="mCellsizeXLabel">
+          <property name="text">
            <string>Cellsize X:</string>
           </property>
+          <property name="buddy">
+           <cstring>mCellsizeXSpinBox</cstring>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="mCellsizeXSpinBox" >
-          <property name="maximum" >
+         <widget class="QDoubleSpinBox" name="mCellsizeXSpinBox">
+          <property name="decimals">
+           <number>5</number>
+          </property>
+          <property name="maximum">
            <double>999999.000000000000000</double>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="mCellsizeYLabel" >
-          <property name="text" >
+         <widget class="QLabel" name="mCellsizeYLabel">
+          <property name="text">
            <string>Cellsize Y:</string>
           </property>
+          <property name="buddy">
+           <cstring>mCellSizeYSpinBox</cstring>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="mCellSizeYSpinBox" >
-          <property name="maximum" >
+         <widget class="QDoubleSpinBox" name="mCellSizeYSpinBox">
+          <property name="decimals">
+           <number>5</number>
+          </property>
+          <property name="maximum">
            <double>999999.000000000000000</double>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="4" column="0" colspan="3" >
-       <layout class="QHBoxLayout" name="horizontalLayout" >
+      <item row="4" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLabel" name="mXMinLabel" >
-          <property name="text" >
+         <widget class="QLabel" name="mXMinLabel">
+          <property name="text">
            <string>X Min:</string>
           </property>
+          <property name="buddy">
+           <cstring>mXMinLineEdit</cstring>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="mXMinLineEdit" />
+         <widget class="QLineEdit" name="mXMinLineEdit"/>
         </item>
         <item>
-         <widget class="QLabel" name="mXMaxLabel" >
-          <property name="text" >
+         <widget class="QLabel" name="mXMaxLabel">
+          <property name="text">
            <string>X Max:</string>
           </property>
+          <property name="buddy">
+           <cstring>mXMaxLineEdit</cstring>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="mXMaxLineEdit" />
+         <widget class="QLineEdit" name="mXMaxLineEdit"/>
         </item>
        </layout>
       </item>
-      <item row="5" column="0" colspan="3" >
-       <layout class="QHBoxLayout" name="horizontalLayout_2" >
+      <item row="5" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QLabel" name="mYMinLabel" >
-          <property name="text" >
+         <widget class="QLabel" name="mYMinLabel">
+          <property name="text">
            <string>Y Min:</string>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="mYMinLineEdit" />
-        </item>
-        <item>
-         <widget class="QLabel" name="mYMaxLabel" >
-          <property name="text" >
-           <string>Y Max:</string>
+          <property name="buddy">
+           <cstring>mYMinLineEdit</cstring>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="mYMaxLineEdit" />
+         <widget class="QLineEdit" name="mYMinLineEdit"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="mYMaxLabel">
+          <property name="text">
+           <string>Y Max:</string>
+          </property>
+          <property name="buddy">
+           <cstring>mYMaxLineEdit</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="mYMaxLineEdit"/>
         </item>
        </layout>
       </item>
-      <item row="6" column="0" colspan="3" >
-       <layout class="QHBoxLayout" name="horizontalLayout_4" >
+      <item row="6" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <spacer name="horizontalSpacer" >
-          <property name="orientation" >
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>298</width>
             <height>20</height>
@@ -277,30 +305,30 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="mBBoxToCurrentExtent" >
-          <property name="text" >
+         <widget class="QPushButton" name="mBBoxToCurrentExtent">
+          <property name="text">
            <string>Set to current extent</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="7" column="0" >
-       <widget class="QLabel" name="mOutputFileLabel" >
-        <property name="text" >
+      <item row="7" column="0">
+       <widget class="QLabel" name="mOutputFileLabel">
+        <property name="text">
          <string>Output file </string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mOutputFileLineEdit</cstring>
         </property>
        </widget>
       </item>
-      <item row="7" column="1" >
-       <widget class="QLineEdit" name="mOutputFileLineEdit" />
+      <item row="7" column="1">
+       <widget class="QLineEdit" name="mOutputFileLineEdit"/>
       </item>
-      <item row="7" column="2" >
-       <widget class="QToolButton" name="mOutputFileButton" >
-        <property name="text" >
+      <item row="7" column="2">
+       <widget class="QToolButton" name="mOutputFileButton">
+        <property name="text">
          <string>...</string>
         </property>
        </widget>
@@ -308,12 +336,12 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
+   <item row="1" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -321,16 +349,29 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>mInputLayerComboBox</tabstop>
+  <tabstop>mInterpolationAttributeComboBox</tabstop>
+  <tabstop>mUseZCoordCheckBox</tabstop>
+  <tabstop>mAddPushButton</tabstop>
+  <tabstop>mRemovePushButton</tabstop>
+  <tabstop>mLayersTreeWidget</tabstop>
   <tabstop>mInterpolationMethodComboBox</tabstop>
   <tabstop>mConfigureInterpolationButton</tabstop>
   <tabstop>mNumberOfColumnsSpinBox</tabstop>
   <tabstop>mNumberOfRowsSpinBox</tabstop>
+  <tabstop>mCellsizeXSpinBox</tabstop>
+  <tabstop>mCellSizeYSpinBox</tabstop>
+  <tabstop>mXMinLineEdit</tabstop>
+  <tabstop>mXMaxLineEdit</tabstop>
+  <tabstop>mYMinLineEdit</tabstop>
+  <tabstop>mYMaxLineEdit</tabstop>
+  <tabstop>mBBoxToCurrentExtent</tabstop>
   <tabstop>mOutputFileLineEdit</tabstop>
   <tabstop>mOutputFileButton</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="interpolator.qrc" />
+  <include location="interpolator.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -339,11 +380,11 @@
    <receiver>QgsInterpolationDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>257</x>
-     <y>362</y>
+    <hint type="sourcelabel">
+     <x>266</x>
+     <y>723</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
     </hint>
@@ -355,11 +396,11 @@
    <receiver>QgsInterpolationDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>325</x>
-     <y>362</y>
+    <hint type="sourcelabel">
+     <x>334</x>
+     <y>723</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
     </hint>

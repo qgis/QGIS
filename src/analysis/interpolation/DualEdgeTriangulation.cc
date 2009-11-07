@@ -959,6 +959,11 @@ QList<int>* DualEdgeTriangulation::getSurroundingTriangles( int pointno )
 
 bool DualEdgeTriangulation::getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 )
 {
+  if ( mPointVector.size() < 3 )
+  {
+    return false;
+  }
+
   if ( p1 && p2 && p3 )
   {
     Point3D point( x, y, 0 );
@@ -1072,6 +1077,11 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, Point3D* p1, int* n
 
 bool DualEdgeTriangulation::getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 )
 {
+  if ( mPointVector.size() < 3 )
+  {
+    return false;
+  }
+
   if ( p1 && p2 && p3 )
   {
     Point3D point( x, y, 0 );

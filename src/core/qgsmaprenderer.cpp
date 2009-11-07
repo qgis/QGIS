@@ -427,7 +427,7 @@ void QgsMapRenderer::render( QPainter* painter )
             QImage * mypImage = new QImage( mRenderContext.painter()->device()->width(), 
                 mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 ); 
             mypImage->fill( 0 );
-            ml->setCacheImage( mypImage ); //no need to delete the oldone, maplayer does it for you
+            ml->setCacheImage( mypImage ); //no need to delete the old one, maplayer does it for you
             QPainter * mypPainter = new QPainter( ml->cacheImage() );
             if ( mySettings.value( "/qgis/enable_anti_aliasing", false ).toBool() )
             {

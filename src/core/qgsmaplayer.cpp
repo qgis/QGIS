@@ -431,8 +431,15 @@ void QgsMapLayer::setSubLayerVisibility( QString name, bool vis )
   // NOOP
 }
 
+const QgsCoordinateReferenceSystem& QgsMapLayer::crs()
+{
+  return *mCRS;
+}
+
 const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
 {
+  // This will be dropped in QGIS 2.0 due to conflicting name
+  // Please use crs() in the future
   return *mCRS;
 }
 

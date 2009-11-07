@@ -79,7 +79,7 @@ class Dialog(QDialog, Ui_Dialog):
 		return QString(aboutText.append(licenceString.append(aknowledgeString)))
 
 	def openWeb(self):
-		webbrowser.open("http://www.ftools.ca/fTools.html")
+		webbrowser.open("http://www.ftools.ca/")
 
 	def openHelp(self):
 		webbrowser.open(currentPath + "/ftools_help.xml")

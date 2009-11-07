@@ -47,6 +47,7 @@
 #include <QPushButton>
 #include <QToolButton>
 #include <QFile>
+#include <QLabel>
 
 static const char * const sIdent = "$Id: plugin.cpp 8053 2008-01-26 13:59:53Z timlinux $";
 static const QString sName = QObject::tr( "Coordinate Capture" );
