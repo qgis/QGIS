@@ -128,7 +128,7 @@ class Qgis2Map:
 
 
   # Set the options collected from the GUI
-  def setOptions(self, msUrl, units, image, mapname, width, height, template, header, footer, dump, force, antialias, partials, fontsPath, symbolsPath):
+  def setOptions(self, msUrl, units, image, mapname, width, height, template, header, footer, dump, force, antialias, partials, exportLayersOnly, fontsPath, symbolsPath):
     if msUrl.encode('utf-8') != "":
       self.mapServerUrl = msUrl.encode('utf-8')
 
@@ -155,10 +155,11 @@ class Qgis2Map:
     self.footer = footer.encode('utf-8')
     #print units, image, mapname, width, height, template, header, footer
 
-    self.dump       = bool2str[dump]
-    self.force      = bool2str[force]
-    self.antialias  = bool2str[antialias]
-    self.partials   = bool2str[partials]
+    self.dump            = bool2str[dump]
+    self.force           = bool2str[force]
+    self.antialias       = bool2str[antialias]
+    self.partials        = bool2str[partials]
+    self.exportLayersOnly   = exportLayersOnly
 
 
   ## All real work happens here by calling methods to write the
@@ -167,50 +168,55 @@ class Qgis2Map:
     # open the output file
     print "creating the map file"
     self.outFile = open(self.mapFile, 'w')
-    # write the general map and web settings
-    print " --- python : map section "
-    self.writeMapSection()
-    logmsg =  "Wrote map section\n"
-    print " --- python : map section done"
-    # write the projection section
-    print " --- python : proj section "
-    self.writeProjectionSection()
-    logmsg += "Wrote projection section\n"
-    print " --- python : proj section done"
-    # write the output format section
-    print " --- python : outputformat section "
-    self.writeOutputFormat()
-    logmsg += "Wrote output format section\n"
-    print " --- python : outputformat section done"
-    # write the legend section
-    print " --- python : legend section"
-    self.writeLegendSection()
-    logmsg += "Wrote legend section\n"
-    print " --- python : legend section done"
+    logmsg = "Starting\n"
+    
+    if self.exportLayersOnly == False:
+        # write the general map and web settings
+        print " --- python : map section "
+        self.writeMapSection()
+        logmsg +=  "Wrote map section\n"
+        print " --- python : map section done"
+        # write the projection section
+        print " --- python : proj section "
+        self.writeProjectionSection()
+        logmsg += "Wrote projection section\n"
+        print " --- python : proj section done"
+        # write the output format section
+        print " --- python : outputformat section "
+        self.writeOutputFormat()
+        logmsg += "Wrote output format section\n"
+        print " --- python : outputformat section done"
+        # write the legend section
+        print " --- python : legend section"
+        self.writeLegendSection()
+        logmsg += "Wrote legend section\n"
+        print " --- python : legend section done"
 
-    # write the WEB section
-    print " --- python : web section "
-    self.writeWebSection()
-    logmsg += "Wrote web section\n"
-    print " --- python : web section done"
+        # write the WEB section
+        print " --- python : web section "
+        self.writeWebSection()
+        logmsg += "Wrote web section\n"
+        print " --- python : web section done"
 
     # write the LAYER sections
     print " --- python : layer section "
-    self.writeMapLayers()
+    layersMsg = self.writeMapLayers()
     logmsg += "Wrote map layers\n"
+    logmsg += layersMsg
     print " --- python : layer section done"
 
-    # we use an external synbol set instead
-    # write the symbol defs section
-    # must happen after layers so we can build a symbol queue
-    #print " --- python : symbol section "
-    #self.writeSymbolSection()
-    #logmsg += "Wrote symbol section\n"
-    #print " --- python : symbol section done"
+    if self.exportLayersOnly == False:
+        # we use an external synbol set instead
+        # write the symbol defs section
+        # must happen after layers so we can build a symbol queue
+        #print " --- python : symbol section "
+        #self.writeSymbolSection()
+        #logmsg += "Wrote symbol section\n"
+        #print " --- python : symbol section done"
 
-    # END and close the map file
-    self.outFile.write("END")
-    self.outFile.close()
+        # END and close the map file
+        self.outFile.write("END")
+        self.outFile.close()
 
     logmsg += "Map file completed for " + self.project + "\n"
     logmsg += "Map file saved as " + self.mapFile + "\n"
@@ -222,7 +228,7 @@ class Qgis2Map:
     self.outFile.write("# Edit this file to customize for your map interface\n")
     self.outFile.write("# (Created with PyQgis MapServer Export plugin)\n")
     self.outFile.write("MAP\n")
-    self.outFile.write("  NAME " + self.mapName + "\n")
+    self.outFile.write("  NAME \"" + self.mapName + "\"\n")
     self.outFile.write("  # Map image size\n")
     if self.width == '' or self.height == '':
       self.outFile.write("  SIZE 0 0\n") 
@@ -263,7 +269,7 @@ class Qgis2Map:
   # Write the OUTPUTFORMAT section
   def writeOutputFormat(self):
     self.outFile.write("  # Background color for the map canvas -- change as desired\n")
-    self.outFile.write("  IMAGECOLOR 192 192 192\n")
+    self.outFile.write("  IMAGECOLOR 255 255 255\n")
     self.outFile.write("  IMAGEQUALITY 95\n")
     self.outFile.write("  IMAGETYPE " + self.imageType + "\n")
     self.outFile.write("\n")
@@ -368,6 +374,7 @@ class Qgis2Map:
   def writeMapLayers(self):
     # get the list of legend nodes so the layers can be written in the
     # proper order
+    resultMsg = ''
     legend_nodes = self.qgs.getElementsByTagName("legendlayer")
     self.z_order = list()
     for legend_node in legend_nodes:
@@ -384,11 +391,11 @@ class Qgis2Map:
       # The attributes of the maplayer tag contain the scale dependent settings,
       # visibility, and layer type
       layer_def = "  LAYER\n"
-      # store name of the layer
-      layer_name = lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "")
+      # store name of the layer - replace space with underscore for wms compliance
+      layer_name = lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "").replace(" ","_")
       # first check to see if there is a name
-      if len(lyr.getElementsByTagName("layername")[0].childNodes) > 0:
-        layer_def += "    NAME '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n"
+      if len(layer_name) > 0:
+        layer_def += "    NAME '%s'\n" % layer_name
       else:
         # if no name for the layer, manufacture one  
         layer_def += "    NAME 'LAYER%s'\n" % count
@@ -435,6 +442,10 @@ class Qgis2Map:
         layer_id = lyr.getElementsByTagName("id")[0].childNodes[0].nodeValue.encode("utf-8")
         
         uniqueId = self.getPrimaryKey(layer_id, uri.table())
+        # %tablename% is returned when no uniqueId is found: inform user
+        if uniqueId.find("%") >= 0:
+            resultMsg += "  ! No primary key found for postgres layer '" +  layer_name + \
+            "' \n    Make sure you edit the mapfile and change the DATA-string \n    containing '" + uniqueId + "'\n"
         epsg = self.getEpsg(lyr)
         
         layer_def += "    DATA '" + uri.geometryColumn() + " FROM " + uri.quotedTablename() + " USING UNIQUE " + uniqueId + " USING srid=" + epsg + "'\n"
@@ -485,7 +496,6 @@ class Qgis2Map:
       layer_def += "    END\n"
 
       layer_def += "    STATUS OFF\n"
-      #layer_def += "    STATUS DEFAULT\n"
 
       # turn status in MapServer on or off based on visibility in QGis:
 #      layer_id = lyr.getElementsByTagName("id")[0].childNodes[0].nodeValue.encode("utf-8")
@@ -496,17 +506,14 @@ class Qgis2Map:
 #      else:
 #        layer_def += "    STATUS OFF\n"
 
-      
-
       opacity = int ( 100.0 * 
            float(lyr.getElementsByTagName("transparencyLevelInt")[0].childNodes[0].nodeValue.encode('utf-8')) / 255.0 ) 
       layer_def += "    TRANSPARENCY " + str(opacity) + "\n"
 
       layer_def += "    PROJECTION\n"
-      # Get the destination srs for this layer and use it to create
-      # the projection section
-      destsrs = self.qgs.getElementsByTagName("destinationsrs")[0] 
-      proj4Text = destsrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
+      # Get the data srs for this layer and use it to create the projection section
+      datasrs = lyr.getElementsByTagName("srs")[0] 
+      proj4Text = datasrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
       # the proj4 text string needs to be reformatted to make mapserver happy
       layer_def += self.formatProj4(proj4Text)
       layer_def += "    END\n"
@@ -549,9 +556,10 @@ class Qgis2Map:
       layer_list[layer_name] = layer_def
     # all layers have been processed, reverse the list and write
     # not necessary since z-order is mapped by the legend list order
-    self.z_order.reverse()
+#    self.z_order.reverse()
     for layer in self.z_order:
       self.outFile.write(layer_list[layer])
+    return resultMsg
 
 
   def getEpsg(self, lyr):
@@ -588,7 +596,7 @@ class Qgis2Map:
         fidIntegerFields.append(id)
 
     if len(fidIntegerFields) == 1:
-      return fields[fidIntegerFields[0]].name().__str__()
+      return str(fields[fidIntegerFields[0]].name())
 
     # fid start
     fidIntegerFields[:] = []
@@ -597,7 +605,7 @@ class Qgis2Map:
         fidIntegerFields.append(id)
 
     if len(fidIntegerFields) == 1:
-      return fields[fidIntegerFields[0]].name().__str__()
+      return str(fields[fidIntegerFields[0]].name())
 
     # id end
     idIntegerFields = []
@@ -606,7 +614,7 @@ class Qgis2Map:
         idIntegerFields.append(id)
 
     if len(idIntegerFields) == 1:
-      return fields[idIntegerFields[0]].name().__str__()
+      return str(fields[idIntegerFields[0]].name())
 
     # id start
     idIntegerFields[:] = []
@@ -615,13 +623,13 @@ class Qgis2Map:
         idIntegerFields.append(id)
 
     if len(idIntegerFields) == 1:
-      return fields[idIntegerFields[0]].name().__str__()
+      return str(fields[idIntegerFields[0]].name())
 
     # if we arrive here we have ambiguous or no primary keys
     #print "Error: Could not find primary key from field type and field name information.\n"
 
     # using a mapfile pre-processor, the proper id field can be substituted in the following:
-    return "%" + tableName + "_id%"
+    return str("%" + tableName + "_id%")
 
   # Simple renderer ouput
   # We need the layer node and symbol node
