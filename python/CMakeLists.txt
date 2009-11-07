@@ -89,5 +89,5 @@ ENDIF (BINDINGS_GLOBAL_INSTALL)
 
 
 # Step 4: install built libs to python's site packages
-INSTALL(FILES __init__.py ${CMAKE_CURRENT_BINARY_DIR}/qgisconfig.py ${BINDINGS_LIBS} DESTINATION ${SITE_PKG_PATH}/qgis)
+INSTALL(FILES __init__.py utils.py ${CMAKE_CURRENT_BINARY_DIR}/qgisconfig.py ${BINDINGS_LIBS} DESTINATION ${SITE_PKG_PATH}/qgis)
 

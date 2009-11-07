@@ -61,9 +61,6 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   // also add path to plugins
   runString( "sys.path = [\"" + pythonPath() + "\", \"" + homePluginsPath()  + "\", \"" + pluginsPath() + "\"] + sys.path" );
 
-  runString( "import traceback" ); // for formatting stack traces
-  runString( "import __main__" ); // to access explicitly global variables
-
   // import SIP
   if ( !runString( "from sip import wrapinstance, unwrapinstance",
                    QObject::tr( "Couldn't load SIP module." ) + "\n" + QObject::tr( "Python support will be disabled." ) ) )
@@ -88,49 +85,16 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     return;
   }
 
-  // hook that will show information and traceback in message box
-  runString(
-    "def qgis_except_hook_msg(type, value, tb, msg):\n"
-    "  lst = traceback.format_exception(type, value, tb)\n"
-    "  if msg == None: msg = '" + QObject::tr( "An error has occured while executing Python code:" ).replace( "'", "\\'" ) + "'\n"
-    "  txt = '<font color=\"red\">'+msg+'</font><br><br>'\n"
-    "  for s in lst:\n"
-    "    txt += s\n"
-    "  txt += '<br>" + QObject::tr( "Python version:" ).replace( "'", "\\'" ) + "<br>' + sys.version + '<br><br>'\n"
-    "  txt += '" + QObject::tr( "Python path:" ).replace( "'", "\\'" ) + "' + str(sys.path)\n"
-    "  txt = txt.replace('\\n', '<br>')\n"
-    "  txt = txt.replace('  ', '&nbsp; ')\n" // preserve whitespaces for nicer output
-    "  \n"
-    "  msg = QgsMessageOutput.createMessageOutput()\n"
-    "  msg.setTitle('" + QObject::tr( "Python error" ).replace( "'", "\\'" ) + "')\n"
-    "  msg.setMessage(txt, QgsMessageOutput.MessageHtml)\n"
-    "  msg.showMessage()\n" );
-  runString(
-    "def qgis_except_hook(type, value, tb):\n"
-    "  qgis_except_hook_msg(type, value, tb, None)\n" );
-  runString(
-    "class QgisOutputCatcher:\n"
-    "  def __init__(self):\n"
-    "    self.data = ''\n"
-    "  def write(self, stuff):\n"
-    "    self.data += stuff\n"
-    "  def get_and_clean_data(self):\n"
-    "    tmp = self.data\n"
-    "    self.data = ''\n"
-    "    return tmp\n" );
-
-  // hook for python console so all output will be redirected
-  // and then shown in console
-  runString(
-    "def console_display_hook(obj):\n"
-    "  __main__.__result = obj\n" );
-
-  installErrorHook();
+  // import QGIS utils
+  error_msg = QObject::tr( "Couldn't load QGIS utils." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  if ( !runString("import qgis.utils", error_msg) )
+  {
+    exitPython();
+    return;
+  }
 
   // initialize 'iface' object
-  runString( "iface = wrapinstance(" + QString::number(( unsigned long ) interface ) + ", QgisInterface)" );
-  runString( "plugins = {}" );
-
+  runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
 }
 
 void QgsPythonUtilsImpl::exitPython()
@@ -149,26 +113,22 @@ bool QgsPythonUtilsImpl::isEnabled()
 
 void QgsPythonUtilsImpl::installErrorHook()
 {
-  runString( "sys.excepthook = qgis_except_hook" );
+  runString( "qgis.utils.installErrorHook()" );
 }
 
 void QgsPythonUtilsImpl::uninstallErrorHook()
 {
-  runString( "sys.excepthook = sys.__excepthook__" );
+  runString( "qgis.utils.uninstallErrorHook()" );
 }
 
 void QgsPythonUtilsImpl::installConsoleHooks()
 {
-  runString( "sys.displayhook = console_display_hook\n" );
-
-  runString( "_old_stdout = sys.stdout\n" );
-  runString( "sys.stdout = QgisOutputCatcher()\n" );
+  runString( "qgis.utils.installConsoleHooks()" );
 }
 
 void QgsPythonUtilsImpl::uninstallConsoleHooks()
 {
-  runString( "sys.displayhook = sys.__displayhook__" );
-  runString( "sys.stdout = _old_stdout" );
+  runString( "qgis.utils.uninstallConsoleHooks()" );
 }
 
 
@@ -192,6 +152,8 @@ bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError )
     // use some default message if custom hasn't been specified
     msgOnError = QObject::tr( "An error occured during execution of following code:" ) + "\n<tt>" + command + "</tt>";
   }
+
+  // TODO: use python implementation
 
   QString traceback = getTraceback();
   QString path, version;
@@ -339,7 +301,7 @@ bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
 
 QString QgsPythonUtilsImpl::getResult()
 {
-  return getVariableFromMain( "__result" );
+  return getVariableFromMain( "qgis.utils.console_output" );
 }
 
 QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
@@ -425,6 +387,8 @@ bool QgsPythonUtilsImpl::evalString( const QString& command, QString& result )
 {
   PyObject* res = PyRun_String( command.toUtf8().data(), Py_eval_input, mMainDict, mMainDict );
 
+  // TODO: error handling
+
   if ( res != NULL )
   {
     result = PyObjectToQString( res );
@@ -472,106 +436,33 @@ QStringList QgsPythonUtilsImpl::pluginList()
 
 QString QgsPythonUtilsImpl::getPluginMetadata( QString pluginName, QString function )
 {
-  QString command = pluginName + "." + function + "()";
-  QString retval = "???";
-
-  // temporary disable error hook - UI will handle this gracefully
-  uninstallErrorHook();
-  PyObject* obj = PyRun_String( command.toUtf8().data(), Py_eval_input, mMainDict, mMainDict );
-
-  if ( PyErr_Occurred() )
-  {
-    PyErr_Print(); // just print it to console
-    PyErr_Clear();
-    retval = "__error__";
-  }
-  else if ( PyUnicode_Check( obj ) )
-  {
-    PyObject* utf8 = PyUnicode_AsUTF8String( obj );
-    if ( utf8 )
-      retval = QString::fromUtf8( PyString_AS_STRING( utf8 ) );
-    else
-      retval = "__error__";
-    Py_XDECREF( utf8 );
-  }
-  else if ( PyString_Check( obj ) )
-  {
-    retval = PyString_AS_STRING( obj );
-  }
-  else
-  {
-    // bad python return value
-    retval = "__error__";
-  }
-  Py_XDECREF( obj );
-
-  installErrorHook();
-  return retval;
+  QString res;
+  QString str = "qgis.utils.pluginMetadata('" + pluginName + "', '"+function+"')";
+  evalString(str, res);
+  //QgsDebugMsg("metadata "+pluginName+" - '"+function+"' = "+res);
+  return res;
 }
 
 
 bool QgsPythonUtilsImpl::loadPlugin( QString packageName )
 {
-  // load plugin's package and ensure that plugin is reloaded when changed
-  runString(
-    "try:\n"
-    "  import " + packageName + "\n"
-    "  __main__.__plugin_result = 'OK'\n"
-    "except:\n"
-    "  __main__.__plugin_result = 'ERROR'\n" );
-
-  if ( getVariableFromMain( "__plugin_result" ) == "OK" )
-    return true;
-
-  // snake in the grass, we know it's there
-  runString( "sys.path_importer_cache.clear()" );
-
-  // retry
-  runString(
-    "try:\n"
-    "  import " + packageName + "\n"
-    "  reload(" + packageName + ")\n"
-    "  __main__.__plugin_result = 'OK'\n"
-    "except:\n"
-    "  qgis_except_hook_msg(sys.exc_type, sys.exc_value, sys.exc_traceback, "
-    "'Couldn\\'t load plugin \"" + packageName + "\" from [\\'' + '\\', \\''.join(sys.path) + '\\']')\n"
-    "  __main__.__plugin_result = 'ERROR'\n" );
-
-  return getVariableFromMain( "__plugin_result" ) == "OK";
+  QString output;
+  evalString("qgis.utils.loadPlugin('" + packageName + "')", output);
+  return (output == "True");
 }
 
 
 bool QgsPythonUtilsImpl::startPlugin( QString packageName )
 {
-  QString pluginPythonVar = "plugins['" + packageName + "']";
-
-  QString errMsg = QObject::tr( "Couldn't load plugin %1" ).arg( packageName );
-
-  // create an instance of the plugin
-  if ( !runString( pluginPythonVar + " = " + packageName + ".classFactory(iface)",
-                   QObject::tr( "%1 due an error when calling its classFactory() method" ).arg( errMsg ) ) )
-    return false;
-
-  // initGui
-  if ( !runString( pluginPythonVar + ".initGui()",
-                   QObject::tr( "%1 due an error when calling its initGui() method" ).arg( errMsg ) ) )
-    return false;
-
-  return true;
+  QString output;
+  evalString("qgis.utils.startPlugin('" + packageName + "')", output);
+  return (output == "True");
 }
 
 
 bool QgsPythonUtilsImpl::unloadPlugin( QString packageName )
 {
-  // unload and delete plugin!
-  QString varName = "plugins['" + packageName + "']";
-
-  QString errMsg = QObject::tr( "Error while unloading plugin %1" ).arg( packageName );
-
-  if ( !runString( varName + ".unload()", errMsg ) )
-    return false;
-  if ( !runString( "del " + varName, errMsg ) )
-    return false;
-
-  return true;
+  QString output;
+  evalString("qgis.utils.unloadPlugin('" + packageName + "')", output);
+  return (output == "True");
 }
