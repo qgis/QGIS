@@ -38,72 +38,37 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
 {
   public:
 
-    /**
-     * Convert a vector layer from single part geometry
-     * to multipart geometry for a given field
-     *
-     * */
-    bool singlepartsToMultipart( QgsVectorLayer* layer,
-                                 const QString& shapefileName,
-                                 const QString& fileEncoding,
-                                 const int fieldIndex );
+    /**Simplify vector layer using (a modified) Douglas-Peucker algorithm
+     and write it to a new shape file
+      @param layer input vector layer
+      @param shapefileName path to the output shp
+      @param fileEncoding encoding of the output file
+      @param tolerance (level of simplification)
+      @param onlySelectedFeatures if true, only selected features are considered, else all the features
+      @param p progress dialog (or 0 if no progress dialog is to be shown)
+      @note: added in version 1.4*/
+    bool simplify( QgsVectorLayer* layer, const QString& shapefileName, double tolerance, \
+                 bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
-    /**
-     * Convert multipart features to multiple singlepart features. Creates
-     * simple polygons and lines.
-     */
-    bool multipartToSingleparts( QgsVectorLayer* layer,
-                                 const QString& shapefileName,
-                                 const QString& fileEncoding );
+    /**Calculate the true centroids, or 'center of mass' for a vector layer and 
+       write it to a new shape file
+      @param layer input vector layer
+      @param shapefileName path to the output shp
+      @param fileEncoding encoding of the output file
+      @param onlySelectedFeatures if true, only selected features are considered, else all the features
+      @param p progress dialog (or 0 if no progress dialog is to be shown)
+      @note: added in version 1.4*/
+    bool centroids( QgsVectorLayer* layer, const QString& shapefileName, \
+                 bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
-    /**
-     * Extract nodes from line and polygon vector layers and output them as
-     * points.
-     * */
-    bool extractNodes( QgsVectorLayer* layer,
-                       const QString& shapefileName,
-                       const QString& fileEncoding );
-
-    /**
-     * Convert polygon features to line features. Multipart polygons are
-     * converted to multiple singlepart lines.
-     */
-    bool polygonsToLines( QgsVectorLayer* layer,
-                          const QString& shapefileName,
-                          const QString& fileEncoding );
-
-    /**
-     * Add vector layer geometry info to point (XCOORD, YCOORD), line (LENGTH),
-     * or polygon (AREA, PERIMETER) layer.
-     */
-    bool exportGeometryInformation( QgsVectorLayer* layer,
-                                    const QString& shapefileName,
-                                    const QString& fileEncoding );
-
-    /**
-     * Simplify (generalise) line or polygon vector layers using (a modified)
-     * Douglas-Peucker algorithm.
-     */
-    bool simplifyGeometry( QgsVectorLayer* layer,
-                           const QString shapefileName,
-                           const QString fileEncoding,
-                           const double tolerance );
-
-    /**
-     * Calculate the true centroids, or 'center of mass' for each polygon in an
-     * input polygon layer.
-     */
-    bool polygonCentroids( QgsVectorLayer* layer,
-                           const QString& shapefileName,
-                           const QString& fileEncoding );
-
-    /**
-     * Create a polygon based on the extents of all features (or all
-     * selected features if applicable) and write it out to a shp.
-     */
-    bool layerExtent( QgsVectorLayer* layer,
-                      const QString& shapefileName,
-                      const QString& fileEncoding );
+    /**Create a polygon based on the extent of all (selected) features and write it to a new shape file
+      @param layer input vector layer
+      @param shapefileName path to the output shp
+      @param fileEncoding encoding of the output file
+      @param onlySelectedFeatures if true, only selected features are considered, else all the features
+      @param p progress dialog (or 0 if no progress dialog is to be shown)
+      @note: added in version 1.4*/
+    bool extent( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
     /**Create buffers for a vector layer and write it to a new shape file
       @param layer input vector layer
@@ -118,19 +83,45 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool buffer( QgsVectorLayer* layer, const QString& shapefileName, double bufferDistance, \
                  bool onlySelectedFeatures = false, bool dissolve = false, int bufferDistanceField = -1, QProgressDialog* p = 0 );
 
+    /**Create convex hull(s) of a vector layer and write it to a new shape file
+      @param layer input vector layer
+      @param shapefileName path to the output shp
+      @param fileEncoding encoding of the output file
+      @param onlySelectedFeatures if true, only selected features are considered, else all the features
+      @param uniqueIdField index of the attribute field that contains the unique convex hull id (or -1 if
+      all features have the same buffer distance)
+      @param p progress dialog (or 0 if no progress dialog is to be shown)
+      @note: added in version 1.4*/
+    bool convexHull( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false, \
+                     int uniqueIdField = -1, QProgressDialog* p = 0 );
+
+    /**Dissolve a vector layer and write it to a new shape file
+      @param layer input vector layer
+      @param shapefileName path to the output shp
+      @param fileEncoding encoding of the output file
+      @param onlySelectedFeatures if true, only selected features are considered, else all the features
+      @param uniqueIdField index of the attribute field that contains the unique id to dissolve on (or -1 if
+      all features should be dissolved together)
+      @param p progress dialog (or 0 if no progress dialog is to be shown)
+      @note: added in version 1.4*/
+    bool dissolve( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false, \
+                     int uniqueIdField = -1, QProgressDialog* p = 0 );
+
   private:
 
     QList<double> simpleMeasure( QgsGeometry* geometry );
     double perimeterMeasure( QgsGeometry* geometry, QgsDistanceArea& measure );
-    QgsFieldMap checkGeometryFields( QgsVectorLayer* layer, int& index1, int& index2 );
-    QgsGeometry* extractLines( QgsGeometry* geometry );
-    QgsGeometry* extractAsSingle( QgsGeometry* geometry );
-    QgsGeometry* extractAsMulti( QgsGeometry* geometry );
-    QgsGeometry* convertGeometry( QgsGeometry* geometry );
-    QList<QgsPoint> extractPoints( QgsGeometry* geometry );
+    /**Helper function to simplify an individual feature*/
+    void simplifyFeature( QgsFeature& f, QgsVectorFileWriter* vfw, double tolerance );
+    /**Helper function to get the cetroid of an individual feature*/
+    void centroidFeature( QgsFeature& f, QgsVectorFileWriter* vfw );
     /**Helper function to buffer an individual feature*/
     void bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve, QgsGeometry** dissolveGeometry, \
                         double bufferDistance, int bufferDistanceField );
+    /**Helper function to get the convex hull of feature(s)*/
+    void convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
+    /**Helper function to dissolve feature(s)*/
+    void dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
 
 };
 #endif //QGSVECTORANALYZER
