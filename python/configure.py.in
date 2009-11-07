@@ -170,7 +170,7 @@ makefile_gui.extra_cxxflags.append("-DGUI_EXPORT="+export)
 
 # more settings for analysis lib
 makefile_analysis.extra_libs.append("qgis_analysis")
-makefile_analysis.extra_lib_dirs.append(build_path+"/src/analysis/vector"+intdir)
+makefile_analysis.extra_lib_dirs.append(build_path+"/src/analysis"+intdir)
 makefile_analysis.extra_include_dirs.append(src_path+"/src/analysis/vector")
 makefile_analysis.extra_include_dirs.append(build_path+"/src/analysis/vector")
 makefile_analysis.extra_include_dirs.append(src_path+"/src/plugins") # because of qgisplugin.h TODO: sort out
