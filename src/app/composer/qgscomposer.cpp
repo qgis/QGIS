@@ -1079,8 +1079,14 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mView = new QgsComposerView( mViewFrame );
   connectSlots();
 
+  //read composition settings
   mComposition = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
-  mComposition->readXML( composerElem, doc );
+  QDomNodeList compositionNodeList = composerElem.elementsByTagName( "Composition" );
+  if ( compositionNodeList.size() > 0 )
+  {
+    QDomElement compositionElem = compositionNodeList.at( 0 ).toElement();
+    mComposition->readXML( compositionElem, doc );
+  }
 
   QGridLayout *l = new QGridLayout( mViewFrame );
   l->setMargin( 0 );
