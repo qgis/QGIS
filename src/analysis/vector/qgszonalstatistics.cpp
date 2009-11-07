@@ -41,7 +41,7 @@ QgsZonalStatistics::~QgsZonalStatistics()
 
 int QgsZonalStatistics::calculateStatistics(QProgressDialog* p)
 {
-  if(!mPolygonLayer || !mPolygonLayer->geometryType() == QGis::Polygon)
+  if(!mPolygonLayer || mPolygonLayer->geometryType() != QGis::Polygon)
   {
     return 1;
   }
@@ -170,7 +170,6 @@ int QgsZonalStatistics::calculateStatistics(QProgressDialog* p)
     cellCenterY = rasterBBox.yMaximum() - offsetY * cellsizeY - cellsizeY / 2;
     count = 0;
     sum = 0;
-    float currentValue;
 
     for(int i = 0; i < nCellsY; ++i)
     {

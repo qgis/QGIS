@@ -114,9 +114,8 @@ void TestQgsVectorAnalyzer::simplifyGeometry(  )
 {
   QString myTmpDir = QDir::tempPath() + QDir::separator() ;
   QString myFileName = myTmpDir +  "simplify_layer.shp";
-  QVERIFY( mAnalyzer.simplifyGeometry( mpLineLayer,
+  QVERIFY( mAnalyzer.simplify( mpLineLayer,
                              myFileName,
-                             "UTF-8",
                              1.0 ) );
 }
 
@@ -124,14 +123,14 @@ void TestQgsVectorAnalyzer::polygonCentroids(  )
 {
   QString myTmpDir = QDir::tempPath() + QDir::separator() ;
   QString myFileName = myTmpDir +  "centroid_layer.shp";
-  QVERIFY( mAnalyzer.polygonCentroids( mpPolyLayer, myFileName, "UTF-8" ) );
+  QVERIFY( mAnalyzer.centroids( mpPolyLayer, myFileName ) );
 }
 
 void TestQgsVectorAnalyzer::layerExtent(  )
 {
   QString myTmpDir = QDir::tempPath() + QDir::separator() ;
   QString myFileName = myTmpDir +  "extent_layer.shp";
-  QVERIFY( mAnalyzer.layerExtent( mpPointLayer, myFileName, "UTF-8" ) );
+  QVERIFY( mAnalyzer.extent( mpPointLayer, myFileName ) );
 }
 
 QTEST_MAIN( TestQgsVectorAnalyzer )
