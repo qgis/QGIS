@@ -64,11 +64,12 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     void populateIMPBabelFormats();
     void populatePortComboBoxes();
     void populateLoadDialog();
+    /*
     void populateDLDialog();
     void populateULDialog();
     void populateIMPDialog();
     void populateCONVDialog();
-
+    */
   private slots:
 
     void on_pbnRefresh_clicked();
