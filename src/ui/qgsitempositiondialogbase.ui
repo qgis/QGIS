@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsItemPositionDialogBase</class>
- <widget class="QDialog" name="QgsItemPositionDialogBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsItemPositionDialogBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,75 +10,75 @@
     <height>274</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Set item position</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="mPositionGroupBox" >
-     <property name="title" >
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="mPositionGroupBox">
+     <property name="title">
       <string>Item reference point</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QCheckBox" name="mUpperLeftCheckBox" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="mUpperLeftCheckBox">
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QCheckBox" name="mUpperMiddleCheckBox" >
-        <property name="text" >
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="mUpperMiddleCheckBox">
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" >
-       <widget class="QCheckBox" name="mUpperRightCheckBox" >
-        <property name="text" >
+      <item row="0" column="2">
+       <widget class="QCheckBox" name="mUpperRightCheckBox">
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QCheckBox" name="mMiddleLeftCheckBox" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="mMiddleLeftCheckBox">
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="QCheckBox" name="mMiddleCheckBox" >
-        <property name="text" >
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="mMiddleCheckBox">
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="1" column="2" >
-       <widget class="QCheckBox" name="mMiddleRightCheckBox" >
-        <property name="text" >
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="mMiddleRightCheckBox">
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QCheckBox" name="mLowerLeftCheckBox" >
-        <property name="text" >
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="mLowerLeftCheckBox">
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <widget class="QCheckBox" name="mLowerMiddleCheckBox" >
-        <property name="text" >
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="mLowerMiddleCheckBox">
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="2" column="2" >
-       <widget class="QCheckBox" name="mLowerRightCheckBox" >
-        <property name="text" >
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="mLowerRightCheckBox">
+        <property name="text">
          <string/>
         </property>
        </widget>
@@ -85,49 +86,49 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2" >
-    <widget class="QGroupBox" name="mCoordinatesGroupBox" >
-     <property name="title" >
+   <item row="0" column="1" colspan="2">
+    <widget class="QGroupBox" name="mCoordinatesGroupBox">
+     <property name="title">
       <string>Coordinates</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <layout class="QHBoxLayout" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="mXLabel" >
-          <property name="text" >
-           <string>x:</string>
+         <widget class="QLabel" name="mXLabel">
+          <property name="text">
+           <string>x</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="mXLineEdit" />
+         <widget class="QLineEdit" name="mXLineEdit"/>
         </item>
        </layout>
       </item>
-      <item row="1" column="0" >
-       <layout class="QHBoxLayout" >
+      <item row="1" column="0">
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="mYLabel" >
-          <property name="text" >
-           <string>y:</string>
+         <widget class="QLabel" name="mYLabel">
+          <property name="text">
+           <string>y</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="mYLineEdit" />
+         <widget class="QLineEdit" name="mYLineEdit"/>
         </item>
        </layout>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
+   <item row="1" column="0" colspan="2">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>201</width>
        <height>20</height>
@@ -135,18 +136,18 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="2" >
-    <layout class="QHBoxLayout" >
+   <item row="1" column="2">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QPushButton" name="mSetPositionButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="mSetPositionButton">
+       <property name="text">
         <string>Set Position</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mCloseButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="mCloseButton">
+       <property name="text">
         <string>Close</string>
        </property>
       </widget>

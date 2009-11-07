@@ -18,16 +18,31 @@
  ***************************************************************************/
 """
 from PyQt4 import QtCore, QtGui 
-from ui_qgsmapserverexportbase import Ui_QgsMapserverExportBase
+from ms_export import defaults
+from ui_mapserverexport import Ui_QgsMapserverExportBase
 # create the dialog for mapserver export
 class MapServerExportDialog(QtGui.QDialog): 
-  def __init__(self): 
+  def __init__(self):
     QtGui.QDialog.__init__(self) 
     # Set up the user interface from Designer. 
     self.ui = Ui_QgsMapserverExportBase() 
     self.ui.setupUi(self) 
 
-    for unit in ["dd", "feet", "meters", "miles", "inches", "kilometers"]:
+    for unit in ["meters", "dd", "feet", "miles", "inches", "kilometers"]:
         self.ui.cmbMapUnits.addItem( QtGui.QApplication.translate("QgsMapserverExportBase", unit, None, QtGui.QApplication.UnicodeUTF8), QtCore.QVariant(unit) )
+    
+    # TODO: set default unit. Is now the first value entered in the unit-list above
+
+    # Set defaults from ms_export.py:
+    self.ui.txtMapServerUrl.setText(defaults.mapServerUrl)
+    self.ui.txtFontsetPath.setText(defaults.fontsPath)
+    self.ui.txtSymbolsetPath.setText(defaults.symbolsPath)
+    self.ui.checkBoxAntiAlias.setChecked(defaults.antialias)
+    self.ui.checkBoxDump.setChecked(defaults.dump)
+    self.ui.checkBoxForce.setChecked(defaults.force)
+    self.ui.checkBoxPartials.setChecked(defaults.partials)
+    self.ui.txtMapWidth.setText(defaults.width)
+    self.ui.txtMapHeight.setText(defaults.height)
+
 
 

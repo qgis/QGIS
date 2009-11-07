@@ -17,19 +17,88 @@
 # presents a Qt based GUI that collects the needed information for this
 # script. 
 # Matthew Perry contributed major portions of this work.
+# Adapted by Erik van de Pol, B3Partners BV.
 #
 # CHANGES SHOULD NOT BE MADE TO THE writeMapFile METHOD UNLESS YOU
 # ARE CHANGING THE QgsMapserverExport CLASS AND YOU KNOW WHAT YOU ARE
 # DOING
-import sys 
-import os
+
+from xml.dom import minidom
 from string import *
-from xml.dom import minidom, Node
-from qgis.core import *
+from qgis.core import QgsDataSourceURI
+from qgis.core import QgsMapLayerRegistry
+#from qgis.core import QgsProject
+from PyQt4.QtCore import QString
+from PyQt4.QtCore import QVariant
+
 
 # symbol map
-qgisSymbols = {'hard:circle'   : 'CIRCLE',
-               'hard:triangle' : 'TRIANGLE'}
+qgis2map_symbol = {
+  "hard:circle"               : "circle",
+  "hard:triangle"             : "triangle",
+  "hard:equilateral_triangle" : "equilateral-triangle",
+  "hard:rectangle"            : "square",
+  "hard:regular_star"         : "star",
+  "hard:diamond"              : "diamond"
+}
+
+# alignment/position map
+qgis2map_aligment2position = {
+  "center"     :   "cc",
+  "above"      :   "uc",
+  "right"      :   "cr",
+  "below"      :   "lc",
+  "left"       :   "cl",
+  "aboveright" :   "ur",
+  "belowright" :   "lr",
+  "belowleft"  :   "ll",
+  "aboveleft"  :   "ul"
+}
+
+# the keys are fonts that must be available in QGis
+# the values in this dictionary must correspond to 
+# the fonts in the file denoted by the FONTSET in the mapfile
+#
+# "MS Shell Dlg 2" is the default label font in QGis.
+# The automatic mapping to "Tahoma" is correct for Windows 2000, Windows XP,
+# Windows Server 2003, Windows Vista and Windows 7.
+# See: http://msdn.microsoft.com/en-us/library/dd374112%28VS.85%29.aspx
+qgis2map_fontset = {
+  "Arial"           : "arial",
+  "Courier"         : "courier",
+  "Georgia"         : "georgia",
+  "Times New Roman" : "times",
+  "Trebuchet MS"    : "trebuchet_ms",
+  "Verdana"         : "verdana",
+  "Tahoma"          : "tahoma",
+  "MS Shell Dlg 2"  : "tahoma"
+}
+# Note that tahoma-italic and tahoma-bold-italic do not exist.
+# Therefore a mapping to the corresponding verdana-variants is made
+# in the fonts file pointed to by the fontsPath. Feel free to map to another font there.
+
+bool2str = {True: "true", False: "false"}
+
+# This is a magic number now. Rationale?
+symbolSizeMultiplier = 3.5
+
+
+class Qgis2MapDefaults: pass
+
+defaults = Qgis2MapDefaults()
+
+defaults.fontsPath = "./fonts/fonts.txt"
+defaults.symbolsPath = "./symbols/symbols.txt"
+defaults.mapServerUrl = "http://my.host.com/cgi-bin/mapserv.exe"
+defaults.width = "100"
+defaults.height = "100"
+
+defaults.dump = True
+defaults.force = True
+defaults.partials = True
+defaults.antialias = True
+
+
 
 class Qgis2Map:
   def __init__(self, projectFile, mapFile):
@@ -38,32 +107,59 @@ class Qgis2Map:
     # create the DOM 
     self.qgs = minidom.parse(projectFile)
     # init the other members that are not set by the constructor
+    self.mapServerUrl = defaults.mapServerUrl
+    self.fontsPath = defaults.fontsPath
+    self.symbolsPath = defaults.symbolsPath
     self.units = ''
     self.imageType = ''
     self.mapName = ''
-    self.width = ''
-    self.height = ''
+    self.width = defaults.width
+    self.height = defaults.height
     self.minimumScale = ''
     self.maximumScale = ''
     self.template = ''
     self.header = ''
     self.footer = ''
+    self.dump = bool2str[defaults.dump]
+    self.force = bool2str[defaults.force]
+    self.antialias = bool2str[defaults.antialias]
+    self.partials = bool2str[defaults.partials]
     self.symbolQueue = {}
-    
+
 
   # Set the options collected from the GUI
-  def setOptions(self, units, image, mapname, width, height, template, header, footer):
+  def setOptions(self, msUrl, units, image, mapname, width, height, template, header, footer, dump, force, antialias, partials, fontsPath, symbolsPath):
+    if msUrl.encode('utf-8') != "":
+      self.mapServerUrl = msUrl.encode('utf-8')
+
+    if fontsPath.encode('utf-8') != "":
+      self.fontsPath = fontsPath.encode('utf-8')
+
+    if symbolsPath.encode('utf-8') != "":
+      self.symbolsPath = symbolsPath.encode('utf-8')
+
+    if width.encode('utf-8') != "":
+      self.width = width.encode('utf-8')
+
+    if height.encode('utf-8') != "":
+      self.height = height.encode('utf-8')
+
     self.units = units.encode('utf-8')
     self.imageType = image.encode('utf-8')
     self.mapName = mapname.encode('utf-8')
-    self.width = width.encode('utf-8')
-    self.height = height.encode('utf-8')
+
     #self.minimumScale = minscale
     #self.maximumScale = maxscale
     self.template = template.encode('utf-8')
     self.header = header.encode('utf-8')
     self.footer = footer.encode('utf-8')
     #print units, image, mapname, width, height, template, header, footer
+
+    self.dump       = bool2str[dump]
+    self.force      = bool2str[force]
+    self.antialias  = bool2str[antialias]
+    self.partials   = bool2str[partials]
+
 
   ## All real work happens here by calling methods to write the
   ## various sections of the map file
@@ -104,12 +200,13 @@ class Qgis2Map:
     logmsg += "Wrote map layers\n"
     print " --- python : layer section done"
 
+    # we use an external synbol set instead
     # write the symbol defs section
     # must happen after layers so we can build a symbol queue
-    print " --- python : symbol section "
-    self.writeSymbolSection()
-    logmsg += "Wrote symbol section\n"
-    print " --- python : symbol section done"
+    #print " --- python : symbol section "
+    #self.writeSymbolSection()
+    #logmsg += "Wrote symbol section\n"
+    #print " --- python : symbol section done"
 
     # END and close the map file
     self.outFile.write("END")
@@ -127,23 +224,41 @@ class Qgis2Map:
     self.outFile.write("MAP\n")
     self.outFile.write("  NAME " + self.mapName + "\n")
     self.outFile.write("  # Map image size\n")
-    self.outFile.write("  SIZE " + self.width + " " + self.height + "\n")
+    if self.width == '' or self.height == '':
+      self.outFile.write("  SIZE 0 0\n") 
+    else:
+      self.outFile.write("  SIZE " + str(self.width) + " " + str(self.height) + "\n")
+      
     self.outFile.write("  UNITS %s\n" % (self.units))
     self.outFile.write("\n")
     # extents
+    self.outFile.write(self.getExtentString())
+
+    self.outFile.write("  FONTSET '" + self.fontsPath + "'\n")
+    # B3Partners uses external symbol set
+    self.outFile.write("  SYMBOLSET '" + self.symbolsPath + "'\n")
+
+  def getExtentString(self):
+    stringToAddTo = ""
+
     xmin = self.qgs.getElementsByTagName("xmin")
-    self.outFile.write("  EXTENT ")
-    self.outFile.write(xmin[0].childNodes[0].nodeValue.encode('utf-8'))
-    self.outFile.write(" ")
+    stringToAddTo += "  EXTENT "
+    stringToAddTo += xmin[0].childNodes[0].nodeValue.encode('utf-8')
+    stringToAddTo += " "
+
     ymin = self.qgs.getElementsByTagName("ymin")
-    self.outFile.write(ymin[0].childNodes[0].nodeValue.encode('utf-8'))
-    self.outFile.write(" ")
+    stringToAddTo += ymin[0].childNodes[0].nodeValue.encode('utf-8')
+    stringToAddTo += " "
+
     xmax = self.qgs.getElementsByTagName("xmax")
-    self.outFile.write(xmax[0].childNodes[0].nodeValue.encode('utf-8'))
-    self.outFile.write(" ")
+    stringToAddTo += xmax[0].childNodes[0].nodeValue.encode('utf-8')
+    stringToAddTo += " "
+
     ymax = self.qgs.getElementsByTagName("ymax")
-    self.outFile.write(ymax[0].childNodes[0].nodeValue.encode('utf-8'))
-    self.outFile.write("\n")
+    stringToAddTo += ymax[0].childNodes[0].nodeValue.encode('utf-8')
+    stringToAddTo += "\n"
+
+    return stringToAddTo
 
   # Write the OUTPUTFORMAT section
   def writeOutputFormat(self):
@@ -151,11 +266,14 @@ class Qgis2Map:
     self.outFile.write("  IMAGECOLOR 192 192 192\n")
     self.outFile.write("  IMAGEQUALITY 95\n")
     self.outFile.write("  IMAGETYPE " + self.imageType + "\n")
+    self.outFile.write("\n")
     self.outFile.write("  OUTPUTFORMAT\n")
     self.outFile.write("    NAME " + self.imageType + "\n")
     self.outFile.write("    DRIVER 'GD/" + self.imageType.upper() + "'\n")
     self.outFile.write("    MIMETYPE 'image/" + lower(self.imageType) + "'\n")
-    self.outFile.write("    #IMAGEMODE PC256\n")
+    if self.imageType.lower() != "gif":
+      self.outFile.write("    IMAGEMODE RGBA\n")
+    #self.outFile.write("    #IMAGEMODE PC256\n")
     self.outFile.write("    EXTENSION '" + lower(self.imageType) + "'\n")
     self.outFile.write("  END\n")
     
@@ -189,7 +307,14 @@ class Qgis2Map:
     self.outFile.write("      COLOR 0 0 89\n")
     self.outFile.write("    END\n")
     self.outFile.write("  END\n\n")
-    
+
+    # groups are ignored as of yet
+    self.legendlayerfileNodesById = {}
+    for legendlayerfileNode in self.qgs.getElementsByTagName("legend")[0].getElementsByTagName("legendlayerfile"):
+      key = legendlayerfileNode.getAttribute("layerid").encode("utf-8")
+      if (key != ""):
+        self.legendlayerfileNodesById[key] = legendlayerfileNode
+
   # Write the symbol definitions
   def writeSymbolSection(self):
     for symbol in self.symbolQueue.keys():
@@ -210,12 +335,14 @@ class Qgis2Map:
     self.outFile.write("    IMAGEURL '/tmp/'\n")
     self.outFile.write("\n")
 
-    # TODO allow user to configure this
+    destsrs = self.qgs.getElementsByTagName("destinationsrs")[0]
+    epsg = destsrs.getElementsByTagName("epsg")[0].childNodes[0].nodeValue.encode("utf-8")
+
     self.outFile.write("    # WMS server settings\n")
     self.outFile.write("    METADATA\n")
-    self.outFile.write("      'wms_title'           '\"" + self.mapName + "\"'\n")
-    self.outFile.write("      'wms_onlineresource'  'http://my.host.com/cgi-bin/mapserv?map=wms.map&'\n")
-    self.outFile.write("      'wms_srs'             'EPSG:4326'\n")
+    self.outFile.write("      'wms_title'           '" + self.mapName + "'\n")
+    self.outFile.write("      'wms_onlineresource'  '" + self.mapServerUrl + "?" + "map" + "=" + self.mapFile + "'\n")
+    self.outFile.write("      'wms_srs'             'EPSG:" + epsg + "'\n")
     self.outFile.write("    END\n\n")
 
     self.outFile.write("    #Scale range at which web interface will operate\n")
@@ -270,11 +397,16 @@ class Qgis2Map:
         layer_def += "    TYPE " + lyr.getAttribute("geometry").encode('utf-8').upper() + "\n"
       elif lyr.getAttribute("type").encode('utf-8') == 'raster':  
         layer_def += "    TYPE " + lyr.getAttribute("type").encode('utf-8').upper() + "\n"
- 
+
+      # Uses default value from the gui
+      layer_def += "    DUMP " + self.dump + "\n"
+      
       # Set min/max scales
       if lyr.getAttribute('hasScaleBasedVisibilityFlag').encode('utf-8') == 1:
         layer_def += "    MINSCALE " + lyr.getAttribute('minimumScale').encode('utf-8') + "\n"
         layer_def += "    MAXSCALE " + lyr.getAttribute('maximumScale').encode('utf-8') + "\n"
+
+      layer_def += self.getExtentString()
 
       # data
       dataString = lyr.getElementsByTagName("datasource")[0].childNodes[0].nodeValue.encode('utf-8')
@@ -288,12 +420,24 @@ class Qgis2Map:
         providerString = ''
 
       if providerString == 'postgres':
+
         # it's a postgis layer
         uri = QgsDataSourceURI(dataString)
 
         layer_def += "    CONNECTIONTYPE postgis\n"
         layer_def += "    CONNECTION \"" + uri.connectionInfo() + "\"\n"
-        layer_def += "    DATA '\"" + uri.geometryColumn() + "\" FROM " + uri.quotedTablename() + "'\n"
+        # EvdP: it seems that the uri.geometryColumn() is quoted automaticly by PostGIS.
+        # To prevent double quoting, we don't quote here.
+        # Now we are unable to process uri.geometryColumn()s with special characters (uppercase... etc.)
+        #layer_def += "    DATA '\"" + uri.geometryColumn() + "\" FROM " + uri.quotedTablename() + "'\n"
+        #layer_def += "    DATA '" + uri.geometryColumn() + " FROM " + uri.quotedTablename() + "'\n"
+
+        layer_id = lyr.getElementsByTagName("id")[0].childNodes[0].nodeValue.encode("utf-8")
+        
+        uniqueId = self.getPrimaryKey(layer_id, uri.table())
+        epsg = self.getEpsg(lyr)
+        
+        layer_def += "    DATA '" + uri.geometryColumn() + " FROM " + uri.quotedTablename() + " USING UNIQUE " + uniqueId + " USING srid=" + epsg + "'\n"
         # don't write the filter keyword if there isn't one
         if uri.sql() != "":
           layer_def += "    FILTER ( " + uri.sql() + " )\n"
@@ -319,10 +463,12 @@ class Qgis2Map:
         layer_def += "      'wms_name' '" + ','.join(wmsNames) + "'\n"
         layer_def += "      'wms_server_version' '1.1.1'\n"
         try:
-          ct = lyr.getElementsByTagName('coordinatetransform')[0]
-          srs = ct.getElementsByTagName('sourcesrs')[0].getElementsByTagName('spatialrefsys')[0]
-          epsg = srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
-          layer_def += "      'wms_srs' 'EPSG:4326 EPSG:" + epsg + "'\n"
+          #ct = lyr.getElementsByTagName('coordinatetransform')[0]
+          #srs = ct.getElementsByTagName('sourcesrs')[0].getElementsByTagName('spatialrefsys')[0]
+          #epsg = srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
+          #layer_def += "      'wms_srs' 'EPSG:4326 EPSG:" + epsg + "'\n"
+          layer_def += "      'wms_srs' 'EPSG:" + self.getEpsg(lyr) + "'\n"
+          # TODO: add epsg to all METADATA tags??
         except:
 	  pass
         layer_def += "      'wms_format' '" + format + "'\n"
@@ -338,7 +484,19 @@ class Qgis2Map:
       layer_def += "      'wms_title' '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n"
       layer_def += "    END\n"
 
-      layer_def += "    STATUS DEFAULT\n"
+      layer_def += "    STATUS OFF\n"
+      #layer_def += "    STATUS DEFAULT\n"
+
+      # turn status in MapServer on or off based on visibility in QGis:
+#      layer_id = lyr.getElementsByTagName("id")[0].childNodes[0].nodeValue.encode("utf-8")
+#      legendLayerNode = self.legendlayerfileNodesById[layer_id]
+
+#      if legendLayerNode.getAttribute("visible").encode("utf-8") == "1":
+#        layer_def += "    STATUS ON\n"
+#      else:
+#        layer_def += "    STATUS OFF\n"
+
+      
 
       opacity = int ( 100.0 * 
            float(lyr.getElementsByTagName("transparencyLevelInt")[0].childNodes[0].nodeValue.encode('utf-8')) / 255.0 ) 
@@ -376,8 +534,7 @@ class Qgis2Map:
       # write the CLASS section for rendering
       # First see if there is a single symbol renderer
       if lyr.getElementsByTagName("singlesymbol").length > 0:
-        symbolNode = lyr.getElementsByTagName("singlesymbol")[0].getElementsByTagName('symbol')[0] 
-        layer_def += self.simpleRenderer(lyr, symbolNode)
+        layer_def += self.simpleRenderer(lyr, lyr.getElementsByTagName("singlesymbol")[0].getElementsByTagName('symbol')[0] )
       elif lyr.getElementsByTagName("graduatedsymbol").length > 0:
         layer_def += self.graduatedRenderer(lyr, lyr.getElementsByTagName("graduatedsymbol")[0].getElementsByTagName('symbol')[0] )
       elif lyr.getElementsByTagName("continuoussymbol").length > 0:
@@ -397,7 +554,74 @@ class Qgis2Map:
       self.outFile.write(layer_list[layer])
 
 
+  def getEpsg(self, lyr):
+    srs = lyr.getElementsByTagName('srs')[0].getElementsByTagName('spatialrefsys')[0]
+    return srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
 
+
+  def getPrimaryKey(self, layerId, tableName):
+    """
+    Since we have no Python bindings for "src\providers\postgres\qgspostgresprovider.cpp"
+    we approximate the primary key by finding an integer type field containing "fid" or "id"
+    This is obviously a lousy solution at best.
+
+    This script requires the project you export to be open in QGis.
+    """
+
+    mlr = QgsMapLayerRegistry.instance()
+    layers = mlr.mapLayers()
+    layer = layers[QString(layerId)]
+    dataProvider = layer.dataProvider()
+    fields = dataProvider.fields()
+
+    intTypes = [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]
+    
+    integerFields = []
+    for id, field in fields.iteritems():
+      if field.type() in intTypes:
+        integerFields.append(id)
+
+    # fid end
+    fidIntegerFields = []
+    for id in integerFields:
+      if fields[id].name().endsWith("fid"):
+        fidIntegerFields.append(id)
+
+    if len(fidIntegerFields) == 1:
+      return fields[fidIntegerFields[0]].name().__str__()
+
+    # fid start
+    fidIntegerFields[:] = []
+    for id in integerFields:
+      if fields[id].name().startsWith("fid"):
+        fidIntegerFields.append(id)
+
+    if len(fidIntegerFields) == 1:
+      return fields[fidIntegerFields[0]].name().__str__()
+
+    # id end
+    idIntegerFields = []
+    for id in integerFields:
+      if fields[id].name().endsWith("id"):
+        idIntegerFields.append(id)
+
+    if len(idIntegerFields) == 1:
+      return fields[idIntegerFields[0]].name().__str__()
+
+    # id start
+    idIntegerFields[:] = []
+    for id in integerFields:
+      if fields[id].name().startsWith("id"):
+        idIntegerFields.append(id)
+
+    if len(idIntegerFields) == 1:
+      return fields[idIntegerFields[0]].name().__str__()
+
+    # if we arrive here we have ambiguous or no primary keys
+    #print "Error: Could not find primary key from field type and field name information.\n"
+
+    # using a mapfile pre-processor, the proper id field can be substituted in the following:
+    return "%" + tableName + "_id%"
 
   # Simple renderer ouput
   # We need the layer node and symbol node
@@ -413,7 +637,7 @@ class Qgis2Map:
     # use the point symbol map to lookup the mapserver symbol type
     symbol = self.msSymbol( geometry, symbolNode )
     class_def += "         SYMBOL " + symbol + " \n"
-    class_def += "         SIZE " + symbolNode.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  + " \n"
+    class_def += self.getSymbolSizeString(symbolNode)
 
     # outline color
     outlineNode = symbolNode.getElementsByTagName('outlinecolor')[0]
@@ -430,7 +654,13 @@ class Qgis2Map:
     class_def += "    END\n"
 
     return class_def
-        
+
+
+  def getSymbolSizeString(self, symbolNode):
+    size = float(symbolNode.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8'))
+    symbolSize = size * symbolSizeMultiplier
+    return "         SIZE " + str(symbolSize) + " \n"
+
 
   # Graduated symbol renderer output
   def graduatedRenderer(self, layerNode, symbolNode):
@@ -465,7 +695,7 @@ class Qgis2Map:
 
       # Symbol size 
       if geometry == 'POINT' or geometry == 'LINE':
-        class_def += "        SIZE " + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8')  + " \n"
+        class_def += self.getSymbolSizeString(cls)
 
       # outline color
       outlineNode = cls.getElementsByTagName('outlinecolor')[0]
@@ -570,9 +800,7 @@ class Qgis2Map:
 
       # Symbol size 
       if geometry == 'POINT' or geometry == 'LINE':
-        class_def += "        SIZE " \
-            + cls.getElementsByTagName('pointsize')[0].childNodes[0].nodeValue.encode('utf-8') \
-            + " \n"
+        class_def += self.getSymbolSizeString(cls)
 
       # outline color
       outlineNode = cls.getElementsByTagName('outlinecolor')[0]
@@ -608,6 +836,24 @@ class Qgis2Map:
       ret = ret + "    '" + p + "'\n"
     return ret
 
+  def getProj4(self, proj4text):
+    """Returns the proj4 string as a dictionary with key value pairs."""
+    parms = proj4text.split(" ")
+    ret = {}
+    for p in parms:
+      p = p.replace("+","")
+      keyValue = p.split("=")
+
+      key = keyValue[0]
+      
+      value = ""
+      try:    value = keyValue[1]
+      except: value = ""
+
+      if key != "":
+        ret[key] = value
+    return ret
+
   # Determines the symbol name and adds it to the symbol queue
   def msSymbol(self, geometry, symbolNode):
     # contains the same markup for a layer regardless of type
@@ -621,67 +867,158 @@ class Qgis2Map:
       symbol = '0'
     elif geometry == 'POINT':
       try:
-        symbolName = qgisSymbols[symbolNode.getElementsByTagName('pointsymbol')[0].childNodes[0].nodeValue.encode('utf-8')]
+        symbolName = qgis2map_symbol[symbolNode.getElementsByTagName('pointsymbol')[0].childNodes[0].nodeValue.encode('utf-8')]
       except:
-        symbolName = "CIRCLE"
-      # make sure it's single quoted
-      symbol = "'" + symbolName + "'"
+        symbolName = "circle"
+      # make sure it's double quoted
+      symbol = "\"" + symbolName + "\""
 
-    if symbolName == 'CIRCLE':
-      self.symbolQueue['CIRCLE'] = """
-      #Circle symbol
-      SYMBOL
-        NAME 'CIRCLE'
-        TYPE ellipse
-        FILLED true
-        POINTS
-          1 1
-        END
-      END """
-
-    if symbolName == 'TRIANGLE':
-      self.symbolQueue['TRIANGLE'] = """
-      SYMBOL
-        NAME "TRIANGLE"
-        TYPE vector
-        FILLED true
-        POINTS
-          0 1
-         .5 0
-          1 1
-          0 1
-        END
-      END """
+# a symbol set in an external symbol.txt file is used; see comment on top of this file
+#    if symbolName == 'CIRCLE':
+#      self.symbolQueue['CIRCLE'] = """
+#      #Circle symbol
+#      SYMBOL
+#        NAME 'CIRCLE'
+#        TYPE ellipse
+#        FILLED true
+#        POINTS
+#          1 1
+#        END
+#      END """
+#
+#    if symbolName == 'TRIANGLE':
+#      self.symbolQueue['TRIANGLE'] = """
+#      SYMBOL
+#        NAME "TRIANGLE"
+#        TYPE vector
+#        FILLED true
+#        POINTS
+#          0 1
+#         .5 0
+#          1 1
+#          0 1
+#        END
+#      END """
 
     return symbol
 
   # Label block creation
-  # TODO field-based parameters, alignment, truetype fonts, sizes
   def msLabel(self, layerNode):
     # currently a very basic bitmap font
     labelNode = layerNode.getElementsByTagName('labelattributes')[0]
-    labelField = labelNode.getElementsByTagName('label')[0].getAttribute('field').encode('utf-8')
+    #labelField = labelNode.getElementsByTagName('label')[0].getAttribute('field').encode('utf-8')
+    # why was the attribute 'field' and not 'fieldname'?
+    labelField = labelNode.getElementsByTagName('label')[0].getAttribute('fieldname').encode('utf-8')
     if labelField != '' and labelField is not None:
       labelBlock  = "     LABEL \n"
-     
-      labelBlock += "      SIZE medium\n"
-      labelBlock += "      COLOR 0 0 0 \n"
+
+      # see comment at 'qgis2ms_fontset'
+      fontQgis = labelNode.getElementsByTagName('family')[0].getAttribute('name').encode('utf-8')
+      fontMs = ""
+      try:
+        fontMs = qgis2map_fontset[fontQgis]
+      except:
+        # we default to the first font in the fontset, if any are present
+        if len(qgis2map_fontset) > 0:
+          try:
+            fontMs = qgis2map_fontset["MS Shell Dialog 2"]
+          except:
+            sortedKeys = qgis2map_fontset.keys()
+            sortedKeys.sort()
+            fontMs = qgis2map_fontset[sortedKeys[0]]
+        else:
+          fontMs = ""
+          
+      bold = bool(int(labelNode.getElementsByTagName('bold')[0].getAttribute('on').encode("utf-8")))
+      italic = bool(int(labelNode.getElementsByTagName('italic')[0].getAttribute('on').encode("utf-8")))
+
+      # "-bold" and "-italic" must correspond with the fontset file
+      # font can be both bold and italic
+      labelBlock += "      FONT " + fontMs
+      if bold:   labelBlock += "-bold"
+      if italic: labelBlock += "-italic" 
+      labelBlock += "\n"
+
+      labelBlock += "      TYPE truetype\n"
+
+      size = self.getFieldName(labelNode, 'size')
+      if size == "":
+        sizeNode = labelNode.getElementsByTagName('size')[0]
+        units = sizeNode.getAttribute("units").encode("utf-8")
+        sizeValue = int(sizeNode.getAttribute("value").encode("utf-8"))
+        # we must convert to px for use in the mapfile
+        sizePx = 11 # default
+        sizePx = sizeValue
+        #if units == "pt":   sizePx = int(sizeValue / 0.75)
+        # TODO: find appropriate conversion metric from map units to pixels
+        #elif unit == "mu":
+        #proj4Elem = labelNode.parentNode.getElementsByTagName("proj4")[0].childNodes[0]
+        #proj4str = proj4Elem.nodeValue.encode('utf-8')
+        #proj4Dict = self.getProj4(proj4str)
+        #for i,j in proj4Dict.iteritems():
+          #labelBlock += str(i) + ":: " + str(j) + "\n"
+        #
+        #sizePx = ?????  proj4Dict["units"] ??
+        # non-used unit types:
+        #elif unit == "em": sizePx = int(size * 16.0)
+        #elif unit == "px": sizePx = size
+        size = str(sizePx)
+      labelBlock += "      SIZE " + size + "\n"
+
+      color = self.getFieldName(labelNode, 'color')
+      if color == "":
+        colorNode = labelNode.getElementsByTagName('color')[0]
+        r = int(colorNode.getAttribute("red"))
+        g = int(colorNode.getAttribute("green"))
+        b = int(colorNode.getAttribute("blue"))
+        color = str(r) + " " + str(g) + " " + str(b)
+      labelBlock += "      COLOR " + color + "\n"
  
       # Include label angle if specified
-      # Note that angles only work for truetype fonts which aren't supported yet
-      angle = labelNode.getElementsByTagName('angle')[0].getAttribute('value').encode('utf-8')
+      # Note that angles only work for truetype fonts
+      angle = self.getFieldName(labelNode, 'angle')
+      if angle == "":
+        angle = labelNode.getElementsByTagName('angle')[0].getAttribute('value').encode('utf-8')
       labelBlock += "      ANGLE " + angle + "\n"
      
       # Include label buffer if specified
       # Note that the buffer has different meaning in qgis vs mapserver
       # mapserver just adds blank space around the label while
       # qgis uses a fill color around the label
-      # Note that buffer only works for truetype fonts which aren't supported yet
+      # Note that buffer only works for truetype fonts
       buffer = labelNode.getElementsByTagName('buffersize')[0].getAttribute('value').encode('utf-8')
       labelBlock += "      BUFFER " + buffer + "\n"
+
+      # alignment in QGis corresponds to position in MapServer
+      alignment = labelNode.getElementsByTagName('alignment')[0].getAttribute('value').encode('utf-8')
+      try:
+        labelBlock += "      POSITION " + qgis2map_aligment2position[alignment] + "\n"
+      except:
+        # default to center if we encounter a nonsensical value
+        labelBlock += "      POSITION cc\n"
+
+      #values from the gui:
+      labelBlock += "      FORCE " + self.force + "\n"
+      labelBlock += "      ANTIALIAS " + self.antialias + "\n"
+      labelBlock += "      PARTIALS " + self.partials + "\n"
 
       labelBlock += "     END \n"
       return labelBlock
     else:
       return ''
+
+
+  def getFieldName(self, parentNode, nodeName):
+    """ Returns the fieldname-attribute-value of a nodeName with a given parentNode
+    as a string surrounded by brackets ('[' and ']') or
+    an empty string if the fieldname-attribute does not exist."""
+    try:
+      fieldname = parentNode.getElementsByTagName(nodeName)[0].getAttribute('fieldname').encode('utf-8')
+      if fieldname != "":
+        return "[" + fieldname + "]"
+      else:
+        return ""
+    except:
+      return ""
+
 

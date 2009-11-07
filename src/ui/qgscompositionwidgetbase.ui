@@ -1,169 +1,164 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsCompositionWidgetBase</class>
- <widget class="QWidget" name="QgsCompositionWidgetBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QgsCompositionWidgetBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>301</width>
-    <height>761</height>
+    <width>284</width>
+    <height>530</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Composition</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" colspan="2" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+  <layout class="QGridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="maximumSize">
+      <size>
+       <width>999</width>
+       <height>300</height>
+      </size>
+     </property>
+     <property name="title">
       <string>Paper</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="leftMargin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>9</number>
       </property>
-      <property name="topMargin" >
-       <number>9</number>
-      </property>
-      <property name="rightMargin" >
-       <number>9</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>9</number>
-      </property>
-      <property name="horizontalSpacing" >
+      <property name="spacing">
        <number>6</number>
       </property>
-      <property name="verticalSpacing" >
-       <number>6</number>
-      </property>
-      <item row="4" column="1" >
-       <widget class="QComboBox" name="mPaperOrientationComboBox" >
-        <property name="enabled" >
+      <item row="4" column="1">
+       <widget class="QComboBox" name="mPaperOrientationComboBox">
+        <property name="enabled">
          <bool>true</bool>
         </property>
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
-       <widget class="QLineEdit" name="mPaperHeightLineEdit" />
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="mPaperHeightLineEdit"/>
       </item>
-      <item row="2" column="1" >
-       <widget class="QLineEdit" name="mPaperWidthLineEdit" />
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="mPaperWidthLineEdit"/>
       </item>
-      <item row="1" column="1" >
-       <widget class="QComboBox" name="mPaperUnitsComboBox" >
-        <property name="enabled" >
+      <item row="1" column="1">
+       <widget class="QComboBox" name="mPaperUnitsComboBox">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QComboBox" name="mPaperSizeComboBox" >
-        <property name="enabled" >
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mPaperSizeComboBox">
+        <property name="enabled">
          <bool>true</bool>
         </property>
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" >
-       <widget class="QLabel" name="textLabel7" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+      <item row="4" column="0">
+       <widget class="QLabel" name="textLabel7">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Orientation</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mPaperOrientationComboBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="textLabel6" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+      <item row="3" column="0">
+       <widget class="QLabel" name="textLabel6">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Height</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mPaperHeightLineEdit</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="textLabel4" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="textLabel4">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Width</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mPaperWidthLineEdit</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="textLabel5" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="textLabel5">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Units</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mPaperUnitsComboBox</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="textLabel3" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+      <item row="0" column="0">
+       <widget class="QLabel" name="textLabel3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Size</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>mPaperSizeComboBox</cstring>
         </property>
        </widget>
@@ -171,121 +166,133 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QGroupBox" name="mSnapGroupBox" >
-     <property name="title" >
+   <item row="1" column="0" colspan="2">
+    <widget class="QGroupBox" name="mSnapGroupBox">
+     <property name="title">
       <string>Snapping</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" colspan="2" >
-       <widget class="QCheckBox" name="mSnapToGridCheckBox" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="mSnapToGridCheckBox">
+        <property name="text">
          <string>Snap to grid</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QLabel" name="mResolutionLabel_2" >
-        <property name="text" >
-         <string>Grid resolution:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" >
-       <widget class="QDoubleSpinBox" name="mResolutionSpinBox" />
-      </item>
-      <item row="2" column="0" colspan="2" >
-       <widget class="QLabel" name="mXOffsetLabel" >
-        <property name="text" >
-         <string>Offset x:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2" >
-       <widget class="QDoubleSpinBox" name="mOffsetXSpinBox" />
-      </item>
-      <item row="3" column="0" colspan="2" >
-       <widget class="QLabel" name="mYOffsetLabel" >
-        <property name="text" >
-         <string>Offset y:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2" >
-       <widget class="QDoubleSpinBox" name="mOffsetYSpinBox" />
-      </item>
-      <item row="4" column="0" >
-       <widget class="QLabel" name="mPenWidthLabel" >
-        <property name="text" >
-         <string>Pen width:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="2" >
-       <widget class="QDoubleSpinBox" name="mPenWidthSpinBox" />
-      </item>
-      <item row="5" column="0" >
-       <widget class="QLabel" name="mGridColorLabel" >
-        <property name="text" >
-         <string>Grid color:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2" >
-       <widget class="QgsColorButton" name="mGridColorButton" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="mResolutionLabel_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
+        <property name="text">
+         <string>Grid resolution</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QDoubleSpinBox" name="mResolutionSpinBox"/>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="mXOffsetLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Offset x</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QDoubleSpinBox" name="mOffsetXSpinBox"/>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QLabel" name="mYOffsetLabel">
+        <property name="text">
+         <string>Offset y</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QDoubleSpinBox" name="mOffsetYSpinBox"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="mPenWidthLabel">
+        <property name="text">
+         <string>Pen width</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QDoubleSpinBox" name="mPenWidthSpinBox"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="mGridColorLabel">
+        <property name="text">
+         <string>Grid color</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QgsColorButton" name="mGridColorButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="6" column="0" >
-       <widget class="QLabel" name="mGridStyleLabel" >
-        <property name="text" >
-         <string>Grid style:</string>
+      <item row="6" column="0">
+       <widget class="QLabel" name="mGridStyleLabel">
+        <property name="text">
+         <string>Grid style</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="1" colspan="2" >
-       <widget class="QComboBox" name="mGridStyleComboBox" />
+      <item row="6" column="1" colspan="2">
+       <widget class="QComboBox" name="mGridStyleComboBox"/>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="mResolutionLabel" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+   <item row="2" column="0">
+    <widget class="QLabel" name="mResolutionLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="text" >
+     <property name="text">
       <string>Print quality (dpi)</string>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>mResolutionLineEdit</cstring>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" >
-    <widget class="QLineEdit" name="mResolutionLineEdit" />
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="mResolutionLineEdit"/>
    </item>
-   <item row="3" column="0" >
-    <widget class="QCheckBox" name="mPrintAsRasterCheckBox" >
-     <property name="text" >
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="mPrintAsRasterCheckBox">
+     <property name="text">
       <string>Print as raster</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
