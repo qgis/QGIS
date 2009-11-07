@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44.1"
+   sodipodi:docbase="F:\north arrow2"
+   sodipodi:docname="rosa30.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="375"
+     inkscape:cy="510.96681"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="744"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2932"
+       transform="translate(4.04061,34.34519)"
+       inkscape:export-filename="F:\north arrow2\rosa30.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300">
+      <path
+         id="path1888"
+         d="M 270.2595,427.02925 L 354.46793,353.89472 L 438.67635,427.02925 L 382.5374,427.02925 L 382.5374,609.86558 L 438.67635,639.11939 L 270.2595,639.11939 L 326.39845,609.86558 L 326.39845,427.02925 L 270.2595,427.02925 z "
+         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:9.06167316px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         id="path1890"
+         d="M 355.47045,353.89472 L 354.46793,639.11939"
+         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:3.62466908;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         transform="matrix(6.012857,0,0,1.194511,-1959.737,-124.6887)"
+         d="M 390.80358 524.05859 A 5.9821429 5.9821429 0 1 1  378.8393,524.05859 A 5.9821429 5.9821429 0 1 1  390.80358 524.05859 z"
+         sodipodi:ry="5.9821429"
+         sodipodi:rx="5.9821429"
+         sodipodi:cy="524.05859"
+         sodipodi:cx="384.82144"
+         id="path2778"
+         style="fill:black;fill-opacity:1;stroke:black;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         sodipodi:type="arc" />
+      <flowRoot
+         transform="matrix(1.7905,0,0,2.461581,-266.6633,-444.6249)"
+         style="font-size:56px;font-family:Arial Black"
+         id="flowRoot2790"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2792"><rect
+             style="font-size:56px;font-family:Arial Black"
+             y="270.93362"
+             x="321.42856"
+             height="74.285713"
+             width="68.571426"
+             id="rect2794" /></flowRegion><flowPara
+           id="flowPara2796">N</flowPara></flowRoot>    </g>
+  </g>
+</svg>

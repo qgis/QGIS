@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44.1"
+   sodipodi:docbase="F:\QGIS_N_ARROWS\NORD"
+   sodipodi:docname="FINALE.svg"
+   inkscape:export-filename="F:\QGIS_N_ARROWS\NORD\FINALE"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="375"
+     inkscape:cy="512.88229"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="744"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g1973">
+      <flowRoot
+         transform="matrix(2.124314,0,0,2.055934,-170.071,-546.9389)"
+         style="font-family:Arial Black"
+         id="flowRoot2762"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2764"><rect
+             style="font-family:Arial Black"
+             y="482.18362"
+             x="313.75"
+             height="15.892858"
+             width="21.964285"
+             id="rect2766" /></flowRegion><flowPara
+           id="flowPara2768">N</flowPara></flowRoot>      <path
+         sodipodi:nodetypes="ccccc"
+         id="path1956"
+         d="M 450.95537,576.26394 L 507.32443,484.38897 L 569.33033,576.26394 L 508.753,545.63895 L 450.95537,576.26394 z "
+         style="fill:black;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:7.19645977px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         d="M 587.50001 551.29077 A 76.785713 76.785713 0 1 1  433.92858,551.29077 A 76.785713 76.785713 0 1 1  587.50001 551.29077 z"
+         sodipodi:ry="76.785713"
+         sodipodi:rx="76.785713"
+         sodipodi:cy="551.29077"
+         sodipodi:cx="510.71429"
+         id="path1958"
+         style="opacity:0.97000002;fill:none;fill-opacity:1;stroke:black;stroke-width:6.4000001;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1.0"
+         sodipodi:type="arc" />
+    </g>
+  </g>
+</svg>

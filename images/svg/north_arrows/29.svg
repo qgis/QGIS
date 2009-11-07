@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.44.1"
+   sodipodi:docbase="F:\QGIS_N_ARROWS\TOT"
+   sodipodi:docname="FINALE.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="375"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="744"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3853"
+       inkscape:export-filename="F:\QGIS_N_ARROWS\TOT\FINALE.png"
+       inkscape:export-xdpi="300"
+       inkscape:export-ydpi="300">
+      <path
+         id="path1872"
+         d="M 252.37093,444.65723 L 294.74501,339.2391 L 333.71714,444.65723 L 450.63351,479.7966 L 333.71714,514.93598 L 294.74501,620.3541 L 255.77289,514.93598 L 138.85651,479.7966 L 252.37093,444.65723 z "
+         style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:7.40123272px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         id="path1874"
+         d="M 316.67798,458.07569 L 294.69131,397.24219 L 274.46984,458.07569 L 213.80536,478.3535 L 274.46984,498.63131 L 294.69131,559.4648 L 314.91285,498.63131 L 375.57733,478.3535 L 316.67798,458.07569 z "
+         style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:10.65;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
+      <flowRoot
+         transform="translate(-47.03239,362.5854)"
+         style="font-size:56px;font-family:Arial Black"
+         id="flowRoot2047"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2049"><rect
+             style="font-size:56px;font-family:Arial Black"
+             y="270.93362"
+             x="321.42856"
+             height="74.285713"
+             width="68.571426"
+             id="rect2051" /></flowRegion><flowPara
+           id="flowPara2053">S</flowPara></flowRoot>      <flowRoot
+         transform="translate(150.6914,179.6853)"
+         style="font-size:56px;font-family:Arial Black"
+         id="flowRoot2055"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2057"><rect
+             style="font-size:56px;font-family:Arial Black"
+             y="270.93362"
+             x="321.42856"
+             height="74.285713"
+             width="68.571426"
+             id="rect2059" /></flowRegion><flowPara
+           id="flowPara2061">E</flowPara></flowRoot>      <flowRoot
+         transform="translate(-51.68759,2.585353)"
+         style="font-size:56px;font-family:Arial Black"
+         id="flowRoot2063"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2065"><rect
+             style="font-size:56px;font-family:Arial Black"
+             y="270.93362"
+             x="321.42856"
+             height="74.285713"
+             width="68.571426"
+             id="rect2067" /></flowRegion><flowPara
+           id="flowPara2069">N</flowPara></flowRoot>      <flowRoot
+         transform="translate(-259.1931,181.1569)"
+         style="font-size:56px;font-family:Arial Black"
+         id="flowRoot2071"
+         xml:space="preserve"><flowRegion
+           id="flowRegion2073"><rect
+             style="font-size:56px;font-family:Arial Black"
+             y="270.93362"
+             x="321.42856"
+             height="74.285713"
+             width="68.571426"
+             id="rect2075" /></flowRegion><flowPara
+           id="flowPara2077">W</flowPara></flowRoot>    </g>
+  </g>
+</svg>
