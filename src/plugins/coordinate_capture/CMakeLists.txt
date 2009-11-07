@@ -8,6 +8,8 @@ SET (coordinatecapture_SRCS
      coordinatecapturemaptool.cpp
 )
 
+SET (coordinatecapture_UIS coordinatecaptureguibase.ui) 
+
 SET (coordinatecapture_MOC_HDRS
      coordinatecapture.h
      coordinatecapturegui.h
@@ -18,6 +20,8 @@ SET (coordinatecapture_RCCS  coordinatecapture.qrc)
 
 ########################################################
 # Build
+
+QT4_WRAP_UI (coordinatecapture_UIS_H  ${coordinatecapture_UIS}) 
 
 QT4_WRAP_CPP (coordinatecapture_MOC_SRCS  ${coordinatecapture_MOC_HDRS})
 
