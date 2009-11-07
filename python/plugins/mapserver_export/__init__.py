@@ -24,7 +24,7 @@ def name():
 def description():
   return "Export a saved QGIS project file to a MapServer map file"
 def version(): 
-  return "Version 0.1" 
+  return "Version 0.4" 
 def qgisMinimumVersion(): 
   return "1.0"
 def authorName():
