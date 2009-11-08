@@ -1675,6 +1675,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionDeleteRing->setIcon( getThemeIcon( "/mActionDeleteRing.png" ) );
   mActionDeletePart->setIcon( getThemeIcon( "/mActionDeletePart.png" ) );
   mActionMergeFeatures->setIcon( getThemeIcon( "/mActionMergeFeatures.png" ) );
+  mActionRotatePointSymbols->setIcon( getThemeIcon( "mActionRotatePointSymbols.png" ) );
   mActionNodeTool->setIcon( getThemeIcon( "/mActionNodeTool.png" ) );
   mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
