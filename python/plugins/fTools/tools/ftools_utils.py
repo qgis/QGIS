@@ -20,6 +20,7 @@
 # getUniqueValues( QgsVectorDataProvider, int *field id )
 # saveDialog( QWidget *parent )
 # getFieldType( QgsVectorLayer, QgsField.name() )
+# getUniqueValuesCount( QgsVectorLayer, int fieldIndex, bool useSelection ):
 #
 # -------------------------------------------------
 
@@ -267,3 +268,24 @@ def getFieldType(vlayer, fieldName):
 	for name, field in fields.iteritems():
 		if field.name() == fieldName:
 			return field.typeName()
+
+# return the number of unique values in field
+def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
+	vprovider = vlayer.dataProvider()
+	allAttrs = vprovider.attributeIndexes()
+	vprovider.select( allAttrs )
+	count = 0
+	values = []
+	if useSelection:
+		selection = vlayer.selectedFeatures()
+		for f in selection:
+			if f.attributeMap()[ fieldIndex ].toString() not in values:
+				values.append( f.attributeMap()[ fieldIndex ].toString() )
+				count += 1
+	else:
+		feat = QgsFeature()
+		while vprovider.nextFeature( feat ):
+			if feat.attributeMap()[ fieldIndex ].toString() not in values:
+				values.append( feat.attributeMap()[ fieldIndex ].toString() )
+				count += 1
+	return count
