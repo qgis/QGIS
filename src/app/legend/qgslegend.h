@@ -26,11 +26,11 @@
 #include <QTreeWidget>
 
 class QgsLegendLayer;
-class QgsLegendLayerFile;
 class QgsLegendItem;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QDomDocument;
+class QDomElement;
 class QDomNode;
 class QMouseEvent;
 class QTreeWidgetItem;
@@ -69,12 +69,6 @@ class QTreeWidgetItem;
    <li>QgsLegendPropertyItem - A list of properties related to the layer. Double clicking
                               a property item will invoke a dialog that will let you change
                               the property settings. Can only exist inside a property group</li>
-   <li>QgsLegendLayerFileGroup - each QgsLegendLayer can have one or more files associated
-                              with it. This is the container group for these files. Can
-                              only exist inside of a QgsLegendLayer.</li>
-   <li>QgsLegendLayerFile -  A file node that relates to a file on disk. Assigning multiple
-                             file nodes in a file group allows you treat them as if they are
-                             one entity.</li>
    </ul>
    @note Additional group types may be defined in the future to accommodate WMS, PostGIS etc layers.
    @author Gary E.Sherman, Tim Sutton, Marco Hugentobler and Jens Oberender
@@ -101,10 +95,10 @@ class QgsLegend : public QTreeWidget
     //! Destructor
     ~QgsLegend();
 
-    /** Returns QgsLegendLayerFile associated with current layer */
-    QgsLegendLayerFile* currentLayerFile();
+    /** Returns QgsLegendLayer associated with current layer */
+    QgsLegendLayer* currentLegendLayer();
 
-    /*!Returns the current layer if the current item is a QgsLegendLayerFile.
+    /*!Returns the current layer if the current item is a QgsLegendLayer.
     If the current item is a QgsLegendLayer, its first maplayer is returned.
     Else, 0 is returned.*/
     QgsMapLayer* currentLayer();
@@ -168,10 +162,6 @@ class QgsLegend : public QTreeWidget
     /**Removes an entry from mPixmapHeightValues*/
     void removePixmapHeightValue( int height );
 
-    /** Sets the name of the QgsLegendLayer that is the parent of
-        the given QgsLegendLayerFile */
-    void setName( QgsLegendLayerFile* w, QString layerName );
-
     /**Sets the toggle editing action. Usually called from QgisApp*/
     void setToggleEditingAction( QAction* editingAction ) {mToggleEditingAction = editingAction;}
 
@@ -219,7 +209,7 @@ class QgsLegend : public QTreeWidget
     /** called to write legend settings to project */
     void writeProject( QDomDocument & );
 
-    /**Removes the current LegendLayer and all its LegendLayerFiles*/
+    /**Removes the current LegendLayer*/
     void legendLayerRemove();
 
     /**Removes a layer. If the layer is editable, a dialog is shown where user can select 'save', 'discard' and optionally 'cancel'. Cancel
@@ -332,6 +322,9 @@ class QgsLegend : public QTreeWidget
     /** Returns the last visible item in the tree widget */
     QTreeWidgetItem *lastVisibleItem();
 
+    /** read layer settings from XML element and add item */
+    QgsLegendLayer* readLayerFromXML(QDomElement& childelem, bool& isOpen);
+
   private slots:
 
     /**Calls 'handleRightClickEvent' on the item*/
@@ -350,8 +343,6 @@ class QgsLegend : public QTreeWidget
     void openEditor();
     /**Removes the current item and inserts it as a toplevel item at the end of the legend*/
     void makeToTopLevelItem();
-    /**Show/ Hide the legend layer file groups*/
-    void showLegendLayerFileGroups();
 
   private:
 
@@ -395,8 +386,6 @@ class QgsLegend : public QTreeWidget
     };
     HIERARCHY_POSITION_TYPE mRestoreInformation;
     QTreeWidgetItem* mRestoreItem;
-
-    bool mShowLegendLayerFiles;
 
     /**Stores the layer ordering before a mouse Move. After the move, this is used to
      decide if the mapcanvas really has to be refreshed*/

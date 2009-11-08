@@ -21,7 +21,6 @@
 #include "qgisapp.h"
 #include "qgslegendgroup.h"
 #include "qgslegendlayer.h"
-#include "qgslegendlayerfile.h"
 #include <QCoreApplication>
 #include <QIcon>
 
@@ -96,7 +95,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendGroup::accept( const QgsLegendItem* li ) con
   return NO_ACTION;
 }
 
-bool QgsLegendGroup::insert( QgsLegendItem* theItem )
+/*bool QgsLegendGroup::insert( QgsLegendItem* theItem )
 {
   if ( theItem->type() == LEGEND_LAYER )
   {
@@ -106,18 +105,17 @@ bool QgsLegendGroup::insert( QgsLegendItem* theItem )
   // XXX - mloskot - I don't know what to return
   // but this function must return a value
   return true;
-}
+}*/
 
-std::list<QgsLegendLayerFile*> QgsLegendGroup::legendLayerFiles()
+std::list<QgsLegendLayer*> QgsLegendGroup::legendLayers()
 {
-  std::list<QgsLegendLayerFile*> result;
+  std::list<QgsLegendLayer*> result;
   for ( int i = 0; i < childCount(); ++i )
   {
     QgsLegendLayer* childItem = dynamic_cast<QgsLegendLayer *>( child( i ) );
     if ( childItem )
     {
-      std::list<QgsLegendLayerFile*> childList = childItem->legendLayerFiles();
-      result.splice( result.end(), childList );
+      result.push_back(childItem);
     }
   }
   return result;
@@ -125,15 +123,15 @@ std::list<QgsLegendLayerFile*> QgsLegendGroup::legendLayerFiles()
 
 void QgsLegendGroup::updateCheckState()
 {
-  std::list<QgsLegendLayerFile*> llfiles = legendLayerFiles();
-  if ( llfiles.size() < 1 )
+  std::list<QgsLegendLayer*> llayers = legendLayers();
+  if ( llayers.size() == 0 )
   {
     return;
   }
 
-  std::list<QgsLegendLayerFile*>::iterator iter = llfiles.begin();
+  std::list<QgsLegendLayer*>::iterator iter = llayers.begin();
   Qt::CheckState theState = ( *iter )->checkState( 0 );
-  for ( ; iter != llfiles.end(); ++iter )
+  for ( ; iter != llayers.end(); ++iter )
   {
     if ( theState != ( *iter )->checkState( 0 ) )
     {
