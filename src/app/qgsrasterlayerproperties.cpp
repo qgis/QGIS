@@ -1936,8 +1936,8 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
 
 
   //create the image onto which graph and axes will be drawn
-  int myImageWidth = pixHistogram->width();
-  int myImageHeight =  pixHistogram->height();
+  int myImageWidth = pixHistogram->width() - 2;
+  int myImageHeight =  pixHistogram->height() - 2; //Take two pixels off to account for the boarder around the QLabel
   QPixmap myPixmap( myImageWidth, myImageHeight );
   myPixmap.fill( Qt::white );
 
