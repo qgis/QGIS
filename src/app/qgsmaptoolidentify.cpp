@@ -45,8 +45,6 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
-
-  mResults = new QgsIdentifyResults( canvas, mCanvas->window() );
 }
 
 QgsMapToolIdentify::~QgsMapToolIdentify()
@@ -55,6 +53,14 @@ QgsMapToolIdentify::~QgsMapToolIdentify()
   {
     mResults->done( 0 );
   }
+}
+
+QgsIdentifyResults *QgsMapToolIdentify::results()
+{
+  if ( !mResults )
+    mResults = new QgsIdentifyResults( mCanvas, mCanvas->window() );
+
+  return mResults;
 }
 
 void QgsMapToolIdentify::canvasMoveEvent( QMouseEvent * e )
@@ -72,11 +78,7 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
 
-  if ( !mResults )
-  {
-    mResults = new QgsIdentifyResults( mCanvas, mCanvas->window() );
-  }
-  mResults->clear();
+  results()->clear();
 
   QSettings settings;
   int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
@@ -139,8 +141,8 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
 
   if ( res )
   {
-    mResults->show();
-    mResults->raise();
+    results()->show();
+    results()->raise();
   }
   else
   {
@@ -148,11 +150,11 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
     if ( !myDockFlag )
     {
-      mResults->hide();
+      results()->hide();
     }
     else
     {
-      mResults->clear();
+      results()->clear();
     }
     QMessageBox::information( 0, tr( "Identify results" ), tr( "No features at this position found." ) );
   }
@@ -160,17 +162,13 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
 
 void QgsMapToolIdentify::activate()
 {
-  if ( !mResults ) 
-  {
-    mResults = new QgsIdentifyResults( mCanvas, mCanvas->window() );
-  }
-  mResults->activate();
+  results()->activate();
   QgsMapTool::activate();
 }
 
 void QgsMapToolIdentify::deactivate()
 {
-  mResults->deactivate();
+  results()->deactivate();
   QgsMapTool::deactivate();
 }
 
@@ -327,7 +325,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
 
     derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : QString::number( fid ) );
 
-    mResults->addFeature( layer, fid, displayField, displayValue, attributes, derivedAttributes );
+    results()->addFeature( layer, fid, displayField, displayValue, attributes, derivedAttributes );
   }
 
   QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
@@ -388,17 +386,12 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
   if ( res )
   {
     derivedAttributes.insert( tr( "(clicked coordinate)" ), idPoint.toString() );
-    mResults->addFeature( layer, -1, type, "", attributes, derivedAttributes );
+    results()->addFeature( layer, -1, type, "", attributes, derivedAttributes );
   }
 
   return res;
 }
 
-
-void QgsMapToolIdentify::resultsDialogGone()
-{
-  mResults = 0;
-}
 
 void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &measure, QGis::UnitType &u, bool isArea )
 {
