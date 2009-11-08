@@ -466,6 +466,7 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   QgsDebugMsg( QgsApplication::showSettings() );
   QgsDebugMsg( "\n--------------------------\n\n\n" );
   mMapCanvas->freeze( false );
+  mLastComposerId = 0;
 } // QgisApp ctor
 
 
@@ -3690,26 +3691,8 @@ void QgisApp::newPrintComposer()
   }
 
   //ask user about name
-  bool composerExists = true;
-  QString composerId;
-  while ( composerExists )
-  {
-    composerId = QInputDialog::getText( 0, tr( "Enter id string for composer" ), tr( "id:" ) );
-    if ( composerId.isNull() )
-    {
-      return;
-    }
-
-    if ( mPrintComposers.contains( composerId ) )
-    {
-      QMessageBox::critical( 0, tr( "Composer id already exists" ), tr( "The entered composer id '%1' already exists. Please enter a different id" ).arg( composerId ) );
-    }
-    else
-    {
-      composerExists = false;
-    }
-  }
-
+  mLastComposerId++;
+  QString composerId = QString( tr("Map Composer %1").arg( mLastComposerId ) );
   //create new composer object
   QgsComposer* newComposerObject = new QgsComposer( this, composerId );
   //add it to the map of existing print composers
@@ -4244,6 +4227,7 @@ bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
     composer->showMinimized();
     composer->zoomFull();
   }
+  mLastComposerId = composerNodes.size();
 
   return true;
 }
@@ -4256,6 +4240,7 @@ void QgisApp::deletePrintComposers()
     delete it.value();
   }
   mPrintComposers.clear();
+  mLastComposerId = 0;
 }
 
 void QgisApp::mergeSelectedFeatures()

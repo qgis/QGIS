@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>275</width>
+    <width>281</width>
     <height>272</height>
    </rect>
   </property>
@@ -154,6 +154,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>mTable</tabstop>
+  <tabstop>editTotal</tabstop>
+  <tabstop>btnHelp</tabstop>
+  <tabstop>mRestartButton</tabstop>
+  <tabstop>mCloseButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

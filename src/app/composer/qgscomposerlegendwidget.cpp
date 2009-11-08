@@ -27,8 +27,8 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
 
   //add widget for item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, legend );
-  gridLayout->addWidget( itemPropertiesWidget, 2, 0, 1, 1 );
-
+  toolBox->addItem( itemPropertiesWidget, tr( "Item Options") );
+ 
   if ( legend )
   {
     mItemTreeView->setModel( legend->model() );

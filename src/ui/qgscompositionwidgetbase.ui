@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>514</width>
-    <height>535</height>
+    <width>416</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,9 +32,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-290</y>
-        <width>491</width>
-        <height>823</height>
+        <y>-72</y>
+        <width>396</width>
+        <height>688</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
@@ -243,6 +243,9 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
+            <property name="buddy">
+             <cstring>mResolutionSpinBox</cstring>
+            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -262,6 +265,9 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
+            <property name="buddy">
+             <cstring>mOffsetXSpinBox</cstring>
+            </property>
            </widget>
           </item>
           <item row="4" column="0">
@@ -274,6 +280,9 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mOffsetYSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -288,6 +297,9 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
+            <property name="buddy">
+             <cstring>mPenWidthSpinBox</cstring>
+            </property>
            </widget>
           </item>
           <item row="8" column="0">
@@ -300,6 +312,9 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mGridColorButton</cstring>
             </property>
            </widget>
           </item>
@@ -323,6 +338,9 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mGridStyleComboBox</cstring>
             </property>
            </widget>
           </item>
