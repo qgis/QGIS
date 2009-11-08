@@ -8686,7 +8686,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="258"/>
         <source>Select/Move item</source>
-        <translation>Selezione/Sposta oggetto</translation>
+        <translation>Seleziona/Sposta oggetto</translation>
     </message>
     <message>
         <source>Export as image</source>
@@ -8728,7 +8728,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="318"/>
         <source>Add Image</source>
-        <translation>Aggiungi Immagine</translation>
+        <translation>Aggiungi immagine</translation>
     </message>
     <message>
         <source>Close</source>
@@ -8751,22 +8751,22 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="231"/>
         <source>Add Label</source>
-        <translation>Aggiugi etichetta</translation>
+        <translation>Aggiungi etichetta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="243"/>
         <source>Add Vector Legend</source>
-        <translation>Aggiungi Legenda Vettoriale</translation>
+        <translation>Aggiungi legenda vettoriale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="255"/>
         <source>Move Item</source>
-        <translation>Muovi Item</translation>
+        <translation>Muovi elemento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="267"/>
         <source>Export as Image...</source>
-        <translation>Esporta come Immagine...</translation>
+        <translation>Esporta come immagine...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="276"/>
@@ -8781,7 +8781,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="294"/>
         <source>Add Scalebar</source>
-        <translation>Aggiungi barra della scala</translation>
+        <translation>Aggiungi barra di scala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="306"/>
@@ -8791,7 +8791,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="323"/>
         <source>Move Content</source>
-        <translation>Sposta Contenuto</translation>
+        <translation>Sposta contenuto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="326"/>
@@ -8811,7 +8811,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="339"/>
         <source>Ungroup</source>
-        <translation>Disaggruppa</translation>
+        <translation>Rimuovi raggruppamento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="342"/>
@@ -8821,7 +8821,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="347"/>
         <source>Raise</source>
-        <translation>Alza</translation>
+        <translation>Muovi in alto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="350"/>
@@ -8831,7 +8831,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="355"/>
         <source>Lower</source>
-        <translation>Abbassa</translation>
+        <translation>Muovi in basso</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="358"/>
@@ -8861,12 +8861,12 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="379"/>
         <source>Load From template</source>
-        <translation>Carica dal template</translation>
+        <translation>Carica dal modello</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="384"/>
         <source>Save as template</source>
-        <translation>Salva come template</translation>
+        <translation>Salva come modello</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="389"/>
@@ -8876,7 +8876,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="392"/>
         <source>Align selected items left</source>
-        <translation>Allinea gli oggetti selezionati a sinsitra</translation>
+        <translation>Allinea gli oggetti selezionati a sinistra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="397"/>
@@ -8927,17 +8927,17 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="437"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Esci (&amp;Quit)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="440"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Esci</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="443"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished">Ctrl+Q</translation>
+        <translation>Ctrl+Q</translation>
     </message>
 </context>
 <context>
@@ -8945,32 +8945,32 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation>Form</translation>
+        <translation type="unfinished">Modulo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="23"/>
         <source>Composer item properties</source>
-        <translation>Composer proprietà dell oggetto</translation>
+        <translation>Composer proprietà dell&apos;oggetto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="29"/>
         <source>Color</source>
-        <translation type="unfinished">Colore</translation>
+        <translation>Colore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="56"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Opacità</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="79"/>
         <source>Outline width</source>
-        <translation type="unfinished">Dimensione stile esterno</translation>
+        <translation>Dimensione stile esterno</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="102"/>
         <source>Show frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra cornice</translation>
     </message>
     <message>
         <source>Color:</source>
@@ -9001,7 +9001,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="95"/>
         <source>Position...</source>
-        <translation>Posizone...</translation>
+        <translation>Posizione...</translation>
     </message>
 </context>
 <context>
@@ -9034,7 +9034,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="49"/>
         <source>Margin (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Margine (mm)</translation>
     </message>
     <message>
         <source>Margin (mm):</source>
@@ -9059,7 +9059,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="19"/>
         <source>Item text</source>
-        <translation type="unfinished"></translation>
+        <translation>Oggetto testo</translation>
     </message>
     <message>
         <source>Item text:</source>
@@ -9089,12 +9089,12 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="31"/>
         <source>Title</source>
-        <translation type="unfinished">Titolo</translation>
+        <translation>Titolo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="44"/>
         <source>Font</source>
-        <translation type="unfinished">Carattere</translation>
+        <translation>Carattere</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="57"/>
@@ -9114,62 +9114,62 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="78"/>
         <source>Symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation>Larghezza simbolo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="91"/>
         <source>Symbol height</source>
-        <translation type="unfinished"></translation>
+        <translation>Altezza simbolo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="104"/>
         <source>Layer space</source>
-        <translation type="unfinished"></translation>
+        <translation>Spazio layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="117"/>
         <source>Symbol space</source>
-        <translation type="unfinished"></translation>
+        <translation>Spazio simbolo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="130"/>
         <source>Icon label space</source>
-        <translation type="unfinished"></translation>
+        <translation>Spazio icona etichetta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="143"/>
         <source>Box space</source>
-        <translation type="unfinished"></translation>
+        <translation>Spazio riquadro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="172"/>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Giù</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="179"/>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Su</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="186"/>
         <source>Remove</source>
-        <translation type="unfinished">Rimuovi</translation>
+        <translation>Rimuovi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="193"/>
         <source>Edit...</source>
-        <translation type="unfinished">Modifica...</translation>
+        <translation>Modifica...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="200"/>
         <source>Update</source>
-        <translation type="unfinished">Aggiorna</translation>
+        <translation>Aggiorna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="207"/>
         <source>Update all</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiorna tutto</translation>
     </message>
     <message>
         <source>Symbol width: </source>
