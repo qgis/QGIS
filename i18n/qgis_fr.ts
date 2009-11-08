@@ -2232,7 +2232,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="35"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="48"/>
@@ -2242,7 +2242,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="71"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -4386,7 +4386,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="89"/>
         <source>Couldn&apos;t load QGIS utils.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger les outils QGIS.</translation>
     </message>
     <message>
         <source>An error has occured while executing Python code:</source>
@@ -4665,22 +4665,22 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/core/qgspoint.cpp" line="60"/>
         <source>W</source>
-        <translation type="unfinished">O</translation>
+        <translation>O</translation>
     </message>
     <message>
         <location filename="../src/core/qgspoint.cpp" line="60"/>
         <source>E</source>
-        <translation type="unfinished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="../src/core/qgspoint.cpp" line="61"/>
         <source>S</source>
-        <translation type="unfinished">S</translation>
+        <translation>S</translation>
     </message>
     <message>
         <location filename="../src/core/qgspoint.cpp" line="61"/>
         <source>N</source>
-        <translation type="unfinished">N</translation>
+        <translation>N</translation>
     </message>
 </context>
 <context>
@@ -6400,7 +6400,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="230"/>
         <source>Quantum GIS </source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="609"/>
@@ -6629,7 +6629,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1170"/>
         <source>Print Composers</source>
-        <translation type="unfinished"></translation>
+        <translation>Composeurs d&apos;impression</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1177"/>
@@ -6858,7 +6858,7 @@ Erreurs : %2
         <location filename="../src/app/qgisapp.cpp" line="595"/>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="596"/>
@@ -30592,53 +30592,53 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="193"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished">Êtes-vous sûr de vouloir effacer la connexion %1 et tous les paramètres associés ?</translation>
+        <translation>Êtes-vous sûr de vouloir effacer la connexion %1 et tous les paramètres associés ?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="195"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirmer l&apos;effacement</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="388"/>
         <source>WMS Password for %1</source>
-        <translation type="unfinished">Mot de passe WMS pour %1</translation>
+        <translation>Mot de passe WMS pour %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="423"/>
         <source>WMS Provider</source>
-        <translation type="unfinished">WMS Provider</translation>
+        <translation>WMS Provider</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="424"/>
         <source>Could not open the WMS Provider</source>
-        <translation type="unfinished">Ne peut ouvrir le provider WMS</translation>
+        <translation>Ne peut ouvrir le provider WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="434"/>
         <source>Select Layer</source>
-        <translation type="unfinished">Sélectionnez la couche</translation>
+        <translation>Sélectionnez la couche</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="434"/>
         <source>You must select at least one leaf layer first.</source>
-        <translation type="unfinished">Vous devez d&apos;abord choisir au moins une couche.</translation>
+        <translation>Vous devez d&apos;abord choisir au moins une couche.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="438"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Système de coordonnées de référence</translation>
+        <translation>Système de coordonnées de référence</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="438"/>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation type="unfinished">Il n&apos;y a pas de système de coordonnées de référence pour les couches que vous avez sélectionné.</translation>
+        <translation>Il n&apos;y a pas de système de coordonnées de référence pour les couches que vous avez sélectionné.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgswmssourceselect.cpp" line="553"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Système de Coordonnées de Référence (%n disponible)</numerusform>
             <numerusform>Systèmes de Coordonnées de Référence (%n disponibles)</numerusform>
         </translation>
@@ -30648,33 +30648,33 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"> Ne comprend pas la réponse. Le service fournisseur %1 dit : %2</translation>
+        <translation> Ne comprend pas la réponse. Le service fournisseur %1 dit : %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="725"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
-        <translation type="unfinished"> Ne comprend pas la réponse. Le service fournisseur %1 dit : %2</translation>
+        <translation> Ne comprend pas la réponse. Le service fournisseur %1 dit : %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="776"/>
         <source>WMS proxies</source>
-        <translation type="unfinished">Serveur mandataire WMS</translation>
+        <translation>Serveur mandataire WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="776"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="unfinished">Plusieurs serveurs WMS ont été ajouté à la liste. Si vous avez accès à internet via un serveur mandataire (proxy), vous aurez besoin de le configurer dans les paramètres de QGIS.</translation>
+        <translation>Plusieurs serveurs WMS ont été ajouté à la liste. Si vous avez accès à internet via un serveur mandataire (proxy), vous aurez besoin de le configurer dans les paramètres de QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="916"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished">La connexion %1 existe déjà. Voulez-vous l&apos;écraser ?</translation>
+        <translation>La connexion %1 existe déjà. Voulez-vous l&apos;écraser ?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="917"/>
         <source>Confirm Overwrite</source>
-        <translation type="unfinished">Confirmer l&apos;écrasement</translation>
+        <translation>Confirmer l&apos;écrasement</translation>
     </message>
 </context>
 <context>
@@ -30682,163 +30682,163 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="13"/>
         <source>Add Layer(s) from a Server</source>
-        <translation type="unfinished">Ajoute le(s) couche(s) du server</translation>
+        <translation>Ajoute le(s) couche(s) du server</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="34"/>
         <source>Servers</source>
-        <translation type="unfinished">Serveurs</translation>
+        <translation>Serveurs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="46"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished">C&amp;onnexion</translation>
+        <translation>C&amp;onnexion</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="53"/>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Nouveau</translation>
+        <translation>&amp;Nouveau</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="63"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="73"/>
         <source>Delete</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="96"/>
         <source>Adds a few example WMS servers</source>
-        <translation type="unfinished">Ajouter quelques serveurs WMS de démonstration</translation>
+        <translation>Ajouter quelques serveurs WMS de démonstration</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="102"/>
         <source>Add default servers</source>
-        <translation type="unfinished">Ajouter les serveurs par défaut</translation>
+        <translation>Ajouter les serveurs par défaut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="122"/>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="127"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="132"/>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="226"/>
         <source>Title</source>
-        <translation type="unfinished">Titre</translation>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="137"/>
         <source>Abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>Résumé</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="146"/>
         <source>Layer Order</source>
-        <translation type="unfinished">Ordre des couches</translation>
+        <translation>Ordre des couches</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="183"/>
         <source>Layer</source>
-        <translation type="unfinished">Couche</translation>
+        <translation>Couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="188"/>
         <source>Style</source>
-        <translation type="unfinished">Style</translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="197"/>
         <source>Server Search</source>
-        <translation type="unfinished">Recherche de serveurs</translation>
+        <translation>Recherche de serveurs</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="206"/>
         <source>Search</source>
-        <translation type="unfinished">Rechercher</translation>
+        <translation>Rechercher</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="231"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="236"/>
         <source>Description</source>
-        <translation type="unfinished">Description</translation>
+        <translation>Description</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="244"/>
         <source>Add selected row to WMS list</source>
-        <translation type="unfinished">Aligner les colonnes sélectionnées à la liste WMS</translation>
+        <translation>Aligner les colonnes sélectionnées à la liste WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="267"/>
         <source>Image encoding</source>
-        <translation type="unfinished">Encodage de l&apos;image</translation>
+        <translation>Encodage de l&apos;image</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="274"/>
         <source>Options</source>
-        <translation type="unfinished">Options</translation>
+        <translation>Options</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="280"/>
         <source>Layer name</source>
-        <translation type="unfinished">Nom de la couche</translation>
+        <translation>Nom de la couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="290"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Système de coordonnées de référence</translation>
+        <translation>Système de coordonnées de référence</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="300"/>
         <source>Change ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modification...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="313"/>
         <source>Help</source>
-        <translation type="unfinished">Aide</translation>
+        <translation>Aide</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="316"/>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="345"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Ajoutez</translation>
+        <translation>&amp;Ajoutez</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="348"/>
         <source>Alt+A</source>
-        <translation type="unfinished">Alt+A</translation>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="361"/>
         <source>C&amp;lose</source>
-        <translation type="unfinished">&amp;Fermer</translation>
+        <translation>&amp;Fermer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="364"/>
         <source>Alt+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+L</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="380"/>
         <source>Ready</source>
-        <translation type="unfinished">Prêt</translation>
+        <translation>Prêt</translation>
     </message>
 </context>
 <context>
@@ -31285,12 +31285,12 @@ URL Éprouvé : %1</translation>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="24"/>
         <source>Map title</source>
-        <translation type="unfinished"></translation>
+        <translation>Titre de la carte</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="37"/>
         <source>Map name</source>
-        <translation type="unfinished">Nom de couche</translation>
+        <translation>Nom de la carte</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="50"/>
@@ -31300,7 +31300,7 @@ URL Éprouvé : %1</translation>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="60"/>
         <source>Page size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de la page</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="73"/>
