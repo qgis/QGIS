@@ -92,3 +92,14 @@ QAction* QgsShortcutsManager::actionForShortcut( QKeySequence s )
 
   return NULL;
 }
+
+QAction* QgsShortcutsManager::actionByName( QString name )
+{
+  for ( ActionsHash::iterator it = mActions.begin(); it != mActions.end(); ++it )
+  {
+    if ( it.key()->text() == name )
+      return it.key();
+  }
+
+  return NULL;
+}

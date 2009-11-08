@@ -43,6 +43,8 @@ class QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsConfigureShor
     void changeShortcut();
     void resetShortcut();
     void setNoShortcut();
+    void saveShortcuts();
+    void loadShortcuts();
 
     void actionChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
 
