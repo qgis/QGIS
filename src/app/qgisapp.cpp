@@ -717,9 +717,9 @@ void QgisApp::createActions()
   connect( mActionAddRing, SIGNAL( triggered() ), this, SLOT( addRing() ) );
   mActionAddRing->setEnabled( false );
 
-  mActionAddIsland = new QAction( getThemeIcon( "mActionAddIsland.png" ), tr( "Add Island" ), this );
+  mActionAddIsland = new QAction( getThemeIcon( "mActionAddIsland.png" ), tr( "Add Part" ), this );
   shortcuts->registerAction( mActionAddIsland );
-  mActionAddIsland->setStatusTip( tr( "Add Island to multipolygon" ) );
+  mActionAddIsland->setStatusTip( tr( "Add part to multipolygon" ) );
   connect( mActionAddIsland, SIGNAL( triggered() ), this, SLOT( addIsland() ) );
   mActionAddIsland->setEnabled( false );
 
@@ -731,13 +731,13 @@ void QgisApp::createActions()
 
   mActionDeleteRing = new QAction( getThemeIcon( "mActionDeleteRing.png" ), tr( "Delete Ring" ), this );
   shortcuts->registerAction( mActionDeleteRing );
-  mActionDeleteRing->setStatusTip( tr( "Delete Ring" ) );
+  mActionDeleteRing->setStatusTip( tr( "Click a vertex of the ring to delete" ) );
   connect( mActionDeleteRing, SIGNAL( triggered() ), this, SLOT( deleteRing() ) );
   mActionDeleteRing->setEnabled( false );
 
   mActionDeletePart = new QAction( getThemeIcon( "mActionDeletePart.png" ), tr( "Delete Part" ), this );
   shortcuts->registerAction( mActionDeletePart );
-  mActionDeletePart->setStatusTip( tr( "Delete Part" ) );
+  mActionDeletePart->setStatusTip( tr( "Click a vertex of the part to delete" ) );
   connect( mActionDeletePart, SIGNAL( triggered() ), this, SLOT( deletePart() ) );
   mActionDeletePart->setEnabled( false );
 
