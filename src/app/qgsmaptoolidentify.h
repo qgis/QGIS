@@ -82,9 +82,7 @@ class QgsMapToolIdentify : public QgsMapTool
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes );
 
-  private slots:
-    // Let us know when the QgsIdentifyResults dialog box has been closed
-    void resultsDialogGone();
+    QgsIdentifyResults *results();
 };
 
 #endif
