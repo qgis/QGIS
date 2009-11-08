@@ -27,7 +27,7 @@ class QPainter;
 /** \ingroup core
  * Contains information about the context of a rendering operation.
  * The context of a rendering operation defines properties such as
- * the conversion ration between screen and map units, the extents /
+ * the conversion ratio between screen and map units, the extents /
  * bounding box to be rendered etc.
  **/
 class CORE_EXPORT QgsRenderContext
