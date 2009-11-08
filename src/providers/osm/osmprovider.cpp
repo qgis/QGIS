@@ -93,9 +93,25 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     }
     if ( propName == "observer" )
     {
+      // remove observer from the URI
+      // (because otherwise it would be saved into project file and would cause crashes)
+      QString newProps;
+      foreach ( QString p , props )
+      {
+        if (!p.startsWith("observer"))
+        {
+          if (!newProps.isEmpty())
+            newProps += "&";
+          newProps += p;
+        }
+      }
+      QString newUri = uri.left( fileNameEnd + 1 ) + newProps;
+      setDataSourceUri(newUri);
+
       ulong observerAddr = propValue.toULong();
       mInitObserver = ( QObject* ) observerAddr;
       mInitObserver->setProperty( "osm_state", QVariant( 1 ) );
+
     }
     if ( propName == "tag" )
     {
