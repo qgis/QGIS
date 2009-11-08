@@ -7249,7 +7249,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="56"/>
         <source>Enter the action name here</source>
-        <translation>Nome d&apos;assegnare all&apos;azione</translation>
+        <translation>Nome da assegnare all&apos;azione</translation>
     </message>
     <message>
         <source>Action:</source>
@@ -7281,7 +7281,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="188"/>
         <source>Update action</source>
-        <translation>Aggiorna azione</translation>
+        <translation>Aggiorna l&apos;azione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="185"/>
@@ -7334,7 +7334,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="19"/>
         <source>Attribute Actions</source>
-        <translation>Atrributi azione</translation>
+        <translation>Attributi azione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="37"/>
@@ -7351,7 +7351,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="66"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="82"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
-        <translation>Inserisci qui l&apos;azione. L&apos;azione può essere un qualsiasi programma o script disponibile sul proprio sistema. Quando l&apos;azione è invocata qualsiasi insieme di caratteri che inizia con una % e ha il nome di un campo verrà sostituito dal valore con tale campo. I caratteri speciali %% saranno sostituiti dal valore del campo selezionato. Le doppie virgolette creano un unico gruppo di testo in un singolo argomento per il programma, script o comando. Le doppie virgolette saranno ignorate se anticipate da un backslash</translation>
+        <translation>Inserisci qui l&apos;azione. L&apos;azione può essere un qualsiasi programma o script disponibile sul proprio sistema. Quando l&apos;azione è invocata qualsiasi insieme di caratteri che inizia con una % e ha il nome di un campo verrà sostituito dal valore con tale campo. I caratteri speciali %% saranno sostituiti dal valore del campo selezionato. Le doppie virgolette creano un unico gruppo di testo in un singolo argomento per il programma, script o comando. Le doppie virgolette saranno ignorate se seguono un backslash \</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="69"/>
@@ -7635,7 +7635,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="78"/>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="84"/>
         <source>Attribute table - %1</source>
-        <translation>tabella degli attributi - %1</translation>
+        <translation type="unfinished">Tabella degli attributi - %1</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="429"/>
@@ -7660,8 +7660,8 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="489"/>
         <source>Found %d matching features.</source>
-        <translation>
-            <numerusform>Trovate %d geometrie corrispondenti.</numerusform>
+        <translation type="unfinished">
+            <numerusform>Trovata %d geometria corrispondente.</numerusform>
             <numerusform>Trovate %d geometrie corrispondenti.</numerusform>
         </translation>
     </message>
@@ -7673,28 +7673,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="581"/>
         <source>Attribute added</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributo aggiunto</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="588"/>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="629"/>
         <source>Attribute Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore nell&apos;attributo</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="588"/>
         <source>The attribute could not be added to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aggiungere l&apos;attributo al layer</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="612"/>
         <source>Deleted attribute</source>
-        <translation type="unfinished">Attributo cancellato</translation>
+        <translation>Attributo cancellato</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="629"/>
         <source>The attribute(s) could not be deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile cancellare l&apos;attributo/i</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="14"/>
@@ -7712,12 +7712,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="29"/>
         <source>Unselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Deseleziona tutto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="52"/>
         <source>Move selection to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Muovi selezione in alto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="68"/>
@@ -7777,22 +7777,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="176"/>
         <source>New column</source>
-        <translation type="unfinished">Nuova colonna</translation>
+        <translation>Nuova colonna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="196"/>
         <source>Delete column</source>
-        <translation type="unfinished">Elimina colonna</translation>
+        <translation>Elimina colonna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="216"/>
         <source>Open field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri il calcolatore di campi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="236"/>
         <source>Look for</source>
-        <translation>Guarda per</translation>
+        <translation>Cerca</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="246"/>
@@ -7807,7 +7807,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="267"/>
         <source>Show selected records only</source>
-        <translation>Mostra record selezionati</translation>
+        <translation>Mostra solo i record selezionati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="294"/>
@@ -7822,7 +7822,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="274"/>
         <source>Search selected records only</source>
-        <translation>Cerca record selezionati</translation>
+        <translation>Cerca solo i record selezionati</translation>
     </message>
 </context>
 <context>
@@ -23343,7 +23343,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="421"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="853"/>
         <source>Thin plate spline (TPS)</source>
-        <translation>Tacca di metallo leggera (TPS)</translation>
+        <translation>Thin plate spline (TPS)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="512"/>
@@ -31097,7 +31097,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="249"/>
         <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
-        <translation>Conneti al database usando i seguenti parametri. Se la connessione funziona un messaggio che conferma che la connessione è stata stabilita apparirá nella Console di Output.</translation>
+        <translation>Connetti al database usando i seguenti parametri. Se la connessione è stata stabilita, un messaggio di conferma  apparirà nella Console di Output.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
