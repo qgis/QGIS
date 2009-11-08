@@ -329,6 +329,7 @@ bool QgsGeometryAnalyzer::extent( QgsVectorLayer* layer, const QString& shapefil
 QList<double> QgsGeometryAnalyzer::simpleMeasure( QgsGeometry* mpGeometry )
 {
   QList<double> list;
+  double perim;
   if ( mpGeometry->wkbType() == QGis::WKBPoint )
   {
     QgsPoint pt = mpGeometry->asPoint();
@@ -341,11 +342,11 @@ QList<double> QgsGeometryAnalyzer::simpleMeasure( QgsGeometry* mpGeometry )
     list.append( measure.measure( mpGeometry ) );
     if ( mpGeometry->type() == QGis::Polygon )
     {
-      list.append( perimeterMeasure( mpGeometry, measure ) );
+      perim = perimeterMeasure( mpGeometry, measure );
+      list.append( perim );
     }
   }
   return list;
-
 }
 
 double QgsGeometryAnalyzer::perimeterMeasure( QgsGeometry* geometry, QgsDistanceArea& measure )
@@ -383,22 +384,12 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
   {
     return false;
   }
-
   QgsVectorDataProvider* dp = layer->dataProvider();
   if ( !dp )
   {
     return false;
   }
-
-  QGis::WkbType outputType = QGis::WKBPolygon;
-  const QgsCoordinateReferenceSystem crs = layer->srs();
-
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
-  QgsFeature currentFeature;
-  QgsGeometry* dissolveGeometry; //dissolve geometry
-  QMultiMap<QString, int> map;
   bool useField = false;
-
   if ( uniqueIdField == -1 )
   {
     uniqueIdField = 0;
@@ -406,14 +397,63 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
   else
   {
     useField = true;
+  }
+  QgsFieldMap fields;
+  fields.insert( 0 , QgsField( QString( "UID" ), QVariant::String ) );
+  fields.insert( 1 , QgsField( QString( "AREA" ), QVariant::Double ) );
+  fields.insert( 2 , QgsField( QString( "PERIM" ), QVariant::Double ) );
+
+  QGis::WkbType outputType = QGis::WKBPolygon;
+  const QgsCoordinateReferenceSystem crs = layer->srs();
+
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, &crs );
+  QgsFeature currentFeature;
+  QgsGeometry* dissolveGeometry; //dissolve geometry
+  QMultiMap<QString, int> map;
+
+  if ( onlySelectedFeatures )
+  {
+    //use QgsVectorLayer::featureAtId
+    const QgsFeatureIds selection = layer->selectedFeaturesIds();
+    QgsFeatureIds::const_iterator it = selection.constBegin();
+    for ( ; it != selection.constEnd(); ++it )
+    {
+//      if ( p )
+//      {
+//        p->setValue( processedFeatures );
+//      }
+//      if ( p && p->wasCanceled() )
+//      {
+//        // break; // it may be better to do something else here?
+//        return false;
+//      }
+      if ( !layer->featureAtId( *it, currentFeature, true, true ) )
+      {
+        continue;
+      }
+      map.insert( currentFeature.attributeMap()[ uniqueIdField ].toString(), currentFeature.id() );
+    }
+  }
+  else
+  {
     layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
     while ( layer->nextFeature( currentFeature ) )
     {
-      map.insert( currentFeature.attributeMap()[uniqueIdField].toString(), currentFeature.id() );
+  //    if ( p )
+  //    {
+  //      p->setValue( processedFeatures );
+  //    }
+  //    if ( p && p->wasCanceled() )
+  //    {
+  //      // break; // it may be better to do something else here?
+  //      return false;
+  //    }
+      map.insert( currentFeature.attributeMap()[ uniqueIdField ].toString(), currentFeature.id() );
     }
   }
-  QMultiMap<QString, int>::const_iterator jt;
-  for (jt = map.constBegin(); jt != map.constEnd(); ++jt)
+
+  QMultiMap<QString, int>::const_iterator jt = map.constBegin();
+  while ( jt != map.constEnd() )
   {
     QString currentKey = jt.key();
     int processedFeatures = 0;
@@ -421,13 +461,13 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
     if ( onlySelectedFeatures )
     {
         //use QgsVectorLayer::featureAtId
-        const QgsFeatureIds selection = layer->selectedFeaturesIds();
+       const QgsFeatureIds selection = layer->selectedFeaturesIds();
         if ( p )
         {
-            p->setMaximum( selection.size() );
+          p->setMaximum( selection.size() );
         }
         processedFeatures = 0;
-        while ( jt != map.end() && ( jt.key() == currentKey || !useField ) )
+        while ( jt != map.constEnd() && ( jt.key() == currentKey || !useField ) )
         {
           if ( p && p->wasCanceled() )
           {
@@ -437,18 +477,26 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
           {
             if ( p )
             {
-                p->setValue( processedFeatures );
+              p->setValue( processedFeatures );
             }
             if ( !layer->featureAtId( jt.value(), currentFeature, true, true ) )
             {
-                continue;
+              continue;
             }
             convexFeature( currentFeature, processedFeatures, &dissolveGeometry );
             ++processedFeatures;
           }
           ++jt;
         }
+        QList<double> values;
+        dissolveGeometry = dissolveGeometry->convexHull();
+        values = simpleMeasure( dissolveGeometry );
+        QgsAttributeMap attributeMap;
+        attributeMap.insert( 0 , QVariant( currentKey ) );
+        attributeMap.insert( 1 , values[ 0 ] );
+        attributeMap.insert( 2 , values[ 1 ] );
         QgsFeature dissolveFeature;
+        dissolveFeature.setAttributeMap( attributeMap );
         dissolveFeature.setGeometry( dissolveGeometry );
         vWriter.addFeature( dissolveFeature );
     }
@@ -461,7 +509,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
         p->setMaximum( featureCount );
       }
       processedFeatures = 0;
-      while ( jt != map.end() && ( jt.key() == currentKey || !useField ) )
+      while ( jt != map.constEnd() && ( jt.key() == currentKey || !useField ) )
       {
         if ( p )
         {
@@ -480,9 +528,19 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
         ++processedFeatures;
         ++jt;
       }
-      QgsFeature dissolveFeature;
-      dissolveFeature.setGeometry( dissolveGeometry );
-      vWriter.addFeature( dissolveFeature );
+        QList<double> values;
+        // QgsGeometry* tmpGeometry = 0;
+        dissolveGeometry = dissolveGeometry->convexHull();
+        // values = simpleMeasure( tmpGeometry );
+        values = simpleMeasure( dissolveGeometry );
+        QgsAttributeMap attributeMap;
+        attributeMap.insert( 0 , QVariant( currentKey ) );
+        attributeMap.insert( 1 , QVariant( values[ 0 ] ) );
+        attributeMap.insert( 2 , QVariant( values[ 1 ] ) );
+        QgsFeature dissolveFeature;
+        dissolveFeature.setAttributeMap( attributeMap );
+        dissolveFeature.setGeometry( dissolveGeometry );
+        vWriter.addFeature( dissolveFeature );
     }
   }
   return true;
@@ -522,22 +580,12 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
   {
     return false;
   }
-
   QgsVectorDataProvider* dp = layer->dataProvider();
   if ( !dp )
   {
     return false;
   }
-
-  QGis::WkbType outputType = dp->geometryType();
-  const QgsCoordinateReferenceSystem crs = layer->srs();
-
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
-  QgsFeature currentFeature;
-  QgsGeometry* dissolveGeometry; //dissolve geometry
-  QMultiMap<QString, int> map;
   bool useField = false;
-
   if ( uniqueIdField == -1 )
   {
     uniqueIdField = 0;
@@ -545,28 +593,56 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
   else
   {
     useField = true;
+  }
+
+  QGis::WkbType outputType = dp->geometryType();
+  const QgsCoordinateReferenceSystem crs = layer->srs();
+
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
+  QgsFeature currentFeature;
+  QMultiMap<QString, int> map;
+
+  if ( onlySelectedFeatures )
+  {
+    //use QgsVectorLayer::featureAtId
+    const QgsFeatureIds selection = layer->selectedFeaturesIds();
+    QgsFeatureIds::const_iterator it = selection.constBegin();
+    for ( ; it != selection.constEnd(); ++it )
+    {
+      if ( !layer->featureAtId( *it, currentFeature, true, true ) )
+      {
+        continue;
+      }
+      map.insert( currentFeature.attributeMap()[ uniqueIdField ].toString(), currentFeature.id() );
+    }
+  }
+  else
+  {
     layer->select( layer->pendingAllAttributesList(), QgsRectangle(), true, false );
     while ( layer->nextFeature( currentFeature ) )
     {
-      map.insert( currentFeature.attributeMap()[uniqueIdField].toString(), currentFeature.id() );
+      map.insert( currentFeature.attributeMap()[ uniqueIdField ].toString(), currentFeature.id() );
     }
   }
-  QMultiMap<QString, int>::const_iterator jt;
-  for (jt = map.constBegin(); jt != map.constEnd(); ++jt)
+
+  QgsGeometry* dissolveGeometry; //dissolve geometry
+  QMultiMap<QString, int>::const_iterator jt = map.constBegin();
+  QgsFeature outputFeature;
+  while ( jt != map.constEnd() )
   {
     QString currentKey = jt.key();
     int processedFeatures = 0;
+    bool first = true;
     //take only selection
     if ( onlySelectedFeatures )
     {
         //use QgsVectorLayer::featureAtId
-        const QgsFeatureIds selection = layer->selectedFeaturesIds();
+       const QgsFeatureIds selection = layer->selectedFeaturesIds();
         if ( p )
         {
-            p->setMaximum( selection.size() );
+          p->setMaximum( selection.size() );
         }
-        processedFeatures = 0;
-        while ( jt != map.end() && ( jt.key() == currentKey || !useField ) )
+        while ( jt != map.constEnd() && ( jt.key() == currentKey || !useField ) )
         {
           if ( p && p->wasCanceled() )
           {
@@ -576,20 +652,22 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
           {
             if ( p )
             {
-                p->setValue( processedFeatures );
+              p->setValue( processedFeatures );
             }
             if ( !layer->featureAtId( jt.value(), currentFeature, true, true ) )
             {
-                continue;
+              continue;
+            }
+            if ( first )
+            {
+              outputFeature.setAttributeMap( currentFeature.attributeMap() );
+              first = false;
             }
             dissolveFeature( currentFeature, processedFeatures, &dissolveGeometry );
             ++processedFeatures;
           }
           ++jt;
         }
-        QgsFeature dissolveFeature;
-        dissolveFeature.setGeometry( dissolveGeometry );
-        vWriter.addFeature( dissolveFeature );
     }
     //take all features
     else
@@ -599,8 +677,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
       {
         p->setMaximum( featureCount );
       }
-      processedFeatures = 0;
-      while ( jt != map.end() && ( jt.key() == currentKey || !useField ) )
+      while ( jt != map.constEnd() && ( jt.key() == currentKey || !useField ) )
       {
         if ( p )
         {
@@ -615,14 +692,17 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
         {
           continue;
         }
+        {
+          outputFeature.setAttributeMap( currentFeature.attributeMap() );
+          first = false;
+        }
         dissolveFeature( currentFeature, processedFeatures, &dissolveGeometry );
         ++processedFeatures;
         ++jt;
       }
-      QgsFeature dissolveFeature;
-      dissolveFeature.setGeometry( dissolveGeometry );
-      vWriter.addFeature( dissolveFeature );
     }
+    outputFeature.setGeometry( dissolveGeometry );
+    vWriter.addFeature( outputFeature );
   }
   return true;
 }
@@ -630,7 +710,6 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
 void QgsGeometryAnalyzer::dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry )
 {
   QgsGeometry* featureGeometry = f.geometry();
-  QgsGeometry* tmpGeometry = 0;
 
   if ( !featureGeometry )
   {
@@ -639,13 +718,15 @@ void QgsGeometryAnalyzer::dissolveFeature( QgsFeature& f, int nProcessedFeatures
 
   if ( nProcessedFeatures == 0 )
   {
-    *dissolveGeometry = featureGeometry;
+    int geomSize = featureGeometry->wkbSize();
+    *dissolveGeometry = new QgsGeometry();
+    unsigned char* wkb = new unsigned char[geomSize];
+    memcpy(wkb, featureGeometry->asWkb(), geomSize);
+    (*dissolveGeometry)->fromWkb(wkb, geomSize);
   }
   else
   {
-    tmpGeometry = *dissolveGeometry;
     *dissolveGeometry = ( *dissolveGeometry )->combine( featureGeometry );
-    delete tmpGeometry;
   }
 }
 
