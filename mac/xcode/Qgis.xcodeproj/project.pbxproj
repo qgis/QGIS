@@ -1362,6 +1362,8 @@
 		729BBF390F407CBA001BCB63 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		729BBF3E0F407D81001BCB63 /* qgispython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC810F39E57B003DC336 /* qgispython.cpp */; };
 		729BBF3F0F407D82001BCB63 /* qgspythonutilsimpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC830F39E57B003DC336 /* qgspythonutilsimpl.cpp */; };
+		729E6DF610A78A4F00D72B73 /* qgsoverlayanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 729E6DF410A78A3C00D72B73 /* qgsoverlayanalyzer.cpp */; };
+		729E6DF810A78A8C00D72B73 /* qgsoverlayanalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 729E6DF510A78A3C00D72B73 /* qgsoverlayanalyzer.h */; };
 		72A07CC90F3BC2DE004FC2A4 /* qgsmemoryprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC5F0F39E57B003DC336 /* qgsmemoryprovider.cpp */; };
 		72A07CFC0F3BD3C5004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07CFF0F3BD3E1004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -6942,6 +6944,9 @@
 		729BBF010F40770B001BCB63 /* qgis_help-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "qgis_help-Info.plist"; sourceTree = "<group>"; };
 		729BBF3D0F407CBA001BCB63 /* libqgispython.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libqgispython.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		729BBF4A0F407E78001BCB63 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		729E6DF310A789E700D72B73 /* qgsoverlayanalyzer.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsoverlayanalyzer.sip; path = ../../python/analysis/qgsoverlayanalyzer.sip; sourceTree = SOURCE_ROOT; };
+		729E6DF410A78A3C00D72B73 /* qgsoverlayanalyzer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsoverlayanalyzer.cpp; path = ../../src/analysis/vector/qgsoverlayanalyzer.cpp; sourceTree = SOURCE_ROOT; };
+		729E6DF510A78A3C00D72B73 /* qgsoverlayanalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsoverlayanalyzer.h; path = ../../src/analysis/vector/qgsoverlayanalyzer.h; sourceTree = SOURCE_ROOT; };
 		72A07CBC0F3BBFEE004FC2A4 /* libmemoryprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libmemoryprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A07CF70F3BD1F9004FC2A4 /* libogrprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libogrprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A07D120F3BD625004FC2A4 /* libwmsprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libwmsprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -10933,6 +10938,8 @@
 			children = (
 				721597E61052B2B0003D1610 /* qgsgeometryanalyzer.cpp */,
 				721597E71052B2B0003D1610 /* qgsgeometryanalyzer.h */,
+				729E6DF410A78A3C00D72B73 /* qgsoverlayanalyzer.cpp */,
+				729E6DF510A78A3C00D72B73 /* qgsoverlayanalyzer.h */,
 				72BD9FE310A4998600FEA70F /* qgszonalstatistics.cpp */,
 				72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */,
 			);
@@ -11115,6 +11122,7 @@
 			children = (
 				7276104A10A60AC300C89AF0 /* analysis.sip */,
 				7276104B10A60AC300C89AF0 /* qgsgeometryanalyzer.sip */,
+				729E6DF310A789E700D72B73 /* qgsoverlayanalyzer.sip */,
 			);
 			name = analysis;
 			path = ../../python/analysis;
@@ -12622,6 +12630,7 @@
 				7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */,
 				7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */,
 				72FE24C8105BE2400026B6CB /* qgsgeometryanalyzer.h in Headers */,
+				729E6DF810A78A8C00D72B73 /* qgsoverlayanalyzer.h in Headers */,
 				72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -14231,6 +14240,7 @@
 				7215983A1052B8F2003D1610 /* qgsslopefilter.cpp in Sources */,
 				7215983B1052B8F2003D1610 /* qgstotalcurvaturefilter.cpp in Sources */,
 				7215983C1052B8FC003D1610 /* qgsgeometryanalyzer.cpp in Sources */,
+				729E6DF610A78A4F00D72B73 /* qgsoverlayanalyzer.cpp in Sources */,
 				72BD9FE510A499D700FEA70F /* qgszonalstatistics.cpp in Sources */,
 				7276104210A609D300C89AF0 /* Bezier3D.cc in Sources */,
 				7276104310A609D300C89AF0 /* CloughTocherInterpolator.cc in Sources */,
@@ -15349,6 +15359,7 @@
 					"$(inherited)",
 					../../src/core,
 					../../src/core/renderer,
+					../../src/core/spatialindex,
 					../../src/analysis/interpolation,
 					"$(GDAL_INC)",
 					"$(GEOS_INC)",
@@ -15381,6 +15392,7 @@
 					"$(inherited)",
 					../../src/core,
 					../../src/core/renderer,
+					../../src/core/spatialindex,
 					../../src/analysis/interpolation,
 					"$(GDAL_INC)",
 					"$(GEOS_INC)",
