@@ -22,6 +22,7 @@
 #include <QSettings>
 
 #include "qgsfield.h"
+#include "qgscontexthelp.h"
 #include "qgspastetransformations.h"
 #include "qgsmaplayerregistry.h"
 #include "qgslogger.h"
@@ -29,6 +30,12 @@
 QgsPasteTransformations::QgsPasteTransformations()
     : QgsPasteTransformationsBase()
 {
+  setupUi( this );
+  connect( buttonBox, SIGNAL( helpRequested() ),this,SLOT( help() ) );
+
+  mAddTransferButton = new QPushButton( tr( "&Add New Transfer" ) );
+  buttonBox->addButton( mAddTransferButton, QDialogButtonBox::ActionRole );
+  connect( mAddTransferButton,SIGNAL( clicked() ), this, SLOT( addNewTransfer() ) );
 
   // Populate the dialog with the loaded layers
   QMap<QString, QgsMapLayer*> mapLayers =
@@ -48,8 +55,6 @@ QgsPasteTransformations::QgsPasteTransformations()
     // store the lookup from the name to the map layer object
     mMapNameLookup[ it.value()->name()] = it.value();
   }
-
-
 }
 
 QgsPasteTransformations::~QgsPasteTransformations()
@@ -57,10 +62,8 @@ QgsPasteTransformations::~QgsPasteTransformations()
 
 }
 
-
 void QgsPasteTransformations::accept()
 {
-
   QSettings settings;
   QString baseKey        = "/Qgis/paste-transformations";             // TODO: promote to static member
   QString sourceKey      = sourceLayerComboBox     ->currentText();
@@ -74,11 +77,18 @@ void QgsPasteTransformations::accept()
       mDestinationTransfers[i]->currentText()
     );
   }
-
   QDialog::accept();
-
 }
 
+void QgsPasteTransformations::help()
+{
+  helpInfo();
+}
+
+void QgsPasteTransformations::helpInfo()
+{
+  QgsContextHelp::run( context_id );
+}
 
 void QgsPasteTransformations::addNewTransfer()
 {
@@ -86,24 +96,18 @@ void QgsPasteTransformations::addNewTransfer()
   addTransfer();
 }
 
-
 void QgsPasteTransformations::sourceChanged( const QString& layerName )
 {
   QgsDebugMsg( QString( "Source changed to %1." ).arg( layerName ) );
-
   layerChanged( layerName, &mSourceFields );
-
 }
 
 
 void QgsPasteTransformations::destinationChanged( const QString& layerName )
 {
   QgsDebugMsg( QString( "Destination changed to %1." ).arg( layerName ) );
-
   layerChanged( layerName, &mDestinationFields );
-
 }
-
 
 void QgsPasteTransformations::addTransfer( const QString& sourceSelectedFieldName,
     const QString& destinationSelectedFieldName )

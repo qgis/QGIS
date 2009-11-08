@@ -21,6 +21,7 @@
 #include "ui_qgspastetransformationsbase.h"
 
 #include "qgsmaplayer.h"
+#include <QPushButton>
 
 /*!
  * \brief Dialog to allow the user to set up how source fields are transformed to destination fields in copy/paste operations
@@ -46,17 +47,15 @@ class QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformati
     QString pasteTo( const QString& sourceLayerName,
                      const QString& destinationLayerName,
                      const QString& sourceFieldName );
-
+    //! Display the context help
+    void helpInfo();
 
   public slots:
+    void help();
     virtual void accept();
-
     virtual void addNewTransfer();
-
     virtual void sourceChanged( const QString& layerName );
-
     virtual void destinationChanged( const QString& layerName );
-
 
   private:
 
@@ -69,16 +68,14 @@ class QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformati
     void restoreTransfers( const QString& sourceSelectedFieldName,
                            const QString& destinationSelectedFieldName );
 
-
     std::map<QString, QgsMapLayer*> mMapNameLookup;
-
     std::vector<QString> mSourceFields;
-
     std::vector<QString> mDestinationFields;
-
     std::vector<QComboBox*> mSourceTransfers;
-
     std::vector<QComboBox*> mDestinationTransfers;
+    QPushButton * mAddTransferButton;
+
+    static const int context_id = 1;
 
 };
 

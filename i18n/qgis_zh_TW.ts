@@ -5419,11 +5419,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Add Island</source>
-        <translation>新增島形(Island)</translation>
+        <translation type="obsolete">新增島形(Island)</translation>
     </message>
     <message>
         <source>Add Island to multipolygon</source>
-        <translation>新增島形至多邊形中</translation>
+        <translation type="obsolete">新增島形至多邊形中</translation>
     </message>
     <message>
         <source>Scale </source>
@@ -6214,6 +6214,22 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>The entered composer id &apos;%1&apos; already exists. Please enter a different id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Part</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add part to multipolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click a vertex of the ring to delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click a vertex of the part to delete</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9996,6 +10012,57 @@ Error was:%2</source>
     <message>
         <source>Set default</source>
         <translation>設成預設</translation>
+    </message>
+    <message>
+        <source>Save shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XML file (*.xml);; All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse error at line %1, column %2:
+%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file is not an shortcuts exchange file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file contains shortcuts created with different locale, so you can&apos;t use it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19286,6 +19353,13 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
 </context>
 <context>
+    <name>QgsPasteTransformations</name>
+    <message>
+        <source>&amp;Add New Transfer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPasteTransformationsBase</name>
     <message>
         <source>Paste Transformations</source>
@@ -19305,23 +19379,19 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation>說明(&amp;H)</translation>
+        <translation type="obsolete">說明(&amp;H)</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation>F1</translation>
-    </message>
-    <message>
-        <source>Add New Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>確定(&amp;O)</translation>
+        <translation type="obsolete">確定(&amp;O)</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>取消(&amp;C)</translation>
+        <translation type="obsolete">取消(&amp;C)</translation>
     </message>
 </context>
 <context>
