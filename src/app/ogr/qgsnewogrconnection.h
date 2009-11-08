@@ -40,9 +40,8 @@ class QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
     //! Display the context help
     void helpInfo();
   public slots:
-    void on_btnOk_clicked();
-    void on_btnCancel_clicked();
-    void on_btnHelp_clicked();
+    void accept();
+    void help();
     void on_btnConnect_clicked();
   private:
     static const int context_id = 63428984;

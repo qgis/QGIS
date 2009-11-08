@@ -34,6 +34,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
     : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonBox, SIGNAL( helpRequested() ),this,SLOT( help() ) );
   //add database drivers
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ";" );
   for ( int i = 0;i < dbDrivers.count();i++ )
@@ -105,21 +106,16 @@ void QgsNewOgrConnection::saveConnection()
   settings.setValue( baseKey + "/username", txtUsername->text() );
   settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
   settings.setValue( baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false" );
-  accept();
-}
-
-void QgsNewOgrConnection::helpInfo()
-{
-  QgsContextHelp::run( context_id );
 }
 
 /** Autoconnected SLOTS **/
-void QgsNewOgrConnection::on_btnOk_clicked()
+void QgsNewOgrConnection::accept()
 {
   saveConnection();
+  QDialog::accept();
 }
 
-void QgsNewOgrConnection::on_btnHelp_clicked()
+void QgsNewOgrConnection::help()
 {
   helpInfo();
 }
@@ -129,10 +125,11 @@ void QgsNewOgrConnection::on_btnConnect_clicked()
   testConnection();
 }
 
-void QgsNewOgrConnection::on_btnCancel_clicked()
+void QgsNewOgrConnection::helpInfo()
 {
-  reject();
+  QgsContextHelp::run( context_id );
 }
+
 /** end  Autoconnected SLOTS **/
 
 
