@@ -6890,12 +6890,12 @@ Erreurs : %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="720"/>
         <source>Add Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un morceau</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="722"/>
         <source>Add part to multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un morceau au multipolygone</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="734"/>
@@ -6905,7 +6905,7 @@ Erreurs : %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="740"/>
         <source>Click a vertex of the part to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquer un sommet du morceau pour l&apos;effacer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="756"/>
@@ -11190,29 +11190,30 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <source>Save shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer les raccourcis</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="122"/>
         <source>XML file (*.xml);; All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier XML (*.xml);; Tous les fichiers (*.*)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="84"/>
         <source>Saving shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer les raccourcis</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="85"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;enregistrer le fichier %1
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="122"/>
         <source>Load shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger les raccourcis</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="132"/>
@@ -11220,29 +11221,31 @@ L&apos;erreur est : %2</translation>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="157"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="177"/>
         <source>Loading shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement des raccourcis</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="133"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier %1
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="147"/>
         <source>Parse error at line %1, column %2:
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;analyse à la ligne %1, colonne %2
+%3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="158"/>
         <source>The file is not an shortcuts exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier n&apos;est pas un fichier d&apos;échange de raccourcis.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="178"/>
         <source>The file contains shortcuts created with different locale, so you can&apos;t use it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier contient des raccourcis créés dans une langue différente, vous ne pouvez donc pas l&apos;utiliser.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="242"/>
@@ -11303,12 +11306,12 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="82"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="92"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer</translation>
     </message>
 </context>
 <context>
@@ -22324,7 +22327,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/app/qgspastetransformations.cpp" line="36"/>
         <source>&amp;Add New Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ajouter un nouveau transfert</translation>
     </message>
 </context>
 <context>
