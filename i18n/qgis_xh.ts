@@ -2550,14 +2550,6 @@ Please contact the developers.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Add Island</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add Island to multipolygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Simplify Feature</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3708,6 +3700,22 @@ Errors: %2
     </message>
     <message>
         <source>The entered composer id &apos;%1&apos; already exists. Please enter a different id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Part</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add part to multipolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click a vertex of the ring to delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click a vertex of the part to delete</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5569,6 +5577,57 @@ Error was:%2</source>
     </message>
     <message>
         <source>Set default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XML file (*.xml);; All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse error at line %1, column %2:
+%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file is not an shortcuts exchange file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file contains shortcuts created with different locale, so you can&apos;t use it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11714,6 +11773,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPasteTransformations</name>
+    <message>
+        <source>&amp;Add New Transfer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPasteTransformationsBase</name>
     <message>
         <source>Paste Transformations</source>
@@ -11729,26 +11795,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Destination</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add New Transfer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

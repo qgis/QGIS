@@ -5418,11 +5418,11 @@ Compiled against Qt </source>
     </message>
     <message>
         <source>Add Island</source>
-        <translation>Thêm Đảo</translation>
+        <translation type="obsolete">Thêm Đảo</translation>
     </message>
     <message>
         <source>Add Island to multipolygon</source>
-        <translation>Thêm đảo và vùng đa (multipolygon)</translation>
+        <translation type="obsolete">Thêm đảo và vùng đa (multipolygon)</translation>
     </message>
     <message>
         <source>Toolbar Visibility...</source>
@@ -6399,6 +6399,22 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
     </message>
     <message>
         <source>The entered composer id &apos;%1&apos; already exists. Please enter a different id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Part</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add part to multipolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click a vertex of the ring to delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click a vertex of the part to delete</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10221,6 +10237,57 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     </message>
     <message>
         <source>Set default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XML file (*.xml);; All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse error at line %1, column %2:
+%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file is not an shortcuts exchange file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file contains shortcuts created with different locale, so you can&apos;t use it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20502,6 +20569,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPasteTransformations</name>
+    <message>
+        <source>&amp;Add New Transfer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPasteTransformationsBase</name>
     <message>
         <source>Paste Transformations</source>
@@ -20521,23 +20595,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation>&amp;Trợ giúp</translation>
+        <translation type="obsolete">&amp;Trợ giúp</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation>phím F1</translation>
+        <translation type="obsolete">phím F1</translation>
     </message>
     <message>
         <source>Add New Transfer</source>
-        <translation>Thêm phép chuyển đổi mới</translation>
+        <translation type="obsolete">Thêm phép chuyển đổi mới</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation>Đồ&amp;ng ý</translation>
+        <translation type="obsolete">Đồ&amp;ng ý</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation>&amp;Hủy</translation>
+        <translation type="obsolete">&amp;Hủy</translation>
     </message>
 </context>
 <context>

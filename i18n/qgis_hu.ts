@@ -4924,14 +4924,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Gyűrű hozzáadás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="720"/>
         <source>Add Island</source>
-        <translation>Sziget hozzáadás</translation>
+        <translation type="obsolete">Sziget hozzáadás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="722"/>
         <source>Add Island to multipolygon</source>
-        <translation>Sziget hozzáadása összetett felülethez</translation>
+        <translation type="obsolete">Sziget hozzáadása összetett felülethez</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="636"/>
@@ -6132,6 +6130,26 @@ Vedd fel a kapcsolatot a fejlesztőkkel.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="720"/>
+        <source>Add Part</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="722"/>
+        <source>Add part to multipolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="734"/>
+        <source>Click a vertex of the ring to delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="740"/>
+        <source>Click a vertex of the part to delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/app/qgisapp.cpp" line="756"/>
         <location filename="../src/app/qgisapp.cpp" line="758"/>
         <source>Rotate Point Symbols</source>
@@ -6708,13 +6726,11 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="732"/>
-        <location filename="../src/app/qgisapp.cpp" line="734"/>
         <source>Delete Ring</source>
         <translation>Gyűrű törlés</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="738"/>
-        <location filename="../src/app/qgisapp.cpp" line="740"/>
         <source>Delete Part</source>
         <translation>Rész törlés</translation>
     </message>
@@ -7452,60 +7468,60 @@ p, li { white-space: pre-wrap; }(new line)
         <translation>Attribútum tábla - %1</translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="429"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="430"/>
         <source>Search string parsing error</source>
         <translation>Keresési minta hibás</translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="436"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="437"/>
         <source>Search results</source>
         <translation>Keresés eredmények</translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="436"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="437"/>
         <source>You&apos;ve supplied an empty search string.</source>
         <translation>Üres keresési mintát adtál meg.</translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="476"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="477"/>
         <source>Error during search</source>
         <translation>Hiba a keresés közben</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="489"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="490"/>
         <source>Found %d matching features.</source>
         <translation>
             <numerusform>%d egyez elemet találtam.</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="491"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="492"/>
         <source>No matching features found.</source>
         <translation>Nem találtam megfelelő elemet.</translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="581"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="582"/>
         <source>Attribute added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="588"/>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="629"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="589"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="630"/>
         <source>Attribute Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="588"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="589"/>
         <source>The attribute could not be added to the layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="612"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="613"/>
         <source>Deleted attribute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="629"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="630"/>
         <source>The attribute(s) could not be deleted</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8093,7 +8109,7 @@ Error was:%2</source>
         <translation type="obsolete">QGIS - nyomtatás vezérlő</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="199"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="202"/>
         <source>Map 1</source>
         <translation>1. Térkép</translation>
     </message>
@@ -8138,7 +8154,7 @@ Error was:%2</source>
         <translation type="obsolete">A kiválasztott papírméret nem egyezik az összeállítás méretével</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="554"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="557"/>
         <source>Big image</source>
         <translation>Nagy kép</translation>
     </message>
@@ -8163,13 +8179,13 @@ Error was:%2</source>
         <translation type="obsolete">Válassz egy fájlnevet a kép elmentéséhez</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="683"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="686"/>
         <source>SVG warning</source>
         <translation>SVG figyelmeztetés</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="684"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1437"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="687"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1440"/>
         <source>Don&apos;t show this message again</source>
         <translation>Ne mutasd többé ezt az üzenetet</translation>
     </message>
@@ -8182,7 +8198,7 @@ Error was:%2</source>
         <translation type="obsolete">Válassz egy fájlnevet a térkép másként mentéséhez</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="706"/>
         <source>SVG Format</source>
         <translation>SVG formátum</translation>
     </message>
@@ -8233,48 +8249,48 @@ Error was:%2</source>
         <translation type="obsolete">Töröl</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="136"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="139"/>
         <source>View</source>
         <translation>Nézet</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="143"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="146"/>
         <source>Layout</source>
         <translation>Nyomtatási kép</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="446"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="449"/>
         <source>PDF Format</source>
         <translation>PDF formátum</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="607"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="610"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Válassz egy fájlnevet a térkép képként mentéséhez</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="445"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="448"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="705"/>
         <source>Choose a file name to save the map as</source>
         <translation>Válassz egy fájlnevet a térkép másként mentéséhez</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1435"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1438"/>
         <source>Project contains WMS layers</source>
         <translation>A projekt WMS rétegeket tartalmaz</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1436"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1439"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>Néhány WMS szerver (pl. az UMN MapServer) korlátozza a WIDTH és HEIGHT értékét. Ilyen szerverekről nyomtatott réteg esetén előfordulhat, hogy meghaladjuk ezt a korlátot. Ebben az esetben a WMS rétegek nem nyomtatjuk ki</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="688"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="691"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
         <translation>Az SVG exporttal a QGIS-ben számos probléma van a hibák miatt</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="583"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="586"/>
         <source>%1 format (*.%2 *.%3)</source>
         <translation>%1 formátum (*.%2 *.%3)</translation>
     </message>
@@ -8283,63 +8299,63 @@ Error was:%2</source>
         <translation type="obsolete">a Qt4 svg kódban. Például a szövegek nem jelennek meg az SVG fájlban és problémák vannak a befoglaló téglalapra vágással és más elemekkel mint a jelkulcs vagy lépték.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="690"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="693"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>befoglaló téglalap</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="555"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="558"/>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
         <translation>A %1 x %1 kép létrehozása kb %3 MB memóriát igényel</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="304"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="307"/>
         <source>Remove composer?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="304"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="307"/>
         <source>Do you really want to remove the composer instance &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="693"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="696"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>Ha vektoros outputra van szükséged és az SVG eredmény nem kielégítő, akkor javasoljuk a PostScript nyomtatás kipróbálását.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="797"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="800"/>
         <source>save template</source>
         <translation>sablon mentés</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="823"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="826"/>
         <source>Save error</source>
         <translation>Mentési hiba</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="823"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="826"/>
         <source>Error, could not save file</source>
         <translation>Hiba, nem sikerült a fájlt menteni</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="831"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="834"/>
         <source>Load template</source>
         <translation>Sablon betöltés</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="844"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="851"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="847"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="854"/>
         <source>Read error</source>
         <translation>Olvasási hiba</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="844"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="847"/>
         <source>Error, could not read file</source>
         <translation>Hiba, nem tudom olvasni a fájlt</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="851"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="854"/>
         <source>Content of template file is not valid</source>
         <translation>A sablon fájl tartalma hibás</translation>
     </message>
@@ -10167,33 +10183,90 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
 <context>
     <name>QgsConfigureShortcutsDialog</name>
     <message>
-        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="110"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
+        <source>Save shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="122"/>
+        <source>XML file (*.xml);; All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="84"/>
+        <source>Saving shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="85"/>
+        <source>Cannot write file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="122"/>
+        <source>Load shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="132"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="146"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="157"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="177"/>
+        <source>Loading shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="133"/>
+        <source>Cannot read file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="147"/>
+        <source>Parse error at line %1, column %2:
+%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="158"/>
+        <source>The file is not an shortcuts exchange file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="178"/>
+        <source>The file contains shortcuts created with different locale, so you can&apos;t use it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="242"/>
         <source>None</source>
         <translation>Semmi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="111"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="243"/>
         <source>Set default (%1)</source>
         <translation>Alapértelmezés beállítás (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="205"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="336"/>
         <source>Input: </source>
         <translation>Input: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="216"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="347"/>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <source>Change</source>
         <translation>Módosítás</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="236"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="367"/>
         <source>Shortcut conflict</source>
         <translation>Gyorsbillentyű ütközés</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="237"/>
+        <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="368"/>
         <source>This shortcut is already assigned to action %1. Reassign?</source>
         <translation>Ezt a gyorsbillyentyűt hozzárendelték már a(z) %1 művelethez. Felülbíráljam?</translation>
     </message>
@@ -10213,14 +10286,24 @@ A legjobb, ha nem használod a térkép összeállítót a QGIS újraindításá
         <translation>Gyorsbillentyű</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="55"/>
+        <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="58"/>
         <source>Set none</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="62"/>
+        <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="68"/>
         <source>Set default</source>
         <translation>Alapértelmezés beállítás</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="82"/>
+        <source>Load...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="92"/>
+        <source>Save...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19858,100 +19941,100 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">törésponthoz és szakaszhoz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="263"/>
-        <location filename="../src/app/qgsoptions.cpp" line="270"/>
-        <location filename="../src/app/qgsoptions.cpp" line="515"/>
+        <location filename="../src/app/qgsoptions.cpp" line="261"/>
+        <location filename="../src/app/qgsoptions.cpp" line="268"/>
+        <location filename="../src/app/qgsoptions.cpp" line="513"/>
         <source>Semi transparent circle</source>
         <translation>Félig átlátszó kör</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="264"/>
-        <location filename="../src/app/qgsoptions.cpp" line="274"/>
-        <location filename="../src/app/qgsoptions.cpp" line="519"/>
+        <location filename="../src/app/qgsoptions.cpp" line="262"/>
+        <location filename="../src/app/qgsoptions.cpp" line="272"/>
+        <location filename="../src/app/qgsoptions.cpp" line="517"/>
         <source>Cross</source>
         <translation>Kereszt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="213"/>
+        <location filename="../src/app/qgsoptions.cpp" line="211"/>
         <source>Detected active locale on your system: %1</source>
         <translation>A rendszer detektált helyi beállítása: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="53"/>
+        <location filename="../src/app/qgsoptions.cpp" line="51"/>
         <source>Current layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="54"/>
+        <location filename="../src/app/qgsoptions.cpp" line="52"/>
         <source>Top down, stop at first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="55"/>
+        <location filename="../src/app/qgsoptions.cpp" line="53"/>
         <source>Top down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="233"/>
+        <location filename="../src/app/qgsoptions.cpp" line="231"/>
         <source>To vertex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="234"/>
+        <location filename="../src/app/qgsoptions.cpp" line="232"/>
         <source>To segment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="235"/>
+        <location filename="../src/app/qgsoptions.cpp" line="233"/>
         <source>To vertex and segment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="265"/>
-        <location filename="../src/app/qgsoptions.cpp" line="278"/>
-        <location filename="../src/app/qgsoptions.cpp" line="523"/>
+        <location filename="../src/app/qgsoptions.cpp" line="263"/>
+        <location filename="../src/app/qgsoptions.cpp" line="276"/>
+        <location filename="../src/app/qgsoptions.cpp" line="521"/>
         <source>None</source>
         <translation>Semmi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="720"/>
+        <location filename="../src/app/qgsoptions.cpp" line="718"/>
         <source>Choose a directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="243"/>
-        <location filename="../src/app/qgsoptions.cpp" line="252"/>
+        <location filename="../src/app/qgsoptions.cpp" line="241"/>
+        <location filename="../src/app/qgsoptions.cpp" line="250"/>
         <source>map units</source>
         <translation>térkép egységek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="247"/>
-        <location filename="../src/app/qgsoptions.cpp" line="256"/>
+        <location filename="../src/app/qgsoptions.cpp" line="245"/>
+        <location filename="../src/app/qgsoptions.cpp" line="254"/>
         <source>pixels</source>
         <translation>pixelek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="289"/>
+        <location filename="../src/app/qgsoptions.cpp" line="287"/>
         <source>Central point (fastest)</source>
         <translation>Centrális (leggyorsabb)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="290"/>
+        <location filename="../src/app/qgsoptions.cpp" line="288"/>
         <source>Chain (fast)</source>
         <translation>Lánc (gyors)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="291"/>
+        <location filename="../src/app/qgsoptions.cpp" line="289"/>
         <source>Popmusic tabu chain (slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="292"/>
+        <location filename="../src/app/qgsoptions.cpp" line="290"/>
         <source>Popmusic tabu (slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="293"/>
+        <location filename="../src/app/qgsoptions.cpp" line="291"/>
         <source>Popmusic chain (very slow)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19963,7 +20046,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">QGIS beállítások</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="40"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="30"/>
         <source>&amp;General</source>
         <translation>&amp;Általános</translation>
     </message>
@@ -19988,7 +20071,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Indító kép</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="217"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="195"/>
         <source>Hide splash screen at startup</source>
         <translation>Indító kép elrejtése</translation>
     </message>
@@ -20033,7 +20116,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">elemek</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="278"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="268"/>
         <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
         <translation>A térkép megjelenítést ennyi elem beolvasása után frissítem (rajzolom)</translation>
     </message>
@@ -20050,7 +20133,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Kezdeti láthatóság</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="261"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="251"/>
         <source>By default new la&amp;yers added to the map should be displayed</source>
         <translation>Alapértelmezés szerint a térképhez adott &amp;rétegek megjelennek</translation>
     </message>
@@ -20059,17 +20142,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Megjelenítés</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="317"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="307"/>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
         <translation>A vonalak kevésbé töredezett megjelenítése, a rajzolási sebesség lassulása árán</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="324"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="314"/>
         <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="327"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="317"/>
         <source>Fix problems with incorrectly filled polygons</source>
         <translation>A hibásan kitöltött felületek probléma javítása</translation>
     </message>
@@ -20078,27 +20161,27 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Folyamatos újrarajzolás a térkép vagy jelkulcs módosításakor</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="384"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="374"/>
         <source>&amp;Map tools</source>
         <translation>&amp;Térkép eszközök</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="393"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="383"/>
         <source>Panning and zooming</source>
         <translation>Eltolás és nagyítás</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="403"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="393"/>
         <source>Zoom</source>
         <translation>Nagyít</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="408"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="398"/>
         <source>Zoom and recenter</source>
         <translation>Nagyítás és középre igazítás</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="418"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="408"/>
         <source>Nothing</source>
         <translation>Semmi</translation>
     </message>
@@ -20111,7 +20194,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Egérgörgő művelet:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="456"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="526"/>
         <source>Measure tool</source>
         <translation>Mérőeszköz</translation>
     </message>
@@ -20136,17 +20219,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Keresési sugár az elemek azonosításához és a térkép tippek megjelenítéséhez</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="567"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="481"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="665"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="667"/>
         <source>Digitizing</source>
         <translation>Digitalizálás</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="671"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="673"/>
         <source>Rubberband</source>
         <translation>Gumiszalag</translation>
     </message>
@@ -20155,7 +20238,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Vonalvastagság:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="687"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="689"/>
         <source>Line width in pixels</source>
         <translation>Vonalvastagság képpontokban</translation>
     </message>
@@ -20164,7 +20247,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Vonal szín:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="723"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="725"/>
         <source>Snapping</source>
         <translation>Tárgyraszter</translation>
     </message>
@@ -20177,7 +20260,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Vetület</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1005"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1007"/>
         <source>Select Global Default ...</source>
         <translation>Globális alapértelmezés kiválasztás ...</translation>
     </message>
@@ -20198,7 +20281,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">A lent meg&amp;jelenõ globális alapértelmezett vetületet használom.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1049"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1051"/>
         <source>Locale</source>
         <translation>Helyi beállítás</translation>
     </message>
@@ -20207,7 +20290,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Helyi beállítás felülírása</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1064"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1066"/>
         <source>Locale to use instead</source>
         <translation>Használandó helyi beállítás</translation>
     </message>
@@ -20216,17 +20299,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Megjegyzés: a helyi beállítás engedélyezése/módosítása az alkalmazás újraindítását igényli.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1103"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1105"/>
         <source>Additional Info</source>
         <translation>További információ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1109"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1111"/>
         <source>Detected active locale on your system:</source>
         <translation>A rendszereden az aktív helyi beállítás:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="413"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="403"/>
         <source>Zoom to mouse cursor</source>
         <translation>Nagyítás az egér kurzorhoz</translation>
     </message>
@@ -20236,177 +20319,177 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="46"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="36"/>
         <source>Project files</source>
         <translation>Projekt fájl</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="55"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="45"/>
         <source>Prompt to save project changes when required</source>
         <translation>Kérdés a projekt módosulások mentésére, amikor szükséges</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="62"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="52"/>
         <source>Warn when opening a project file saved with an older version of QGIS</source>
         <translation>Figyelmeztetés, ha a projekt fájlt egy korábbi QGIS verzióval mentették</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="72"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="62"/>
         <source>Default Map Appearance (overridden by project properties)</source>
         <translation>Alapértelmezett térkép megjelenés (projekt tulajdonságok felülírják)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="78"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="68"/>
         <source>Selection color</source>
         <translation>Szelekció szín</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="101"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="91"/>
         <source>Background color</source>
         <translation>Háttér szín</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="153"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="143"/>
         <source>&amp;Application</source>
         <translation>&amp;Alkalmazás</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="165"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="155"/>
         <source>Icon theme</source>
         <translation>Ikon téma</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="203"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="181"/>
         <source>Capitalise layer names in legend</source>
         <translation>Nagybetűs rétegnevek a jelmagyarázatban</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="210"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="188"/>
         <source>Display classification attribute names in legend</source>
         <translation>Osztályozás attribútum neve a jelmagyarázatban</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="224"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="202"/>
         <source>Open identify results in a dock window (QGIS restart required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="238"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="216"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="249"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="239"/>
         <source>&amp;Rendering and SVG</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="255"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="245"/>
         <source>Rendering behavior</source>
         <translation>Rajzolási viselkedés</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="268"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="258"/>
         <source>Number of features to draw before updating the display</source>
         <translation>Rajzolt elemek száma mielőtt a képernyőt frissítem</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="291"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="281"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</source>
         <translation>Megjegyzés&lt;b&gt;:&lt;/b&gt; Használj nullát az összes elem megrajzolása utáni frissítéshez</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="298"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="288"/>
         <source>Use render caching where possible to speed up redraws</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="308"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="298"/>
         <source>Rendering quality</source>
         <translation>Megjelenítési minőség</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="337"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="327"/>
         <source>SVG paths</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="343"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="333"/>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="426"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="416"/>
         <source>Zoom factor</source>
         <translation>Nagyítási tényező</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="433"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="426"/>
         <source>Mouse wheel action</source>
         <translation>Egér görgő művelet</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="494"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="564"/>
         <source>Rubberband color</source>
         <translation>Gumiszalag szín</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="504"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="574"/>
         <source>Ellipsoid for distance calculations</source>
         <translation>Ellipszoid a távolság számításhoz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="514"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="584"/>
         <source>Preferred measurements units</source>
         <translation>Preferált mérés egységek</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="521"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="594"/>
         <source>Meters</source>
         <translation>Méter</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="528"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="601"/>
         <source>Feet</source>
         <translation>Láb</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="538"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="452"/>
         <source>Identify</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="547"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="461"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</source>
         <translation>Megjegyzés&lt;b&gt;:&lt;/b&gt; Add meg a keresési sugarat a térkép szélesség százalékában</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="557"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="471"/>
         <source>Search radius for identifying features and displaying map tips</source>
         <translation>Keresési sugár elemek azonosításához és térkép tippek megjelenítéséhez</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="586"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="500"/>
         <source>Mode</source>
         <translation type="unfinished">Mód</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="677"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="679"/>
         <source>Line width</source>
         <translation>Vonalvastagság</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="697"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="699"/>
         <source>Line colour</source>
         <translation>Vonalszín</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="729"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="731"/>
         <source>Default snap mode</source>
         <translation>Alapértelmezett tárgyraszter mód</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1242"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1250"/>
         <source>Exclude URLs (starting with):</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20419,17 +20502,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Keresési sugár töréspont szerkesztéshez réteg egységekben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="865"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="867"/>
         <source>Vertex markers</source>
         <translation>Töréspont jelek</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="871"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="873"/>
         <source>Show markers only for selected features</source>
         <translation>Markerek megjelenítése csak a szelektált elemekhez</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="878"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="880"/>
         <source>Marker style</source>
         <translation>Jel stílus</translation>
     </message>
@@ -20446,12 +20529,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Az alább meg&amp;jelenített globális alapértelmezett vetületet használom</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1055"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1057"/>
         <source>Override system locale</source>
         <translation>Helyi beállítás felülbírálása</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1077"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1079"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
         <translation>Megjegyzés: a helyi beállítás engedélyezése/módosítása az alkalmazás újraindítását igényli.</translation>
     </message>
@@ -20460,43 +20543,43 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Proxy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1144"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1149"/>
         <source>Use proxy for web access</source>
         <translation>Proxy használata a web eléréséhez</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1156"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1161"/>
         <source>Host</source>
         <translation>Gép</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1169"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1174"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1182"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1187"/>
         <source>User</source>
         <translation>Felhasználó</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1192"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1209"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1197"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1214"/>
         <source>Leave this blank if no proxy username / password are required</source>
         <translation>Hagyd üresen, ha proxy felhasználó és jelszó nem szükséges</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1199"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1204"/>
         <source>Password</source>
         <translation>Jelszó</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="231"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="209"/>
         <source>Open attribute table in a dock window</source>
         <translation>Attribútum tábla nyitás dokkolt ablakban</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="983"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="985"/>
         <source>CRS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20505,62 +20588,62 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Amikor koordináta-rendszer (CSR) nélküli réteget töltünk be</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1024"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1026"/>
         <source>Prompt for CRS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1031"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1033"/>
         <source>Project wide default CRS will be used</source>
         <translation>A projektre érvényes vetületett használom</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1038"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1040"/>
         <source>Global default CRS displa&amp;yed below will be used</source>
         <translation>Az alább meg&amp;jelenített globális alapértelmezett vetületet használom</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="950"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="952"/>
         <source>Enter attribute values</source>
         <translation>Add meg az attribútum értékeket</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="762"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="764"/>
         <source>Default snapping tolerance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="795"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="797"/>
         <source>Search radius for vertex edits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="924"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="926"/>
         <source>Marker size</source>
         <translation type="unfinished">Jelméret</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="956"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="958"/>
         <source>Suppress attributes pop-up windows after each created feature</source>
         <translation>Felbukkanó ablak tiltása az egyes elemek létrehozása után</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1015"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1017"/>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1120"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1122"/>
         <source>Network and Proxy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1128"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1130"/>
         <source>Timeout for network requests (ms):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1219"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1224"/>
         <source>Proxy type</source>
         <translation>Proxy típus</translation>
     </message>
@@ -20569,41 +20652,41 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Kivéve ezek az URL-k:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="363"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1249"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="353"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1260"/>
         <source>Add</source>
         <translation>Hozzáad</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="370"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1256"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="360"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1267"/>
         <source>Remove</source>
         <translation>Töröl</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="610"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="612"/>
         <source>Overlay</source>
         <translation>Átfedés</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="616"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="618"/>
         <source>Position</source>
         <translation>Pozíció</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="622"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="624"/>
         <source>Placement algorithm:</source>
         <translation>Elhelyezési algoritmus</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="835"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="849"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="837"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="851"/>
         <source>map units</source>
         <translation>térkép egységek</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="840"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="854"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="842"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="856"/>
         <source>pixels</source>
         <translation>pixelek</translation>
     </message>
@@ -20660,51 +20743,50 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPasteTransformations</name>
+    <message>
+        <location filename="../src/app/qgspastetransformations.cpp" line="36"/>
+        <source>&amp;Add New Transfer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPasteTransformationsBase</name>
     <message>
-        <location filename="../src/ui/qgspastetransformationsbase.ui" line="16"/>
+        <location filename="../src/ui/qgspastetransformationsbase.ui" line="17"/>
         <source>Paste Transformations</source>
         <translation>Transzformációk beillesztése</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspastetransformationsbase.ui" line="39"/>
+        <location filename="../src/ui/qgspastetransformationsbase.ui" line="38"/>
         <source>&lt;b&gt;Note: This function is not useful yet!&lt;/b&gt;</source>
         <translation>&lt;b&gt;Megjegyzés: Ez a funkció nem működik még!&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspastetransformationsbase.ui" line="62"/>
+        <location filename="../src/ui/qgspastetransformationsbase.ui" line="59"/>
         <source>Source</source>
         <translation>Forrás</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspastetransformationsbase.ui" line="83"/>
+        <location filename="../src/ui/qgspastetransformationsbase.ui" line="78"/>
         <source>Destination</source>
         <translation>Cél</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspastetransformationsbase.ui" line="122"/>
         <source>&amp;Help</source>
-        <translation>&amp;Súgó</translation>
+        <translation type="obsolete">&amp;Súgó</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspastetransformationsbase.ui" line="125"/>
         <source>F1</source>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspastetransformationsbase.ui" line="151"/>
-        <source>Add New Transfer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgspastetransformationsbase.ui" line="158"/>
         <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspastetransformationsbase.ui" line="174"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;Mégsem</translation>
+        <translation type="obsolete">&amp;Mégsem</translation>
     </message>
 </context>
 <context>
