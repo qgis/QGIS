@@ -49,6 +49,9 @@ class QgsShortcutsManager
     //! return action which is associated for the shortcut, NULL if no action is associated
     QAction* actionForShortcut( QKeySequence s );
 
+    // return action by it's name. NULL if nothing found
+    QAction* actionByName( QString name );
+
   protected:
     QgsShortcutsManager();
 
