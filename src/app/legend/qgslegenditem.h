@@ -66,7 +66,6 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
 
     virtual bool isLeafNode() = 0;
     virtual LEGEND_ITEM_TYPE type() const {return mType;}
-    virtual void addItem( QgsLegendItem* ) {}
     /**Returns the type of action that will be done if a drag, originating at a certain
      item type, will be released at this item*/
     virtual DRAG_ACTION accept( LEGEND_ITEM_TYPE type ) = 0;

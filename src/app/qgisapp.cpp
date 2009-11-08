@@ -106,7 +106,6 @@
 #include "qgshelpviewer.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslegend.h"
-#include "qgslegendlayerfile.h"
 #include "qgslegendlayer.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -4050,12 +4049,12 @@ void QgisApp::attributeTable()
 
 void QgisApp::saveAsShapefile()
 {
-  mMapLegend->currentLayerFile()->saveAsShapefile();
+  mMapLegend->currentLegendLayer()->saveAsShapefile();
 }
 
 void QgisApp::saveSelectionAsShapefile()
 {
-  mMapLegend->currentLayerFile()->saveSelectionAsShapefile();
+  mMapLegend->currentLegendLayer()->saveSelectionAsShapefile();
 }
 
 void QgisApp::layerProperties()
@@ -4576,8 +4575,8 @@ void QgisApp::toggleEditing()
   if ( mMapCanvas && mMapCanvas->isDrawing() )
     return;
 
-  QgsLegendLayerFile* currentLayerFile = mMapLegend->currentLayerFile();
-  if ( currentLayerFile )
+  QgsLegendLayer* currentLayer = mMapLegend->currentLegendLayer();
+  if ( currentLayer )
   {
     toggleEditing( mMapLegend->currentLayer() );
   }
