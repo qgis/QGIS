@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>285</width>
-    <height>328</height>
+    <width>706</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -237,7 +237,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>246</x>
-     <y>309</y>
+     <y>531</y>
     </hint>
     <hint type="destinationlabel">
      <x>283</x>
@@ -253,7 +253,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>155</x>
-     <y>318</y>
+     <y>531</y>
     </hint>
     <hint type="destinationlabel">
      <x>283</x>
