@@ -47,11 +47,11 @@ class VisualDialog( QDialog, Ui_Dialog ):
       # add all fields in combobox because now we can work with text fields too
       for i in changedField:
         if self.myFunction == 3:
-          if changedField[i].type() == QVariant.Int or changedField[i].type() == QVariant.Double:
+        #  if changedField[i].type() == QVariant.Int or changedField[i].type() == QVariant.Double:
             self.cmbField.addItem( unicode( changedField[i].name() ) )
         else:
           self.cmbField.addItem( unicode( changedField[i].name() ) )
-        self.cmbField.addItem( unicode( changedField[i].name() ) )
+         # self.cmbField.addItem( unicode( changedField[i].name() ) )
         
   def accept( self ):
     if self.inShape.currentText() == "":
@@ -246,19 +246,22 @@ class visualThread( QThread ):
       if nVal > 0.00:
         meanVal = sumVal / nVal
       lstStats = []
-      lstStats.append( QCoreApplication.translate( "statResult", "Max. len.      : " ) + unicode( maxVal ) )
-      lstStats.append( QCoreApplication.translate( "statResult", "Min. len.       : " ) + unicode( minVal ) )
-      lstStats.append( QCoreApplication.translate( "statResult", "Mean. len     : " ) + unicode( meanVal ) )
-      lstStats.append( QCoreApplication.translate( "statResult", "Filled             : " ) + unicode( fillVal ) )
-      lstStats.append( QCoreApplication.translate( "statResult", "Empty           : " ) + unicode( emptyVal ) )
-      lstStats.append( QCoreApplication.translate( "statResult", "N                   : " ) + unicode( nVal ) )
+      lstStats.append( self.tr( "Max. len: " ) + "         " + unicode( maxVal ) )
+      lstStats.append( self.tr( "Min. len: " ) + "         " + unicode( minVal ) )
+      lstStats.append( self.tr( "Mean. len: " ) + "         " + unicode( meanVal ) )
+      lstStats.append( self.tr( "Filled: " ) + "         " + unicode( fillVal ) )
+      lstStats.append( self.tr( "Empty: " ) + "         " + unicode( emptyVal ) )
+      lstStats.append( self.tr( "N: " ) + "         " + unicode( nVal ) )
       return ( lstStats, [] )
     else: # numeric field
       stdVal = 0
       cvVal = 0
+      rangeVal = 0
+      medianVal = 0
       if self.mySelection: # only selected features
         selection = vlayer.selectedFeatures()
         nFeat = vlayer.selectedFeatureCount()
+	uniqueVal = utils.getUniqueValuesCount( vlayer, index, True )
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
@@ -277,6 +280,7 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       else: # there is no selection, process the whole layer
         nFeat = vprovider.featureCount()
+	uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, False )
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         while vprovider.nextFeature( feat ):
@@ -294,6 +298,7 @@ class visualThread( QThread ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       nVal= float( len( values ) )
+      rangeVal = maxVal - minVal
       if nVal > 0.00:
         meanVal = sumVal / nVal
         if meanVal != 0.00:
@@ -301,14 +306,24 @@ class visualThread( QThread ):
             stdVal += ( ( val - meanVal ) * ( val - meanVal ) )
           stdVal = math.sqrt( stdVal / nVal )
           cvVal = stdVal / meanVal
+      if nVal > 1:
+	  lstVal = values
+	  lstVal.sort()
+	  if ( nVal % 2 ) == 0:
+	    medianVal = 0.5 * ( lstVal[ int( ( nVal - 1 ) / 2 ) ] + lstVal[ int( ( nVal ) / 2 ) ] )
+	  else:
+	    medianVal = lstVal[ ( nVal + 1 ) / 2 ]
       lstStats = []
-      lstStats.append( "Mean    : " + unicode( meanVal ) )
-      lstStats.append( "StdDev : " + unicode( stdVal ) )
-      lstStats.append( "Sum     : " + unicode( sumVal) )
-      lstStats.append( "Min     : " + unicode( minVal ) )
-      lstStats.append( "Max     : " + unicode( maxVal ) )
-      lstStats.append( "N         : " + unicode( nVal ) )
-      lstStats.append( "CV       : " + unicode( cvVal ) )
+      lstStats.append( self.tr( "Mean: " ) + "         " + unicode( meanVal ) )
+      lstStats.append( self.tr( "StdDev: " ) + "         " + unicode( stdVal ) )
+      lstStats.append( self.tr( "Sum: " ) + "         " + unicode( sumVal) )
+      lstStats.append( self.tr( "Min: " ) + "         " + unicode( minVal ) )
+      lstStats.append( self.tr( "Max: " ) + "         " + unicode( maxVal ) )
+      lstStats.append( self.tr( "N: " ) + "         " + unicode( nVal ) )
+      lstStats.append( self.tr( "CV: " ) + "         " + unicode( cvVal ) )
+      lstStats.append( self.tr( "Number of unique values: " ) + "         " + unicode( uniqueVal ) )
+      lstStats.append( self.tr( "Range: " ) + "         " + unicode( rangeVal ) )
+      lstStats.append( self.tr( "Median: " ) + "         " + unicode( medianVal ) )
       return ( lstStats, [] )
 
   def nearest_neighbour_analysis( self, vlayer ):
