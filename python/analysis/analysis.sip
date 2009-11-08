@@ -8,4 +8,5 @@
 %Import core/core.sip
 
 %Include qgsgeometryanalyzer.sip
+%Include qgsoverlayanalyzer.sip
 

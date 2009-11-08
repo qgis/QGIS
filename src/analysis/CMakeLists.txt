@@ -31,6 +31,7 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgstotalcurvaturefilter.cpp
   vector/qgsgeometryanalyzer.cpp
   vector/qgszonalstatistics.cpp
+  vector/qgsoverlayanalyzer.cpp
 )
 
 SET(QGIS_ANALYSIS_MOC_HDRS
@@ -43,6 +44,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/renderer
+  ${CMAKE_CURRENT_SOURCE_DIR}/../core/spatialindex
   interpolation
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
@@ -99,7 +101,7 @@ INSTALL(TARGETS qgis_analysis
 
 # Added by Tim to install headers
 
-SET(QGIS_ANALYSIS_HDRS vector/qgsgeometryanalyzer.h vector/qgszonalstatistics.h
+SET(QGIS_ANALYSIS_HDRS vector/qgsgeometryanalyzer.h vector/qgszonalstatistics.h vector/qgsgeometryanalyzer.h
 )
 
 INSTALL(CODE "MESSAGE(\"Installing ANALYSIS headers...\")")
