@@ -285,7 +285,7 @@
    <item row="6" column="0" colspan="3">
     <widget class="QTextEdit" name="mExpressionTextEdit"/>
    </item>
-   <item row="7" column="1">
+   <item row="7" column="2">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -297,6 +297,40 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mUpdateExistingFieldCheckBox</tabstop>
+  <tabstop>mExistingFieldComboBox</tabstop>
+  <tabstop>mOnlyUpdateSelectedCheckBox</tabstop>
+  <tabstop>mOutputFieldNameLineEdit</tabstop>
+  <tabstop>mOutputFieldTypeComboBox</tabstop>
+  <tabstop>mOuputFieldWidthSpinBox</tabstop>
+  <tabstop>mOutputFieldPrecisionSpinBox</tabstop>
+  <tabstop>mFieldsListWidget</tabstop>
+  <tabstop>mValueListWidget</tabstop>
+  <tabstop>mSamplePushButton</tabstop>
+  <tabstop>mAllPushButton</tabstop>
+  <tabstop>mPlusPushButton</tabstop>
+  <tabstop>mMultiplyPushButton</tabstop>
+  <tabstop>mSqrtButton</tabstop>
+  <tabstop>mSinButton</tabstop>
+  <tabstop>mTanButton</tabstop>
+  <tabstop>mACosButton</tabstop>
+  <tabstop>mOpenBracketPushButton</tabstop>
+  <tabstop>mMinusPushButton</tabstop>
+  <tabstop>mDividePushButton</tabstop>
+  <tabstop>mExpButton</tabstop>
+  <tabstop>mCosButton</tabstop>
+  <tabstop>mASinButton</tabstop>
+  <tabstop>mATanButton</tabstop>
+  <tabstop>mCloseBracketPushButton</tabstop>
+  <tabstop>mToRealButton</tabstop>
+  <tabstop>mToIntButton</tabstop>
+  <tabstop>mToStringButton</tabstop>
+  <tabstop>mLengthButton</tabstop>
+  <tabstop>mAreaButton</tabstop>
+  <tabstop>mExpressionTextEdit</tabstop>
+  <tabstop>mButtonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -306,8 +340,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>321</x>
+     <y>676</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -322,8 +356,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>321</x>
+     <y>676</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

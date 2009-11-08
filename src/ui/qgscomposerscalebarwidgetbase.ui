@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>212</width>
+    <width>325</width>
     <height>537</height>
    </rect>
   </property>
@@ -19,25 +19,28 @@
   <property name="windowTitle">
    <string>Barscale Options</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout">
    <property name="margin">
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QScrollArea" name="scrollArea">
-     <property name="widgetResizable">
-      <bool>true</bool>
+    <widget class="QToolBox" name="toolBox">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
+     <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-179</y>
-        <width>189</width>
+        <y>0</y>
+        <width>307</width>
         <height>714</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout">
+      <attribute name="label">
+       <string>Scale bar</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <widget class="QLabel" name="mSegmentSizeLabel">
          <property name="text">
@@ -269,22 +272,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <tabstops>
-  <tabstop>scrollArea</tabstop>
-  <tabstop>mSegmentSizeSpinBox</tabstop>
-  <tabstop>mMapUnitsPerBarUnitSpinBox</tabstop>
-  <tabstop>mNumberOfSegmentsSpinBox</tabstop>
-  <tabstop>mSegmentsLeftSpinBox</tabstop>
-  <tabstop>mStyleComboBox</tabstop>
-  <tabstop>mMapComboBox</tabstop>
-  <tabstop>mHeightSpinBox</tabstop>
-  <tabstop>mLineWidthSpinBox</tabstop>
-  <tabstop>mLabelBarSpaceSpinBox</tabstop>
-  <tabstop>mBoxSizeSpinBox</tabstop>
-  <tabstop>mUnitLabelLineEdit</tabstop>
-  <tabstop>mFontButton</tabstop>
-  <tabstop>mColorPushButton</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

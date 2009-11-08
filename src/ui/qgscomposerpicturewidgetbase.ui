@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>347</width>
+    <width>240</width>
     <height>540</height>
    </rect>
   </property>
@@ -24,19 +24,22 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QScrollArea" name="scrollArea">
-     <property name="widgetResizable">
-      <bool>true</bool>
+    <widget class="QToolBox" name="toolBox">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
+     <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>324</width>
+        <width>226</width>
         <height>679</height>
        </rect>
       </property>
+      <attribute name="label">
+       <string>Picture options</string>
+      </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <widget class="QGroupBox" name="mSearchDirectoriesGroupBox">
@@ -102,6 +105,12 @@
           <string>Preview</string>
          </property>
          <layout class="QGridLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
            <widget class="QListWidget" name="mPreviewListWidget">
             <property name="showDropIndicator" stdset="0">
@@ -251,7 +260,7 @@
           <item row="8" column="0">
            <widget class="QCheckBox" name="mRotationFromComposerMapCheckBox">
             <property name="text">
-             <string>Take rotation from composer map</string>
+             <string>Sync from map</string>
             </property>
            </widget>
           </item>
@@ -280,7 +289,6 @@
   <tabstop>mRotationSpinBox</tabstop>
   <tabstop>mRotationFromComposerMapCheckBox</tabstop>
   <tabstop>mComposerMapComboBox</tabstop>
-  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources/>
  <connections/>

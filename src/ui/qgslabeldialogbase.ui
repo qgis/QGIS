@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsLabelDialogBase</class>
- <widget class="QWidget" name="QgsLabelDialogBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QgsLabelDialogBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,37 +10,40 @@
     <height>487</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form1</string>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>0</number>
    </property>
-   <item row="0" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
+   <item row="0" column="0" colspan="2">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QLabel" name="textLabel5" >
-       <property name="text" >
+      <widget class="QLabel" name="textLabel5">
+       <property name="text">
         <string>Field containing label</string>
+       </property>
+       <property name="buddy">
+        <cstring>cboLabelField</cstring>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cboLabelField" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+      <widget class="QComboBox" name="cboLabelField">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimumSize" >
+       <property name="minimumSize">
         <size>
          <width>0</width>
          <height>20</height>
@@ -48,21 +52,24 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="textLabel1" >
-       <property name="text" >
+      <widget class="QLabel" name="textLabel1">
+       <property name="text">
         <string>Default label</string>
+       </property>
+       <property name="buddy">
+        <cstring>leDefaultLabel</cstring>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="leDefaultLabel" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+      <widget class="QLineEdit" name="leDefaultLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>2</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimumSize" >
+       <property name="minimumSize">
         <size>
          <width>0</width>
          <height>20</height>
@@ -72,55 +79,55 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0" >
-    <widget class="QListWidget" name="listWidget" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+   <item row="1" column="0">
+    <widget class="QListWidget" name="listWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <item>
-      <property name="text" >
+      <property name="text">
        <string>General</string>
       </property>
      </item>
      <item>
-      <property name="text" >
+      <property name="text">
        <string>Buffer</string>
       </property>
      </item>
      <item>
-      <property name="text" >
+      <property name="text">
        <string>Position</string>
       </property>
      </item>
      <item>
-      <property name="text" >
+      <property name="text">
        <string>Data defined style</string>
       </property>
      </item>
      <item>
-      <property name="text" >
+      <property name="text">
        <string>Data defined alignment</string>
       </property>
      </item>
      <item>
-      <property name="text" >
+      <property name="text">
        <string>Data defined buffer</string>
       </property>
      </item>
      <item>
-      <property name="text" >
+      <property name="text">
        <string>Data defined position</string>
       </property>
      </item>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2" >
-    <widget class="QGroupBox" name="groupBox5" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+   <item row="2" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox5">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -131,16 +138,16 @@
        <height>200</height>
       </size>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Preview:</string>
      </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>11</number>
       </property>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="lblSample" >
-        <property name="text" >
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblSample">
+        <property name="text">
          <string>QGIS Rocks!</string>
         </property>
        </widget>
@@ -148,61 +155,56 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="1" >
-    <widget class="QStackedWidget" name="stackedWidget" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+   <item row="1" column="1">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="currentIndex" >
+     <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="page" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>304</width>
-        <height>399</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" >
-       <item row="0" column="0" >
-        <layout class="QGridLayout" >
-         <item row="0" column="0" >
-          <widget class="QPushButton" name="btnDefaultFont" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+     <widget class="QWidget" name="page">
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <layout class="QGridLayout">
+         <item row="0" column="0">
+          <widget class="QPushButton" name="btnDefaultFont">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>2</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>Font</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1" >
-          <widget class="QLabel" name="textLabel5_2_2_3_2" >
-           <property name="text" >
+         <item row="0" column="1">
+          <widget class="QLabel" name="textLabel5_2_2_3_2">
+           <property name="text">
             <string>Font size</string>
            </property>
-           <property name="alignment" >
+           <property name="alignment">
             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>spinFontSize</cstring>
            </property>
           </widget>
          </item>
-         <item row="0" column="2" >
-          <widget class="QDoubleSpinBox" name="spinFontSize" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <item row="0" column="2">
+          <widget class="QDoubleSpinBox" name="spinFontSize">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="minimumSize" >
+           <property name="minimumSize">
             <size>
              <width>50</width>
              <height>0</height>
@@ -212,119 +214,122 @@
             <number>6</number>
            </property>
            <property name="maximum">
-            <double>1000000</double>
+            <double>1000000.000000000000000</double>
            </property>
-           <property name="value" >
-            <number>0</number>
+           <property name="value">
+            <double>0.000000000000000</double>
            </property>
           </widget>
          </item>
-         <item row="1" column="0" >
-          <widget class="QPushButton" name="pbnDefaultFontColor" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <item row="1" column="0">
+          <widget class="QPushButton" name="pbnDefaultFontColor">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>2</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="text" >
+           <property name="text">
             <string>Color</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1" >
-          <widget class="QLabel" name="textLabel1_2_2_2_2_2" >
-           <property name="text" >
+         <item row="1" column="1">
+          <widget class="QLabel" name="textLabel1_2_2_2_2_2">
+           <property name="text">
             <string>Angle (deg)</string>
+           </property>
+           <property name="buddy">
+            <cstring>spinAngle</cstring>
            </property>
           </widget>
          </item>
-         <item row="1" column="2" >
-          <widget class="QSpinBox" name="spinAngle" >
-           <property name="suffix" >
+         <item row="1" column="2">
+          <widget class="QSpinBox" name="spinAngle">
+           <property name="suffix">
             <string>°</string>
            </property>
-           <property name="maximum" >
+           <property name="maximum">
             <number>360</number>
            </property>
-           <property name="value" >
+           <property name="value">
             <number>0</number>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="1" column="0" >
-        <widget class="QGroupBox" name="groupBox_2" >
-         <property name="title" >
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
           <string>Placement</string>
          </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
+         <layout class="QGridLayout">
+          <property name="margin">
            <number>11</number>
           </property>
-          <item row="2" column="2" >
-           <widget class="QRadioButton" name="radioBelowRight" >
-            <property name="text" >
+          <item row="2" column="2">
+           <widget class="QRadioButton" name="radioBelowRight">
+            <property name="text">
              <string>Below Right</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="2" >
-           <widget class="QRadioButton" name="radioRight" >
-            <property name="text" >
+          <item row="1" column="2">
+           <widget class="QRadioButton" name="radioRight">
+            <property name="text">
              <string>Right</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1" >
-           <widget class="QRadioButton" name="radioBelow" >
-            <property name="text" >
+          <item row="2" column="1">
+           <widget class="QRadioButton" name="radioBelow">
+            <property name="text">
              <string>Below</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
-           <widget class="QRadioButton" name="radioOver" >
-            <property name="text" >
+          <item row="1" column="1">
+           <widget class="QRadioButton" name="radioOver">
+            <property name="text">
              <string>Over</string>
             </property>
-            <property name="checked" >
+            <property name="checked">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QRadioButton" name="radioAbove" >
-            <property name="text" >
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="radioAbove">
+            <property name="text">
              <string>Above</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QRadioButton" name="radioLeft" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="radioLeft">
+            <property name="text">
              <string>Left</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" >
-           <widget class="QRadioButton" name="radioBelowLeft" >
-            <property name="text" >
+          <item row="2" column="0">
+           <widget class="QRadioButton" name="radioBelowLeft">
+            <property name="text">
              <string>Below Left</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="2" >
-           <widget class="QRadioButton" name="radioAboveRight" >
-            <property name="text" >
+          <item row="0" column="2">
+           <widget class="QRadioButton" name="radioAboveRight">
+            <property name="text">
              <string>Above Right</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" >
-           <widget class="QRadioButton" name="radioAboveLeft" >
-            <property name="text" >
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="radioAboveLeft">
+            <property name="text">
              <string>Above Left</string>
             </property>
            </widget>
@@ -332,22 +337,22 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QGroupBox" name="groupBox_3" >
-         <property name="title" >
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
           <string>Font size units</string>
          </property>
-         <layout class="QGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QRadioButton" name="radioFontSizeUnitsPoints" >
-            <property name="text" >
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="radioFontSizeUnitsPoints">
+            <property name="text">
              <string>Points</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QRadioButton" name="radioFontSizeUnitsMap" >
-            <property name="text" >
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="radioFontSizeUnitsMap">
+            <property name="text">
              <string>Map units</string>
             </property>
            </widget>
@@ -355,12 +360,12 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" >
+       <item row="3" column="0">
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>40</height>
@@ -368,60 +373,60 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="0" >
-        <widget class="QGroupBox" name="chkUseScaleDependentRendering" >
-         <property name="title" >
+       <item row="4" column="0">
+        <widget class="QGroupBox" name="chkUseScaleDependentRendering">
+         <property name="title">
           <string>Use scale dependent rendering</string>
          </property>
-         <property name="checkable" >
+         <property name="checkable">
           <bool>true</bool>
          </property>
-         <layout class="QGridLayout" >
-          <property name="margin" >
+         <layout class="QGridLayout">
+          <property name="margin">
            <number>11</number>
           </property>
-          <item row="0" column="2" >
-           <widget class="QLabel" name="textLabel1_2_2_1" >
-            <property name="text" >
+          <item row="0" column="2">
+           <widget class="QLabel" name="textLabel1_2_2_1">
+            <property name="text">
              <string>Maximum</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>spinMaximumScale</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="0" >
-           <widget class="QLabel" name="textLabel1_1" >
-            <property name="text" >
+          <item row="0" column="0">
+           <widget class="QLabel" name="textLabel1_1">
+            <property name="text">
              <string>Minimum</string>
             </property>
-            <property name="buddy" >
+            <property name="buddy">
              <cstring>spinMinimumScale</cstring>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QSpinBox" name="spinMinimumScale" >
-            <property name="toolTip" >
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="spinMinimumScale">
+            <property name="toolTip">
              <string>Minimum scale at which this layer will be displayed. </string>
             </property>
-            <property name="minimum" >
+            <property name="minimum">
              <number>1</number>
             </property>
-            <property name="maximum" >
+            <property name="maximum">
              <number>100000000</number>
             </property>
            </widget>
           </item>
-          <item row="0" column="3" >
-           <widget class="QSpinBox" name="spinMaximumScale" >
-            <property name="toolTip" >
+          <item row="0" column="3">
+           <widget class="QSpinBox" name="spinMaximumScale">
+            <property name="toolTip">
              <string>Maximum scale at which this layer will be displayed. </string>
             </property>
-            <property name="minimum" >
+            <property name="minimum">
              <number>1</number>
             </property>
-            <property name="maximum" >
+            <property name="maximum">
              <number>100000000</number>
             </property>
            </widget>
@@ -429,112 +434,104 @@
          </layout>
         </widget>
        </item>
-       <item row="5" column="0" >
-        <widget class="QCheckBox" name="chkUseMultiline" >
-         <property name="text" >
+       <item row="5" column="0">
+        <widget class="QCheckBox" name="chkUseMultiline">
+         <property name="text">
           <string>Multiline labels?</string>
          </property>
-         <property name="checked" >
+         <property name="checked">
           <bool>true</bool>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>304</width>
-        <height>399</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" >
-       <item row="0" column="0" >
-        <widget class="QCheckBox" name="chkUseBuffer" >
-         <property name="text" >
+     <widget class="QWidget" name="page_2">
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="chkUseBuffer">
+         <property name="text">
           <string>Buffer labels?</string>
          </property>
-         <property name="checked" >
+         <property name="checked">
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="textLabel4_3_2_2" >
-         <property name="text" >
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel4_3_2_2">
+         <property name="text">
           <string>Buffer size</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QDoubleSpinBox" name="spinBufferSize" />
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="spinBufferSize"/>
        </item>
-       <item row="2" column="0" >
-        <widget class="QLabel" name="textLabel5_2_2_3" >
-         <property name="enabled" >
+       <item row="2" column="0">
+        <widget class="QLabel" name="textLabel5_2_2_3">
+         <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Transparency</string>
          </property>
-         <property name="alignment" >
+         <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
-       <item row="2" column="1" >
-        <widget class="QSpinBox" name="spinBufferTransparency" >
-         <property name="enabled" >
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="spinBufferTransparency">
+         <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="minimumSize" >
+         <property name="minimumSize">
           <size>
            <width>50</width>
            <height>0</height>
           </size>
          </property>
-         <property name="suffix" >
+         <property name="suffix">
           <string>%</string>
          </property>
-         <property name="maximum" >
+         <property name="maximum">
           <number>100</number>
          </property>
-         <property name="value" >
+         <property name="value">
           <number>0</number>
          </property>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2" >
-        <widget class="QPushButton" name="pbnDefaultBufferColor_2" >
-         <property name="text" >
+       <item row="3" column="0" colspan="2">
+        <widget class="QPushButton" name="pbnDefaultBufferColor_2">
+         <property name="text">
           <string>Color</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="0" colspan="2" >
-        <widget class="QGroupBox" name="groupBox_4" >
-         <property name="title" >
+       <item row="4" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
           <string>Buffer size units</string>
          </property>
-         <layout class="QGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QRadioButton" name="radioBufferUnitsPoints" >
-            <property name="text" >
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="radioBufferUnitsPoints">
+            <property name="text">
              <string>Size is in points</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QRadioButton" name="radioBufferUnitsMap" >
-            <property name="text" >
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="radioBufferUnitsMap">
+            <property name="text">
              <string>Size is in map units</string>
             </property>
            </widget>
@@ -542,12 +539,12 @@
          </layout>
         </widget>
        </item>
-       <item row="5" column="0" >
+       <item row="5" column="0">
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>40</height>
@@ -557,60 +554,52 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_3" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>304</width>
-        <height>399</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" >
-       <item row="0" column="0" >
-        <widget class="QLabel" name="textLabel1_2_3_2" >
-         <property name="text" >
+     <widget class="QWidget" name="page_3">
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel1_2_3_2">
+         <property name="text">
           <string>X Offset (pts)</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QDoubleSpinBox" name="spinXOffset" >
-         <property name="minimum" >
-          <number>-99</number>
+       <item row="0" column="1">
+        <widget class="QDoubleSpinBox" name="spinXOffset">
+         <property name="minimum">
+          <double>-99.000000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="textLabel1_2_2_2_3" >
-         <property name="text" >
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel1_2_2_2_3">
+         <property name="text">
           <string>Y Offset (pts)</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QDoubleSpinBox" name="spinYOffset" >
-         <property name="minimum" >
-          <number>-99</number>
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="spinYOffset">
+         <property name="minimum">
+          <double>-99.000000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="2" column="0" colspan="2" >
-        <widget class="QGroupBox" name="buttonGroup10" >
-         <property name="title" >
+       <item row="2" column="0" colspan="2">
+        <widget class="QGroupBox" name="buttonGroup10">
+         <property name="title">
           <string>Offset units</string>
          </property>
-         <layout class="QGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QRadioButton" name="radioOffsetUnitsPoints" >
-            <property name="text" >
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="radioOffsetUnitsPoints">
+            <property name="text">
              <string>Points</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QRadioButton" name="radioOffsetUnitsMap" >
-            <property name="text" >
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="radioOffsetUnitsMap">
+            <property name="text">
              <string>Map units</string>
             </property>
            </widget>
@@ -618,12 +607,12 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" >
+       <item row="3" column="0">
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
            <height>181</height>
@@ -633,35 +622,27 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_4" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>304</width>
-        <height>399</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_1" >
-       <item row="0" column="0" >
-        <widget class="QLabel" name="lblFont" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+     <widget class="QWidget" name="page_4">
+      <layout class="QGridLayout" name="gridLayout_1">
+       <item row="0" column="0">
+        <widget class="QLabel" name="lblFont">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>&amp;Font family</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboFontField</cstring>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QComboBox" name="cboFontField" >
-         <property name="minimumSize" >
+       <item row="0" column="1">
+        <widget class="QComboBox" name="cboFontField">
+         <property name="minimumSize">
           <size>
            <width>0</width>
            <height>20</height>
@@ -669,25 +650,25 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="textLabel4" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>&amp;Bold</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboBoldField</cstring>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QComboBox" name="cboBoldField" >
-         <property name="minimumSize" >
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cboBoldField">
+         <property name="minimumSize">
           <size>
            <width>0</width>
            <height>20</height>
@@ -695,25 +676,25 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
-        <widget class="QLabel" name="textLabel4_2_4" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="2" column="0">
+        <widget class="QLabel" name="textLabel4_2_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>&amp;Italic</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboItalicField</cstring>
          </property>
         </widget>
        </item>
-       <item row="2" column="1" >
-        <widget class="QComboBox" name="cboItalicField" >
-         <property name="minimumSize" >
+       <item row="2" column="1">
+        <widget class="QComboBox" name="cboItalicField">
+         <property name="minimumSize">
           <size>
            <width>0</width>
            <height>20</height>
@@ -721,25 +702,25 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <widget class="QLabel" name="textLabel4_3" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="3" column="0">
+        <widget class="QLabel" name="textLabel4_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>&amp;Underline</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboUnderlineField</cstring>
          </property>
         </widget>
        </item>
-       <item row="3" column="1" >
-        <widget class="QComboBox" name="cboUnderlineField" >
-         <property name="minimumSize" >
+       <item row="3" column="1">
+        <widget class="QComboBox" name="cboUnderlineField">
+         <property name="minimumSize">
           <size>
            <width>0</width>
            <height>20</height>
@@ -747,25 +728,25 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0" >
-        <widget class="QLabel" name="textLabel4_3_2" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="4" column="0">
+        <widget class="QLabel" name="textLabel4_3_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>&amp;Size</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboFontSizeField</cstring>
          </property>
         </widget>
        </item>
-       <item row="4" column="1" >
-        <widget class="QComboBox" name="cboFontSizeField" >
-         <property name="minimumSize" >
+       <item row="4" column="1">
+        <widget class="QComboBox" name="cboFontSizeField">
+         <property name="minimumSize">
           <size>
            <width>0</width>
            <height>20</height>
@@ -773,25 +754,25 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0" >
-        <widget class="QLabel" name="textLabel4_3_2_4" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="5" column="0">
+        <widget class="QLabel" name="textLabel4_3_2_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Size units</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboFontSizeTypeField</cstring>
          </property>
         </widget>
        </item>
-       <item row="5" column="1" >
-        <widget class="QComboBox" name="cboFontSizeTypeField" >
-         <property name="minimumSize" >
+       <item row="5" column="1">
+        <widget class="QComboBox" name="cboFontSizeTypeField">
+         <property name="minimumSize">
           <size>
            <width>0</width>
            <height>20</height>
@@ -799,31 +780,31 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0" >
-        <widget class="QLabel" name="textLabel4_3_2_3" >
-         <property name="enabled" >
+       <item row="6" column="0">
+        <widget class="QLabel" name="textLabel4_3_2_3">
+         <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Transparency</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboFontTransparencyField</cstring>
          </property>
         </widget>
        </item>
-       <item row="6" column="1" >
-        <widget class="QComboBox" name="cboFontTransparencyField" >
-         <property name="enabled" >
+       <item row="6" column="1">
+        <widget class="QComboBox" name="cboFontTransparencyField">
+         <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="minimumSize" >
+         <property name="minimumSize">
           <size>
            <width>0</width>
            <height>20</height>
@@ -831,25 +812,25 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0" >
-        <widget class="QLabel" name="textLabel4_3_2_5" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="7" column="0">
+        <widget class="QLabel" name="textLabel4_3_2_5">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>&amp;Color</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboFontColorField</cstring>
          </property>
         </widget>
        </item>
-       <item row="7" column="1" >
-        <widget class="QComboBox" name="cboFontColorField" >
-         <property name="minimumSize" >
+       <item row="7" column="1">
+        <widget class="QComboBox" name="cboFontColorField">
+         <property name="minimumSize">
           <size>
            <width>0</width>
            <height>20</height>
@@ -859,205 +840,177 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_5" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>304</width>
-        <height>399</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" >
-       <item row="0" column="0" >
-        <widget class="QLabel" name="textLabel1_2_2_2_2_3" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+     <widget class="QWidget" name="page_5">
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel1_2_2_2_2_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Placement</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QComboBox" name="cboAlignmentField" />
+       <item row="0" column="1">
+        <widget class="QComboBox" name="cboAlignmentField"/>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="textLabel1_2_2_2_2" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel1_2_2_2_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Angle (deg)</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QComboBox" name="cboAngleField" />
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cboAngleField"/>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_6" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>304</width>
-        <height>399</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" >
-       <item row="0" column="0" >
-        <widget class="QLabel" name="textLabel1_3_2_2_2" >
-         <property name="enabled" >
+     <widget class="QWidget" name="page_6">
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel1_3_2_2_2">
+         <property name="enabled">
           <bool>false</bool>
          </property>
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="minimumSize" >
+         <property name="minimumSize">
           <size>
            <width>70</width>
            <height>0</height>
           </size>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Transparency:</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboBufferTransparencyField</cstring>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QComboBox" name="cboBufferTransparencyField" >
-         <property name="enabled" >
+       <item row="0" column="1">
+        <widget class="QComboBox" name="cboBufferTransparencyField">
+         <property name="enabled">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="textLabel4_3_2_2_2" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel4_3_2_2_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Size:</string>
          </property>
-         <property name="buddy" >
+         <property name="buddy">
           <cstring>cboBufferSizeField</cstring>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QComboBox" name="cboBufferSizeField" />
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cboBufferSizeField"/>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_7" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>100</width>
-        <height>30</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" >
-       <item row="0" column="0" >
-        <widget class="QLabel" name="textLabel1_2" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+     <widget class="QWidget" name="page_7">
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel1_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>X Coordinate</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QComboBox" name="cboXCoordinateField" />
+       <item row="0" column="1">
+        <widget class="QComboBox" name="cboXCoordinateField"/>
        </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="textLabel1_2_2" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel1_2_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Y Coordinate</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QComboBox" name="cboYCoordinateField" />
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cboYCoordinateField"/>
        </item>
-       <item row="2" column="0" >
-        <widget class="QLabel" name="textLabel1_2_3" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="2" column="0">
+        <widget class="QLabel" name="textLabel1_2_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>X Offset (pts)</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1" >
-        <widget class="QComboBox" name="cboXOffsetField" />
+       <item row="2" column="1">
+        <widget class="QComboBox" name="cboXOffsetField"/>
        </item>
-       <item row="3" column="0" >
-        <widget class="QLabel" name="textLabel1_2_2_2" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <item row="3" column="0">
+        <widget class="QLabel" name="textLabel1_2_2_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Y Offset (pts)</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1" >
-        <widget class="QComboBox" name="cboYOffsetField" />
+       <item row="3" column="1">
+        <widget class="QComboBox" name="cboYOffsetField"/>
        </item>
       </layout>
      </widget>
     </widget>
    </item>
   </layout>
-  <zorder>listWidget</zorder>
-  <zorder>groupBox5</zorder>
-  <zorder>stackedWidget</zorder>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>cboLabelField</tabstop>
   <tabstop>leDefaultLabel</tabstop>
+  <tabstop>listWidget</tabstop>
   <tabstop>btnDefaultFont</tabstop>
-  <tabstop>pbnDefaultFontColor</tabstop>
   <tabstop>spinFontSize</tabstop>
-  <tabstop>radioFontSizeUnitsPoints</tabstop>
-  <tabstop>radioFontSizeUnitsMap</tabstop>
+  <tabstop>pbnDefaultFontColor</tabstop>
   <tabstop>spinAngle</tabstop>
   <tabstop>radioAboveLeft</tabstop>
   <tabstop>radioAbove</tabstop>
@@ -1068,11 +1021,12 @@
   <tabstop>radioBelowLeft</tabstop>
   <tabstop>radioBelow</tabstop>
   <tabstop>radioBelowRight</tabstop>
-  <tabstop>chkUseBuffer</tabstop>
-  <tabstop>spinBufferSize</tabstop>
-  <tabstop>spinBufferTransparency</tabstop>
-  <tabstop>radioBufferUnitsPoints</tabstop>
-  <tabstop>radioBufferUnitsMap</tabstop>
+  <tabstop>radioFontSizeUnitsPoints</tabstop>
+  <tabstop>radioFontSizeUnitsMap</tabstop>
+  <tabstop>chkUseScaleDependentRendering</tabstop>
+  <tabstop>spinMinimumScale</tabstop>
+  <tabstop>spinMaximumScale</tabstop>
+  <tabstop>chkUseMultiline</tabstop>
   <tabstop>spinXOffset</tabstop>
   <tabstop>spinYOffset</tabstop>
   <tabstop>radioOffsetUnitsPoints</tabstop>
@@ -1091,6 +1045,14 @@
   <tabstop>cboYCoordinateField</tabstop>
   <tabstop>cboXOffsetField</tabstop>
   <tabstop>cboYOffsetField</tabstop>
+  <tabstop>chkUseBuffer</tabstop>
+  <tabstop>spinBufferSize</tabstop>
+  <tabstop>spinBufferTransparency</tabstop>
+  <tabstop>radioBufferUnitsPoints</tabstop>
+  <tabstop>radioBufferUnitsMap</tabstop>
+  <tabstop>pbnDefaultBufferColor_2</tabstop>
+  <tabstop>cboFontSizeTypeField</tabstop>
+  <tabstop>cboFontColorField</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -1100,11 +1062,11 @@
    <receiver>stackedWidget</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>121</x>
      <y>72</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>269</x>
      <y>54</y>
     </hint>
@@ -1116,13 +1078,13 @@
    <receiver>spinBufferTransparency</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>415</x>
-     <y>64</y>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>55</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>467</x>
-     <y>130</y>
+    <hint type="destinationlabel">
+     <x>506</x>
+     <y>107</y>
     </hint>
    </hints>
   </connection>
@@ -1132,13 +1094,13 @@
    <receiver>textLabel4_3_2_2</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>390</x>
-     <y>61</y>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>55</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>333</x>
-     <y>100</y>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>81</y>
     </hint>
    </hints>
   </connection>
@@ -1148,13 +1110,13 @@
    <receiver>spinBufferSize</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>396</x>
-     <y>67</y>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>55</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>451</x>
-     <y>92</y>
+    <hint type="destinationlabel">
+     <x>506</x>
+     <y>81</y>
     </hint>
    </hints>
   </connection>
@@ -1164,13 +1126,13 @@
    <receiver>textLabel5_2_2_3</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>431</x>
-     <y>65</y>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>55</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>347</x>
-     <y>128</y>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>107</y>
     </hint>
    </hints>
   </connection>
@@ -1180,13 +1142,13 @@
    <receiver>pbnDefaultBufferColor_2</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>380</x>
-     <y>66</y>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>55</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>393</x>
-     <y>159</y>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>137</y>
     </hint>
    </hints>
   </connection>
@@ -1196,13 +1158,13 @@
    <receiver>groupBox_4</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>294</x>
-     <y>66</y>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>55</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>306</x>
-     <y>195</y>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>173</y>
     </hint>
    </hints>
   </connection>

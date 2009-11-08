@@ -28,7 +28,7 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, scaleBar );
-  gridLayout->addWidget( itemPropertiesWidget );
+  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
 
   blockMemberSignals( true );
   mStyleComboBox->insertItem( 0, tr( "Single Box" ) );

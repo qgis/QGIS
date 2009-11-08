@@ -219,6 +219,7 @@
   <tabstop>numberofclassesspinbox</tabstop>
   <tabstop>mClassifyButton</tabstop>
   <tabstop>mDeleteClassButton</tabstop>
+  <tabstop>mClassListWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>
