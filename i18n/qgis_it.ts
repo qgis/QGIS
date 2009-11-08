@@ -8001,24 +8001,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="123"/>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="124"/>
         <source>Could not open file %1
 Error was:%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire il file %1
+L&apos;errore è: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="297"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="318"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
-        <translation>Il valore minimo attuale per questo dato è %1 mentre quello massimo %2.</translation>
+        <translation>Il valore minimo attuale per questo dato è %1 e quello massimo %2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="323"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
-        <translation>L´attributo non ha tipi interi o reali, per tale motivo l´intervallo non è utilizzabile.</translation>
+        <translation>L´attributo non ha tipi interi o reali, quindi l´intervallo non è utilizzabile.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="431"/>
@@ -8029,12 +8030,12 @@ Error was:%2</source>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="525"/>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <source>Attribute Edit Dialog</source>
-        <translation>Finestra di diaologo Modifica Attributo</translation>
+        <translation>Finestra di dialogo modifica attributo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="21"/>
         <source>Line edit</source>
-        <translation>Modifica Linea</translation>
+        <translation>Modifica linea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="26"/>
@@ -8049,7 +8050,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="36"/>
         <source>Unique values</source>
-        <translation>Valori Univoci</translation>
+        <translation>Valori univoci</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="41"/>
@@ -8074,13 +8075,13 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="61"/>
         <source>Hidden</source>
-        <translation type="unfinished">Nascosto</translation>
+        <translation>Nascosto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="76"/>
         <source>Simple edit box. This is the default editation widget.</source>
         <translation>Box di modifica semplice. 
-Questo è il widget predefinito per le operazioni di modifica. </translation>
+Questo è il widget predefinito per le operazioni di modifica.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="100"/>
@@ -8090,7 +8091,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="129"/>
         <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation>Permette di definire un numero di valori per un intervallo specifico. Il widget di modica puó utilizzare uno slider o un spin box.</translation>
+        <translation>Permette di definire un numero di valori per un intervallo specifico. Il widget di modica può utilizzare uno slider o un spin box.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="141"/>
@@ -8121,12 +8122,12 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="250"/>
         <source>Local minimum/maximum = 0/0</source>
-        <translation>Locale minimo/massimo = 0/0</translation>
+        <translation>Minimo/massimo locali= 0/0</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="268"/>
         <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
-        <translation>L´utente può selezionare uno dei valore giá utilizzate negli attributi. Se modificabile, una linea modifica si presenta con il supporto di autocompletamento, in caso contrario viene presentata una combo box.</translation>
+        <translation>L´utente può selezionare uno dei valori già utilizzati negli attributi. Se modificabile, una linea modificata ha la possibilità di autocompletamento; in caso contrario viene presentata una combo box.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="304"/>
@@ -8161,22 +8162,22 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="395"/>
         <source>Load Data from CSV file</source>
-        <translation type="unfinished"></translation>
+        <translation>Carica dati da un file CSV</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="406"/>
         <source>Combo box with values that can be used within the column&apos;s type. Must be supported by the provider.</source>
-        <translation>La combo box con i valori può essere utilizzata assieme al tipo di colonne. Deve essere una funzione supportata dal fornitore.</translation>
+        <translation>La combo box con i valori può essere utilizzata assieme al tipo di colonne. Deve essere una funzione supportata dal data provider.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="440"/>
         <source>An immutable attribute is read-only - the user is not able to modify the contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un attributo immutabile è in sola lettura - l´utente non è in grado di modificare il contenuto.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="467"/>
         <source>A hidden attribute will be invisible - the user is not able to see it&apos;s contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un attributo nascosto è invisibile - l´utente non è in grado di vedere il contenuto.</translation>
     </message>
     <message>
         <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
@@ -8188,7 +8189,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/ui/qgsavoidintersectionsdialogbase.ui" line="13"/>
         <source>Remove intersections of new polygons with layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuove le intersezioni dei nuovi poligoni con i layers</translation>
     </message>
 </context>
 <context>
@@ -8196,7 +8197,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="158"/>
         <source>Really Delete?</source>
-        <translation>Si vuole davvero cancellare?</translation>
+        <translation type="unfinished">Si vuole davvero eliminare?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -8394,7 +8395,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="683"/>
         <source>SVG warning</source>
-        <translation>Avviso SVG </translation>
+        <translation>Avviso SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="684"/>
@@ -8543,13 +8544,13 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="607"/>
         <source>Choose a file name to save the map image as</source>
-        <translation>Scegli un nome per il file con cui salvare l&apos;immagine della mappa</translation>
+        <translation>Scegli un nome di file per salvare l&apos;immagine della mappa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="445"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
         <source>Choose a file name to save the map as</source>
-        <translation>Selezione un nome di file per salvare la mappa come</translation>
+        <translation>Scegli un nome di file per salvare la mappa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1435"/>
@@ -8564,7 +8565,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="688"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation>&lt;p&gt;La funziona di esportazione SVG in Qgis ha diversi problemi causati da bug e limitazione</translation>
+        <translation>&lt;p&gt;La funziona di esportazione SVG in Qgis ha diversi problemi causati da bug e limitazioni</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="583"/>
@@ -8578,7 +8579,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="690"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation>dovute al codice svg delle Qt4. In articolare ci sono problemi con i layer che sono tagliati all`interno dei confini del box della mappa.&lt;/p&gt;</translation>
+        <translation>dovute al codice SVG delle Qt4. In particolare ci sono problemi con i layer che sono tagliati all`interno dei confini del box della mappa.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="555"/>
@@ -8588,22 +8589,22 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="304"/>
         <source>Remove composer?</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina il composer?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="304"/>
         <source>Do you really want to remove the composer instance &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vuoi veramente rimuovere il composer &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="693"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation>Se serve un formato vettoriale come output da Qgis, e l´output SVG ottenuto non è soddisfacente, si consiglia di utilizzare la stampa su Postscript&lt;/p&gt;</translation>
+        <translation>Se serve un formato vettoriale come output da Qgis, e l´output SVG ottenuto non è soddisfacente, si consiglia di utilizzare la stampa su PostScript&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="797"/>
         <source>save template</source>
-        <translation>salva template</translation>
+        <translation>salva modello</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="823"/>
@@ -8618,7 +8619,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="831"/>
         <source>Load template</source>
-        <translation>Carica template</translation>
+        <translation>Carica modello</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="844"/>
@@ -8634,7 +8635,7 @@ Questo è il widget predefinito per le operazioni di modifica. </translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="851"/>
         <source>Content of template file is not valid</source>
-        <translation>Il contenuto del file di template non è valido</translation>
+        <translation>Il contenuto del file di modello non è valido</translation>
     </message>
 </context>
 <context>
