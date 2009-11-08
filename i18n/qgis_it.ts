@@ -2287,7 +2287,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
         <source>Use custom renderer</source>
-        <translation>Usa un renderer personalizzato</translation>
+        <translation>Usa un modo di disegno personalizzato</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
@@ -2601,7 +2601,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
         <source>Use custom renderer</source>
-        <translation>Usa un render personalizzato</translation>
+        <translation>Usa un modo di disegno personalizzato</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
@@ -4447,7 +4447,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1566"/>
         <source>Render</source>
-        <translation>Render</translation>
+        <translation>Disegna</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3530"/>
@@ -9346,54 +9346,54 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="48"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="320"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Solido</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="49"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="316"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="562"/>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Croce</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="51"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="328"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="624"/>
         <source>Inside frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Cornice interna</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="52"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="332"/>
         <source>Outside frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Cornice esterna</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="54"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="349"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="662"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Orizzontale</translation>
+        <translation>Orizzontale</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="55"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="353"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="666"/>
         <source>Vertical</source>
-        <translation type="unfinished">Verticale</translation>
+        <translation>Verticale</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="56"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="357"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="670"/>
         <source>Horizontal and Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Orizzontale e verticale</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="57"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="361"/>
         <source>Boundary direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Direzione del confine</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="45"/>
@@ -9417,7 +9417,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="73"/>
         <source>Map</source>
-        <translation type="unfinished">Mappa</translation>
+        <translation>Mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="79"/>
@@ -9432,97 +9432,97 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="117"/>
         <source>Scale</source>
-        <translation type="unfinished">Scala</translation>
+        <translation>Scala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="137"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="190"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation>X min</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="222"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation>Y min</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="270"/>
         <source>Show grid?</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra griglia?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="285"/>
         <source>Grid &amp;type</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tipo griglia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="301"/>
         <source>Interval X</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervallo X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="324"/>
         <source>Offset X</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="347"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation>Spessore linea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="374"/>
         <source>Annotation position</source>
-        <translation type="unfinished"></translation>
+        <translation>Posizione dell&apos;annotazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="393"/>
         <source>Annotation direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Direzione dell&apos;annotazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="409"/>
         <source>Line color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore della linea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="491"/>
         <source>Interval Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervallo Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="514"/>
         <source>Offset Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="527"/>
         <source>Cross width</source>
-        <translation type="unfinished"></translation>
+        <translation>Larghezza della croce</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="206"/>
         <source>X max</source>
-        <translation type="unfinished"></translation>
+        <translation>X Max</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="238"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Max</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="260"/>
         <source>Set to map canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Imposta alla estensione della mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="166"/>
         <source>Lock layers for map item</source>
-        <translation type="unfinished"></translation>
+        <translation>Blocca i layers per la mappa</translation>
     </message>
     <message>
         <source>Line width:</source>
@@ -9531,22 +9531,22 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="367"/>
         <source>Draw annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Scrivi le annotazioni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="435"/>
         <source>Font...</source>
-        <translation type="unfinished">Carattere...</translation>
+        <translation>Carattere...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="442"/>
         <source>Distance to map frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Distanza dal bordo della mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="458"/>
         <source>Coordinate precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Precisione delle coordinate</translation>
     </message>
     <message>
         <source>Scale:</source>
@@ -9659,7 +9659,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="68"/>
         <source>Select svg or image file</source>
-        <translation>Seleziona un svg o una immagine</translation>
+        <translation type="unfinished">Seleziona un svg o altra immagine</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="171"/>
@@ -9670,7 +9670,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="291"/>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="337"/>
         <source>Map %1</source>
-        <translation type="unfinished">Mappa %1</translation>
+        <translation>Mappa %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="381"/>
@@ -9724,37 +9724,37 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="142"/>
         <source>Options</source>
-        <translation type="unfinished">Opzioni</translation>
+        <translation>Opzioni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="148"/>
         <source>Load</source>
-        <translation type="unfinished">Carica</translation>
+        <translation>Carica</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="175"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="190"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Larghezza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="212"/>
         <source>Height</source>
-        <translation type="unfinished">Altezza</translation>
+        <translation>Altezza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="238"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotazione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="254"/>
         <source>Take rotation from composer map</source>
-        <translation type="unfinished"></translation>
+        <translation>Sincronizza la rotazione con la mappa</translation>
     </message>
 </context>
 <context>
@@ -9790,32 +9790,32 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="34"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="291"/>
         <source>Single Box</source>
-        <translation>Riquadro Singolo</translation>
+        <translation type="unfinished">Riquadro singolo</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="35"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="295"/>
         <source>Double Box</source>
-        <translation>Riquadro Doppio</translation>
+        <translation>Riquadro doppio</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="36"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="299"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="303"/>
         <source>Line Ticks Middle</source>
-        <translation>Spessore linea centrale</translation>
+        <translation>Linea con tacche al centro</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="37"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="307"/>
         <source>Line Ticks Down</source>
-        <translation>Spessore linea bassa</translation>
+        <translation>LInea con tacche in basso</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="38"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="311"/>
         <source>Line Ticks Up</source>
-        <translation>Spessore linea alta</translation>
+        <translation>LInea con tacche in alto</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="39"/>
@@ -9888,57 +9888,57 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="44"/>
         <source>Segment size (map units)</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensione Segmento (unità mappa)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="67"/>
         <source>Map units per bar unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Unità mappa per unità di barra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="87"/>
         <source>Number of segments</source>
-        <translation type="unfinished">Numero di segmenti</translation>
+        <translation>Numero di segmenti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="103"/>
         <source>Segments left</source>
-        <translation type="unfinished"></translation>
+        <translation>Segmenti rimanenti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="116"/>
         <source>Style</source>
-        <translation type="unfinished">Stile</translation>
+        <translation>Stile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="135"/>
         <source>Map</source>
-        <translation type="unfinished">Mappa</translation>
+        <translation>Mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="161"/>
         <source>Height (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Altezza (mm)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="174"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation>Spessore linea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="206"/>
         <source>Label space</source>
-        <translation type="unfinished"></translation>
+        <translation>Spazio etichetta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="219"/>
         <source>Box space</source>
-        <translation type="unfinished"></translation>
+        <translation>Spazio riquadro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="232"/>
         <source>Unit label</source>
-        <translation type="unfinished">Unità etichetta</translation>
+        <translation>Unità etichetta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="254"/>
@@ -10042,7 +10042,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="167"/>
         <source>Box</source>
-        <translation>Rettangolo</translation>
+        <translation>Riquadro</translation>
     </message>
     <message>
         <source>Column 1</source>
@@ -10282,7 +10282,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="178"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="211"/>
         <source>Custom</source>
-        <translation>Personalizza</translation>
+        <translation>Personalizzata</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="120"/>
@@ -10416,7 +10416,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="44"/>
         <source>Paper and quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Carta e qualità</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="56"/>
@@ -10426,32 +10426,32 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="241"/>
         <source>Grid resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Risoluzione griglia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="260"/>
         <source>Offset x</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="273"/>
         <source>Offset y</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="286"/>
         <source>Pen width</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensioni penna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="299"/>
         <source>Grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore griglia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="322"/>
         <source>Grid style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stile griglia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="196"/>
@@ -10508,7 +10508,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="111"/>
         <source>Set default (%1)</source>
-        <translation>Selezione predefintia (%1)</translation>
+        <translation>Selezione predefinita (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="205"/>
@@ -10524,7 +10524,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="236"/>
         <source>Shortcut conflict</source>
-        <translation>Conflitto di scorciatoia</translation>
+        <translation>Conflitto fra scorciatoie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="237"/>
@@ -10544,7 +10544,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="32"/>
         <source>Shortcut</source>
-        <translation>Scorciatoria</translation>
+        <translation>Scorciatoia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="55"/>
@@ -10656,27 +10656,27 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="14"/>
         <source>Continuous color</source>
-        <translation>Colori continui</translation>
+        <translation>Colore continuo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="76"/>
         <source>Maximum value</source>
-        <translation type="unfinished">Valore massimo</translation>
+        <translation>Valore massimo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="112"/>
         <source>Outline width</source>
-        <translation type="unfinished">Dimensione stile esterno</translation>
+        <translation>Spessore margine esterno</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="60"/>
         <source>Minimum value</source>
-        <translation type="unfinished">Valore minimo</translation>
+        <translation>Valore minimo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="34"/>
         <source>Classification field</source>
-        <translation type="unfinished">Campo di classificazione</translation>
+        <translation>Campo di classificazione</translation>
     </message>
     <message>
         <source>Maximum Value:</source>
@@ -10710,7 +10710,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="473"/>
         <source>transform of</source>
-        <translation>trasformazione di </translation>
+        <translation>trasformazione di</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="486"/>
@@ -10732,7 +10732,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation>Il sistema di riferimento spaziale (SRS) non è valido.</translation>
+        <translation>Il sistema di riferimento spaziale (CRS) non è valido. </translation>
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: </source>
@@ -10741,7 +10741,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation>Il sistema di riferimento spaziale (SRS) di destinazione non è valido.</translation>
+        <translation>Il sistema di riferimento spaziale (CRS) di destinazione non è valido.</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="419"/>
@@ -10780,7 +10780,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="81"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation>Crea una etichetta di copyright che verrà visualizzata sopra la mappa.</translation>
+        <translation>Crea una etichetta di copyright che verrà visualizzata sulla mappa.</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="94"/>
@@ -10794,7 +10794,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="14"/>
         <source>Copyright Label Plugin</source>
-        <translation>Etichetta di Copyright</translation>
+        <translation type="unfinished">Plugin etichetta di copyright</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -10807,47 +10807,51 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="80"/>
         <source>&amp;Enter your copyright label here:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ins&amp;erisci la tua etichetta di copyright label qui:</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="102"/>
         <source>&amp;Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Posizione</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="113"/>
         <source>Bottom Left</source>
-        <translation>Basso a sx</translation>
+        <translation>In basso a sx</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="118"/>
         <source>Top Left</source>
-        <translation>Alto a sx</translation>
+        <translation>In alto a sx</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="123"/>
         <source>Bottom Right</source>
-        <translation>Basso a dx</translation>
+        <translation>In basso a dx</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="128"/>
         <source>Top Right</source>
-        <translation>Alto a dx</translation>
+        <translation>In alto a dx</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="136"/>
         <source>&amp;Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Direzi&amp;one</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="160"/>
         <source>&amp;Color</source>
-        <translation type="unfinished">&amp;Colore</translation>
+        <translation>&amp;Colore</translation>
     </message>
     <message>
         <source>Orientation</source>
@@ -10866,7 +10870,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="48"/>
         <source>Enable copyright label</source>
-        <translation type="unfinished"></translation>
+        <translation>Abilita etichetta di Copyright</translation>
     </message>
     <message>
         <source>Enable Copyright Label</source>
@@ -10933,7 +10937,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="728"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="782"/>
         <source>Abort</source>
-        <translation>Annulla</translation>
+        <translation>Interrompi</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="604"/>
@@ -10951,7 +10955,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="874"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="886"/>
         <source>QGIS Custom Projection</source>
-        <translation>QGIS Proiezione personalizzata</translation>
+        <translation>Proiezione personalizzata di QGIS</translation>
     </message>
     <message>
         <source>This proj4 projection definition is not valid. Please correct before pressing save.</source>
@@ -10990,7 +10994,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="887"/>
         <source>Internal Error (source projection invalid?)</source>
-        <translation>Errore interno (proiezione non valida?)</translation>
+        <translation>Errore interno (proiezione di partenza non valida?)</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="651"/>
@@ -11000,7 +11004,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="658"/>
         <source> Please add the parameters before pressing save.</source>
-        <translation>.Prego aggiungere i parametri prima di salvare.</translation>
+        <translation> Prego aggiungere i parametri prima di salvare.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="674"/>
@@ -11162,17 +11166,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="31"/>
         <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</source>
-        <translation>Qui puoi personalizzare il Sistema di Riferimento Spaziale (SRS). La definizione deve essere conforme al formato proj4 onde specificare un SRS.</translation>
+        <translation>Qui puoi personalizzare il Sistema di Riferimento Spaziale (CRS). La definizione deve essere conforme al formato proj4.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="167"/>
         <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
-        <translation>Usa i riquadri di testo sottostanti per provare la definizione del SRS che stai creando. Inserisci una coordinata laddove sia nota la lat/long ed il risultato trasformato sia noto (ad esempio leggendolo da una mappa). Poi premi il bottone calcola per vedere se la definizione del SRS che stai creando è accurata.</translation>
+        <translation>Usa i riquadri di testo sottostanti per provare la definizione del CRS che stai creando. Inserisci una coordinata laddove sia nota la lat/long ed il risultato trasformato sia noto (ad esempio leggendolo da una mappa). Poi premi il bottone calcola per vedere se la definizione del CRS che stai creando è accurata.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="197"/>
         <source>Destination CRS        </source>
-        <translation>SRS di Destinazione</translation>
+        <translation>CRS di destinazione</translation>
     </message>
 </context>
 <context>
@@ -11470,7 +11474,7 @@ Questo il messaggio di errore restituito:
     <message>
         <location filename="../src/app/qgsdbtablemodel.cpp" line="29"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome colonna chiave primaria</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbtablemodel.cpp" line="30"/>
@@ -17606,7 +17610,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="374"/>
         <source>Use scale dependent rendering</source>
-        <translation>Utilizzare una scala in relazione al rendering</translation>
+        <translation>Utilizzare un disegno in funzione della scala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="386"/>
@@ -21089,7 +21093,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="249"/>
         <source>&amp;Rendering and SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ridisegno e SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="255"/>
@@ -21109,7 +21113,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="298"/>
         <source>Use render caching where possible to speed up redraws</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa il caching del disegno quando possibile per velocizzare il disegno</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="308"/>
@@ -29333,7 +29337,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="446"/>
         <source>Use scale dependent rendering</source>
-        <translation>Utilizzare una scala in relazione al rendering</translation>
+        <translation>Utilizzare un disegno in funzione della scala</translation>
     </message>
     <message>
         <source>Maximum 1:</source>
