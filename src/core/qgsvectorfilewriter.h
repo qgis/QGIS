@@ -65,7 +65,8 @@ class CORE_EXPORT QgsVectorFileWriter
                          const QString& fileEncoding,
                          const QgsFieldMap& fields,
                          QGis::WkbType geometryType,
-                         const QgsCoordinateReferenceSystem* srs );
+                         const QgsCoordinateReferenceSystem* srs,
+                         const QString& driverName = "ESRI Shapefile" );
 
     /** checks whether there were any errors in constructor */
     WriterError hasError();

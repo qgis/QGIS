@@ -43,11 +43,11 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     const QString& fileEncoding,
     const QgsFieldMap& fields,
     QGis::WkbType geometryType,
-    const QgsCoordinateReferenceSystem* srs )
+    const QgsCoordinateReferenceSystem* srs,
+    const QString& driverName )
     : mDS( NULL ), mLayer( NULL ), mGeom( NULL ), mError( NoError )
 {
   // save the layer as a shapefile
-  QString driverName = "ESRI Shapefile";
 
   // find driver in OGR
   OGRSFDriverH poDriver;
