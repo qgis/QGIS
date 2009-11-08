@@ -171,8 +171,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     // Set the position of the database connection list to the last
     // used one.
     void setConnectionListPosition();
-    // Show the context help for the dialog
-    void showHelp();
     // Combine the schema, table and column data into a single string
     // useful for display to the user
     QString fullDescription( QString schema, QString table, QString column, QString type );

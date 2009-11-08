@@ -111,7 +111,7 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
 // Slot for showing help
 void QgsPgSourceSelect::helpClicked()
 {
-  showHelp();
+  QgsContextHelp::run( context_id );
 }
 /** End Autoconnected SLOTS **/
 
@@ -728,11 +728,6 @@ bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
   }
 
   return n > 0;
-}
-
-void QgsPgSourceSelect::showHelp()
-{
-  QgsContextHelp::run( context_id );
 }
 
 QString QgsPgSourceSelect::fullDescription( QString schema, QString table,
