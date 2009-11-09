@@ -46,10 +46,11 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
 
   QGis::WkbType outputType = dpA->geometryType();
   const QgsCoordinateReferenceSystem crs = layerA->srs();
-  QgsFieldMap fields;
-  //fields = combineFieldLists( dpA->fields(), dpB->fields() );
+  QgsFieldMap fieldsA = dpA->fields();
+  QgsFieldMap fieldsB = dpB->fields();
+  combineFieldLists( fieldsA, fieldsB );
 
-  QgsVectorFileWriter vWriter( shapefileName, dpA->encoding(), fields, outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dpA->encoding(), fieldsA, outputType, &crs );
   QgsFeature currentFeature;
   QgsGeometry* dissolveGeometry; //dissolve geometry (if dissolve enabled)
   QgsSpatialIndex index;
@@ -73,7 +74,7 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
     {
       p->setMaximum( selectionA.size() );
     }
-
+    QgsFeature currentFeature;
     int processedFeatures = 0;
     it = selectionA.constBegin();
     for ( ; it != selectionA.constEnd(); ++it )
@@ -104,11 +105,11 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
   else
   {
     layerB->select( layerB->pendingAllAttributesList(), QgsRectangle(), true, false );
-    while ( dpB->nextFeature( currentFeature ) )
+    while ( layerB->nextFeature( currentFeature ) )
     {
       index.insertFeature( currentFeature );
     }
-
+    QgsFeature currentFeature;
     layerA->select( layerA->pendingAllAttributesList(), QgsRectangle(), true, false );
 
     int featureCount = layerA->featureCount();
@@ -144,7 +145,7 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
 {
   QgsGeometry* featureGeometry = f.geometry();
   QgsGeometry* intersectGeometry = 0;
-  QgsFeature currentFeature;
+  QgsFeature overlayFeature;
 
   if ( !featureGeometry )
   {
@@ -154,20 +155,23 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
   QList<int> intersects;
   intersects = index->intersects( featureGeometry->boundingBox() );
   QList<int>::const_iterator it = intersects.constBegin();
+  QgsFeature outFeature;
   for ( ; it != intersects.constEnd(); ++it )
   {
-    if ( !vl->featureAtId( *it, currentFeature, true, true ) )
+    if ( !vl->featureAtId( *it, overlayFeature, true, true ) )
     {
       continue;
     }
 
-    if ( featureGeometry->intersects( currentFeature.geometry() ) )
+    if ( featureGeometry->intersects( overlayFeature.geometry() ) )
     {
-      intersectGeometry = featureGeometry->intersection( currentFeature.geometry() );
+      intersectGeometry = featureGeometry->intersection( overlayFeature.geometry() );
 
-      QgsFeature outFeature;
       outFeature.setGeometry( intersectGeometry );
-      outFeature.setAttributeMap( f.attributeMap() );
+      QgsAttributeMap attributeMapA = f.attributeMap();
+      QgsAttributeMap attributeMapB = overlayFeature.attributeMap();
+      combineAttributeMaps( attributeMapA, attributeMapB );
+      outFeature.setAttributeMap( attributeMapA );
 
       //add it to vector file writer
       if ( vfw )
@@ -178,27 +182,47 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
   }
 }
 
-void QgsOverlayAnalyzer::combineFieldLists( QgsFieldMap fieldListA, QgsFieldMap fieldListB )
+void QgsOverlayAnalyzer::combineFieldLists( QgsFieldMap& fieldListA, QgsFieldMap fieldListB )
 {
+  QList<QString> names;
+  QMap<int, QgsField>::const_iterator j = fieldListA.constBegin();
+  while ( j != fieldListA.constEnd() )
+  {
+    names.append( j.value().name() );
+    ++j;
+  }
   QMap<int, QgsField>::const_iterator i = fieldListB.constBegin();
   int count = 0;
+  int fcount = fieldListA.size();
+  QgsField field;
   while ( i != fieldListB.constEnd() )
   {
-    if ( !fieldListA.contains( i.key() ) )
+    field = i.value();
+    while ( names.contains( field.name() ) )
     {
-      fieldListA.insert( fieldListA.size()-1, i.value() );
-      count = 0;
-    }
-    else
-    {
-      QgsField field;
-      field = i.value();
       QString name = field.name();
       name.append( "_" ).append( QString( count ) );
-      fieldListA.insert( fieldListA.size()-1 , QgsField( name, field.type() ) );
+      field = QgsField( name, field.type() );
       ++count;
-      continue;
     }
+    fieldListA.insert( fcount, field );
+    count = 0;
+    ++fcount;
     ++i;
   }
 }
+
+void QgsOverlayAnalyzer::combineAttributeMaps( QgsAttributeMap& attributeMapA, QgsAttributeMap attributeMapB )
+{
+  QMap<int, QVariant>::const_iterator i = attributeMapB.constBegin();
+  QVariant attribute;
+  int fcount = attributeMapA.size();
+  while ( i != attributeMapB.constEnd() )
+  {
+    attribute = i.value();
+    attributeMapA.insert( fcount, attribute );
+    ++i;
+    ++fcount;
+  }
+}
+
