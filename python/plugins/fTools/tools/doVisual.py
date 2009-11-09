@@ -24,8 +24,12 @@ class VisualDialog( QDialog, Ui_Dialog ):
     if ( e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier ) and e.key() == Qt.Key_C:
       selection = self.lstUnique.selectedItems()
       items = QString()
-      for item in selection:
-        items.append( item.text() + "\n" )
+      if self.myFunction in ( 1, 2 ):
+	for rec in range( self.tblUnique.rowCount() ):
+	  items.append( self.tblUnique.item( rec, 0 ).text() + "\n" )
+      else:
+	for rec in range( self.tblUnique.rowCount() ):
+	  items.append( self.tblUnique.item( rec, 0 ).text() + ":" + self.tblUnique.item( rec, 1 ).text() + "\n" )
       if not items.isEmpty():
         clip_board = QApplication.clipboard()
         clip_board.setText( items )
@@ -46,12 +50,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
           self.useSelected.setCheckState( Qt.Unchecked )
       # add all fields in combobox because now we can work with text fields too
       for i in changedField:
-        if self.myFunction == 3:
-        #  if changedField[i].type() == QVariant.Int or changedField[i].type() == QVariant.Double:
-            self.cmbField.addItem( unicode( changedField[i].name() ) )
-        else:
-          self.cmbField.addItem( unicode( changedField[i].name() ) )
-         # self.cmbField.addItem( unicode( changedField[i].name() ) )
+        self.cmbField.addItem( unicode( changedField[i].name() ) )
         
   def accept( self ):
     if self.inShape.currentText() == "":
@@ -105,7 +104,8 @@ class VisualDialog( QDialog, Ui_Dialog ):
 #4:  Nearest neighbour analysis
   def visual( self,  myLayer, myField, mySelection ):
     vlayer = ftools_utils.getVectorLayerByName( myLayer )
-    self.lstUnique.clear()
+    self.tblUnique.clearContents()
+    self.tblUnique.setRowCount( 0 )
     self.lstCount.clear()
     self.testThread = visualThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myField, mySelection )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
@@ -121,7 +121,29 @@ class VisualDialog( QDialog, Ui_Dialog ):
     
   def runFinishedFromThread( self, output ):
     self.testThread.stop()
-    self.lstUnique.addItems( output[ 0 ] )
+    
+    result = output[ 0 ]
+    numRows = len( result )
+    self.tblUnique.setRowCount( numRows )
+    if self.myFunction in ( 1, 2 ):
+      self.tblUnique.setColumnCount( 1 )
+      for rec in range( numRows ):
+	item = QTableWidgetItem( result[ rec ] )
+	self.tblUnique.setItem( rec, 0, item )
+    else:
+      self.tblUnique.setColumnCount( 2 )
+      for rec in range( numRows ):
+	tmp = result[ rec ].split( ":" )
+	item = QTableWidgetItem( tmp[ 0 ] )
+	self.tblUnique.setItem( rec, 0, item )
+	item = QTableWidgetItem( tmp[ 1 ] )
+	self.tblUnique.setItem( rec, 1, item )
+	self.tblUnique.setHorizontalHeaderLabels( [ "Parameter", "Value" ] )
+	self.tblUnique.horizontalHeader().setResizeMode( 1, QHeaderView.ResizeToContents )
+	self.tblUnique.horizontalHeader().show()
+    self.tblUnique.horizontalHeader().setResizeMode( 0, QHeaderView.Stretch )
+    self.tblUnique.resizeRowsToContents()
+    
     self.lstCount.insert( unicode( output[ 1 ] ) )
     self.cancel_close.setText( "Close" )
     QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
@@ -246,12 +268,12 @@ class visualThread( QThread ):
       if nVal > 0.00:
         meanVal = sumVal / nVal
       lstStats = []
-      lstStats.append( self.tr( "Max. len: " ) + "         " + unicode( maxVal ) )
-      lstStats.append( self.tr( "Min. len: " ) + "         " + unicode( minVal ) )
-      lstStats.append( self.tr( "Mean. len: " ) + "         " + unicode( meanVal ) )
-      lstStats.append( self.tr( "Filled: " ) + "         " + unicode( fillVal ) )
-      lstStats.append( self.tr( "Empty: " ) + "         " + unicode( emptyVal ) )
-      lstStats.append( self.tr( "N: " ) + "         " + unicode( nVal ) )
+      lstStats.append( self.tr( "Max. len:" ) + unicode( maxVal ) )
+      lstStats.append( self.tr( "Min. len:" ) + unicode( minVal ) )
+      lstStats.append( self.tr( "Mean. len:" ) + unicode( meanVal ) )
+      lstStats.append( self.tr( "Filled:" ) + unicode( fillVal ) )
+      lstStats.append( self.tr( "Empty:" ) + unicode( emptyVal ) )
+      lstStats.append( self.tr( "N:" ) + unicode( nVal ) )
       return ( lstStats, [] )
     else: # numeric field
       stdVal = 0
@@ -261,7 +283,7 @@ class visualThread( QThread ):
       if self.mySelection: # only selected features
         selection = vlayer.selectedFeatures()
         nFeat = vlayer.selectedFeatureCount()
-	uniqueVal = utils.getUniqueValuesCount( vlayer, index, True )
+	uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, True )
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
@@ -314,16 +336,16 @@ class visualThread( QThread ):
 	  else:
 	    medianVal = lstVal[ ( nVal + 1 ) / 2 ]
       lstStats = []
-      lstStats.append( self.tr( "Mean: " ) + "         " + unicode( meanVal ) )
-      lstStats.append( self.tr( "StdDev: " ) + "         " + unicode( stdVal ) )
-      lstStats.append( self.tr( "Sum: " ) + "         " + unicode( sumVal) )
-      lstStats.append( self.tr( "Min: " ) + "         " + unicode( minVal ) )
-      lstStats.append( self.tr( "Max: " ) + "         " + unicode( maxVal ) )
-      lstStats.append( self.tr( "N: " ) + "         " + unicode( nVal ) )
-      lstStats.append( self.tr( "CV: " ) + "         " + unicode( cvVal ) )
-      lstStats.append( self.tr( "Number of unique values: " ) + "         " + unicode( uniqueVal ) )
-      lstStats.append( self.tr( "Range: " ) + "         " + unicode( rangeVal ) )
-      lstStats.append( self.tr( "Median: " ) + "         " + unicode( medianVal ) )
+      lstStats.append( self.tr( "Mean:" ) + unicode( meanVal ) )
+      lstStats.append( self.tr( "StdDev:" ) + unicode( stdVal ) )
+      lstStats.append( self.tr( "Sum:" ) + unicode( sumVal) )
+      lstStats.append( self.tr( "Min:" ) + unicode( minVal ) )
+      lstStats.append( self.tr( "Max:" ) + unicode( maxVal ) )
+      lstStats.append( self.tr( "N:" ) + unicode( nVal ) )
+      lstStats.append( self.tr( "CV:" ) + unicode( cvVal ) )
+      lstStats.append( self.tr( "Number of unique values:" ) + unicode( uniqueVal ) )
+      lstStats.append( self.tr( "Range:" ) + unicode( rangeVal ) )
+      lstStats.append( self.tr( "Median:" ) + unicode( medianVal ) )
       return ( lstStats, [] )
 
   def nearest_neighbour_analysis( self, vlayer ):
@@ -356,11 +378,11 @@ class visualThread( QThread ):
     SE = float( 0.26136 / math.sqrt( ( nVal * nVal ) / A ) )
     zscore = float( ( do - de ) / SE )
     lstStats = []
-    lstStats.append( self.tr( "Observed mean distance : " ) + "         " + unicode( do ) )
-    lstStats.append( self.tr( "Expected mean distance : " ) + "        " + unicode( de ) )
-    lstStats.append( self.tr( "Nearest neighbour index : " ) + "        " + unicode( d ) )
-    lstStats.append( "N :           " + unicode( nVal ) )
-    lstStats.append( "Z-Score :           " + unicode( zscore ) )
+    lstStats.append( self.tr( "Observed mean distance:" ) + unicode( do ) )
+    lstStats.append( self.tr( "Expected mean distance:" ) + unicode( de ) )
+    lstStats.append( self.tr( "Nearest neighbour index:" ) + unicode( d ) )
+    lstStats.append( self.tr( "N:" ) + unicode( nVal ) )
+    lstStats.append( self.tr( "Z-Score:" ) + unicode( zscore ) )
     return ( lstStats, [] )
 
   def check_geometry( self, vlayer ):
