@@ -99,7 +99,8 @@ class ANALYSIS_EXPORT QgsOverlayAnalyzer
 
   private:
 
-    void combineFieldLists( QgsFieldMap fieldListA, QgsFieldMap fieldListB );
+    void combineFieldLists( QgsFieldMap& fieldListA, QgsFieldMap fieldListB );
     void intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw, QgsVectorLayer* dp, QgsSpatialIndex* index );
+    void combineAttributeMaps( QgsAttributeMap& attributeMapA, QgsAttributeMap attributeMapB );
 };
 #endif //QGSVECTORANALYZER
