@@ -772,7 +772,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="239"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="250"/>
-        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="130"/>
+        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="142"/>
         <source>Use only selected features</source>
         <translation>Lietot tikai izvēlētos objektus</translation>
     </message>
@@ -1122,7 +1122,7 @@ p, li { white-space: pre-wrap; }
         <translation>Unikālo vērtību saraksts</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="92"/>
+        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="104"/>
         <source>Unique value count</source>
         <translation>Unikālo vērtību skaits</translation>
     </message>
@@ -6976,37 +6976,37 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Forma1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="144"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="136"/>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
         <translation>Šis saraksts satur visas darbības, kas ir definētas pašreizējam slānim. Jaunas darbības var pievienot norādot to parametrus zemāk redzamajos lodziņos un nospiežot pievienošanas pogu. Eksistējošās darbības var tikt rediģētas ar dubultklikšķi uz tās nosaukuma.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="214"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="206"/>
         <source>Move up</source>
         <translation>Pārvietot uz augšu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="211"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="203"/>
         <source>Move the selected action up</source>
         <translation>Pārvieto izvēlēto darbību uz augšu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="224"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="216"/>
         <source>Move down</source>
         <translation>Pārvietot uz leju</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="221"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="213"/>
         <source>Move the selected action down</source>
         <translation>Pārvieto izvēlēto darbību uz leju</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="250"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="242"/>
         <source>Remove</source>
         <translation>Noņemt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="247"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="239"/>
         <source>Remove the selected action</source>
         <translation>Noņem izvēlēto darbību</translation>
     </message>
@@ -7015,13 +7015,13 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nosaukums:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="43"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="59"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="35"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="51"/>
         <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
         <translation>Šeit ievadiet darbības nosaukumu. Nosaukumam vajadzētu būt unikālam (QGIS padarīs to unikālu, ja tas būs vajadzīgs).</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="56"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="48"/>
         <source>Enter the action name here</source>
         <translation>Šeit ievadiet darbības nosaukumu</translation>
     </message>
@@ -7030,7 +7030,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Darbība:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="79"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="71"/>
         <source>Enter the action command here</source>
         <translation>Šeit ievadiet darbības komandu</translation>
     </message>
@@ -7043,105 +7043,105 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Pārlūkot darbību komandas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="178"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="170"/>
         <source>Insert action</source>
         <translation>Ievietot darbību</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="175"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="167"/>
         <source>Inserts the action into the list above</source>
         <translation>Ievieto darbību sarakstā</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="188"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="180"/>
         <source>Update action</source>
         <translation>Atjaunot darbību</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="185"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="177"/>
         <source>Update the selected action</source>
         <translation>Atjauno izvēlēto darbību</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="115"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="107"/>
         <source>Insert field</source>
         <translation>Ievietot lauku</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="112"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="104"/>
         <source>Inserts the selected field into the action, prepended with a %</source>
         <translation>Ievieto izvēlēto lauku darbībā un priekšā pieliek %</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="105"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="97"/>
         <source>The valid attribute names for this layer</source>
         <translation>Derīgi atribūtu nosaukumi šim slānim</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="128"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="120"/>
         <source>Capture output</source>
         <translation>Tvert izvadi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="122"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="114"/>
         <source>Captures any output from the action</source>
         <translation>Tver jebkādu darbības izvadi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="125"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="117"/>
         <source>Captures the standard output or error generated by the action and displays it in a dialog box</source>
         <translation>Tver programmas standarta izvadi vai kļūdu paziņojumus un parāda to</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="19"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="20"/>
         <source>Attribute Actions</source>
         <translation>Darbības ar atribūtiem</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="37"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="29"/>
         <source>Action properties</source>
         <translation>Darbības īpašības</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="46"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="157"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="38"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="149"/>
         <source>Name</source>
         <translation>Nosaukums</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="66"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="82"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="58"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="74"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="69"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="162"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="61"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="154"/>
         <source>Action</source>
         <translation>Darbība</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="89"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="81"/>
         <source>Browse for action</source>
         <translation>Pārlūkot darbību</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="92"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="84"/>
         <source>Click to browse for an action</source>
         <translation>Klikšķiniet, lai pārlūkotu darbību</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="98"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="90"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="167"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="159"/>
         <source>Capture</source>
         <translation>Tvert</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="95"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="87"/>
         <source>Clicking the button will let you select an application to use as the action</source>
         <translation>Uzklikšķinot, tiks piedāvāts izvēlēties programmu, ko izmantot kā darbību</translation>
     </message>
@@ -11504,12 +11504,12 @@ p, li { white-space: pre-wrap; }
         <translation>No</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="64"/>
+        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="70"/>
         <source>Heading Label</source>
         <translation>Virsraksta birka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="106"/>
+        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="112"/>
         <source>Detail label</source>
         <translation>Apraksta birka</translation>
     </message>
@@ -18327,66 +18327,58 @@ Vai vēlaties to pārrakstīt?</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="407"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Forces labels on, regardless of collisions. Available only for cached labels.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="414"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="446"/>
+        <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="410"/>
         <source>Force</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="424"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="420"/>
         <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="427"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="423"/>
         <source>Anti-alias</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="437"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="433"/>
         <source>Can text run off the edge of the map?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="440"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="436"/>
         <source>Partials</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="450"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="457"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="449"/>
         <source>Dump</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="472"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="464"/>
         <source>Paths</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="495"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="487"/>
         <source>MapServer url</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="505"/>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="545"/>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="585"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="497"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="537"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="577"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -18398,12 +18390,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="535"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="527"/>
         <source>Fontset path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="575"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="567"/>
         <source>Symbolset path</source>
         <translation type="unfinished"></translation>
     </message>
@@ -30412,75 +30404,79 @@ Spraudnis netiks ieslēgts.</translation>
 <context>
     <name>visualThread</name>
     <message>
-        <source>Max. len: </source>
+        <source>Max. len:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Min. len: </source>
+        <source>Min. len:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mean. len: </source>
+        <source>Mean. len:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Filled: </source>
+        <source>Filled:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Empty: </source>
+        <source>Empty:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>N: </source>
+        <source>N:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mean: </source>
+        <source>Mean:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>StdDev: </source>
+        <source>StdDev:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sum: </source>
+        <source>Sum:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Min: </source>
+        <source>Min:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Max: </source>
+        <source>Max:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CV: </source>
+        <source>CV:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Number of unique values: </source>
+        <source>Number of unique values:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Range: </source>
+        <source>Range:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Median: </source>
+        <source>Median:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Observed mean distance : </source>
+        <source>Observed mean distance:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Expected mean distance : </source>
+        <source>Expected mean distance:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nearest neighbour index : </source>
+        <source>Nearest neighbour index:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
