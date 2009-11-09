@@ -3240,39 +3240,39 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">Une erreur est apparue lors de l&apos;exécution du code python : &apos;</translation>
+        <translation>Une erreur est apparue lors de l&apos;exécution du code python :</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Version de Python :</translation>
+        <translation>Version de Python :</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Chemin vers Python :</translation>
+        <translation>Chemin vers Python :</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Erreur Python</translation>
+        <translation>Erreur Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger l&apos;extension &apos;%1&apos; depuis [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">Impossible de charger l&apos;extension %1</translation>
+        <translation>Impossible de charger l&apos;extension %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished">%1 provoque une erreur lors de l&apos;appel de sa méthode classFactory()</translation>
+        <translation>%1 provoque une erreur lors de l&apos;appel de sa méthode classFactory()</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 provoque une erreur lors de l&apos;appel de sa méthode initGui()</translation>
+        <translation>%1 provoque une erreur lors de l&apos;appel de sa méthode initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">Erreur lors du déchargement de l&apos;extension %1</translation>
+        <translation>Erreur lors du déchargement de l&apos;extension %1</translation>
     </message>
 </context>
 <context>
@@ -4724,17 +4724,17 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="34"/>
         <source>Diagram Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagramme Incrusté</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="35"/>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Une extension pour insérer un diagramme dans une couche vecteur</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="36"/>
         <source>Version 0.0.1</source>
-        <translation type="unfinished"></translation>
+        <translation>Version 0.0.1</translation>
     </message>
 </context>
 <context>
@@ -6262,7 +6262,7 @@ Compilé avec Qt </translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3694"/>
         <source>Map Composer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Composeur de Carte %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5446"/>
@@ -6959,7 +6959,7 @@ Erreurs : %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="734"/>
         <source>Click a vertex of the ring to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquer un sommet du morceau pour l&apos;effacer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="740"/>
@@ -9702,12 +9702,12 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="20"/>
         <source>Frame color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur du cadre...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="27"/>
         <source>Background color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur du fond...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="34"/>
@@ -9774,7 +9774,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="30"/>
         <source>Item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés de l&apos;objet</translation>
     </message>
 </context>
 <context>
@@ -9787,7 +9787,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="41"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquette</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="53"/>
@@ -9834,7 +9834,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="30"/>
         <source>Item Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options de l&apos;objet</translation>
     </message>
 </context>
 <context>
@@ -9852,27 +9852,27 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="62"/>
         <source>&amp;Title</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Titre</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Title Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pocile du tite</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Layer Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Police de la couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Item Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Police de l&apos;objet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Symbol width </source>
-        <translation type="unfinished"></translation>
+        <translation>Largeur du symbole</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
@@ -9882,57 +9882,57 @@ L&apos;erreur est : %2</translation>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="145"/>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="155"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
         <source>Symbol height </source>
-        <translation type="unfinished"></translation>
+        <translation>Hauteur du symbole</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="122"/>
         <source>Layer space </source>
-        <translation type="unfinished"></translation>
+        <translation>Espace entre les couches</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="132"/>
         <source>Symbol space </source>
-        <translation type="unfinished"></translation>
+        <translation>Espace entre les symboles</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="142"/>
         <source>Icon label space </source>
-        <translation type="unfinished"></translation>
+        <translation>Espace des étiquettes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de la boite</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
         <source>v</source>
-        <translation type="unfinished"></translation>
+        <translation>v</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="210"/>
         <source>^</source>
-        <translation type="unfinished"></translation>
+        <translation>^</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="217"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="224"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="238"/>
         <source>All</source>
-        <translation type="unfinished">Tout</translation>
+        <translation>Tout</translation>
     </message>
     <message>
         <source>Title:</source>
@@ -10179,7 +10179,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options globales</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="44"/>
@@ -10301,7 +10301,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="190"/>
         <source>Extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Emprise</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="205"/>
@@ -10331,7 +10331,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="286"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Grille</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="292"/>
@@ -10515,7 +10515,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="38"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options globales</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="68"/>
@@ -10565,7 +10565,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
         <source>Picture options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options de l&apos;image</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="53"/>
@@ -10620,7 +10620,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="263"/>
         <source>Sync from map</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchroniser depuis la carte</translation>
     </message>
     <message>
         <source>Take rotation from composer map</source>
@@ -10659,7 +10659,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options globales</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="34"/>
@@ -10763,7 +10763,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="41"/>
         <source>Scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre d&apos;échelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="47"/>
@@ -12891,7 +12891,7 @@ La base de donnée dit: %3</translation>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="83"/>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="319"/>
         <source>linearly scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à l&apos;échelle linéaire</translation>
     </message>
 </context>
 <context>
@@ -18786,64 +18786,64 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="489"/>
         <source>Save layer as...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="525"/>
         <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished">Sélectionnez le système de coordonnées référence pour le shapefile enregistré. Les données des points seront transformées depuis le système de référence de la couche.</translation>
+        <translation>Sélectionnez le système de coordonnées référence pour le shapefile enregistré. Les données des points seront transformées depuis le système de référence de la couche.</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="564"/>
         <source>Saving done</source>
-        <translation type="unfinished">Sauvegarde effectuée</translation>
+        <translation>Sauvegarde effectuée</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="564"/>
         <source>Export to Shapefile has been completed</source>
-        <translation type="unfinished">Export vers Shapefile est terminé</translation>
+        <translation>Export vers Shapefile est terminé</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="568"/>
         <source>Driver not found</source>
-        <translation type="unfinished">Pilote non trouvé</translation>
+        <translation>Pilote non trouvé</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="568"/>
         <source>ESRI Shapefile driver is not available</source>
-        <translation type="unfinished">Le pilote ESRI Shapefile n&apos;est pas disponible</translation>
+        <translation>Le pilote ESRI Shapefile n&apos;est pas disponible</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="572"/>
         <source>Error creating shapefile</source>
-        <translation type="unfinished">Erreur lors de la création du Shapefile</translation>
+        <translation>Erreur lors de la création du Shapefile</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="573"/>
         <source>The shapefile could not be created (%1)</source>
-        <translation type="unfinished">Le shapefile n&apos;a pas pu être créé (%1)</translation>
+        <translation>Le shapefile n&apos;a pas pu être créé (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="577"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="581"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="586"/>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="577"/>
         <source>Layer creation failed</source>
-        <translation type="unfinished">La création de la couche a échoué</translation>
+        <translation>La création de la couche a échoué</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="582"/>
         <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="unfinished">La table attributaire de la couche continet des types de donnée non pris en charge</translation>
+        <translation>La table attributaire de la couche continet des types de donnée non pris en charge</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="587"/>
         <source>Creation of an attribute failed</source>
-        <translation type="unfinished">Échec de la création d&apos;un attribut</translation>
+        <translation>Échec de la création d&apos;un attribut</translation>
     </message>
     <message>
         <source>More layers</source>
@@ -20064,12 +20064,12 @@ Voulez-vous l&apos;écraser ?</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="407"/>
         <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
-        <translation type="unfinished"></translation>
+        <translation>Forcer l&apos;affichage des étiquettes sans ce soucier des collisions. Disponible uniquement les étiquettes en cache.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="446"/>
         <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Permettre à MapServer de retourner des données au format GML. Utile quand utilisé avec l&apos;opération GetFeatureInfo de WMS.</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -22990,7 +22990,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="46"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Ajoutez</translation>
+        <translation>&amp;Ajouter</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="54"/>
@@ -25634,12 +25634,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="39"/>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tester</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="43"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Effacer</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="105"/>
@@ -26511,7 +26511,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="439"/>
         <source>Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Note : les valeurs Minimum et Maximun sont estimées, définies par l&apos;utilisateur ou calculées depuis l&apos;emprise actuelle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="608"/>
@@ -27274,7 +27274,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="780"/>
         <source>Current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Emprise actuelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="787"/>
@@ -27439,7 +27439,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1749"/>
@@ -33220,79 +33224,79 @@ L&apos;extension ne sera pas activée.</translation>
     <name>visualThread</name>
     <message>
         <source>Max. len:</source>
-        <translation type="unfinished"></translation>
+        <translation>Long. max. :</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="unfinished"></translation>
+        <translation>Long. min. :</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="unfinished"></translation>
+        <translation>Long. moy. :</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplissage :</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vider :</translation>
     </message>
     <message>
         <source>N:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="unfinished"></translation>
+        <translation>Moyenne :</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dev. Strd. :</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Somme :</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="unfinished"></translation>
+        <translation>Min :</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="unfinished"></translation>
+        <translation>Max :</translation>
     </message>
     <message>
         <source>CV:</source>
-        <translation type="unfinished"></translation>
+        <translation>CV :</translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de valeurs uniques :</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Portée :</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="unfinished"></translation>
+        <translation>Médianne :</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Distance moyenne observée :</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Distance moyenne attendue :</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="unfinished"></translation>
+        <translation>Index du plus proche voisin :</translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation type="unfinished"></translation>
+        <translation>Score Z :</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
