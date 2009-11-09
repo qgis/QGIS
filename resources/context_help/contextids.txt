@@ -13,6 +13,6 @@
 985715179_en_US   QgsComposer
 63428984_en_US    QgsNewOgrConnection
 348772824_en_US   QgsOpenVectorLayerDialog
-995980174_en_US   Qgs
-165149618_en_US   Qgs
-831088384_en_US   Qgs
+995980174_en_US   QgsGPSPlugin
+165149618_en_US   QgsCreateNewVectorLayer
+831088384_en_US   QgsAttributeTable
