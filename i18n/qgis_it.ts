@@ -20171,7 +20171,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="65"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;rova connessione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="90"/>
@@ -20243,22 +20243,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="31"/>
         <source>Text data</source>
-        <translation type="unfinished"></translation>
+        <translation>Testo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="32"/>
         <source>Whole number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numeri interi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="33"/>
         <source>Decimal number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numeri decimali</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="39"/>
         <source>ESRI Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI Shapefile</translation>
     </message>
 </context>
 <context>
@@ -20271,77 +20271,77 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="25"/>
         <source>File format</source>
-        <translation type="unfinished">Formato file</translation>
+        <translation>Formato file</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="42"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="91"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="205"/>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="48"/>
         <source>Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="55"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="62"/>
         <source>Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligono</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="72"/>
         <source>New attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuovo attributo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="78"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="200"/>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="104"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="210"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Larghezza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="117"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="215"/>
         <source>Precision</source>
-        <translation type="unfinished">Precisione</translation>
+        <translation>Precisione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="156"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggungi l&apos;attributo alla lista</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="162"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi alla lista delgi attributi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="178"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista degli attributi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="242"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished">Elimina attributo selezionato</translation>
+        <translation>Elimina attributo selezionato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="245"/>
         <source>Removed selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributo selezionato rimosso</translation>
     </message>
 </context>
 <context>
@@ -21736,7 +21736,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="63"/>
         <source>&amp;Oracle Spatial</source>
-        <translation>&amp;Orcale Spatial</translation>
+        <translation>&amp;Oracle Spatial</translation>
     </message>
 </context>
 <context>
