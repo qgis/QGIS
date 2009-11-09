@@ -2572,6 +2572,45 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
+    <name>Python</name>
+    <message>
+        <source>An error has occured while executing Python code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python version:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load plugin %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 due an error when calling its classFactory() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 due an error when calling its initGui() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while unloading plugin %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QFileDialog</name>
     <message>
         <source>open files dialog</source>
@@ -3545,6 +3584,18 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Couldn&apos;t load QGIS utils.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Diagram Overlay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A plugin for placing diagrams on vector layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version 0.0.1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5624,22 +5675,6 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enter id string for composer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>id:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Composer id already exists</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The entered composer id &apos;%1&apos; already exists. Please enter a different id</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Add Part</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5653,6 +5688,10 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Click a vertex of the part to delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map Composer %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7992,18 +8031,6 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Composer item properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Frame...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Background...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Frame</source>
         <translation type="obsolete">框架</translation>
     </message>
@@ -8013,7 +8040,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">颜色</translation>
+        <translation type="obsolete">颜色</translation>
     </message>
     <message>
         <source>Opacity</source>
@@ -8025,6 +8052,14 @@ Error was:%2</source>
     </message>
     <message>
         <source>Show frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame color...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background color...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8044,6 +8079,13 @@ Error was:%2</source>
     </message>
 </context>
 <context>
+    <name>QgsComposerLabelWidget</name>
+    <message>
+        <source>Item properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerLabelWidgetBase</name>
     <message>
         <source>Label Options</source>
@@ -8056,6 +8098,10 @@ Error was:%2</source>
     <message>
         <source>Margin (mm)</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">标签</translation>
     </message>
 </context>
 <context>
@@ -8077,6 +8123,13 @@ Error was:%2</source>
     </message>
 </context>
 <context>
+    <name>QgsComposerLegendWidget</name>
+    <message>
+        <source>Item Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerLegendWidgetBase</name>
     <message>
         <source>Barscale Options</source>
@@ -8087,76 +8140,88 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Title...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Item...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Legend items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished">标题</translation>
+        <translation type="obsolete">标题</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished">字体</translation>
-    </message>
-    <message>
-        <source>Symbol width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symbol height</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer space</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symbol space</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Icon label space</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Box space</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Down</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">字体</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">移除</translation>
-    </message>
-    <message>
-        <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">移除</translation>
     </message>
     <message>
         <source>Update</source>
         <translation type="unfinished">更新</translation>
     </message>
     <message>
-        <source>Update all</source>
+        <source>&amp;Title</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Title Font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer Font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item Font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol width </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> mm</source>
+        <translation type="unfinished">毫米</translation>
+    </message>
+    <message>
+        <source>Symbol height </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer space </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol space </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Icon label space </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box space </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>v</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>^</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">编辑</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished">所有</translation>
     </message>
 </context>
 <context>
@@ -8299,6 +8364,10 @@ Error was:%2</source>
         <source>Boundary direction</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>General options</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidgetBase</name>
@@ -8426,6 +8495,14 @@ Error was:%2</source>
         <source>Cross width</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Extents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerPicture</name>
@@ -8487,6 +8564,10 @@ Error was:%2</source>
         <source>Map %1</source>
         <translation type="unfinished">地图 %1</translation>
     </message>
+    <message>
+        <source>General options</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerPictureWidgetBase</name>
@@ -8535,12 +8616,16 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Take rotation from composer map</source>
+        <source>Options</source>
+        <translation type="unfinished">选项</translation>
+    </message>
+    <message>
+        <source>Picture options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation type="unfinished">选项</translation>
+        <source>Sync from map</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8572,6 +8657,10 @@ Error was:%2</source>
     <message>
         <source>Map %1</source>
         <translation type="unfinished">地图 %1</translation>
+    </message>
+    <message>
+        <source>General options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8631,6 +8720,10 @@ Error was:%2</source>
     <message>
         <source>Unit label</source>
         <translation type="unfinished">单位标签</translation>
+    </message>
+    <message>
+        <source>Scale bar</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10264,6 +10357,10 @@ has failed. The database said:
     </message>
     <message>
         <source>Proportional SVG symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>linearly scaling</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14603,7 +14700,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>-</source>
-        <translation>-</translation>
+        <translation type="obsolete">-</translation>
     </message>
     <message>
         <source>OK</source>
@@ -15059,7 +15156,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Show file groups</source>
-        <translation>显示文件</translation>
+        <translation type="obsolete">显示文件</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
@@ -15144,11 +15241,51 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished">属性(&amp;P)</translation>
     </message>
     <message>
-        <source>Multiple layers</source>
+        <source>Save layer as...</source>
+        <translation type="unfinished">图层另存为...</translation>
+    </message>
+    <message>
+        <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
+        <source>Saving done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to Shapefile has been completed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Driver not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ESRI Shapefile driver is not available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The shapefile could not be created (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">错误</translation>
+    </message>
+    <message>
+        <source>Layer creation failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer attribute table contains unsupported datatype(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation of an attribute failed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15160,7 +15297,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Save layer as...</source>
-        <translation type="unfinished">图层另存为...</translation>
+        <translation type="obsolete">图层另存为...</translation>
     </message>
     <message>
         <source>Start editing failed</source>
@@ -15188,7 +15325,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">错误</translation>
+        <translation type="obsolete">错误</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
@@ -15199,72 +15336,24 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="obsolete">回滚时发生问题</translation>
     </message>
     <message>
-        <source>Saving done</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export to Shapefile has been completed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Driver not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ESRI Shapefile driver is not available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layer creation failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Zoom to layer extent</source>
-        <translation type="unfinished">缩放到图层的范围 (&amp;Z)</translation>
-    </message>
-    <message>
-        <source>&amp;Show in overview</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">缩放到图层的范围 (&amp;Z)</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished">移除(&amp;R)</translation>
+        <translation type="obsolete">移除(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
-        <translation type="unfinished">打开属性表(&amp;O)</translation>
+        <translation type="obsolete">打开属性表(&amp;O)</translation>
     </message>
     <message>
         <source>Save as shapefile...</source>
-        <translation type="unfinished">存储为shapefile...</translation>
-    </message>
-    <message>
-        <source>Save selection as shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">存储为shapefile...</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation type="unfinished">属性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The shapefile could not be created (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Creation of an attribute failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">属性(&amp;P)</translation>
     </message>
 </context>
 <context>
@@ -18505,6 +18594,10 @@ Please verify that you have SELECT privilege on a table carrying PostGIS
 geometry.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished">增加 (&amp;A)</translation>
+    </message>
 </context>
 <context>
     <name>QgsPgSourceSelectBase</name>
@@ -18534,19 +18627,19 @@ geometry.</source>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">帮助</translation>
+        <translation type="obsolete">帮助</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">添加</translation>
+        <translation type="obsolete">添加</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">关闭</translation>
+        <translation type="obsolete">关闭</translation>
     </message>
     <message>
         <source>Search:</source>
@@ -20370,6 +20463,14 @@ p, li { white-space: pre-wrap; }
         <source>The subset string could not be set</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;Test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsQueryBuilderBase</name>
@@ -20491,19 +20592,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">清除</translation>
+        <translation type="obsolete">清除</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation type="unfinished">测试</translation>
+        <translation type="obsolete">测试</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished">确定</translation>
+        <translation type="obsolete">确定</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation type="obsolete">取消</translation>
     </message>
 </context>
 <context>
@@ -21100,10 +21201,6 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <source>Note: Minimum Maximum values are estimates or user defined</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21158,6 +21255,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21834,19 +21935,23 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Specify...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26201,33 +26306,6 @@ Plugin will not be enabled.</source>
     </message>
 </context>
 <context>
-    <name>statResult</name>
-    <message>
-        <source>Max. len.      : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Min. len.       : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mean. len     : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filled             : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty           : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>N                   : </source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>visualThread</name>
     <message>
         <source>Observed mean distance : </source>
@@ -26255,6 +26333,66 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max. len: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. len: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean. len: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filled: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>StdDev: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CV: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of unique values: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Median: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
