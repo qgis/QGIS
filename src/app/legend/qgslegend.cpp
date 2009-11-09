@@ -583,7 +583,7 @@ void QgsLegend::legendGroupRemove()
     while ( child )
     {
       setCurrentItem( child );
-      legendLayerRemove();
+      removeCurrentLayer();
       child = lg->child( 0 );
     }
     delete lg;
@@ -591,7 +591,7 @@ void QgsLegend::legendGroupRemove()
   }
 }
 
-void QgsLegend::legendLayerRemove()
+void QgsLegend::removeCurrentLayer()
 {
   if ( !mMapCanvas || mMapCanvas->isDrawing() )
   {
@@ -605,12 +605,7 @@ void QgsLegend::legendLayerRemove()
 
   removeLayer( ll->layer(), true );
 
-  mStateOfCheckBoxes.erase( ll );
-  removeItem( ll );
-  delete ll;
-
   adjustIconSize();
-
 }
 
 bool QgsLegend::removeLayer( QgsMapLayer* ml, bool askCancelOnEditable )
