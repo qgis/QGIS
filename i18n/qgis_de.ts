@@ -454,7 +454,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="239"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="250"/>
-        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="130"/>
+        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="142"/>
         <source>Use only selected features</source>
         <translation>Nur gewählte Objekte nutzen</translation>
     </message>
@@ -864,7 +864,7 @@ p, li { white-space: pre-wrap; }
         <translation>Eindeutige Werte</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="92"/>
+        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="104"/>
         <source>Unique value count</source>
         <translation>Anzahl eindeutiger Werte</translation>
     </message>
@@ -5392,156 +5392,156 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeActionDialogBase</name>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="144"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="136"/>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
         <translation>Diese Liste beinhaltet alle Aktionen, die für aktive Layer definiert wurden. Fügen Sie durch Eingabe von Details in den untenstehenden Kontrollelementen Aktionen hinzu und drücken Sie dann den Knopf mit der Aufschrift &apos;Aktion hinzufügen&apos;. Aktionen können durch Doppelklick auf das entsprechende Element bearbeitet werden.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="214"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="206"/>
         <source>Move up</source>
         <translation>Verschiebe aufwärts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="211"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="203"/>
         <source>Move the selected action up</source>
         <translation>Gewählte Aktion aufwärts bewegen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="224"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="216"/>
         <source>Move down</source>
         <translation>Verschiebe abwärts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="221"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="213"/>
         <source>Move the selected action down</source>
         <translation>Selektierte Aktion abwärts bewegen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="250"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="242"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="247"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="239"/>
         <source>Remove the selected action</source>
         <translation>Gewählte Aktion entfernen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="43"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="59"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="35"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="51"/>
         <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
         <translation>Bitte Namen der Aktion eingeben. Der Name sollte eindeutig sein (QGIS macht ihn eindeutig, falls notwendig). </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="56"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="48"/>
         <source>Enter the action name here</source>
         <translation>Namen der Aktion hier eingeben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="79"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="71"/>
         <source>Enter the action command here</source>
         <translation>Kommando für die Aktion hier eingeben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="178"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="170"/>
         <source>Insert action</source>
         <translation>Aktion hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="175"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="167"/>
         <source>Inserts the action into the list above</source>
         <translation>Aktion in die obenstehende Liste einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="188"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="180"/>
         <source>Update action</source>
         <translation>Aktualisiere die Aktion</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="185"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="177"/>
         <source>Update the selected action</source>
         <translation>Aktualisiere die markierte Aktion</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="115"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="107"/>
         <source>Insert field</source>
         <translation>Attribut einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="112"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="104"/>
         <source>Inserts the selected field into the action, prepended with a %</source>
         <translation>Fügt das markierte Attribut mit vorangestelltem &apos;%&apos; in die Aktion ein</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="105"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="97"/>
         <source>The valid attribute names for this layer</source>
         <translation>Die gültigen Attributnamen für diesen Layer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="128"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="120"/>
         <source>Capture output</source>
         <translation>Ausgaben aufzeichnen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="122"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="114"/>
         <source>Captures any output from the action</source>
         <translation>Ausgaben der Aktion aufzeichnen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="125"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="117"/>
         <source>Captures the standard output or error generated by the action and displays it in a dialog box</source>
         <translation>Nimmt Ausgaben ader Aktion auf Standardausgabe- oder -fehlerkanal auf und zeigt ihn in einem Dialog an</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="66"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="82"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="58"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="74"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
         <translation>Geben Sie hier die Aktion ein. Dies kann jedes Programm, Skript oder Kommando sein, dass in Ihrem System verfügbar ist. Wenn die Aktion ausgeführt wird jeder durch % eingeleiteter Feldname durch den Feldwert ersetzt. Die besondere Zeichenfolge %% wird durch den Wert des gewählten Felds ersetzt. Mit Anführungszeichen können mehrere Wörter zu einem Argument der Aktion zusammengefaßt werden. Für mit Backslash (\) eingeleitete Anführungszeichen gilt dies nicht</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="19"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="20"/>
         <source>Attribute Actions</source>
         <translation>Attributaktionen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="37"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="29"/>
         <source>Action properties</source>
         <translation>Aktionseigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="46"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="157"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="38"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="149"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="69"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="162"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="61"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="154"/>
         <source>Action</source>
         <translation>Aktion</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="89"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="81"/>
         <source>Browse for action</source>
         <translation>Aktionen durchsuchen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="92"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="84"/>
         <source>Click to browse for an action</source>
         <translation>Zum Aktionen durchsuchen anklicken</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="98"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="90"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="167"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="159"/>
         <source>Capture</source>
         <translation>Erfassen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="95"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="87"/>
         <source>Clicking the button will let you select an application to use as the action</source>
         <translation>Mit diesem Knopf kann man eine Applikation für diese Aktion wählen</translation>
     </message>
@@ -9061,12 +9061,12 @@ p, li { white-space: pre-wrap; }
         <translation>Formular</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="64"/>
+        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="70"/>
         <source>Heading Label</source>
         <translation>Kopftitel</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="106"/>
+        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="112"/>
         <source>Detail label</source>
         <translation>Detailtitel</translation>
     </message>
@@ -14911,74 +14911,82 @@ Soll sie überschrieben werden?</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="407"/>
+        <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="446"/>
+        <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Forces labels on, regardless of collisions. Available only for cached labels.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Erzwingt Labels auch bei Kollisionen eingeschalten. Verfügbar nur für gecached Label.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="414"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="410"/>
         <source>Force</source>
         <translation>Erzwingen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="424"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="420"/>
         <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
         <translation>Soll der Text Kantengeglättet sein? Beachte das die mehrere Farben erfordert, die Zeichengeschwindigkeit verringert, und das Ergebnis leicht größere Bilder erzeugt.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="427"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="423"/>
         <source>Anti-alias</source>
         <translation>Kantenglättung</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="437"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="433"/>
         <source>Can text run off the edge of the map?</source>
         <translation>Kann der Text über den Rand der Karte laufen?</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="440"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="436"/>
         <source>Partials</source>
         <translation>Teilung</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="450"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Überprüfen Sie damit MapServer Daten im GML-Format zurückgibt. Dies ist nützlich, wenn Sie es mit WMS GetFeatureInfo Operationen verwenden.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="457"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="449"/>
         <source>Dump</source>
         <translation>Abbild</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="472"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="464"/>
         <source>Paths</source>
         <translation>Pfade</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="495"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="487"/>
         <source>MapServer url</source>
         <translation>MapServer URL</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="505"/>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="545"/>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="585"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="497"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="537"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="577"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -14997,12 +15005,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;http://my.host.com/cgi-bin/mapserv.exe&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="535"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="527"/>
         <source>Fontset path</source>
         <translation>Fontset Pfad</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="575"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="567"/>
         <source>Symbolset path</source>
         <translation>Symbolset Pfad</translation>
     </message>
@@ -25765,76 +25773,152 @@ Plugin wird nicht aktiviert.</translation>
 <context>
     <name>visualThread</name>
     <message>
+        <source>Max. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filled:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>StdDev:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CV:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of unique values:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Median:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Observed mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Max. len: </source>
-        <translation>Max. Länge: </translation>
+        <translation type="obsolete">Max. Länge: </translation>
     </message>
     <message>
         <source>Min. len: </source>
-        <translation>Min. Länge: </translation>
+        <translation type="obsolete">Min. Länge: </translation>
     </message>
     <message>
         <source>Mean. len: </source>
-        <translation>Mittlere Länge: </translation>
+        <translation type="obsolete">Mittlere Länge: </translation>
     </message>
     <message>
         <source>Filled: </source>
-        <translation>Gefüllt: </translation>
+        <translation type="obsolete">Gefüllt: </translation>
     </message>
     <message>
         <source>Empty: </source>
-        <translation>Leer: </translation>
+        <translation type="obsolete">Leer: </translation>
     </message>
     <message>
         <source>N: </source>
-        <translation>N: </translation>
+        <translation type="obsolete">N: </translation>
     </message>
     <message>
         <source>Mean: </source>
-        <translation>Durchschnitt: </translation>
+        <translation type="obsolete">Durchschnitt: </translation>
     </message>
     <message>
         <source>StdDev: </source>
-        <translation>Std.Abw: </translation>
+        <translation type="obsolete">Std.Abw: </translation>
     </message>
     <message>
         <source>Sum: </source>
-        <translation>Summe: </translation>
+        <translation type="obsolete">Summe: </translation>
     </message>
     <message>
         <source>Min: </source>
-        <translation>Min: </translation>
+        <translation type="obsolete">Min: </translation>
     </message>
     <message>
         <source>Max: </source>
-        <translation>Max: </translation>
+        <translation type="obsolete">Max: </translation>
     </message>
     <message>
         <source>CV: </source>
-        <translation>CV: </translation>
+        <translation type="obsolete">CV: </translation>
     </message>
     <message>
         <source>Number of unique values: </source>
-        <translation>Anzahl der eindeutigen Werte: </translation>
+        <translation type="obsolete">Anzahl der eindeutigen Werte: </translation>
     </message>
     <message>
         <source>Range: </source>
-        <translation>Bereich: </translation>
+        <translation type="obsolete">Bereich: </translation>
     </message>
     <message>
         <source>Median: </source>
-        <translation>Mittel: </translation>
+        <translation type="obsolete">Mittel: </translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation>Beobachteter mittlerer Abstand : </translation>
+        <translation type="obsolete">Beobachteter mittlerer Abstand : </translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation>Erwarteter mittlerer Abstand : </translation>
+        <translation type="obsolete">Erwarteter mittlerer Abstand : </translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation>Nächster Nachbarindex : </translation>
+        <translation type="obsolete">Nächster Nachbarindex : </translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>

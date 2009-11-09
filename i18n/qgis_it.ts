@@ -990,7 +990,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="239"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="250"/>
-        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="130"/>
+        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="142"/>
         <source>Use only selected features</source>
         <translation>Usa solo le geometrie selezionate</translation>
     </message>
@@ -1399,7 +1399,7 @@ p, li { white-space: pre-wrap; }
         <translation>Lista valori univoci</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="92"/>
+        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="104"/>
         <source>Unique value count</source>
         <translation>Conta valore univoci</translation>
     </message>
@@ -7278,32 +7278,32 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Form1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="214"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="206"/>
         <source>Move up</source>
         <translation>Sposta in su</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="211"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="203"/>
         <source>Move the selected action up</source>
         <translation>Sposta l&apos;azione selezionata in su</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="224"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="216"/>
         <source>Move down</source>
         <translation>Sposta in giù</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="221"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="213"/>
         <source>Move the selected action down</source>
         <translation>Sposta l&apos;azione selezionata in giù</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="250"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="242"/>
         <source>Remove</source>
         <translation>Rimuovi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="247"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="239"/>
         <source>Remove the selected action</source>
         <translation>Rimuovi l&apos;azione selezionata</translation>
     </message>
@@ -7312,13 +7312,13 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nome:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="43"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="59"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="35"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="51"/>
         <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
         <translation>Inserire un nome con cui identificare l&apos;azione. Il nome deve essere univoco (QGIS lo rende tale se necessario).</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="56"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="48"/>
         <source>Enter the action name here</source>
         <translation>Nome da assegnare all&apos;azione</translation>
     </message>
@@ -7327,7 +7327,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Azione:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="79"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="71"/>
         <source>Enter the action command here</source>
         <translation>Inserire il comando dell&apos;azione</translation>
     </message>
@@ -7340,42 +7340,42 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Cerca i comandi per l&apos;azione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="178"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="170"/>
         <source>Insert action</source>
         <translation>Inserire l&apos;azione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="175"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="167"/>
         <source>Inserts the action into the list above</source>
         <translation>Inserire l&apos;azione in questa lista</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="188"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="180"/>
         <source>Update action</source>
         <translation>Aggiorna l&apos;azione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="185"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="177"/>
         <source>Update the selected action</source>
         <translation>Aggiorna l&apos;azione selezionata</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="115"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="107"/>
         <source>Insert field</source>
         <translation>Inserisci campo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="112"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="104"/>
         <source>Inserts the selected field into the action, prepended with a %</source>
         <translation>Inserisci il campo selezionato nell&apos;azione preceduto con il simbolo %</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="105"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="97"/>
         <source>The valid attribute names for this layer</source>
         <translation>Nomi degli attributi validi per questo vettoriale</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="144"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="136"/>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
         <translation>Questa lista contiene tutte le azioni che sono state definite per il vettoriale in uso. Per aggiungere un&apos;azione è sufficente fare click sul bottone Aggiungi. La azioni possono essere modificate facendo doppio click su di esse.</translation>
     </message>
@@ -7384,17 +7384,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Inserire l&apos;azione qui. Questo può essere un programma o uno script o un comando presenti sul sistema. Quando l&apos;azione viene invocata tutti i caratteri che cominciano con il simbolo % e che hanno nome uguale al campo vengono sostituiti con il valore contenuto nel relativo campo. Il carattere speciale %% sostituisce il valore del campo selezionato. Le doppie virgolette marcano una parte di testo come singolo argomento per il programma, script o comando. Le doppie virgolette vengono ignorate se precedute da un backslash.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="128"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="120"/>
         <source>Capture output</source>
         <translation>Cattura dell&apos;output</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="122"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="114"/>
         <source>Captures any output from the action</source>
         <translation>Cattura ogni output dell&apos;azione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="125"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="117"/>
         <source>Captures the standard output or error generated by the action and displays it in a dialog box</source>
         <translation>Gli output catturati da una azione (sia standard che errori) saranno visualizzati in una finestra di dialogo </translation>
     </message>
@@ -7403,55 +7403,55 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Inserisci un azione qui. Essa può essere un qualsisasi programma, script o comando disponibile sul tuo sistema. Quando questa azione è invocata qualsiasi set di caratteri che inizia con % e che segue con un nome di campo verrà sostituito con il contenuto del campo specificato. I caratteri speciali %% verranno sostituiti dal valore del campo che è stato selezionato. Racchiudere fra doppi apici un gruppo di testo fa si che tale ragruppamento venga considerato come singolo parametro dal programma, script o comando richiamato. I doppi apici vengono ignorati se preceduti da un backslash</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="19"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="20"/>
         <source>Attribute Actions</source>
         <translation>Attributi azione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="37"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="29"/>
         <source>Action properties</source>
         <translation>Proprietà azione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="46"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="157"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="38"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="149"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="66"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="82"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="58"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="74"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
         <translation>Inserisci qui l&apos;azione. L&apos;azione può essere un qualsiasi programma o script disponibile sul proprio sistema. Quando l&apos;azione è invocata qualsiasi insieme di caratteri che inizia con una % e ha il nome di un campo verrà sostituito dal valore con tale campo. I caratteri speciali %% saranno sostituiti dal valore del campo selezionato. Le doppie virgolette creano un unico gruppo di testo in un singolo argomento per il programma, script o comando. Le doppie virgolette saranno ignorate se seguono un backslash \</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="69"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="162"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="61"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="154"/>
         <source>Action</source>
         <translation>Azione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="89"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="81"/>
         <source>Browse for action</source>
         <translation>Cerca i comandi per l&apos;azione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="92"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="84"/>
         <source>Click to browse for an action</source>
         <translation>Click per selezionare un&apos;azione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="98"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="90"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="167"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="159"/>
         <source>Capture</source>
         <translation>Cattura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="95"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="87"/>
         <source>Clicking the button will let you select an application to use as the action</source>
         <translation>Cliccando il bottone potrai scegliere una applicazione da usare come azione</translation>
     </message>
@@ -12177,12 +12177,12 @@ p, li { white-space: pre-wrap; }
         <translation>Modulo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="64"/>
+        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="70"/>
         <source>Heading Label</source>
         <translation>Etichetta intestazione</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="106"/>
+        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="112"/>
         <source>Detail label</source>
         <translation>Etichetta dettaglio</translation>
     </message>
@@ -19340,66 +19340,58 @@ Lo si vuole sovrascrivere?</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="407"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Forces labels on, regardless of collisions. Available only for cached labels.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="414"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="446"/>
+        <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="410"/>
         <source>Force</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="424"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="420"/>
         <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="427"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="423"/>
         <source>Anti-alias</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="437"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="433"/>
         <source>Can text run off the edge of the map?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="440"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="436"/>
         <source>Partials</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="450"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="457"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="449"/>
         <source>Dump</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="472"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="464"/>
         <source>Paths</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="495"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="487"/>
         <source>MapServer url</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="505"/>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="545"/>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="585"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="497"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="537"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="577"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -19411,12 +19403,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="535"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="527"/>
         <source>Fontset path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="575"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="567"/>
         <source>Symbolset path</source>
         <translation type="unfinished"></translation>
     </message>
@@ -20001,7 +19993,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="195"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">P&amp;rova connessione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="207"/>
@@ -32273,76 +32265,92 @@ Il plugin può essere abilitato.</translation>
 <context>
     <name>visualThread</name>
     <message>
-        <source>Max. len: </source>
+        <source>Max. len:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Min. len: </source>
+        <source>Min. len:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mean. len: </source>
+        <source>Mean. len:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Filled: </source>
+        <source>Filled:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Empty: </source>
+        <source>Empty:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>N: </source>
+        <source>N:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mean: </source>
+        <source>Mean:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>StdDev: </source>
+        <source>StdDev:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sum: </source>
+        <source>Sum:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Min: </source>
+        <source>Min:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Max: </source>
+        <source>Max:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CV: </source>
+        <source>CV:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Number of unique values: </source>
+        <source>Number of unique values:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Range: </source>
+        <source>Range:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Median: </source>
+        <source>Median:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Observed mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation type="unfinished">Distanza media osservata : </translation>
+        <translation type="obsolete">Distanza media osservata : </translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation type="unfinished">Distanza media attesa : </translation>
+        <translation type="obsolete">Distanza media attesa : </translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation type="unfinished">Indice più vicino : </translation>
+        <translation type="obsolete">Indice più vicino : </translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>

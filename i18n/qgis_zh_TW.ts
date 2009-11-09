@@ -17609,14 +17609,6 @@ Do you want to overwrite it?</source>
         <translation type="unfinished">選項</translation>
     </message>
     <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Forces labels on, regardless of collisions. Available only for cached labels.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Force</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17634,14 +17626,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Partials</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -17673,6 +17657,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Symbolset path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -27901,18 +27893,6 @@ Plugin will not be enabled.</source>
 <context>
     <name>visualThread</name>
     <message>
-        <source>Observed mean distance : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expected mean distance : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nearest neighbour index : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Feature %1 contains an unnested hole</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27929,63 +27909,79 @@ Plugin will not be enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Max. len: </source>
+        <source>Max. len:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Min. len: </source>
+        <source>Min. len:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mean. len: </source>
+        <source>Mean. len:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Filled: </source>
+        <source>Filled:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Empty: </source>
+        <source>Empty:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>N: </source>
+        <source>N:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mean: </source>
+        <source>Mean:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>StdDev: </source>
+        <source>StdDev:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sum: </source>
+        <source>Sum:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Min: </source>
+        <source>Min:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Max: </source>
+        <source>Max:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CV: </source>
+        <source>CV:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Number of unique values: </source>
+        <source>Number of unique values:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Range: </source>
+        <source>Range:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Median: </source>
+        <source>Median:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Observed mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
