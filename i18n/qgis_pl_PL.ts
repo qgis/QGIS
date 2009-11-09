@@ -2659,19 +2659,19 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">Wystąpił błąd podczas wykonywania kodu Pythona:</translation>
+        <translation>Wystąpił błąd podczas wykonywania kodu Pythona:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Wersja Pythona:</translation>
+        <translation>Wersja Pythona:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Lokalizacja Pythona:</translation>
+        <translation>Lokalizacja Pythona:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Błąd Pythona</translation>
+        <translation>Błąd Pythona</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
@@ -2679,19 +2679,19 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">Nie można wczytać wtyczki %1</translation>
+        <translation>Nie można wczytać wtyczki %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished">%1 z powodu błędu wywołania jej metody classFactory()</translation>
+        <translation>%1 z powodu błędu wywołania jej metody classFactory()</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 z powodu błędu wywołania jej metody initGui()</translation>
+        <translation>%1 z powodu błędu wywołania jej metody initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">Błąd podczas usuwania wtyczki %1</translation>
+        <translation>Błąd podczas usuwania wtyczki %1</translation>
     </message>
 </context>
 <context>
