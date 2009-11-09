@@ -376,7 +376,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
 
   // remove from canvas
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemove.png" ),
-                     tr( "&Remove" ), legend(), SLOT( legendLayerRemove() ) );
+                     tr( "&Remove" ), legend(), SLOT( removeCurrentLayer() ) );
 
   theMenu.addSeparator();
 

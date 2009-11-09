@@ -4769,7 +4769,7 @@ void QgisApp::isInOverview()
 
 void QgisApp::removeLayer()
 {
-  mMapLegend->legendLayerRemove();
+  mMapLegend->removeCurrentLayer();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
 }

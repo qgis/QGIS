@@ -210,7 +210,7 @@ class QgsLegend : public QTreeWidget
     void writeProject( QDomDocument & );
 
     /**Removes the current LegendLayer*/
-    void legendLayerRemove();
+    void removeCurrentLayer();
 
     /**Removes a layer. If the layer is editable, a dialog is shown where user can select 'save', 'discard' and optionally 'cancel'. Cancel
       is useful if a single layer is removed whereas on closing of the whole project or application, the cancel option may not be possible
