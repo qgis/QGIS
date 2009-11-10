@@ -43,7 +43,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   if ( mComposition )
   {
     //read printout resolution from composition
-    mResolutionLineEdit->setText( QString::number( mComposition->printResolution() ) );
+    mResolutionSpinBox->setValue( mComposition->printResolution() );
 
     //print as raster
     if ( mComposition->printAsRaster() )
@@ -64,7 +64,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     {
       mSnapToGridCheckBox->setCheckState( Qt::Unchecked );
     }
-    mResolutionSpinBox->setValue( mComposition->snapGridResolution() );
+    mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
 
@@ -154,20 +154,21 @@ void QgsCompositionWidget::createPaperEntries()
   }
 
   mPaperSizeComboBox->blockSignals( false );
+  mPaperSizeComboBox->setCurrentIndex( 2 ); //A4
 }
 
 void QgsCompositionWidget::on_mPaperSizeComboBox_currentIndexChanged( const QString& text )
 {
   if ( mPaperSizeComboBox->currentText() == tr( "Custom" ) )
   {
-    mPaperWidthLineEdit->setEnabled( true );
-    mPaperHeightLineEdit->setEnabled( true );
+    mPaperWidthDoubleSpinBox->setEnabled( true );
+    mPaperHeightDoubleSpinBox->setEnabled( true );
     mPaperUnitsComboBox->setEnabled( true );
   }
   else
   {
-    mPaperWidthLineEdit->setEnabled( false );
-    mPaperHeightLineEdit->setEnabled( false );
+    mPaperWidthDoubleSpinBox->setEnabled( false );
+    mPaperHeightDoubleSpinBox->setEnabled( false );
     mPaperUnitsComboBox->setEnabled( false );
   }
   applyCurrentPaperSettings();
@@ -189,8 +190,8 @@ void QgsCompositionWidget::on_mPaperOrientationComboBox_currentIndexChanged( con
 
 void QgsCompositionWidget::on_mPaperUnitsComboBox_currentIndexChanged( const QString& text )
 {
-  double width = size( mPaperWidthLineEdit );
-  double height = size( mPaperHeightLineEdit );
+  double width = size( mPaperWidthDoubleSpinBox );
+  double height = size( mPaperHeightDoubleSpinBox );
 
   if ( mPaperUnitsComboBox->currentIndex() == 0 )
   {
@@ -205,8 +206,8 @@ void QgsCompositionWidget::on_mPaperUnitsComboBox_currentIndexChanged( const QSt
     height /= 25.4;
   }
 
-  setSize( mPaperWidthLineEdit, width );
-  setSize( mPaperHeightLineEdit, height );
+  setSize( mPaperWidthDoubleSpinBox, width );
+  setSize( mPaperHeightDoubleSpinBox, height );
 
   if ( mPaperSizeComboBox->currentText() == tr( "Custom" ) )
   {
@@ -222,8 +223,8 @@ void QgsCompositionWidget::on_mPaperUnitsComboBox_currentIndexChanged( const QSt
 
 void QgsCompositionWidget::adjustOrientation()
 {
-  double width = size( mPaperWidthLineEdit );
-  double height = size( mPaperHeightLineEdit );
+  double width = size( mPaperWidthDoubleSpinBox );
+  double height = size( mPaperHeightDoubleSpinBox );
 
   if ( width < 0 || height < 0 )
   {
@@ -237,45 +238,41 @@ void QgsCompositionWidget::adjustOrientation()
     height = tmp;
   }
 
-  bool lineEditsEnabled = mPaperWidthLineEdit->isEnabled();
+  bool lineEditsEnabled = mPaperWidthDoubleSpinBox->isEnabled();
 
-  mPaperWidthLineEdit->setEnabled( true );
-  mPaperHeightLineEdit->setEnabled( true );
+  mPaperWidthDoubleSpinBox->setEnabled( true );
+  mPaperHeightDoubleSpinBox->setEnabled( true );
   if ( mPaperOrientationComboBox->currentText() == tr( "Landscape" ) )
   {
-    setSize( mPaperWidthLineEdit, width );
-    setSize( mPaperHeightLineEdit, height );
+    setSize( mPaperWidthDoubleSpinBox, width );
+    setSize( mPaperHeightDoubleSpinBox, height );
   }
   else
   {
-    setSize( mPaperWidthLineEdit, height );
-    setSize( mPaperHeightLineEdit, width );
+    setSize( mPaperWidthDoubleSpinBox, height );
+    setSize( mPaperHeightDoubleSpinBox, width );
   }
-  mPaperWidthLineEdit->setEnabled( lineEditsEnabled );
-  mPaperHeightLineEdit->setEnabled( lineEditsEnabled );
+  mPaperWidthDoubleSpinBox->setEnabled( lineEditsEnabled );
+  mPaperHeightDoubleSpinBox->setEnabled( lineEditsEnabled );
 }
 
-void QgsCompositionWidget::setSize( QLineEdit *le, double v )
+void QgsCompositionWidget::setSize( QDoubleSpinBox *spin, double v )
 {
   if ( mPaperUnitsComboBox->currentIndex() == 0 )
   {
     // mm
-    le->setText( QString( "%1" ).arg( v ) );
+    spin->setValue( v );
   }
   else
   {
     // inch (show width in inch)
-    le->setText( QString( "%1" ).arg( v / 25.4 ) );
+    spin->setValue(  v / 25.4  );
   }
 }
 
-double QgsCompositionWidget::size( QLineEdit *le )
+double QgsCompositionWidget::size( QDoubleSpinBox *spin )
 {
-  bool conversionSuccess;
-
-  double size = le->text().toDouble( &conversionSuccess );
-  if ( !conversionSuccess )
-    return -1.0;
+  double size = spin->value();
 
   if ( mPaperUnitsComboBox->currentIndex() == 0 )
   {
@@ -300,12 +297,12 @@ void QgsCompositionWidget::applyCurrentPaperSettings()
       return;
     }
 
-    mPaperWidthLineEdit->setEnabled( true );
-    mPaperHeightLineEdit->setEnabled( true );
-    setSize( mPaperWidthLineEdit, it->mWidth );
-    setSize( mPaperHeightLineEdit, it->mHeight );
-    mPaperWidthLineEdit->setEnabled( false );
-    mPaperHeightLineEdit->setEnabled( false );
+    mPaperWidthDoubleSpinBox->setEnabled( true );
+    mPaperHeightDoubleSpinBox->setEnabled( true );
+    setSize( mPaperWidthDoubleSpinBox, it->mWidth );
+    setSize( mPaperHeightDoubleSpinBox, it->mHeight );
+    mPaperWidthDoubleSpinBox->setEnabled( false );
+    mPaperHeightDoubleSpinBox->setEnabled( false );
 
     adjustOrientation();
     applyWidthHeight();
@@ -314,8 +311,8 @@ void QgsCompositionWidget::applyCurrentPaperSettings()
 
 void QgsCompositionWidget::applyWidthHeight()
 {
-  double width = size( mPaperWidthLineEdit );
-  double height = size( mPaperHeightLineEdit );
+  double width = size( mPaperWidthDoubleSpinBox );
+  double height = size( mPaperHeightDoubleSpinBox );
 
   if ( width < 0 || height < 0 )
     return;
@@ -323,12 +320,12 @@ void QgsCompositionWidget::applyWidthHeight()
   mComposition->setPaperSize( width, height );
 }
 
-void QgsCompositionWidget::on_mPaperWidthLineEdit_editingFinished()
+void QgsCompositionWidget::on_mPaperWidthDoubleSpinBox_editingFinished()
 {
   applyWidthHeight();
 }
 
-void QgsCompositionWidget::on_mPaperHeightLineEdit_editingFinished()
+void QgsCompositionWidget::on_mPaperHeightDoubleSpinBox_editingFinished()
 {
   applyWidthHeight();
 }
@@ -343,16 +340,16 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   //block all signals to avoid infinite recursion
   mPaperSizeComboBox->blockSignals( true );
   mPaperUnitsComboBox->blockSignals( true );
-  mPaperWidthLineEdit->blockSignals( true );
-  mPaperHeightLineEdit->blockSignals( true );
+  mPaperWidthDoubleSpinBox->blockSignals( true );
+  mPaperHeightDoubleSpinBox->blockSignals( true );
   mPaperOrientationComboBox->blockSignals( true );
-  mResolutionLineEdit->blockSignals( true );
+  mResolutionSpinBox->blockSignals( true );
 
   double paperWidth = mComposition->paperWidth();
-  setSize( mPaperWidthLineEdit, paperWidth );
+  setSize( mPaperWidthDoubleSpinBox, paperWidth );
 
   double paperHeight = mComposition->paperHeight();
-  setSize( mPaperHeightLineEdit, paperHeight );
+  setSize( mPaperHeightDoubleSpinBox, paperHeight );
 
   //set orientation
   if ( paperWidth > paperHeight )
@@ -389,10 +386,10 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
 
   mPaperSizeComboBox->blockSignals( false );
   mPaperUnitsComboBox->blockSignals( false );
-  mPaperWidthLineEdit->blockSignals( false );
-  mPaperHeightLineEdit->blockSignals( false );
+  mPaperWidthDoubleSpinBox->blockSignals( false );
+  mPaperHeightDoubleSpinBox->blockSignals( false );
   mPaperOrientationComboBox->blockSignals( false );
-  mResolutionLineEdit->blockSignals( false );
+  mResolutionSpinBox->blockSignals( false );
 }
 
 void QgsCompositionWidget::displaySnapingSettings()
@@ -403,7 +400,7 @@ void QgsCompositionWidget::displaySnapingSettings()
   }
 
   mSnapToGridCheckBox->blockSignals( true );
-  mResolutionSpinBox->blockSignals( true );
+  mGridResolutionSpinBox->blockSignals( true );
   mOffsetXSpinBox->blockSignals( true );
   mOffsetYSpinBox->blockSignals( true );
 
@@ -416,30 +413,19 @@ void QgsCompositionWidget::displaySnapingSettings()
     mSnapToGridCheckBox->setCheckState( Qt::Unchecked );
   }
 
-  mResolutionSpinBox->setValue( mComposition->snapGridResolution() );
+  mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
   mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
   mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
 
   mSnapToGridCheckBox->blockSignals( false );
-  mResolutionSpinBox->blockSignals( false );
+  mGridResolutionSpinBox->blockSignals( false );
   mOffsetXSpinBox->blockSignals( false );
   mOffsetYSpinBox->blockSignals( false );
 }
 
-void QgsCompositionWidget::on_mResolutionLineEdit_textChanged( const QString& text )
+void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged( const int value )
 {
-  bool conversionOk;
-  int resolution = text.toInt( &conversionOk );
-  if ( conversionOk && mComposition )
-  {
-    mComposition->setPrintResolution( resolution );
-  }
-  else if ( mComposition )
-  {
-    //set screen resolution per default
-    QPrinter resolutionInfo( QPrinter::ScreenResolution );
-    mComposition->setPrintResolution( resolutionInfo.resolution() );
-  }
+  mComposition->setPrintResolution( value );
 }
 
 void QgsCompositionWidget::on_mPrintAsRasterCheckBox_stateChanged( int state )
@@ -474,7 +460,7 @@ void QgsCompositionWidget::on_mSnapToGridCheckBox_stateChanged( int state )
   }
 }
 
-void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged( double d )
+void QgsCompositionWidget::on_mGridResolutionSpinBox_valueChanged( double d )
 {
   if ( mComposition )
   {
