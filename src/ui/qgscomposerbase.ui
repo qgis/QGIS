@@ -21,7 +21,7 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QSplitter" name="mSplitter">
       <property name="mouseTracking">
        <bool>true</bool>
@@ -131,13 +131,6 @@
         </layout>
        </widget>
       </widget>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QDialogButtonBox" name="buttonBox">
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Help</set>
-      </property>
      </widget>
     </item>
    </layout>
@@ -445,27 +438,9 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>buttonBox</tabstop>
   <tabstop>mCompositionNameComboBox</tabstop>
   <tabstop>mOptionsTabWidget</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsComposerBase</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>612</x>
-     <y>583</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>735</x>
-     <y>567</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

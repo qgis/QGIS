@@ -26,13 +26,13 @@
    <item row="0" column="0">
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-68</y>
         <width>386</width>
         <height>419</height>
        </rect>
@@ -172,6 +172,19 @@
             </item>
            </layout>
           </item>
+          <item row="10" column="0">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </widget>
        </item>
@@ -182,8 +195,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>404</width>
-        <height>351</height>
+        <width>386</width>
+        <height>352</height>
        </rect>
       </property>
       <attribute name="label">
@@ -279,9 +292,30 @@
          </layout>
         </widget>
        </item>
+       <item row="1" column="0">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>-448</y>
+        <width>386</width>
+        <height>805</height>
+       </rect>
+      </property>
       <attribute name="label">
        <string>Grid</string>
       </attribute>
@@ -555,6 +589,19 @@
              <cstring>mCrossWidthSpinBox</cstring>
             </property>
            </widget>
+          </item>
+          <item row="37" column="0">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
