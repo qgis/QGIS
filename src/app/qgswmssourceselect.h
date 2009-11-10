@@ -22,6 +22,7 @@
 #include "qgisgui.h"
 
 #include <QStringList>
+#include <QPushButton>
 
 class QgisApp;
 class QgsWmsProvider;
@@ -103,13 +104,14 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void on_btnConnect_clicked();
 
     //! Determines the layers the user selected
-    void on_btnAdd_clicked();
+    void addClicked();
+
 
     //! Opens the Spatial Reference System dialog.
     void on_btnChangeSpatialRefSys_clicked();
 
     //! Opens help application
-    void on_btnHelp_clicked();
+    void helpClicked();
 
     //! Signaled when a layer selection is changed.  Ensures that only one style is selected per layer.
     void on_lstLayers_itemSelectionChanged();
@@ -181,6 +183,8 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! The widget that controls the image format radio buttons
     QButtonGroup* m_imageFormatGroup;
     QHBoxLayout* m_imageFormatLayout;
+
+    QPushButton * mAddButton;
 
     //! The WMS provider that retrieves information for this dialog
     QgsWmsProvider * mWmsProvider;
