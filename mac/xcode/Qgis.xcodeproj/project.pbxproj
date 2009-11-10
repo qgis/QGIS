@@ -579,6 +579,11 @@
 		72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */; };
 		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
 		72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 72267A500F9A1D3100010C18 /* mActionZoomNext.png */; };
+		7238DB6510AA191E00963E09 /* qgsgridfilewriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CB1052B2B0003D1610 /* qgsgridfilewriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7238DB6610AA191E00963E09 /* qgsidwinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CD1052B2B0003D1610 /* qgsidwinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7238DB6710AA191E00963E09 /* qgsinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CF1052B2B0003D1610 /* qgsinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7238DB6810AA191E00963E09 /* qgstininterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597D11052B2B0003D1610 /* qgstininterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7238DB6B10AA198C00963E09 /* qgsrasterviewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F40F39E57A003DC336 /* qgsrasterviewport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
 		72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */; };
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
@@ -1173,8 +1178,8 @@
 		726840010FD6B2D200D90FFC /* qgsmergeattributesdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */; };
 		726840020FD6B2D200D90FFC /* qgsmergeattributesdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */; };
 		7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383010F8B8C2D0083B883 /* qgscentralpointpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */; };
-		7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383040F8B8C2D0083B883 /* qgspalobjectpositionmanager.h */; };
+		7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383040F8B8C2D0083B883 /* qgspalobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383020F8B8C2D0083B883 /* qgsvectoroverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		726979A80F7136D700AFA402 /* qgsnewogrconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */; };
 		726979A90F7136D800AFA402 /* qgsogrhelperfunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */; };
@@ -1413,7 +1418,7 @@
 		729BBF3E0F407D81001BCB63 /* qgispython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC810F39E57B003DC336 /* qgispython.cpp */; };
 		729BBF3F0F407D82001BCB63 /* qgspythonutilsimpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC830F39E57B003DC336 /* qgspythonutilsimpl.cpp */; };
 		729E6DF610A78A4F00D72B73 /* qgsoverlayanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 729E6DF410A78A3C00D72B73 /* qgsoverlayanalyzer.cpp */; };
-		729E6DF810A78A8C00D72B73 /* qgsoverlayanalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 729E6DF510A78A3C00D72B73 /* qgsoverlayanalyzer.h */; };
+		729E6DF810A78A8C00D72B73 /* qgsoverlayanalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 729E6DF510A78A3C00D72B73 /* qgsoverlayanalyzer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		72A07CC90F3BC2DE004FC2A4 /* qgsmemoryprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC5F0F39E57B003DC336 /* qgsmemoryprovider.cpp */; };
 		72A07CFC0F3BD3C5004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07CFF0F3BD3E1004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -1541,7 +1546,7 @@
 		72AA0BE9107394D900D00B43 /* qgsfieldcalculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE71073949C00D00B43 /* qgsfieldcalculator.cpp */; };
 		72AA0BEA107394D900D00B43 /* qgsfieldcalculator.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE81073949C00D00B43 /* qgsfieldcalculator.h */; };
 		72BD9FE510A499D700FEA70F /* qgszonalstatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BD9FE310A4998600FEA70F /* qgszonalstatistics.cpp */; };
-		72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */; };
+		72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		72C42430103DE72D005CD18E /* mActionAddImage.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242F103DE718005CD18E /* mActionAddImage.png */; };
 		72C42431103DE72D005CD18E /* mActionAddLegend.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4241F103DE718005CD18E /* mActionAddLegend.png */; };
 		72C42432103DE72D005CD18E /* mActionAddMap.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4241E103DE718005CD18E /* mActionAddMap.png */; };
@@ -5103,7 +5108,6 @@
 		7209EC8A0F39E57B003DC336 /* qgsabout.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsabout.ui; path = ../../src/ui/qgsabout.ui; sourceTree = SOURCE_ROOT; };
 		7209EC8B0F39E57B003DC336 /* qgsaddattrdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsaddattrdialogbase.ui; path = ../../src/ui/qgsaddattrdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC8C0F39E57B003DC336 /* qgsattributeactiondialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsattributeactiondialogbase.ui; path = ../../src/ui/qgsattributeactiondialogbase.ui; sourceTree = SOURCE_ROOT; };
-		7209EC8D0F39E57B003DC336 /* qgsattributedialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsattributedialogbase.ui; path = ../../src/ui/qgsattributedialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC8F0F39E57B003DC336 /* qgsbookmarksbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsbookmarksbase.ui; path = ../../src/ui/qgsbookmarksbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC900F39E57B003DC336 /* qgscomposerbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerbase.ui; path = ../../src/ui/qgscomposerbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC910F39E57B003DC336 /* qgscomposeritemwidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposeritemwidgetbase.ui; path = ../../src/ui/qgscomposeritemwidgetbase.ui; sourceTree = SOURCE_ROOT; };
@@ -9611,7 +9615,6 @@
 				7209EC8A0F39E57B003DC336 /* qgsabout.ui */,
 				7209EC8B0F39E57B003DC336 /* qgsaddattrdialogbase.ui */,
 				7209EC8C0F39E57B003DC336 /* qgsattributeactiondialogbase.ui */,
-				7209EC8D0F39E57B003DC336 /* qgsattributedialogbase.ui */,
 				72D0A53F1018975800EE6279 /* qgsattributetypeedit.ui */,
 				72D0A5401018975800EE6279 /* qgsattributeloadfrommap.ui */,
 				72442AE81095DCD800B54796 /* qgsavoidintersectionsdialogbase.ui */,
@@ -12911,6 +12914,7 @@
 				7209F5F80F3A577C003DC336 /* qgsrastershader.h in Headers */,
 				7209F5F90F3A577C003DC336 /* qgsrastershaderfunction.h in Headers */,
 				7209F5FA0F3A577C003DC336 /* qgsrastertransparency.h in Headers */,
+				7238DB6B10AA198C00963E09 /* qgsrasterviewport.h in Headers */,
 				7209F5FB0F3A577C003DC336 /* qgsrectangle.h in Headers */,
 				7209F5FC0F3A577C003DC336 /* qgsrendercontext.h in Headers */,
 				7209F5FD0F3A577C003DC336 /* qgsrenderer.h in Headers */,
@@ -12938,6 +12942,10 @@
 				72FE24C8105BE2400026B6CB /* qgsgeometryanalyzer.h in Headers */,
 				729E6DF810A78A8C00D72B73 /* qgsoverlayanalyzer.h in Headers */,
 				72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */,
+				7238DB6510AA191E00963E09 /* qgsgridfilewriter.h in Headers */,
+				7238DB6610AA191E00963E09 /* qgsidwinterpolator.h in Headers */,
+				7238DB6710AA191E00963E09 /* qgsinterpolator.h in Headers */,
+				7238DB6810AA191E00963E09 /* qgstininterpolator.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18072,6 +18080,7 @@
 					../../src/python,
 					../../src/plugins,
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(QT_INC_UITOOLS)",
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
@@ -18095,6 +18104,7 @@
 					"$(SQLITE_LIB)",
 					"$(PGSQL_LIB)",
 					"$(QT_LIB)",
+					"$(QT_LIB_UITOOLS)",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_NAME = Qgis;
@@ -18124,6 +18134,7 @@
 					../../src/python,
 					../../src/plugins,
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(QT_INC_UITOOLS)",
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
@@ -18147,6 +18158,7 @@
 					"$(SQLITE_LIB)",
 					"$(PGSQL_LIB)",
 					"$(QT_LIB)",
+					"$(QT_LIB_UITOOLS)",
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_NAME = Qgis;
@@ -18161,7 +18173,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20091109;
+				QGIS_VERSION_BUILD = 20091110;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18172,7 +18184,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20091109;
+				QGIS_VERSION_BUILD = 20091110;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
