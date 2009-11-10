@@ -695,7 +695,7 @@ void QgisApp::createActions()
   mActionDeleteSelected->setEnabled( false );
 
   //these three tools to be deprecated - use node tool rather
-  /**
+#if 0
   mActionAddVertex = new QAction( getThemeIcon( "mActionAddVertex.png" ), tr( "Add Vertex" ), this );
   shortcuts->registerAction( mActionAddVertex );
   mActionAddVertex->setStatusTip( tr( "Add Vertex" ) );
@@ -713,7 +713,7 @@ void QgisApp::createActions()
   mActionDeleteVertex->setStatusTip( tr( "Delete Vertex" ) );
   connect( mActionDeleteVertex, SIGNAL( triggered() ), this, SLOT( deleteVertex() ) );
   mActionDeleteVertex->setEnabled( false );
-  */
+#endif
 
   mActionAddRing = new QAction( getThemeIcon( "mActionAddRing.png" ), tr( "Add Ring" ), this );
   shortcuts->registerAction( mActionAddRing );
@@ -5728,10 +5728,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionCapturePolygon->setEnabled( false );
         mActionCaptureLine->setVisible( false );
         mActionCapturePolygon->setVisible( false );
-        //these three tools to be deprecated - use node tool rather
-        //mActionAddVertex->setEnabled( false );
-        //mActionDeleteVertex->setEnabled( false );
-        //mActionMoveVertex->setEnabled( false );
+#if 0   //these three tools to be deprecated - use node tool rather
+        mActionAddVertex->setEnabled( false );
+        mActionDeleteVertex->setEnabled( false );
+        mActionMoveVertex->setEnabled( false );
+#endif
         mActionAddRing->setEnabled( false );
         mActionAddIsland->setEnabled( false );
         mActionReshapeFeatures->setEnabled( false );
@@ -5740,10 +5741,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionDeleteRing->setEnabled( false );
         mActionRotatePointSymbols->setEnabled( false );
 
+#if 0
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
         {
           mActionMoveVertex->setEnabled( true );
         }
+#endif
+
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues )
         {
           if ( QgsMapToolRotatePointSymbols::layerIsRotatable( vlayer ) )

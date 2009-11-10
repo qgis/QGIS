@@ -744,9 +744,11 @@ class QgisApp : public QMainWindow
     QAction *mActionMoveFeature;
     QAction *mActionReshapeFeatures;
     QAction *mActionSplitFeatures;
+#if 0 // deprecated
     QAction *mActionAddVertex;
     QAction *mActionDeleteVertex;
     QAction *mActionMoveVertex;
+#endif
     QAction *mActionAddRing;
     QAction *mActionAddIsland;
     QAction *mActionEditSeparator2;
@@ -974,7 +976,7 @@ class QgisApp : public QMainWindow
 
     /* Maptip object
      */
-    QgsMapTip *  mpMaptip;
+    QgsMapTip *mpMaptip;
 
     // Flag to indicate if maptips are on or off
     bool mMapTipsVisible;
