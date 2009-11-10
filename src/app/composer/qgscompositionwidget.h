@@ -43,13 +43,13 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mPaperSizeComboBox_currentIndexChanged( const QString& text );
     void on_mPaperUnitsComboBox_currentIndexChanged( const QString& text );
     void on_mPaperOrientationComboBox_currentIndexChanged( const QString& text );
-    void on_mPaperWidthLineEdit_editingFinished();
-    void on_mPaperHeightLineEdit_editingFinished();
-    void on_mResolutionLineEdit_textChanged( const QString& text );
+    void on_mPaperWidthDoubleSpinBox_editingFinished();
+    void on_mPaperHeightDoubleSpinBox_editingFinished();
+    void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_stateChanged( int state );
 
     void on_mSnapToGridCheckBox_stateChanged( int state );
-    void on_mResolutionSpinBox_valueChanged( double d );
+    void on_mGridResolutionSpinBox_valueChanged( double d );
     void on_mOffsetXSpinBox_valueChanged( double d );
     void on_mOffsetYSpinBox_valueChanged( double d );
     void on_mGridColorButton_clicked();
@@ -75,6 +75,6 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void createPaperEntries();
     void insertPaperEntries();
 
-    double size( QLineEdit *le );
-    void setSize( QLineEdit *le, double v );
+    double size( QDoubleSpinBox *spin );
+    void setSize( QDoubleSpinBox *spin, double v );
 };
