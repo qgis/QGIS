@@ -24,8 +24,11 @@
 
 #include <QPushButton>
 #include <QLineEdit>
+#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QFileDialog>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QSpinBox>
 #include <QCompleter>
 #include <QHBoxLayout>
@@ -51,12 +54,23 @@ void QgsAttributeEditor::selectFileName( void )
   le->setText( fileName );
 }
 
-QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLayer *vl, int idx, const QVariant &value )
+QComboBox *QgsAttributeEditor::comboBox( QWidget *editor, QWidget *parent )
+{
+  QComboBox *cb = NULL;
+  if ( editor )
+    cb = qobject_cast<QComboBox *>( editor );
+  else
+    cb = new QComboBox( parent );
+
+  return cb;
+}
+
+QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
 {
   if ( !vl )
     return NULL;
 
-  QWidget *myWidget;
+  QWidget *myWidget = NULL;
   QgsVectorLayer::EditType editType = vl->editType( idx );
   const QgsField &field = vl->pendingFields()[idx];
   QVariant::Type myFieldType = field.type();
@@ -68,13 +82,16 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
       QList<QVariant> values;
       vl->dataProvider()->uniqueValues( idx, values );
 
-      QComboBox *cb = new QComboBox( parent );
-      cb->setEditable( true );
+      QComboBox *cb = comboBox( editor, parent );
+      if ( cb )
+      {
+        cb->setEditable( true );
 
-      for ( QList<QVariant>::iterator it = values.begin(); it != values.end(); it++ )
-        cb->addItem( it->toString() );
+        for ( QList<QVariant>::iterator it = values.begin(); it != values.end(); it++ )
+          cb->addItem( it->toString() );
 
-      myWidget = cb;
+        myWidget = cb;
+      }
     }
     break;
 
@@ -83,14 +100,17 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
       QStringList enumValues;
       vl->dataProvider()->enumValues( idx, enumValues );
 
-      QComboBox *cb = new QComboBox( parent );
-      QStringList::const_iterator s_it = enumValues.constBegin();
-      for ( ; s_it != enumValues.constEnd(); ++s_it )
+      QComboBox *cb = comboBox( editor, parent );
+      if ( cb )
       {
-        cb->addItem( *s_it );
-      }
+        QStringList::const_iterator s_it = enumValues.constBegin();
+        for ( ; s_it != enumValues.constEnd(); ++s_it )
+        {
+          cb->addItem( *s_it );
+        }
 
-      myWidget = cb;
+        myWidget = cb;
+      }
     }
     break;
 
@@ -98,14 +118,16 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
     {
       const QMap<QString, QVariant> &map = vl->valueMap( idx );
 
-      QComboBox *cb = new QComboBox( parent );
-
-      for ( QMap<QString, QVariant>::const_iterator it = map.begin(); it != map.end(); it++ )
+      QComboBox *cb = comboBox( editor, parent );
+      if ( cb )
       {
-        cb->addItem( it.key(), it.value() );
-      }
+        for ( QMap<QString, QVariant>::const_iterator it = map.begin(); it != map.end(); it++ )
+        {
+          cb->addItem( it.key(), it.value() );
+        }
 
-      myWidget = cb;
+        myWidget = cb;
+      }
     }
     break;
 
@@ -133,13 +155,16 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
         }
       }
 
-      QComboBox *cb = new QComboBox( parent );
-      for ( QMap<QString, QString>::const_iterator it = classes.begin(); it != classes.end(); it++ )
+      QComboBox *cb = comboBox( editor, parent );
+      if ( cb )
       {
-        cb->addItem( it.value(), it.key() );
-      }
+        for ( QMap<QString, QString>::const_iterator it = classes.begin(); it != classes.end(); it++ )
+        {
+          cb->addItem( it.value(), it.key() );
+        }
 
-      myWidget = cb;
+        myWidget = cb;
+      }
     }
     break;
 
@@ -154,35 +179,74 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
 
         if ( editType == QgsVectorLayer::EditRange )
         {
-          QSpinBox *sb = new QSpinBox( parent );
+          QSpinBox *sb = NULL;
 
-          sb->setRange( min, max );
-          sb->setSingleStep( step );
+          if ( editor )
+            sb = qobject_cast<QSpinBox *>( editor );
+          else
+            sb = new QSpinBox( parent );
 
-          myWidget = sb;
+          if ( sb )
+          {
+            sb->setRange( min, max );
+            sb->setSingleStep( step );
+
+            myWidget = sb;
+          }
         }
         else
         {
-          QSlider *sl = new QSlider( Qt::Horizontal, parent );
+          QSlider *sl = NULL;
 
-          sl->setRange( min, max );
-          sl->setSingleStep( step );
+          if ( editor )
+            sl = qobject_cast<QSlider*>( editor );
+          else
+            sl = new QSlider( Qt::Horizontal, parent );
 
-          myWidget = sl;
+          if ( sl )
+          {
+            sl->setRange( min, max );
+            sl->setSingleStep( step );
+
+            myWidget = sl;
+          }
         }
         break;
       }
       else if ( myFieldType == QVariant::Double )
       {
-        double min = vl->range( idx ).mMin.toDouble();
-        double max = vl->range( idx ).mMax.toDouble();
-        double step = vl->range( idx ).mStep.toDouble();
-        QDoubleSpinBox *dsb = new QDoubleSpinBox( parent );
+        QDoubleSpinBox *dsb = NULL;
+        if ( editor )
+          dsb = qobject_cast<QDoubleSpinBox*>( editor );
+        else
+          dsb = new QDoubleSpinBox( parent );
 
-        dsb->setRange( min, max );
-        dsb->setSingleStep( step );
+        if ( dsb )
+        {
+          double min = vl->range( idx ).mMin.toDouble();
+          double max = vl->range( idx ).mMax.toDouble();
+          double step = vl->range( idx ).mStep.toDouble();
 
-        myWidget = dsb;
+          dsb->setRange( min, max );
+          dsb->setSingleStep( step );
+
+          myWidget = dsb;
+        }
+        break;
+      }
+    }
+
+    case QgsVectorLayer::CheckBox:
+    {
+      QCheckBox *cb = NULL;
+      if ( editor )
+        cb = qobject_cast<QCheckBox*>( editor );
+      else
+        cb = new QCheckBox();
+
+      if ( cb )
+      {
+        myWidget = cb;
         break;
       }
     }
@@ -191,40 +255,62 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
 
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::UniqueValuesEditable:
-    case QgsVectorLayer::Immutable:
     default:
     {
-      QLineEdit *le = new QLineEdit( parent );
+      QLineEdit *le = NULL;
+      QTextEdit *te = NULL;
+      QPlainTextEdit *pte = NULL;
 
-      if ( editType == QgsVectorLayer::Immutable )
+      if ( editor )
       {
-        le->setEnabled( false );
+        le = qobject_cast<QLineEdit *>( editor );
+        te = qobject_cast<QTextEdit *>( editor );
+        pte = qobject_cast<QPlainTextEdit *>( editor );
+      }     
+      else
+      {
+        le = new QLineEdit( parent );
       }
 
-      if ( editType == QgsVectorLayer::UniqueValuesEditable )
+      if ( le )
       {
-        QList<QVariant> values;
-        vl->dataProvider()->uniqueValues( idx, values );
 
-        QStringList svalues;
-        for ( QList<QVariant>::const_iterator it = values.begin(); it != values.end(); it++ )
-          svalues << it->toString();
+        if ( editType == QgsVectorLayer::UniqueValuesEditable )
+        {
+          QList<QVariant> values;
+          vl->dataProvider()->uniqueValues( idx, values );
 
-        QCompleter *c = new QCompleter( svalues );
-        c->setCompletionMode( QCompleter::PopupCompletion );
-        le->setCompleter( c );
+          QStringList svalues;
+          for ( QList<QVariant>::const_iterator it = values.begin(); it != values.end(); it++ )
+            svalues << it->toString();
+
+          QCompleter *c = new QCompleter( svalues );
+          c->setCompletionMode( QCompleter::PopupCompletion );
+          le->setCompleter( c );
+        }
+
+        if ( myFieldType == QVariant::Int )
+        {
+          le->setValidator( new QIntValidator( le ) );
+        }
+        else if ( myFieldType == QVariant::Double )
+        {
+          le->setValidator( new QDoubleValidator( le ) );
+        }
+
+        myWidget = le;
+      }
+      
+      if( te )
+      {
+        te->setAcceptRichText(true);
+        myWidget = te;
       }
 
-      if ( myFieldType == QVariant::Int )
+      if( pte )
       {
-        le->setValidator( new QIntValidator( le ) );
+        myWidget = pte;
       }
-      else if ( myFieldType == QVariant::Double )
-      {
-        le->setValidator( new QDoubleValidator( le ) );
-      }
-
-      myWidget = le;
     }
     break;
 
@@ -234,19 +320,41 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QgsVectorLa
 
     case QgsVectorLayer::FileName:
     {
-      QLineEdit *le = new QLineEdit();
+      QPushButton *pb = NULL;
+      QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+      if ( le )
+      {
+        if ( le )
+          myWidget = le;
 
-      QPushButton *pb = new QPushButton( tr( "..." ) );
-      connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectFileName() ) );
+        if( editor->parent() )
+        {
+          pb = editor->parent()->findChild<QPushButton *>();
+        }
+      }
+      else
+      {
+        le = new QLineEdit();
 
-      QHBoxLayout *hbl = new QHBoxLayout();
-      hbl->addWidget( le );
-      hbl->addWidget( pb );
+        QPushButton *pb = new QPushButton( tr( "..." ) );
 
-      myWidget = new QWidget( parent );
-      myWidget->setLayout( hbl );
+        QHBoxLayout *hbl = new QHBoxLayout();
+        hbl->addWidget( le );
+        hbl->addWidget( pb );
+
+        myWidget = new QWidget( parent );
+        myWidget->setLayout( hbl );
+      }
+
+      if ( pb )
+        connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectFileName() ) );
     }
     break;
+  }
+
+  if ( editType == QgsVectorLayer::Immutable )
+  {
+    myWidget->setEnabled( false );
   }
 
   setValue( myWidget, vl, idx, value );
@@ -270,6 +378,28 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     text = le->text();
     modified = le->isModified();
     if ( text == "NULL" )
+    {
+      text = QString::null;
+    }
+  }
+
+  QTextEdit *te = qobject_cast<QTextEdit *>( widget );
+  if ( te )
+  {
+    text = te->toHtml();
+    modified = te->document()->isModified();
+    if( text == "NULL" )
+    {
+      text = QString::null;
+    }
+  }
+
+  QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( widget );
+  if ( pte )
+  {
+    text = pte->toPlainText();
+    modified = pte->document()->isModified();
+    if( text == "NULL" )
     {
       text = QString::null;
     }
@@ -301,10 +431,18 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   {
     text = QString::number( slider->value() );
   }
+
   QDoubleSpinBox *dsb = qobject_cast<QDoubleSpinBox *>( widget );
   if ( dsb )
   {
     text = QString::number( dsb->value() );
+  }
+
+  QCheckBox *ckb = qobject_cast<QCheckBox *>( widget );
+  if ( ckb )
+  {
+    QPair<QString, QString> states = vl->checkedState( idx );
+    text = ckb->isChecked() ? states.first : states.second;
   }
 
   le = widget->findChild<QLineEdit *>();
@@ -411,6 +549,17 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       }
     }
 
+    case QgsVectorLayer::CheckBox:
+    {
+      QCheckBox *cb = qobject_cast<QCheckBox *>( editor );
+      if( cb )
+      {
+        QPair<QString, QString> states = vl->checkedState( idx );
+        cb->setChecked( value == states.first );
+        break;
+      }
+    }
+
     // fall-through
 
     case QgsVectorLayer::LineEdit:
@@ -419,7 +568,9 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     default:
     {
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
-      if ( le == NULL )
+      QTextEdit *te = qobject_cast<QTextEdit *>( editor );
+      QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( editor );
+      if ( !le && !te && !pte )
         return false;
 
       QString text;
@@ -431,7 +582,12 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       else
         text = value.toString();
 
-      le->setText( text );
+      if( le )
+        le->setText( text );
+      if( te )
+        te->setHtml( text );
+      if( pte )
+        pte->setPlainText( text );
     }
     break;
 

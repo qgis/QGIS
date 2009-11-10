@@ -53,9 +53,6 @@ typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
 
-
-
-
 /** \ingroup core
  * Vector layer backed by a data source provider.
  */
@@ -73,6 +70,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Classification,
       EditRange,
       SliderRange,
+      CheckBox,    /* added in 1.4 */
       FileName,
       Enumeration,
       Immutable,   /*The attribute value should not be changed in the attribute form*/
@@ -450,6 +448,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**set edit type*/
     void setEditType( int idx, EditType edit );
+ 
+    /** set string representing 'true' for a checkbox (added in 1.4) */
+    void setCheckedState( int idx, QString checked, QString notChecked );
+    
+    /** return string representing 'true' for a checkbox (added in 1.4) */
+    QPair<QString, QString> checkedState( int idx );
+
+    /** get edit form (added in 1.4) */
+    QString editForm();
+
+    /** set edit form (added in 1.4) */
+    void setEditForm( QString ui );
 
     /**access value map*/
     QMap<QString, QVariant> &valueMap( int idx );
@@ -719,6 +729,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, EditType > mEditTypes;
     QMap< QString, QMap<QString, QVariant> > mValueMaps;
     QMap< QString, RangeData > mRanges;
+    QMap< QString, QPair<QString,QString> > mCheckedStates;
+    QString mEditForm;
 
     bool mFetching;
     QgsRectangle mFetchRect;
