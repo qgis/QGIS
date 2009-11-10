@@ -91,14 +91,14 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
     mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     mDock->setWidget( this );
     QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
-    buttonCancel->hide();
   }
   lstResults->setColumnCount( 2 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
-  connect( buttonCancel, SIGNAL( clicked() ),
-           this, SLOT( close() ) );
+  connect( buttonBox,SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
+
+  connect( buttonBox, SIGNAL( clicked() ), this, SLOT( close() ) );
 
   connect( lstResults, SIGNAL( itemExpanded( QTreeWidgetItem* ) ),
            this, SLOT( itemExpanded( QTreeWidgetItem* ) ) );
@@ -644,8 +644,8 @@ QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, 
 
   return featItem;
 }
-
-void QgsIdentifyResults::on_buttonHelp_clicked()
+// Slot for showing help
+void QgsIdentifyResults::helpClicked()
 {
   QgsContextHelp::run( context_id );
 }
