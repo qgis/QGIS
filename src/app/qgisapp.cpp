@@ -1374,26 +1374,27 @@ void QgisApp::createToolBars()
   mFileToolBar->addAction( mActionSaveProject );
   mFileToolBar->addAction( mActionSaveProjectAs );
   mFileToolBar->addAction( mActionNewPrintComposer );
-  mFileToolBar->addAction( mActionAddOgrLayer );
-  mFileToolBar->addAction( mActionAddRasterLayer );
-#ifdef HAVE_POSTGRESQL
-  mFileToolBar->addAction( mActionAddPgLayer );
-#endif
-#ifdef HAVE_SPATIALITE
-  mFileToolBar->addAction( mActionAddSpatiaLiteLayer );
-#endif
-  mFileToolBar->addAction( mActionAddWmsLayer );
   mToolbarMenu->addAction( mFileToolBar->toggleViewAction() );
   //
   // Layer Toolbar
   mLayerToolBar = addToolBar( tr( "Manage Layers" ) );
   mLayerToolBar->setIconSize( myIconSize );
   mLayerToolBar->setObjectName( "LayerToolBar" );
+  mLayerToolBar->addAction( mActionAddOgrLayer );
+  mLayerToolBar->addAction( mActionAddRasterLayer );
+#ifdef HAVE_POSTGRESQL
+  mLayerToolBar->addAction( mActionAddPgLayer );
+#endif
+#ifdef HAVE_SPATIALITE
+  mLayerToolBar->addAction( mActionAddSpatiaLiteLayer );
+#endif
+  mLayerToolBar->addAction( mActionAddWmsLayer );
   mLayerToolBar->addAction( mActionNewVectorLayer );
   mLayerToolBar->addAction( mActionRemoveLayer );
-  mLayerToolBar->addAction( mActionAddToOverview );
-  mLayerToolBar->addAction( mActionShowAllLayers );
-  mLayerToolBar->addAction( mActionHideAllLayers );
+  //commented out for QGIS 1.4 by Tim
+  //mLayerToolBar->addAction( mActionAddToOverview );
+  //mLayerToolBar->addAction( mActionShowAllLayers );
+  //mLayerToolBar->addAction( mActionHideAllLayers );
   mToolbarMenu->addAction( mLayerToolBar->toggleViewAction() );
   //
   // Digitizing Toolbar

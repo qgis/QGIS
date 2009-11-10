@@ -96,7 +96,7 @@ void QgsGPSPlugin::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   connect( mCreateGPXAction, SIGNAL( triggered() ), this, SLOT( createGPX() ) );
 
-  mQGisInterface->fileToolBar()->addAction( mQActionPointer );
+  mQGisInterface->layerToolBar()->addAction( mQActionPointer );
   mQGisInterface->addPluginToMenu( tr( "&Gps" ), mQActionPointer );
   mQGisInterface->addPluginToMenu( tr( "&Gps" ), mCreateGPXAction );
 
