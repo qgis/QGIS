@@ -84,7 +84,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void featureDeleted( int fid );
 
     //! Context help
-    void on_buttonHelp_clicked();
+    void helpClicked();
 
     /* Called when an item is expanded so that we can ensure that the
        column width if expanded to show it */

@@ -39,6 +39,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout">
      <property name="spacing">
       <number>6</number>
@@ -46,53 +53,28 @@
      <property name="margin">
       <number>0</number>
      </property>
-     <item>
-      <widget class="QPushButton" name="buttonHelp">
-       <property name="text">
-        <string>Help</string>
-       </property>
-       <property name="shortcut">
-        <string>F1</string>
-       </property>
-       <property name="autoDefault">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>0</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonCancel">
-       <property name="text">
-        <string>Close</string>
-       </property>
-       <property name="shortcut">
-        <string/>
-       </property>
-       <property name="autoDefault">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsIdentifyResultsBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>261</x>
+     <y>298</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>204</x>
+     <y>313</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
