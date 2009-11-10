@@ -95,7 +95,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendGroup::accept( const QgsLegendItem* li ) con
   return NO_ACTION;
 }
 
-/*bool QgsLegendGroup::insert( QgsLegendItem* theItem )
+bool QgsLegendGroup::insert( QgsLegendItem* theItem )
 {
   if ( theItem->type() == LEGEND_LAYER )
   {
@@ -105,7 +105,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendGroup::accept( const QgsLegendItem* li ) con
   // XXX - mloskot - I don't know what to return
   // but this function must return a value
   return true;
-}*/
+}
 
 std::list<QgsLegendLayer*> QgsLegendGroup::legendLayers()
 {
