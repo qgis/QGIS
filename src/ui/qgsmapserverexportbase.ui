@@ -1,270 +1,200 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsMapserverExportBase</class>
- <widget class="QDialog" name="QgsMapserverExportBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsMapserverExportBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>483</width>
-    <height>433</height>
+    <width>410</width>
+    <height>416</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Export to Mapserver</string>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <property name="modal" >
+  <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>10</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="textLabel7" >
-     <property name="text" >
+   <item row="0" column="0">
+    <widget class="QLabel" name="textLabel7">
+     <property name="text">
       <string>Map file</string>
      </property>
-     <property name="buddy" >
+     <property name="buddy">
       <cstring>txtMapFilePath</cstring>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QCheckBox" name="chkExpLayersOnly" >
-     <property name="text" >
+   <item row="1" column="0" colspan="2">
+    <widget class="QCheckBox" name="chkExpLayersOnly">
+     <property name="text">
       <string>Export LAYER information only</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="3" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="buttonHelp" >
-       <property name="text" >
-        <string>&amp;Help</string>
-       </property>
-       <property name="shortcut" >
-        <string>F1</string>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonOk" >
-       <property name="text" >
-        <string>&amp;OK</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-       <property name="default" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonCancel" >
-       <property name="text" >
-        <string>&amp;Cancel</string>
-       </property>
-       <property name="shortcut" >
-        <string/>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="2" >
-    <widget class="QPushButton" name="btnChooseFile" >
-     <property name="text" >
+   <item row="0" column="2">
+    <widget class="QPushButton" name="btnChooseFile">
+     <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <widget class="QLineEdit" name="txtMapFilePath" />
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="txtMapFilePath"/>
    </item>
-   <item row="2" column="0" colspan="3" >
-    <widget class="Q3GroupBox" name="grpMap" >
-     <property name="title" >
+   <item row="2" column="0" colspan="3">
+    <widget class="Q3GroupBox" name="grpMap">
+     <property name="title">
       <string>Map</string>
      </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>10</number>
       </property>
-      <property name="spacing" >
+      <property name="spacing">
        <number>6</number>
       </property>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="textLabel1" >
-        <property name="toolTip" >
+      <item row="0" column="0">
+       <widget class="QLabel" name="textLabel1">
+        <property name="toolTip">
          <string/>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Name</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>txtMapName</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="7" >
-       <widget class="QLabel" name="textLabel2_2" >
-        <property name="text" >
+      <item row="0" column="7">
+       <widget class="QLabel" name="textLabel2_2">
+        <property name="text">
          <string>Height</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>txtMapHeight</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2" >
-       <widget class="QComboBox" name="cmbMapUnits" />
+      <item row="1" column="1" colspan="2">
+       <widget class="QComboBox" name="cmbMapUnits"/>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="textLabel3" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="textLabel3">
+        <property name="text">
          <string>Units</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>cmbMapUnits</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="3" colspan="2" >
-       <widget class="QLabel" name="textLabel4" >
-        <property name="text" >
+      <item row="1" column="3" colspan="2">
+       <widget class="QLabel" name="textLabel4">
+        <property name="text">
          <string>Image type</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>cmbMapImageType</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="5" colspan="3" >
-       <widget class="QComboBox" name="cmbMapImageType" >
+      <item row="1" column="5" colspan="3">
+       <widget class="QComboBox" name="cmbMapImageType">
         <item>
-         <property name="text" >
+         <property name="text">
           <string>gif</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>gtiff</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>jpeg</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>png</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>swf</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>userdefined</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>wbmp</string>
          </property>
         </item>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2" >
-       <widget class="QLabel" name="textLabel6" >
-        <property name="text" >
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="textLabel6">
+        <property name="text">
          <string>MinScale</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>txtMinScale</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="5" colspan="2" >
-       <widget class="QLabel" name="textLabel6_2" >
-        <property name="text" >
+      <item row="2" column="5" colspan="2">
+       <widget class="QLabel" name="textLabel6_2">
+        <property name="text">
          <string>MaxScale</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>txtMaxScale</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="2" colspan="2" >
-       <widget class="QLineEdit" name="txtMinScale" />
+      <item row="2" column="2" colspan="2">
+       <widget class="QLineEdit" name="txtMinScale"/>
       </item>
-      <item row="2" column="7" colspan="2" >
-       <widget class="QLineEdit" name="txtMaxScale" />
+      <item row="2" column="7" colspan="2">
+       <widget class="QLineEdit" name="txtMaxScale"/>
       </item>
-      <item row="0" column="1" colspan="3" >
-       <widget class="QLineEdit" name="txtMapName" >
-        <property name="toolTip" >
+      <item row="0" column="1" colspan="3">
+       <widget class="QLineEdit" name="txtMapName">
+        <property name="toolTip">
          <string>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile. It should be kept short.</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="6" >
-       <widget class="QLineEdit" name="txtMapWidth" />
+      <item row="0" column="6">
+       <widget class="QLineEdit" name="txtMapWidth"/>
       </item>
-      <item row="0" column="8" >
-       <widget class="QLineEdit" name="txtMapHeight" />
+      <item row="0" column="8">
+       <widget class="QLineEdit" name="txtMapHeight"/>
       </item>
-      <item row="0" column="4" colspan="2" >
-       <widget class="QLabel" name="textLabel2" >
-        <property name="text" >
+      <item row="0" column="4" colspan="2">
+       <widget class="QLabel" name="textLabel2">
+        <property name="text">
          <string>Width</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>txtMapWidth</cstring>
         </property>
        </widget>
@@ -272,66 +202,70 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3" >
-    <widget class="Q3GroupBox" name="grpWeb" >
-     <property name="title" >
+   <item row="3" column="0" colspan="3">
+    <widget class="Q3GroupBox" name="grpWeb">
+     <property name="title">
       <string>Web Interface Definition</string>
      </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
+     <layout class="QGridLayout">
+      <property name="margin">
        <number>10</number>
       </property>
-      <property name="spacing" >
+      <property name="spacing">
        <number>6</number>
       </property>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="textLabel5" >
-        <property name="text" >
+      <item row="0" column="0">
+       <widget class="QLabel" name="textLabel5">
+        <property name="text">
          <string>Header</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>txtWebHeader</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="textLabel5_3" >
-        <property name="text" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="textLabel5_3">
+        <property name="text">
          <string>Footer</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>txtWebFooter</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="textLabel5_2" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="textLabel5_2">
+        <property name="text">
          <string>Template</string>
         </property>
-        <property name="buddy" >
+        <property name="buddy">
          <cstring>txtWebTemplate</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QLineEdit" name="txtWebHeader" />
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="txtWebHeader"/>
       </item>
-      <item row="1" column="1" >
-       <widget class="QLineEdit" name="txtWebTemplate" />
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="txtWebTemplate"/>
       </item>
-      <item row="2" column="1" >
-       <widget class="QLineEdit" name="txtWebFooter" />
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="txtWebFooter"/>
       </item>
      </layout>
     </widget>
    </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
@@ -355,10 +289,40 @@
   <tabstop>txtWebHeader</tabstop>
   <tabstop>txtWebTemplate</tabstop>
   <tabstop>txtWebFooter</tabstop>
-  <tabstop>buttonHelp</tabstop>
-  <tabstop>buttonOk</tabstop>
-  <tabstop>buttonCancel</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsMapserverExportBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>349</x>
+     <y>393</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>404</x>
+     <y>317</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsMapserverExportBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>280</x>
+     <y>386</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>404</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

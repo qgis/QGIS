@@ -35,11 +35,9 @@ class QgsNewConnection : public QDialog, private Ui::QgsNewConnectionBase
     void testConnection();
     //! Saves the connection to ~/.qt/qgisrc
     void saveConnection();
-    //! Display the context help
-    void helpInfo();
   public slots:
     void accept();
-    void help();
+    void helpClicked();
     void on_btnConnect_clicked();
     void on_cb_geometryColumnsOnly_clicked();
   private:

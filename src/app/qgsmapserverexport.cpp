@@ -19,6 +19,7 @@ email                : sherman at mrcc.com
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgshelpviewer.h"
+#include "qgscontexthelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsrectangle.h"
@@ -37,6 +38,7 @@ QgsMapserverExport::QgsMapserverExport( QgsMapCanvas * _map, QWidget * parent, Q
     : QDialog( parent, fl ), map( _map )
 {
   setupUi( this );
+  connect( buttonBox, SIGNAL( helpRequested() ),this,SLOT( help() ) );
   connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
   connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
   // These values shouldn't be translated, the units should be in english in the map file
@@ -360,11 +362,12 @@ void QgsMapserverExport::on_btnChooseFile_clicked()
   txtMapFilePath->setText( s );
 }
 
-void QgsMapserverExport::on_buttonHelp_clicked()
+void QgsMapserverExport::help()
 {
+  QgsContextHelp::run( context_id );
   //QMessageBox::information(this, "Help","Help");
-  QgsHelpViewer *hv = new QgsHelpViewer( this );
+  //QgsHelpViewer *hv = new QgsHelpViewer( this );
   // causes problems in qt3.1.x:  hv->setModal(false);
-  hv->setCaption( "QGIS Help - Mapserver Export" );
-  hv->show();
+  //hv->setCaption( "QGIS Help - Mapserver Export" );
+  //hv->show();
 }
