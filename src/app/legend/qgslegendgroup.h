@@ -40,7 +40,7 @@ class QgsLegendGroup : public QgsLegendItem
     QgsLegendItem::DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
     QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
     bool isLeafNode();
-    //bool insert( QgsLegendItem* theItem );
+    bool insert( QgsLegendItem* theItem );
     /**Returns all legend layers under this group*/
     std::list<QgsLegendLayer*> legendLayers();
     /**Goes through all the legendlayers and sets check state to checked/partially checked/unchecked*/
