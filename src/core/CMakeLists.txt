@@ -363,6 +363,7 @@ raster/qgsrasterlayer.h
 raster/qgsrastertransparency.h
 raster/qgsrastershader.h
 raster/qgsrastershaderfunction.h
+raster/qgsrasterviewport.h
 
 renderer/qgscontinuouscolorrenderer.h
 renderer/qgsgraduatedsymbolrenderer.h
