@@ -247,9 +247,12 @@ QAction *QgisAppInterface::actionCapturePolygon() { return qgis->actionCapturePo
 QAction *QgisAppInterface::actionDeleteSelected() { return qgis->actionDeleteSelected(); }
 QAction *QgisAppInterface::actionMoveFeature() { return qgis->actionMoveFeature(); }
 QAction *QgisAppInterface::actionSplitFeatures() { return qgis->actionSplitFeatures(); }
-QAction *QgisAppInterface::actionAddVertex() { return qgis->actionAddVertex(); }
-QAction *QgisAppInterface::actionDeleteVertex() { return qgis->actionDeleteVertex(); }
-QAction *QgisAppInterface::actionMoveVertex() { return qgis->actionMoveVertex(); }
+//these three actions are removed from the ui as of qgis v1.4
+//for plugin api completeness we now return a null pointer
+//but these should be removed from the plugin interface for v2
+QAction *QgisAppInterface::actionAddVertex() { return 0; }
+QAction *QgisAppInterface::actionDeleteVertex() { return 0; }
+QAction *QgisAppInterface::actionMoveVertex() { return 0; }
 QAction *QgisAppInterface::actionAddRing() { return qgis->actionAddRing(); }
 QAction *QgisAppInterface::actionAddIsland() { return qgis->actionAddIsland(); }
 QAction *QgisAppInterface::actionEditSeparator2() { return qgis->actionEditSeparator2(); }

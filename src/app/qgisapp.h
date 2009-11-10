@@ -224,9 +224,10 @@ class QgisApp : public QMainWindow
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
-    QAction *actionAddVertex() { return mActionAddVertex; }
-    QAction *actionDeleteVertex() { return mActionDeleteVertex; }
-    QAction *actionMoveVertex() { return mActionMoveVertex; }
+    //These three tools are deprecated - use node tool rather...
+    //QAction *actionAddVertex() { return mActionAddVertex; }
+    //QAction *actionDeleteVertex() { return mActionDeleteVertex; }
+    //QAction *actionMoveVertex() { return mActionMoveVertex; }
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddIsland() { return mActionAddIsland; }
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
