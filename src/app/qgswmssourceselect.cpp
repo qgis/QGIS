@@ -56,9 +56,16 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
     mWmsProvider( 0 )
 {
   setupUi( this );
+  mAddButton = new QPushButton( tr( "&Add" ) );
+  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  connect( mAddButton,SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+  connect( buttonBox,SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
+
   mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.png" ) );
   mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.png" ) );
-  connect( btnCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
+
+  mAddButton->setEnabled( false );
+  populateConnectionList();
 
   // Qt Designer 4.1 doesn't let us use a QButtonGroup, so it has to
   // be done manually... Unless I'm missing something, it's a whole
@@ -201,7 +208,7 @@ void QgsWMSSourceSelect::on_btnDelete_clicked()
   }
 }
 
-void QgsWMSSourceSelect::on_btnHelp_clicked()
+void QgsWMSSourceSelect::helpClicked()
 {
 
   QgsContextHelp::run( context_id );
@@ -283,7 +290,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   // If we got some layers, let the user add them to the map
   if ( lstLayers->topLevelItemCount() > 0 )
   {
-    btnAdd->setEnabled( TRUE );
+    mAddButton->setEnabled( TRUE );
 
     if ( lstLayers->topLevelItemCount() == 1 )
     {
@@ -292,7 +299,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   }
   else
   {
-    btnAdd->setEnabled( FALSE );
+    mAddButton->setEnabled( FALSE );
   }
 
   return TRUE;
@@ -427,7 +434,7 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
 
 }
 
-void QgsWMSSourceSelect::on_btnAdd_clicked()
+void QgsWMSSourceSelect::addClicked()
 {
   if ( selectedLayers().empty() == TRUE )
   {
