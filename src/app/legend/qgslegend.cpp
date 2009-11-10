@@ -119,13 +119,12 @@ void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetI
 void QgsLegend::addGroup()
 {
   QgsLegendGroup* group = new QgsLegendGroup( this, tr( "group" ) );
-  mStateOfCheckBoxes.insert( std::make_pair( group, Qt::Checked ) ); //insert the check state into the map to query for changes later
+  group->setData( 0, Qt::UserRole, Qt::Checked );
   setExpanded( indexFromItem( group ), true );
 }
 
 void QgsLegend::removeAll()
 {
-  mStateOfCheckBoxes.clear();
   clear();
   mPixmapWidthValues.clear();
   mPixmapHeightValues.clear();
@@ -182,8 +181,6 @@ void QgsLegend::removeLayer( QString layer_key )
 
       if ( ll && ll->layer() && ll->layer()->getLayerID() == layer_key )
       {
-        //remove the map entry for the checkbox
-        mStateOfCheckBoxes.erase( ll );
         removeItem( ll );
         delete ll;
 
@@ -501,12 +498,12 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   if ( llayer->isVisible() )
   {
     llayer->setCheckState( 0, Qt::Checked );
-    mStateOfCheckBoxes.insert( std::make_pair( llayer, Qt::Checked ) );
+    llayer->setData( 0, Qt::UserRole, Qt::Checked );
   }
   else
   {
     llayer->setCheckState( 0, Qt::Unchecked );
-    mStateOfCheckBoxes.insert( std::make_pair( llayer, Qt::Unchecked ) );
+    llayer->setData( 0, Qt::UserRole, Qt::Unchecked );
   }
   blockSignals( false );
 
@@ -909,7 +906,6 @@ bool QgsLegend::readXML( QDomNode& legendnode )
   if ( !child.isNull() )
   {
     clear(); //remove all items first
-    mStateOfCheckBoxes.clear();
 
     do
     {
@@ -927,24 +923,24 @@ bool QgsLegend::readXML( QDomNode& legendnode )
         if ( checked == "Qt::Checked" )
         {
           theGroup->setCheckState( 0, Qt::Checked );
-          mStateOfCheckBoxes.insert( std::make_pair( theGroup, Qt::Checked ) );
+          theGroup->setData( 0, Qt::UserRole, Qt::Checked );
         }
         else if ( checked == "Qt::Unchecked" )
         {
           theGroup->setCheckState( 0, Qt::Unchecked );
-          mStateOfCheckBoxes.insert( std::make_pair( theGroup, Qt::Unchecked ) );
+          theGroup->setData( 0, Qt::UserRole, Qt::Checked );
         }
         else if ( checked == "Qt::PartiallyChecked" )
         {
           theGroup->setCheckState( 0, Qt::PartiallyChecked );
-          mStateOfCheckBoxes.insert( std::make_pair( theGroup, Qt::PartiallyChecked ) );
+          theGroup->setData( 0, Qt::UserRole, Qt::PartiallyChecked );
         }
         blockSignals( false );
         lastGroup = theGroup;
       }
       else if ( childelem.tagName() == "legendlayer" )
       {
-        bool isOpen; // to recieve info whether the item is open or closed
+        bool isOpen; // to receive info whether the item is open or closed
         lastLayer = readLayerFromXML(childelem, isOpen);
 
         if (lastLayer)
@@ -1039,13 +1035,13 @@ QgsLegendLayer* QgsLegend::readLayerFromXML(QDomElement& childelem, bool& isOpen
   {
     ll->setVisible(true);
     ll->setCheckState( 0, Qt::Checked );
-    mStateOfCheckBoxes.insert( std::make_pair( ll, Qt::Checked ) );
+    ll->setData( 0, Qt::UserRole, Qt::Checked );
   }
   else if ( checked == "Qt::Unchecked" )
   {
     ll->setVisible(false);
     ll->setCheckState( 0, Qt::Unchecked );
-    mStateOfCheckBoxes.insert( std::make_pair( ll, Qt::Unchecked ) );
+    ll->setData( 0, Qt::UserRole, Qt::Unchecked );
   }
   blockSignals( false );
 
@@ -1336,8 +1332,6 @@ void QgsLegend::removeItem( QTreeWidgetItem* item )
 
 void QgsLegend::updateMapCanvasLayerSet()
 {
-  //std::deque<QString> layers = layerIDs();
-
   QList<QgsMapCanvasLayer> layers;
 
   // create list of the layers
@@ -1484,12 +1478,8 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     theLegendLayer->layer()->setLayerName( theLegendLayer->text( 0 ) );
   }
 
-  std::map<QTreeWidgetItem*, Qt::CheckState>::iterator it = mStateOfCheckBoxes.find( item );
-  if ( it == mStateOfCheckBoxes.end() )
-    return;
-
   // has the checkState changed?
-  if ( it->second == item->checkState( 0 ) )
+  if ( item->data(0, Qt::UserRole).toInt() == item->checkState( 0 ) )
     return;
 
   QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item ); //item is a legend group
@@ -1518,7 +1508,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
       blockSignals( true );
       ( *iter )->setCheckState( 0, item->checkState( 0 ) );
       blockSignals( false );
-      mStateOfCheckBoxes[( *iter )] = item->checkState( 0 );
+      item->setData( 0, Qt::UserRole, item->checkState( 0 ) );
       if (( *iter )->layer() )
       {
         ( *iter )->setVisible( item->checkState( 0 ) == Qt::Checked );
@@ -1529,7 +1519,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     // off, as turning it on causes a refresh.
     if ( renderFlagState )
       mMapCanvas->setRenderFlag( true );
-    mStateOfCheckBoxes[item] = item->checkState( 0 );
+    item->setData( 0, Qt::UserRole, item->checkState( 0 ) );
   }
 
   QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( item ); //item is a legend layer
@@ -1538,7 +1528,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     blockSignals( true );
     ll->setCheckState( 0, item->checkState( 0 ) );
     blockSignals( false );
-    mStateOfCheckBoxes[ll] = item->checkState( 0 );
+    ll->setData( 0, Qt::UserRole, ll->checkState( 0 ) );
     if (ll->layer() )
     {
       ll->setVisible( item->checkState( 0 ) == Qt::Checked );
@@ -1547,7 +1537,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     if ( ll->parent() )
     {
       static_cast<QgsLegendGroup*>( ll->parent() )->updateCheckState();
-      mStateOfCheckBoxes[ll->parent()] = ll->parent()->checkState( 0 );
+      ll->parent()->setData( 0, Qt::UserRole, ll->parent()->checkState( 0 ) );
     }
     // If it was on, turn it back on, otherwise leave it
     // off, as turning it on causes a refresh.
@@ -1557,7 +1547,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     }
     mMapCanvas->freeze( false );
     //update check state of the legend group
-    mStateOfCheckBoxes[item] = item->checkState( 0 );
+    item->setData( 0, Qt::UserRole, item->checkState( 0 ) );
   }
 
   // update layer set
