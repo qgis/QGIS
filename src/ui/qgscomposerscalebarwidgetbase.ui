@@ -34,7 +34,7 @@
         <x>0</x>
         <y>0</y>
         <width>307</width>
-        <height>714</height>
+        <height>616</height>
        </rect>
       </property>
       <attribute name="label">
@@ -85,35 +85,20 @@
         </widget>
        </item>
        <item row="4" column="0">
-        <widget class="QLabel" name="mNumbereOfSegmentsLabel">
-         <property name="text">
-          <string>Number of segments</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-         <property name="buddy">
-          <cstring>mNumberOfSegmentsSpinBox</cstring>
+        <widget class="QSpinBox" name="mNumberOfSegmentsSpinBox">
+         <property name="suffix">
+          <string> Right segments</string>
          </property>
         </widget>
        </item>
        <item row="5" column="0">
-        <widget class="QSpinBox" name="mNumberOfSegmentsSpinBox"/>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="mSegmentsLeftLabel">
-         <property name="text">
-          <string>Segments left</string>
-         </property>
-         <property name="buddy">
-          <cstring>mSegmentsLeftSpinBox</cstring>
+        <widget class="QSpinBox" name="mSegmentsLeftSpinBox">
+         <property name="suffix">
+          <string> Left segments</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QSpinBox" name="mSegmentsLeftSpinBox"/>
-       </item>
-       <item row="8" column="0">
+       <item row="6" column="0">
         <widget class="QLabel" name="mStyleLabel">
          <property name="text">
           <string>Style</string>
@@ -123,10 +108,10 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="0">
+       <item row="7" column="0">
         <widget class="QComboBox" name="mStyleComboBox"/>
        </item>
-       <item row="10" column="0">
+       <item row="8" column="0">
         <widget class="QLabel" name="mMapLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -145,7 +130,7 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="0">
+       <item row="9" column="0">
         <widget class="QComboBox" name="mMapComboBox">
          <property name="enabled">
           <bool>true</bool>
@@ -158,39 +143,29 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="0">
-        <widget class="QLabel" name="mHeightLabel">
-         <property name="text">
-          <string>Height (mm)</string>
+       <item row="10" column="0">
+        <widget class="QSpinBox" name="mHeightSpinBox">
+         <property name="suffix">
+          <string> mm</string>
          </property>
-         <property name="buddy">
-          <cstring>mHeightSpinBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="0">
-        <widget class="QSpinBox" name="mHeightSpinBox"/>
-       </item>
-       <item row="14" column="0">
-        <widget class="QLabel" name="mLineWidthLabel">
-         <property name="text">
-          <string>Line width</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-         <property name="buddy">
-          <cstring>mLineWidthSpinBox</cstring>
+         <property name="prefix">
+          <string>Height </string>
          </property>
         </widget>
        </item>
-       <item row="15" column="0">
+       <item row="11" column="0">
         <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="prefix">
+          <string>Line width </string>
+         </property>
+         <property name="suffix">
+          <string> mm</string>
          </property>
          <property name="minimum">
           <double>0.010000000000000</double>
@@ -203,33 +178,27 @@
          </property>
         </widget>
        </item>
-       <item row="16" column="0">
-        <widget class="QLabel" name="mLabelBarSpaceLabel">
-         <property name="text">
-          <string>Label space</string>
+       <item row="12" column="0">
+        <widget class="QDoubleSpinBox" name="mLabelBarSpaceSpinBox">
+         <property name="prefix">
+          <string>Label space </string>
          </property>
-         <property name="buddy">
-          <cstring>mLabelBarSpaceSpinBox</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="17" column="0">
-        <widget class="QDoubleSpinBox" name="mLabelBarSpaceSpinBox"/>
-       </item>
-       <item row="18" column="0">
-        <widget class="QLabel" name="mBoxSpaceLabel">
-         <property name="text">
-          <string>Box space</string>
-         </property>
-         <property name="buddy">
-          <cstring>mBoxSizeSpinBox</cstring>
+         <property name="suffix">
+          <string> mm</string>
          </property>
         </widget>
        </item>
-       <item row="19" column="0">
-        <widget class="QDoubleSpinBox" name="mBoxSizeSpinBox"/>
+       <item row="13" column="0">
+        <widget class="QDoubleSpinBox" name="mBoxSizeSpinBox">
+         <property name="prefix">
+          <string>Box space </string>
+         </property>
+         <property name="suffix">
+          <string> mm</string>
+         </property>
+        </widget>
        </item>
-       <item row="20" column="0">
+       <item row="14" column="0">
         <widget class="QLabel" name="mUnitLabelLabel">
          <property name="text">
           <string>Unit label</string>
@@ -242,10 +211,10 @@
          </property>
         </widget>
        </item>
-       <item row="21" column="0">
+       <item row="15" column="0">
         <widget class="QLineEdit" name="mUnitLabelLineEdit"/>
        </item>
-       <item row="22" column="0">
+       <item row="16" column="0">
         <widget class="QPushButton" name="mFontButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -258,12 +227,25 @@
          </property>
         </widget>
        </item>
-       <item row="23" column="0">
+       <item row="17" column="0">
         <widget class="QPushButton" name="mColorPushButton">
          <property name="text">
           <string>Color...</string>
          </property>
         </widget>
+       </item>
+       <item row="18" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
