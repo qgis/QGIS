@@ -101,7 +101,7 @@ INSTALL(TARGETS qgis_analysis
 
 # Added by Tim to install headers
 
-SET(QGIS_ANALYSIS_HDRS vector/qgsgeometryanalyzer.h vector/qgszonalstatistics.h vector/qgsgeometryanalyzer.h
+SET(QGIS_ANALYSIS_HDRS vector/qgsgeometryanalyzer.h vector/qgszonalstatistics.h vector/qgsgeometryanalyzer.h interpolation/qgsinterpolator.h interpolation/qgsgridfilewriter.h interpolation/qgsidwinterpolator.h interpolation/qgstininterpolator.h
 )
 
 INSTALL(CODE "MESSAGE(\"Installing ANALYSIS headers...\")")
