@@ -66,10 +66,22 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void setValueMap( QMap<QString, QVariant> valueMap );
 
     /**
-     * Setter to range for to be displayed and edited in this dialog
-     * @param rangeData rande data which is to be displayed
+     * Setter to range to be displayed and edited in this dialog
+     * @param rangeData range data which is to be displayed
      */
     void setRange( QgsVectorLayer::RangeData rangeData );
+
+    /**
+     * Setter to checked state to be displayed and edited in this dialog
+     * @param checked string that represents the checked state
+     */
+    void setCheckedState( QString checked, QString unchecked ); 
+
+    /**
+     * Getter for checked state after editing
+     * @return string representing the checked
+     */
+    QPair<QString, QString> checkedState();
 
     /**
      * Getter for value map after editing

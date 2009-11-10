@@ -52,7 +52,6 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
 
   QgsVectorFileWriter vWriter( shapefileName, dpA->encoding(), fieldsA, outputType, &crs );
   QgsFeature currentFeature;
-  QgsGeometry* dissolveGeometry; //dissolve geometry (if dissolve enabled)
   QgsSpatialIndex index;
 
   //take only selection

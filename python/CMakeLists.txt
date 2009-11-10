@@ -1,15 +1,15 @@
 SUBDIRS(plugins)
 IF (WIN32)
-  SET(BINDINGS_CORE_LIB ${CMAKE_CURRENT_BINARY_DIR}/core/core.pyd)
-  SET(BINDINGS_GUI_LIB  ${CMAKE_CURRENT_BINARY_DIR}/gui/gui.pyd)
-  SET(BINDINGS_ANALYSIS_LIB  ${CMAKE_CURRENT_BINARY_DIR}/analysis/analysis.pyd)
+  SET(BINDINGS_CORE_LIB     ${CMAKE_CURRENT_BINARY_DIR}/core/core.pyd)
+  SET(BINDINGS_GUI_LIB      ${CMAKE_CURRENT_BINARY_DIR}/gui/gui.pyd)
+  SET(BINDINGS_ANALYSIS_LIB ${CMAKE_CURRENT_BINARY_DIR}/analysis/analysis.pyd)
   IF (NOT MSVC)
     SET(QGIS_CORE_LIB     ${CMAKE_BINARY_DIR}/src/core/libqgis_core.dll)
     SET(QGIS_GUI_LIB      ${CMAKE_BINARY_DIR}/src/gui/libqgis_gui.dll)
     SET(QGIS_ANALYSIS_LIB ${CMAKE_BINARY_DIR}/src/analysis/libqgis_analysis.dll)
   ELSE (NOT MSVC)
-    SET(QGIS_CORE_LIB	    ${CMAKE_BINARY_DIR}/src/core/${CMAKE_CFG_INTDIR}/qgis_core.lib)
-    SET(QGIS_GUI_LIB	    ${CMAKE_BINARY_DIR}/src/gui/${CMAKE_CFG_INTDIR}/qgis_gui.lib)
+    SET(QGIS_CORE_LIB     ${CMAKE_BINARY_DIR}/src/core/${CMAKE_CFG_INTDIR}/qgis_core.lib)
+    SET(QGIS_GUI_LIB      ${CMAKE_BINARY_DIR}/src/gui/${CMAKE_CFG_INTDIR}/qgis_gui.lib)
     SET(QGIS_ANALYSIS_LIB ${CMAKE_BINARY_DIR}/src/analysis/${CMAKE_CFG_INTDIR}/qgis_analysis.lib)
   ENDIF (NOT MSVC)
 ELSE (WIN32)
@@ -60,9 +60,9 @@ ENDIF (MSVC)
 ADD_CUSTOM_COMMAND(OUTPUT ${BINDINGS_CORE_MAKEFILE} ${BINDINGS_GUI_MAKEFILE} ${BINDINGS_ANALYSIS_MAKEFILE} PRE_BUILD
                    COMMAND ${PYTHON_EXECUTABLE}
                    ARGS ${CMAKE_CURRENT_BINARY_DIR}/configure.py ${CMAKE_CFG_INTDIR} ${EXPORT}
-		   DEPENDS ${QGIS_CORE_LIB} ${QGIS_GUI_LIB} ${QGIS_ANALYSIS_LIB}
-		           ${CMAKE_CURRENT_BINARY_DIR}/configure.py
-			   ${CORE_SIP_FILES} ${GUI_SIP_FILES} ${ANALYSIS_SIP_FILES})
+                   DEPENDS ${QGIS_CORE_LIB} ${QGIS_GUI_LIB} ${QGIS_ANALYSIS_LIB}
+                           ${CMAKE_CURRENT_BINARY_DIR}/configure.py
+                           ${CORE_SIP_FILES} ${GUI_SIP_FILES} ${ANALYSIS_SIP_FILES})
 
 # Step 3: run make in core and gui subdirs
 ADD_CUSTOM_COMMAND(OUTPUT ${BINDINGS_CORE_LIB} PRE_LINK

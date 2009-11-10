@@ -251,6 +251,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} composer legend attributetable
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${QT_QTUITOOLS_INCLUDE_DIR}
   ../core
   ../core/composer ../core/raster ../core/renderer ../core/symbology
   ../gui
@@ -295,6 +296,7 @@ TARGET_LINK_LIBRARIES(qgis
   ${QT_QTSVG_LIBRARY} 
   ${QT_QTNETWORK_LIBRARY} 
   ${QT_QTSQL_LIBRARY}
+  ${QT_QTUITOOLS_LIBRARY}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY} 
   qgis_core
