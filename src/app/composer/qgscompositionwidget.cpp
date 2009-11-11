@@ -24,6 +24,7 @@
 QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c ): QWidget( parent ), mComposition( c )
 {
   setupUi( this );
+  blockSignals( true );
   createPaperEntries();
 
   //unit
@@ -31,10 +32,8 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   mPaperUnitsComboBox->addItem( tr( "inch" ) );
 
   //orientation
-  mPaperOrientationComboBox->blockSignals( true );
   mPaperOrientationComboBox->insertItem( 0, tr( "Landscape" ) );
   mPaperOrientationComboBox->insertItem( 1, tr( "Portrait" ) );
-  mPaperOrientationComboBox->blockSignals( false );
   mPaperOrientationComboBox->setCurrentIndex( 0 );
 
   //read with/height from composition and find suitable entries to display
@@ -70,16 +69,11 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
 
     //grid pen width
-    mPenWidthSpinBox->blockSignals( true );
     mPenWidthSpinBox->setValue( mComposition->gridPen().widthF() );
-    mPenWidthSpinBox->blockSignals( false );
 
     //grid pen color
-    mGridColorButton->blockSignals( true );
     mGridColorButton->setColor( mComposition->gridPen().color() );
-    mGridColorButton->blockSignals( false );
 
-    mGridStyleComboBox->blockSignals( true );
     mGridStyleComboBox->insertItem( 0, tr( "Solid" ) );
     mGridStyleComboBox->insertItem( 1, tr( "Dots" ) );
     mGridStyleComboBox->insertItem( 2, tr( "Crosses" ) );
@@ -97,8 +91,8 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     {
       mGridStyleComboBox->setCurrentIndex( 2 );
     }
-    mGridStyleComboBox->blockSignals( false );
   }
+  blockSignals( false );
 }
 
 QgsCompositionWidget::QgsCompositionWidget(): QWidget( 0 ), mComposition( 0 )
@@ -143,8 +137,6 @@ void QgsCompositionWidget::createPaperEntries()
   << QgsCompositionPaper( tr( "Arch E (36x48 inches)" ), 914.4, 1219.2 )
   << QgsCompositionPaper( tr( "Arch E1 (30x42 inches)" ), 762, 1066.8 )
   ;
-
-  mPaperSizeComboBox->blockSignals( true );
   mPaperSizeComboBox->addItem( tr( "Custom" ) );
 
   for ( QList<QgsCompositionPaper>::const_iterator it = formats.begin(); it != formats.end(); it++ )
@@ -152,8 +144,6 @@ void QgsCompositionWidget::createPaperEntries()
     mPaperSizeComboBox->addItem( it->mName );
     mPaperMap.insert( it->mName, *it );
   }
-
-  mPaperSizeComboBox->blockSignals( false );
   mPaperSizeComboBox->setCurrentIndex( 2 ); //A4
 }
 
@@ -266,7 +256,7 @@ void QgsCompositionWidget::setSize( QDoubleSpinBox *spin, double v )
   else
   {
     // inch (show width in inch)
-    spin->setValue(  v / 25.4  );
+    spin->setValue( v / 25.4 );
   }
 }
 
@@ -337,14 +327,6 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
     return;
   }
 
-  //block all signals to avoid infinite recursion
-  mPaperSizeComboBox->blockSignals( true );
-  mPaperUnitsComboBox->blockSignals( true );
-  mPaperWidthDoubleSpinBox->blockSignals( true );
-  mPaperHeightDoubleSpinBox->blockSignals( true );
-  mPaperOrientationComboBox->blockSignals( true );
-  mResolutionSpinBox->blockSignals( true );
-
   double paperWidth = mComposition->paperWidth();
   setSize( mPaperWidthDoubleSpinBox, paperWidth );
 
@@ -383,13 +365,6 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
     //custom
     mPaperSizeComboBox->setCurrentIndex( 0 );
   }
-
-  mPaperSizeComboBox->blockSignals( false );
-  mPaperUnitsComboBox->blockSignals( false );
-  mPaperWidthDoubleSpinBox->blockSignals( false );
-  mPaperHeightDoubleSpinBox->blockSignals( false );
-  mPaperOrientationComboBox->blockSignals( false );
-  mResolutionSpinBox->blockSignals( false );
 }
 
 void QgsCompositionWidget::displaySnapingSettings()
@@ -398,11 +373,6 @@ void QgsCompositionWidget::displaySnapingSettings()
   {
     return;
   }
-
-  mSnapToGridCheckBox->blockSignals( true );
-  mGridResolutionSpinBox->blockSignals( true );
-  mOffsetXSpinBox->blockSignals( true );
-  mOffsetYSpinBox->blockSignals( true );
 
   if ( mComposition->snapToGridEnabled() )
   {
@@ -416,11 +386,6 @@ void QgsCompositionWidget::displaySnapingSettings()
   mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
   mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
   mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
-
-  mSnapToGridCheckBox->blockSignals( false );
-  mGridResolutionSpinBox->blockSignals( false );
-  mOffsetXSpinBox->blockSignals( false );
-  mOffsetYSpinBox->blockSignals( false );
 }
 
 void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged( const int value )
@@ -528,4 +493,22 @@ void QgsCompositionWidget::on_mPenWidthSpinBox_valueChanged( double d )
     pen.setWidthF( d );
     mComposition->setGridPen( pen );
   }
+}
+
+void QgsCompositionWidget::blockSignals( bool block )
+{
+  mPaperSizeComboBox->blockSignals( block );
+  mPaperUnitsComboBox->blockSignals( block );
+  mPaperWidthDoubleSpinBox->blockSignals( block );
+  mPaperHeightDoubleSpinBox->blockSignals( block );
+  mPaperOrientationComboBox->blockSignals( block );
+  mResolutionSpinBox->blockSignals( block );
+  mPrintAsRasterCheckBox->blockSignals( block );
+  mSnapToGridCheckBox->blockSignals( block );
+  mGridResolutionSpinBox->blockSignals( block );
+  mOffsetXSpinBox->blockSignals( block );
+  mOffsetYSpinBox->blockSignals( block );
+  mPenWidthSpinBox->blockSignals( block );
+  mGridColorButton->blockSignals( block );
+  mGridStyleComboBox->blockSignals( block );
 }

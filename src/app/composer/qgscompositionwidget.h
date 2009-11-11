@@ -77,4 +77,6 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
     double size( QDoubleSpinBox *spin );
     void setSize( QDoubleSpinBox *spin, double v );
+    /**Blocks / unblocks the signals of all items*/
+    void blockSignals( bool block );
 };
