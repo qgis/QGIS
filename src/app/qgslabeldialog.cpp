@@ -264,7 +264,6 @@ void QgsLabelDialog::init( )
   spinBufferSize->setValue( myLabelAttributes->bufferSize() );
   //TODO - transparency attributes for buffers
 
-  listWidget->setItemSelected( listWidget->item( 0 ), true );
 }
 
 

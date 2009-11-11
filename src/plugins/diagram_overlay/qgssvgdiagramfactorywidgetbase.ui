@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsSVGDiagramFactoryWidgetBase</class>
- <widget class="QWidget" name="QgsSVGDiagramFactoryWidgetBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QgsSVGDiagramFactoryWidgetBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,28 +10,31 @@
     <height>342</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="mSearchDirectoriesGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+  <layout class="QGridLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="mSearchDirectoriesGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Search directories</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>101</width>
           <height>20</height>
@@ -38,24 +42,24 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="1" >
-       <widget class="QPushButton" name="mAddDirectoryButton" >
-        <property name="text" >
+      <item row="0" column="1">
+       <widget class="QPushButton" name="mAddDirectoryButton">
+        <property name="text">
          <string>Add...</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" >
-       <widget class="QPushButton" name="mRemoveDirectoryButton" >
-        <property name="text" >
+      <item row="0" column="2">
+       <widget class="QPushButton" name="mRemoveDirectoryButton">
+        <property name="text">
          <string>Remove</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="3" >
-       <widget class="QComboBox" name="mSearchDirectoriesComboBox" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <item row="1" column="0" colspan="3">
+       <widget class="QComboBox" name="mSearchDirectoriesComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -65,39 +69,39 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="mPreviewGroupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="mPreviewGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>SVG Preview</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QListWidget" name="mPreviewListWidget" >
-        <property name="movement" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QListWidget" name="mPreviewListWidget">
+        <property name="movement">
          <enum>QListView::Free</enum>
         </property>
-        <property name="flow" >
+        <property name="flow">
          <enum>QListView::LeftToRight</enum>
         </property>
-        <property name="isWrapping" stdset="0" >
+        <property name="isWrapping" stdset="0">
          <bool>true</bool>
         </property>
-        <property name="gridSize" >
+        <property name="gridSize">
          <size>
           <width>30</width>
           <height>30</height>
          </size>
         </property>
-        <property name="viewMode" >
+        <property name="viewMode">
          <enum>QListView::IconMode</enum>
         </property>
-        <property name="wordWrap" >
+        <property name="wordWrap">
          <bool>true</bool>
         </property>
        </widget>
@@ -105,42 +109,21 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
+   <item row="2" column="0">
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QLineEdit" name="mPictureLineEdit" />
+      <widget class="QLineEdit" name="mPictureLineEdit"/>
      </item>
      <item>
-      <widget class="QPushButton" name="mPictureBrowseButton" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize" >
-        <size>
-         <width>150</width>
-         <height>32767</height>
-        </size>
-       </property>
-       <property name="text" >
-        <string>Browse...</string>
+      <widget class="QToolButton" name="mPictureBrowseButton">
+       <property name="text">
+        <string>...</string>
        </property>
       </widget>
      </item>
