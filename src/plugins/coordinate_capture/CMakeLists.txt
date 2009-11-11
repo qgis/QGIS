@@ -8,8 +8,6 @@ SET (coordinatecapture_SRCS
      coordinatecapturemaptool.cpp
 )
 
-SET (coordinatecapture_UIS coordinatecaptureguibase.ui) 
-
 SET (coordinatecapture_MOC_HDRS
      coordinatecapture.h
      coordinatecapturegui.h
