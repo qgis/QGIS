@@ -6,14 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>342</width>
+    <width>412</width>
     <height>277</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout">
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <layout class="QHBoxLayout">
      <property name="spacing">
@@ -30,50 +33,47 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mAttributesComboBox"/>
+      <widget class="QComboBox" name="mAttributesComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <layout class="QGridLayout">
-     <property name="margin">
-      <number>0</number>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="mAddPushButton">
+     <property name="text">
+      <string>Add</string>
      </property>
-     <property name="spacing">
-      <number>6</number>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="mRemovePushButton">
+     <property name="text">
+      <string>Remove</string>
      </property>
-     <item row="1" column="0" colspan="2">
-      <widget class="QTreeWidget" name="mAttributesTreeWidget">
-       <property name="columnCount">
-        <number>2</number>
-       </property>
-       <column>
-        <property name="text">
-         <string>1</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>1</string>
-        </property>
-       </column>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="mRemovePushButton">
-       <property name="text">
-        <string>Remove attribute</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QPushButton" name="mAddPushButton">
-       <property name="text">
-        <string>Add attribute</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="QTreeWidget" name="mAttributesTreeWidget">
+     <property name="columnCount">
+      <number>2</number>
+     </property>
+     <column>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </column>
+    </widget>
    </item>
   </layout>
  </widget>

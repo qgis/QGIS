@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>424</width>
-    <height>339</height>
+    <width>552</width>
+    <height>432</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,16 +19,16 @@
   <property name="windowTitle">
    <string>Attribute Actions</string>
   </property>
-  <layout class="QGridLayout">
+  <layout class="QGridLayout" name="gridLayout_3">
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="0" column="0" colspan="2">
+   <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Action properties</string>
      </property>
-     <layout class="QGridLayout">
+     <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="textLabel1">
         <property name="whatsThis">
@@ -42,7 +42,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="3">
+      <item row="0" column="1">
        <widget class="QLineEdit" name="actionName">
         <property name="toolTip">
          <string>Enter the action name here</string>
@@ -65,50 +65,37 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QLineEdit" name="actionAction">
-        <property name="toolTip">
-         <string>Enter the action command here</string>
-        </property>
-        <property name="whatsThis">
-         <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</string>
-        </property>
-       </widget>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="actionAction">
+          <property name="toolTip">
+           <string>Enter the action command here</string>
+          </property>
+          <property name="whatsThis">
+           <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="browseButton">
+          <property name="toolTip">
+           <string>Browse for action</string>
+          </property>
+          <property name="statusTip">
+           <string>Click to browse for an action</string>
+          </property>
+          <property name="whatsThis">
+           <string>Clicking the button will let you select an application to use as the action</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="1" column="3">
-       <widget class="QToolButton" name="browseButton">
-        <property name="toolTip">
-         <string>Browse for action</string>
-        </property>
-        <property name="statusTip">
-         <string>Click to browse for an action</string>
-        </property>
-        <property name="whatsThis">
-         <string>Clicking the button will let you select an application to use as the action</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="fieldComboBox">
-        <property name="toolTip">
-         <string>The valid attribute names for this layer</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2" colspan="2">
-       <widget class="QPushButton" name="insertFieldButton">
-        <property name="toolTip">
-         <string>Inserts the selected field into the action, prepended with a %</string>
-        </property>
-        <property name="text">
-         <string>Insert field</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1" colspan="2">
+      <item row="2" column="0">
        <widget class="QCheckBox" name="captureCB">
         <property name="toolTip">
          <string>Captures any output from the action</string>
@@ -121,126 +108,156 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QComboBox" name="fieldComboBox">
+          <property name="toolTip">
+           <string>The valid attribute names for this layer</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="insertFieldButton">
+          <property name="toolTip">
+           <string>Inserts the selected field into the action, prepended with a %</string>
+          </property>
+          <property name="text">
+           <string>Insert field</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" rowspan="7">
-    <widget class="QTableWidget" name="attributeActionTable">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Action list</string>
      </property>
-     <property name="whatsThis">
-      <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</string>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
-     </property>
-     <property name="columnCount">
-      <number>3</number>
-     </property>
-     <column>
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Action</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Capture</string>
-      </property>
-     </column>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="insertButton">
-     <property name="toolTip">
-      <string>Inserts the action into the list above</string>
-     </property>
-     <property name="text">
-      <string>Insert action</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="updateButton">
-     <property name="toolTip">
-      <string>Update the selected action</string>
-     </property>
-     <property name="text">
-      <string>Update action</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>85</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="4" column="1">
-    <widget class="QPushButton" name="moveUpButton">
-     <property name="toolTip">
-      <string>Move the selected action up</string>
-     </property>
-     <property name="text">
-      <string>Move up</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QPushButton" name="moveDownButton">
-     <property name="toolTip">
-      <string>Move the selected action down</string>
-     </property>
-     <property name="text">
-      <string>Move down</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>85</width>
-       <height>41</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="7" column="1">
-    <widget class="QPushButton" name="removeButton">
-     <property name="toolTip">
-      <string>Remove the selected action</string>
-     </property>
-     <property name="text">
-      <string>Remove</string>
-     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0" rowspan="7">
+       <widget class="QTableWidget" name="attributeActionTable">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="whatsThis">
+         <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</string>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="columnCount">
+         <number>3</number>
+        </property>
+        <column>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Action</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Capture</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="insertButton">
+        <property name="toolTip">
+         <string>Inserts the action into the list above</string>
+        </property>
+        <property name="text">
+         <string>Insert action</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="updateButton">
+        <property name="toolTip">
+         <string>Update the selected action</string>
+        </property>
+        <property name="text">
+         <string>Update action</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>85</width>
+          <height>35</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="moveUpButton">
+        <property name="toolTip">
+         <string>Move the selected action up</string>
+        </property>
+        <property name="text">
+         <string>Move up</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QPushButton" name="moveDownButton">
+        <property name="toolTip">
+         <string>Move the selected action down</string>
+        </property>
+        <property name="text">
+         <string>Move down</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>85</width>
+          <height>41</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="6" column="1">
+       <widget class="QPushButton" name="removeButton">
+        <property name="toolTip">
+         <string>Remove the selected action</string>
+        </property>
+        <property name="text">
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -250,14 +267,14 @@
   <tabstop>actionName</tabstop>
   <tabstop>actionAction</tabstop>
   <tabstop>browseButton</tabstop>
+  <tabstop>captureCB</tabstop>
   <tabstop>fieldComboBox</tabstop>
   <tabstop>insertFieldButton</tabstop>
-  <tabstop>captureCB</tabstop>
+  <tabstop>attributeActionTable</tabstop>
   <tabstop>insertButton</tabstop>
   <tabstop>updateButton</tabstop>
   <tabstop>moveUpButton</tabstop>
   <tabstop>moveDownButton</tabstop>
-  <tabstop>attributeActionTable</tabstop>
   <tabstop>removeButton</tabstop>
  </tabstops>
  <resources/>
