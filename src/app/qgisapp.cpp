@@ -4241,7 +4241,9 @@ bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
     composer->readXML( composerNodes.at( i ).toElement(), projectDom );
     mPrintComposers.insert( composer );
     mPrintComposersMenu->addAction( composer->windowAction() );
+#ifndef Q_OS_MACX
     composer->showMinimized();
+#endif
     composer->zoomFull();
   }
   return true;
