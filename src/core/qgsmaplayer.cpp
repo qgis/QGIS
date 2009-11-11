@@ -586,6 +586,16 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
   setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
 
+  //read transparency level
+  QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
+  if ( ! transparencyNode.isNull() )
+  {
+    // set transparency level only if it's in project
+    // (otherwise it sets the layer transparent)
+    QDomElement myElement = transparencyNode.toElement();
+    setTransparency( myElement.text().toInt() );
+  }
+
   QString errorMsg;
   theResultFlag = readSymbology( myRoot, errorMsg );
   if ( !theResultFlag )
@@ -619,6 +629,13 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
   myRootNode.setAttribute( "minimumScale", minimumScale() );
   myRootNode.setAttribute( "maximumScale", maximumScale() );
+
+  // <transparencyLevelInt>
+  QDomElement transparencyLevelIntElement = myDocument.createElement( "transparencyLevelInt" );
+  QDomText    transparencyLevelIntText    = myDocument.createTextNode( QString::number( getTransparency() ) );
+  transparencyLevelIntElement.appendChild( transparencyLevelIntText );
+  myRootNode.appendChild( transparencyLevelIntElement );
+  // now append layer node to map layer node
 
   QString errorMsg;
   if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
