@@ -152,9 +152,9 @@ QList<QgsComposerView*> QgisAppInterface::activeComposers()
   QList<QgsComposerView*> composerViewList;
   if ( qgis )
   {
-    QList<QgsComposer*> composerList = qgis->printComposers();
-    QList<QgsComposer*>::iterator it = composerList.begin();
-    for ( ; it != composerList.end(); ++it )
+    const QSet<QgsComposer*> composerList = qgis->printComposers();
+    QSet<QgsComposer*>::const_iterator it = composerList.constBegin();
+    for ( ; it != composerList.constEnd(); ++it )
     {
       if ( *it )
       {
