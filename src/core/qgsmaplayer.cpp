@@ -83,10 +83,10 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
 QgsMapLayer::~QgsMapLayer()
 {
   delete mCRS;
-  if ( mpCacheImage ) 
-  { 
-    delete mpCacheImage; 
-  }  
+  if ( mpCacheImage )
+  {
+    delete mpCacheImage;
+  }
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -171,6 +171,12 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     uri.setDatabase( QgsProject::instance()->readPath( uri.database() ) );
     mDataSource = uri.uri();
   }
+  else if ( provider == "ogr" )
+  {
+    QStringList theURIParts = mDataSource.split( "|" );
+    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    mDataSource = theURIParts.join( "|" );
+  }
   else
   {
     mDataSource = QgsProject::instance()->readPath( mDataSource );
@@ -221,15 +227,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   }
 
   // use scale dependent visibility flag
-  QString hasScaleBasedVisibility = element.attribute( "hasScaleBasedVisibilityFlag" );
-  if ( "1" == hasScaleBasedVisibility )
-  {
-    toggleScaleBasedVisibility( true );
-  }
-  else
-  {
-    toggleScaleBasedVisibility( false );
-  }
+  toggleScaleBasedVisibility( element.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
   setMinimumScale( element.attribute( "minimumScale" ).toFloat() );
   setMaximumScale( element.attribute( "maximumScale" ).toFloat() );
 
@@ -267,14 +265,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QDomElement maplayer = document.createElement( "maplayer" );
 
   // use scale dependent visibility flag
-  if ( hasScaleBasedVisibility() )
-  {
-    maplayer.setAttribute( "hasScaleBasedVisibilityFlag", 1 );
-  }
-  else
-  {
-    maplayer.setAttribute( "hasScaleBasedVisibilityFlag", 0 );
-  }
+  maplayer.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
   maplayer.setAttribute( "minimumScale", minimumScale() );
   maplayer.setAttribute( "maximumScale", maximumScale() );
 
@@ -297,6 +288,12 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
     QString database = QgsProject::instance()->writePath( uri.database() );
     uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
     src = uri.uri();
+  }
+  else if ( vlayer && vlayer->providerType() == "ogr" )
+  {
+    QStringList theURIParts = src.split( "|" );
+    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    src = theURIParts.join( "|" );
   }
   else
   {
@@ -584,6 +581,11 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
     return myErrorMessage;
   }
 
+  // use scale dependent visibility flag
+  toggleScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+  setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
+  setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
+
   QString errorMsg;
   theResultFlag = readSymbology( myRoot, errorMsg );
   if ( !theResultFlag )
@@ -613,6 +615,11 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   myRootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
   myDocument.appendChild( myRootNode );
 
+  // use scale dependent visibility flag
+  myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
+  myRootNode.setAttribute( "minimumScale", minimumScale() );
+  myRootNode.setAttribute( "maximumScale", maximumScale() );
+
   QString errorMsg;
   if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
   {
@@ -621,9 +628,22 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
 
   // check if the uri is a file or ends with .qml,
   // which indicates that it should become one
-  // everything else goes to the database.
-  QFileInfo myFileInfo( theURI );
-  if ( myFileInfo.exists() || theURI.endsWith( ".qml", Qt::CaseInsensitive ) )
+  // everything else goes to the database
+  QString filename;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
+  if ( vlayer && vlayer->providerType() == "ogr" )
+  {
+    QStringList theURIParts = theURI.split( "|" );
+    filename = theURIParts[0];
+  }
+  else
+  {
+    filename = theURI;
+  }
+
+  QFileInfo myFileInfo( filename );
+  if ( myFileInfo.exists() || filename.endsWith( ".qml", Qt::CaseInsensitive ) )
   {
     QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
@@ -742,12 +762,12 @@ QUndoStack* QgsMapLayer::undoStack()
   return &mUndoStack;
 }
 
-void QgsMapLayer::setCacheImage( QImage * thepImage ) 
-{ 
+void QgsMapLayer::setCacheImage( QImage * thepImage )
+{
   QgsDebugMsg( "cache Image set!" );
-  if ( mpCacheImage ) 
-  { 
-    delete mpCacheImage; 
-  }  
-  mpCacheImage = thepImage; 
+  if ( mpCacheImage )
+  {
+    delete mpCacheImage;
+  }
+  mpCacheImage = thepImage;
 }
