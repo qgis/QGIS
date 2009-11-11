@@ -1899,6 +1899,8 @@
 		72EFB924105068590050AC82 /* osmprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D41021D06C00ED5F3A /* osmprovider.h */; };
 		72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */; };
 		72F22FB90FDAC249000E8CB0 /* mActionNodeTool.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */; };
+		72F4862210AB755200E7BFEE /* qgscomposermanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F4862010AB753D00E7BFEE /* qgscomposermanager.cpp */; };
+		72F4862310AB755200E7BFEE /* qgscomposermanager.h in Sources */ = {isa = PBXBuildFile; fileRef = 72F4862110AB753D00E7BFEE /* qgscomposermanager.h */; };
 		72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */; };
 		72FB0B4E0FFD680F0052360B /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72FB0B4F0FFD680F0052360B /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
@@ -7302,7 +7304,6 @@
 		72C5C9091059386500555945 /* osm_removeFeat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeFeat.png; path = ../../python/plugins/osm/images/osm_removeFeat.png; sourceTree = SOURCE_ROOT; };
 		72C5C90A1059386500555945 /* osm_removeMember.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeMember.png; path = ../../python/plugins/osm/images/osm_removeMember.png; sourceTree = SOURCE_ROOT; };
 		72C5C90B1059386500555945 /* osm_removeTag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeTag.png; path = ../../python/plugins/osm/images/osm_removeTag.png; sourceTree = SOURCE_ROOT; };
-		72C83D4E10A5D06D00B97B43 /* coordinatecaptureguibase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = coordinatecaptureguibase.ui; path = ../../src/plugins/coordinate_capture/coordinatecaptureguibase.ui; sourceTree = SOURCE_ROOT; };
 		72C83D4F10A5D08E00B97B43 /* utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = utils.py; path = ../../python/utils.py; sourceTree = SOURCE_ROOT; };
 		72D0A536101896AA00EE6279 /* qgsattributetypeloaddialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetypeloaddialog.h; path = ../../src/app/qgsattributetypeloaddialog.h; sourceTree = SOURCE_ROOT; };
 		72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetypeloaddialog.cpp; path = ../../src/app/qgsattributetypeloaddialog.cpp; sourceTree = SOURCE_ROOT; };
@@ -7576,6 +7577,9 @@
 		72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolnodetool.cpp; path = ../../src/app/qgsmaptoolnodetool.cpp; sourceTree = SOURCE_ROOT; };
 		72F22FB60FDAC1F4000E8CB0 /* qgsmaptoolnodetool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolnodetool.h; path = ../../src/app/qgsmaptoolnodetool.h; sourceTree = SOURCE_ROOT; };
 		72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNodeTool.png; path = ../../images/themes/default/mActionNodeTool.png; sourceTree = SOURCE_ROOT; };
+		72F4861F10AB752500E7BFEE /* qgscomposermanagerbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgscomposermanagerbase.ui; path = ../../src/ui/qgscomposermanagerbase.ui; sourceTree = SOURCE_ROOT; };
+		72F4862010AB753D00E7BFEE /* qgscomposermanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscomposermanager.cpp; path = ../../src/app/composer/qgscomposermanager.cpp; sourceTree = SOURCE_ROOT; };
+		72F4862110AB753D00E7BFEE /* qgscomposermanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposermanager.h; path = ../../src/app/composer/qgscomposermanager.h; sourceTree = SOURCE_ROOT; };
 		72F6FCDE0FE7D78F00D5B53B /* default.qgc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = default.qgc; path = "../../src/plugins/grass/modules-6.3/default.qgc"; sourceTree = SOURCE_ROOT; };
 		72F6FCDF0FE7D79C00D5B53B /* default.qgc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = default.qgc; path = "../../src/plugins/grass/modules-6.4/default.qgc"; sourceTree = SOURCE_ROOT; };
 		72F8D9350F89234600D10CE5 /* FindIconv.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindIconv.cmake; path = ../../cmake/FindIconv.cmake; sourceTree = SOURCE_ROOT; };
@@ -8366,6 +8370,8 @@
 				7209E5C50F39E57A003DC336 /* qgscomposerlegenditemdialog.h */,
 				7209E5C60F39E57A003DC336 /* qgscomposerlegendwidget.cpp */,
 				7209E5C70F39E57A003DC336 /* qgscomposerlegendwidget.h */,
+				72F4862010AB753D00E7BFEE /* qgscomposermanager.cpp */,
+				72F4862110AB753D00E7BFEE /* qgscomposermanager.h */,
 				7209E5C80F39E57A003DC336 /* qgscomposermapwidget.cpp */,
 				7209E5C90F39E57A003DC336 /* qgscomposermapwidget.h */,
 				7209E5CA0F39E57A003DC336 /* qgscomposerpicturewidget.cpp */,
@@ -8913,7 +8919,6 @@
 				7209E7A10F39E57A003DC336 /* coordinatecapture.qrc */,
 				7209E7A20F39E57A003DC336 /* coordinatecapturegui.cpp */,
 				7209E7A30F39E57A003DC336 /* coordinatecapturegui.h */,
-				72C83D4E10A5D06D00B97B43 /* coordinatecaptureguibase.ui */,
 				7209E7A50F39E57A003DC336 /* coordinatecapturemaptool.cpp */,
 				7209E7A60F39E57A003DC336 /* coordinatecapturemaptool.h */,
 				7209E7A70F39E57A003DC336 /* geographic.png */,
@@ -9624,6 +9629,7 @@
 				7209EC920F39E57B003DC336 /* qgscomposerlabelwidgetbase.ui */,
 				7209EC930F39E57B003DC336 /* qgscomposerlegenditemdialogbase.ui */,
 				7209EC940F39E57B003DC336 /* qgscomposerlegendwidgetbase.ui */,
+				72F4861F10AB752500E7BFEE /* qgscomposermanagerbase.ui */,
 				7209EC950F39E57B003DC336 /* qgscomposermapwidgetbase.ui */,
 				7209EC960F39E57B003DC336 /* qgscomposerpicturewidgetbase.ui */,
 				7209EC970F39E57B003DC336 /* qgscomposerscalebarwidgetbase.ui */,
@@ -15195,6 +15201,8 @@
 				72AA0BEA107394D900D00B43 /* qgsfieldcalculator.h in Sources */,
 				72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */,
 				72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */,
+				72F4862210AB755200E7BFEE /* qgscomposermanager.cpp in Sources */,
+				72F4862310AB755200E7BFEE /* qgscomposermanager.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18173,7 +18181,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 20091110;
+				QGIS_VERSION_BUILD = 12095;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18184,7 +18192,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 20091110;
+				QGIS_VERSION_BUILD = 12095;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
