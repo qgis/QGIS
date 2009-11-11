@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsHelpViewerBase</class>
- <widget class="QDialog" name="QgsHelpViewerBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsHelpViewerBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,88 +10,56 @@
     <height>417</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>QGIS Help</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="0" column="0" >
-    <widget class="QTextBrowser" name="txtBrowser" >
-     <property name="acceptDrops" >
+   <item row="0" column="0">
+    <widget class="QTextBrowser" name="txtBrowser">
+     <property name="acceptDrops">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
      </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType" >
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>390</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonCancel" >
-       <property name="text" >
-        <string>&amp;Close</string>
-       </property>
-       <property name="shortcut" >
-        <string>Alt+C</string>
-       </property>
-       <property name="autoDefault" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonCancel</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>QgsHelpViewerBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>455</x>
-     <y>393</y>
+    <hint type="sourcelabel">
+     <x>482</x>
+     <y>390</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>256</x>
-     <y>208</y>
+    <hint type="destinationlabel">
+     <x>508</x>
+     <y>288</y>
     </hint>
    </hints>
   </connection>
