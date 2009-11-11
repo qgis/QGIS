@@ -94,6 +94,7 @@
 #include "qgsbookmarks.h"
 #include "qgsclipboard.h"
 #include "qgscomposer.h"
+#include "qgscomposermanager.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscursors.h"
@@ -592,10 +593,14 @@ void QgisApp::createActions()
   mActionSaveMapAsImage->setStatusTip( tr( "Save map as image" ) );
   connect( mActionSaveMapAsImage, SIGNAL( triggered() ), this, SLOT( saveMapAsImage() ) );
 
-  mActionNewPrintComposer = new QAction( getThemeIcon( "mActionFilePrint.png" ), tr( "&New Print Composer" ), this );
+  mActionNewPrintComposer = new QAction( getThemeIcon( "mActionNewComposer.png" ), tr( "&New Print Composer" ), this );
   shortcuts->registerAction( mActionNewPrintComposer, tr( "Ctrl+P", "New Print Composer" ) );
   mActionNewPrintComposer->setStatusTip( tr( "New Print Composer" ) );
   connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
+
+  mActionShowComposerManager = new QAction( getThemeIcon( "mActionFilePrint.png" ), tr( "Composer manager..." ), this );
+  mActionShowComposerManager->setStatusTip( tr( "Composer manager" ) );
+  connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
 
   mActionExit = new QAction( getThemeIcon( "mActionFileExit.png" ), tr( "Exit" ), this );
   shortcuts->registerAction( mActionExit, tr( "Ctrl+Q", "Exit QGIS" ) );
@@ -1174,6 +1179,7 @@ void QgisApp::createMenus()
   }
 
   mFileMenu->addAction( mActionNewPrintComposer );
+  mFileMenu->addAction( mActionShowComposerManager );
   mPrintComposersMenu = mFileMenu->addMenu( tr( "Print Composers" ) );
   mActionFileSeparator4 = mFileMenu->addSeparator();
 
@@ -1374,6 +1380,7 @@ void QgisApp::createToolBars()
   mFileToolBar->addAction( mActionSaveProject );
   mFileToolBar->addAction( mActionSaveProjectAs );
   mFileToolBar->addAction( mActionNewPrintComposer );
+  mFileToolBar->addAction( mActionShowComposerManager );
   mToolbarMenu->addAction( mFileToolBar->toggleViewAction() );
   //
   // Layer Toolbar
@@ -1641,6 +1648,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionSaveProject->setIcon( getThemeIcon( "/mActionFileSave.png" ) );
   mActionSaveProjectAs->setIcon( getThemeIcon( "/mActionFileSaveAs.png" ) );
   mActionNewPrintComposer->setIcon( getThemeIcon( "/mActionNewComposer.png" ) );
+  mActionShowComposerManager->setIcon( getThemeIcon( "/mActionFilePrint.png" ) );
   mActionSaveMapAsImage->setIcon( getThemeIcon( "/mActionSaveMapAsImage.png" ) );
   mActionExit->setIcon( getThemeIcon( "/mActionFileExit.png" ) );
   mActionAddOgrLayer->setIcon( getThemeIcon( "/mActionAddOgrLayer.png" ) );
@@ -1709,10 +1717,10 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
 
   //change themes of all composers
-  QMap<QString, QgsComposer*>::iterator composerIt = mPrintComposers.begin();
+  QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
   for ( ; composerIt != mPrintComposers.end(); ++composerIt )
   {
-    composerIt.value()->setupTheme();
+    ( *composerIt )->setupTheme();
   }
 
   emit currentThemeChanged( theThemeName );
@@ -3701,16 +3709,13 @@ void QgisApp::newPrintComposer()
     return;
   }
 
-  //ask user about name
-  mLastComposerId++;
-  QString composerId = QString( tr("Map Composer %1").arg( mLastComposerId ) );
-  //create new composer object
-  QgsComposer* newComposerObject = new QgsComposer( this, composerId );
-  //add it to the map of existing print composers
-  mPrintComposers.insert( composerId, newComposerObject );
-  //and place action into print composers menu
-  mPrintComposersMenu->addAction( newComposerObject->windowAction() );
-  newComposerObject->open();
+  createNewComposer();
+}
+
+void QgisApp::showComposerManager()
+{
+  QgsComposerManager m( this, 0, Qt::WindowStaysOnTopHint );
+  m.exec();
 }
 
 void QgisApp::saveMapAsImage()
@@ -4191,25 +4196,25 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
   return unionGeom;
 }
 
-QList<QgsComposer*> QgisApp::printComposers()
+QgsComposer* QgisApp::createNewComposer()
 {
-  QList<QgsComposer*> composerList;
-  QMap<QString, QgsComposer*>::iterator it = mPrintComposers.begin();
-  for ( ; it != mPrintComposers.end(); ++it )
-  {
-    composerList.push_back( it.value() );
-  }
-  return composerList;
+  //ask user about name
+  mLastComposerId++;
+  //create new composer object
+  QgsComposer* newComposerObject = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
+  //add it to the map of existing print composers
+  mPrintComposers.insert( newComposerObject );
+  //and place action into print composers menu
+  mPrintComposersMenu->addAction( newComposerObject->windowAction() );
+  newComposerObject->open();
+  return newComposerObject;
 }
 
-void QgisApp::checkOutComposer( QgsComposer* c )
+void QgisApp::deleteComposer( QgsComposer* c )
 {
-  if ( !c )
-  {
-    return;
-  }
-  mPrintComposers.remove( c->id() );
+  mPrintComposers.remove( c );
   mPrintComposersMenu->removeAction( c->windowAction() );
+  delete c;
 }
 
 bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
@@ -4231,24 +4236,23 @@ bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
   QDomNodeList composerNodes = projectDom.elementsByTagName( "Composer" );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
-    QgsComposer* composer = new QgsComposer( this, "" );
+    ++mLastComposerId;
+    QgsComposer* composer = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
     composer->readXML( composerNodes.at( i ).toElement(), projectDom );
-    mPrintComposers.insert( composer->id(), composer );
+    mPrintComposers.insert( composer );
     mPrintComposersMenu->addAction( composer->windowAction() );
     composer->showMinimized();
     composer->zoomFull();
   }
-  mLastComposerId = composerNodes.size();
-
   return true;
 }
 
 void QgisApp::deletePrintComposers()
 {
-  QMap<QString, QgsComposer*>::iterator it = mPrintComposers.begin();
+  QSet<QgsComposer*>::iterator it = mPrintComposers.begin();
   for ( ; it != mPrintComposers.end(); ++it )
   {
-    delete it.value();
+    delete( *it );
   }
   mPrintComposers.clear();
   mLastComposerId = 0;
