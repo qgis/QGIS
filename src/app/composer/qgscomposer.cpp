@@ -184,7 +184,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   connectSlots();
 
   mComposition  = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
-  mComposition->setParent(mView);
+  mComposition->setParent( mView );
   mView->setComposition( mComposition );
 
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mCompositionOptionsFrame, mComposition );
@@ -220,13 +220,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
 
 QgsComposer::~QgsComposer()
 {
-  //delete all the items
-  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
-  for ( ; it != mItemWidgetMap.end(); ++it )
-  {
-    delete it.key();
-    delete it.value();
-  }
+  deleteItems();
 }
 
 void QgsComposer::setupTheme()
@@ -842,6 +836,7 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
     return;
   }
 
+  deleteItems();
   readXML( templateDocument );
 
   //clean up after template read (e.g. legend and map extent)
@@ -1174,6 +1169,18 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mView->setComposition( mComposition );
 
   setSelectionTool();
+}
+
+void QgsComposer::deleteItems()
+{
+  //delete all the items
+  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
+  for ( ; it != mItemWidgetMap.end(); ++it )
+  {
+    delete it.key();
+    delete it.value();
+  }
+  mItemWidgetMap.clear();
 }
 
 void QgsComposer::addComposerMap( QgsComposerMap* map )
