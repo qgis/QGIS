@@ -57,6 +57,11 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
   drawBackground( painter );
 
   int newDpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
+  if ( newDpi != mCachedDpi )
+  {
+    mSvgCacheUpToDate = false;
+  }
+
   if ( mMode != Unknown )
   {
     double rectPixelWidth = rect().width() * newDpi / 25.4;
@@ -225,7 +230,7 @@ bool QgsComposerPicture::imageSizeConsideringRotation( double& width, double& he
     return false;
   }
 #if 0
-  if(!cornerPointOnRotatedAndScaledRect(x4, y4, width, height))
+  if ( !cornerPointOnRotatedAndScaledRect( x4, y4, width, height ) )
   {
     return false;
   }
