@@ -246,6 +246,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Writes state under DOM element
     void writeXML( QDomNode& parentNode, QDomDocument& doc );
 
+    //! Removes all the item from the graphics scene and deletes them
+    void deleteItems();
+
     /**Composer title*/
     QString mTitle;
 
