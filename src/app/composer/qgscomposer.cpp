@@ -453,8 +453,20 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 void QgsComposer::on_mActionPrint_triggered()
 {
   QPrinter printer;
+  //portrait or landscape
+  if ( mComposition )
+  {
+    if ( mComposition->paperWidth() >= mComposition->paperHeight() )
+    {
+      printer.setOrientation( QPrinter::Landscape );
+    }
+    else
+    {
+      printer.setOrientation( QPrinter::Portrait );
+    }
+  }
+  QPrintDialog printDialog( &printer, 0 );
 
-  QPrintDialog printDialog( &printer );
   if ( printDialog.exec() != QDialog::Accepted )
     return;
 
