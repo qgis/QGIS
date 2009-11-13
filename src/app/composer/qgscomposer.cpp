@@ -453,7 +453,6 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 void QgsComposer::on_mActionPrint_triggered()
 {
   QPrinter printer;
-  //portrait or landscape
   if ( mComposition )
   {
     if ( mComposition->paperWidth() >= mComposition->paperHeight() )
@@ -465,10 +464,12 @@ void QgsComposer::on_mActionPrint_triggered()
       printer.setOrientation( QPrinter::Portrait );
     }
   }
+  printer.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
   QPrintDialog printDialog( &printer, 0 );
-
   if ( printDialog.exec() != QDialog::Accepted )
+  {
     return;
+  }
 
   print( printer );
 }
