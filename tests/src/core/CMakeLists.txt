@@ -52,7 +52,7 @@ ENDIF (WIN32)
 
 # Since the tests are not actually installed, but rather
 # run directly from the build/src/tests dir we need to
-# ensure the omg libs can be found.
+# ensure the qgis libs can be found.
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
   SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)

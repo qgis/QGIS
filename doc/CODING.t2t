@@ -1026,28 +1026,48 @@ line is the include for the MOC generated sources. You should replace
 
 Adding your unit test to the build system is simply a matter of editing the
 CMakeLists.txt in the test directory, cloning one of the existing test blocks,
-and then search and replacing your test class name into it.  For example:
+and then replacing your test class name into it.  For example:
 
 ```
-#
 # QgsRasterLayer test
-#
-SET(qgis_rasterlayertest_SRCS testqgsrasterlayer.cpp)
-SET(qgis_rasterlayertest_MOC_CPPS testqgsrasterlayer.cpp)
-QT4_WRAP_CPP(qgis_rasterlayertest_MOC_SRCS ${qgis_rasterlayertest_MOC_CPPS})
-ADD_CUSTOM_TARGET(qgis_rasterlayertestmoc ALL DEPENDS ${qgis_rasterlayertest_MOC_SRCS})
-ADD_EXECUTABLE(qgis_rasterlayertest ${qgis_rasterlayertest_SRCS})
-ADD_DEPENDENCIES(qgis_rasterlayertest qgis_rasterlayertestmoc)
-TARGET_LINK_LIBRARIES(qgis_rasterlayertest ${QT_LIBRARIES} qgis_core)
-INSTALL(TARGETS qgis_rasterlayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
-ADD_TEST(qgis_rasterlayertest ${QGIS_BIN_DIR}/qgis_rasterlayertest)
+ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
 ```
+
+== The ADD_QGIS_TEST macro explained ==
 
 I'll run through these lines briefly to explain what they do, but if you are
-not interested, just clone the block, search and replace e.g.
+not interested, just do the step explained in the above section and section.
 
 ```
-:'<,'>s/rasterlayer/mynewtest/g
+MACRO (ADD_QGIS_TEST testname testsrc)
+  SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
+  SET(qgis_${testname}_MOC_CPPS ${testsrc})
+  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
+  ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
+  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
+  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
+  TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_core)
+  SET_TARGET_PROPERTIES(qgis_${testname}
+    PROPERTIES
+    # skip the full RPATH for the build tree
+    SKIP_BUILD_RPATH  TRUE
+    # when building, use the install RPATH already
+    # (so it doesn't need to relink when installing)
+    BUILD_WITH_INSTALL_RPATH TRUE
+    # the RPATH to be used when installing
+    INSTALL_RPATH ${QGIS_LIB_DIR}
+    # add the automatically determined parts of the RPATH
+    # which point to directories outside the build tree to the install RPATH
+    INSTALL_RPATH_USE_LINK_PATH true)
+  IF (APPLE)
+    # For Mac OS X, the executable must be at the root of the bundle's executable folder
+    INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+    ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/qgis_${testname})
+  ELSE (APPLE)
+    INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+    ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/bin/qgis_${testname})
+  ENDIF (APPLE)
+ENDMACRO (ADD_QGIS_TEST)
 ```
 
 Lets look a little more in detail at the individual lines. First we define the
@@ -1056,16 +1076,16 @@ methodology I described above where class declaration and definition are in the
 same file) its a simple statement:
 
 ```
-SET(qgis_rasterlayertest_SRCS testqgsrasterlayer.cpp)
+SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
 ```
 
 Since our test class needs to be run through the Qt meta object compiler (moc)
 we need to provide a couple of lines to make that happen too:
 
 ```
-SET(qgis_rasterlayertest_MOC_CPPS testqgsrasterlayer.cpp)
-QT4_WRAP_CPP(qgis_rasterlayertest_MOC_SRCS ${qgis_rasterlayertest_MOC_CPPS})
-ADD_CUSTOM_TARGET(qgis_rasterlayertestmoc ALL DEPENDS ${qgis_rasterlayertest_MOC_SRCS})
+SET(qgis_${testname}_MOC_CPPS ${testsrc})
+QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
 ```
 
 Next we tell cmake that it must make an executeable from the test class.
@@ -1075,8 +1095,8 @@ included the moc outputs directly into our test class, so that will give it
 executeable:
 
 ```
-ADD_EXECUTABLE(qgis_rasterlayertest ${qgis_rasterlayertest_SRCS})
-ADD_DEPENDENCIES(qgis_rasterlayertest qgis_rasterlayertestmoc)
+ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
+ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
 ```
 
 Next we need to specify any library dependencies. At the moment classes have
@@ -1086,35 +1106,46 @@ only. Of course you also need to link to the relevant qgis libraries as
 required by your unit test.
 
 ```
-TARGET_LINK_LIBRARIES(qgis_rasterlayertest ${QT_LIBRARIES} qgis_core)
+TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_core)
 ```
 
-Next I tell cmake to the same place as the qgis binaries itself. This is
-something I plan to remove in the future so that the tests can run directly
-from inside the source tree.
+Next I tell cmake to install the tests to the same place as the qgis binaries
+itself. This is something I plan to remove in the future so that the tests can
+run directly from inside the source tree.
 
 ```
-INSTALL(TARGETS qgis_rasterlayertest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+SET_TARGET_PROPERTIES(qgis_${testname}
+  PROPERTIES
+  # skip the full RPATH for the build tree
+  SKIP_BUILD_RPATH  TRUE
+  # when building, use the install RPATH already
+  # (so it doesn't need to relink when installing)
+  BUILD_WITH_INSTALL_RPATH TRUE
+  # the RPATH to be used when installing
+  INSTALL_RPATH ${QGIS_LIB_DIR}
+  # add the automatically determined parts of the RPATH
+  # which point to directories outside the build tree to the install RPATH
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+  INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/qgis_${testname})
+ELSE (APPLE)
+  INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+  ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/bin/qgis_${testname})
+ENDIF (APPLE)
 ```
 
-Finally here is where the best magic happens - we register the class with
-ctest. If you recall in the overview I gave in the beginning of this section we
-are using both QtTest and CTest together. To recap, **QtTest** adds a main
-method to your test unit and handles calling your test methods within the
-class. It also provides some macros like QVERIFY that you can use as to test
-for failure of the tests using conditions. The output from a QtTest unit test
-is an executeable which you can run from the command line.  However when you
-have a suite of tests and you want to run each executeable in turn, and
-better yet integrate running tests into the build process, the **CTest** is
-what we use. The next line registers the unit test with CMake / CTest.
-
-```
-ADD_TEST(qgis_rasterlayertest ${QGIS_BIN_DIR}/qgis_rasterlayertest)
-```
-
-The last thing I should add is that if your test requires optional parts of the
-build process (e.g. Postgresql support, GSL libs, GRASS etc.), you should take
-care to enclose you test block inside a IF () block in the CMakeLists.txt file.
+Finally the above uses ADD_TEST to register the test with cmake / ctest . Here
+is where the best magic happens - we register the class with ctest. If you
+recall in the overview I gave in the beginning of this section we are using
+both QtTest and CTest together. To recap, **QtTest** adds a main method to your
+test unit and handles calling your test methods within the class. It also
+provides some macros like QVERIFY that you can use as to test for failure of
+the tests using conditions. The output from a QtTest unit test is an
+executeable which you can run from the command line.  However when you have a
+suite of tests and you want to run each executeable in turn, and better yet
+integrate running tests into the build process, the **CTest** is what we use. 
 
 
 == Building your unit test ==
