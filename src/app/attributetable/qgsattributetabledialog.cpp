@@ -115,6 +115,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
   connect( mView->verticalHeader(), SIGNAL( sectionClicked( int ) ), this, SLOT( updateRowSelection( int ) ) );
+  connect( mView->verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( updateRowPressed( int ) ) );
   connect( mModel, SIGNAL( modelChanged() ), this, SLOT( updateSelection() ) );
 
   mLastClickedHeaderIndex = 0;
@@ -262,8 +263,6 @@ int QgsAttributeTableDialog::columnBoxColumnId()
 void QgsAttributeTableDialog::updateSelection()
 {
   QModelIndex index;
-  mView->setSelectionMode( QAbstractItemView::MultiSelection );
-
   QItemSelection selection;
 
   QgsFeatureIds::Iterator it = mSelectedFeatures.begin();
@@ -277,7 +276,6 @@ void QgsAttributeTableDialog::updateSelection()
 
   mSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );// | QItemSelectionModel::Columns);
   mView->setSelectionModel( mSelectionModel );
-  mView->setSelectionMode( QAbstractItemView::NoSelection );
 
   /*for (int i = 0; i < mModel->rowCount(); ++i)
   {
@@ -288,127 +286,200 @@ void QgsAttributeTableDialog::updateSelection()
   */
 }
 
+void QgsAttributeTableDialog::updateRowPressed( int index )
+{
+  mView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mIndexPressed = index;
+}
+
 void QgsAttributeTableDialog::updateRowSelection( int index )
 {
-  // map index to filter model
-  //index = mFilterModel->mapFromSource(mModel->index(index, 0)).row();
+  bool bDrag;
 
-  if ( mView->shiftPressed() )
+  if ( mIndexPressed == index )
+    bDrag = false;
+  else
+    bDrag = true;
+
+  QString key = "";
+  if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
+    key = "Control";
+  else if ( QApplication::keyboardModifiers() == Qt::ShiftModifier )
+    key = "Shift";
+
+  int first, last;
+
+  if ( bDrag )
   {
-    QgsDebugMsg( "shift" );
-    // get the first and last index of the rows to be selected/deselected
-    int first, last;
-    if ( index > mLastClickedHeaderIndex )
+    if ( mIndexPressed < index )
     {
-      first = mLastClickedHeaderIndex + 1;
-      last = index;
-    }
-    else if ( index == mLastClickedHeaderIndex )
-    {
-      // row was selected and now it is shift-clicked
-      // ignore the shift and deselect the row
-      first = last = index;
+      first = mIndexPressed;
+      mLastClickedHeaderIndex = last = index;
     }
     else
     {
-      first = index;
-      last = mLastClickedHeaderIndex - 1;
+      last = mIndexPressed;
+      mLastClickedHeaderIndex = first = index;
     }
 
-    // for all the rows update the selection, without starting a new selection
-    if ( first <= last )
-      updateRowSelection( first, last, false );
-
-    mLastClickedHeaderIndex = last;
+    updateRowSelection( first, last, 3 );
+    mView->setSelectionMode( QAbstractItemView::NoSelection );
+    return;
   }
-  else if ( mView->ctrlPressed() )
+  else // No drag
   {
-    QgsDebugMsg( "ctrl" );
-    // update the single row selection, without starting a new selection
-    updateRowSelection( index, index, false );
+    if ( key == "Shift" )
+    {
+      QgsDebugMsg( "shift" );
+      // get the first and last index of the rows to be selected/deselected
+      first = last = 0;
 
-    // the next shift would start from here
-    mLastClickedHeaderIndex = index;
-  }
-  else
-  {
-    QgsDebugMsg( "ordinary click" );
-    // update the single row selection, start a new selection if the row was not selected
-    updateRowSelection( index, index, true );
+      if ( index > mLastClickedHeaderIndex )
+      {
+        first = mLastClickedHeaderIndex;
+        last = index;
+      }
+      else if ( index == mLastClickedHeaderIndex )
+      {
+        // row was selected and now it is shift-clicked
+        first = last = index;
+      }
+      else
+      {
+        first = index;
+        last = mLastClickedHeaderIndex;
+      }
 
-    // the next shift would start from here
-    mLastClickedHeaderIndex = index;
+      // for all the rows update the selection, without starting a new selection
+      if ( first <= last )
+        updateRowSelection( first, last, 1 );
+    }
+    else if ( key == "Control" )
+    {
+      QgsDebugMsg( "ctrl" );
+      // update the single row selection, without starting a new selection
+      updateRowSelection( index, index, 2 );
+
+      // the next shift would start from here
+      mLastClickedHeaderIndex = index;
+    }
+    else // Single click
+    {
+      // Start a new selection if the row was not selected
+      updateRowSelection( index, index, 0 );
+
+      // the next shift would start from here
+      mLastClickedHeaderIndex = index;
+    }
   }
+  mView->setSelectionMode( QAbstractItemView::NoSelection );
 }
 
-// fast row deselection needed
-void QgsAttributeTableDialog::updateRowSelection( int first, int last, bool startNewSelection )
+void QgsAttributeTableDialog::updateRowSelection( int first, int last, int clickType )
 {
+  // clickType= 0:Single click, 1:Shift, 2:Ctrl, 3: Dragged click
   disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
 
-  //index = mFilterModel->mapFromSource(mModel->index(index, 0)).row();
   // Id must be mapped to table/view row
   QModelIndex index = mFilterModel->mapToSource( mFilterModel->index( first, 0 ) );
   int fid = mModel->rowToId( index.row() );
   bool wasSelected = mSelectedFeatures.contains( fid );
 
   // new selection should be created
-  if ( startNewSelection )
+  if ( clickType == 0 ) // Single click
   {
-    mView->clearSelection();
-    mSelectedFeatures.clear();
+    if ( mSelectedFeatures.size() == 1 and wasSelected ) // One item selected
+        return // Click over a selected item doesn't do anything
 
-    if ( wasSelected )
-    {
-      mLayer->removeSelection();
-      connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
-      return;
-    }
-
-    // set clicked row to current
     mView->setCurrentIndex( mFilterModel->index( first, 0 ) );
-    mView->setSelectionMode( QAbstractItemView::SingleSelection );
-
-    //QModelIndex index = mFilterModel->mapFromSource(mModel->index(first, 0));
-
     mView->selectRow( first );
-    mView->setSelectionMode( QAbstractItemView::NoSelection );
 
+    mSelectedFeatures.clear();
     mSelectedFeatures.insert( fid );
-    //mLayer->setSelectedFeatures(mSelectedFeatures);
     mLayer->removeSelection();
     mLayer->select( fid );
-    //mFilterModel->invalidate();
     connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
     return;
   }
-
-  // existing selection should be updated
-  for ( int i = first; i <= last; ++i )
+  else if ( clickType == 1 ) // Shift
   {
-    if ( i > first )
+    QgsFeatureIds newSelection;
+
+    for ( int i = first; i <= last; ++i )
     {
-      // Id must be mapped to table/view row
-      index = mFilterModel->mapToSource( mFilterModel->index( i, 0 ) );
-      fid = mModel->rowToId( index.row() );
-      wasSelected = mSelectedFeatures.contains( fid );
+      if ( i >= first )
+      {
+        // Id must be mapped to table/view row
+        index = mFilterModel->mapToSource( mFilterModel->index( i, 0 ) );
+        fid = mModel->rowToId( index.row() );
+      }
+      newSelection.insert( fid );
     }
 
+    // Remove items in mSelectedFeatures if they aren't in mNewSelection
+    QgsFeatureIds::Iterator it = mSelectedFeatures.begin();
+    while ( it != mSelectedFeatures.end() ) {
+      if ( !newSelection.contains( *it ) ) {
+        it = mSelectedFeatures.erase( it );
+      } else {
+        ++it;
+      }
+    }
+
+    // Append the other fids in range first-last to mSelectedFeatures
+    QgsFeatureIds::Iterator itNew = newSelection.begin();
+    for ( ; itNew != newSelection.end(); ++itNew )
+    {
+      if ( !mSelectedFeatures.contains( *itNew ) )
+      {
+        mSelectedFeatures.insert( *itNew );
+      }
+    }
+  }
+  else if ( clickType == 2 ) // Ctrl
+  {
+    // existing selection should be updated
     if ( wasSelected )
       mSelectedFeatures.remove( fid );
     else
       mSelectedFeatures.insert( fid );
   }
-  //mFilterModel->invalidate();
+  else if ( clickType == 3 ) // Dragged click
+  {
+    QgsFeatureIds newSelection;
 
-  /*
-  QItemSelection selection;
-  QModelIndex leftUpIndex = mFilterModel->index(first, 0);
-  QModelIndex rightBottomIndex = mFilterModel->index(last, mModel->columnCount() - 1);
-  selection.append(QItemSelectionRange(leftUpIndex, rightBottomIndex));
-  mSelectionModel->select(selection, QItemSelectionModel::Select);
-  mView->setSelectionModel(mSelectionModel);
-  */
+    for ( int i = first; i <= last; ++i )
+    {
+      if ( i >= first )
+      {
+        // Id must be mapped to table/view row
+        index = mFilterModel->mapToSource( mFilterModel->index( i, 0 ) );
+        fid = mModel->rowToId( index.row() );
+      }
+      newSelection.insert( fid );
+    }
+
+    // Remove items in mSelectedFeatures if they aren't in mNewSelection
+    QgsFeatureIds::Iterator it = mSelectedFeatures.begin();
+    while ( it != mSelectedFeatures.end() ) {
+      if ( !newSelection.contains( *it ) ) {
+        it = mSelectedFeatures.erase( it );
+      } else {
+        ++it;
+      }
+    }
+
+    // Append the other fids in range first-last to mSelectedFeatures
+    QgsFeatureIds::Iterator itNew = newSelection.begin();
+    for ( ; itNew != newSelection.end(); ++itNew )
+    {
+      if ( !mSelectedFeatures.contains( *itNew ) )
+      {
+        mSelectedFeatures.insert( *itNew );
+      }
+    }
+  }
+
   updateSelection();
   mLayer->setSelectedFeatures( mSelectedFeatures );
   connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );

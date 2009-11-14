@@ -42,8 +42,6 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
   setSelectionMode( QAbstractItemView::NoSelection );
   setSortingEnabled( true );
 
-  mShiftPressed = false;
-  mCtrlPressed = false;
 }
 
 void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
@@ -72,26 +70,4 @@ void QgsAttributeTableView::closeEvent( QCloseEvent *event )
 {
   QSettings settings;
   settings.setValue( "/BetterAttributeTable/geometry", QVariant( saveGeometry() ) );
-}
-
-void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
-{
-  // shift pressed
-  if ( event->key() == Qt::Key_Shift )// && event->modifiers() & Qt::ShiftModifier)
-    mShiftPressed = true;
-  else if ( event->key() == Qt::Key_Control )
-    mCtrlPressed = true;
-  else
-    QTableView::keyPressEvent( event );
-}
-
-void QgsAttributeTableView::keyReleaseEvent( QKeyEvent *event )
-{
-  // workaround for some Qt bug
-  if ( event->key() == Qt::Key_Shift || event->key() == -1 )
-    mShiftPressed = false;
-  else if ( event->key() == Qt::Key_Control )
-    mCtrlPressed = false;
-  else
-    QTableView::keyReleaseEvent( event );
 }
