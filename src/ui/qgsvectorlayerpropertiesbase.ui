@@ -21,7 +21,47 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" rowspan="2" colspan="2">
+   <item row="0" column="0">
+    <widget class="QListWidget" name="listWidget">
+     <property name="iconSize">
+      <size>
+       <width>64</width>
+       <height>64</height>
+      </size>
+     </property>
+     <item>
+      <property name="text">
+       <string>Symbology</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Labels</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Attributes</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>General</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Metadata</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Actions</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="1">
     <layout class="QHBoxLayout">
      <property name="spacing">
       <number>3</number>
@@ -31,69 +71,7 @@
      </property>
     </layout>
    </item>
-   <item row="1" column="1">
-    <widget class="QScrollArea" name="scrollArea">
-     <property name="widgetResizable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>194</width>
-        <height>404</height>
-       </rect>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_10">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QListWidget" name="listWidget">
-         <property name="iconSize">
-          <size>
-           <width>64</width>
-           <height>64</height>
-          </size>
-         </property>
-         <item>
-          <property name="text">
-           <string>Symbology</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Labels</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Attributes</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>General</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Metadata</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Actions</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-   <item row="0" column="2" rowspan="2" colspan="4">
+   <item row="0" column="2" colspan="3">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
       <number>3</number>
@@ -370,7 +348,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>540</width>
+            <width>555</width>
             <height>401</height>
            </rect>
           </property>
@@ -619,35 +597,35 @@
      </widget>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2">
+   <item row="1" column="0" colspan="2">
     <widget class="QPushButton" name="pbnLoadDefaultStyle">
      <property name="text">
       <string>Restore Default Style</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="3">
+   <item row="1" column="2">
     <widget class="QPushButton" name="pbnSaveDefaultStyle">
      <property name="text">
       <string>Save As Default</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="4">
+   <item row="1" column="3">
     <widget class="QPushButton" name="pbnLoadStyle">
      <property name="text">
       <string>Load Style ...</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="5">
+   <item row="1" column="4">
     <widget class="QPushButton" name="pbnSaveStyleAs">
      <property name="text">
       <string>Save Style ...</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="6">
+   <item row="2" column="0" colspan="5">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
