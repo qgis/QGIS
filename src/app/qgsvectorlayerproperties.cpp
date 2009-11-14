@@ -137,12 +137,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   for ( ; it != overlayPluginList.constEnd(); ++it )
   {
     QgsApplyDialog* d = ( *it )->dialog( lyr );
-    position = tabWidget->addTab( d, ( *it )->name() );
-    tabWidget->setCurrentIndex( position ); //ugly, but otherwise the properties dialog is a mess
+    position = stackedWidget->insertWidget( stackedWidget->count(), qobject_cast<QDialog*>( d ) );
+    stackedWidget->setCurrentIndex( position ); //ugly, but otherwise the properties dialog is a mess
     mOverlayDialogs.push_back( d );
+    listWidget->insertItem( stackedWidget->count(), ( *it )->name() );
   }
 
-  tabWidget->setCurrentIndex( 0 );
+  stackedWidget->setCurrentIndex( 0 );
 } // QgsVectorLayerProperties ctor
 
 void QgsVectorLayerProperties::loadRows()
