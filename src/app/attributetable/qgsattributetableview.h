@@ -41,29 +41,8 @@ class QgsAttributeTableView: public QTableView
      * @param event not used
      */
     void closeEvent( QCloseEvent *event );
-    /**
-     * Handles Ctrl or Shift key press
-     * @param event the key pressed
-     */
-    void keyPressEvent( QKeyEvent *event );
-    /**
-     * Handles Ctrl or Shift key release
-     * @param event the key released
-     */
-    void keyReleaseEvent( QKeyEvent *event );
-    /**
-     * Returns true if shift was pressed
-     */
-    bool shiftPressed() { return mShiftPressed; }
-    /**
-     * Returns true if ctrl was pressed
-     */
-    bool ctrlPressed() { return mCtrlPressed; }
 
   private:
-    bool mShiftPressed;
-    bool mCtrlPressed;
-
     QgsAttributeTableModel* mModel;
     QgsAttributeTableFilterModel* mFilterModel;
 };
