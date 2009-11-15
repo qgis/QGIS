@@ -56,6 +56,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   QSettings settings;
   int identifyMode = settings.value( "/Map/identifyMode", 0 ).toInt();
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
+  cbxAutoFeatureForm->setChecked( settings.value( "/Map/identifyAutoFeatureForm", false ).toBool() );
   double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
   QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );
   spinBoxIdentifyValue->setValue( identifyValue );
@@ -392,6 +393,7 @@ void QgsOptions::saveOptions()
 
   //general settings
   settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );
+  settings.setValue( "/Map/identifyAutoFeatureForm", cbxAutoFeatureForm->isChecked() );
   settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );

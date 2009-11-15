@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>733</width>
-    <height>549</height>
+    <width>722</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>7</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
@@ -455,7 +455,7 @@
           <property name="margin">
            <number>11</number>
           </property>
-          <item row="2" column="0" colspan="2">
+          <item row="3" column="0" colspan="2">
            <widget class="QLabel" name="textLabel2">
             <property name="text">
              <string>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</string>
@@ -465,7 +465,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="textLabel1_3">
             <property name="text">
              <string>Search radius for identifying features and displaying map tips</string>
@@ -475,7 +475,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="spinBoxIdentifyValue">
             <property name="suffix">
              <string>%</string>
@@ -501,6 +501,13 @@
             </property>
             <property name="buddy">
              <cstring>cmbIdentifyMode</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="cbxAutoFeatureForm">
+            <property name="text">
+             <string>Open feature form, if a single feature is identified</string>
             </property>
            </widget>
           </item>
