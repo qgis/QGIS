@@ -388,8 +388,8 @@ void QgsAttributeTableDialog::updateRowSelection( int first, int last, int click
   // new selection should be created
   if ( clickType == 0 ) // Single click
   {
-    if ( mSelectedFeatures.size() == 1 and wasSelected ) // One item selected
-        return // Click over a selected item doesn't do anything
+    if ( mSelectedFeatures.size() == 1 && wasSelected ) // One item selected
+        return; // Click over a selected item doesn't do anything
 
     mView->setCurrentIndex( mFilterModel->index( first, 0 ) );
     mView->selectRow( first );

@@ -71,7 +71,7 @@ class QgsAttributeAction
     //! Reads the actions in in XML format
     bool readXML( const QDomNode& layer_node );
 
-    //! interface to inherited methods from QList<QgsAction>
-    const QgsAction &at( int idx );
-    const int size();
+    int size() const;
+    QgsAction &at( int idx );
+    QgsAction &operator[]( int idx );
 };

@@ -35,7 +35,7 @@ static const char * const ident_ = "$Id$";
 
 void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QString action, bool capture )
 {
-  *this << QgsAction( type, name, action, capture );
+  mActions << QgsAction( type, name, action, capture );
 }
 
 void QgsAttributeAction::doAction( int index, const QList< QPair<QString, QString> > &values,
@@ -116,13 +116,13 @@ bool QgsAttributeAction::writeXML( QDomNode& layer_node, QDomDocument& doc ) con
 {
   QDomElement aActions = doc.createElement( "attributeactions" );
 
-  for ( int i = 0; i < size(); i++ )
+  for ( int i = 0; i < mActions.size(); i++ )
   {
     QDomElement actionSetting = doc.createElement( "actionsetting" );
-    actionSetting.setAttribute( "type", at( i ).type() );
-    actionSetting.setAttribute( "name", at( i ).name() );
-    actionSetting.setAttribute( "action", at( i ).action() );
-    actionSetting.setAttribute( "capture", at( i ).capture() );
+    actionSetting.setAttribute( "type", mActions[i].type() );
+    actionSetting.setAttribute( "name", mActions[i].name() );
+    actionSetting.setAttribute( "action", mActions[i].action() );
+    actionSetting.setAttribute( "capture", mActions[i].capture() );
     aActions.appendChild( actionSetting );
   }
   layer_node.appendChild( aActions );
@@ -132,7 +132,7 @@ bool QgsAttributeAction::writeXML( QDomNode& layer_node, QDomDocument& doc ) con
 
 bool QgsAttributeAction::readXML( const QDomNode& layer_node )
 {
-  clear();
+  mActions.clear();
 
   QDomNode aaNode = layer_node.namedItem( "attributeactions" );
 

@@ -63,7 +63,7 @@ class CORE_EXPORT QgsAction
     //! Whether to capture output for display when this action is run
     bool capture() const { return mCaptureOutput; }
 
-    //!
+    //! Wheter the action is runable on the current platform
     bool runable() const
     {
       return mType == Generic ||
@@ -90,14 +90,14 @@ class CORE_EXPORT QgsAction
  * attributes.
  */
 
-class  CORE_EXPORT QgsAttributeAction : public QList<QgsAction>
+class  CORE_EXPORT QgsAttributeAction
 {
   public:
     //! Constructor
-    QgsAttributeAction() {};
+    QgsAttributeAction() {}
 
     //! Destructor
-    virtual ~QgsAttributeAction() {};
+    virtual ~QgsAttributeAction() {}
 
     //! Add an action with the given name and action details.
     // Will happily have duplicate names and actions. If
@@ -113,7 +113,7 @@ class  CORE_EXPORT QgsAttributeAction : public QList<QgsAction>
                    int defaultValueIndex = 0, void ( *executePython )( const QString & ) = 0 );
 
     //! Removes all actions
-    void clearActions() { clear(); }
+    void clearActions() { mActions.clear(); }
 
     //! Expands the given action, replacing all %'s with the value as
     // given.
@@ -125,6 +125,13 @@ class  CORE_EXPORT QgsAttributeAction : public QList<QgsAction>
 
     //! Reads the actions in in XML format
     bool readXML( const QDomNode& layer_node );
+
+    int size() const { return mActions.size(); }
+    QgsAction &at( int idx ) { return mActions[idx]; }
+    QgsAction &operator[]( int idx ) { return mActions[idx]; }
+
+  private:
+    QList<QgsAction> mActions;
 };
 
 #endif
