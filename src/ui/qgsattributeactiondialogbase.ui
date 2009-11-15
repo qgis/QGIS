@@ -51,7 +51,7 @@
         </property>
         <column>
          <property name="text">
-          <string>New Column</string>
+          <string>Type</string>
          </property>
         </column>
         <column>
@@ -61,7 +61,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Type</string>
+          <string>Action</string>
          </property>
         </column>
         <column>
