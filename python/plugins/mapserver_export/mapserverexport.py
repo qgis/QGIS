@@ -80,68 +80,8 @@ class MapServerExport:
     # create and show the MapServerExport dialog 
     self.dlg = MapServerExportDialog()
     
-    # TODO: should come from settings
-    self.dlg.ui.txtMapFilePath.setText('/usr/lib/cgi-bin/kaas.map')
-
-    # project defaults to current instance
-    project = QgsProject.instance()
-    
-    # question: save project on loading export dialog?
-    if project.isDirty():
-      shouldSave = QMessageBox.question(self.dlg,
-                      "Save?",
-                      "Save project to \"" + project.fileName() + "\" before exporting? Only the last saved version of your project will be exported.",
-                      QMessageBox.Yes,
-                      QMessageBox.No,
-                      QMessageBox.Cancel
-                      )
-      if shouldSave == QMessageBox.Yes:
-        if project.fileName().size() == 0:
-          # project has not yet been saved:
-          saveAsFileName = QFileDialog.getSaveFileName(self.dlg,
-                      "Save QGIS Project file as...",
-                      ".",
-                      "QGIS Project Files (*.qgs)",
-                      "Filter list for selecting files from a dialog box")
-          # Check that a file was selected
-          if saveAsFileName.size() == 0:
-            QMessageBox.warning(self.dlg, "Not saved!", "QGis project file not saved because no file name was given.")
-            # fall back to using current project if available
-            self.dlg.ui.txtQgisFilePath.setText(project.fileName())
-          else:
-            project.setFileName(saveAsFileName)
-            project.write()
-        else:
-          project.write()
-      elif shouldSave == QMessageBox.Cancel:
-        return # do not show the export dialog
-
-    self.dlg.ui.txtQgisFilePath.setText(project.fileName())
-    
-    # set title, or set default one if none available
-    title = project.title()
-    if title == "":
-      title = "QGisGeneratedMapfile"
-    self.dlg.ui.txtMapName.setText(project.title())
-    
-    if self.dlg.ui.txtMapFilePath.text().size() == 0:
-      btnOk = self.dlg.ui.buttonBox.button(QDialogButtonBox.Ok)
-      btnOk.setEnabled(False)
-      
-    # TODO: fetch unit used from QSettings
-
-    # TODO: fetch width/height guess from QSettings:
-    # fetch the last used values from settings and intialize the
-    # dialog with them
-    #settings = QSettings("MicroResources", "ZoomToPoint")
-    #xValue = settings.value("coordinate/x")
-    #self.dlg.ui.xCoord.setText(str(xValue.toString()))
-    #yValue = settings.value("coordinate/y")
-    #self.dlg.ui.yCoord.setText(str(yValue.toString()))
-    #scale = settings.value("zoom/scale", QVariant(4))
-    #self.dlg.ui.spinBoxScale.setValue(scale.toInt()[0])
-
-    QObject.connect(self.dlg.ui.btnChooseFile, SIGNAL("clicked()"), self.setSaveFile)
+    # attach events to inputs and buttons
+    QObject.connect(self.dlg.ui.btnChooseFile, SIGNAL("clicked()"), self.setMapFile)
     QObject.connect(self.dlg.ui.txtMapFilePath, SIGNAL("textChanged(QString)"), self.mapfileChanged)
     QObject.connect(self.dlg.ui.btnChooseProjectFile, SIGNAL("clicked()"), self.setProjectFile)
     QObject.connect(self.dlg.ui.chkExpLayersOnly, SIGNAL("clicked(bool)"), self.toggleLayersOnly)
@@ -150,40 +90,51 @@ class MapServerExport:
     QObject.connect(self.dlg.ui.btnChooseHeaderFile, SIGNAL("clicked()"), self.setHeaderFile)
     QObject.connect(self.dlg.ui.btnChooseTemplateFile, SIGNAL("clicked()"), self.setTemplateFile)
     QObject.connect(self.dlg.ui.buttonBox, SIGNAL("accepted()"), self.ok_clicked)
+    
+    # qgs-project
+    # defaults to current instance
+    project = QgsProject.instance()
+    self.dlg.ui.txtQgisFilePath.setText(project.fileName())
+
+    # get some settings from former successfull exports
+    # defaults are defined in ms_export.py and set in mapserverexportdialog.py
+    settings = QSettings()
+    # map-file name and force mapfileChanged to enable/disable ok button
+    self.dlg.ui.txtMapFilePath.setText(settings.value("/MapserverExport/mapfileName", QVariant("")).toString ()) 
+    self.mapfileChanged(self.dlg.ui.txtMapFilePath.text())
+    # map width and height
+    if settings.contains("/MapserverExport/mapWidth"):
+      self.dlg.ui.txtMapWidth.setText(settings.value("/MapserverExport/mapWidth").toString ())
+    if settings.contains("/MapserverExport/mapHeight"):
+      self.dlg.ui.txtMapHeight.setText(settings.value("/MapserverExport/mapHeight").toString ())
+    # MapServer IMAGETYPE's [gif|png|jpeg|wbmp|gtiff|swf|userdefined]
+    self.dlg.ui.cmbMapImageType.addItems(QStringList(["png","gif","jpeg","wbmp","gtiff","swf","userdefined"]))
+    if settings.contains("/MapserverExport/imageType"):
+      idx = self.dlg.ui.cmbMapImageType.findText(settings.value("/MapserverExport/imageType").toString ())
+      self.dlg.ui.cmbMapImageType.setCurrentIndex(idx)
+    # MapServer URL (default value already set by dialog defaults)
+    if settings.contains("/MapserverExport/mapserverUrl"):
+      self.dlg.ui.txtMapServerUrl.setText(settings.value("/MapserverExport/mapserverUrl").toString())
+    
+    
+    # set title or default to one if none available
+    title = project.title()
+    if title == "":
+      title = "QGIS-MAP"
+    self.dlg.ui.txtMapName.setText(title)
+
+    # TODO: fetch units used from current project
+    # QGIS: Meters, Feet, Degrees, UnknownUnit since 1.4 also: DecimalDegrees, DegreesMinutesSeconds, DegreesDecimalMinutes 	
+    # Mapserver: UNITS [feet|inches|kilometers|meters|miles|dd]
 	
     self.dlg.show()
 
   def ok_clicked(self):
-    # Check if map file name is provided
-    if self.dlg.ui.txtMapFilePath.text().size() == 0:
-      saveAsFileName = QFileDialog.getSaveFileName(self.dlg,
-                    "Please choose to save map file as...",
-                    ".",
-                    "Map files (*.map)",
-                    "Filter list for selecting files from a dialog box")
-      # Check that a file was selected
-      if saveAsFileName.size() == 0:
-        QMessageBox.warning(self.dlg, "Not saved!", "Map file not saved because no file name was given")
-        return
-      else:
-        self.dlg.ui.txtMapFilePath.setText(saveAsFileName)
-        self.saveMapFile()
-
-    # Check if map file exists and we should overwrite it
-    elif QFile(self.dlg.ui.txtMapFilePath.text()).exists():
-      shouldOverwrite = QMessageBox.question(self.dlg,
-                    "Overwrite?",
-                    "Map file \"" + self.dlg.ui.txtMapFilePath.text() + "\" already exists. \nShould we overwrite it?",
-                    QMessageBox.Yes,
-                    QMessageBox.Cancel
-                    )
-      if shouldOverwrite == QMessageBox.Yes:
-        self.saveMapFile()
-      elif shouldOverwrite == QMessageBox.Cancel:
-        return
-        
-    else:
+    if self.checkMapFile():
       self.saveMapFile()
+    else:
+      print "Failed for Map file check, try again..."
+      pass
 
   def toggleUseCurrentProject(self, boolUseCurrent):
     self.dlg.ui.txtQgisFilePath.setEnabled(not boolUseCurrent)
@@ -248,7 +199,18 @@ class MapServerExport:
     except Exception, err:
       QMessageBox.information(self.dlg, "MapServer Export Error", str(err))
       return
-      
+    # ok succesfull: write some setting for a next session
+    settings = QSettings()
+    # mapfile name 
+    settings.setValue("/MapserverExport/mapfileName", QVariant(self.dlg.ui.txtMapFilePath.text()))
+    # map width and heigth
+    settings.setValue("/MapserverExport/mapWidth", QVariant(self.dlg.ui.txtMapWidth.text()))
+    settings.setValue("/MapserverExport/mapHeight", QVariant(self.dlg.ui.txtMapHeight.text()))
+    # mapserver url
+    settings.setValue("/MapserverExport/mapserverUrl", QVariant(self.dlg.ui.txtMapServerUrl.text()))
+    # map ImageType
+    settings.setValue("/MapserverExport/imageType", QVariant(self.dlg.ui.cmbMapImageType.currentText()))
+    # show results
     QMessageBox.information(self.dlg, "MapServer Export Results", result)
 
   def mapfileChanged(self, text):
@@ -259,11 +221,30 @@ class MapServerExport:
     else:
       btnOk.setEnabled(False)      
 
-  def setSaveFile(self):
-    mapFile = QFileDialog.getSaveFileName(self.dlg, "Name for the map file", \
-      ".", "MapServer map files (*.map);;All files (*.*)","Filter list for selecting files from a dialog box")
-    self.dlg.ui.txtMapFilePath.setText(mapFile)
-      
+  def checkMapFile(self):
+    # Check if map file name is provided
+    mapFileName = self.dlg.ui.txtMapFilePath.text()
+    if mapFileName.size() == 0:
+      QMessageBox.warning(self.dlg, "Not saved!", "Map file not saved because no file name was given")
+      return False
+    # Check/fix for .map extension (mapserver fails to read otherwise)
+    if not mapFileName.trimmed().endsWith('.map'):
+      mapFileName += '.map'
+    self.dlg.ui.txtMapFilePath.setText(mapFileName)
+    # Check if map file exists and we should overwrite it
+    if QFile(mapFileName).exists():
+      if QMessageBox.Cancel == QMessageBox.question(self.dlg, "Overwrite?",
+                    "Map file \"" + mapFileName + "\" already exists. \nShould we overwrite it?",
+                    QMessageBox.Yes, QMessageBox.Cancel):
+        return False
+    # mapfile ok, extension ok, ok to overwrite  
+    return True
+
+  def setMapFile(self):
+    mapFileName = QFileDialog.getSaveFileName(self.dlg, "Name for the map file", \
+      self.dlg.ui.txtMapFilePath.text(), "MapServer map files (*.map);;All files (*.*)","Filter list for selecting files from a dialog box")
+    self.dlg.ui.txtMapFilePath.setText(mapFileName)
+
   def setProjectFile(self):
     qgisProjectFile = QFileDialog.getOpenFileName(self.dlg, "Choose a QGIS Project file", \
       ".", "QGIS Project Files (*.qgs);;All files (*.*)", "Filter list for selecting files from a dialog box")

@@ -131,43 +131,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QComboBox" name="cmbMapImageType">
-        <item>
-         <property name="text">
-          <string>png</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>gif</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>gtiff</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>jpeg</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>swf</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>userdefined</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>wbmp</string>
-         </property>
-        </item>
-       </widget>
+       <widget class="QComboBox" name="cmbMapImageType"/>
       </item>
       <item row="0" column="4">
        <widget class="QLabel" name="label">
