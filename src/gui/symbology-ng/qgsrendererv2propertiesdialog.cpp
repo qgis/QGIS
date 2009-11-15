@@ -51,9 +51,10 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
     if (!pix.load(iconPath, "png"))
       pix = QPixmap();
 
-    QListWidgetItem* item = new QListWidgetItem(QIcon(pix), m.visibleName(), listRenderers);
-    item->setData(Qt::UserRole, name);
+    cboRenderers->addItem(QIcon(pix), m.visibleName(), name);
   }
+
+  cboRenderers->setCurrentIndex(-1); // set no current renderer
 
   // if the layer doesn't use renderer V2, let's start using it!
   if (!mLayer->isUsingRendererV2())
@@ -63,15 +64,15 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   }
 
   // setup slot rendererChanged()
-  connect(listRenderers, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(rendererChanged()));
+  connect(cboRenderers, SIGNAL(currentIndexChanged(int)), this, SLOT(rendererChanged()));
 
   // set current renderer from layer
   QString rendererName = mLayer->rendererV2()->type();
-  for (int i = 0; i < listRenderers->count(); i++)
+  for (int i = 0; i < cboRenderers->count(); i++)
   {
-    if (listRenderers->item(i)->data(Qt::UserRole).toString() == rendererName)
+    if (cboRenderers->itemData(i).toString() == rendererName)
     {
-      listRenderers->setCurrentItem( listRenderers->item(i) );
+      cboRenderers->setCurrentIndex(i);
       return;
     }
   }
@@ -85,13 +86,13 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
 void QgsRendererV2PropertiesDialog::rendererChanged()
 {
 
-  if (listRenderers->currentItem() == NULL)
+  if (cboRenderers->currentIndex() == -1)
   {
     QgsDebugMsg("No current item -- this should never happen!");
     return;
   }
 
-  QString rendererName = listRenderers->currentItem()->data(Qt::UserRole).toString();
+  QString rendererName = cboRenderers->itemData( cboRenderers->currentIndex() ).toString();
 
   // get rid of old active widget (if any)
   if (mActiveWidget)
