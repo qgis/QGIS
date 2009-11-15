@@ -62,7 +62,7 @@ QWidget *QgsAttributeTableDelegate::createEditor(
   if ( vl == NULL )
     return NULL;
 
-  QWidget *widget = QgsAttributeEditor::createAttributeEditor( parent, vl, fieldIdx( index ), index.model()->data( index, Qt::EditRole ) );
+  QWidget *widget = QgsAttributeEditor::createAttributeEditor( parent, 0, vl, fieldIdx( index ), index.model()->data( index, Qt::EditRole ) );
 
   return widget;
 }

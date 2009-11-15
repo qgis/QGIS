@@ -94,6 +94,7 @@
 #include "qgsbookmarks.h"
 #include "qgsclipboard.h"
 #include "qgscomposer.h"
+#include "qgscomposermanager.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscursors.h"
@@ -488,9 +489,10 @@ QgisApp::~QgisApp()
   delete mMapTools.mReshapeFeatures;
   delete mMapTools.mSplitFeatures;
   delete mMapTools.mSelect;
-  delete mMapTools.mVertexAdd;
-  delete mMapTools.mVertexMove;
-  delete mMapTools.mVertexDelete;
+  //these three tools to be deprecated - use node tool rather
+  //delete mMapTools.mVertexAdd;
+  //delete mMapTools.mVertexMove;
+  //delete mMapTools.mVertexDelete;
   delete mMapTools.mAddRing;
   delete mMapTools.mSimplifyFeature;
   delete mMapTools.mDeleteRing;
@@ -591,10 +593,14 @@ void QgisApp::createActions()
   mActionSaveMapAsImage->setStatusTip( tr( "Save map as image" ) );
   connect( mActionSaveMapAsImage, SIGNAL( triggered() ), this, SLOT( saveMapAsImage() ) );
 
-  mActionNewPrintComposer = new QAction( getThemeIcon( "mActionFilePrint.png" ), tr( "&New Print Composer" ), this );
+  mActionNewPrintComposer = new QAction( getThemeIcon( "mActionNewComposer.png" ), tr( "&New Print Composer" ), this );
   shortcuts->registerAction( mActionNewPrintComposer, tr( "Ctrl+P", "New Print Composer" ) );
   mActionNewPrintComposer->setStatusTip( tr( "New Print Composer" ) );
   connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
+
+  mActionShowComposerManager = new QAction( getThemeIcon( "mActionFilePrint.png" ), tr( "Composer manager..." ), this );
+  mActionShowComposerManager->setStatusTip( tr( "Composer manager" ) );
+  connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
 
   mActionExit = new QAction( getThemeIcon( "mActionFileExit.png" ), tr( "Exit" ), this );
   shortcuts->registerAction( mActionExit, tr( "Ctrl+Q", "Exit QGIS" ) );
@@ -693,6 +699,8 @@ void QgisApp::createActions()
   connect( mActionDeleteSelected, SIGNAL( triggered() ), this, SLOT( deleteSelected() ) );
   mActionDeleteSelected->setEnabled( false );
 
+  //these three tools to be deprecated - use node tool rather
+#if 0
   mActionAddVertex = new QAction( getThemeIcon( "mActionAddVertex.png" ), tr( "Add Vertex" ), this );
   shortcuts->registerAction( mActionAddVertex );
   mActionAddVertex->setStatusTip( tr( "Add Vertex" ) );
@@ -710,6 +718,7 @@ void QgisApp::createActions()
   mActionDeleteVertex->setStatusTip( tr( "Delete Vertex" ) );
   connect( mActionDeleteVertex, SIGNAL( triggered() ), this, SLOT( deleteVertex() ) );
   mActionDeleteVertex->setEnabled( false );
+#endif
 
   mActionAddRing = new QAction( getThemeIcon( "mActionAddRing.png" ), tr( "Add Ring" ), this );
   shortcuts->registerAction( mActionAddRing );
@@ -1108,12 +1117,15 @@ void QgisApp::createActionGroups()
   mActionSplitFeatures->setCheckable( true );
   mMapToolGroup->addAction( mActionSplitFeatures );
   mMapToolGroup->addAction( mActionDeleteSelected );
+  //these three tools are deprecated - use node tool rather
+  /**
   mActionAddVertex->setCheckable( true );
   mMapToolGroup->addAction( mActionAddVertex );
   mActionDeleteVertex->setCheckable( true );
   mMapToolGroup->addAction( mActionDeleteVertex );
   mActionMoveVertex->setCheckable( true );
   mMapToolGroup->addAction( mActionMoveVertex );
+  */
   mActionAddRing->setCheckable( true );
   mMapToolGroup->addAction( mActionAddRing );
   mActionAddIsland->setCheckable( true );
@@ -1181,6 +1193,7 @@ void QgisApp::createMenus()
   }
 
   mFileMenu->addAction( mActionNewPrintComposer );
+  mFileMenu->addAction( mActionShowComposerManager );
   mPrintComposersMenu = mFileMenu->addMenu( tr( "Print Composers" ) );
   mActionFileSeparator4 = mFileMenu->addSeparator();
 
@@ -1209,9 +1222,10 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionCapturePolygon );
   mEditMenu->addAction( mActionMoveFeature );
   mEditMenu->addAction( mActionDeleteSelected );
-  mEditMenu->addAction( mActionAddVertex );
-  mEditMenu->addAction( mActionMoveVertex );
-  mEditMenu->addAction( mActionDeleteVertex );
+  //these three tools are deprecated - use node tool rather
+  //mEditMenu->addAction( mActionAddVertex );
+  //mEditMenu->addAction( mActionMoveVertex );
+  //mEditMenu->addAction( mActionDeleteVertex );
 
   mActionEditSeparator2 = mEditMenu->addSeparator();
 
@@ -1382,26 +1396,28 @@ void QgisApp::createToolBars()
   mFileToolBar->addAction( mActionSaveProject );
   mFileToolBar->addAction( mActionSaveProjectAs );
   mFileToolBar->addAction( mActionNewPrintComposer );
-  mFileToolBar->addAction( mActionAddOgrLayer );
-  mFileToolBar->addAction( mActionAddRasterLayer );
-#ifdef HAVE_POSTGRESQL
-  mFileToolBar->addAction( mActionAddPgLayer );
-#endif
-#ifdef HAVE_SPATIALITE
-  mFileToolBar->addAction( mActionAddSpatiaLiteLayer );
-#endif
-  mFileToolBar->addAction( mActionAddWmsLayer );
+  mFileToolBar->addAction( mActionShowComposerManager );
   mToolbarMenu->addAction( mFileToolBar->toggleViewAction() );
   //
   // Layer Toolbar
   mLayerToolBar = addToolBar( tr( "Manage Layers" ) );
   mLayerToolBar->setIconSize( myIconSize );
   mLayerToolBar->setObjectName( "LayerToolBar" );
+  mLayerToolBar->addAction( mActionAddOgrLayer );
+  mLayerToolBar->addAction( mActionAddRasterLayer );
+#ifdef HAVE_POSTGRESQL
+  mLayerToolBar->addAction( mActionAddPgLayer );
+#endif
+#ifdef HAVE_SPATIALITE
+  mLayerToolBar->addAction( mActionAddSpatiaLiteLayer );
+#endif
+  mLayerToolBar->addAction( mActionAddWmsLayer );
   mLayerToolBar->addAction( mActionNewVectorLayer );
   mLayerToolBar->addAction( mActionRemoveLayer );
-  mLayerToolBar->addAction( mActionAddToOverview );
-  mLayerToolBar->addAction( mActionShowAllLayers );
-  mLayerToolBar->addAction( mActionHideAllLayers );
+  //commented out for QGIS 1.4 by Tim
+  //mLayerToolBar->addAction( mActionAddToOverview );
+  //mLayerToolBar->addAction( mActionShowAllLayers );
+  //mLayerToolBar->addAction( mActionHideAllLayers );
   mToolbarMenu->addAction( mLayerToolBar->toggleViewAction() );
   //
   // Digitizing Toolbar
@@ -1413,9 +1429,11 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction( mActionCaptureLine );
   mDigitizeToolBar->addAction( mActionCapturePolygon );
   mDigitizeToolBar->addAction( mActionMoveFeature );
-  mDigitizeToolBar->addAction( mActionMoveVertex );
-  mDigitizeToolBar->addAction( mActionAddVertex );
-  mDigitizeToolBar->addAction( mActionDeleteVertex );
+  mDigitizeToolBar->addAction( mActionNodeTool );
+  //these three tools are deprecated - use node tool rather
+  //mDigitizeToolBar->addAction( mActionMoveVertex );
+  //mDigitizeToolBar->addAction( mActionAddVertex );
+  //mDigitizeToolBar->addAction( mActionDeleteVertex );
   mDigitizeToolBar->addAction( mActionDeleteSelected );
   mDigitizeToolBar->addAction( mActionCutFeatures );
   mDigitizeToolBar->addAction( mActionCopyFeatures );
@@ -1435,7 +1453,6 @@ void QgisApp::createToolBars()
   mAdvancedDigitizeToolBar->addAction( mActionReshapeFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionSplitFeatures );
   mAdvancedDigitizeToolBar->addAction( mActionMergeFeatures );
-  mAdvancedDigitizeToolBar->addAction( mActionNodeTool );
   mAdvancedDigitizeToolBar->addAction( mActionRotatePointSymbols );
   mToolbarMenu->addAction( mAdvancedDigitizeToolBar->toggleViewAction() );
 
@@ -1647,6 +1664,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionSaveProject->setIcon( getThemeIcon( "/mActionFileSave.png" ) );
   mActionSaveProjectAs->setIcon( getThemeIcon( "/mActionFileSaveAs.png" ) );
   mActionNewPrintComposer->setIcon( getThemeIcon( "/mActionNewComposer.png" ) );
+  mActionShowComposerManager->setIcon( getThemeIcon( "/mActionFilePrint.png" ) );
   mActionSaveMapAsImage->setIcon( getThemeIcon( "/mActionSaveMapAsImage.png" ) );
   mActionExit->setIcon( getThemeIcon( "/mActionFileExit.png" ) );
   mActionAddOgrLayer->setIcon( getThemeIcon( "/mActionAddOgrLayer.png" ) );
@@ -1680,9 +1698,11 @@ void QgisApp::setTheme( QString theThemeName )
   mActionReshapeFeatures->setIcon( getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( getThemeIcon( "/mActionSplitFeatures.png" ) );
   mActionDeleteSelected->setIcon( getThemeIcon( "/mActionDeleteSelected.png" ) );
-  mActionAddVertex->setIcon( getThemeIcon( "/mActionAddVertex.png" ) );
-  mActionMoveVertex->setIcon( getThemeIcon( "/mActionMoveVertex.png" ) );
-  mActionDeleteVertex->setIcon( getThemeIcon( "/mActionDeleteVertex.png" ) );
+  //these three icons to be deprecated
+  //mActionAddVertex->setIcon( getThemeIcon( "/mActionAddVertex.png" ) );
+  //mActionMoveVertex->setIcon( getThemeIcon( "/mActionMoveVertex.png" ) );
+  //mActionDeleteVertex->setIcon( getThemeIcon( "/mActionDeleteVertex.png" ) );
+  mActionNodeTool->setIcon( getThemeIcon( "/mActionNodeTool.png" ) );
   mActionSimplifyFeature->setIcon( getThemeIcon( "/mActionSimplify.png" ) );
   mActionUndo->setIcon( getThemeIcon( "/mActionUndo.png" ) );
   mActionRedo->setIcon( getThemeIcon( "/mActionRedo.png" ) );
@@ -1692,7 +1712,6 @@ void QgisApp::setTheme( QString theThemeName )
   mActionDeletePart->setIcon( getThemeIcon( "/mActionDeletePart.png" ) );
   mActionMergeFeatures->setIcon( getThemeIcon( "/mActionMergeFeatures.png" ) );
   mActionRotatePointSymbols->setIcon( getThemeIcon( "mActionRotatePointSymbols.png" ) );
-  mActionNodeTool->setIcon( getThemeIcon( "/mActionNodeTool.png" ) );
   mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
   mActionZoomFullExtent->setIcon( getThemeIcon( "/mActionZoomFullExtent.png" ) );
@@ -1714,10 +1733,10 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
 
   //change themes of all composers
-  QMap<QString, QgsComposer*>::iterator composerIt = mPrintComposers.begin();
+  QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
   for ( ; composerIt != mPrintComposers.end(); ++composerIt )
   {
-    composerIt.value()->setupTheme();
+    ( *composerIt )->setupTheme();
   }
 
   emit currentThemeChanged( theThemeName );
@@ -1814,12 +1833,13 @@ void QgisApp::createCanvas()
   mMapTools.mSplitFeatures->setAction( mActionSplitFeatures );
   mMapTools.mSelect = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelect->setAction( mActionSelect );
-  mMapTools.mVertexAdd = new QgsMapToolAddVertex( mMapCanvas );
-  mMapTools.mVertexAdd->setAction( mActionAddVertex );
-  mMapTools.mVertexMove = new QgsMapToolMoveVertex( mMapCanvas );
-  mMapTools.mVertexMove->setAction( mActionMoveVertex );
-  mMapTools.mVertexDelete = new QgsMapToolDeleteVertex( mMapCanvas );
-  mMapTools.mVertexDelete->setAction( mActionDeleteVertex );
+  //these three tools to be deprecated - use node tool rather
+  //mMapTools.mVertexAdd = new QgsMapToolAddVertex( mMapCanvas );
+  //mMapTools.mVertexAdd->setAction( mActionAddVertex );
+  //mMapTools.mVertexMove = new QgsMapToolMoveVertex( mMapCanvas );
+  //mMapTools.mVertexMove->setAction( mActionMoveVertex );
+  //mMapTools.mVertexDelete = new QgsMapToolDeleteVertex( mMapCanvas );
+  //mMapTools.mVertexDelete->setAction( mActionDeleteVertex );
   mMapTools.mAddRing = new QgsMapToolAddRing( mMapCanvas );
   mMapTools.mAddRing->setAction( mActionAddRing );
   mMapTools.mAddIsland = new QgsMapToolAddIsland( mMapCanvas );
@@ -3705,16 +3725,13 @@ void QgisApp::newPrintComposer()
     return;
   }
 
-  //ask user about name
-  mLastComposerId++;
-  QString composerId = QString( tr("Map Composer %1").arg( mLastComposerId ) );
-  //create new composer object
-  QgsComposer* newComposerObject = new QgsComposer( this, composerId );
-  //add it to the map of existing print composers
-  mPrintComposers.insert( composerId, newComposerObject );
-  //and place action into print composers menu
-  mPrintComposersMenu->addAction( newComposerObject->windowAction() );
-  newComposerObject->open();
+  createNewComposer();
+}
+
+void QgisApp::showComposerManager()
+{
+  QgsComposerManager m( this, 0, Qt::WindowStaysOnTopHint );
+  m.exec();
 }
 
 void QgisApp::saveMapAsImage()
@@ -4195,25 +4212,25 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
   return unionGeom;
 }
 
-QList<QgsComposer*> QgisApp::printComposers()
+QgsComposer* QgisApp::createNewComposer()
 {
-  QList<QgsComposer*> composerList;
-  QMap<QString, QgsComposer*>::iterator it = mPrintComposers.begin();
-  for ( ; it != mPrintComposers.end(); ++it )
-  {
-    composerList.push_back( it.value() );
-  }
-  return composerList;
+  //ask user about name
+  mLastComposerId++;
+  //create new composer object
+  QgsComposer* newComposerObject = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
+  //add it to the map of existing print composers
+  mPrintComposers.insert( newComposerObject );
+  //and place action into print composers menu
+  mPrintComposersMenu->addAction( newComposerObject->windowAction() );
+  newComposerObject->open();
+  return newComposerObject;
 }
 
-void QgisApp::checkOutComposer( QgsComposer* c )
+void QgisApp::deleteComposer( QgsComposer* c )
 {
-  if ( !c )
-  {
-    return;
-  }
-  mPrintComposers.remove( c->id() );
+  mPrintComposers.remove( c );
   mPrintComposersMenu->removeAction( c->windowAction() );
+  delete c;
 }
 
 bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
@@ -4235,24 +4252,25 @@ bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
   QDomNodeList composerNodes = projectDom.elementsByTagName( "Composer" );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
-    QgsComposer* composer = new QgsComposer( this, "" );
+    ++mLastComposerId;
+    QgsComposer* composer = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
     composer->readXML( composerNodes.at( i ).toElement(), projectDom );
-    mPrintComposers.insert( composer->id(), composer );
+    mPrintComposers.insert( composer );
     mPrintComposersMenu->addAction( composer->windowAction() );
+#ifndef Q_OS_MACX
     composer->showMinimized();
+#endif
     composer->zoomFull();
   }
-  mLastComposerId = composerNodes.size();
-
   return true;
 }
 
 void QgisApp::deletePrintComposers()
 {
-  QMap<QString, QgsComposer*>::iterator it = mPrintComposers.begin();
+  QSet<QgsComposer*>::iterator it = mPrintComposers.begin();
   for ( ; it != mPrintComposers.end(); ++it )
   {
-    delete it.value();
+    delete( *it );
   }
   mPrintComposers.clear();
   mLastComposerId = 0;
@@ -4785,7 +4803,7 @@ void QgisApp::isInOverview()
 
 void QgisApp::removeLayer()
 {
-  mMapLegend->legendLayerRemove();
+  mMapLegend->removeCurrentLayer();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
 }
@@ -5732,9 +5750,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionCapturePolygon->setEnabled( false );
         mActionCaptureLine->setVisible( false );
         mActionCapturePolygon->setVisible( false );
+#if 0   //these three tools to be deprecated - use node tool rather
         mActionAddVertex->setEnabled( false );
         mActionDeleteVertex->setEnabled( false );
         mActionMoveVertex->setEnabled( false );
+#endif
         mActionAddRing->setEnabled( false );
         mActionAddIsland->setEnabled( false );
         mActionReshapeFeatures->setEnabled( false );
@@ -5743,10 +5763,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionDeleteRing->setEnabled( false );
         mActionRotatePointSymbols->setEnabled( false );
 
+#if 0
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
         {
           mActionMoveVertex->setEnabled( true );
         }
+#endif
+
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues )
         {
           if ( QgsMapToolRotatePointSymbols::layerIsRotatable( vlayer ) )
@@ -5820,9 +5843,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       //are add/delete/move vertex supported?
       if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
       {
-        mActionAddVertex->setEnabled( true );
-        mActionMoveVertex->setEnabled( true );
-        mActionDeleteVertex->setEnabled( true );
+        //these three tools to be deprecated - use node tool rather
+        //mActionAddVertex->setEnabled( true );
+        //mActionMoveVertex->setEnabled( true );
+        //mActionDeleteVertex->setEnabled( true );
         if ( vlayer->geometryType() == QGis::Polygon )
         {
           mActionAddRing->setEnabled( true );
@@ -5833,9 +5857,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
       else
       {
-        mActionAddVertex->setEnabled( false );
-        mActionMoveVertex->setEnabled( false );
-        mActionDeleteVertex->setEnabled( false );
+        //mActionAddVertex->setEnabled( false );
+        //mActionMoveVertex->setEnabled( false );
+        //mActionDeleteVertex->setEnabled( false );
       }
       return;
     }
@@ -5855,15 +5879,16 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionDeleteSelected->setEnabled( false );
     mActionAddRing->setEnabled( false );
     mActionAddIsland->setEnabled( false );
-    mActionAddVertex->setEnabled( false );
-    mActionDeleteVertex->setEnabled( false );
-    mActionMoveVertex->setEnabled( false );
+    //these three tools to be deprecated - use node tool rather
+    //mActionAddVertex->setEnabled( false );
+    //mActionDeleteVertex->setEnabled( false );
+    //mActionMoveVertex->setEnabled( false );
+    mActionNodeTool->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
-    mActionNodeTool->setEnabled( false );
     mActionDeletePart->setEnabled( false );
 
     //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate

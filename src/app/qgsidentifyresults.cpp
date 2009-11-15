@@ -91,14 +91,14 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
     mDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     mDock->setWidget( this );
     QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mDock );
-    buttonCancel->hide();
   }
   lstResults->setColumnCount( 2 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
-  connect( buttonCancel, SIGNAL( clicked() ),
-           this, SLOT( close() ) );
+  connect( buttonBox,SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
+
+  connect( buttonBox, SIGNAL( clicked() ), this, SLOT( close() ) );
 
   connect( lstResults, SIGNAL( itemExpanded( QTreeWidgetItem* ) ),
            this, SLOT( itemExpanded( QTreeWidgetItem* ) ) );
@@ -147,8 +147,8 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     {
       connect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
       connect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
-      connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( addEditAction() ) );
-      connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( removeEditAction() ) );
+      connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
+      connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
     }
     else
     {
@@ -176,24 +176,22 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     }
   }
 
-  if ( vlayer && ( vlayer->actions()->size() > 0 || vlayer->isEditable() ) )
+  if ( vlayer )
   {
     QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
     featItem->addChild( actionItem );
 
-    QTreeWidgetItem *twi;
-
-    if ( vlayer->isEditable() )
-    {
-      addEditAction( actionItem );
-    }
+    QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << (vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) ) );
+    editItem->setIcon( 0, QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
+    editItem->setData( 0, Qt::UserRole, "edit" );
+    actionItem->addChild( editItem );
 
     for ( int i = 0; i < vlayer->actions()->size(); i++ )
     {
       QgsAttributeAction::aIter iter = vlayer->actions()->retrieveAction( i );
 
-      twi = new QTreeWidgetItem( QStringList() << "" << iter->name() );
+      QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << iter->name() );
       twi->setIcon( 0, QgisApp::getThemeIcon( "/mAction.png" ) );
       twi->setData( 0, Qt::UserRole, "action" );
       twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
@@ -202,6 +200,40 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
   }
 
   layItem->addChild( featItem );
+}
+
+void QgsIdentifyResults::editingToggled()
+{
+  QTreeWidgetItem *layItem = layerItem( sender() );
+  QgsVectorLayer *vlayer = vectorLayer( layItem );
+  if( !layItem || !vlayer )
+    return;
+
+  // iterate features
+  int i;
+  for( i=0; i<layItem->childCount(); i++ )
+  {
+    QTreeWidgetItem *featItem = layItem->child(i);
+
+    int j;
+    for( j=0; j<featItem->childCount() && featItem->child(j)->data( 0, Qt::UserRole ).toString() != "actions"; j++ )
+      QgsDebugMsg( QString("%1: skipped %2").arg( featItem->child(j)->data( 0, Qt::UserRole ).toString() ) );
+
+    if( j==featItem->childCount() || featItem->child(j)->childCount()<1 )
+      continue;
+
+    QTreeWidgetItem *actions = featItem->child(j);
+
+    for( j=0; i<actions->childCount() && actions->child(j)->data( 0, Qt::UserRole ).toString() != "edit"; j++ )  
+      ;
+
+    if( j==actions->childCount() )
+      continue;
+
+    QTreeWidgetItem *editItem = actions->child(j);
+    editItem->setIcon( 0, QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
+    editItem->setText( 1, vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
+  }
 }
 
 // Call to show the dialog box.
@@ -223,13 +255,10 @@ void QgsIdentifyResults::show()
       {
         highlightFeature( featItem );
 
-        if ( layer->isEditable() )
-        {
-          // if this is the only feature, it's on a vector layer and that layer is editable:
-          // don't show the edit dialog instead of the results window
-          editFeature( featItem );
-          return;
-        }
+        // if this is the only feature and it's on a vector layer
+        // don't show the form dialog instead of the results window
+        featureForm( featItem );
+        return;
       }
     }
 
@@ -240,6 +269,7 @@ void QgsIdentifyResults::show()
 
   QDialog::show();
 }
+
 // Slot called when user clicks the Close button
 // (saves the current window size/position)
 void QgsIdentifyResults::close()
@@ -247,6 +277,7 @@ void QgsIdentifyResults::close()
   saveWindowLocation();
   done( 0 );
 }
+
 // Save the current window size/position before closing
 // from window menu or X in titlebar
 void QgsIdentifyResults::closeEvent( QCloseEvent *e )
@@ -256,83 +287,11 @@ void QgsIdentifyResults::closeEvent( QCloseEvent *e )
   close();
 }
 
-void QgsIdentifyResults::addEditAction( QTreeWidgetItem *item )
-{
-  QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << tr( "Edit feature" ) );
-  editItem->setIcon( 0, QgisApp::getThemeIcon( "/mIconEditable.png" ) );
-  editItem->setData( 0, Qt::UserRole, "edit" );
-  item->addChild( editItem );
-}
-
-void QgsIdentifyResults::addOrRemoveEditAction( bool addItem )
-{
-  QTreeWidgetItem *layItem = layerItem( sender() );
-
-  for ( int i = 0; i < layItem->childCount(); i++ )
-  {
-    QTreeWidgetItem *featItem = layItem->child( i );
-    QTreeWidgetItem *actionsItem = 0;
-
-    for ( int j = 0; j < featItem->childCount(); j++ )
-    {
-      QTreeWidgetItem *attrItem = featItem->child( j );
-
-      if ( attrItem->childCount() == 0 || attrItem->data( 0, Qt::UserRole ).toString() != "actions" )
-        continue;
-
-      actionsItem = attrItem;
-      break;
-    }
-
-    if ( addItem )
-    {
-      if ( !actionsItem )
-      {
-        actionsItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
-        actionsItem->setData( 0, Qt::UserRole, "actions" );
-        featItem->addChild( actionsItem );
-      }
-
-      addEditAction( actionsItem );
-    }
-    else if ( actionsItem )
-    {
-      for ( int k = 0; k < actionsItem->childCount(); k++ )
-      {
-        QTreeWidgetItem *editItem = actionsItem->child( k );
-        if ( editItem->data( 0, Qt::UserRole ).toString() != "edit" )
-          continue;
-
-        delete editItem;
-
-        if ( actionsItem->childCount() == 0 )
-          delete actionsItem;
-
-        break;
-      }
-    }
-    else
-    {
-      QgsDebugMsg( "actions item not found" );
-    }
-  }
-}
-
-void QgsIdentifyResults::addEditAction()
-{
-  addOrRemoveEditAction( true );
-}
-
-void QgsIdentifyResults::removeEditAction()
-{
-  addOrRemoveEditAction( false );
-}
-
 void QgsIdentifyResults::itemClicked( QTreeWidgetItem *item, int column )
 {
   if ( item->data( 0, Qt::UserRole ).toString() == "edit" )
   {
-    editFeature( item );
+    featureForm( item );
   }
   else if ( item->data( 0, Qt::UserRole ).toString() == "action" )
   {
@@ -362,12 +321,9 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
 
   QAction *a;
 
-  if ( vlayer->isEditable() )
-  {
-    a = mActionPopup->addAction( tr( "Edit feature" ) );
-    a->setEnabled( true );
-    a->setData( QVariant::fromValue( -6 ) );
-  }
+  a = mActionPopup->addAction( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
+  a->setEnabled( true );
+  a->setData( QVariant::fromValue( -6 ) );
 
   a = mActionPopup->addAction( tr( "Zoom to feature" ) );
   a->setEnabled( true );
@@ -454,7 +410,7 @@ void QgsIdentifyResults::popupItemSelected( QAction* menuAction )
     switch ( action )
     {
       case -6:
-        editFeature( item );
+        featureForm( item );
         break;
 
       case -5:
@@ -644,8 +600,8 @@ QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, 
 
   return featItem;
 }
-
-void QgsIdentifyResults::on_buttonHelp_clicked()
+// Slot for showing help
+void QgsIdentifyResults::helpClicked()
 {
   QgsContextHelp::run( context_id );
 }
@@ -694,8 +650,8 @@ void QgsIdentifyResults::disconnectLayer( QObject *layer )
   {
     disconnect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
     disconnect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
-    disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( addEditAction() ) );
-    disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( removeEditAction() ) );
+    disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( changeEditAction() ) );
+    disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( changeEditAction() ) );
   }
   else
   {
@@ -810,10 +766,10 @@ void QgsIdentifyResults::zoomToFeature( QTreeWidgetItem *item )
 }
 
 
-void QgsIdentifyResults::editFeature( QTreeWidgetItem *item )
+void QgsIdentifyResults::featureForm( QTreeWidgetItem *item )
 {
   QgsVectorLayer *layer = vectorLayer( item );
-  if ( !layer || !layer->isEditable() )
+  if ( !layer )
     return;
 
   QTreeWidgetItem *featItem = featureItem( item );

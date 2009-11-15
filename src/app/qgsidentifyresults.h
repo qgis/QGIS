@@ -80,11 +80,11 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void popupItemSelected( QAction* menuAction );
 
     void layerDestroyed();
-
+    void editingToggled();
     void featureDeleted( int fid );
 
     //! Context help
-    void on_buttonHelp_clicked();
+    void helpClicked();
 
     /* Called when an item is expanded so that we can ensure that the
        column width if expanded to show it */
@@ -95,9 +95,6 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     /* Item in tree was clicked */
     void itemClicked( QTreeWidgetItem *lvi, int column );
-
-    void addEditAction();
-    void removeEditAction();
 
   private:
     QMenu *mActionPopup;
@@ -113,8 +110,6 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     QTreeWidgetItem *layerItem( QObject *layer );
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, std::vector< std::pair<QString, QString> > &attributes );
     void clearRubberBand();
-    void addEditAction( QTreeWidgetItem * );
-    void addOrRemoveEditAction( bool addItem );
     void disconnectLayer( QObject *object );
 
     void setColumnText( int column, const QString & label );
@@ -124,7 +119,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     void highlightFeature( QTreeWidgetItem *item );
     void zoomToFeature( QTreeWidgetItem *item );
-    void editFeature( QTreeWidgetItem *item );
+    void featureForm( QTreeWidgetItem *item );
 
     void doAction( QTreeWidgetItem *item, int action );
 

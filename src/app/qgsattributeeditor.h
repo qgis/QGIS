@@ -23,6 +23,7 @@
 class QObject;
 class QWidget;
 class QgsVectorLayer;
+class QComboBox;
 
 class QgsAttributeEditor : public QObject
 {
@@ -30,9 +31,12 @@ class QgsAttributeEditor : public QObject
 
   public:
     QgsAttributeEditor( QObject *parent ) : QObject( parent ) {}
-    static QWidget *createAttributeEditor( QWidget *parent, QgsVectorLayer *vl, int idx, const QVariant &value );
+    static QWidget *createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value );
     static bool retrieveValue( QWidget *widget, QgsVectorLayer *vl, int idx, QVariant &value );
     static bool setValue( QWidget *widget, QgsVectorLayer *vl, int idx, const QVariant &value );
+
+  private:
+    static QComboBox *comboBox( QWidget *editor, QWidget *parent );
 
   public slots:
     void selectFileName( void );

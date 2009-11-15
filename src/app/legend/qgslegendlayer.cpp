@@ -399,7 +399,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
 
   // remove from canvas
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemove.png" ),
-                     tr( "&Remove" ), legend(), SLOT( legendLayerRemove() ) );
+                     tr( "&Remove" ), legend(), SLOT( removeCurrentLayer() ) );
 
   theMenu.addSeparator();
 
@@ -408,7 +408,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
     // attribute table
-    QAction* tableAction = theMenu.addAction( tr( "&Open attribute table" ), this, SLOT( table() ) );
+    theMenu.addAction( tr( "&Open attribute table" ), this, SLOT( table() ) );
 
     // allow editing
     int cap = vlayer->dataProvider()->capabilities();
@@ -422,7 +422,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
     }
 
     // save as shapefile
-    QAction* saveShpAction = theMenu.addAction( tr( "Save as shapefile..." ), this, SLOT( saveAsShapefile() ) );
+    theMenu.addAction( tr( "Save as shapefile..." ), this, SLOT( saveAsShapefile() ) );
 
     // save selection as shapefile
     QAction* saveSelectionAction = theMenu.addAction( tr( "Save selection as shapefile..." ), this, SLOT( saveSelectionAsShapefile() ) );

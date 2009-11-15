@@ -1319,7 +1319,7 @@ bool QgsVectorLayer::setSubsetString( QString subset )
 void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f )
 {
   // do not update when we aren't in editing mode
-  if ( ! mEditable )
+  if ( !mEditable )
     return;
 
   if ( mChangedAttributeValues.contains( f.id() ) )
@@ -2619,7 +2619,18 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
         mRanges[ name ] = RangeData( min, max, step );
       }
+      else if( editType == CheckBox )
+      {
+        mCheckedStates[ name ] = QPair<QString, QString>( editTypeElement.attribute( "checked" ), editTypeElement.attribute( "unchecked" ) );
+      }
     }
+  }
+
+  QDomNode editFormNode = node.namedItem( "editform" );
+  if ( !editFormNode.isNull() )
+  {
+    QDomElement e = editFormNode.toElement();
+    mEditForm = e.text();
   }
 
   mAttributeAliasMap.clear();
@@ -2743,12 +2754,25 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
           editTypeElement.setAttribute( "step", mRanges[ it.key()].mStep.toString() );
         }
       }
+      else if ( it.value() == CheckBox )
+      {
+        if ( mCheckedStates.contains( it.key() ) )
+        {
+          editTypeElement.setAttribute( "checked", mCheckedStates[ it.key()].first );
+          editTypeElement.setAttribute( "unchecked", mCheckedStates[ it.key()].second );
+        }
+      }
 
       editTypesElement.appendChild( editTypeElement );
     }
 
     node.appendChild( editTypesElement );
   }
+
+  QDomElement efField  = doc.createElement( "editform" );
+  QDomText efText = doc.createTextNode( mEditForm );
+  efField.appendChild( efText );
+  node.appendChild( efField );
 
   //attribute aliases
   if ( mAttributeAliasMap.size() > 0 )
@@ -3931,6 +3955,16 @@ void QgsVectorLayer::setEditType( int idx, EditType type )
     mEditTypes[ fields[idx].name()] = type;
 }
 
+QString QgsVectorLayer::editForm()
+{
+  return mEditForm;
+}
+
+void QgsVectorLayer::setEditForm( QString ui )
+{
+  mEditForm = ui;
+}
+
 QMap< QString, QVariant > &QgsVectorLayer::valueMap( int idx )
 {
   const QgsFieldMap &fields = pendingFields();
@@ -4332,4 +4366,20 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
 
   // it's not ideal to trigger refresh from here
   triggerRepaint();
+}
+
+void QgsVectorLayer::setCheckedState( int idx, QString checked, QString unchecked )
+{
+  const QgsFieldMap &fields = pendingFields();
+  if ( fields.contains( idx ) )
+    mCheckedStates[ fields[idx].name() ] = QPair<QString, QString>( checked, unchecked );
+}
+
+QPair<QString, QString> QgsVectorLayer::checkedState( int idx )
+{
+  const QgsFieldMap &fields = pendingFields();
+  if ( fields.contains( idx ) && mCheckedStates.contains( fields[idx].name() ) )
+    return mCheckedStates[ fields[idx].name() ];
+  else
+    return QPair<QString,QString>( "1", "0" );
 }

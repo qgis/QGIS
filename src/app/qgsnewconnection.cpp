@@ -33,7 +33,7 @@ QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt
     : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( helpRequested() ),this,SLOT( help() ) );
+  connect( buttonBox, SIGNAL( helpRequested() ),this,SLOT( helpClicked() ) );
 
   cbxSSLmode->insertItem( QgsDataSourceURI::SSLprefer, tr( "prefer" ) );
   cbxSSLmode->insertItem( QgsDataSourceURI::SSLrequire, tr( "require" ) );
@@ -84,9 +84,9 @@ void QgsNewConnection::accept()
   QDialog::accept();
 }
 
-void QgsNewConnection::help()
+void QgsNewConnection::helpClicked()
 {
-  helpInfo();
+  QgsContextHelp::run( context_id );
 }
 
 void QgsNewConnection::on_btnConnect_clicked()
@@ -149,11 +149,6 @@ void QgsNewConnection::saveConnection()
   settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
   settings.setValue( baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentIndex() );
-}
-
-void QgsNewConnection::helpInfo()
-{
-  QgsContextHelp::run( context_id );
 }
 
 #if 0

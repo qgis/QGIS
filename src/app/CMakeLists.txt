@@ -77,6 +77,7 @@ SET(QGIS_APP_SRCS
   composer/qgscomposeritemwidget.cpp
   composer/qgscomposerlabelwidget.cpp
   composer/qgscomposerpicturewidget.cpp
+  composer/qgscomposermanager.cpp
   composer/qgscomposermapwidget.cpp
   composer/qgscomposerscalebarwidget.cpp
   composer/qgscomposerlegenditemdialog.cpp
@@ -174,6 +175,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposeritemwidget.h
   composer/qgscomposerlabelwidget.h
   composer/qgscomposerlegendwidget.h
+  composer/qgscomposermanager.h
   composer/qgscomposermapwidget.h
   composer/qgscomposerpicturewidget.h
   composer/qgscomposerscalebarwidget.h
@@ -251,6 +253,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} composer legend attributetable
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${QT_QTUITOOLS_INCLUDE_DIR}
   ../core
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
   ../gui ../gui/symbology-ng
@@ -295,6 +298,7 @@ TARGET_LINK_LIBRARIES(qgis
   ${QT_QTSVG_LIBRARY} 
   ${QT_QTNETWORK_LIBRARY} 
   ${QT_QTSQL_LIBRARY}
+  ${QT_QTUITOOLS_LIBRARY}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY} 
   qgis_core

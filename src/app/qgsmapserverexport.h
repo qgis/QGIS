@@ -55,7 +55,8 @@ class QgsMapserverExport: public QDialog, private Ui::QgsMapserverExportBase
   public slots:
     void on_chkExpLayersOnly_clicked();
     void on_btnChooseFile_clicked();
-    void on_buttonHelp_clicked();
+    void help();
+
   private:
     void writeMapFile( void );
     QString fileName;
@@ -63,6 +64,7 @@ class QgsMapserverExport: public QDialog, private Ui::QgsMapserverExportBase
     bool neverSaved;
     QgsMapCanvas *map;
     int action;
+    static const int context_id = 0;
 };
 
 #endif //QGSMAPSERVEREXPORT_H

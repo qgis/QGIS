@@ -189,7 +189,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
       else
       {
-        QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
+        QgsAttributeDialog *mypDialog = new QgsAttributeDialog( vlayer, f );
         if ( mypDialog->exec() )
         {
           QgsDebugMsg( "Adding feature to layer" );

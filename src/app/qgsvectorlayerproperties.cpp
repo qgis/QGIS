@@ -128,6 +128,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   leSpatialRefSys->setText( layer->srs().toProj4() );
   leSpatialRefSys->setCursorPosition( 0 );
 
+  leEditForm->setText( layer->editForm() );
+
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
 
   //for each overlay plugin create a new tab
@@ -239,6 +241,11 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
     attributeTypeDialog.setIndex( index );
   }
 
+  if ( mCheckedStates.contains( index ) )
+  {
+    attributeTypeDialog.setCheckedState( mCheckedStates[index].first, mCheckedStates[index].second );
+  }
+
   if ( !attributeTypeDialog.exec() )
     return;
 
@@ -256,6 +263,8 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
     case QgsVectorLayer::SliderRange:
       mRanges.insert( index, attributeTypeDialog.rangeData() );
       break;
+    case QgsVectorLayer::CheckBox:
+      mCheckedStates.insert( index, attributeTypeDialog.checkedState() );
     default:
       break;
   }
@@ -568,6 +577,7 @@ void QgsVectorLayerProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::Enumeration, tr( "Enumeration" ) );
   editTypeMap.insert( QgsVectorLayer::Immutable, tr( "Immutable" ) );
   editTypeMap.insert( QgsVectorLayer::Hidden, tr( "Hidden" ) );
+  editTypeMap.insert( QgsVectorLayer::CheckBox, tr( "Checkbox" ) );
 }
 
 QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )
@@ -604,6 +614,8 @@ void QgsVectorLayerProperties::apply()
   // update the display field
   layer->setDisplayField( displayFieldComboBox->currentText() );
 
+  layer->setEditForm( leEditForm->text() );
+
   actionDialog->apply();
 
   labelDialog->apply();
@@ -636,6 +648,13 @@ void QgsVectorLayerProperties::apply()
       if ( mRanges.contains( idx ) )
       {
         layer->range( idx ) = mRanges[idx];
+      }
+    }
+    else if ( editType == QgsVectorLayer::CheckBox )
+    {
+      if ( mCheckedStates.contains( idx ) )
+      {
+        layer->setCheckedState( idx, mCheckedStates[idx].first, mCheckedStates[idx].second );
       }
     }
   }
@@ -1080,6 +1099,18 @@ void QgsVectorLayerProperties::on_mCalculateFieldButton_clicked()
 
   QgsFieldCalculator calc( layer );
   calc.exec();
+}
+
+void QgsVectorLayerProperties::on_pbnSelectEditForm_clicked()
+{
+  QSettings myQSettings;
+  QString lastUsedDir = myQSettings.value( "style/lastUIDir", "." ).toString();
+  QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file (*.ui)" ) );
+
+  if ( uifilename.isNull() )
+    return;
+
+  leEditForm->setText( uifilename );
 }
 
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const

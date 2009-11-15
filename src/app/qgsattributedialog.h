@@ -18,10 +18,7 @@
 #ifndef QGSATTRIBUTEDIALOG_H
 #define QGSATTRIBUTEDIALOG_H
 
-#include "ui_qgsattributedialogbase.h"
-
 #include "qgsfeature.h"
-#include <vector>
 
 class QDialog;
 class QgsFeature;
@@ -29,7 +26,7 @@ class QLayout;
 class QgsField;
 class QgsVectorLayer;
 
-class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
+class QgsAttributeDialog : public QObject
 {
     Q_OBJECT
 
@@ -37,26 +34,33 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
     QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature * thepFeature );
     ~QgsAttributeDialog();
 
-    /** Overloaded accept method which will write the feature field
-     * values, then delegate to QDialog::accept()
-     */
-    void accept();
     /** Saves the size and position for the next time
      *  this dialog box was used.
      */
+
     void saveGeometry();
+
     /** Restores the size and position from the last time
      *  this dialog box was used.
      */
     void restoreGeometry();
 
+  public slots:
+    /** Overloaded accept method which will write the feature field
+     * values, then delegate to QDialog::accept()
+     */
+    void accept();
+
+    int exec();
+
   private:
+
+    QDialog *mDialog;
     QString mSettingsPath;
     QList<QWidget *> mpWidgets;
     QList<int> mpIndizes;
     QgsVectorLayer *mLayer;
-    QgsFeature *  mpFeature;
-
+    QgsFeature *mpFeature;
 };
 
 #endif

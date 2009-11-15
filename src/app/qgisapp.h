@@ -195,10 +195,12 @@ class QgisApp : public QMainWindow
     void removeWindow( QAction *action );
 
     /**Returns the print composers*/
-    QList<QgsComposer*> printComposers();
-    /**Unregisters a composer instance but does _not_ delete it. This method is usually called from within QgsComposer::closeEvent before
-    the composer deletes itself using the Qt::WA_DeleteOnClose flag*/
-    void checkOutComposer( QgsComposer* c );
+    QSet<QgsComposer*> printComposers() const {return mPrintComposers;}
+    /**Creates a new composer and returns a pointer to it*/
+    QgsComposer* createNewComposer();
+    /**Deletes a composer and removes entry from Set*/
+    void deleteComposer( QgsComposer* c );
+
 
     //! Actions to be inserted in menus and toolbars
     QAction *actionNewProject() { return mActionNewProject; }
@@ -224,9 +226,10 @@ class QgisApp : public QMainWindow
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
-    QAction *actionAddVertex() { return mActionAddVertex; }
-    QAction *actionDeleteVertex() { return mActionDeleteVertex; }
-    QAction *actionMoveVertex() { return mActionMoveVertex; }
+    //These three tools are deprecated - use node tool rather...
+    //QAction *actionAddVertex() { return mActionAddVertex; }
+    //QAction *actionDeleteVertex() { return mActionDeleteVertex; }
+    //QAction *actionMoveVertex() { return mActionMoveVertex; }
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddIsland() { return mActionAddIsland; }
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
@@ -449,6 +452,7 @@ class QgisApp : public QMainWindow
     void newVectorLayer();
     //! Print the current map view frame
     void newPrintComposer();
+    void showComposerManager();
     //! Add all loaded layers into the overview - overides qgisappbase method
     void addAllToOverview();
     //! Remove all loaded layers from the overview - overides qgisappbase method
@@ -728,6 +732,7 @@ class QgisApp : public QMainWindow
     QAction *mActionProjectProperties;
     QAction *mActionFileSeparator3;
     QAction *mActionNewPrintComposer;
+    QAction *mActionShowComposerManager;
     QAction *mActionFileSeparator4;
     QAction *mActionExit;
 
@@ -745,9 +750,11 @@ class QgisApp : public QMainWindow
     QAction *mActionMoveFeature;
     QAction *mActionReshapeFeatures;
     QAction *mActionSplitFeatures;
+#if 0 // deprecated
     QAction *mActionAddVertex;
     QAction *mActionDeleteVertex;
     QAction *mActionMoveVertex;
+#endif
     QAction *mActionAddRing;
     QAction *mActionAddIsland;
     QAction *mActionEditSeparator2;
@@ -949,7 +956,7 @@ class QgisApp : public QMainWindow
     //! list of recently opened/saved project files
     QStringList mRecentProjectPaths;
     //! Print composers of this project, accessible by id string
-    QMap<QString, QgsComposer*> mPrintComposers;
+    QSet<QgsComposer*> mPrintComposers;
     //! How to determine the number of decimal places used to
     //! display the mouse position
     bool mMousePrecisionAutomatic;
@@ -978,7 +985,7 @@ class QgisApp : public QMainWindow
 
     /* Maptip object
      */
-    QgsMapTip *  mpMaptip;
+    QgsMapTip *mpMaptip;
 
     // Flag to indicate if maptips are on or off
     bool mMapTipsVisible;

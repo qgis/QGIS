@@ -55,15 +55,13 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mAnnotationDirectionComboBox->insertItem( 1, tr( "Vertical" ) );
   mAnnotationDirectionComboBox->insertItem( 2, tr( "Horizontal and Vertical" ) );
   mAnnotationDirectionComboBox->insertItem( 2, tr( "Boundary direction" ) );
-
-  blockAllSignals( false );
-
   if ( composerMap )
   {
     connect( composerMap, SIGNAL( extentChanged() ), this, SLOT( updateSettingsNoSignals() ) );
   }
 
   updateGuiElements();
+  blockAllSignals( false );
 }
 
 QgsComposerMapWidget::~QgsComposerMapWidget()

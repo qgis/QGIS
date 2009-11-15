@@ -169,7 +169,7 @@ class QgsLegend : public QTreeWidget
     QgsLegendPixmaps& pixmaps() { return mPixmaps; }
 
 
-    void updateCheckStates( QTreeWidgetItem* item, Qt::CheckState state ) {mStateOfCheckBoxes[item] = state;}
+    void updateCheckStates( QTreeWidgetItem* item, Qt::CheckState state ) { item->setData( 0, Qt::UserRole, state ); }
 
   public slots:
 
@@ -210,7 +210,7 @@ class QgsLegend : public QTreeWidget
     void writeProject( QDomDocument & );
 
     /**Removes the current LegendLayer*/
-    void legendLayerRemove();
+    void removeCurrentLayer();
 
     /**Removes a layer. If the layer is editable, a dialog is shown where user can select 'save', 'discard' and optionally 'cancel'. Cancel
       is useful if a single layer is removed whereas on closing of the whole project or application, the cancel option may not be possible
@@ -403,10 +403,6 @@ class QgsLegend : public QTreeWidget
 
     /**Pointer to the main canvas. Used for requiring repaints in case of legend changes*/
     QgsMapCanvas* mMapCanvas;
-
-    /**Map that keeps track of which checkboxes are in which check state. This is necessary because QTreeView does not emit
-       a signal for check state changes*/
-    std::map<QTreeWidgetItem*, Qt::CheckState> mStateOfCheckBoxes;
 
     /**Stores the width values of the LegendSymbologyItem pixmaps. The purpose of this is that the legend may automatically change
      the global IconWidth when items are added or removed*/

@@ -102,6 +102,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_pbnSaveStyleAs_clicked();
     void on_tblAttributes_cellChanged( int row, int column );
     void on_mCalculateFieldButton_clicked();
+    void on_pbnSelectEditForm_clicked();
 
     void addAttribute();
     void deleteAttribute();
@@ -145,6 +146,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     QMap<int, QgsVectorLayer::EditType> mEditTypeMap;
     QMap<int, QMap<QString, QVariant> > mValueMaps;
     QMap<int, QgsVectorLayer::RangeData> mRanges;
+    QMap<int, QPair<QString, QString> > mCheckedStates;
 
     void updateButtons();
     void loadRows();

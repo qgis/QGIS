@@ -46,7 +46,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     Q_OBJECT
 
   public:
-    QgsComposer( QgisApp *qgis, const QString& id );
+    QgsComposer( QgisApp *qgis, const QString& title );
     ~QgsComposer();
 
     //! Set the pixmap / icons on the toolbar buttons
@@ -75,7 +75,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QAction* windowAction() {return mWindowAction;}
 
-    QString id() const {return mId;}
+    const QString& title() const {return mTitle;}
+    void setTitle( const QString& title );
 
   protected:
     //! Move event
@@ -83,9 +84,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Resize event
     virtual void resizeEvent( QResizeEvent * );
-
-    //! Close event (remove window from menu)
-    virtual void closeEvent( QCloseEvent * );
 
 #ifdef Q_WS_MAC
     //! Change event (update window menu on ActivationChange)
@@ -225,8 +223,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void setSelectionTool();
 
-  private slots:
-
     //! Raise, unminimize and activate this window
     void activate();
 
@@ -250,8 +246,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Writes state under DOM element
     void writeXML( QDomNode& parentNode, QDomDocument& doc );
 
-    /**Identification string*/
-    QString mId;
+    //! Removes all the item from the graphics scene and deletes them
+    void deleteItems();
+
+    /**Composer title*/
+    QString mTitle;
 
     //! Pointer to composer view
     QgsComposerView *mView;

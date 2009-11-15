@@ -13,9 +13,10 @@ public:
     Classification,
     EditRange,
     SliderRange
+    CheckBox,    /* @note added in 1.4 */
     FileName,
-    Enumeration,
-    Immutable
+    Enumeration, /* @note added in 1.4 */
+    Immutable    /* @note added in 1.4 */
   };
    
   struct RangeData {
@@ -142,7 +143,7 @@ public:
   /** Write the symbology for the layer into the docment provided.
    *  @param QDomNode the node that will have the style element added to it.
    *  @param QDomDocument the document that will have the QDomNode added.
-   * @param errorMessage reference to string that will be updated with any error messages
+   *  @param errorMessage reference to string that will be updated with any error messages
    *  @return true in case of success.
    */
   bool writeSymbology(QDomNode&, QDomDocument& doc, QString& errorMessage) const;
@@ -166,7 +167,7 @@ public:
    * @param subset The subset string. This may be the where clause of a sql statement
    *               or other defintion string specific to the underlying dataprovider
    *               and data store.
-   * @return true, when setting the string was successful, false otherwise (added in 1.4)
+   * @return true, when setting the string was successful, false otherwise (@note added in 1.4)
    */
   virtual bool setSubsetString(QString subset);
 
@@ -398,6 +399,27 @@ public:
 
   /**set edit type*/
   void setEditType(int idx, EditType edit);
+
+  /** set string representing 'true' for a checkbox
+   @note added in 1.4
+   */
+  void setCheckedState( int idx, QString checked, QString notChecked );
+   
+  /** return string representing 'true' for a checkbox
+    @note added in 1.4
+   */
+  // FIXME: need SIP binding for QPair<QString, QString> 
+  // QPair<QString, QString> checkedState( int idx );
+ 
+  /** get edit form
+    @note added in 1.4
+   */
+  QString editForm();
+
+  /** set edit form
+    @note added in 1.4
+   */
+  void setEditForm( QString ui );
 
   /**access value map*/
   QMap<QString, QVariant> &valueMap(int idx);

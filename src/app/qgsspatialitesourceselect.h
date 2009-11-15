@@ -21,6 +21,7 @@
 #include "qgisgui.h"
 #include "qgsspatialitefilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"
+#include <QPushButton>
 
 extern "C"
 {
@@ -80,14 +81,14 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();
-    void on_btnAdd_clicked();
+    void addClicked();
     void on_btnNew_clicked();
     void on_btnDelete_clicked();
     void on_mSearchOptionsButton_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
-    void on_btnHelp_clicked();
+    void helpClicked();
     void on_cmbConnections_activated( int );
     void setLayerType( QString table, QString column, QString type );
     //!Sets a new regular expression to the model
@@ -115,8 +116,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     // Set the position of the database connection list to the last
     // used one.
     void setConnectionListPosition();
-    // Show the context help for the dialog
-    void showHelp();
     // Combine the table and column data into a single string
     // useful for display to the user
     QString fullDescription( QString table, QString column, QString type );
@@ -132,6 +131,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     //! Model that acts as datasource for mTableTreeWidget
     QgsSpatiaLiteTableModel mTableModel;
     QgsSpatiaLiteFilterProxyModel mProxyModel;
+    QPushButton * mAddButton;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H

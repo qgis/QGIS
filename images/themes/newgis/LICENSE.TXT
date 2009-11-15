@@ -1,0 +1,32 @@
+LICENSE
+
+Original GIS icons theme was created by Robert Szczepanek [1] and is licensed under a Creative Commons Attribution-Share Alike 3.0 Unported License [2].
+Fill free to use it for GIS software or for any other purposes. I only ask you to let me know about that and to include licence.txt file in your work.
+
+TITLE:                  gis-0.1
+DESCRIPTION:            GIS icon theme
+AUTHOR:                 Robert Szczepanek	
+CONTACT:                robert at szczepanek pl
+SITE:                   http://robert.szczepanek.pl/
+
+
+UPDATE November 9 2009
+
+Since the original work provided by Robert above, these icons have been augmented and sometimes modified by Anita Graser ( anitagraser at gmx.at ).
+
+ACKNOWLEDGEMENTS
+		
+OSGeo community [3] helped in whole design process. 
+Especially I want to acknowledge GRASS and QGIS team members for creative comments and support:
+Martin Landa
+Michael Barton
+Tim Sutton
+Borys Jurgiel
+
+Robert Szczepanek
+Cracow 2009 
+Poland
+
+[1] http://robert.szczepanek.pl/
+[2] http://creativecommons.org/licenses/by-sa/3.0/
+[3] http://www.osgeo.org/

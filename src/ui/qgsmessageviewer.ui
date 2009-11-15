@@ -23,13 +23,6 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="checkBox">
-     <property name="text">
-      <string>Don't show this message again</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0" colspan="3">
     <widget class="QTextEdit" name="txtMessage">
      <property name="lineWidth">
@@ -44,51 +37,40 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QPushButton" name="btnClose">
-     <property name="text">
-      <string>Close</string>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="1" column="1">
+    <widget class="QCheckBox" name="checkBox">
+     <property name="text">
+      <string>Don't show this message again</string>
      </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>191</width>
-       <height>31</height>
-      </size>
-     </property>
-    </spacer>
+    </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>txtMessage</tabstop>
-  <tabstop>checkBox</tabstop>
-  <tabstop>btnClose</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>btnClose</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>QgsMessageViewer</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>483</x>
-     <y>271</y>
+     <x>450</x>
+     <y>257</y>
     </hint>
     <hint type="destinationlabel">
-     <x>249</x>
-     <y>141</y>
+     <x>495</x>
+     <y>188</y>
     </hint>
    </hints>
   </connection>

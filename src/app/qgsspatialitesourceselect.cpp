@@ -39,7 +39,12 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
     QDialog( app, fl ), qgisApp( app )
 {
   setupUi( this );
-  btnAdd->setEnabled( false );
+  mAddButton = new QPushButton( tr( "&Add" ) );
+  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  connect( mAddButton,SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+  connect( buttonBox,SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
+
+  mAddButton->setEnabled( false );
   populateConnectionList();
 
   mSearchModeComboBox->addItem( tr( "Wildcard" ) );
@@ -79,15 +84,15 @@ void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsSpatiaLiteSourceSelect::on_btnAdd_clicked()
+void QgsSpatiaLiteSourceSelect::addClicked()
 {
   addTables();
 }
 
 // Slot for showing help
-void QgsSpatiaLiteSourceSelect::on_btnHelp_clicked()
+void QgsSpatiaLiteSourceSelect::helpClicked()
 {
-  showHelp();
+  QgsContextHelp::run( context_id );
 }
 
 /** End Autoconnected SLOTS **/
@@ -475,7 +480,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
 
   // BEGIN CHANGES ECOS
   if ( cmbConnections->count() > 0 )
-    btnAdd->setEnabled( true );
+    mAddButton->setEnabled( true );
   // END CHANGES ECOS
 
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
@@ -551,11 +556,6 @@ error:
   QMessageBox::critical( this, tr( "SpatiaLite getTableInfo Error" ),
                          tr( "Failure exploring tables from: %1\n\n%2" ).arg( mSqlitePath ).arg( errCause ) );
   return false;
-}
-
-void QgsSpatiaLiteSourceSelect::showHelp()
-{
-  QgsContextHelp::run( context_id );
 }
 
 QString QgsSpatiaLiteSourceSelect::fullDescription( QString table, QString column, QString type )
