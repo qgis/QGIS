@@ -5,6 +5,10 @@ symbology-ng/qgsbrushstylecombobox.cpp
 symbology-ng/qgspenstylecombobox.cpp
 symbology-ng/qgssymbollayerv2widget.cpp
 symbology-ng/qgssymbolv2propertiesdialog.cpp
+symbology-ng/qgsrendererv2widget.cpp
+symbology-ng/qgssinglesymbolrendererv2widget.cpp
+symbology-ng/qgscategorizedsymbolrendererv2widget.cpp
+symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp
 symbology-ng/qgsrendererv2propertiesdialog.cpp
 symbology-ng/qgsstylev2managerdialog.cpp
 symbology-ng/qgssymbollevelsv2dialog.cpp
@@ -44,6 +48,9 @@ SET(QGIS_GUI_MOC_HDRS
 
 symbology-ng/qgssymbollayerv2widget.h
 symbology-ng/qgssymbolv2propertiesdialog.h
+symbology-ng/qgssinglesymbolrendererv2widget.h
+symbology-ng/qgscategorizedsymbolrendererv2widget.h
+symbology-ng/qgsgraduatedsymbolrendererv2widget.h
 symbology-ng/qgsrendererv2propertiesdialog.h
 symbology-ng/qgsstylev2managerdialog.h
 symbology-ng/qgssymbollevelsv2dialog.h

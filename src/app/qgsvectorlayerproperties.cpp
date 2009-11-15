@@ -475,7 +475,7 @@ void QgsVectorLayerProperties::reset( void )
   
   if (layer->isUsingRendererV2())
   {
-    mRendererDialog = new QgsRendererV2PropertiesDialog(layer, QgsStyleV2::defaultStyle(), NULL, true);
+    mRendererDialog = new QgsRendererV2PropertiesDialog(layer, QgsStyleV2::defaultStyle(), true);
 
     // hide unused widgets
     legendtypecombobox->hide();

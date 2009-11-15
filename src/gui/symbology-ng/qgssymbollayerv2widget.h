@@ -13,6 +13,7 @@ class QgsSymbolLayerV2Widget : public QWidget
   
   public:
     QgsSymbolLayerV2Widget(QWidget* parent) : QWidget(parent) {}
+    virtual ~QgsSymbolLayerV2Widget() {}
     
     virtual void setSymbolLayer(QgsSymbolLayerV2* layer) = 0;
     virtual QgsSymbolLayerV2* symbolLayer() = 0;

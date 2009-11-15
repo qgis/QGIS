@@ -26,7 +26,6 @@ public slots:
 };
 
 
-
 class QgsRendererV2PropertiesDialog : QDialog //, private Ui::QgsRendererV2PropsDialogBase
 {
 %TypeHeaderCode
@@ -34,19 +33,23 @@ class QgsRendererV2PropertiesDialog : QDialog //, private Ui::QgsRendererV2Props
 %End
 
 public:
-  QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = NULL, bool embedded = false);
-  
-public slots:
-  void changeSingleSymbol();
-  void updateRenderer();
-  
-  void categoryColumnChanged();
-  void categoriesDoubleClicked(const QModelIndex & idx);
-  void addCategories();
-  void deleteCategory();
-  void deleteAllCategories();
-};
+    QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false);
 
+public slots:
+    //! called when user changes renderer type
+    void rendererChanged();
+
+    void apply();
+    void onOK();
+
+    void showSymbolLevels();
+
+protected:
+
+    //! Reimplements dialog keyPress event so we can ignore it
+    void keyPressEvent( QKeyEvent * event );
+
+};
 
 
 class QgsStyleV2ManagerDialog : QDialog //, private Ui::QgsStyleV2ManagerDialogBase

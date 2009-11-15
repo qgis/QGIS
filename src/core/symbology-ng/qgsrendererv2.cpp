@@ -266,7 +266,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load(QDomElement& element)
   // load renderer
   QString rendererType = element.attribute("type");
 
-  QgsRendererV2CreateFunc pfCreate = QgsRendererV2Registry::instance()->rendererCreateFunction(rendererType);
+  QgsRendererV2CreateFunc pfCreate = QgsRendererV2Registry::instance()->rendererMetadata(rendererType).createFunction();
 
   // unknown renderer type?
   if (pfCreate == NULL)
