@@ -6397,3 +6397,11 @@ void QgisApp::updateUndoActions()
   mActionUndo->setEnabled( canUndo );
   mActionRedo->setEnabled( canRedo );
 }
+
+void QgisApp::runPythonString( const QString &expr )
+{
+  if ( mPythonUtils )
+  {
+    mPythonUtils->runStringUnsafe( expr );
+  }
+}

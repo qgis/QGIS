@@ -72,6 +72,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsclipper.h"
+#include "qgsproject.h"
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -2357,7 +2358,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
         mRanges[ name ] = RangeData( min, max, step );
       }
-      else if( editType == CheckBox )
+      else if ( editType == CheckBox )
       {
         mCheckedStates[ name ] = QPair<QString, QString>( editTypeElement.attribute( "checked" ), editTypeElement.attribute( "unchecked" ) );
       }
@@ -2368,7 +2369,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   if ( !editFormNode.isNull() )
   {
     QDomElement e = editFormNode.toElement();
-    mEditForm = e.text();
+    mEditForm = QgsProject::instance()->readPath( e.text() );
   }
 
   mAttributeAliasMap.clear();
@@ -2531,7 +2532,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   }
 
   QDomElement efField  = doc.createElement( "editform" );
-  QDomText efText = doc.createTextNode( mEditForm );
+  QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( mEditForm ) );
   efField.appendChild( efText );
   node.appendChild( efField );
 
@@ -4130,14 +4131,14 @@ void QgsVectorLayer::setCheckedState( int idx, QString checked, QString unchecke
 {
   const QgsFieldMap &fields = pendingFields();
   if ( fields.contains( idx ) )
-    mCheckedStates[ fields[idx].name() ] = QPair<QString, QString>( checked, unchecked );
+    mCheckedStates[ fields[idx].name()] = QPair<QString, QString>( checked, unchecked );
 }
 
 QPair<QString, QString> QgsVectorLayer::checkedState( int idx )
 {
   const QgsFieldMap &fields = pendingFields();
   if ( fields.contains( idx ) && mCheckedStates.contains( fields[idx].name() ) )
-    return mCheckedStates[ fields[idx].name() ];
+    return mCheckedStates[ fields[idx].name()];
   else
-    return QPair<QString,QString>( "1", "0" );
+    return QPair<QString, QString>( "1", "0" );
 }

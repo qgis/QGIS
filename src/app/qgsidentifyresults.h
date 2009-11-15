@@ -21,9 +21,9 @@
 
 #include "ui_qgsidentifyresultsbase.h"
 #include "qgsattributeaction.h"
+
 #include <QWidget>
-#include <vector>
-#include <map>
+#include <QList>
 
 class QCloseEvent;
 class QTreeWidgetItem;
@@ -77,11 +77,17 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     void close();
     void contextMenuEvent( QContextMenuEvent* );
-    void popupItemSelected( QAction* menuAction );
 
     void layerDestroyed();
     void editingToggled();
     void featureDeleted( int fid );
+
+    void featureForm();
+    void zoomToFeature();
+    void copyAttributeValue();
+    void copyFeatureAttributes();
+    void expandAll();
+    void collapseAll();
 
     //! Context help
     void helpClicked();
@@ -96,6 +102,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     /* Item in tree was clicked */
     void itemClicked( QTreeWidgetItem *lvi, int column );
 
+    QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QList< QPair<QString, QString> > &attributes );
+
   private:
     QMenu *mActionPopup;
     QgsVectorLayer *mRubberBandLayer;
@@ -108,7 +116,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
-    QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, std::vector< std::pair<QString, QString> > &attributes );
+
     void clearRubberBand();
     void disconnectLayer( QObject *object );
 
@@ -118,12 +126,29 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void restorePosition();
 
     void highlightFeature( QTreeWidgetItem *item );
-    void zoomToFeature( QTreeWidgetItem *item );
-    void featureForm( QTreeWidgetItem *item );
 
     void doAction( QTreeWidgetItem *item, int action );
 
     QDockWidget *mDock;
+};
+
+class QgsFeatureAction : public QAction
+{
+    Q_OBJECT
+
+  public:
+    QgsFeatureAction( const QString &name, QgsIdentifyResults *results, QgsVectorLayer *vl, int action, QTreeWidgetItem *featItem ) :
+        QAction( name, results ), mResults( results ), mLayer( vl ), mAction( action ), mFeatItem( featItem )
+    {}
+
+  public slots:
+    void execute();
+
+  private:
+    QgsIdentifyResults *mResults;
+    QgsVectorLayer *mLayer;
+    int mAction;
+    QTreeWidgetItem *mFeatItem;
 };
 
 #endif
