@@ -60,6 +60,7 @@ console_output = None
 # hook for python console so all output will be redirected
 # and then shown in console
 def console_displayhook(obj):
+  global console_output
   console_output = obj
 
 class QgisOutputCatcher:
