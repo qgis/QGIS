@@ -22,7 +22,12 @@ done
 if [ -n "$exclude" ]; then
   tar --remove-files -cvf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
 fi
-echo Updating python plugin translations
+echo Updating python translations
+cd python
+pylupdate4 utils.py -ts python-i18n.ts
+perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
+rm python-i18n.ts
+cd ..
 for i in python/plugins/*/CMakeLists.txt; do
 	cd ${i%/*}
 	pylupdate4 $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
@@ -34,9 +39,9 @@ echo Creating qmake project file
 qmake -project -o qgis_ts.pro -nopwd src python i18n
 echo Updating translation files
 lupdate -verbose qgis_ts.pro
-echo Removing temporary python plugin translation files
+echo Removing temporary python translation files
 perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
-rm python/plugins/*/python-i18n.cpp i18n/qgis_*.ts.bak
+rm python/python-i18n.cpp python/plugins/*/python-i18n.cpp i18n/qgis_*.ts.bak
 echo Removing qmake project file
 rm qgis_ts.pro
 echo Unpacking qt_ts.tar

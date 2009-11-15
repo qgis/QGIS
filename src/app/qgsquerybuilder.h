@@ -22,10 +22,9 @@
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
 #include "qgsfield.h"
+#include <QPushButton>
 
 class QgsVectorLayer;
-
-
 /*!
  * \class QgsQueryBuilder
  * \brief Query Builder for PostgreSQL layers.
@@ -70,9 +69,11 @@ class QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
     ~QgsQueryBuilder();
 
   public slots:
+    void accept();
+    void reject();
+    void helpClicked();
+    void on_btnClear_clicked();
     void on_btnEqual_clicked();
-    void on_btnOk_clicked();
-    void on_btnCancel_clicked();
     void on_btnLessThan_clicked();
     void on_btnGreaterThan_clicked();
     void on_btnPct_clicked();
@@ -91,7 +92,7 @@ class QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
     void on_btnAnd_clicked();
     void on_btnNot_clicked();
     void on_btnOr_clicked();
-    void on_btnClear_clicked();
+
     /*! Test the constructed sql statement to see if the database likes it.
      * The number of rows that would be returned is displayed in a message box.
      * The test uses a "select count(*) from ..." query to test the SQL

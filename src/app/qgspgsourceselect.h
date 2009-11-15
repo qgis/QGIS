@@ -21,6 +21,7 @@
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsdbtablemodel.h"
+#include <QPushButton>
 
 extern "C"
 {
@@ -124,11 +125,14 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     void dbChanged();
 
   public slots:
+
+    void helpClicked();
+    void addClicked();
+    
     /*! Connects to the database using the stored connection parameters.
     * Once connected, available layers are displayed.
     */
     void on_btnConnect_clicked();
-    void on_btnAdd_clicked();
     void on_btnNew_clicked();
     void on_btnEdit_clicked();
     void on_btnBuildQuery_clicked();
@@ -138,7 +142,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
     void setSql( const QModelIndex& index );
-    void on_btnHelp_clicked();
     void on_cmbConnections_activated( int );
     void setLayerType( QString schema, QString table, QString column,
                        QString type );
@@ -168,8 +171,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     // Set the position of the database connection list to the last
     // used one.
     void setConnectionListPosition();
-    // Show the context help for the dialog
-    void showHelp();
     // Combine the schema, table and column data into a single string
     // useful for display to the user
     QString fullDescription( QString schema, QString table, QString column, QString type );
@@ -188,6 +189,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     QgsDbFilterProxyModel mProxyModel;
 
     QString layerURI( const QModelIndex &index );
+    QPushButton * mAddButton;
 };
 
 

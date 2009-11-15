@@ -20,20 +20,10 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>7</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
@@ -78,7 +68,7 @@
              <string>Selection color</string>
             </property>
             <property name="buddy">
-             <cstring>pbnMeasureColour</cstring>
+             <cstring>pbnSelectionColour</cstring>
             </property>
            </widget>
           </item>
@@ -131,7 +121,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="2">
            <spacer>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -167,18 +157,6 @@
             <property name="buddy">
              <cstring>cmbTheme</cstring>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="cmbTheme">
-            <property name="duplicatesEnabled">
-             <bool>false</bool>
-            </property>
-            <item>
-             <property name="text">
-              <string/>
-             </property>
-            </item>
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
@@ -237,6 +215,18 @@
             <property name="text">
              <string>Add PostGIS layers with double click and select in extended mode</string>
             </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cmbTheme">
+            <property name="duplicatesEnabled">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string/>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
@@ -441,12 +431,18 @@
             <property name="text">
              <string>Zoom factor</string>
             </property>
+            <property name="buddy">
+             <cstring>spinZoomFactor</cstring>
+            </property>
            </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Mouse wheel action</string>
+            </property>
+            <property name="buddy">
+             <cstring>cmbWheelAction</cstring>
             </property>
            </widget>
           </item>
@@ -460,88 +456,6 @@
             </property>
             <property name="value">
              <double>2.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="groupBox_6">
-         <property name="title">
-          <string>Measure tool</string>
-         </property>
-         <layout class="QGridLayout">
-          <property name="margin">
-           <number>11</number>
-          </property>
-          <item row="1" column="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>191</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="1">
-           <widget class="QgsColorButton" name="pbnMeasureColour">
-            <property name="minimumSize">
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="cmbEllipsoid"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="textLabel1_10">
-            <property name="text">
-             <string>Rubberband color</string>
-            </property>
-            <property name="buddy">
-             <cstring>cmbEllipsoid</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="textLabel1_8">
-            <property name="text">
-             <string>Ellipsoid for distance calculations</string>
-            </property>
-            <property name="buddy">
-             <cstring>cmbEllipsoid</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="textLabel1_11">
-            <property name="text">
-             <string>Preferred measurements units</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QRadioButton" name="radMeters">
-            <property name="text">
-             <string>Meters</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QRadioButton" name="radFeet">
-            <property name="text">
-             <string>Feet</string>
             </property>
            </widget>
           </item>
@@ -601,6 +515,9 @@
             <property name="text">
              <string>Mode</string>
             </property>
+            <property name="buddy">
+             <cstring>cmbIdentifyMode</cstring>
+            </property>
            </widget>
           </item>
          </layout>
@@ -618,6 +535,91 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>Measure tool</string>
+         </property>
+         <layout class="QGridLayout">
+          <property name="margin">
+           <number>11</number>
+          </property>
+          <item row="1" column="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>191</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsColorButton" name="pbnMeasureColour">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QComboBox" name="cmbEllipsoid"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="textLabel1_10">
+            <property name="text">
+             <string>Rubberband color</string>
+            </property>
+            <property name="buddy">
+             <cstring>pbnMeasureColour</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="textLabel1_8">
+            <property name="text">
+             <string>Ellipsoid for distance calculations</string>
+            </property>
+            <property name="buddy">
+             <cstring>cmbEllipsoid</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="textLabel1_11">
+            <property name="text">
+             <string>Preferred measurements units</string>
+            </property>
+            <property name="buddy">
+             <cstring>radMeters</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QRadioButton" name="radMeters">
+            <property name="text">
+             <string>Meters</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QRadioButton" name="radFeet">
+            <property name="text">
+             <string>Feet</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -1143,6 +1145,9 @@
            <property name="text">
             <string>Timeout for network requests (ms):</string>
            </property>
+           <property name="buddy">
+            <cstring>mNetworkTimeoutSpinBox</cstring>
+           </property>
           </widget>
          </item>
          <item>
@@ -1234,6 +1239,9 @@
             <property name="text">
              <string>Proxy type</string>
             </property>
+            <property name="buddy">
+             <cstring>mProxyTypeComboBox</cstring>
+            </property>
            </widget>
           </item>
           <item row="4" column="1" colspan="2">
@@ -1256,6 +1264,9 @@
            <widget class="QLabel" name="mExcludeUrlsLabel">
             <property name="text">
              <string>Exclude URLs (starting with):</string>
+            </property>
+            <property name="buddy">
+             <cstring>mAddUrlPushButton</cstring>
             </property>
            </widget>
           </item>
@@ -1296,6 +1307,16 @@
      </widget>
     </widget>
    </item>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -1324,6 +1345,9 @@
   <tabstop>chkUseRenderCaching</tabstop>
   <tabstop>chkAntiAliasing</tabstop>
   <tabstop>chkUseQPixmap</tabstop>
+  <tabstop>mBtnAddSVGPath</tabstop>
+  <tabstop>mBtnRemoveSVGPath</tabstop>
+  <tabstop>mListSVGPaths</tabstop>
   <tabstop>cmbIdentifyMode</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
@@ -1337,8 +1361,8 @@
   <tabstop>mLineColourToolButton</tabstop>
   <tabstop>mDefaultSnapModeComboBox</tabstop>
   <tabstop>mDefaultSnappingToleranceSpinBox</tabstop>
-  <tabstop>mSearchRadiusVertexEditSpinBox</tabstop>
   <tabstop>mDefaultSnappingToleranceComboBox</tabstop>
+  <tabstop>mSearchRadiusVertexEditSpinBox</tabstop>
   <tabstop>mSearchRadiusVertexEditComboBox</tabstop>
   <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
   <tabstop>mMarkerStyleComboBox</tabstop>
@@ -1351,6 +1375,7 @@
   <tabstop>pbnSelectProjection</tabstop>
   <tabstop>grpLocale</tabstop>
   <tabstop>cboLocale</tabstop>
+  <tabstop>mNetworkTimeoutSpinBox</tabstop>
   <tabstop>grpProxy</tabstop>
   <tabstop>leProxyHost</tabstop>
   <tabstop>leProxyPort</tabstop>
@@ -1363,5 +1388,38 @@
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsOptionsBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>611</x>
+     <y>531</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>730</x>
+     <y>311</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsOptionsBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>686</x>
+     <y>525</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>731</x>
+     <y>353</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

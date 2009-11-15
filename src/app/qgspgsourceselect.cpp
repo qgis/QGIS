@@ -43,7 +43,12 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ), mColumnTypeThread( NULL ), pd( 0 )
 {
   setupUi( this );
-  btnAdd->setEnabled( false );
+  mAddButton = new QPushButton( tr( "&Add" ) );
+  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  connect( mAddButton,SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+  connect( buttonBox,SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
+
+  mAddButton->setEnabled( false );
   populateConnectionList();
 
   mSearchModeComboBox->addItem( tr( "Wildcard" ) );
@@ -92,7 +97,7 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   deleteConnection();
 }
 // Slot for performing action when the Add button is clicked
-void QgsPgSourceSelect::on_btnAdd_clicked()
+void QgsPgSourceSelect::addClicked()
 {
   addTables();
 }
@@ -104,9 +109,9 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
 }
 
 // Slot for showing help
-void QgsPgSourceSelect::on_btnHelp_clicked()
+void QgsPgSourceSelect::helpClicked()
 {
-  showHelp();
+  QgsContextHelp::run( context_id );
 }
 /** End Autoconnected SLOTS **/
 
@@ -466,7 +471,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     }
     // BEGIN CHANGES ECOS
     if ( cmbConnections->count() > 0 )
-      btnAdd->setEnabled( true );
+      mAddButton->setEnabled( true );
     // END CHANGES ECOS
   }
   else
@@ -723,11 +728,6 @@ bool QgsPgSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
   }
 
   return n > 0;
-}
-
-void QgsPgSourceSelect::showHelp()
-{
-  QgsContextHelp::run( context_id );
 }
 
 QString QgsPgSourceSelect::fullDescription( QString schema, QString table,

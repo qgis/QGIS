@@ -124,6 +124,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& id ): QMainWindow(), mId
 #endif
 
   QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
+  fileMenu->addAction( mActionLoadFromTemplate );
+  fileMenu->addAction( mActionSaveAsTemplate );
+  fileMenu->addSeparator();
   fileMenu->addAction( mActionExportAsImage );
   fileMenu->addAction( mActionExportAsPDF );
   fileMenu->addAction( mActionExportAsSVG );

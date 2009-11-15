@@ -31,9 +31,9 @@
 #define QGISEXTERN extern "C"
 #endif
 
-static const QString pluginName = "Diagram Overlay";
-static const QString pluginDescription = "A plugin for placing diagrams on vector layers";
-static const QString pluginVersion = "Version 0.0.1";
+static const QString pluginName = QObject::tr( "Diagram Overlay" );
+static const QString pluginDescription = QObject::tr( "A plugin for placing diagrams on vector layers" );
+static const QString pluginVersion = QObject::tr( "Version 0.0.1" );
 
 QgsDiagramOverlayPlugin::QgsDiagramOverlayPlugin( QgisInterface* iface ): QObject(), QgsVectorOverlayPlugin( pluginName, pluginDescription, pluginVersion ), mInterface( iface )
 {

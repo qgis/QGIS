@@ -34,6 +34,16 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
     : QDialog( parent, fl ), mLayer( layer )
 {
   setupUi( this );
+  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
+
+  QPushButton *pbn = new QPushButton( tr( "&Test" ) );
+  buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
+  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnTest_clicked() ) );
+
+  pbn = new QPushButton( tr( "&Clear" ) );
+  buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
+  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnClear_clicked() ) );
+
   setupGuiViews();
 
   mOrigSubsetString = layer->subsetString();
@@ -166,7 +176,13 @@ void QgsQueryBuilder::on_btnTest_clicked()
   }
 }
 
-void QgsQueryBuilder::on_btnOk_clicked()
+// Slot for showing help
+void QgsQueryBuilder::helpClicked()
+{
+    // QgsContextHelp::run( context_id );
+}
+
+void QgsQueryBuilder::accept()
 {
   // if user hits Ok and there is no query, skip the validation
   if ( !txtSQL->toPlainText().trimmed().isEmpty() )
@@ -179,15 +195,15 @@ void QgsQueryBuilder::on_btnOk_clicked()
     }
   }
 
-  accept();
+  QDialog::accept();
 }
 
-void QgsQueryBuilder::on_btnCancel_clicked()
+void QgsQueryBuilder::reject()
 {
   if ( mLayer->subsetString() != mOrigSubsetString )
     mLayer->setSubsetString( mOrigSubsetString );
 
-  reject();
+  QDialog::reject();
 }
 
 void QgsQueryBuilder::on_btnEqual_clicked()

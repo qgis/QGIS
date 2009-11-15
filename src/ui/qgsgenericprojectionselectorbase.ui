@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsGenericProjectionSelectorBase</class>
- <widget class="QDialog" name="QgsGenericProjectionSelectorBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsGenericProjectionSelectorBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,59 +10,62 @@
     <height>563</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Coordinate Reference System Selector</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <property name="modal" >
+  <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QTextEdit" name="textEdit" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <widget class="QTextEdit" name="textEdit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="maximumSize" >
+     <property name="maximumSize">
       <size>
        <width>16777215</width>
        <height>160</height>
       </size>
      </property>
-     <property name="focusPolicy" >
+     <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
      </property>
-     <property name="acceptDrops" >
+     <property name="acceptDrops">
       <bool>false</bool>
      </property>
-     <property name="lineWidth" >
+     <property name="lineWidth">
       <number>2</number>
      </property>
-     <property name="readOnly" >
+     <property name="readOnly">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QgsProjectionSelector" native="1" name="projectionSelector" />
+   <item row="1" column="0">
+    <widget class="QgsProjectionSelector" name="projectionSelector" native="true"/>
    </item>
-   <item row="2" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>QgsProjectionSelector</class>
@@ -74,33 +78,33 @@
  <connections>
   <connection>
    <sender>buttonBox</sender>
-   <signal>rejected()</signal>
+   <signal>accepted()</signal>
    <receiver>QgsGenericProjectionSelectorBase</receiver>
-   <slot>reject()</slot>
+   <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>475</x>
+    <hint type="sourcelabel">
+     <x>409</x>
      <y>534</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>493</x>
-     <y>523</y>
+    <hint type="destinationlabel">
+     <x>417</x>
+     <y>559</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>buttonBox</sender>
-   <signal>accepted()</signal>
+   <signal>rejected()</signal>
    <receiver>QgsGenericProjectionSelectorBase</receiver>
-   <slot>accept()</slot>
+   <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>566</x>
-     <y>534</y>
+    <hint type="sourcelabel">
+     <x>471</x>
+     <y>537</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>600</x>
-     <y>530</y>
+    <hint type="destinationlabel">
+     <x>594</x>
+     <y>563</y>
     </hint>
    </hints>
   </connection>

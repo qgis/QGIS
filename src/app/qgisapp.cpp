@@ -106,7 +106,6 @@
 #include "qgshelpviewer.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslegend.h"
-#include "qgslegendlayerfile.h"
 #include "qgslegendlayer.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -466,6 +465,7 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   QgsDebugMsg( QgsApplication::showSettings() );
   QgsDebugMsg( "\n--------------------------\n\n\n" );
   mMapCanvas->freeze( false );
+  mLastComposerId = 0;
 } // QgisApp ctor
 
 
@@ -717,9 +717,9 @@ void QgisApp::createActions()
   connect( mActionAddRing, SIGNAL( triggered() ), this, SLOT( addRing() ) );
   mActionAddRing->setEnabled( false );
 
-  mActionAddIsland = new QAction( getThemeIcon( "mActionAddIsland.png" ), tr( "Add Island" ), this );
+  mActionAddIsland = new QAction( getThemeIcon( "mActionAddIsland.png" ), tr( "Add Part" ), this );
   shortcuts->registerAction( mActionAddIsland );
-  mActionAddIsland->setStatusTip( tr( "Add Island to multipolygon" ) );
+  mActionAddIsland->setStatusTip( tr( "Add part to multipolygon" ) );
   connect( mActionAddIsland, SIGNAL( triggered() ), this, SLOT( addIsland() ) );
   mActionAddIsland->setEnabled( false );
 
@@ -731,13 +731,13 @@ void QgisApp::createActions()
 
   mActionDeleteRing = new QAction( getThemeIcon( "mActionDeleteRing.png" ), tr( "Delete Ring" ), this );
   shortcuts->registerAction( mActionDeleteRing );
-  mActionDeleteRing->setStatusTip( tr( "Delete Ring" ) );
+  mActionDeleteRing->setStatusTip( tr( "Click a vertex of the ring to delete" ) );
   connect( mActionDeleteRing, SIGNAL( triggered() ), this, SLOT( deleteRing() ) );
   mActionDeleteRing->setEnabled( false );
 
   mActionDeletePart = new QAction( getThemeIcon( "mActionDeletePart.png" ), tr( "Delete Part" ), this );
   shortcuts->registerAction( mActionDeletePart );
-  mActionDeletePart->setStatusTip( tr( "Delete Part" ) );
+  mActionDeletePart->setStatusTip( tr( "Click a vertex of the part to delete" ) );
   connect( mActionDeletePart, SIGNAL( triggered() ), this, SLOT( deletePart() ) );
   mActionDeletePart->setEnabled( false );
 
@@ -1691,6 +1691,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionDeleteRing->setIcon( getThemeIcon( "/mActionDeleteRing.png" ) );
   mActionDeletePart->setIcon( getThemeIcon( "/mActionDeletePart.png" ) );
   mActionMergeFeatures->setIcon( getThemeIcon( "/mActionMergeFeatures.png" ) );
+  mActionRotatePointSymbols->setIcon( getThemeIcon( "mActionRotatePointSymbols.png" ) );
   mActionNodeTool->setIcon( getThemeIcon( "/mActionNodeTool.png" ) );
   mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
@@ -3705,26 +3706,8 @@ void QgisApp::newPrintComposer()
   }
 
   //ask user about name
-  bool composerExists = true;
-  QString composerId;
-  while ( composerExists )
-  {
-    composerId = QInputDialog::getText( 0, tr( "Enter id string for composer" ), tr( "id:" ) );
-    if ( composerId.isNull() )
-    {
-      return;
-    }
-
-    if ( mPrintComposers.contains( composerId ) )
-    {
-      QMessageBox::critical( 0, tr( "Composer id already exists" ), tr( "The entered composer id '%1' already exists. Please enter a different id" ).arg( composerId ) );
-    }
-    else
-    {
-      composerExists = false;
-    }
-  }
-
+  mLastComposerId++;
+  QString composerId = QString( tr("Map Composer %1").arg( mLastComposerId ) );
   //create new composer object
   QgsComposer* newComposerObject = new QgsComposer( this, composerId );
   //add it to the map of existing print composers
@@ -4082,12 +4065,12 @@ void QgisApp::attributeTable()
 
 void QgisApp::saveAsShapefile()
 {
-  mMapLegend->currentLayerFile()->saveAsShapefile();
+  mMapLegend->currentLegendLayer()->saveAsShapefile();
 }
 
 void QgisApp::saveSelectionAsShapefile()
 {
-  mMapLegend->currentLayerFile()->saveSelectionAsShapefile();
+  mMapLegend->currentLegendLayer()->saveSelectionAsShapefile();
 }
 
 void QgisApp::layerProperties()
@@ -4259,6 +4242,7 @@ bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
     composer->showMinimized();
     composer->zoomFull();
   }
+  mLastComposerId = composerNodes.size();
 
   return true;
 }
@@ -4271,6 +4255,7 @@ void QgisApp::deletePrintComposers()
     delete it.value();
   }
   mPrintComposers.clear();
+  mLastComposerId = 0;
 }
 
 void QgisApp::mergeSelectedFeatures()
@@ -4606,8 +4591,8 @@ void QgisApp::toggleEditing()
   if ( mMapCanvas && mMapCanvas->isDrawing() )
     return;
 
-  QgsLegendLayerFile* currentLayerFile = mMapLegend->currentLayerFile();
-  if ( currentLayerFile )
+  QgsLegendLayer* currentLayer = mMapLegend->currentLegendLayer();
+  if ( currentLayer )
   {
     toggleEditing( mMapLegend->currentLayer() );
   }

@@ -2428,6 +2428,11 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
         // deal with unnecessary schema qualification to make v.in.ogr happy
         mDataSource = mDataProvider->dataSourceUri();
       }
+      else if ( mProviderKey == "osm" )
+      {
+        // make sure that the "observer" has been removed from URI to avoid crashes
+        mDataSource = mDataProvider->dataSourceUri();
+      }
 
       // label
       mLabel = new QgsLabel( mDataProvider->fields() );

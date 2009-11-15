@@ -35,6 +35,7 @@
 #include "qgis.h"
 #include "qgspoint.h"
 #include "qgsmaplayer.h"
+#include "qgsrasterviewport.h"
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
 #include "qgsrastershader.h"
@@ -59,7 +60,6 @@ class QgsRectangle;
 class QgsRasterBandStats;
 class QgsRasterPyramid;
 class QgsRasterLayerProperties;
-struct QgsRasterViewPort;
 class QImage;
 class QPixmap;
 class QSlider;
@@ -439,6 +439,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
     void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
+
+    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
+    void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
+
+    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
+    void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
 
     /** \brief Get a pointer to the contrast enhancement for the selected band */
     QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );
@@ -827,6 +833,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /**  [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created */
     QDateTime mLastModified;
+
+    QgsRasterViewPort mLastViewPort;
 
     /**  [ data provider interface ] pointer for loading the provider library */
     QLibrary* mLib;

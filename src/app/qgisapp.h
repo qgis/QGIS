@@ -996,6 +996,7 @@ class QgisApp : public QMainWindow
 
     QgsUndoWidget* mUndoWidget;
 
+    int mLastComposerId;
 };
 
 #endif

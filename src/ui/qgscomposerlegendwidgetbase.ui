@@ -1,219 +1,255 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsComposerLegendWidgetBase</class>
- <widget class="QWidget" name="QgsComposerLegendWidgetBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QgsComposerLegendWidgetBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>520</width>
-    <height>498</height>
+    <width>354</width>
+    <height>474</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Barscale Options</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="mGeneralGroupBox" >
-     <property name="title" >
-      <string>General</string>
+  <layout class="QGridLayout" name="gridLayout_4">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="mTitleLabel" >
-        <property name="text" >
-         <string>Title</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mTitleLineEdit</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="8" >
-       <widget class="QLineEdit" name="mTitleLineEdit" />
-      </item>
-      <item row="1" column="0" colspan="3" >
-       <widget class="QLabel" name="mFontLabel" >
-        <property name="text" >
-         <string>Font</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3" colspan="2" >
-       <widget class="QPushButton" name="mTitleFontButton" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>Title...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5" colspan="2" >
-       <widget class="QPushButton" name="mLayerFontButton" >
-        <property name="text" >
-         <string>Layer...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="7" colspan="2" >
-       <widget class="QPushButton" name="mItemFontButton" >
-        <property name="text" >
-         <string>Item...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="4" >
-       <widget class="QLabel" name="mSymbolWidthLabel" >
-        <property name="text" >
-         <string>Symbol width</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mSymbolWidthSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4" >
-       <widget class="QDoubleSpinBox" name="mSymbolWidthSpinBox" />
-      </item>
-      <item row="2" column="5" colspan="3" >
-       <widget class="QLabel" name="mSymbolHeightLabel" >
-        <property name="text" >
-         <string>Symbol height</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mSymbolHeightSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="8" >
-       <widget class="QDoubleSpinBox" name="mSymbolHeightSpinBox" />
-      </item>
-      <item row="3" column="0" colspan="2" >
-       <widget class="QLabel" name="mLayerSpaceLabel" >
-        <property name="text" >
-         <string>Layer space</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mLayerSpaceSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2" colspan="3" >
-       <widget class="QDoubleSpinBox" name="mLayerSpaceSpinBox" />
-      </item>
-      <item row="3" column="5" >
-       <widget class="QLabel" name="mSymbolSpaceLabel" >
-        <property name="text" >
-         <string>Symbol space</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mSymbolSpaceSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="6" colspan="3" >
-       <widget class="QDoubleSpinBox" name="mSymbolSpaceSpinBox" />
-      </item>
-      <item row="4" column="0" colspan="3" >
-       <widget class="QLabel" name="mIconLabelSpaceLabel" >
-        <property name="text" >
-         <string>Icon label space</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mIconLabelSpaceSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="3" colspan="2" >
-       <widget class="QDoubleSpinBox" name="mIconLabelSpaceSpinBox" />
-      </item>
-      <item row="4" column="5" colspan="2" >
-       <widget class="QLabel" name="mBoxSpaceLabel" >
-        <property name="text" >
-         <string>Box space</string>
-        </property>
-        <property name="buddy" >
-         <cstring>mBoxSpaceSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="7" colspan="2" >
-       <widget class="QDoubleSpinBox" name="mBoxSpaceSpinBox" />
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="mLegendItemsGroupBox" >
-     <property name="title" >
-      <string>Legend items</string>
-     </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" colspan="6" >
-       <widget class="QTreeView" name="mItemTreeView" >
-        <property name="headerHidden" stdset="0" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QPushButton" name="mMoveDownPushButton" >
-        <property name="text" >
-         <string>Down</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QPushButton" name="mMoveUpPushButton" >
-        <property name="text" >
-         <string>Up</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" >
-       <widget class="QPushButton" name="mRemovePushButton" >
-        <property name="text" >
-         <string>Remove</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3" >
-       <widget class="QPushButton" name="mEditPushButton" >
-        <property name="text" >
-         <string>Edit...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4" >
-       <widget class="QPushButton" name="mUpdatePushButton" >
-        <property name="text" >
-         <string>Update</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5" >
-       <widget class="QPushButton" name="mUpdateAllPushButton" >
-        <property name="text" >
-         <string>Update all</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>352</width>
+        <height>472</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QToolBox" name="toolBox">
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <widget class="QWidget" name="page">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>334</width>
+            <height>390</height>
+           </rect>
+          </property>
+          <attribute name="label">
+           <string>General</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="mTitleLabel">
+             <property name="text">
+              <string>&amp;Title</string>
+             </property>
+             <property name="buddy">
+              <cstring>mTitleLineEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLineEdit" name="mTitleLineEdit"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="mTitleFontButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Title Font...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QPushButton" name="mLayerFontButton">
+             <property name="text">
+              <string>Layer Font...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QPushButton" name="mItemFontButton">
+             <property name="text">
+              <string>Item Font...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QDoubleSpinBox" name="mSymbolWidthSpinBox">
+             <property name="prefix">
+              <string>Symbol width </string>
+             </property>
+             <property name="suffix">
+              <string> mm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QDoubleSpinBox" name="mSymbolHeightSpinBox">
+             <property name="prefix">
+              <string>Symbol height </string>
+             </property>
+             <property name="suffix">
+              <string> mm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QDoubleSpinBox" name="mLayerSpaceSpinBox">
+             <property name="prefix">
+              <string>Layer space </string>
+             </property>
+             <property name="suffix">
+              <string> mm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <widget class="QDoubleSpinBox" name="mSymbolSpaceSpinBox">
+             <property name="prefix">
+              <string>Symbol space </string>
+             </property>
+             <property name="suffix">
+              <string> mm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0">
+            <widget class="QDoubleSpinBox" name="mIconLabelSpaceSpinBox">
+             <property name="prefix">
+              <string>Icon label space </string>
+             </property>
+             <property name="suffix">
+              <string> mm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0">
+            <widget class="QDoubleSpinBox" name="mBoxSpaceSpinBox">
+             <property name="prefix">
+              <string>Box space </string>
+             </property>
+             <property name="suffix">
+              <string> mm</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>334</width>
+            <height>390</height>
+           </rect>
+          </property>
+          <attribute name="label">
+           <string>Legend items</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0" colspan="6">
+            <widget class="QTreeView" name="mItemTreeView">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="headerHidden">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QToolButton" name="mMoveDownPushButton">
+             <property name="text">
+              <string>v</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QToolButton" name="mMoveUpPushButton_2">
+             <property name="text">
+              <string>^</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QToolButton" name="toolButton">
+             <property name="text">
+              <string>X</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QToolButton" name="mEditPushButton">
+             <property name="text">
+              <string>Edit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="4">
+            <widget class="QToolButton" name="mUpdatePushButton">
+             <property name="text">
+              <string>Update</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="5">
+            <widget class="QToolButton" name="mUpdatePushButton_2">
+             <property name="text">
+              <string>All</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>mTitleLineEdit</tabstop>
   <tabstop>mTitleFontButton</tabstop>
@@ -226,12 +262,6 @@
   <tabstop>mIconLabelSpaceSpinBox</tabstop>
   <tabstop>mBoxSpaceSpinBox</tabstop>
   <tabstop>mItemTreeView</tabstop>
-  <tabstop>mMoveDownPushButton</tabstop>
-  <tabstop>mMoveUpPushButton</tabstop>
-  <tabstop>mRemovePushButton</tabstop>
-  <tabstop>mEditPushButton</tabstop>
-  <tabstop>mUpdatePushButton</tabstop>
-  <tabstop>mUpdateAllPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

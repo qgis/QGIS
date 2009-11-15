@@ -19,8 +19,6 @@
  ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgisapp.h"
-#include "qgslegendlayerfile.h"
-#include "qgslegendlayerfilegroup.h"
 #include "qgslegendsymbologygroup.h"
 #include "qgsmaplayer.h"
 #include <QCoreApplication>

@@ -1,140 +1,132 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsProjectionSelectorBase</class>
- <widget class="QWidget" name="QgsProjectionSelectorBase" >
-  <property name="geometry" >
+ <widget class="QWidget" name="QgsProjectionSelectorBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
-    <height>416</height>
+    <width>428</width>
+    <height>313</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Coordinate Reference System Selector</string>
   </property>
-  <property name="windowIcon" >
+  <property name="windowIcon">
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <layout class="QGridLayout" >
-   <property name="leftMargin" >
+  <layout class="QGridLayout">
+   <property name="verticalSpacing">
     <number>3</number>
    </property>
-   <property name="topMargin" >
+   <property name="margin">
     <number>3</number>
    </property>
-   <property name="rightMargin" >
-    <number>3</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>3</number>
-   </property>
-   <property name="verticalSpacing" >
-    <number>3</number>
-   </property>
-   <item row="0" column="0" >
-    <widget class="QTreeWidget" name="lstCoordinateSystems" >
-     <property name="alternatingRowColors" >
+   <item row="0" column="0">
+    <widget class="QTreeWidget" name="lstCoordinateSystems">
+     <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
-     <property name="uniformRowHeights" >
+     <property name="uniformRowHeights">
       <bool>true</bool>
      </property>
-     <property name="columnCount" >
+     <property name="columnCount">
       <number>3</number>
      </property>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Coordinate Reference System</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>EPSG</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>ID</string>
       </property>
      </column>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QTextEdit" name="teProjection" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
+   <item row="1" column="0">
+    <widget class="QTextEdit" name="teProjection">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize" >
+     <property name="minimumSize">
       <size>
        <width>0</width>
        <height>30</height>
       </size>
      </property>
-     <property name="maximumSize" >
+     <property name="maximumSize">
       <size>
        <width>16777215</width>
        <height>50</height>
       </size>
      </property>
-     <property name="baseSize" >
+     <property name="baseSize">
       <size>
        <width>0</width>
        <height>50</height>
       </size>
      </property>
-     <property name="autoFormatting" >
+     <property name="autoFormatting">
       <set>QTextEdit::AutoBulletList</set>
      </property>
-     <property name="readOnly" >
+     <property name="readOnly">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Search</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QRadioButton" name="radEpsgCrsId" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="radEpsgCrsId">
+        <property name="text">
          <string>EPSG ID</string>
         </property>
-        <property name="iconSize" >
+        <property name="iconSize">
          <size>
           <width>16</width>
           <height>10</height>
          </size>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QRadioButton" name="radName" >
-        <property name="text" >
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="radName">
+        <property name="text">
          <string>Name</string>
         </property>
-        <property name="iconSize" >
+        <property name="iconSize">
          <size>
           <width>16</width>
           <height>10</height>
@@ -142,21 +134,21 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2" >
-       <widget class="QLineEdit" name="leSearch" />
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="leSearch"/>
       </item>
-      <item row="0" column="3" >
-       <widget class="QPushButton" name="pbnFind" >
-        <property name="maximumSize" >
+      <item row="0" column="3">
+       <widget class="QPushButton" name="pbnFind">
+        <property name="maximumSize">
          <size>
           <width>100</width>
           <height>16777215</height>
          </size>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Find</string>
         </property>
-        <property name="default" >
+        <property name="default">
          <bool>true</bool>
         </property>
        </widget>
@@ -164,25 +156,21 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" >
-    <widget class="QPushButton" name="pbnPopular1">
-    </widget>
-   </item>     
-   <item row="4" column="0" >
-    <widget class="QPushButton" name="pbnPopular2">
-    </widget>
-   </item>     
-   <item row="5" column="0" >
-    <widget class="QPushButton" name="pbnPopular3">
-    </widget>
-   </item>     
-   <item row="6" column="0" >
-    <widget class="QPushButton" name="pbnPopular4">
-    </widget>
-   </item>     
+   <item row="3" column="0">
+    <widget class="QPushButton" name="pbnPopular1"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="pbnPopular2"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QPushButton" name="pbnPopular3"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QPushButton" name="pbnPopular4"/>
+   </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections>
   <connection>
@@ -191,13 +179,13 @@
    <receiver>pbnFind</receiver>
    <slot>click()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>292</x>
-     <y>380</y>
+    <hint type="sourcelabel">
+     <x>362</x>
+     <y>276</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>375</x>
-     <y>373</y>
+    <hint type="destinationlabel">
+     <x>453</x>
+     <y>277</y>
     </hint>
    </hints>
   </connection>

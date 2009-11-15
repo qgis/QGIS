@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>672</width>
-    <height>687</height>
+    <width>406</width>
+    <height>470</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,21 +24,8 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout">
-   <property name="margin">
-    <number>9</number>
-   </property>
-   <property name="spacing">
-    <number>6</number>
-   </property>
-   <item row="1" column="0" colspan="6">
-    <widget class="QTreeView" name="mTablesTreeView">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="6">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>PostgreSQL Connections</string>
@@ -84,78 +71,44 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="6">
-    <layout class="QHBoxLayout">
-     <property name="spacing">
-      <number>6</number>
+   <item>
+    <widget class="QTreeView" name="mTablesTreeView">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
-     <property name="margin">
-      <number>11</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="btnHelp">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Help</string>
-       </property>
-       <property name="shortcut">
-        <string>F1</string>
-       </property>
-       <property name="autoDefault">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>141</width>
-         <height>21</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnAdd">
-       <property name="text">
-        <string>Add</string>
-       </property>
-       <property name="shortcut">
-        <string/>
-       </property>
-       <property name="autoDefault">
-        <bool>true</bool>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnCancel">
-       <property name="text">
-        <string>Close</string>
-       </property>
-       <property name="shortcut">
-        <string/>
-       </property>
-       <property name="autoDefault">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
-   <item row="3" column="0" colspan="6">
+   <item>
+    <widget class="QPushButton" name="btnBuildQuery">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Build query</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>271</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QPushButton" name="mSearchOptionsButton">
+     <property name="text">
+      <string>Search options...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="mSearchGroupBox">
      <property name="title">
       <string/>
@@ -172,12 +125,18 @@
         <property name="text">
          <string>Search:</string>
         </property>
+        <property name="buddy">
+         <cstring>mSearchTableEdit</cstring>
+        </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="mSearchModeLabel">
         <property name="text">
          <string>Search mode:</string>
+        </property>
+        <property name="buddy">
+         <cstring>mSearchModeComboBox</cstring>
         </property>
        </widget>
       </item>
@@ -188,6 +147,9 @@
        <widget class="QLabel" name="mSearchColumnsLabel">
         <property name="text">
          <string>Search in columns:</string>
+        </property>
+        <property name="buddy">
+         <cstring>mSearchColumnComboBox</cstring>
         </property>
        </widget>
       </item>
@@ -200,35 +162,12 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="4">
-    <widget class="QPushButton" name="btnBuildQuery">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>Build query</string>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
     </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QPushButton" name="mSearchOptionsButton">
-     <property name="text">
-      <string>Search options...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>271</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
@@ -239,25 +178,29 @@
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
-  <tabstop>btnHelp</tabstop>
-  <tabstop>btnAdd</tabstop>
-  <tabstop>btnCancel</tabstop>
+  <tabstop>mTablesTreeView</tabstop>
+  <tabstop>btnBuildQuery</tabstop>
+  <tabstop>mSearchOptionsButton</tabstop>
+  <tabstop>mSearchTableEdit</tabstop>
+  <tabstop>mSearchColumnComboBox</tabstop>
+  <tabstop>mSearchModeComboBox</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>btnCancel</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>QgsPgSourceSelectBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>404</x>
+     <x>353</x>
      <y>446</y>
     </hint>
     <hint type="destinationlabel">
-     <x>229</x>
-     <y>236</y>
+     <x>404</x>
+     <y>421</y>
     </hint>
    </hints>
   </connection>

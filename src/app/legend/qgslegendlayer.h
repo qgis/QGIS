@@ -20,12 +20,12 @@
 #ifndef QGSLEGENDLAYER_H
 #define QGSLEGENDLAYER_H
 
-//#include <qobject.h>
 #include <qgslegenditem.h>
 #include <QFileInfo>
 
+#include "qgsmapcanvas.h"
+
 class QgsLegendLayer;
-class QgsLegendLayerFile;
 class QgsLegendPropertyGroup;
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -45,25 +45,17 @@ class QgsLegendLayer : public QgsLegendItem
     Q_OBJECT
 
   public:
-    QgsLegendLayer( QTreeWidgetItem *, QString );
-    QgsLegendLayer( QTreeWidget*, QString );
-    QgsLegendLayer( QString name );
+    QgsLegendLayer( QgsMapLayer* layer );
     ~QgsLegendLayer();
 
     bool isLeafNode();
     QgsLegendItem::DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
     QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
-    /**Returns the map layer associated with the first QgsLegendLayerFile or 0 if
-     there is no QgsLegendLayerFile*/
-    QgsMapLayer* firstMapLayer() const;
-    /**Returns first map layer's file or 0 if there's no QgsLegendLayerFile */
-    QgsLegendLayerFile* firstLayerFile() const;
-    /**Returns the map layers associated with the QgsLegendLayerFiles*/
-    std::list<QgsMapLayer*> mapLayers();
-    /**Returns the legend layer file items associated with this legend layer*/
-    std::list<QgsLegendLayerFile*> legendLayerFiles();
+    /**Returns the map layer associated the item*/
+    QgsMapLayer* layer();
+    QgsMapCanvasLayer& canvasLayer();
     /**Goes through all the legendlayerfiles and sets check state to checked/partially checked/unchecked*/
-    void updateCheckState();
+    //void updateCheckState();
 
     /**Updates symbology of the layer and copies symbology to other layer files in the group*/
     void refreshSymbology( const QString& key, double widthScale = 1.0 );
@@ -71,8 +63,18 @@ class QgsLegendLayer : public QgsLegendItem
     /** called to add appropriate menu items to legend's popup menu */
     void addToPopupMenu( QMenu& theMenu, QAction* toggleEditingAction );
 
+    /** Set layer to be visible in canvas */
+    void setVisible( bool visible = TRUE );
+    /** Find out whether the layer is visible */
+    bool isVisible();
+
+    void setInOverview( bool isInOverview = TRUE );
     /**Determines whether there are layers in overview*/
     bool isInOverview();
+
+    /**Returns a label for a layer. Is static such that
+     the name can be passed to the constructor of QgsLegendLayer*/
+    static QString nameFromLayer( QgsMapLayer* layer );
 
   public slots:
 
@@ -85,9 +87,11 @@ class QgsLegendLayer : public QgsLegendItem
     void saveAsShapefile();
     void saveSelectionAsShapefile();
 
-    /**Goes through all the legendlayerfiles and adds editing/overview pixmaps to the icon. If not all layer files
-    have the same editing/overview state, a tristate is applied*/
+    /**update the layer's icon to show whether is in editing mode or in overview */
     void updateIcon();
+
+    /**Layer name has changed - set it also in legend*/
+    void layerNameChanged();
 
   protected:
 
@@ -99,19 +103,13 @@ class QgsLegendLayer : public QgsLegendItem
     /** Prepare and change symbology for raster layer */
     void rasterLayerSymbology( QgsRasterLayer* mapLayer );
 
-    /** Removes the symbology items of a layer and adds new ones.
-     * If other files are in the same legend layer, the new symbology settings are copied.
-     * Note: the QIcon* are deleted and therefore need to be allocated by calling
-     * functions using operator new
-     */
+    /** Removes the symbology items of a layer and adds new ones. */
     void changeSymbologySettings( const QgsMapLayer* mapLayer, const SymbologyList& newSymbologyItems );
 
-    /** Copies the symbology settings of the layer to all maplayers in the QgsLegendLayerFileGroup.
-     * This method should be called whenever a layer in this group changes it symbology settings
-     */
-    void updateLayerSymbologySettings( const QgsMapLayer* mapLayer );
+    QPixmap getOriginalPixmap();
 
-    QPixmap getOriginalPixmap() const;
+    /**Save as shapefile (called from saveAsShapefile and saveSelectionAsShapefile)*/
+    void saveAsShapefileGeneral( bool saveOnlySelection );
 
   private:
     /** Helper method to make the font bold from all ctors.
@@ -119,6 +117,11 @@ class QgsLegendLayer : public QgsLegendItem
      *  from the QTreeWidgetItem base class.
      */
     void setupFont();
+
+  protected:
+
+    /** layer identified by its layer id */
+    QgsMapCanvasLayer mLyr;
 };
 
 #endif

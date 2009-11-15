@@ -16,7 +16,6 @@ email                : tim at linfiniti.com
  ***************************************************************************/
 /* $Id$ */
 
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -25,7 +24,6 @@ email                : tim at linfiniti.com
 #include "qgsrasterbandstats.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
-#include "qgsrasterviewport.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatereferencesystem.h"
@@ -151,6 +149,20 @@ QgsRasterLayer::QgsRasterLayer(
       }
     }
   }
+
+  //Initialize the last view port structure, should really be a class
+  mLastViewPort.rectXOffset = 0;
+  mLastViewPort.rectXOffsetFloat = 0.0;
+  mLastViewPort.rectYOffset = 0;
+  mLastViewPort.rectYOffsetFloat = 0.0;
+  mLastViewPort.clippedXMin = 0.0;
+  mLastViewPort.clippedXMax = 0.0;
+  mLastViewPort.clippedYMin = 0.0;
+  mLastViewPort.clippedYMax = 0.0;
+  mLastViewPort.clippedWidth = 0;
+  mLastViewPort.clippedHeight = 0;
+  mLastViewPort.drawableAreaXDim = 0;
+  mLastViewPort.drawableAreaYDim = 0;
 
 } // QgsRasterLayer ctor
 
@@ -1267,6 +1279,52 @@ void QgsRasterLayer::computeMinimumMaximumEstimates( QString theBand, double* th
 }
 
 /**
+ * @param theBand The band (number) for which to calculate the min max values
+ * @param theMinMax Pointer to a double[2] which hold the estimated min max
+ */
+void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax )
+{
+  if ( 0 == theMinMax ) { return; }
+
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBand );
+  GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
+  void* myGdalScanData = readData( myGdalBand, &mLastViewPort );
+
+  /* Check for out of memory error */
+  if ( myGdalScanData == NULL )
+  {
+    return;
+  }
+
+  if ( 0 < theBand && theBand <= ( int ) bandCount() )
+  {
+    float myMin = std::numeric_limits<float>::max();
+    float myMax = -1 * std::numeric_limits<float>::max();
+    float myValue = 0.0;
+    for ( int myRow = 0; myRow < mLastViewPort.drawableAreaYDim; ++myRow )
+    {
+      for ( int myColumn = 0; myColumn < mLastViewPort.drawableAreaXDim; ++myColumn )
+      {
+        myValue = readValue( myGdalScanData, myDataType, myRow * mLastViewPort.drawableAreaXDim + myColumn );
+        myMin = qMin( myMin, myValue );
+        myMax = qMax( myMax, myValue );
+      }
+    }
+    theMinMax[0] = myMin;
+    theMinMax[1] = myMax;
+  }
+}
+
+/**
+ * @param theBand The band (name) for which to calculate the min max values
+ * @param theMinMax Pointer to a double[2] which hold the estimated min max
+ */
+void QgsRasterLayer::computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax )
+{
+  computeMinimumMaximumFromLastExtent( bandNumber( theBand ), theMinMax );
+}
+
+/**
  * @param theBand The band (number) for which to get the contrast enhancement for
  * @return Pointer to the contrast enhancement or 0 on failure
  */
@@ -1498,6 +1556,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
   // /\/\/\ - added to handle zoomed-in rasters
 
+  mLastViewPort = *myRasterViewPort;
 
   // Provider mode: See if a provider key is specified, and if so use the provider instead
 

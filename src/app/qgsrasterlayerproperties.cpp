@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDebug>
+
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgisapp.h"
@@ -434,7 +436,7 @@ void QgsRasterLayerProperties::setMinimumMaximumEstimateWarning()
 
   if ( myEstimatedValues )
   {
-    lblMinMaxEstimateWarning->setText( tr( "Note: Minimum Maximum values are estimates or user defined" ) );
+    lblMinMaxEstimateWarning->setText( tr( "Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent" ) );
   }
   else
   {
@@ -1934,10 +1936,9 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   QgsDebugMsg( QString( "max %1" ).arg( myYAxisMax ) );
   QgsDebugMsg( QString( "min %1" ).arg( myYAxisMin ) );
 
-
   //create the image onto which graph and axes will be drawn
-  int myImageWidth = pixHistogram->width();
-  int myImageHeight =  pixHistogram->height();
+  int myImageWidth = pixHistogram->width() - 2;
+  int myImageHeight =  pixHistogram->height() - 2; //Take two pixels off to account for the boarder around the QLabel
   QPixmap myPixmap( myImageWidth, myImageHeight );
   myPixmap.fill( Qt::white );
 
@@ -2086,6 +2087,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
           QgsDebugMsg( QString( "Band %1, bin %2, Hist Value : %3, Scaled Value : %4" ).arg( myIteratorInt ).arg( myBin ).arg( myBinValue ).arg( myY ) );
           QgsDebugMsg( "myY = myGraphImageHeight - myY" );
           QgsDebugMsg( QString( "myY = %1-%2" ).arg( myGraphImageHeight ).arg( myY ) );
+
           if ( myGraphType == BAR_CHART )
           {
             //draw the bar
@@ -2136,6 +2138,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
             myPolygon << QPointF( myX + myYGutterWidth, myY );
           }
         }
+
         if ( myGraphType == LINE_CHART )
         {
           QLinearGradient myGradient;
@@ -2832,6 +2835,9 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
   if ( mRasterLayerIsGdal && ( mRasterLayer->drawingStyle() == QgsRasterLayer::SingleBandGray || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandSingleGandGray || mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandColor ) )
   {
     QgsRasterBandStats myRasterBandStats;
+    double myMinimumMaximum[2];
+    myMinimumMaximum[0] = 0;
+    myMinimumMaximum[1] = 0;
     if ( rbtnThreeBand->isChecked() )
     {
       rbtnThreeBandMinMax->setChecked( true );
@@ -2849,10 +2855,22 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
         leBlueMax->setText( QString::number( myRasterBandStats.maximumValue ) );
         mRGBMinimumMaximumEstimated = false;
       }
+      else if ( rbtnExtentMinMax->isChecked() )
+      {
+        mRasterLayer->computeMinimumMaximumFromLastExtent( mRasterLayer->bandNumber( cboRed->currentText() ), myMinimumMaximum );
+        leRedMin->setText( QString::number( myMinimumMaximum[0] ) );
+        leRedMax->setText( QString::number( myMinimumMaximum[1] ) );
+        mRasterLayer->computeMinimumMaximumFromLastExtent( mRasterLayer->bandNumber( cboGreen->currentText() ), myMinimumMaximum );
+        leGreenMin->setText( QString::number( myMinimumMaximum[0] ) );
+        leGreenMax->setText( QString::number( myMinimumMaximum[1] ) );
+        mRasterLayer->computeMinimumMaximumFromLastExtent( mRasterLayer->bandNumber( cboBlue->currentText() ), myMinimumMaximum );
+        leBlueMin->setText( QString::number( myMinimumMaximum[0] ) );
+        leBlueMax->setText( QString::number( myMinimumMaximum[1] ) );
+        mRGBMinimumMaximumEstimated = true;
+      }
       else
       {
         rbtnEstimateMinMax->setChecked( true );
-        double myMinimumMaximum[2];
         mRasterLayer->computeMinimumMaximumEstimates( mRasterLayer->bandNumber( cboRed->currentText() ), myMinimumMaximum );
         leRedMin->setText( QString::number( myMinimumMaximum[0] ) );
         leRedMax->setText( QString::number( myMinimumMaximum[1] ) );
@@ -2876,10 +2894,16 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
         leGrayMax->setText( QString::number( myRasterBandStats.maximumValue ) );
         mGrayMinimumMaximumEstimated = false;
       }
+      else if ( rbtnExtentMinMax->isChecked() )
+      {
+        mRasterLayer->computeMinimumMaximumFromLastExtent( mRasterLayer->bandNumber( cboGray->currentText() ), myMinimumMaximum );
+        leGrayMin->setText( QString::number( myMinimumMaximum[0] ) );
+        leGrayMax->setText( QString::number( myMinimumMaximum[1] ) );
+        mGrayMinimumMaximumEstimated = true;
+      }
       else
       {
         rbtnEstimateMinMax->setChecked( true );
-        double myMinimumMaximum[2];
         mRasterLayer->computeMinimumMaximumEstimates( mRasterLayer->bandNumber( cboGray->currentText() ), myMinimumMaximum );
         leGrayMin->setText( QString::number( myMinimumMaximum[0] ) );
         leGrayMax->setText( QString::number( myMinimumMaximum[1] ) );
