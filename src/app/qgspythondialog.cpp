@@ -67,11 +67,11 @@ void QgsPythonDialog::on_pbnNext_clicked()
   }
 }
 
-void QgsPythonDialog::on_pbnExecute_clicked()
+void QgsPythonDialog::execute( bool single )
 {
   QString command = edtCmdLine->toPlainText();
 
-  QgsDebugMsg( QString( "command: |%1|" ).arg( command ) );
+  QgsDebugMsg( QString( "command: |%1| %2" ).arg( command ).arg( single ) );
 
   if ( !command.isEmpty() )
   {
@@ -83,7 +83,7 @@ void QgsPythonDialog::on_pbnExecute_clicked()
 
   // when using Py_single_input the return value will be always null
   // we're using custom hooks for output and exceptions to show output in console
-  if ( mPythonUtils->runStringUnsafe( command, false ) )
+  if ( mPythonUtils->runStringUnsafe( command, single ) )
   {
     mPythonUtils->evalString( "sys.stdout.get_and_clean_data()", output );
     QString result = mPythonUtils->getResult();
@@ -110,6 +110,16 @@ void QgsPythonDialog::on_pbnExecute_clicked()
   txtHistory->insertHtml( str );
   txtHistory->moveCursor( QTextCursor::End );
   txtHistory->ensureCursorVisible();
+}
+
+void QgsPythonDialog::on_pbnExecute_clicked()
+{
+  execute( false );
+}
+
+void QgsPythonDialog::on_pbnEval_clicked()
+{
+  execute( true );
 }
 
 void QgsPythonDialog::showEvent( QShowEvent* event )

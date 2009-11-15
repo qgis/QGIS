@@ -6,36 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>483</width>
-    <height>305</height>
+    <width>625</width>
+    <height>641</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Python console</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="3">
-    <widget class="QPushButton" name="pbnExecute">
-     <property name="text">
-      <string>&amp;Execute</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <widget class="QPushButton" name="pbnPrev">
-     <property name="text">
-      <string>&amp;Previous</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="3">
-    <widget class="QPushButton" name="pbnNext">
-     <property name="text">
-      <string>&amp;Next</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="4">
+   <item row="0" column="0" colspan="5">
     <widget class="QLabel" name="lblInfo">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -55,24 +34,41 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4">
-    <widget class="QTextBrowser" name="txtHistory">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>3</verstretch>
-      </sizepolicy>
+   <item row="2" column="4">
+    <widget class="QPushButton" name="pbnPrev">
+     <property name="text">
+      <string>&amp;Previous</string>
      </property>
-     <property name="html">
-      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <property name="shortcut">
+      <string comment="Ctrl+Up"/>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="3" column="4">
+    <widget class="QPushButton" name="pbnExecute">
+     <property name="text">
+      <string>E&amp;xecute</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="4">
+    <widget class="QPushButton" name="pbnEval">
+     <property name="text">
+      <string>&amp;Eval</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="4">
+    <widget class="QPushButton" name="pbnNext">
+     <property name="text">
+      <string>&amp;Next</string>
+     </property>
+     <property name="shortcut">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" rowspan="4" colspan="2">
     <widget class="QLabel" name="lblPrompt">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -85,7 +81,24 @@ p, li { white-space: pre-wrap; }
      </property>
     </widget>
    </item>
-   <item row="2" column="2" rowspan="3">
+   <item row="1" column="0" colspan="5">
+    <widget class="QTextBrowser" name="txtHistory">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>3</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3" rowspan="4">
     <widget class="QTextEdit" name="edtCmdLine">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -98,10 +111,6 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <tabstops>
-  <tabstop>edtCmdLine</tabstop>
-  <tabstop>pbnPrev</tabstop>
-  <tabstop>pbnExecute</tabstop>
-  <tabstop>pbnNext</tabstop>
   <tabstop>txtHistory</tabstop>
  </tabstops>
  <resources/>
