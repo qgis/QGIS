@@ -9610,6 +9610,10 @@ Error was:%2</source>
         <source>Take rotation from composer map</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidget</name>
@@ -10082,7 +10086,7 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     </message>
     <message>
         <source>Paper</source>
-        <translation>Giấy</translation>
+        <translation type="obsolete">Giấy</translation>
     </message>
     <message>
         <source>Orientation</source>
@@ -10166,6 +10170,10 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     </message>
     <message>
         <source>Grid style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paper and quality</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18820,15 +18828,15 @@ Thông tin bổ sung về lỗi:
     </message>
     <message>
         <source>OK</source>
-        <translation>Đồng ý</translation>
+        <translation type="obsolete">Đồng ý</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Hủy bỏ</translation>
+        <translation type="obsolete">Hủy bỏ</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Trợ giúp</translation>
+        <translation type="obsolete">Trợ giúp</translation>
     </message>
     <message>
         <source>Connection Information</source>
@@ -18860,7 +18868,7 @@ Thông tin bổ sung về lỗi:
     </message>
     <message>
         <source>Test Connect</source>
-        <translation>Thử kết nối</translation>
+        <translation type="obsolete">Thử kết nối</translation>
     </message>
     <message>
         <source>Save Password</source>
@@ -18868,7 +18876,7 @@ Thông tin bổ sung về lỗi:
     </message>
     <message>
         <source>F1</source>
-        <translation>F1</translation>
+        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <source>Port</source>
@@ -18921,6 +18929,10 @@ Thông tin bổ sung về lỗi:
     <message>
         <source>SSL mode</source>
         <translation>Chế độ SSL</translation>
+    </message>
+    <message>
+        <source>&amp;Test Connect</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19010,12 +19022,12 @@ Thông tin bổ sung về lỗi:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>User name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Password</source>
         <translation type="unfinished">Mật mã</translation>
+    </message>
+    <message>
+        <source>&amp;User name</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19055,7 +19067,7 @@ Thông tin bổ sung về lỗi:
     </message>
     <message>
         <source>Test Connect</source>
-        <translation>Thử kết nối</translation>
+        <translation type="obsolete">Thử kết nối</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -19095,18 +19107,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OK</source>
-        <translation>Đồng ý</translation>
+        <translation type="obsolete">Đồng ý</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Hủy</translation>
+        <translation type="obsolete">Hủy</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Trợ giúp</translation>
+        <translation type="obsolete">Trợ giúp</translation>
     </message>
     <message>
-        <source>F1</source>
+        <source>&amp;Test Connect</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22481,21 +22493,21 @@ primary key) hoặc có một cột oid PostgreSQL.
     <message>
         <source>Unable to access the %1 relation.
 </source>
-        <translation>Không thể truy cập vào quan hệ %1.
+        <translation type="obsolete">Không thể truy cập vào quan hệ %1.
 </translation>
     </message>
     <message>
         <source>The error message from the database was:
 %1.
 SQL: %2</source>
-        <translation>Thông báo lỗi từ CSDL là:
+        <translation type="obsolete">Thông báo lỗi từ CSDL là:
 %1
 SQL: %2</translation>
     </message>
     <message>
         <source>Unable to determine table access privileges for the %1 relation.
 </source>
-        <translation>Không thể xác định các quyền ưu tiên truy cập bảng đối với quan hệ %1.
+        <translation type="obsolete">Không thể xác định các quyền ưu tiên truy cập bảng đối với quan hệ %1.
 </translation>
     </message>
     <message>
@@ -22600,6 +22612,20 @@ có một cột oid PostgreSQL hoặc có một cột ctid với số block
     <message>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to access the %1 relation.
+The error message from the database was:
+%2.
+SQL: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to determine table access privileges for the %1 relation.
+The error message from the database was:
+%2.
+SQL: %3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23039,7 +23065,7 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
-        <translation>Để truy nhập vào môi trường Quantum GIS từ console python này hãy dùng đối tượng trên phạm vi toàn cục, đây là một &apos;bản thể&apos; của QggisInterface. &lt;br&gt;Cách dùng ví dụ: iface.zoomFull()</translation>
+        <translation type="obsolete">Để truy nhập vào môi trường Quantum GIS từ console python này hãy dùng đối tượng trên phạm vi toàn cục, đây là một &apos;bản thể&apos; của QggisInterface. &lt;br&gt;Cách dùng ví dụ: iface.zoomFull()</translation>
     </message>
     <message>
         <source>&amp;Execute</source>
@@ -23057,8 +23083,16 @@ p, li { white-space: pre-wrap; }(new line)
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To access Quantum GIS environment from this python console use qgis.utils.iface object which is an instance of QgisInterface class.&lt;br /&gt;Usage e.g.: qgis.utils.iface.zoomFull()&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

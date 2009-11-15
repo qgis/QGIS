@@ -58,18 +58,18 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     void on_pbnDLOutput_clicked();
 
   private:
-
     void populateDeviceComboBox();
     void populateULLayerComboBox();
     void populateIMPBabelFormats();
     void populatePortComboBoxes();
+#if 0
     void populateLoadDialog();
-    /*
     void populateDLDialog();
     void populateULDialog();
     void populateIMPDialog();
     void populateCONVDialog();
-    */
+#endif
+
   private slots:
 
     void on_pbnRefresh_clicked();

@@ -104,9 +104,10 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
   {
     showMessageBox( tr( "Unable to access relation" ),
-                    tr( "Unable to access the %1 relation.\n" ).arg( mSchemaTableName )
-                    + tr( "The error message from the database was:\n%1.\nSQL: %2" )
-                    .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ).arg( sql ) ) );
+                    tr( "Unable to access the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
+                    .arg( mSchemaTableName )
+                    .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ) )
+                    .arg( sql ) );
     valid = false;
     disconnectDb();
     return;
@@ -123,9 +124,10 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
   {
     showMessageBox( tr( "Unable to access relation" ),
-                    tr( "Unable to determine table access privileges for the %1 relation.\n" ).arg( mSchemaTableName )
-                    + tr( "The error message from the database was:\n%1.\nSQL: %2" )
-                    .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ) ).arg( sql ) );
+                    tr( "Unable to determine table access privileges for the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
+                    .arg( mSchemaTableName )
+                    .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ) )
+                    .arg( sql ) );
     valid = false;
     disconnectDb();
     return;

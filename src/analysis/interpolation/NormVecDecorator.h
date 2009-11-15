@@ -17,11 +17,10 @@
 #ifndef NORMVECDECORATOR_H
 #define NORMVECDECORATOR_H
 
-using namespace std;
-
 #include "TriDecorator.h"
 #include <TriangleInterpolator.h>
 #include <MathUtils.h>
+#include "qgslogger.h"
 
 /**Decorator class which adds the functionality of estimating normals at the data points*/
 class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
@@ -99,7 +98,7 @@ inline Vector3D* NormVecDecorator::getNormal( int n ) const
   }
   else
   {
-    cout << "warning, null pointer in NormVecDecorator::getNormal" << endl << flush;
+    QgsDebugMsg( "warning, null pointer" );
     return 0;
   }
 }

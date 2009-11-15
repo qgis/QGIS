@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsMessageViewer</class>
- <widget class="QDialog" name="QgsMessageViewer" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsMessageViewer">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,71 +10,55 @@
     <height>283</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>QGIS Message</string>
   </property>
-  <property name="modal" >
+  <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="1" column="0" >
-    <widget class="QCheckBox" name="checkBox" >
-     <property name="text" >
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="checkBox">
+     <property name="text">
       <string>Don't show this message again</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="3" >
-    <widget class="QTextEdit" name="txtMessage" >
-     <property name="lineWidth" >
+   <item row="0" column="0" colspan="3">
+    <widget class="QTextEdit" name="txtMessage">
+     <property name="lineWidth">
       <number>2</number>
      </property>
-     <property name="autoFormatting" >
+     <property name="autoFormatting">
       <set>QTextEdit::AutoNone</set>
      </property>
-     <property name="readOnly" >
+     <property name="readOnly">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" >
-    <widget class="QPushButton" name="btnClose" >
-     <property name="text" >
+   <item row="2" column="1">
+    <widget class="QPushButton" name="btnClose">
+     <property name="text">
       <string>Close</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
+   <item row="2" column="0">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeType" >
+     <property name="sizeType">
       <enum>QSizePolicy::Expanding</enum>
      </property>
-     <property name="sizeHint" >
-      <size>
-       <width>191</width>
-       <height>31</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="2" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>191</width>
        <height>31</height>
@@ -83,7 +68,12 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>txtMessage</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>btnClose</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -92,11 +82,11 @@
    <receiver>QgsMessageViewer</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>249</x>
-     <y>256</y>
+    <hint type="sourcelabel">
+     <x>483</x>
+     <y>271</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>249</x>
      <y>141</y>
     </hint>

@@ -15,7 +15,7 @@
  ***************************************************************************/
 
 #include "Bezier3D.h"
-#include <iostream>
+#include "qgslogger.h"
 
 
 void Bezier3D::calcFirstDer( float t, Vector3D* v )
@@ -31,7 +31,7 @@ void Bezier3D::calcFirstDer( float t, Vector3D* v )
       return;
     }
 
-    for ( int n = 1;n <= int( mControlPoly->count() - 1 );n++ )
+    for ( int n = 1; n <= int( mControlPoly->count() - 1 ); n++ )
     {
       double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 2, n - 1, t );
       v->setX( v->getX() + (( *mControlPoly )[n]->getX() - ( *mControlPoly )[n-1]->getX() )*bernst );
@@ -45,7 +45,7 @@ void Bezier3D::calcFirstDer( float t, Vector3D* v )
 
   else
   {
-    std::cout << "warning: null pointer in Bezier3D::calcFirstDer" << std::endl << std::flush;
+    QgsDebugMsg( "warning: null pointer" );
   }
 }
 
@@ -58,7 +58,7 @@ void Bezier3D::calcPoint( float t, Point3D* p )
     p->setY( 0 );
     p->setZ( 0 );
 
-    for ( int n = 1;n <= int( mControlPoly->count() );n++ )
+    for ( int n = 1; n <= int( mControlPoly->count() ); n++ )
     {
       double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 1, n - 1, t );
       p->setX( p->getX() + ( *mControlPoly )[n-1]->getX()*bernst );
@@ -69,7 +69,7 @@ void Bezier3D::calcPoint( float t, Point3D* p )
 
   else
   {
-    std::cout << "warning: null pointer in Bezier3D::calcPoint" << std::endl << std::flush;
+    QgsDebugMsg( "warning: null pointer" );
   }
 }
 
@@ -86,7 +86,7 @@ void Bezier3D::calcSecDer( float t, Vector3D* v )
       return;
     }
 
-    for ( int n = 1;n <= int( mControlPoly->count() - 2 );n++ )
+    for ( int n = 1; n <= int( mControlPoly->count() - 2 ); n++ )
     {
       double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 3, n - 1, t );
       v->setX( v->getX() + (( *mControlPoly )[n+1]->getX() - 2*( *mControlPoly )[n]->getX() + ( *mControlPoly )[n-1]->getX() )*bernst );
@@ -100,7 +100,7 @@ void Bezier3D::calcSecDer( float t, Vector3D* v )
 
   else
   {
-    std::cout << "warning: null pointer in Bezier3D::calcSecDer" << std::endl << std::flush;
+    QgsDebugMsg( "warning: null pointer" );
   }
 }
 
@@ -110,12 +110,12 @@ void Bezier3D::changeDirection()//does this work correctli? more testing is need
   if ( mControlPoly )
   {
     Point3D** pointer = new Point3D*[mControlPoly->count()];//create an array to temporarily store pointer to the control points
-    for ( uint i = 0;i < mControlPoly->count();i++ )//store the points
+    for ( int i = 0; i < mControlPoly->count(); i++ )//store the points
     {
       pointer[i] = ( *mControlPoly )[i];
     }
 
-    for ( uint i = 0;i < mControlPoly->count();i++ )
+    for ( int i = 0; i < mControlPoly->count(); i++ )
     {
       mControlPoly->insert( i, pointer[( mControlPoly->count()-1 )-i] );
     }
@@ -123,7 +123,7 @@ void Bezier3D::changeDirection()//does this work correctli? more testing is need
 
   else
   {
-    std::cout << "warning: null pointer in Bezier3D::changeDirection" << std::endl << std::flush;
+    QgsDebugMsg( "warning: null pointer" );
   }
 }
 

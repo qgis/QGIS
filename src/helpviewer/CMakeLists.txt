@@ -62,6 +62,11 @@ ELSE (${QTVERSION} STRLESS "4.3.0")
     )
 ENDIF (${QTVERSION} STRLESS "4.3.0")
 
+SET_TARGET_PROPERTIES(qgis_help PROPERTIES
+  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true
+)
+
 
 ########################################################
 # Install
