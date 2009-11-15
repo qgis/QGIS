@@ -82,7 +82,8 @@ namespace pal
 
   Pal::Pal()
   {
-    initGEOS( geosNotice, geosError );
+    // do not init and exit GEOS - we do it inside QGIS
+    //initGEOS( geosNotice, geosError );
 
     layers = new std::list<Layer*>();
 
@@ -159,7 +160,8 @@ namespace pal
     delete layers;
     delete lyrsMutex;
 
-    finishGEOS();
+    // do not init and exit GEOS - we do it inside QGIS
+    //finishGEOS();
   }
 
 
