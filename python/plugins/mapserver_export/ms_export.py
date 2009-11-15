@@ -235,7 +235,7 @@ class Qgis2Map:
     logmsg += "Map file completed for " + self.projectFileName + "\n"
     logmsg += "Map file saved as " + self.mapFile + "\n"
     if self.exportLayersOnly:
-      logmsg += "\n> We only saved the LAYER portion of the map file. Merge this into an excisting mapfile to see it working\n"
+      logmsg += "\n> We only saved the LAYER portion of the map file. \nMerge this into an excisting map file to see it working\n"
     else:
       logmsg += "\n> If this mapfile is accessible by your mapserver, you\nshould be able to see the capabilities by firing this url:\n" + self.mapServerUrl + "?MAP="+self.mapFile+"&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetCapabilities\n"
       logmsg += "\n> if this mapfile is accessible by your mapserver, you\nshould be able to see a map by firing this url:\n" + self.mapServerUrl + "?MAP="+self.mapFile+"&SERVICE=WMS&LAYERS=ALL&MODE=MAP\n"
@@ -243,7 +243,6 @@ class Qgis2Map:
 
   # Write the general parts of the map section
   def writeMapSection(self):
-    print "writeMapSection, projNaam = %s en type = %s" % (self.projectFileName, type(self.projectFileName))
     self.outFile.write("# Map file created from QGIS project file " + str(self.projectFileName).encode('utf-8') + "\n")
     self.outFile.write("# Edit this file to customize for your map interface\n")
     self.outFile.write("# (Created with PyQgis MapServer Export plugin)\n")
@@ -299,7 +298,6 @@ class Qgis2Map:
     self.outFile.write("    MIMETYPE 'image/" + lower(self.imageType) + "'\n")
     if self.imageType.lower() != "gif":
       self.outFile.write("    IMAGEMODE RGBA\n")
-    #self.outFile.write("    #IMAGEMODE PC256\n")
     self.outFile.write("    EXTENSION '" + lower(self.imageType) + "'\n")
     self.outFile.write("  END\n")
     
