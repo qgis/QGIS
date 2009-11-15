@@ -25,6 +25,7 @@ back to QgsVectorLayer.
 #define QGSATTRIBUTEACTIONDIALOG_H
 
 #include "ui_qgsattributeactiondialogbase.h"
+#include "qgsattributeaction.h"
 #include "qgsfield.h"
 #include <QMap>
 
@@ -56,7 +57,7 @@ class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDi
 
   private:
 
-    void insertRow( int row, const QString &name, const QString &action, bool capture );
+    void insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, bool capture );
     void swapRows( int row1, int row2 );
 
     void insert( int pos );
@@ -66,7 +67,7 @@ class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDi
     QString uniqueName( QString name );
 
     // Pointer to the QgsAttributeAction in the class that created us.
-    QgsAttributeAction* mActions;
+    QgsAttributeAction *mActions;
 };
 
 #endif

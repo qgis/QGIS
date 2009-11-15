@@ -27,14 +27,11 @@
 
 #include <QString>
 #include <QObject>
-
-#include <list>
-#include <vector>
-#include <utility>
+#include <QList>
+#include <QPair>
 
 class QDomNode;
 class QDomDocument;
-
 
 /** \ingroup core
  * Utility class that encapsulates an action based on vector attributes.
@@ -42,8 +39,17 @@ class QDomDocument;
 class CORE_EXPORT QgsAction
 {
   public:
-    QgsAction( QString name, QString action, bool capture ) :
-        mName( name ), mAction( action ), mCaptureOutput( capture ) {}
+    enum ActionType
+    {
+      Generic,
+      GenericPython,
+      Mac,
+      Windows,
+      Unix,
+    };
+
+    QgsAction( ActionType type, QString name, QString action, bool capture ) :
+        mType( type ), mName( name ), mAction( action ), mCaptureOutput( capture ) {}
 
     //! The name of the action
     QString name() const { return mName; }
@@ -51,10 +57,29 @@ class CORE_EXPORT QgsAction
     //! The action
     QString action() const { return mAction; }
 
+    //! The action type
+    ActionType type() const { return mType; }
+
     //! Whether to capture output for display when this action is run
     bool capture() const { return mCaptureOutput; }
 
+    //!
+    bool runable() const
+    {
+      return mType == Generic ||
+             mType == GenericPython ||
+#if defined(Q_OS_WIN)
+             mType == Windows
+#elif defined(Q_OS_MAC)
+             mType == Mac
+#else
+             mType == Unix
+#endif
+             ;
+    }
+
   private:
+    ActionType mType;
     QString mName;
     QString mAction;
     bool mCaptureOutput;
@@ -65,13 +90,9 @@ class CORE_EXPORT QgsAction
  * attributes.
  */
 
-class  CORE_EXPORT QgsAttributeAction
+class  CORE_EXPORT QgsAttributeAction : public QList<QgsAction>
 {
   public:
-
-    typedef std::list<QgsAction> AttributeActions;
-    typedef AttributeActions::const_iterator aIter;
-
     //! Constructor
     QgsAttributeAction() {};
 
@@ -83,38 +104,20 @@ class  CORE_EXPORT QgsAttributeAction
     // capture is true, when running the action using doAction(),
     // any stdout from the process will be captured and displayed in a
     // dialog box.
-    void addAction( QString name, QString action, bool capture = false );
+    void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
 
     //! Does the action using the given values. defaultValueIndex is an
     // index into values which indicates which value in the values vector
     // is to be used if the action has a default placeholder.
-    void doAction( unsigned int index, const std::vector< std::pair<QString, QString> > &values,
-                   uint defaultValueIndex = 0 );
-
-    //! Returns a const_iterator that points to the QgsAction at the
-    // given position in the data collection. The insertion order is
-    // preserved. The index starts at 0 and goes to one less than the
-    // number of actions. An index outside that range will return an
-    // a const_iterator equal to that returned by end().
-    aIter retrieveAction( unsigned int index ) const;
+    void doAction( int index, const QList< QPair<QString, QString> > &values,
+                   int defaultValueIndex = 0, void ( *executePython )( const QString & ) = 0 );
 
     //! Removes all actions
-    void clearActions() { mActions.clear(); }
-
-    //! A const iterator to the start of the action pairs
-    const AttributeActions::const_iterator begin() const
-    { return mActions.begin(); }
-
-    //! A const iterator to the one past the end of the action pairs
-    const AttributeActions::const_iterator end() const
-    { return mActions.end(); }
-
-    //! Returns the number of stored actions
-    int size() const { return mActions.size(); }
+    void clearActions() { clear(); }
 
     //! Expands the given action, replacing all %'s with the value as
     // given.
-    static QString expandAction( QString action, const std::vector< std::pair<QString, QString> > &values,
+    static QString expandAction( QString action, const QList< QPair<QString, QString> > &values,
                                  uint defaultValueIndex );
 
     //! Writes the actions out in XML format
@@ -122,11 +125,6 @@ class  CORE_EXPORT QgsAttributeAction
 
     //! Reads the actions in in XML format
     bool readXML( const QDomNode& layer_node );
-
-  private:
-
-    // Stores the name/action pairs.
-    AttributeActions mActions;
 };
 
 #endif
