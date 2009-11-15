@@ -74,7 +74,7 @@
    <item row="0" column="2" colspan="3">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_3">
       <layout class="QGridLayout" name="gridLayout_4">
