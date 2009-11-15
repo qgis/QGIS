@@ -15,6 +15,7 @@ symbology-ng/qgssymbollevelsv2dialog.cpp
 symbology-ng/qgssymbolv2selectordialog.cpp
 symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp
 symbology-ng/qgsvectorrandomcolorrampv2dialog.cpp
+symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
 
 qgisgui.cpp
 qgisinterface.cpp
@@ -57,6 +58,7 @@ symbology-ng/qgssymbollevelsv2dialog.h
 symbology-ng/qgssymbolv2selectordialog.h
 symbology-ng/qgsvectorgradientcolorrampv2dialog.h
 symbology-ng/qgsvectorrandomcolorrampv2dialog.h
+symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
 
 qgscomposerview.h
 qgsdetaileditemdelegate.h

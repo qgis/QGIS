@@ -114,3 +114,66 @@ void QgsVectorRandomColorRampV2::updateColors()
     mColors.append( QColor::fromHsv(h,s,v) );
   }
 }
+
+
+////////////
+
+QgsVectorColorBrewerColorRampV2::QgsVectorColorBrewerColorRampV2(QString schemeName, int colors)
+ : mSchemeName(schemeName), mColors(colors)
+{
+  loadPalette();
+}
+
+QgsVectorColorRampV2* QgsVectorColorBrewerColorRampV2::create(const QgsStringMap& props)
+{
+  QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME;
+  int colors = DEFAULT_COLORBREWER_COLORS;
+
+  if (props.contains("schemeName"))
+    schemeName = props["schemeName"];
+  if (props.contains("colors"))
+    colors = props["colors"].toInt();
+
+  return new QgsVectorColorBrewerColorRampV2(schemeName, colors);
+}
+
+#include "qgscolorbrewerpalette.h"
+
+void QgsVectorColorBrewerColorRampV2::loadPalette()
+{
+  mPalette = QgsColorBrewerPalette::listSchemeColors(mSchemeName, mColors);
+}
+
+QStringList QgsVectorColorBrewerColorRampV2::listSchemeNames()
+{
+  return QgsColorBrewerPalette::listSchemes();
+}
+
+QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants(QString schemeName)
+{
+  return QgsColorBrewerPalette::listSchemeVariants(schemeName);
+}
+
+QColor QgsVectorColorBrewerColorRampV2::color(double value) const
+{
+  if (mPalette.isEmpty() || value < 0 || value > 1)
+    return QColor(255,0,0); // red color as a warning :)
+
+  int paletteEntry = (int) (value * mPalette.count());
+  if (paletteEntry > mPalette.count())
+    paletteEntry = mPalette.count()-1;
+  return mPalette.at(paletteEntry);
+}
+
+QgsVectorColorRampV2* QgsVectorColorBrewerColorRampV2::clone() const
+{
+  return new QgsVectorColorBrewerColorRampV2(mSchemeName, mColors);
+}
+
+QgsStringMap QgsVectorColorBrewerColorRampV2::properties() const
+{
+  QgsStringMap map;
+  map["schemeName"] = mSchemeName;
+  map["colors"] = QString::number(mColors);
+  return map;
+}

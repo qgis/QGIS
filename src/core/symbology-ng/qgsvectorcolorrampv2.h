@@ -100,4 +100,42 @@ protected:
   QList<QColor> mColors;
 };
 
+
+#define DEFAULT_COLORBREWER_SCHEMENAME "Spectral"
+#define DEFAULT_COLORBREWER_COLORS     5
+
+class QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
+{
+public:
+  QgsVectorColorBrewerColorRampV2(QString schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
+                                  int colors = DEFAULT_COLORBREWER_COLORS);
+
+  static QgsVectorColorRampV2* create(const QgsStringMap& properties = QgsStringMap());
+
+  virtual QColor color(double value) const;
+
+  virtual QString type() const { return "colorbrewer"; }
+
+  virtual QgsVectorColorRampV2* clone() const;
+
+  virtual QgsStringMap properties() const;
+
+  QString schemeName() const { return mSchemeName; }
+  int colors() const { return mColors; }
+
+  void setSchemeName(QString schemeName) { mSchemeName = schemeName; loadPalette(); }
+  void setColors(int colors) { mColors = colors; loadPalette(); }
+
+  static QStringList listSchemeNames();
+  static QList<int> listSchemeVariants(QString schemeName);
+
+protected:
+
+  void loadPalette();
+
+  QString mSchemeName;
+  int mColors;
+  QList<QColor> mPalette;
+};
+
 #endif

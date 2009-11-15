@@ -9,6 +9,7 @@
 #include "qgssymbolv2propertiesdialog.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsvectorrandomcolorrampv2dialog.h"
+#include "qgsvectorcolorbrewercolorrampv2dialog.h"
 
 #include <QFile>
 #include <QInputDialog>
@@ -234,7 +235,7 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
 {
   // let the user choose the color ramp type
   QStringList rampTypes;
-  rampTypes << "Gradient" << "Random";
+  rampTypes << "Gradient" << "Random" << "ColorBrewer";
   bool ok;
   QString rampType = QInputDialog::getItem(this, "Color ramp type",
         "Please select color ramp type:", rampTypes, 0, false, &ok);
@@ -263,6 +264,17 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
       return false;
     }
     ramp = randRamp;
+  }
+  else if (rampType == "ColorBrewer")
+  {
+    QgsVectorColorBrewerColorRampV2* brewerRamp = new QgsVectorColorBrewerColorRampV2();
+    QgsVectorColorBrewerColorRampV2Dialog dlg(brewerRamp, this);
+    if (!dlg.exec())
+    {
+      delete brewerRamp;
+      return false;
+    }
+    ramp = brewerRamp;
   }
   else
   {
@@ -345,6 +357,16 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
   {
     QgsVectorRandomColorRampV2* randRamp = static_cast<QgsVectorRandomColorRampV2*>(ramp);
     QgsVectorRandomColorRampV2Dialog dlg(randRamp, this);
+    if (!dlg.exec())
+    {
+      delete ramp;
+      return false;
+    }
+  }
+  else if (ramp->type() == "colorbrewer")
+  {
+    QgsVectorColorBrewerColorRampV2* brewerRamp = static_cast<QgsVectorColorBrewerColorRampV2*>(ramp);
+    QgsVectorColorBrewerColorRampV2Dialog dlg(brewerRamp, this);
     if (!dlg.exec())
     {
       delete ramp;

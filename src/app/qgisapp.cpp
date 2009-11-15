@@ -1049,6 +1049,7 @@ void QgisApp::createActions()
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
 
   mActionStyleManagerV2 = new QAction( tr("Style manager..."), this );
+  shortcuts->registerAction( mActionStyleManagerV2 );
   mActionStyleManagerV2->setStatusTip( tr( "Show style manager V2" ) );
   connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
 }

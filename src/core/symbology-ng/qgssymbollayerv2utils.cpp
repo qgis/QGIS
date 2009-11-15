@@ -563,6 +563,8 @@ QgsVectorColorRampV2* QgsSymbolLayerV2Utils::loadColorRamp(QDomElement& element)
     return QgsVectorGradientColorRampV2::create(props);
   else if (rampType == "random")
     return QgsVectorRandomColorRampV2::create(props);
+  else if (rampType == "colorbrewer")
+    return QgsVectorColorBrewerColorRampV2::create(props);
   else
   {
     QgsDebugMsg("unknown colorramp type " + rampType);
