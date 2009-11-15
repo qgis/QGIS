@@ -39,6 +39,7 @@ class QgsPythonDialog : public QDialog, private Ui::QgsPythonDialog
 
     void on_pbnPrev_clicked();
     void on_pbnExecute_clicked();
+    void on_pbnEval_clicked();
     void on_pbnNext_clicked();
 
   protected:
@@ -47,6 +48,7 @@ class QgsPythonDialog : public QDialog, private Ui::QgsPythonDialog
     void showEvent( QShowEvent *event );
 
   private:
+    void execute( bool single );
 
     QgisInterface* mIface;
     QgsPythonUtils* mPythonUtils;
