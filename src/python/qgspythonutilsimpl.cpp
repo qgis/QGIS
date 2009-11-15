@@ -301,7 +301,11 @@ bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
 
 QString QgsPythonUtilsImpl::getResult()
 {
-  return getVariableFromMain( "qgis.utils.console_output" );
+  QString res;
+  evalString( "qgis.utils.console_output", res );
+  // clear output
+  runString("qgis.utils.console_output = None");
+  return res;
 }
 
 QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
