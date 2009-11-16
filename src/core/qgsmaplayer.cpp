@@ -246,6 +246,8 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
     setTransparency( myElement.text().toInt() );
   }
 
+  readCustomProperties( layer_node );
+
   return true;
 } // void QgsMapLayer::readXML
 
@@ -330,6 +332,8 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   // now append layer node to map layer node
 
   layer_node.appendChild( maplayer );
+
+  writeCustomProperties( maplayer, document );
 
   return writeXml( maplayer, document );
 
@@ -779,8 +783,63 @@ QUndoStack* QgsMapLayer::undoStack()
   return &mUndoStack;
 }
 
-void QgsMapLayer::setCacheImage( QImage * thepImage )
+
+void QgsMapLayer::setCustomProperty( const QString& key, const QVariant& value )
 {
+  mCustomProperties[key] = value;
+}
+
+QVariant QgsMapLayer::customProperty( const QString& value, const QVariant& defaultValue ) const
+{
+  return mCustomProperties.value(value, defaultValue);
+}
+
+void QgsMapLayer::removeCustomProperty( const QString& key )
+{
+  mCustomProperties.remove(key);
+}
+
+void QgsMapLayer::readCustomProperties( QDomNode & layerNode )
+{
+  QDomNode propsNode = layerNode.namedItem("customproperties");
+  if ( propsNode.isNull() ) // no properties stored...
+    return;
+
+  mCustomProperties.clear();
+
+  QDomNodeList nodes = propsNode.childNodes();
+
+  for ( int i = 0; i < nodes.size(); i++ )
+  {
+    QDomNode propNode = nodes.at( i );
+    if (propNode.isNull() || propNode.nodeName() != "property")
+      continue;
+    QDomElement propElement = propNode.toElement();
+
+    QString key = propElement.attribute( "key" );
+    QString value = propElement.attribute( "value" );
+    mCustomProperties[key] = QVariant(value);
+  }
+
+}
+
+void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & doc )
+{
+  QDomElement propsElement = doc.createElement( "customproperties" );
+
+  for ( QMap<QString, QVariant>::const_iterator it = mCustomProperties.begin(); it != mCustomProperties.end(); ++it )
+  {
+    QDomElement propElement = doc.createElement( "property" );
+    propElement.setAttribute( "key", it.key() );
+    propElement.setAttribute( "value", it.value().toString() );
+    propsElement.appendChild(propElement);
+  }
+
+  layerNode.appendChild(propsElement);
+}
+
+void QgsMapLayer::setCacheImage( QImage * thepImage ) 
+{ 
   QgsDebugMsg( "cache Image set!" );
   if ( mpCacheImage )
   {
@@ -788,3 +847,4 @@ void QgsMapLayer::setCacheImage( QImage * thepImage )
   }
   mpCacheImage = thepImage;
 }
+

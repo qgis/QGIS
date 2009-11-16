@@ -80,36 +80,10 @@ namespace pal
   }*/
 
 
-  inline int nbLabelPointInPolygon( int npol, double *xp, double *yp, double x[4], double y[4] )
-  {
-    int a, k, count = 0;
-    double px, py;
 
-    // cheack each corner
-    for ( k = 0;k < 4;k++ )
-    {
-      px = x[k];
-      py = y[k];
-
-      for ( a = 0;a < 2;a++ ) // and each middle of segment
-      {
-        if ( isPointInPolygon( npol, xp, yp, px, py ) )
-          count++;
-        px = ( x[k] + x[( k+1 ) %4] ) / 2.0;
-        py = ( y[k] + y[( k+1 ) %4] ) / 2.0;
-      }
-    }
-
-    px = ( x[0] + x[2] ) / 2.0;
-    py = ( y[0] + y[2] ) / 2.0;
-
-    // and the label center
-    if ( isPointInPolygon( npol, xp, yp, px, py ) )
-      count += 4; // virtually 4 points
-
-    return count;
-  }
-
+  void findLineCircleIntersection(double cx, double cy, double radius,
+                                  double x1, double y1, double x2, double y2,
+                                  double& xRes, double& yRes);
 
 
   int convexHull( int *id, const double* const x, const double* const y, int n );

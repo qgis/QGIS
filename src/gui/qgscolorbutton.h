@@ -17,6 +17,7 @@
 #define QGSCOLORBUTTON_H
 
 #include <QToolButton>
+#include <QPushButton>
 
 /** \ingroup gui
  * A cross platform button subclass for selecting colors.
@@ -36,5 +37,19 @@ class GUI_EXPORT QgsColorButton: public QToolButton
   private:
     QColor mColor;
 };
+
+
+class QgsColorButtonV2 : public QPushButton
+{
+  public:
+    QgsColorButtonV2( QWidget* parent = 0 );
+
+    void setColor( const QColor &color );
+    QColor color() const { return mColor; }
+
+  private:
+    QColor mColor;
+};
+
 
 #endif

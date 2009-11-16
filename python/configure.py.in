@@ -154,6 +154,7 @@ for mk in [ makefile_core, makefile_gui, makefile_analysis ]:
                            src_path+"/src/core/renderer",
                            src_path+"/src/core/spatialindex",
                            src_path+"/src/core/symbology",
+                           src_path+"/src/core/symbology-ng",
                            build_path, # qgsconfig.h, qgssvnversion.h
                            gdal_inc_dir,
                            geos_inc_dir]
@@ -163,6 +164,7 @@ for mk in [ makefile_core, makefile_gui, makefile_analysis ]:
 makefile_gui.extra_libs.append("qgis_gui")
 makefile_gui.extra_lib_dirs.append(build_path+"/src/gui"+intdir)
 makefile_gui.extra_include_dirs.append(src_path+"/src/gui")
+makefile_gui.extra_include_dirs.append(src_path+"/src/gui/symbology-ng")
 makefile_gui.extra_include_dirs.append(build_path+"/src/gui")
 makefile_gui.extra_include_dirs.append(build_path+"/src/ui")
 makefile_gui.extra_include_dirs.append(src_path+"/src/plugins") # because of qgisplugin.h TODO: sort out

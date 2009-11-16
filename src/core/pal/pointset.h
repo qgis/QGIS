@@ -47,7 +47,6 @@ namespace pal
 {
 
   class Pal;
-  class Feat;
   class Feature;
   class Projection;
   class LabelPosition;
@@ -92,34 +91,21 @@ namespace pal
 
   class PointSet
   {
-      friend class Feature;
-      friend class Pal;
-      friend class Layer;
+      friend class FeaturePart;
       friend class LabelPosition;
+      friend class CostCalculator;
       friend class PolygonCostCalculator;
-      friend class Problem;
-      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
-      //friend Feat *splitButterflyPolygon (Feat *f, int pt_a, int pt_b, double cx, double cy);
-      friend bool obstacleCallback( PointSet *feat, void *ctx );
-      friend bool extractFeatCallback( Feature*, void* );
-      friend void extractXYCoord( Feat *f );
-      friend LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id );
-      friend void releaseAllInIndex( RTree<PointSet*, double, 2, double> *obstacles );
-      friend bool releaseCallback( PointSet *pset, void *ctx );
-      friend bool filteringCallback( PointSet*, void* );
-      /*protected*/
-    public:
+      friend class Layer;
+
+    protected:
       int nbPoints;
       double *x;
       double *y;   // points order is counterclockwise
 
-      int *status;   // -1 means inside the bbox, +1 means outside and 0 is either in either out
       int *cHull;
       int cHullSize;
 
       int type;
-
-      //PointSet *parent;
 
       PointSet* holeOf;
       PointSet* parent;
@@ -128,42 +114,23 @@ namespace pal
 
       PointSet( PointSet &ps );
 
+      void deleteCoords();
 
-//public:
       double xmin;
       double xmax;
       double ymin;
       double ymax;
 
+public:
       PointSet();
       PointSet( int nbPoints, double *x, double *y );
-      ~PointSet();
-
-      int getPath( int start, int stop, int *path_val );
-
-      PointSet *extractPath( int path, int nbPtPath, int nbBboxPt, double bbx[4], double bby[4], Crossing *start, Crossing *stop, int startPt );
+      virtual ~PointSet();
 
       PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
-      PointSet *createProblemSpecificPointSet( double bbx[4], double bby[4], bool *outside, bool *inside );
+      PointSet* createProblemSpecificPointSet( double bbmin[2], double bbmax[2], bool *inside );
 
       CHullBox * compute_chull_bbox();
-
-      /*
-       *  \brief Take each line in shape_toProcess and only keep inside bbox line parts
-       */
-      static void reduceLine( PointSet *line,
-                              LinkedList<PointSet*> *shapes_final,
-                              double bbx[4], double bby[4] );
-
-
-      /**
-       * \brief takes shapes from shapes_toProcess, compute intersection with bbox
-       * and puts new shapes into shapes_final
-       */
-      static void reducePolygon( PointSet* shape_toProcess,
-                                 LinkedList<PointSet*> *shapes_final,
-                                 double bbx[4], double bby[4] );
 
 
       /*
@@ -196,7 +163,18 @@ namespace pal
       void getCentroid( double &px, double &py );
 
 
+      int getGeosType() const { return type; }
 
+      void getBoundingBox(double min[2], double max[2]) const
+      {
+          min[0] = xmin; min[1] = ymin;
+          max[0] = xmax; max[1] = ymax;
+      }
+
+      /** returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
+      PointSet* getHoleOf() { return holeOf; }
+
+      int getNumPoints() const { return nbPoints; }
 
       /*
        * Iterate on line by real step of dl on x,y points

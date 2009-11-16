@@ -255,8 +255,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ../core
-  ../core/composer ../core/raster ../core/renderer ../core/symbology
-  ../gui
+  ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
+  ../gui ../gui/symbology-ng
   ../plugins
   ../python
   ${PROJ_INCLUDE_DIR}

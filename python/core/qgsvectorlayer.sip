@@ -101,6 +101,18 @@ public:
   /** Sets the renderer. If a renderer is already present, it is deleted */
   void setRenderer(QgsRenderer * r /Transfer/);
 
+  /** Return renderer V2. Added in QGIS 1.2 */
+  QgsFeatureRendererV2* rendererV2();
+  /** Set renderer V2. Added in QGIS 1.2 */
+  void setRendererV2(QgsFeatureRendererV2* r);
+  /** Return whether using renderer V2. Added in QGIS 1.2 */
+  bool isUsingRendererV2();
+  /** set whether to use renderer V2 for drawing. Added in QGIS 1.2 */
+  void setUsingRendererV2(bool usingRendererV2);
+    
+  void drawRendererV2( QgsRenderContext& rendererContext, bool labeling );
+  void drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling );
+
   /** Returns point, line or polygon */
   QGis::GeometryType geometryType() const;
 

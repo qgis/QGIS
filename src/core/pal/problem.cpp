@@ -48,7 +48,6 @@
 #include <pal/pal.h>
 #include <pal/palstat.h>
 #include <pal/layer.h>
-#include <pal/label.h>
 
 #include "linkedlist.hpp"
 #include "rtree.hpp"
@@ -157,26 +156,6 @@ namespace pal
   }
 
 
-  typedef struct
-  {
-    LabelPosition *lp;
-    int *nbOverlaps;
-  } RemoveOverlapContext;
-
-  bool removeOverlapCallback( LabelPosition *lp, void *ctx )
-  {
-    LabelPosition *lp2 = ( LabelPosition * ) ctx;
-
-    if ( lp2->isInConflict( lp ) )
-    {
-      //std::cout << "   hit !" << std::endl;
-      lp->nbOverlap--;
-      lp2->nbOverlap--;
-    }
-
-    return true;
-  }
-
 
   void Problem::reduce()
   {
@@ -213,7 +192,7 @@ namespace pal
         {
           if ( !ok[featStartId[i] + j] )
           {
-            if (( lp = labelpositions[featStartId[i] + j] )->nbOverlap == 0 ) // if candidate has no overlap
+            if (( lp = labelpositions[featStartId[i] + j] )->getNumOverlaps() == 0 ) // if candidate has no overlap
             {
               run = true;
               ok[featStartId[i] + j] = true;
@@ -228,24 +207,10 @@ namespace pal
                 ok[lpid] = true;
                 lp2 = labelpositions[lpid];
 
-                amin[0] = DBL_MAX;
-                amax[0] = -DBL_MAX;
-                amin[1] = DBL_MAX;
-                amax[1] = -DBL_MAX;
-                for ( c = 0;c < 4;c++ )
-                {
-                  if ( lp2->x[c] < amin[0] )
-                    amin[0] = lp2->x[c];
-                  if ( lp2->x[c] > amax[0] )
-                    amax[0] = lp2->x[c];
-                  if ( lp2->y[c] < amin[1] )
-                    amin[1] = lp2->y[c];
-                  if ( lp2->y[c] > amax[1] )
-                    amax[1] = lp2->y[c];
-                }
+                lp2->getBoundingBox(amin, amax);
 
-                nbOverlap -= lp2->nbOverlap;
-                candidates->Search( amin, amax, removeOverlapCallback, ( void* ) lp2 );
+                nbOverlap -= lp2->getNumOverlaps();
+                candidates->Search( amin, amax, LabelPosition::removeOverlapCallback, ( void* ) lp2 );
                 lp2->removeFromIndex( candidates );
               }
 
@@ -304,9 +269,9 @@ namespace pal
     LabelPosition *lp2 = (( FalpContext* ) ctx )->lp;
     PriorityQueue *list = (( FalpContext* ) ctx )->list;
 
-    if ( lp->id != lp2->id && list->isIn( lp->id ) && lp->isInConflict( lp2 ) )
+    if ( lp->getId() != lp2->getId() && list->isIn( lp->getId() ) && lp->isInConflict( lp2 ) )
     {
-      list->decreaseKey( lp->id );
+      list->decreaseKey( lp->getId() );
     }
     return true;
   }
@@ -323,25 +288,12 @@ namespace pal
     double amax[2];
     int c;
 
-    if ( list->isIn( lp->id ) )
+    if ( list->isIn( lp->getId() ) )
     {
-      list->remove( lp->id );
+      list->remove( lp->getId() );
 
-      amin[0] = DBL_MAX;
-      amax[0] = -DBL_MAX;
-      amin[1] = DBL_MAX;
-      amax[1] = -DBL_MAX;
-      for ( c = 0;c < 4;c++ )
-      {
-        if ( lp->x[c] < amin[0] )
-          amin[0] = lp->x[c];
-        if ( lp->x[c] > amax[0] )
-          amax[0] = lp->x[c];
-        if ( lp->y[c] < amin[1] )
-          amin[1] = lp->y[c];
-        if ( lp->y[c] > amax[1] )
-          amax[1] = lp->y[c];
-      }
+      lp->getBoundingBox(amin, amax);
+
       context->lp = lp;
       candidates->Search( amin, amax, falpCallback2, context );
     }
@@ -396,7 +348,7 @@ namespace pal
       for ( j = 0;j < featNbLp[i];j++ )
       {
         label = featStartId[i] + j;
-        list->insert( label, ( double ) labelpositions[label]->nbOverlap );
+        list->insert( label, ( double ) labelpositions[label]->getNumOverlaps() );
       }
 
     while ( list->getSize() > 0 ) // O (log size)
@@ -406,40 +358,27 @@ namespace pal
 
       lp = labelpositions[label];
 
-      if ( lp->id != label )
+      if ( lp->getId() != label )
       {
-        std::cout << "Error: " << lp->id << " <--> " << label << std::endl;
+        std::cout << "Error: " << lp->getId() << " <--> " << label << std::endl;
       }
 
-
-      sol->s[lp->probFeat] = label;
+      int probFeatId = lp->getProblemFeatureId();
+      sol->s[probFeatId] = label;
 
 #ifdef _DEBUG_FULL_
       std::cout << "sol->s[" << lp->probFeat << "] :" << label << std::endl;
 #endif
 
-      for ( i = featStartId[lp->probFeat];i < featStartId[lp->probFeat] + featNbLp[lp->probFeat];i++ )
+      for ( i = featStartId[probFeatId];i < featStartId[probFeatId] + featNbLp[probFeatId];i++ )
       {
         ignoreLabel( labelpositions[i], list, candidates );
 
       }
 
 
-      amin[0] = DBL_MAX;
-      amax[0] = -DBL_MAX;
-      amin[1] = DBL_MAX;
-      amax[1] = -DBL_MAX;
-      for ( c = 0;c < 4;c++ )
-      {
-        if ( lp->x[c] < amin[0] )
-          amin[0] = lp->x[c];
-        if ( lp->x[c] > amax[0] )
-          amax[0] = lp->x[c];
-        if ( lp->y[c] < amin[1] )
-          amin[1] = lp->y[c];
-        if ( lp->y[c] > amax[1] )
-          amax[1] = lp->y[c];
-      }
+      lp->getBoundingBox(amin, amax);
+
       context->lp = lp;
       candidates->Search( amin, amax, falpCallback1, ( void* ) context );
       candidates_sol->Insert( amin, amax, lp );
@@ -466,33 +405,20 @@ namespace pal
           for ( p = 0;p < featNbLp[i];p++ )
           {
             lp = labelpositions[start_p+p];
-            lp->nbOverlap = 0;
-            amin[0] = DBL_MAX;
-            amax[0] = -DBL_MAX;
-            amin[1] = DBL_MAX;
-            amax[1] = -DBL_MAX;
-            for ( c = 0;c < 4;c++ )
-            {
-              if ( lp->x[c] < amin[0] )
-                amin[0] = lp->x[c];
-              if ( lp->x[c] > amax[0] )
-                amax[0] = lp->x[c];
-              if ( lp->y[c] < amin[1] )
-                amin[1] = lp->y[c];
-              if ( lp->y[c] > amax[1] )
-                amax[1] = lp->y[c];
-            }
+            lp->resetNumOverlaps();
+
+            lp->getBoundingBox(amin, amax);
 
 
-            candidates_sol->Search( amin, amax, countOverlapCallback, lp );
+            candidates_sol->Search( amin, amax, LabelPosition::countOverlapCallback, lp );
 
-            if ( lp->nbOverlap < nbOverlap )
+            if ( lp->getNumOverlaps() < nbOverlap )
             {
               retainedLabel = lp;
-              nbOverlap = lp->nbOverlap;
+              nbOverlap = lp->getNumOverlaps();
             }
           }
-          sol->s[i] = retainedLabel->id;
+          sol->s[i] = retainedLabel->getId();
 
           retainedLabel->insertIntoIndex( candidates_sol );
 
@@ -724,7 +650,7 @@ namespace pal
     LinkedList<int> *queue = (( SubPartContext* ) ctx )->queue;
 
 
-    int id = lp->probFeat;
+    int id = lp->getProblemFeatureId();
     if ( !isIn[id] && lp->isInConflict((( SubPartContext* ) ctx )->lp ) )
     {
       queue->push_back( id );
@@ -774,21 +700,9 @@ namespace pal
       for ( i = featS;i < featS + p;i++ )  // foreach candidat of feature 'id'
       {
         lp = labelpositions[i];
-        amin[0] = DBL_MAX;
-        amax[0] = -DBL_MAX;
-        amin[1] = DBL_MAX;
-        amax[1] = -DBL_MAX;
-        for ( c = 0;c < 4;c++ )
-        {
-          if ( lp->x[c] < amin[0] )
-            amin[0] = lp->x[c];
-          if ( lp->x[c] > amax[0] )
-            amax[0] = lp->x[c];
-          if ( lp->y[c] < amin[1] )
-            amin[1] = lp->y[c];
-          if ( lp->y[c] > amax[1] )
-            amax[1] = lp->y[c];
-        }
+
+        lp->getBoundingBox(amin, amax);
+
         context.lp = lp;
         candidates->Search( amin, amax, subPartCallback, ( void* ) &context );
       }
@@ -839,7 +753,7 @@ namespace pal
 
     int c;
 
-    CountContext context;
+    LabelPosition::CountContext context;
     context.inactiveCost = inactiveCost;
     context.nbOv = nbOverlap;
     context.cost = &cost;
@@ -854,25 +768,12 @@ namespace pal
     {
       lp = labelpositions[label_id];
 
-      amin[0] = DBL_MAX;
-      amax[0] = -DBL_MAX;
-      amin[1] = DBL_MAX;
-      amax[1] = -DBL_MAX;
-      for ( c = 0;c < 4;c++ )
-      {
-        if ( lp->x[c] < amin[0] )
-          amin[0] = lp->x[c];
-        if ( lp->x[c] > amax[0] )
-          amax[0] = lp->x[c];
-        if ( lp->y[c] < amin[1] )
-          amin[1] = lp->y[c];
-        if ( lp->y[c] > amax[1] )
-          amax[1] = lp->y[c];
-      }
-      context.lp = lp;
-      candidates_subsol->Search( amin, amax, countFullOverlapCallback, ( void* ) &context );
+      lp->getBoundingBox(amin, amax);
 
-      cost += lp->cost;
+      context.lp = lp;
+      candidates_subsol->Search( amin, amax, LabelPosition::countFullOverlapCallback, ( void* ) &context );
+
+      cost += lp->getCost();
     }
     else
     {
@@ -980,15 +881,15 @@ namespace pal
 
     if ( ctx->lp->isInConflict( lp ) )
     {
-      ctx->labelPositionCost[lp->id] += ctx->diff_cost;
+      ctx->labelPositionCost[lp->getId()] += ctx->diff_cost;
       if ( ctx->diff_cost > 0 )
-        ctx->nbOlap[lp->id]++;
+        ctx->nbOlap[lp->getId()]++;
       else
-        ctx->nbOlap[lp->id]--;
+        ctx->nbOlap[lp->getId()]--;
 
-      int feat_id = ctx->featWrap[ctx->lp->probFeat];
+      int feat_id = ctx->featWrap[ctx->lp->getProblemFeatureId()];
       int feat_id2;
-      if ( feat_id >= 0 && ctx->sol[feat_id] == lp->id ) // this label is in use
+      if ( feat_id >= 0 && ctx->sol[feat_id] == lp->getId() ) // this label is in use
       {
         if (( feat_id2 = feat_id - ctx->borderSize ) >= 0 )
         {
@@ -1184,13 +1085,13 @@ namespace pal
             else
             {
               delta = -labelPositionCost[sol[feat_id]];
-              delta -= nbOlap[sol[feat_id]] * ( inactiveCost[feat_sub_id] + labelpositions[label_id]->cost );
+              delta -= nbOlap[sol[feat_id]] * ( inactiveCost[feat_sub_id] + labelpositions[label_id]->getCost() );
             }
 
             if ( j >= 0 )
             {
               delta += labelPositionCost[featStartId[feat_sub_id] + j];
-              delta += nbOlap[featStartId[feat_sub_id] + j] * ( inactiveCost[feat_sub_id] + labelpositions[featStartId[feat_sub_id] + j]->cost );
+              delta += nbOlap[featStartId[feat_sub_id] + j] * ( inactiveCost[feat_sub_id] + labelpositions[featStartId[feat_sub_id] + j]->getCost() );
             }
             else
             {
@@ -1305,23 +1206,9 @@ namespace pal
         {
           lp = labelpositions[old_label];
 
+          lp->getBoundingBox(amin, amax);
 
-          amin[0] = DBL_MAX;
-          amax[0] = -DBL_MAX;
-          amin[1] = DBL_MAX;
-          amax[1] = -DBL_MAX;
-          for ( c = 0;c < 4;c++ )
-          {
-            if ( lp->x[c] < amin[0] )
-              amin[0] = lp->x[c];
-            if ( lp->x[c] > amax[0] )
-              amax[0] = lp->x[c];
-            if ( lp->y[c] < amin[1] )
-              amin[1] = lp->y[c];
-            if ( lp->y[c] > amax[1] )
-              amax[1] = lp->y[c];
-          }
-          context.diff_cost = -local_inactive - labelpositions[old_label]->cost;
+          context.diff_cost = -local_inactive - labelpositions[old_label]->getCost();
           context.lp = labelpositions[old_label];
 
           candidates->Search( amin, amax, updateCandidatesCost, &context );
@@ -1331,24 +1218,9 @@ namespace pal
         {
           lp = labelpositions[choosed_label];
 
+          lp->getBoundingBox(amin, amax);
 
-          amin[0] = DBL_MAX;
-          amax[0] = -DBL_MAX;
-          amin[1] = DBL_MAX;
-          amax[1] = -DBL_MAX;
-          for ( c = 0;c < 4;c++ )
-          {
-            if ( lp->x[c] < amin[0] )
-              amin[0] = lp->x[c];
-            if ( lp->x[c] > amax[0] )
-              amax[0] = lp->x[c];
-            if ( lp->y[c] < amin[1] )
-              amin[1] = lp->y[c];
-            if ( lp->y[c] > amax[1] )
-              amax[1] = lp->y[c];
-          }
-
-          context.diff_cost = local_inactive + labelpositions[choosed_label]->cost;
+          context.diff_cost = local_inactive + labelpositions[choosed_label]->getCost();
           context.lp = labelpositions[choosed_label];
 
 
@@ -1449,7 +1321,7 @@ namespace pal
       int feat, rfeat;
       bool sub = ctx->featWrap != NULL;
 
-      feat = lp->probFeat;
+      feat = lp->getProblemFeatureId();
       if ( sub )
       {
         rfeat = feat;
@@ -1463,7 +1335,7 @@ namespace pal
       std::cout << "    sol: " << ctx->tmpsol[feat] << "/" << lp->id << std::endl;
       std::cout << "    border:" << ctx->borderSize << std::endl;
 #endif
-      if ( feat >= 0 && ctx->tmpsol[feat] == lp->id )
+      if ( feat >= 0 && ctx->tmpsol[feat] == lp->getId() )
       {
         if ( sub && feat < ctx->borderSize )
         {
@@ -1492,7 +1364,7 @@ namespace pal
       if ( !ctx->conflicts->isIn( feat ) )
       {
         ctx->conflicts->push_back( feat );
-        *ctx->delta_tmp += lp->cost + ctx->inactiveCost[rfeat];
+        *ctx->delta_tmp += lp->getCost() + ctx->inactiveCost[rfeat];
       }
     }
     return true;
@@ -1563,7 +1435,7 @@ namespace pal
       if ( tmpsol[seed] == -1 )
         delta -= inactiveCost[subseed];
       else
-        delta -= labelpositions[tmpsol[seed]]->cost;
+        delta -= labelpositions[tmpsol[seed]]->getCost();
 
       // TODO modify to handle displayAll param
       for ( i = -1;i < seedNbLp;i++ )
@@ -1581,21 +1453,8 @@ namespace pal
               lp = labelpositions[lid];
 
               // evaluate conflicts graph in solution after moving seed's label
-              amin[0] = DBL_MAX;
-              amax[0] = -DBL_MAX;
-              amin[1] = DBL_MAX;
-              amax[1] = -DBL_MAX;
-              for ( c = 0;c < 4;c++ )
-              {
-                if ( lp->x[c] < amin[0] )
-                  amin[0] = lp->x[c];
-                if ( lp->x[c] > amax[0] )
-                  amax[0] = lp->x[c];
-                if ( lp->y[c] < amin[1] )
-                  amin[1] = lp->y[c];
-                if ( lp->y[c] > amax[1] )
-                  amax[1] = lp->y[c];
-              }
+              lp->getBoundingBox(amin, amax);
+
               context.lp = lp;
 
               if ( conflicts->size() != 0 )
@@ -1610,7 +1469,7 @@ namespace pal
               // no conflict -> end of chain
               if ( conflicts->size() == 0 )
               {
-                if ( !retainedChain || delta + labelpositions[lid]->cost < delta_best )
+                if ( !retainedChain || delta + labelpositions[lid]->getCost() < delta_best )
                 {
 
                   if ( retainedChain )
@@ -1623,7 +1482,7 @@ namespace pal
                     retainedChain = new Chain(); // HERE
                   }
 
-                  delta_best = delta + labelpositions[lid]->cost;
+                  delta_best = delta + labelpositions[lid]->getCost();
 
                   retainedChain->degree = currentChain->size() + 1;
                   retainedChain->feat  = new int[retainedChain->degree]; // HERE
@@ -1641,7 +1500,7 @@ namespace pal
                   }
                   retainedChain->feat[j] = seed;
                   retainedChain->label[j] = lid;
-                  retainedChain->delta = delta + labelpositions[retainedChain->label[j]]->cost;
+                  retainedChain->delta = delta + labelpositions[retainedChain->label[j]]->getCost();
                 }
               }
 
@@ -1681,7 +1540,7 @@ namespace pal
 
                 newChain->feat[j] = seed;
                 newChain->label[j] = lid;
-                newChain->delta = delta + labelpositions[newChain->label[j]]->cost;
+                newChain->delta = delta + labelpositions[newChain->label[j]]->getCost();
                 j++;
 
 
@@ -1785,7 +1644,7 @@ namespace pal
         }
 
         tmpsol[seed] = retainedLabel;
-        delta += labelpositions[retainedLabel]->cost;
+        delta += labelpositions[retainedLabel]->getCost();
         seed = next_seed;
       }
     }
@@ -1871,7 +1730,7 @@ namespace pal
       if ( tmpsol[seed] == -1 )
         delta -= inactiveCost[seed];
       else
-        delta -= labelpositions[tmpsol[seed]]->cost;
+        delta -= labelpositions[tmpsol[seed]]->getCost();
 
       for ( i = -1;i < seedNbLp;i++ )
       {
@@ -1888,21 +1747,8 @@ namespace pal
               lp = labelpositions[lid];
 
               // evaluate conflicts graph in solution after moving seed's label
-              amin[0] = DBL_MAX;
-              amax[0] = -DBL_MAX;
-              amin[1] = DBL_MAX;
-              amax[1] = -DBL_MAX;
-              for ( c = 0;c < 4;c++ )
-              {
-                if ( lp->x[c] < amin[0] )
-                  amin[0] = lp->x[c];
-                if ( lp->x[c] > amax[0] )
-                  amax[0] = lp->x[c];
-                if ( lp->y[c] < amin[1] )
-                  amin[1] = lp->y[c];
-                if ( lp->y[c] > amax[1] )
-                  amax[1] = lp->y[c];
-              }
+              lp->getBoundingBox(amin, amax);
+
               context.lp = lp;
               if ( conflicts->size() != 0 )
                 std::cerr << "Conflicts not empty" << std::endl;
@@ -1912,7 +1758,7 @@ namespace pal
               // no conflict -> end of chain
               if ( conflicts->size() == 0 )
               {
-                if ( !retainedChain || delta + labelpositions[lid]->cost < delta_best )
+                if ( !retainedChain || delta + labelpositions[lid]->getCost() < delta_best )
                 {
                   if ( retainedChain )
                   {
@@ -1924,7 +1770,7 @@ namespace pal
                     retainedChain = new Chain();
                   }
 
-                  delta_best = delta + labelpositions[lid]->cost;
+                  delta_best = delta + labelpositions[lid]->getCost();
 
                   retainedChain->degree = currentChain->size() + 1;
                   retainedChain->feat  = new int[retainedChain->degree];
@@ -1942,7 +1788,7 @@ namespace pal
                   }
                   retainedChain->feat[j] = seed;
                   retainedChain->label[j] = lid;
-                  retainedChain->delta = delta + labelpositions[lid]->cost;
+                  retainedChain->delta = delta + labelpositions[lid]->getCost();
                 }
               }
 
@@ -1984,7 +1830,7 @@ namespace pal
                 // add the current candidates into the chain
                 newChain->feat[j] = seed;
                 newChain->label[j] = lid;
-                newChain->delta = delta + labelpositions[newChain->label[j]]->cost;
+                newChain->delta = delta + labelpositions[newChain->label[j]]->getCost();
                 j++;
 
                 // hide all conflictual candidates
@@ -2088,7 +1934,7 @@ namespace pal
 
 
         tmpsol[seed] = retainedLabel;
-        delta += labelpositions[retainedLabel]->cost;
+        delta += labelpositions[retainedLabel]->getCost();
         seed = next_seed;
       }
     }
@@ -2367,7 +2213,7 @@ namespace pal
       candidates[i]->feat_id = i + borderSize;
       candidatesUnsorted[i] = candidates[i];
 
-      candidates[i]->cost = ( sol[i+borderSize] == -1 ? inactiveCost[i+borderSize] : labelpositions[sol[i+borderSize]]->cost );
+      candidates[i]->cost = ( sol[i+borderSize] == -1 ? inactiveCost[i+borderSize] : labelpositions[sol[i+borderSize]]->getCost() );
     }
 
     sort(( void** ) candidates, probSize, decreaseCost );
@@ -2492,7 +2338,7 @@ namespace pal
             std::cout << "label[lid]->cost: " << labelpositions[lid]->cost << std::endl;
           }
 #endif
-          candidatesUnsorted[fid-borderSize]->cost = ( lid == -1 ? inactiveCost[sub[fid]] : labelpositions[lid]->cost );
+          candidatesUnsorted[fid-borderSize]->cost = ( lid == -1 ? inactiveCost[sub[fid]] : labelpositions[lid]->getCost() );
 
         }
 
@@ -2602,15 +2448,16 @@ namespace pal
 
     while ( list->size() > 0 )
     {
+      int probFeatId = lp->getProblemFeatureId();
       lp = list->pop_front();
-      if ( solution[lp->probFeat] >= 0 )
+      if ( solution[probFeatId] >= 0 )
       {
-        std::cerr << "Doublon : " << lp->probFeat << " "
-                  << solution[lp->probFeat]  << "<->"
-                  << lp->id << std::endl;
+        std::cerr << "Doublon : " << probFeatId << " "
+                  << solution[probFeatId]  << "<->"
+                  << lp->getId() << std::endl;
       }
 
-      solution[lp->probFeat] = lp->id;
+      solution[probFeatId] = lp->getId();
       //std::cout << "lp->id:" << lp->id <<;
     }
 
@@ -2641,11 +2488,11 @@ namespace pal
     {
       if ( wrap )
       {
-        ok[wrap[lp->probFeat]] = false;
+        ok[wrap[lp->getProblemFeatureId()]] = false;
       }
       else
       {
-        ok[lp->probFeat] = false;
+        ok[lp->getProblemFeatureId()] = false;
       }
     }
 
@@ -2911,22 +2758,7 @@ namespace pal
             LabelPosition *old = labelpositions[sol->s[fid]];
             old->removeFromIndex( candidates_sol );
 
-
-            amin[0] = DBL_MAX;
-            amax[0] = -DBL_MAX;
-            amin[1] = DBL_MAX;
-            amax[1] = -DBL_MAX;
-            for ( c = 0;c < 4;c++ )
-            {
-              if ( old->x[c] < amin[0] )
-                amin[0] = old->x[c];
-              if ( old->x[c] > amax[0] )
-                amax[0] = old->x[c];
-              if ( old->y[c] < amin[1] )
-                amin[1] = old->y[c];
-              if ( old->y[c] > amax[1] )
-                amax[1] = old->y[c];
-            }
+            old->getBoundingBox(amin, amax);
 
             context.lp = old;
             candidates->Search( amin, amax, nokCallback, &context );
@@ -3085,21 +2917,7 @@ namespace pal
             LabelPosition *old = labelpositions[sol[fid]];
             old->removeFromIndex( candidates_subsol );
 
-            amin[0] = DBL_MAX;
-            amax[0] = -DBL_MAX;
-            amin[1] = DBL_MAX;
-            amax[1] = -DBL_MAX;
-            for ( c = 0;c < 4;c++ )
-            {
-              if ( old->x[c] < amin[0] )
-                amin[0] = old->x[c];
-              if ( old->x[c] > amax[0] )
-                amax[0] = old->x[c];
-              if ( old->y[c] < amin[1] )
-                amin[1] = old->y[c];
-              if ( old->y[c] > amax[1] )
-                amax[1] = old->y[c];
-            }
+            old->getBoundingBox(amin, amax);
 
             context.lp = old;
             candidates->Search( amin, amax, nokCallback, &context );
@@ -3142,20 +2960,20 @@ namespace pal
 //#undef _DEBUG_FULL_
 #endif
 
-  std::list<Label*> * Problem::getSolution( bool returnInactive )
+  std::list<LabelPosition*> * Problem::getSolution( bool returnInactive )
   {
 
     int i;
-    std::list<Label*> *solList = new std::list<Label*>();
+    std::list<LabelPosition*> *solList = new std::list<LabelPosition*>();
 
     if ( nbft == 0 )
       return solList;
 
     for ( i = 0;i < nbft;i++ )
       if ( sol->s[i] != -1 )
-        solList->push_back( labelpositions[sol->s[i]]->toLabel( true ) );
+        solList->push_back( labelpositions[sol->s[i]] ); // active labels
       else if ( returnInactive )
-        solList->push_back( labelpositions[featStartId[i]]->toLabel( false ) );
+        solList->push_back( labelpositions[featStartId[i]] ); // unplaced label
 
     return solList;
   }
@@ -3186,7 +3004,7 @@ namespace pal
     int k;
     for ( i = 0;i < nbft;i++ )
     {
-      lyrName = labelpositions[featStartId[i]]->feature->layer->name;
+      lyrName = labelpositions[featStartId[i]]->getLayerName();
       k = -1;
       for ( j = 0;j < stats->nbLayers;j++ )
       {
@@ -3279,12 +3097,10 @@ namespace pal
         solution << feature->type << ";" << feature->nbPoints << ";0;0;0;0;0;";
       }
 
-      feature->fetchCoordinates( pal );
       for ( j = 0;j < feature->nbPoints;j++ )
       {
         solution << feature->x[j] << " " << feature->y[j] << " ";
       }
-      feature->releaseCoordinates();
       solution << std::endl;
     }
 
@@ -3304,10 +3120,9 @@ namespace pal
 
     int nbOv;
 
-    int c;
     int i;
 
-    CountContext context;
+    LabelPosition::CountContext context;
     context.inactiveCost = inactiveCost;
     context.nbOv = &nbOv;
     context.cost = &sol->cost;
@@ -3329,25 +3144,12 @@ namespace pal
         nbOv = 0;
         lp = labelpositions[sol->s[i]];
 
-        amin[0] = DBL_MAX;
-        amax[0] = -DBL_MAX;
-        amin[1] = DBL_MAX;
-        amax[1] = -DBL_MAX;
-        for ( c = 0;c < 4;c++ )
-        {
-          if ( lp->x[c] < amin[0] )
-            amin[0] = lp->x[c];
-          if ( lp->x[c] > amax[0] )
-            amax[0] = lp->x[c];
-          if ( lp->y[c] < amin[1] )
-            amin[1] = lp->y[c];
-          if ( lp->y[c] > amax[1] )
-            amax[1] = lp->y[c];
-        }
-        context.lp = lp;
-        candidates_sol->Search( amin, amax, countFullOverlapCallback, &context );
+        lp->getBoundingBox(amin, amax);
 
-        sol->cost += lp->cost;
+        context.lp = lp;
+        candidates_sol->Search( amin, amax, LabelPosition::countFullOverlapCallback, &context );
+
+        sol->cost += lp->getCost();
 
         if ( nbOv == 0 )
           nbActive++;

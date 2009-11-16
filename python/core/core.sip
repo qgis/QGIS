@@ -74,3 +74,4 @@
 %Include qgsvectorlayer.sip
 %Include qgsvectoroverlay.sip
 
+%Include symbology-ng-core.sip

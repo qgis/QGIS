@@ -74,6 +74,11 @@
 #include "qgsclipper.h"
 #include "qgsproject.h"
 
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
+#include "qgssymbollayerv2.h"
+#include "qgssinglesymbolrendererv2.h"
+
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
 #endif
@@ -102,7 +107,10 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mLabelOn( false ),
     mVertexMarkerOnlyForSelection( false ),
     mFetching( false ),
-    mActiveCommand( NULL )
+    mActiveCommand( NULL ),
+    mRendererV2( NULL ),
+    mUsingRendererV2( false ),
+    mLabelingEngine( NULL )
 {
   mActions = new QgsAttributeAction;
 
@@ -116,26 +124,36 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     // Always set crs
     setCoordinateSystem();
 
+    QSettings settings;
+    if ( settings.value( "/qgis/use_symbology_ng", false ).toBool() )
+    {
+      // using symbology-ng!
+      setUsingRendererV2(true);
+    }
+
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
-    //
+    bool defaultLoadedFlag = false;
     if ( loadDefaultStyleFlag )
     {
-      bool defaultLoadedFlag = false;
       loadDefaultStyle( defaultLoadedFlag );
-      if ( !defaultLoadedFlag )
+    }
+
+    // if the default style failed to load or was disabled use some very basic defaults
+    if ( !defaultLoadedFlag )
+    {
+      // add single symbol renderer
+      if (mUsingRendererV2)
       {
-        // add single symbol renderer as default
+        setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
+      }
+      else
+      {
         QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
         setRenderer( renderer );
       }
     }
-    else  // Otherwise use some very basic defaults
-    {
-      // add single symbol renderer as default
-      QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
-      setRenderer( renderer );
-    }
+
     // Get the update threshold from user settings. We
     // do this only on construction to avoid the penality of
     // fetching this each time the layer is drawn. If the user
@@ -647,8 +665,163 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
   return ptr;
 }
 
+void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool labeling )
+{
+  mRendererV2->startRender(rendererContext, pendingFields());
+
+  QgsSingleSymbolRendererV2* selRenderer = NULL;
+  if (!mSelectedFeatureIds.isEmpty())
+  {
+    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol(geometryType()) );
+    selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
+    selRenderer->startRender(rendererContext, pendingFields());
+  }
+
+  QgsFeature fet;
+  while ( nextFeature( fet ) )
+  {
+    if (mSelectedFeatureIds.contains( fet.id() ))
+      selRenderer->renderFeature(fet, rendererContext);
+    else
+      mRendererV2->renderFeature(fet, rendererContext);
+
+    if ( labeling )
+      mLabelingEngine->registerFeature(this, fet);
+  }
+
+  mRendererV2->stopRender(rendererContext);
+
+  if (selRenderer)
+  {
+    selRenderer->stopRender(rendererContext);
+    delete selRenderer;
+  }
+}
+
+void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
+{
+  QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
+
+  // startRender must be called before symbolForFeature() calls to make sure renderer is ready
+  mRendererV2->startRender(rendererContext, pendingFields());
+
+  QgsSingleSymbolRendererV2* selRenderer = NULL;
+  if (!mSelectedFeatureIds.isEmpty())
+  {
+    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol(geometryType()) );
+    selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
+    selRenderer->startRender(rendererContext, pendingFields());
+  }
+
+  // 1. fetch features
+  QgsFeature fet;
+  while ( nextFeature(fet) )
+  {
+    QgsSymbolV2* sym = mRendererV2->symbolForFeature(fet);
+    if ( !features.contains(sym) )
+    {
+      features.insert( sym, QList<QgsFeature>() );
+    }
+    features[sym].append( fet );
+
+    if ( labeling )
+      mLabelingEngine->registerFeature(this, fet);
+  }
+
+  // find out the order
+  QgsSymbolV2LevelOrder levels;
+  QgsSymbolV2List symbols = mRendererV2->symbols();
+  for (int i = 0; i < symbols.count(); i++)
+  {
+    QgsSymbolV2* sym = symbols[i];
+    for (int j = 0; j < sym->symbolLayerCount(); j++)
+    {
+      int level = sym->symbolLayer(j)->renderingPass();
+      QgsSymbolV2LevelItem item(sym,j);
+      while (level >= levels.count()) // append new empty levels
+        levels.append( QgsSymbolV2Level() );
+      levels[level].append(item);
+    }
+  }
+
+  // 2. draw features in correct order
+  for (int l = 0; l < levels.count(); l++)
+  {
+    QgsSymbolV2Level& level = levels[l];
+    for (int i = 0; i < level.count(); i++)
+    {
+      QgsSymbolV2LevelItem& item = level[i];
+      if (!features.contains(item.symbol()))
+      {
+        QgsDebugMsg("level item's symbol not found!");
+        continue;
+      }
+      int layer = item.layer();
+      QList<QgsFeature>& lst = features[item.symbol()];
+      QList<QgsFeature>::iterator fit;
+      for ( fit = lst.begin(); fit != lst.end(); ++fit )
+      {
+        if (mSelectedFeatureIds.contains( fit->id() ))
+          selRenderer->renderFeature(*fit, rendererContext);
+        else
+          mRendererV2->renderFeature(*fit, rendererContext, layer);
+      }
+    }
+  }
+
+  mRendererV2->stopRender(rendererContext);
+
+  if (selRenderer)
+  {
+    selRenderer->stopRender(rendererContext);
+    delete selRenderer;
+  }
+}
+
 bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
+  if (mUsingRendererV2)
+  {
+    if (mRendererV2 == NULL)
+      return FALSE;
+
+    QgsDebugMsg("rendering v2:\n" + mRendererV2->dump());
+
+    // TODO: really needed?
+    updateFeatureCount();
+    int totalFeatures = pendingFeatureCount();
+    int featureCount = 0;
+    
+    QgsAttributeList attributes;
+    foreach (QString attrName, mRendererV2->usedAttributes())
+    {
+      int attrNum = QgsFeatureRendererV2::fieldNameIndex(pendingFields(), attrName);
+      attributes.append( attrNum );
+      QgsDebugMsg("attrs: "+ attrName + " - " + QString::number(attrNum));
+    }
+
+    bool labeling = FALSE;
+    if ( mLabelingEngine )
+    {
+      int attrIndex;
+      if (mLabelingEngine->prepareLayer(this, attrIndex))
+      {
+        if (!attributes.contains(attrIndex))
+          attributes << attrIndex;
+        labeling = TRUE;
+      }
+    }
+
+    select( attributes, rendererContext.extent() );
+
+    if (mRendererV2->usingSymbolLevels())
+      drawRendererV2Levels(rendererContext, labeling);
+    else
+      drawRendererV2(rendererContext, labeling);
+
+    return TRUE;
+  }
+  
   //set update threshold before each draw to make sure the current setting is picked up
   QSettings settings;
   mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
@@ -686,6 +859,19 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     int featureCount = 0;
     QgsFeature fet;
     QgsAttributeList attributes = mRenderer->classificationAttributes();
+
+    bool labeling = FALSE;
+    if (mLabelingEngine)
+    {
+      int attrIndex;
+      if (mLabelingEngine->prepareLayer(this, attrIndex))
+      {
+        if (!attributes.contains(attrIndex))
+          attributes << attrIndex;
+        labeling = TRUE;
+      }
+    }
+
     select( attributes, rendererContext.extent() );
 
     try
@@ -749,6 +935,11 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
         //double scale = rendererContext.scaleFactor() /  markerScaleFactor;
         drawFeature( rendererContext, fet, &marker );
+
+        if (labeling && mLabelingEngine)
+        {
+          mLabelingEngine->registerFeature(this, fet);
+        }
 
         ++featureCount;
       }
@@ -2067,6 +2258,12 @@ bool QgsVectorLayer::hasLabelsEnabled( void ) const
   return mLabelOn;
 }
 
+void QgsVectorLayer::setLabelingEngine(QgsLabelingEngineInterface* engine)
+{
+  mLabelingEngine = engine;
+}
+
+
 bool QgsVectorLayer::startEditing()
 {
   if ( !mDataProvider )
@@ -2153,7 +2350,6 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
   {
     return false;
   }
-
 
   return mValid;               // should be true if read successfully
 
@@ -2293,19 +2489,85 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   }
 
   // renderer specific settings
-
   QString errorMsg;
   if ( !writeSymbology( layer_node, document, errorMsg ) )
   {
     return false;
   }
 
-
   return true;
 } // bool QgsVectorLayer::writeXml
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
+  // try renderer v2 first
+  QDomElement rendererElement = node.firstChildElement(RENDERER_TAG_NAME);
+  if (!rendererElement.isNull())
+  {
+    // using renderer v2
+    setUsingRendererV2(true);
+
+    QgsFeatureRendererV2* r = QgsFeatureRendererV2::load(rendererElement);
+    if (r == NULL)
+      return false;
+
+    setRendererV2(r);
+  }
+  else
+  {
+    // using renderer v1
+    setUsingRendererV2(false);
+
+    // create and bind a renderer to this layer
+
+    QDomNode singlenode = node.namedItem( "singlesymbol" );
+    QDomNode graduatednode = node.namedItem( "graduatedsymbol" );
+    QDomNode continuousnode = node.namedItem( "continuoussymbol" );
+    QDomNode uniquevaluenode = node.namedItem( "uniquevalue" );
+
+    QgsRenderer * renderer = 0;
+    int returnCode = 1;
+
+    if ( !singlenode.isNull() )
+    {
+      renderer = new QgsSingleSymbolRenderer( geometryType() );
+      returnCode = renderer->readXML( singlenode, *this );
+    }
+    else if ( !graduatednode.isNull() )
+    {
+      renderer = new QgsGraduatedSymbolRenderer( geometryType() );
+      returnCode = renderer->readXML( graduatednode, *this );
+    }
+    else if ( !continuousnode.isNull() )
+    {
+      renderer = new QgsContinuousColorRenderer( geometryType() );
+      returnCode = renderer->readXML( continuousnode, *this );
+    }
+    else if ( !uniquevaluenode.isNull() )
+    {
+      renderer = new QgsUniqueValueRenderer( geometryType() );
+      returnCode = renderer->readXML( uniquevaluenode, *this );
+    }
+
+    if ( !renderer )
+    {
+      errorMessage = tr( "Unknown renderer" );
+      return false;
+    }
+
+    if ( returnCode == 1 )
+    {
+      errorMessage = tr( "No renderer object" ); delete renderer; return false;
+    }
+    else if ( returnCode == 2 )
+    {
+      errorMessage = tr( "Classification field not found" ); delete renderer; return false;
+    }
+
+    mRenderer = renderer;
+
+  }
+
   // process the attribute actions
   mActions->readXML( node );
 
@@ -2390,54 +2652,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
   }
 
-  // create and bind a renderer to this layer
-
-  QDomNode singlenode = node.namedItem( "singlesymbol" );
-  QDomNode graduatednode = node.namedItem( "graduatedsymbol" );
-  QDomNode continuousnode = node.namedItem( "continuoussymbol" );
-  QDomNode uniquevaluenode = node.namedItem( "uniquevalue" );
-
-  QgsRenderer * renderer = 0;
-  int returnCode = 1;
-
-  if ( !singlenode.isNull() )
-  {
-    renderer = new QgsSingleSymbolRenderer( geometryType() );
-    returnCode = renderer->readXML( singlenode, *this );
-  }
-  else if ( !graduatednode.isNull() )
-  {
-    renderer = new QgsGraduatedSymbolRenderer( geometryType() );
-    returnCode = renderer->readXML( graduatednode, *this );
-  }
-  else if ( !continuousnode.isNull() )
-  {
-    renderer = new QgsContinuousColorRenderer( geometryType() );
-    returnCode = renderer->readXML( continuousnode, *this );
-  }
-  else if ( !uniquevaluenode.isNull() )
-  {
-    renderer = new QgsUniqueValueRenderer( geometryType() );
-    returnCode = renderer->readXML( uniquevaluenode, *this );
-  }
-
-  if ( !renderer )
-  {
-    errorMessage = tr( "Unknown renderer" );
-    return false;
-  }
-
-  if ( returnCode == 1 )
-  {
-    errorMessage = tr( "No renderer object" ); delete renderer; return false;
-  }
-  else if ( returnCode == 2 )
-  {
-    errorMessage = tr( "Classification field not found" ); delete renderer; return false;
-  }
-
-  mRenderer = renderer;
-
   // Test if labeling is on or off
   QDomNode labelnode = node.namedItem( "label" );
   QDomElement element = labelnode.toElement();
@@ -2464,22 +2678,47 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
+  if (mUsingRendererV2)
+  {
+    QDomElement rendererElement = mRendererV2->save(doc);
+    node.appendChild(rendererElement);
+  }
+  else
+  {
+    //classification field(s)
+    QgsAttributeList attributes = mRenderer->classificationAttributes();
+    const QgsFieldMap providerFields = mDataProvider->fields();
+    for ( QgsAttributeList::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+    {
+      QDomElement classificationElement = doc.createElement( "classificationattribute" );
+      QDomText classificationText = doc.createTextNode( providerFields[*it].name() );
+      classificationElement.appendChild( classificationText );
+      node.appendChild( classificationElement );
+    }
+
+    // renderer settings
+    const QgsRenderer * myRenderer = renderer();
+    if ( myRenderer )
+    {
+      if ( !myRenderer->writeXML( node, doc, *this ) )
+      {
+        errorMessage = "renderer failed to save";
+        return false;
+      }
+    }
+    else
+    {
+      QgsDebugMsg( "no renderer" );
+      errorMessage = "no renderer";
+      return false;
+    }
+  }
+
   // use scale dependent visibility flag
   QDomElement mapLayerNode = node.toElement();
   mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", label()->scaleBasedVisibility() ? 1 : 0 );
   mapLayerNode.setAttribute( "minLabelScale", label()->minScale() );
   mapLayerNode.setAttribute( "maxLabelScale", label()->maxScale() );
-
-  //classification field(s)
-  QgsAttributeList attributes = mRenderer->classificationAttributes();
-  const QgsFieldMap providerFields = mDataProvider->fields();
-  for ( QgsAttributeList::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
-  {
-    QDomElement classificationElement = doc.createElement( "classificationattribute" );
-    QDomText classificationText = doc.createTextNode( providerFields[*it].name() );
-    classificationElement.appendChild( classificationText );
-    node.appendChild( classificationElement );
-  }
 
   //edit types
   if ( mEditTypes.size() > 0 )
@@ -2575,22 +2814,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
   // add attribute actions
   mActions->writeXML( node, doc );
-
-  const QgsRenderer * myRenderer = renderer();
-  if ( myRenderer )
-  {
-    if ( !myRenderer->writeXML( node, doc, *this ) )
-    {
-      errorMessage = "renderer failed to save";
-      return false;
-    }
-  }
-  else
-  {
-    QgsDebugMsg( "no renderer" );
-    errorMessage = "no renderer";
-    return false;
-  }
 
   // Now we get to do all that all over again for QgsLabel
 
@@ -3807,6 +4030,25 @@ QgsVectorOverlay* QgsVectorLayer::findOverlayByType( const QString& typeName )
     }
   }
   return 0; //not found
+}
+
+
+QgsFeatureRendererV2* QgsVectorLayer::rendererV2()
+{
+  return mRendererV2;
+}
+void QgsVectorLayer::setRendererV2(QgsFeatureRendererV2* r)
+{
+  delete mRendererV2;
+  mRendererV2 = r;
+}
+bool QgsVectorLayer::isUsingRendererV2()
+{
+  return mUsingRendererV2;
+}
+void QgsVectorLayer::setUsingRendererV2(bool usingRendererV2)
+{
+  mUsingRendererV2 = usingRendererV2;
 }
 
 

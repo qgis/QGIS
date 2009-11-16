@@ -23,7 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectoroverlay.h"
 #include "pal.h"
-#include "label.h"
+#include "labelposition.h"
+#include "feature.h"
 #include "layer.h"
 
 QgsPALObjectPositionManager::QgsPALObjectPositionManager(): mNumberOfLayers( 0 )
@@ -108,7 +109,6 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   double bbox[4]; bbox[0] = viewExtent.xMinimum(); bbox[1] = viewExtent.yMinimum(); bbox[2] = viewExtent.xMaximum(); bbox[3] = viewExtent.yMaximum();
 
 
-  pal::PalStat* stat = 0;
   //set map units
   pal::Units mapUnits;
   switch ( unitType )
@@ -131,8 +131,7 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   mPositionEngine.setMapUnit( mapUnits );
   mPositionEngine.setDpi( renderContext.scaleFactor() * 25.4 );
 
-  std::list<pal::Label*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, &stat, false );
-  delete stat;
+  std::list<pal::LabelPosition*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, NULL, false );
 
   //and read the positions back to the overlay objects
   if ( !resultLabelList )
@@ -144,10 +143,10 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   QgsPALGeometry* referredGeometry = 0;
   QgsOverlayObject* referredOverlayObject = 0;
 
-  std::list<pal::Label*>::iterator labelIt = resultLabelList->begin();
+  std::list<pal::LabelPosition*>::iterator labelIt = resultLabelList->begin();
   for ( ; labelIt != resultLabelList->end(); ++labelIt )
   {
-    referredGeometry = dynamic_cast<QgsPALGeometry*>(( *labelIt )->getGeometry() );
+    referredGeometry = dynamic_cast<QgsPALGeometry*>(( *labelIt )->getFeaturePart()->getUserGeometry() );
     if ( !referredGeometry )
     {
       continue;
@@ -158,9 +157,11 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
       continue;
     }
 
+    pal::LabelPosition* lp = *labelIt;
+
     //QGIS takes the coordinates of the middle points
-    double x = (( *labelIt )->getX( 0 ) + ( *labelIt )->getX( 1 ) + ( *labelIt )->getX( 2 ) + ( *labelIt )->getX( 3 ) ) / 4;
-    double y = (( *labelIt )->getY( 0 ) + ( *labelIt )->getY( 1 ) + ( *labelIt )->getY( 2 ) + ( *labelIt )->getY( 3 ) ) / 4;
+    double x = (lp->getX( 0 ) + lp->getX( 1 ) + lp->getX( 2 ) + lp->getX( 3 ) ) / 4;
+    double y = (lp->getY( 0 ) + lp->getY( 1 ) + lp->getY( 2 ) + lp->getY( 3 ) ) / 4;
     referredOverlayObject->addPosition( QgsPoint( x, y ) );
   }
 

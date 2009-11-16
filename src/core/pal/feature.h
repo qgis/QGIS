@@ -48,53 +48,98 @@
 
 namespace pal
 {
-
-  class Pal;
-  class Layer;
-  class LabelPosition;
-  class SimpleMutex;
-
-  /**
-   * \brief Main class to handle feature
-   */
-  class Feature : public PointSet
+  /** optional additional info about label (for curved labels) */
+  class LabelInfo
   {
+  public:
+    typedef struct
+    {
+        unsigned short chr;
+        double width;
+    } CharacterInfo;
 
-      friend class Pal;
-      friend class Layer;
-      friend class Problem;
-      friend class LabelPosition;
+    LabelInfo(int num, double height)
+    {
+      max_char_angle_delta = 20;
+      label_height = height;
+      char_num = num;
+      char_info = new CharacterInfo[num];
+    }
+    ~LabelInfo() { delete [] char_info; }
 
-      friend bool extractFeatCallback( Feature *ft_ptr, void *ctx );
-      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
-      friend bool obstacleCallback( PointSet *feat, void *ctx );
-      //friend void setCost (int nblp, LabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4]);
-      friend void releaseAllInIndex( RTree<PointSet*, double, 2, double, 8, 4>* );
-      friend bool releaseCallback( PointSet *pset, void *ctx );
-      friend bool filteringCallback( PointSet*, void* );
+    double max_char_angle_delta;
+    double label_height;
+    int char_num;
+    CharacterInfo* char_info;
+  };
+
+  class LabelPosition;
+  class FeaturePart;
+
+  class Feature
+  {
+    friend class FeaturePart;
+
+    public:
+      Feature(Layer* l, const char* id, PalGeometry* userG, double lx, double ly);
+      ~Feature();
+
+      void setLabelInfo(LabelInfo* info) { labelInfo = info; }
+      void setDistLabel(double dist) { distlabel = dist; }
 
     protected:
-      //int id;   /* feature no id into layer */
       double label_x;
       double label_y;
-
-      int nbSelfObs;
-      PointSet **selfObs;
+      LabelInfo* labelInfo; // optional
 
       char *uid;
       Layer *layer;
 
-      int distlabel;
-
-      GEOSGeometry *the_geom;
-      int currentAccess;
-
-      int nPart;
-      int part;
+      double distlabel;
 
       PalGeometry *userGeom;
 
-      SimpleMutex *accessMutex;
+      // array of parts - possibly not necessary
+      //int nPart;
+      //FeaturePart** parts;
+  };
+
+  /**
+   * \brief Main class to handle feature
+   */
+  class FeaturePart : public PointSet
+  {
+
+    protected:
+      Feature* f;
+
+      int nbHoles;
+      PointSet **holes;
+
+      GEOSGeometry *the_geom;
+      bool ownsGeom;
+
+      /** \brief read coordinates from a GEOS geom */
+      void extractCoords( const GEOSGeometry* geom );
+
+      /** find duplicate (or nearly duplicate points) and remove them.
+       * Probably to avoid numerical errors in geometry algorithms.
+       */
+      void removeDuplicatePoints();
+
+public:
+
+      /**
+        * \brief create a new generic feature
+        *
+        * \param feat a pointer for a Feat which contains the spatial entites
+        */
+      FeaturePart( Feature *feat, const GEOSGeometry* geom );
+
+      /**
+       * \brief Delete the feature
+       */
+      virtual ~FeaturePart();
 
       /**
        * \brief generate candidates for point feature
@@ -108,6 +153,11 @@ namespace pal
       int setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width );
 
       /**
+       * generate one candidate over specified point
+       */
+      int setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width );
+
+      /**
        * \brief generate candidates for line feature
        * Generate candidates for line features
        * \param scale map scale is 1:scale
@@ -116,6 +166,14 @@ namespace pal
        * \return the number of generated cadidates
        */
       int setPositionForLine( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
+
+      LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
+                                                      int orientation, int index, double distance );
+
+      /**
+       * Generate curved candidates for line features
+       */
+      int setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape );
 
       /**
        * \brief generate candidates for point feature
@@ -128,7 +186,6 @@ namespace pal
       int setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
 
 
-
       /**
        * \brief Feature against problem bbox
        * \param bbox[0] problem x min
@@ -139,29 +196,6 @@ namespace pal
        */
       //LinkedList<Feature*> *splitFeature( double bbox[4]);
 
-
-      /**
-        * \brief create a new generic feature
-        *
-        * \param feat a pointer for a Feat which contains the spatial entites
-        * \param layer feature is in this layer
-        * \param part which part of the collection is this feature for ?
-        * \param nPart how many feats have same uid (MULTI..., Collection)
-        */
-      Feature( Feat *feat, Layer *layer, int part, int nPart, PalGeometry *userGeom );
-
-
-      /**
-      * \brief Used to load pre-computed feature
-      * \param file the file open by  Pal::Pal(const char *pal_file)
-      * \param layer feature is in this layer
-      */
-      Feature( std::ifstream *file, Layer *layer );
-
-      /**
-       * \brief Delete the feature
-       */
-      virtual ~Feature();
 
       /**
        * \brief return the feature id
@@ -213,32 +247,28 @@ namespace pal
        */
       void print();
 
-      //void toSVGPath(std::ostream &out, double scale, int xmin, int ymax, bool exportInfo);
-      /**
-       * \brief Draw the feature and its candidates in a svg file
-       * The svg file will be uid-scale-text.svg. For DEBUG Purpose
-       * \param text a text to append on filename
-       * \param scale the scale of the drawing
-       * \param nbp number of candidats in lPos
-       * \param lPos array of candidates
-       */
-      //void toSvg(char *text, double scale, int nbp, LabelPosition **lPos);
 
-      /**
-          * \brief Draw the feature and the convexe polygon bounding box
-          * The svg file will be uid-scale-text.svg. For DEBUG purpose
-          * \param text a text to append on filename
-          * \param scale the scale of the drawing
-          * \param nbp number of candidats in lPos
-          * \param lPos array of candidates
-          */
-      //void toSvg(char *text, double scale, int nb_bb, CHullBox **bbox);
+      PalGeometry* getUserGeometry() { return f->userGeom; }
 
+      void setLabelSize(double lx, double ly) { f->label_x = lx; f->label_y = ly; }
+      double getLabelWidth() const { return f->label_x; }
+      double getLabelHeight() const { return f->label_y; }
+      void setLabelDistance(double dist) { f->distlabel = dist; }
+      double getLabelDistance() const { return f->distlabel; }
+      void setLabelInfo(LabelInfo* info) { f->labelInfo = info; }
 
-      void deleteCoord();
+      int getNumSelfObstacles() const { return nbHoles; }
+      PointSet* getSelfObstacle(int i) { return holes[i]; }
 
-      void fetchCoordinates();
-      void releaseCoordinates();
+      /** check whether this part is connected with some other part */
+      bool isConnected(FeaturePart* p2);
+
+      /** merge other (connected) part with this one and save the result in this part (other is unchanged).
+       * Return true on success, false if the feature wasn't modified */
+      bool mergeWithFeaturePart(FeaturePart* other);
+
+      void addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4]);
+
   };
 
 } // end namespace pal

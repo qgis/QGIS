@@ -42,7 +42,6 @@
 
 namespace pal
 {
-//#include <pal/LinkedList.hpp>
 
   template <class Type> class LinkedList;
   template <class Type> class Cell;
@@ -51,10 +50,10 @@ namespace pal
   template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
 
   class Feature;
+  class FeaturePart;
   class Pal;
   class SimpleMutex;
-
-  class Feat;
+  class LabelInfo;
 
   /**
    * \brief A layer of spacial entites
@@ -66,21 +65,24 @@ namespace pal
   class Layer
   {
       friend class Pal;
-      friend class Feature;
+      friend class FeaturePart;
 
       friend class Problem;
 
       friend class LabelPosition;
-      friend bool extractFeatCallback( Feature *ft_ptr, void *ctx );
-      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
-      friend bool obstacleCallback( PointSet *feat, void *ctx );
+      friend bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx );
       friend void toSVGPath( int nbPoints, double *x, double *y, int dpi, Layer *layer, int type, char *uid, std::ostream &out, double scale, int xmin, int ymax, bool exportInfo, char *color );
-      friend bool filteringCallback( PointSet*, void* );
+
+    public:
+      enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
 
     protected:
       char *name; /* unique */
 
+      /** list of feature parts */
+      LinkedList<FeaturePart*> *featureParts;
 
+      /** list of features - for deletion */
       LinkedList<Feature*> *features;
 
       Pal *pal;
@@ -98,9 +100,18 @@ namespace pal
 
       Arrangement arrangement;
 
+      LabelMode mode;
+      bool mergeLines;
+
+      /** optional flags used for some placement methods */
+      unsigned long arrangementFlags;
+
       // indexes (spatial and id)
-      RTree<Feature*, double, 2, double, 8, 4> *rtree;
-      HashTable<Cell<Feature*>*> *hashtable;
+      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
+      HashTable<Feature*> *hashtable;
+
+      HashTable< LinkedList<FeaturePart*>* > * connectedHashtable;
+      LinkedList< char* >* connectedTexts;
 
       SimpleMutex *modMutex;
 
@@ -127,17 +138,13 @@ namespace pal
       virtual ~Layer();
 
       /**
-       * \brief look up for a feature in layer and return an iterator pointing to the feature
-       * @param geom_id unique identifier of the feature
-       * @return an iterator pointng to the feature or NULL if the feature does not exists
-       */
-      Cell<Feature*> *getFeatureIt( const char * geom_id );
-
-      /**
        * \brief check if the scal is in the scale range min_scale -> max_scale
        * @param scale the scale to check
        */
       bool isScaleValid( double scale );
+
+      /** add newly creted feature part into r tree and to the list */
+      void addFeaturePart( FeaturePart* fpart, const char* labelText = NULL );
 
     public:
       /**
@@ -152,12 +159,6 @@ namespace pal
 
 
       /**
-       * \brief rename the layer
-       * @param name the new name
-       */
-      void rename( char *name );
-
-      /**
        *  \brief get arrangement policy
        */
       Arrangement getArrangement();
@@ -168,6 +169,9 @@ namespace pal
        * @param arrangement arrangement policy
        */
       void setArrangement( Arrangement arrangement );
+
+      unsigned long getArrangementFlags() const { return arrangementFlags; }
+      void setArrangementFlags( unsigned long flags ) { arrangementFlags = flags; }
 
       /**
        * \brief get units for label size
@@ -268,6 +272,12 @@ namespace pal
        */
       double getPriority();
 
+      void setLabelMode( LabelMode m ) { mode = m; }
+      LabelMode getLabelMode() const { return mode; }
+
+      void setMergeConnectedLines(bool m) { mergeLines = m; }
+      bool getMergeConnectedLines() const { return mergeLines; }
+
       /**
        * \brief register a feature in the layer
        *
@@ -277,66 +287,16 @@ namespace pal
        * @param userGeom user's geometry that implements the PalGeometry interface
        *
        * @throws PalException::FeatureExists
+       *
+       * @return true on success (i.e. valid geometry)
        */
-      void registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1 );
+      bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1, const char* labelText = NULL );
 
-      // TODO implement
-      //void unregisterFeature (const char *geom_id);
+      /** return pointer to feature or NULL if doesn't exist */
+      Feature* getFeature( const char* geom_id );
 
-      // TODO call that when a geometry change (a moveing points, etc)
-      //void updateFeature();
-
-      /**
-       * \brief change the label size for a feature
-       *
-       * @param geom_id unique identifier of the feature
-       * @param label_x new label width
-       * @param label_y new label height
-       *
-       * @throws PalException::UnknownFeature
-       * @throws PalException::ValueNotInRange
-       */
-      void setFeatureLabelSize( const char *geom_id, double label_x, double label_y );
-
-      /**
-       * \brief get the label height for a specific feature
-       *
-       * @param geom_id unique of the feature
-       *
-       * @throws PalException::UnknownFeature
-       */
-      double getFeatureLabelHeight( const char *geom_id );
-
-      /**
-       * \brief get the label width for a specific feature
-       *
-       * @param geom_id unique of the feature
-       *
-       * @throws PalException::UnknownFeature
-       */
-      double getFeatureLabelWidth( const char *geom_id );
-
-
-      /**
-       * \brief set the symbol size (pixel) for a specific feature
-       *
-       * @param geom_id unique od of the feaiture
-       * @param distlabel symbol size (point radius or line width)
-       *
-       * @throws PalException::UnknownFeature
-       * @throws PalException::ValueNotInRange
-       */
-      void setFeatureDistlabel( const char *geom_id, int distlabel );
-
-      /**
-       * \brief get the symbol size (pixel) for a specific feature
-       *
-       * @param geom_id unique of of the feature
-       * @return the symbol size (point radius or line width)
-       *
-       * @throws PalException::UnknownFeature
-       */
-      int getFeatureDistlabel( const char *geom_id );
+      /** join connected features with the same label text */
+      void joinConnectedFeatures();
 
   };
 

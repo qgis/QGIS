@@ -34,8 +34,6 @@
 #ifndef _PAL_H
 #define _PAL_H
 
-#include <pal/label.h>
-#include <pal/palstat.h>
 
 #include <list>
 #include <iostream>
@@ -62,6 +60,7 @@ namespace pal
 
   class Layer;
   class LabelPosition;
+  class PalStat;
   class Problem;
   class PointSet;
   class SimpleMutex;
@@ -84,7 +83,8 @@ namespace pal
     CHAIN = 0, /**< is the worst but fastest method */
     POPMUSIC_TABU_CHAIN = 1, /**< is the best but slowest */
     POPMUSIC_TABU = 2, /**< is a little bit better than CHAIN but slower*/
-    POPMUSIC_CHAIN = 3 /**< is slower and best than TABU, worse and faster than TABU_CHAIN */
+    POPMUSIC_CHAIN = 3, /**< is slower and best than TABU, worse and faster than TABU_CHAIN */
+    FALP = 4 /** only initial solution */
   };
 
   /** Typedef for _Units enumeration */
@@ -97,15 +97,24 @@ namespace pal
   enum _arrangement
   {
     P_POINT = 0, /**< arranges candidates around a point (centroid for polygon)*/
+    P_POINT_OVER, /** arranges candidates over a point (centroid for polygon)*/
     P_LINE, /**< Only for lines and polygons, arranges candidates over the line or the polygon perimeter */
+    P_CURVED, /** Only for lines, labels along the line */
     P_HORIZ, /**< Only for polygon, arranges candidates horizontaly */
-    P_FREE, /**< Only for polygon, arranges candidates with respect of polygon orientation */
-    P_LINE_AROUND /**< Only for lines and polygons, arranges candidates above and below the line or the polygon perimeter */
+    P_FREE /**< Only for polygon, arranges candidates with respect of polygon orientation */
   };
 
   /** typedef for _arrangement enumeration */
   typedef enum _arrangement Arrangement;
 
+  /** enumeration line arrangement flags. Flags can be combined. */
+  enum LineArrangementFlags
+  {
+    FLAG_ON_LINE     = 1,
+    FLAG_ABOVE_LINE  = 2,
+    FLAG_BELOW_LINE  = 4,
+    FLAG_MAP_ORIENTATION = 8
+  };
 
   /**
    *  \brief Pal main class.
@@ -118,11 +127,8 @@ namespace pal
   class Pal
   {
       friend class Problem;
-      friend class Feature;
+      friend class FeaturePart;
       friend class Layer;
-      friend class LabelPosition;
-      friend class PointSet;
-      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
     private:
       std::list<Layer*> * layers;
 
@@ -303,7 +309,7 @@ namespace pal
        *
        * @return A list of label to display on map
        */
-      std::list<Label*> *labeller( double scale, double bbox[4], PalStat **stats, bool displayAll );
+      std::list<LabelPosition*> *labeller( double scale, double bbox[4], PalStat **stats, bool displayAll );
 
 
       /**
@@ -323,12 +329,17 @@ namespace pal
        *
        * @return A list of label to display on map
        */
-      std::list<Label*> *labeller( int nbLayers,
+      std::list<LabelPosition*> *labeller( int nbLayers,
                                    char **layersName,
                                    double *layersFactor,
                                    double scale, double bbox[4],
                                    PalStat **stat,
                                    bool displayAll );
+
+
+      Problem* extractProblem(double scale, double bbox[4]);
+
+      std::list<LabelPosition*>* solveProblem(Problem* prob, bool displayAll);
 
       /**
        * \brief Set map resolution

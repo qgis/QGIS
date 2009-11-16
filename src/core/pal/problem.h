@@ -170,18 +170,27 @@ namespace pal
       void solution_cost();
       void check_solution();
 
+  public:
       Problem();
 
       //Problem(char *lorena_file, bool displayAll);
 
       ~Problem();
 
+      /////////////////
+      // problem inspection functions
+      int getNumFeatures() { return nbft; }
+      // features counted 0...n-1
+      int getFeatureCandidateCount(int i) { return featNbLp[i]; }
+      // both features and candidates counted 0..n-1
+      LabelPosition* getFeatureCandidate(int fi, int ci) { return labelpositions[ featStartId[fi] + ci]; }
+      /////////////////
+
 
       void reduce();
 
 
       void post_optimization();
-
 
 
       /**
@@ -194,7 +203,7 @@ namespace pal
        */
       void chain_search();
 
-      std::list<Label*> * getSolution( bool returnInactive );
+      std::list<LabelPosition*> * getSolution( bool returnInactive );
 
       PalStat * getStats();
 
