@@ -52,6 +52,8 @@ class QgsRenderer
     virtual QgsRenderer* clone() const=0;
     /** Change selection color */
     static void setSelectionColor(QColor color);
+    /** Get selection color */
+    static QColor selectionColor();
     /**Returns true if this renderer returns a pixmap in the render method (e.g. for point data or diagrams)*/
     virtual bool containsPixmap() const;
     /**Returns true if this renderer uses its own transparency settings, e.g. differentiated by classification.

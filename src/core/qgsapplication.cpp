@@ -311,6 +311,16 @@ const QString QgsApplication::svgPath()
   return mPkgDataPath + QString( "/svg/" );
 }
 
+const QString QgsApplication::userStyleV2Path()
+{
+  return qgisSettingsDirPath() + QString( "symbology-ng-style.xml" );
+}
+
+const QString QgsApplication::defaultStyleV2Path()
+{
+  return mPkgDataPath + QString( "/resources/symbology-ng-style.xml" );
+}
+
 QgsApplication::endian_t QgsApplication::endian()
 {
   return ( htonl( 1 ) == 1 ) ? XDR : NDR ;

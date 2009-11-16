@@ -49,49 +49,22 @@ namespace pal
 
   class LabelPosition;
   class Layer;
-  class Feature;
+  class FeaturePart;
 
-  inline bool ptrFeatureCompare( Feature * a, Feature * b )
-  {
-    return a == b;
-  }
-
+  LinkedList<const GEOSGeometry*> * unmulti( GEOSGeometry *the_geom );
 
   /**
-   * \brief For translating feature from GEOS to Pal
+   * \brief For usage in problem solving algorithm
    */
-  class Feat
+  class Feats
   {
-    public:
-      const GEOSGeometry *geom;
-      const char *id;
-      int type;
-
-      int nbPoints;
-      double *x;
-      double *y;
-
-      double minmax[4]; // {xmin, ymin, xmax, ymax}
-
-      int nbHoles;
-      PointSet **holes;
-
-  };
-
-
-  /**
-   * \brief split GEOS geom (multilinestring, multipoint, multipolygon) => (point, linestring, polygone)
-   */
-  LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id );
-
-  typedef struct _feats
-  {
-    Feature *feature;
+  public:
+    FeaturePart *feature;
     PointSet *shape;
     double priority;
     int nblp;
     LabelPosition **lPos;
-  } Feats;
+  };
 
 
   typedef struct _elementary_transformation
@@ -264,8 +237,11 @@ namespace pal
     return a == b;
   }
 
-
-  inline bool ptrFeatCompare( Feat * a, Feat * b )
+  inline bool ptrFeatureCompare( Feature * a, Feature * b )
+  {
+    return a == b;
+  }
+  inline bool ptrFeaturePartCompare( FeaturePart * a, FeaturePart * b )
   {
     return a == b;
   }
@@ -297,22 +273,6 @@ namespace pal
   void tabcpy( int n, const int* const x, const int* const y,
                const double* const prob, int *cx, int *cy, double *p );
 
-
-  typedef struct
-  {
-    LabelPosition *lp;
-    int *nbOv;
-    double *cost;
-    double *inactiveCost;
-    //int *feat;
-  } CountContext;
-
-  /*
-   * count overlap, ctx = p_lp
-   */
-  bool countOverlapCallback( LabelPosition *lp, void *ctx );
-
-  bool countFullOverlapCallback( LabelPosition *lp, void *ctx );
 
 } // namespace
 

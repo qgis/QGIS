@@ -1,5 +1,22 @@
 
 SET(QGIS_GUI_SRCS
+
+symbology-ng/qgsbrushstylecombobox.cpp
+symbology-ng/qgspenstylecombobox.cpp
+symbology-ng/qgssymbollayerv2widget.cpp
+symbology-ng/qgssymbolv2propertiesdialog.cpp
+symbology-ng/qgsrendererv2widget.cpp
+symbology-ng/qgssinglesymbolrendererv2widget.cpp
+symbology-ng/qgscategorizedsymbolrendererv2widget.cpp
+symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp
+symbology-ng/qgsrendererv2propertiesdialog.cpp
+symbology-ng/qgsstylev2managerdialog.cpp
+symbology-ng/qgssymbollevelsv2dialog.cpp
+symbology-ng/qgssymbolv2selectordialog.cpp
+symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp
+symbology-ng/qgsvectorrandomcolorrampv2dialog.cpp
+symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
+
 qgisgui.cpp
 qgisinterface.cpp
 qgscolorbutton.cpp
@@ -29,6 +46,20 @@ qgsvertexmarker.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
+
+symbology-ng/qgssymbollayerv2widget.h
+symbology-ng/qgssymbolv2propertiesdialog.h
+symbology-ng/qgssinglesymbolrendererv2widget.h
+symbology-ng/qgscategorizedsymbolrendererv2widget.h
+symbology-ng/qgsgraduatedsymbolrendererv2widget.h
+symbology-ng/qgsrendererv2propertiesdialog.h
+symbology-ng/qgsstylev2managerdialog.h
+symbology-ng/qgssymbollevelsv2dialog.h
+symbology-ng/qgssymbolv2selectordialog.h
+symbology-ng/qgsvectorgradientcolorrampv2dialog.h
+symbology-ng/qgsvectorrandomcolorrampv2dialog.h
+symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
+
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
@@ -45,8 +76,8 @@ qgsquickprint.h
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ../core
-     ../core/composer ../core/raster ../core/renderer ../core/symbology
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng ../core
+     ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
      ${CMAKE_CURRENT_BINARY_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}/../ui
      ${GEOS_INCLUDE_DIR}

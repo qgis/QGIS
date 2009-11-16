@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsStyleV2ManagerDialogBase</class>
+ <widget class="QDialog" name="QgsStyleV2ManagerDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>300</width>
+    <height>369</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Style Manager</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Style item type:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="cboItemType"/>
+   </item>
+   <item>
+    <widget class="QListView" name="listItems">
+     <property name="editTriggers">
+      <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>48</width>
+       <height>48</height>
+      </size>
+     </property>
+     <property name="movement">
+      <enum>QListView::Static</enum>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
+     <property name="spacing">
+      <number>5</number>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::IconMode</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QPushButton" name="btnAddItem">
+       <property name="toolTip">
+        <string>Add item</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnEditItem">
+       <property name="toolTip">
+        <string>Edit item</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnRemoveItem">
+       <property name="toolTip">
+        <string>Remove item</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>cboItemType</tabstop>
+  <tabstop>listItems</tabstop>
+  <tabstop>btnAddItem</tabstop>
+  <tabstop>btnEditItem</tabstop>
+  <tabstop>btnRemoveItem</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsStyleV2ManagerDialogBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>266</x>
+     <y>350</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>351</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -30,8 +30,7 @@
 #ifndef _PAL_GEOMETRY_H
 #define _PAL_GEOMETRY_H
 
-#include <list>
-#include <pal/label.h>
+#include <cstdlib> // for size_t needed in geos_c.h
 #include <geos_c.h>
 
 namespace pal
@@ -43,13 +42,6 @@ namespace pal
   class CORE_EXPORT PalGeometry
   {
     public:
-      /*
-       * \brief get the geometry in WKB hexa format
-       * This method is called by Pal each time it needs a geom's coordinates
-       *
-       * @return WKB Hex buffer
-       */
-      //virtual char * getWkbHexBuffer() = 0;
 
       /**
        * \brief get the GEOSGeometry of the feature
@@ -66,20 +58,6 @@ namespace pal
        */
       virtual void releaseGeosGeometry( GEOSGeometry *the_geom ) = 0;
 
-
-      /*
-       * \brief Called by Pal when it doesn't need the coordinates anymore
-       * @param wkbBuffer is the WkbBuffer from PalGeometry::getWkbHexBuffer()
-       */
-      //virtual void releaseWkbHexBuffer(char *wkbBuffer) = 0;
-
-      /*
-       * \brief Give back a label to display
-       * Pal call this method when label will no move anymore.
-       *
-       * @param label the label to disploy
-       */
-      //virtual void addLabel(Label *label) = 0;
 
       virtual ~PalGeometry() {}
   };

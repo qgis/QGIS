@@ -1056,6 +1056,20 @@ void QgisApp::createActions()
   mActionAbout->setStatusTip( tr( "About QGIS" ) );
   mActionAbout->setMenuRole( QAction::AboutRole ); // put in application menu on Mac OS X
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
+
+  mActionStyleManagerV2 = new QAction( tr("Style manager..."), this );
+  shortcuts->registerAction( mActionStyleManagerV2 );
+  mActionStyleManagerV2->setStatusTip( tr( "Show style manager V2" ) );
+  connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
+}
+
+#include "qgsstylev2.h"
+#include "qgsstylev2managerdialog.h"
+
+void QgisApp::showStyleManagerV2()
+{
+  QgsStyleV2ManagerDialog dlg(QgsStyleV2::defaultStyle(), QgsApplication::userStyleV2Path(), this);
+  dlg.exec();
 }
 
 void QgisApp::showPythonDialog()
@@ -1231,6 +1245,7 @@ void QgisApp::createMenus()
     mActionEditSeparator3 = mEditMenu->addSeparator();
     mEditMenu->addAction( mActionOptions );
     mEditMenu->addAction( mActionConfigureShortcuts );
+    mEditMenu->addAction( mActionStyleManagerV2 );
     mEditMenu->addAction( mActionCustomProjection );
   }
 
@@ -1321,6 +1336,7 @@ void QgisApp::createMenus()
 
     mSettingsMenu->addAction( mActionProjectProperties );
     mSettingsMenu->addAction( mActionCustomProjection );
+    mSettingsMenu->addAction( mActionStyleManagerV2 );
     mSettingsMenu->addAction( mActionConfigureShortcuts );
     mSettingsMenu->addAction( mActionOptions );
   }

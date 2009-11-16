@@ -169,6 +169,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", false ).toBool() );
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
 
+  chkUseSymbologyNG->setChecked( settings.value( "/qgis/use_symbology_ng", false ).toBool() );
+
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
   chkUseQPixmap->setChecked( !( settings.value( "/qgis/use_qimage_to_render", true ).toBool() ) );
@@ -404,6 +406,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
+  settings.setValue( "/qgis/use_symbology_ng", chkUseSymbologyNG->isChecked() );
   settings.setValue( "qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
   settings.setValue( "qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
   settings.setValue( "qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );

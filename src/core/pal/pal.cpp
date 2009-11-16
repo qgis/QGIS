@@ -31,6 +31,10 @@
 #include <config.h>
 #endif
 
+//#define _VERBOSE_
+//#define _EXPORT_MAP_
+#include <QTime>
+
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <cstdarg>
@@ -38,7 +42,6 @@
 #include <fstream>
 #include <cstring>
 #include <cfloat>
-#include <ctime>
 #include <list>
 //#include <geos/geom/Geometry.h>
 #include <geos_c.h>
@@ -46,10 +49,12 @@
 #include <pal/pal.h>
 #include <pal/layer.h>
 #include <pal/palexception.h>
+#include <pal/palstat.h>
 
 #include "linkedlist.hpp"
 #include "rtree.hpp"
 
+#include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
@@ -60,14 +65,6 @@
 
 namespace pal
 {
-
-  typedef struct
-  {
-    //LabelPosition *lp;
-    double scale;
-    Pal* pal;
-    PointSet *obstacle;
-  } PruneCtx;
 
   void geosError( const char *fmt, ... )
   {
@@ -85,7 +82,8 @@ namespace pal
 
   Pal::Pal()
   {
-    initGEOS( geosNotice, geosError );
+    // do not init and exit GEOS - we do it inside QGIS
+    //initGEOS( geosNotice, geosError );
 
     layers = new std::list<Layer*>();
 
@@ -114,7 +112,6 @@ namespace pal
     std::cout.precision( 12 );
     std::cerr.precision( 12 );
 
-    tmpTime = 0;
   }
 
   std::list<Layer*> *Pal::getLayers()
@@ -153,8 +150,6 @@ namespace pal
   Pal::~Pal()
   {
 
-    std::cout << "Acces/Concvert time: " << ( double ) tmpTime / CLOCKS_PER_SEC << std::endl;
-
     lyrsMutex->lock();
     while ( layers->size() > 0 )
     {
@@ -165,7 +160,8 @@ namespace pal
     delete layers;
     delete lyrsMutex;
 
-    finishGEOS();
+    // do not init and exit GEOS - we do it inside QGIS
+    //finishGEOS();
   }
 
 
@@ -222,11 +218,9 @@ namespace pal
    *
    * Extract a specific shape from indexes
    */
-  bool extractFeatCallback( Feature *ft_ptr, void *ctx )
+  bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
   {
-
-    double min[2];
-    double max[2];
+    double amin[2], amax[2];
 
     FeatCallBackCtx *context = ( FeatCallBackCtx* ) ctx;
 
@@ -243,349 +237,67 @@ namespace pal
     // all feature which are obstacle will be inserted into obstacles
     if ( context->layer->obstacle )
     {
-      min[0] = ft_ptr->xmin;
-      min[1] = ft_ptr->ymin;
-      max[0] = ft_ptr->xmax;
-      max[1] = ft_ptr->ymax;
-      context->obstacles->Insert( min, max, ft_ptr );
-
-      ft_ptr->fetchCoordinates();
+      ft_ptr->getBoundingBox(amin, amax);
+      context->obstacles->Insert( amin, amax, ft_ptr );
     }
 
+    // first do some checks whether to extract candidates or not
 
     // feature has to be labeled ?
-    if ( context->layer->toLabel )
+    if ( !context->layer->toLabel )
+      return true;
+
+    // are we in a valid scale range for the layer?
+    if ( !context->layer->isScaleValid( context->scale ) )
+      return true;
+
+    // is the feature well defined ? // TODO Check epsilon
+    if ( ft_ptr->getLabelWidth() < 0.0000001 || ft_ptr->getLabelHeight() < 0.0000001 )
+      return true;
+
+    // OK, everything's fine, let's process the feature part
+
+    // Holes of the feature are obstacles
+    for ( int i = 0;i < ft_ptr->getNumSelfObstacles();i++ )
     {
-      // is the feature well defined ? // TODO Check epsilon
-      if ( ft_ptr->label_x > 0.0000001 && ft_ptr->label_y > 0.0000001 )
+      ft_ptr->getSelfObstacle(i)->getBoundingBox(amin, amax);
+      context->obstacles->Insert( amin, amax, ft_ptr->getSelfObstacle(i) );
+
+      if ( !ft_ptr->getSelfObstacle(i)->getHoleOf() )
       {
+        std::cout << "ERROR: SHOULD HAVE A PARENT!!!!!" << std::endl;
+      }
+    }
 
-        int i;
-        // Hole of the feature are obstacles
-        for ( i = 0;i < ft_ptr->nbSelfObs;i++ )
-        {
-          min[0] = ft_ptr->selfObs[i]->xmin;
-          min[1] = ft_ptr->selfObs[i]->ymin;
-          max[0] = ft_ptr->selfObs[i]->xmax;
-          max[1] = ft_ptr->selfObs[i]->ymax;
-          context->obstacles->Insert( min, max, ft_ptr->selfObs[i] );
-
-          if ( !ft_ptr->selfObs[i]->holeOf )
-          {
-            std::cout << "ERROR: SHOULD HAVE A PARENT!!!!!" << std::endl;
-          }
-        }
-
-
-        LinkedList<Feats*> *feats = new LinkedList<Feats*> ( ptrFeatsCompare );
-
-        if (( ft_ptr->type == GEOS_LINESTRING )
-            || ft_ptr->type == GEOS_POLYGON )
-        {
-
-          double bbx[4], bby[4];
-
-          bbx[0] = context->bbox_min[0];   bbx[1] = context->bbox_max[0];
-          bbx[2] = context->bbox_max[0];   bbx[3] = context->bbox_min[0];
-
-          bby[0] = context->bbox_min[1];   bby[1] = context->bbox_min[1];
-          bby[2] = context->bbox_max[1];   bby[3] = context->bbox_max[1];
-
-          LinkedList<PointSet*> *shapes = new LinkedList<PointSet*> ( ptrPSetCompare );
-          bool outside, inside;
-
-          // Fetch coordinates
-          ft_ptr->fetchCoordinates();
-          PointSet *shape = ft_ptr->createProblemSpecificPointSet( bbx, bby, &outside, &inside );
-          ft_ptr->releaseCoordinates();
-
-
-
-
-          if ( inside )
-          {
-            // no extra treatment required
-            shapes->push_back( shape );
-          }
-          else
-          {
-            // feature isn't completly in the math
-            if ( ft_ptr->type == GEOS_LINESTRING )
-              PointSet::reduceLine( shape, shapes, bbx, bby );
-            else
-            {
-              PointSet::reducePolygon( shape, shapes, bbx, bby );
-            }
-          }
-
-          while ( shapes->size() > 0 )
-          {
-            shape = shapes->pop_front();
-            Feats *ft = new Feats();
-            ft->feature = ft_ptr;
-            ft->shape = shape;
-            feats->push_back( ft );
-
-#ifdef _EXPORT_MAP_
-            if ( !svged )
-            {
-              toSVGPath( shape->nbPoints, shape->type, shape->x, shape->y,
-                         dpi , context->scale,
-                         convert2pt( context->bbox_min[0], context->scale, dpi ),
-                         convert2pt( context->bbox_max[1], context->scale, dpi ),
-                         context->layer->name, ft_ptr->uid, *context->svgmap );
-            }
-#endif
-          }
-          delete shapes;
-        }
-        else
-        {
-          // Feat is a point
-          Feats *ft = new Feats();
-          ft->feature = ft_ptr;
-          ft->shape = NULL;
-          feats->push_back( ft );
-        }
-
-        // for earch feature part extracted : generate candidates
-        while ( feats->size() > 0 )
-        {
-          Feats *ft = feats->pop_front();
-
-#ifdef _DEBUG_
-          std::cout << "Compute candidates for feat " <<  ft->feature->layer->name << "/" << ft->feature->uid << std::endl;
-#endif
-          ft->nblp = ft->feature->setPosition( context->scale, & ( ft->lPos ), context->bbox_min, context->bbox_max, ft->shape, context->candidates
+    // generate candidates for the feature part
+    LabelPosition** lPos = NULL;
+    int nblp = ft_ptr->setPosition( context->scale, &lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates
 #ifdef _EXPORT_MAP_
                                                , *context->svgmap
 #endif
                                              );
 
-          delete ft->shape;
-          ft->shape = NULL;
-
-          if ( ft->nblp > 0 )
-          {
-            // valid features are added to fFeats
-            ft->priority = context->priority;
-            context->fFeats->push_back( ft );
-#ifdef _DEBUG_
-            std::cout << ft->nblp << " labelPositions for feature : " << ft->feature->layer->name << "/" << ft->feature->uid << std::endl;
-#endif
-          }
-          else
-          {
-            // Others are deleted
-#ifdef _VERBOSE_
-            std::cout << "Unable to generate labelPosition for feature : " << ft->feature->layer->name << "/" << ft->feature->uid << std::endl;
-#endif
-            delete[] ft->lPos;
-            delete ft;
-          }
-        }
-        delete feats;
-      }
-      else   // check labelsize
-      {
-#ifdef _VERBOSE_
-        std::cerr << "Feature " <<  ft_ptr->layer->name << "/" << ft_ptr->uid << " is skipped (label size = 0)" << std::endl;
-#endif
-      }
+    if ( nblp > 0 )
+    {
+      // valid features are added to fFeats
+      Feats *ft = new Feats();
+      ft->feature = ft_ptr;
+      ft->shape = NULL;
+      ft->nblp = nblp;
+      ft->lPos = lPos;
+      ft->priority = context->priority;
+      context->fFeats->push_back( ft );
     }
+    else
+    {
+      // Others are deleted
+      delete[] lPos;
+    }
+
     return true;
   }
 
 
-  double dist_pointToLabel( double xp, double yp, LabelPosition *lp )
-  {
-
-    int i;
-    int j;
-
-    double mx[4];
-    double my[4];
-
-    double dist_min = DBL_MAX;
-    double dist;
-
-    for ( i = 0;i < 4;i++ )
-    {
-      j = ( i + 1 ) % 4;
-      mx[i] = ( lp->x[i] + lp->x[j] ) / 2.0;
-      my[i] = ( lp->y[i] + lp->y[j] ) / 2.0;
-    }
-
-
-    if ( vabs( cross_product( mx[0], my[0], my[2], my[2], xp, yp ) / lp->h ) < lp->w / 2 )
-    {
-      dist = cross_product( lp->x[0], lp->y[0], lp->x[1], lp->y[1], xp, yp ) / lp->w;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-
-      dist = cross_product( lp->x[2], lp->y[2], lp->x[3], lp->y[3], xp, yp ) / lp->w;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-    }
-
-    if ( vabs( cross_product( mx[1], my[1], my[3], my[3], xp, yp ) / lp->w ) < lp->h / 2 )
-    {
-      dist = cross_product( lp->x[1], lp->y[1], lp->x[2], lp->y[2], xp, yp ) / lp->h;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-
-      dist = cross_product( lp->x[3], lp->y[3], lp->x[0], lp->y[0], xp, yp ) / lp->h;
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-    }
-
-    for ( i = 0;i < 4;i++ )
-    {
-      dist = dist_euc2d( lp->x[i], lp->y[i], xp, yp );
-      if ( vabs( dist ) < vabs( dist_min ) )
-        dist_min = dist;
-    }
-
-    return dist_min;
-  }
-
-
-  /*
-   *  Check wheter the candidate in ctx overlap with obstacle feat
-   */
-  bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx )
-  {
-
-    PointSet *feat = (( PruneCtx* ) ctx )->obstacle;
-    double scale = (( PruneCtx* ) ctx )->scale;
-    Pal* pal = (( PruneCtx* ) ctx )->pal;
-
-    if (( feat == lp->feature ) || ( feat->holeOf && feat->holeOf != lp->feature ) )
-    {
-      return true;
-    }
-
-    int n;
-
-    int i, j;
-    double ca, cb;
-
-    n = 0;
-
-    //if (!feat->holeOf)
-    //((Feature*)feat)->fetchCoordinates();
-
-    double dist;
-
-    double distlabel = unit_convert( double( lp->feature->distlabel ),
-                                     pal::PIXEL,
-                                     pal->map_unit,
-                                     pal->dpi, scale, 1 );
-
-
-
-    switch ( feat->type )
-    {
-        //case geos::geom::GEOS_POINT:
-      case GEOS_POINT:
-
-#ifdef _DEBUG_FULL
-        std::cout << "    POINT" << std::endl;
-#endif
-
-        dist = dist_pointToLabel( feat->x[0], feat->y[0], lp );
-
-        if ( dist < 0 )
-          n = 2;
-        else if ( dist < distlabel )
-          n = 1;
-        else
-          n = 0;
-
-        break;
-
-        //case geos::geom::GEOS_LINESTRING:
-      case GEOS_LINESTRING:
-#ifdef _DEBUG_FULL
-        std::cout << "    LINE" << std::endl;
-#endif
-        // Is one of label's boarder cross the line ?
-        for ( i = 0;i < 4;i++ )
-        {
-          for ( j = 0;j < feat->nbPoints - 1;j++ )
-          {
-            ca = cross_product( lp->x[i], lp->y[i], lp->x[( i+1 ) %4], lp->y[( i+1 ) %4],
-                                feat->x[j], feat->y[j] );
-            cb = cross_product( lp->x[i], lp->y[i], lp->x[( i+1 ) %4], lp->y[( i+1 ) %4],
-                                feat->x[j+1], feat->y[j+1] );
-
-            if (( ca < 0 && cb > 0 ) || ( ca > 0 && cb < 0 ) )
-            {
-              ca = cross_product( feat->x[j], feat->y[j], feat->x[j+1], feat->y[j+1],
-                                  lp->x[i], lp->y[i] );
-              cb = cross_product( feat->x[j], feat->y[j], feat->x[j+1], feat->y[j+1],
-                                  lp->x[( i+1 ) %4], lp->y[( i+1 ) %4] );
-              if (( ca < 0 && cb > 0 ) || ( ca > 0 && cb < 0 ) )
-              {
-                n = 1;
-                i = 4;
-                break;
-              }
-            }
-          }
-        }
-        break;
-        //case geos::geom::GEOS_POLYGON:
-      case GEOS_POLYGON:
-#ifdef _DEBUG_FULL
-        std::cout << "    POLY" << std::endl;
-#endif
-        n =  nbLabelPointInPolygon( feat->nbPoints, feat->x, feat->y, lp->x, lp->y );
-
-        //n<1?n=0:n=1;
-        break;
-    }
-
-    // label cost is penalized
-    lp->cost += double( n );
-
-    //if (!feat->holeOf)
-    //((Feature*)feat)->releaseCoordinates();
-
-    return true;
-  }
-
-  bool releaseCallback( PointSet *pset, void *ctx )
-  {
-    if ( pset->holeOf == NULL )
-    {
-      (( Feature* ) pset )->releaseCoordinates();
-    }
-    return true;
-  }
-
-
-  void releaseAllInIndex( RTree<PointSet*, double, 2, double> *obstacles )
-  {
-    /*
-    RTree<PointSet*, double, 2, double>::Iterator it;
-    for (obstacles->GetFirst(it) ; it.IsNotNull(); obstacles->GetNext(it)){
-        if (!(*it)->holeOf){
-            std::cout << "Release obs:" << ((Feature*)(*it))->layer->getName() << "/" << ((Feature*)(*it))->uid << std::endl;
-            ((Feature*)(*it))->releaseCoordinates();
-        }
-    }
-    */
-
-
-    double amin[2];
-    double amax[2];
-
-    amin[0] = amin[1] = -DBL_MAX;
-    amax[0] = amax[1] = DBL_MAX;
-
-    obstacles->Search( amin, amax, releaseCallback, NULL );
-  }
 
 
   typedef struct _filterContext
@@ -602,37 +314,15 @@ namespace pal
     double scale = (( FilterContext* ) ctx )->scale;
     Pal* pal = (( FilterContext* )ctx )->pal;
 
-    if ( pset->holeOf == NULL )
-    {
-      (( Feature* ) pset )->fetchCoordinates();
-    }
-    else
-    {
-      (( Feature* ) pset->holeOf )->fetchCoordinates();
-    }
-
     double amin[2], amax[2];
+    pset->getBoundingBox(amin, amax);
 
-    amin[0] = pset->xmin;
-    amin[1] = pset->ymin;
-    amax[0] = pset->xmax;
-    amax[1] = pset->ymax;
-
-    PruneCtx pruneContext;
+    LabelPosition::PruneCtx pruneContext;
 
     pruneContext.scale = scale;
     pruneContext.obstacle = pset;
     pruneContext.pal = pal;
-    cdtsIndex->Search( amin, amax, pruneLabelPositionCallback, ( void* ) &pruneContext );
-
-    if ( pset->holeOf == NULL )
-    {
-      (( Feature* ) pset )->releaseCoordinates();
-    }
-    else
-    {
-      (( Feature* ) pset->holeOf )->releaseCoordinates();
-    }
+    cdtsIndex->Search( amin, amax, LabelPosition::pruneCallback, ( void* ) &pruneContext );
 
     return true;
   }
@@ -726,6 +416,10 @@ namespace pal
           // check if this selected layers has been selected by user
           if ( strcmp( layersName[i], layer->name ) == 0 )
           {
+            // check for connected features with the same label text and join them
+            if (layer->getMergeConnectedLines())
+              layer->joinConnectedFeatures();
+
             context->layer = layer;
             context->priority = layersFactor[i];
             // lookup for feature (and generates candidates list)
@@ -770,7 +464,6 @@ namespace pal
     delete context;
     lyrsMutex->unlock();
 
-
     prob->nbLabelledLayers = labLayers->size();
     prob->labelledLayersName = new char*[prob->nbLabelledLayers];
     for ( i = 0;i < prob->nbLabelledLayers;i++ )
@@ -788,7 +481,6 @@ namespace pal
 #endif
       delete fFeats;
       delete prob;
-      releaseAllInIndex( obstacles );
       delete obstacles;
       return NULL;
     }
@@ -823,7 +515,7 @@ namespace pal
       prob->featStartId[i] = idlp;
       prob->inactiveCost[i] = pow( 2, 10 - 10 * feat->priority );
 
-      switch ( feat->feature->type )
+      switch ( feat->feature->getGeosType() )
       {
         case GEOS_POINT:
           max_p = point_p;
@@ -836,40 +528,8 @@ namespace pal
           break;
       }
 
-      // If candidates list is smaller than expected
-      if ( max_p > feat->nblp )
-        max_p = feat->nblp;
-      //
-      // sort candidates list, best label to worst
-      sort(( void** ) feat->lPos, feat->nblp, costGrow );
-
-      // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
-      double discrim = 0.0;
-      int stop;
-      do
-      {
-        discrim += 1.0;
-        for ( stop = 0;stop < feat->nblp && feat->lPos[stop]->cost < discrim;stop++ );
-      }
-      while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->cost + 2.0 );
-
-      if ( discrim > 1.5 )
-      {
-        int k;
-        for ( k = 0;k < stop;k++ )
-          feat->lPos[k]->cost = 0.0021;
-      }
-
-      if ( max_p > stop )
-        max_p = stop;
-
-#ifdef _DEBUG_FULL_
-      std::cout << "Nblabel kept for feat " << feat->feature->uid << "/" << feat->feature->layer->name << ": " << max_p << "/" << feat->nblp << std::endl;
-#endif
-
-      // Sets costs for candidates of polygon
-      if ( feat->feature->type == GEOS_POLYGON && ( feat->feature->layer->arrangement == P_FREE || feat->feature->layer->arrangement == P_HORIZ ) )
-        LabelPosition::setCost( stop, feat->lPos, max_p, obstacles, bbx, bby );
+      // sort candidates by cost, skip less interesting ones, calculate polygon costs (if using polygons)
+      max_p = CostCalculator::finalizeCandidatesCosts( feat, max_p, obstacles, bbx, bby );
 
 #ifdef _DEBUG_FULL_
       std::cout << "All Cost are setted" << std::endl;
@@ -892,8 +552,7 @@ namespace pal
       {
         lp = feat->lPos[j];
         //lp->insertIntoIndex(prob->candidates);
-        lp->id = idlp;
-        lp->probFeat = i; // bugfix #1 (maxence 10/23/2008)
+        lp->setProblemIds( i, idlp ); // bugfix #1 (maxence 10/23/2008)
       }
       fFeats->push_back( feat );
     }
@@ -920,37 +579,20 @@ namespace pal
       for ( i = 0;i < feat->nblp;i++, idlp++ )  // foreach label candidate
       {
         lp = feat->lPos[i];
-        lp->nbOverlap = 0;
+        lp->resetNumOverlaps();
 
-        if ( lp->cost >= 1 )
-        {
-          std::cout << " Warning: lp->cost == " << lp->cost << " (from feat: " << lp->feature->uid << "/" << lp->feature->layer->name << ")" << std::endl;
-          lp->cost -= int ( lp->cost ); // label cost up to 1
-        }
+        // make sure that candidate's cost is less than 1
+        lp->validateCost();
 
         prob->labelpositions[idlp] = lp;
         //prob->feat[idlp] = j;
 
+        lp->getBoundingBox(amin, amax);
 
-        amin[0] = DBL_MAX;
-        amax[0] = -DBL_MAX;
-        amin[1] = DBL_MAX;
-        amax[1] = -DBL_MAX;
-        for ( c = 0;c < 4;c++ )
-        {
-          if ( lp->x[c] < amin[0] )
-            amin[0] = lp->x[c];
-          if ( lp->x[c] > amax[0] )
-            amax[0] = lp->x[c];
-          if ( lp->y[c] < amin[1] )
-            amin[1] = lp->y[c];
-          if ( lp->y[c] > amax[1] )
-            amax[1] = lp->y[c];
-        }
         // lookup for overlapping candidate
-        prob->candidates->Search( amin, amax, countOverlapCallback, ( void* ) lp );
+        prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, ( void* ) lp );
 
-        nbOverlaps += lp->nbOverlap;
+        nbOverlaps += lp->getNumOverlaps();
 #ifdef _DEBUG_FULL_
         std::cout << "Nb overlap for " << idlp << "/" << prob->nblp - 1 << " : " << lp->nbOverlap << std::endl;
 #endif
@@ -962,7 +604,6 @@ namespace pal
     delete fFeats;
 
     //delete candidates;
-    releaseAllInIndex( obstacles );
     delete obstacles;
 
 
@@ -979,17 +620,10 @@ namespace pal
               << prob->nbOverlap << "\t";
 #endif
 
-    prob->reduce();
-
-#ifdef _VERBOSE_
-    std::cerr << prob->nblp << "\t"
-              << prob->nbOverlap;
-#endif
-
     return prob;
   }
 
-  std::list<Label*>* Pal::labeller( double scale, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( double scale, double bbox[4], PalStat **stats, bool displayAll )
   {
 
 #ifdef _DEBUG_FULL_
@@ -1013,7 +647,7 @@ namespace pal
     }
     lyrsMutex->unlock();
 
-    std::list<Label*> * solution = labeller( nbLayers, layersName, priorities, scale, bbox, stats, displayAll );
+    std::list<LabelPosition*> * solution = labeller( nbLayers, layersName, priorities, scale, bbox, stats, displayAll );
 
     delete[] layersName;
     delete[] priorities;
@@ -1024,7 +658,7 @@ namespace pal
   /*
    * BIG MACHINE
    */
-  std::list<Label*>* Pal::labeller( int nbLayers, char **layersName , double *layersFactor, double scale, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( int nbLayers, char **layersName , double *layersFactor, double scale, double bbox[4], PalStat **stats, bool displayAll )
   {
 #ifdef _DEBUG_
     std::cout << "LABELLER (selection)" << std::endl;
@@ -1062,6 +696,9 @@ namespace pal
     << "height=\"" << convert2pt( bbox[3] - bbox[1], scale, dpi )  << "\">" << std::endl; // TODO xmax ymax
 #endif
 
+    QTime t;
+    t.start();
+
     // First, extract the problem
     // TODO which is the minimum scale ? (> 0, >= 0, >= 1, >1 )
     if ( scale < 1 || ( prob = extract( nbLayers, layersName, layersFactor, bbox[0], bbox[1], bbox[2], bbox[3], scale,
@@ -1088,8 +725,21 @@ namespace pal
       // nothing to be done => return an empty result set
       if ( stats )
         ( *stats ) = new PalStat();
-      return new std::list<Label*>();
+      return new std::list<LabelPosition*>();
     }
+
+    std::cout << "PAL EXTRACT: " << t.elapsed() / 1000.0 << " s" << std::endl;
+    t.restart();
+
+    // reduce number of candidates
+    // (remove candidates which surely won't be used)
+    prob->reduce();
+
+#ifdef _VERBOSE_
+    std::cerr << prob->nblp << "\t"
+              << prob->nbOverlap;
+#endif
+
 
     prob->displayAll = displayAll;
 
@@ -1101,16 +751,21 @@ namespace pal
 #endif
 
     // search a solution
-    if ( searchMethod != CHAIN )
-      prob->popmusic();
-    else
+    if ( searchMethod == FALP )
+      prob->init_sol_falp();
+    else if ( searchMethod == CHAIN )
       prob->chain_search();
+    else
+      prob->popmusic();
+
+    std::cout << "PAL SEARCH (" << searchMethod << "): " << t.elapsed() / 1000.0 << " s" << std::endl;
+    t.restart();
 
     // Post-Optimization
     //prob->post_optimization();
 
 
-    std::list<Label*> * solution = prob->getSolution( displayAll );
+    std::list<LabelPosition*> * solution = prob->getSolution( displayAll );
 
     if ( stats )
       *stats = prob->getStats();
@@ -1137,6 +792,51 @@ namespace pal
 
     return solution;
   }
+
+  Problem* Pal::extractProblem(double scale, double bbox[4])
+  {
+    // find out: nbLayers, layersName, layersFactor
+    lyrsMutex->lock();
+    int nbLayers = layers->size();
+
+    char **layersName = new char*[nbLayers];
+    double *priorities = new double[nbLayers];
+    Layer *layer;
+    int i = 0;
+    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end();it++ )
+    {
+      layer = *it;
+      layersName[i] = layer->name;
+      priorities[i] = layer->defaultPriority;
+      i++;
+    }
+    lyrsMutex->unlock();
+
+    Problem* prob = extract( nbLayers, layersName, priorities, bbox[0], bbox[1], bbox[2], bbox[3], scale, NULL);
+
+    delete[] layersName;
+    delete[] priorities;
+
+    return prob;
+  }
+
+  std::list<LabelPosition*>* Pal::solveProblem(Problem* prob, bool displayAll )
+  {
+    if (prob == NULL)
+      return new std::list<LabelPosition*>();
+
+    prob->reduce();
+
+    if ( searchMethod == FALP )
+      prob->init_sol_falp();
+    else if ( searchMethod == CHAIN )
+      prob->chain_search();
+    else
+      prob->popmusic();
+
+    return prob->getSolution( displayAll );
+  }
+
 
   void Pal::setPointP( int point_p )
   {
@@ -1266,6 +966,9 @@ namespace pal
         tenure = 10;
         ejChainDeg = 50;
         candListSize = 0.2;
+        break;
+      case FALP:
+        searchMethod = method;
         break;
       default:
         std::cerr << "Unknown search method..." << std::endl;

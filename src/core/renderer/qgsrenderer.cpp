@@ -39,6 +39,11 @@ void QgsRenderer::setSelectionColor( QColor color )
   mSelectionColor = color;
 }
 
+QColor QgsRenderer::selectionColor()
+{
+  return mSelectionColor;
+}
+
 bool QgsRenderer::containsPixmap() const
 {
   //default implementation returns true only for points

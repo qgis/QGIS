@@ -1,0 +1,116 @@
+<!DOCTYPE qgis_style>
+<qgis_style version="0" >
+ <symbols>
+  <symbol type="marker" name="blue square" >
+    <layer class="SimpleMarker" locked="0" >
+      <prop k="angle" v="0" />
+      <prop k="color" v="85,170,255" />
+      <prop k="color_border" v="0,0,255" />
+      <prop k="name" v="rectangle" />
+      <prop k="size" v="9" />
+    </layer>
+  </symbol>
+  <symbol type="marker" name="car" >
+    <layer class="SvgMarker" locked="0" >
+      <prop k="angle" v="0" />
+      <prop k="name" v="gpsicons/car.svg" />
+      <prop k="size" v="18" />
+    </layer>
+  </symbol>
+  <symbol type="fill" name="funny fill" >
+    <layer class="SimpleFill" locked="0" >
+      <prop k="color" v="85,170,0" />
+      <prop k="color_border" v="0,0,0" />
+      <prop k="style" v="b_diagonal" />
+    </layer>
+    <layer class="SimpleFill" locked="0" >
+      <prop k="color" v="255,0,0" />
+      <prop k="color_border" v="0,0,0" />
+      <prop k="style" v="f_diagonal" />
+    </layer>
+  </symbol>
+  <symbol type="marker" name="green diamond" >
+    <layer class="SimpleMarker" locked="0" >
+      <prop k="angle" v="0" />
+      <prop k="color" v="0,209,153" />
+      <prop k="color_border" v="0,170,127" />
+      <prop k="name" v="diamond" />
+      <prop k="size" v="9" />
+    </layer>
+  </symbol>
+  <symbol type="line" name="highway" >
+    <layer class="SimpleLine" locked="1" >
+      <prop k="color" v="0,0,0" />
+      <prop k="penstyle" v="solid" />
+      <prop k="width" v="5" />
+    </layer>
+    <layer class="SimpleLine" locked="0" >
+      <prop k="color" v="255,255,0" />
+      <prop k="penstyle" v="solid" />
+      <prop k="width" v="3" />
+    </layer>
+    <layer class="SimpleLine" locked="1" >
+      <prop k="color" v="0,0,0" />
+      <prop k="penstyle" v="solid" />
+      <prop k="width" v="1" />
+    </layer>
+  </symbol>
+  <symbol type="marker" name="orange star" >
+    <layer class="SimpleMarker" locked="0" >
+      <prop k="angle" v="0" />
+      <prop k="color" v="255,85,0" />
+      <prop k="color_border" v="85,0,0" />
+      <prop k="name" v="regular_star" />
+      <prop k="size" v="18" />
+    </layer>
+  </symbol>
+  <symbol type="line" name="railway" >
+    <layer class="SimpleLine" locked="0" >
+      <prop k="color" v="0,0,0" />
+      <prop k="penstyle" v="solid" />
+      <prop k="width" v="3" />
+    </layer>
+    <layer class="SimpleLine" locked="1" >
+      <prop k="color" v="255,255,255" />
+      <prop k="penstyle" v="dot" />
+      <prop k="width" v="2" />
+    </layer>
+  </symbol>
+  <symbol type="line" name="triangle line" >
+    <layer class="MarkerLine" locked="0" >
+      <prop k="interval" v="11" />
+      <prop k="rotate" v="1" />
+    </layer>
+  </symbol>
+  <symbol type="fill" name="yellow fill" >
+    <layer class="SimpleFill" locked="0" >
+      <prop k="color" v="255,255,127" />
+      <prop k="color_border" v="150,150,74" />
+      <prop k="style" v="solid" />
+    </layer>
+  </symbol>
+  <symbol type="marker" name="@triangle line@0" >
+    <layer class="SimpleMarker" locked="0" >
+      <prop k="angle" v="0" />
+      <prop k="color" v="255,0,0" />
+      <prop k="color_border" v="170,0,0" />
+      <prop k="name" v="equilateral_triangle" />
+      <prop k="size" v="12" />
+    </layer>
+  </symbol>
+ </symbols>
+ <colorramps>
+  <colorramp type="gradient" name="blue" >
+    <prop k="color1" v="0,0,255" />
+    <prop k="color2" v="207,205,255" />
+  </colorramp>
+  <colorramp type="gradient" name="green" >
+    <prop k="color1" v="0,170,0" />
+    <prop k="color2" v="170,255,127" />
+  </colorramp>
+  <colorramp type="gradient" name="red-yellow" >
+    <prop k="color1" v="255,0,0" />
+    <prop k="color2" v="255,255,0" />
+  </colorramp>
+ </colorramps>
+</qgis_style>

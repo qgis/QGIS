@@ -27,3 +27,4 @@
 %Include qgsrubberband.sip
 %Include qgsvertexmarker.sip
 
+%Include symbology-ng-gui.sip

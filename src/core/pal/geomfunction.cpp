@@ -626,5 +626,39 @@ namespace pal
 #endif
 
 
+    void findLineCircleIntersection(double cx, double cy, double radius,
+                                  double x1, double y1, double x2, double y2,
+                                  double& xRes, double& yRes)
+    {
+      double dx = x2 - x1;
+      double dy = y2 - y1;
+
+      double A = dx * dx + dy * dy;
+      double B = 2 * (dx * (x1 - cx) + dy * (y1 - cy));
+      double C = (x1 - cx) * (x1 - cx) + (y1 - cy) * (y1 - cy) - radius * radius;
+
+      double det = B * B - 4 * A * C;
+      if (A <= 0.0000001 || det < 0)
+          // Should never happen, No real solutions.
+          return;
+
+      if (det == 0)
+      {
+          // Could potentially happen.... One solution.
+          double t = -B / (2 * A);
+          xRes = x1 + t * dx;
+          yRes = y1 + t * dy;
+      }
+      else
+      {
+          // Two solutions.
+          // Always use the 1st one
+          // We only really have one solution here, as we know the line segment will start in the circle and end outside
+          double t = (-B + sqrt(det)) / (2 * A);
+          xRes = x1 + t * dx;
+          yRes = y1 + t * dy;
+      }
+    }
+
 
 } // end namespace

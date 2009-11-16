@@ -11,6 +11,7 @@ SUBDIRS (copyright_label
   ogr_converter
   diagram_overlay
   evis
+  labeling
   )
 
 IF (POSTGRES_FOUND)
@@ -30,3 +31,4 @@ IF (GRASS_FOUND)
 ENDIF (GRASS_FOUND)
 
 INSTALL(FILES qgisplugin.h qgsrendererplugin.h DESTINATION ${QGIS_INCLUDE_DIR})
+

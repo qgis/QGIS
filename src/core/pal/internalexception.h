@@ -31,8 +31,8 @@
 #include <config.h>
 #endif
 
-#ifndef _EXCEPTION_H
-#define _EXCEPTION_H
+#ifndef INTERNAL_EXCEPTION_H
+#define INTERNAL_EXCEPTION_H
 
 #include <exception>
 

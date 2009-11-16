@@ -321,7 +321,7 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>SVG paths</string>
@@ -363,6 +363,22 @@
           </item>
           <item row="1" column="0" colspan="4">
            <widget class="QListWidget" name="mListSVGPaths"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Compatibility</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QCheckBox" name="chkUseSymbologyNG">
+            <property name="text">
+             <string>Use new generation symbology for rendering</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

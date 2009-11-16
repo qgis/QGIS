@@ -3,6 +3,7 @@ This file contains code for conversion between various (often nested) mapped typ
 which are not wrapped by PyQt:
 - QVector< QVector<TYPE> >
 - QVector< QVector< QVector<TYPE> > >
+- QList< QList<TYPE> >
 - QSet<int>
 - QSet<TYPE>
 - QMap<int, QMap<int, TYPE> >
@@ -19,6 +20,7 @@ which are not wrapped by PyQt:
 #if (PY_VERSION_HEX < 0x02050000)
 typedef int Py_ssize_t;
 #endif
+
 %End
 
 
@@ -181,6 +183,85 @@ template <TYPE>
 %End
 
 };
+
+
+
+template <TYPE>
+%MappedType QList< QList<TYPE> >
+{
+%TypeHeaderCode
+#include <QList>
+%End
+
+%ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
+
+  if ((l = PyList_New(sipCpp->size())) == NULL)
+    return NULL;
+
+  const sipMappedType* qlist_type = sipFindMappedType("QList<TYPE>");
+
+  // Set the list elements.
+  for (int i = 0; i < sipCpp->size(); ++i)
+  {
+    QList<TYPE>* t = new QList<TYPE>(sipCpp->at(i));
+    PyObject *tobj;
+
+    if ((tobj = sipConvertFromMappedType(t, qlist_type, sipTransferObj)) == NULL)
+    {
+      Py_DECREF(l);
+      delete t;
+      return NULL;
+    }
+    PyList_SET_ITEM(l, i, tobj);
+  }
+
+  return l;
+%End
+
+%ConvertToTypeCode
+  const sipMappedType* qlist_type = sipFindMappedType("QList<TYPE>");
+
+  // Check the type if that is all that is required.
+  if (sipIsErr == NULL)
+  {
+    if (!PyList_Check(sipPy))
+      return 0;
+
+    for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, SIP_NOT_NONE))
+        return 0;
+
+    return 1;
+  }
+
+
+  QList< QList<TYPE> > *ql = new QList< QList<TYPE> >;
+
+  for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+  {
+    int state;
+    //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToInstance(PyList_GET_ITEM(sipPy, i), sipClass_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QList<TYPE> * t = reinterpret_cast< QList<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+
+    if (*sipIsErr)
+    {
+      sipReleaseInstance(t, sipClass_TYPE, state);
+      delete ql;
+      return 0;
+    }
+    ql->append(*t);
+    sipReleaseInstance(t, sipClass_TYPE, state);
+  }
+
+  *sipCppPtr = ql;
+  return sipGetState(sipTransferObj);
+%End
+
+};
+
+
 
 
 %MappedType QSet<int>

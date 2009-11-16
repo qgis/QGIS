@@ -38,6 +38,13 @@
 #include "qgsattributetabledialog.h"
 #include "qgsencodingfiledialog.h"
 
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
+
+#include "qgssinglesymbolrendererv2.h"
+#include "qgscategorizedsymbolrendererv2.h"
+#include "qgsgraduatedsymbolrendererv2.h"
+
 #include <iostream>
 #include <QAction>
 #include <QCoreApplication>
@@ -152,7 +159,10 @@ void QgsLegendLayer::refreshSymbology( const QString& key, double widthScale )
   if ( theMapLayer->type() == QgsMapLayer::VectorLayer ) // VECTOR
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( theMapLayer );
-    vectorLayerSymbology( vlayer, widthScale ); // get and change symbology
+    if ( vlayer->isUsingRendererV2() )
+      vectorLayerSymbologyV2( vlayer );
+    else
+      vectorLayerSymbology( vlayer, widthScale ); // get and change symbology
   }
   else // RASTER
   {
@@ -242,7 +252,7 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
     }
 
     QPixmap pix = QPixmap::fromImage( img ); // convert to pixmap
-    itemList.push_back( std::make_pair( values, pix ) );
+    itemList.append( qMakePair( values, pix ) );
   }
 
 
@@ -261,10 +271,23 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
         {
           classfieldname = fields[*it].name();
         }
-        itemList.push_front( std::make_pair( classfieldname, QPixmap() ) );
+        itemList.append( qMakePair( classfieldname, QPixmap() ) );
       }
     }
   }
+
+  changeSymbologySettings( layer, itemList );
+}
+
+
+void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
+{
+  QSize iconSize(16,16);
+
+  QSettings settings;
+  bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
+
+  SymbologyList itemList = layer->rendererV2()->legendSymbologyItems(iconSize);
 
   changeSymbologySettings( layer, itemList );
 }
@@ -273,7 +296,7 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
 {
   SymbologyList itemList;
   QPixmap legendpixmap = layer->legendAsPixmap( true ).scaled( 20, 20, Qt::KeepAspectRatio );
-  itemList.push_back( std::make_pair( "", legendpixmap ) );
+  itemList.append( qMakePair( QString(), legendpixmap ) );
 
   changeSymbologySettings( layer, itemList );
 
