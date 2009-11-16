@@ -127,10 +127,10 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to the default theme directory.
     static const QString defaultThemePath();
 
-    //! Returns the path to user's style. Added in QGIS 1.2
+    //! Returns the path to user's style. Added in QGIS 1.4
     static const QString userStyleV2Path();
 
-    //! Returns the path to default style (works as a starting point). Added in QGIS 1.2
+    //! Returns the path to default style (works as a starting point). Added in QGIS 1.4
     static const QString defaultStyleV2Path();
 
     //! Alters prefix path - used by 3rd party apps

@@ -177,16 +177,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Sets the renderer. If a renderer is already present, it is deleted */
     void setRenderer( QgsRenderer * r );
     
-    /** Return renderer V2. Added in QGIS 1.2 */
+    /** Return renderer V2. Added in QGIS 1.4 */
     QgsFeatureRendererV2* rendererV2();
-    /** Set renderer V2. Added in QGIS 1.2 */
+    /** Set renderer V2. Added in QGIS 1.4 */
     void setRendererV2(QgsFeatureRendererV2* r);
-    /** Return whether using renderer V2. Added in QGIS 1.2 */
+    /** Return whether using renderer V2. Added in QGIS 1.4 */
     bool isUsingRendererV2();
-    /** set whether to use renderer V2 for drawing. Added in QGIS 1.2 */
+    /** set whether to use renderer V2 for drawing. Added in QGIS 1.4 */
     void setUsingRendererV2(bool usingRendererV2);
 
+    /** Draw layer with renderer V2. Added in QGIS 1.4 */
     void drawRendererV2( QgsRenderContext& rendererContext, bool labeling );
+    /** Draw layer with renderer V2 using symbol levels. Added in QGIS 1.4 */
     void drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling );
 
     /** Returns point, line or polygon */
@@ -359,6 +361,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Label is on */
     bool hasLabelsEnabled( void ) const;
 
+    /** Assign a custom labeling engine with layer. Added in v1.4 */
     void setLabelingEngine(QgsLabelingEngineInterface* engine);
 
     /** Returns true if the provider is in editing mode */

@@ -101,7 +101,7 @@ class CORE_EXPORT QgsRenderer
     virtual QgsRenderer* clone() const = 0;
     /** Change selection color */
     static void setSelectionColor( QColor color );
-    /** Get selection color */
+    /** Get selection color. Added in QGIS v1.4 */
     static QColor selectionColor();
     /**Returns true if this renderer returns a pixmap in the render method (e.g. for point data or diagrams)*/
     virtual bool containsPixmap() const;

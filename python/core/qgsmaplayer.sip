@@ -145,13 +145,13 @@ public:
     bool writeXML(QDomNode & layer_node, QDomDocument & document) const;
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.3 */
+     *  @note Added in v1.4 */
     void setCustomProperty( const QString& key, const QVariant& value );
     /** Read a custom property from layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.3 */
+     *  @note Added in v1.4 */
     QVariant customProperty( const QString& value, const QVariant& defaultValue = QVariant() ) const;
     /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.3 */
+     *  @note Added in v1.4 */
     void removeCustomProperty( const QString& key );
 
     /** Read the symbology for the current layer from the Dom node supplied. 
