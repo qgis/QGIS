@@ -503,6 +503,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
   switch ( editType )
   {
+    case QgsVectorLayer::Classification:
     case QgsVectorLayer::UniqueValues:
     case QgsVectorLayer::Enumeration:
     case QgsVectorLayer::ValueMap:
