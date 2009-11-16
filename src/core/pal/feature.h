@@ -88,16 +88,14 @@ namespace pal
       void setDistLabel( double dist ) { distlabel = dist; }
 
     protected:
+      Layer *layer;
+      PalGeometry *userGeom;
       double label_x;
       double label_y;
+      double distlabel;
       LabelInfo* labelInfo; // optional
 
       char *uid;
-      Layer *layer;
-
-      double distlabel;
-
-      PalGeometry *userGeom;
 
       // array of parts - possibly not necessary
       //int nPart;

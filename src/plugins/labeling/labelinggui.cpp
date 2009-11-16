@@ -148,7 +148,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* pare
     radLineParallel, radLineCurved, radLineHorizontal, // line
     radAroundCentroid, radPolygonHorizontal, radPolygonFree, radPolygonPerimeter // polygon
   };
-  for ( int i = 0; i < sizeof( placementRadios ) / sizeof( QRadioButton* ); i++ )
+  for ( unsigned int i = 0; i < sizeof( placementRadios ) / sizeof( QRadioButton* ); i++ )
     connect( placementRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateOptions() ) );
 }
 

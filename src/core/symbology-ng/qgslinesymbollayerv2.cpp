@@ -101,9 +101,10 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
 class MyLine
 {
   public:
-    MyLine( QPointF p1, QPointF p2 )
+    MyLine( QPointF p1, QPointF p2 ) : mVertical(false), mIncreasing(false), mT(0.0), mLength(0.0)
     {
-      if ( p1 == p2 ) return; // invalid
+      if ( p1 == p2 )
+        return; // invalid
 
       // tangent and direction
       if ( p1.x() == p2.x() )

@@ -97,8 +97,8 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     void setSourceColorRamp( QgsVectorColorRampV2* ramp );
 
   protected:
-    QgsRangeList mRanges;
     QString mAttrName;
+    QgsRangeList mRanges;
     Mode mMode;
     QgsSymbolV2* mSourceSymbol;
     QgsVectorColorRampV2* mSourceColorRamp;

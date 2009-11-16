@@ -98,13 +98,12 @@ namespace pal
       double min_scale;
       double max_scale;
 
-      Arrangement arrangement;
-
-      LabelMode mode;
       bool mergeLines;
 
       /** optional flags used for some placement methods */
       unsigned long arrangementFlags;
+      LabelMode mode;
+      Arrangement arrangement;
 
       // indexes (spatial and id)
       RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;

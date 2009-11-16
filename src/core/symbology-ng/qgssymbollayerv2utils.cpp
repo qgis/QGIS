@@ -269,7 +269,7 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
   if ( polyline.count() < 2 )
     return newLine;
 
-  double angle, t_new, t_old = 0;
+  double angle = 0.0, t_new, t_old = 0;
   QPointF pt_old, pt_new;
   QPointF p1 = polyline[0], p2;
 

@@ -732,6 +732,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Geometry type as defined in enum WkbType (qgis.h) */
     int mWkbType;
 
+    QgsUndoCommand * mActiveCommand;
+
     /** Renderer object which holds the information about how to display the features */
     QgsRenderer *mRenderer;
     
@@ -778,8 +780,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QSet<int> mFetchConsidered;
     QgsGeometryMap::iterator mFetchChangedGeomIt;
     QgsFeatureList::iterator mFetchAddedFeaturesIt;
-
-    QgsUndoCommand * mActiveCommand;
 };
 
 #endif
