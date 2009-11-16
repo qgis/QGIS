@@ -117,9 +117,12 @@ void Labeling::initGui()
   mQGisIface->addToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Labeling" ), mQActionPointer );
 
+  /*
+  // for testing only
   mActionTool = new QAction( "Ltool", this );
   mQGisIface->addToolBarIcon( mActionTool );
   connect( mActionTool, SIGNAL( triggered() ), this, SLOT( setTool() ) );
+  */
 
   mTool = new LabelingTool( mLBL, mQGisIface->mapCanvas() );
 
@@ -204,8 +207,11 @@ void Labeling::unload()
   mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 
+  /*
+  // for testing only
   mQGisIface->removeToolBarIcon( mActionTool );
   delete mActionTool;
+  */
 
   delete mLBL;
 }
