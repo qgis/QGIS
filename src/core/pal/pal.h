@@ -124,7 +124,7 @@ namespace pal
    *
    *  \author Maxence Laurent <maxence _dot_ laurent _at_ heig-vd _dot_ ch>
    */
-  class Pal
+  class CORE_EXPORT Pal
   {
       friend class Problem;
       friend class FeaturePart;

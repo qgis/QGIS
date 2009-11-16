@@ -8,24 +8,24 @@
 
 class QgsVectorColorBrewerColorRampV2;
 
-class QgsVectorColorBrewerColorRampV2Dialog : public QDialog, private Ui::QgsVectorColorBrewerColorRampV2DialogBase
+class GUI_EXPORT QgsVectorColorBrewerColorRampV2Dialog : public QDialog, private Ui::QgsVectorColorBrewerColorRampV2DialogBase
 {
-  Q_OBJECT
-      
-public:
-  QgsVectorColorBrewerColorRampV2Dialog(QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent = NULL);
-  
-public slots:
-  void setSchemeName();
-  void setColors();
+    Q_OBJECT
 
-  void populateVariants();
+  public:
+    QgsVectorColorBrewerColorRampV2Dialog( QgsVectorColorBrewerColorRampV2* ramp, QWidget* parent = NULL );
 
-protected:
-  
-  void updatePreview();
+  public slots:
+    void setSchemeName();
+    void setColors();
 
-  QgsVectorColorBrewerColorRampV2* mRamp;
+    void populateVariants();
+
+  protected:
+
+    void updatePreview();
+
+    QgsVectorColorBrewerColorRampV2* mRamp;
 };
 
 #endif

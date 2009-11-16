@@ -60,8 +60,8 @@
 
 namespace pal
 {
-  Feature::Feature(Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly)
-    : layer(l), userGeom(userG), label_x(lx), label_y(ly), distlabel(0), labelInfo(NULL)
+  Feature::Feature( Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly )
+      : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL )
   {
     uid = new char[strlen( geom_id ) +1];
     strcpy( uid, geom_id );
@@ -75,13 +75,13 @@ namespace pal
   ////////////
 
   FeaturePart::FeaturePart( Feature *feat, const GEOSGeometry* geom )
-   : f(feat), nbHoles(0), holes(NULL)
+      : f( feat ), nbHoles( 0 ), holes( NULL )
   {
     // we'll remove const, but we won't modify that geometry
-    the_geom = const_cast<GEOSGeometry*>(geom);
+    the_geom = const_cast<GEOSGeometry*>( geom );
     ownsGeom = false; // geometry is owned by Feature class
 
-    extractCoords(geom);
+    extractCoords( geom );
 
     holeOf = NULL;
     for ( int i = 0;i < nbHoles;i++ )
@@ -95,7 +95,7 @@ namespace pal
   {
     // X and Y are deleted in PointSet
 
-    if (holes)
+    if ( holes )
     {
       for ( int i = 0; i < nbHoles;i++ )
         delete holes[i];
@@ -103,141 +103,141 @@ namespace pal
       holes = NULL;
     }
 
-    if (ownsGeom)
+    if ( ownsGeom )
     {
-      GEOSGeom_destroy(the_geom);
+      GEOSGeom_destroy( the_geom );
       the_geom = NULL;
     }
   }
 
 
-/*
- * \brief read coordinates from a GEOS geom
- */
-void FeaturePart::extractCoords( const GEOSGeometry* geom )
-{
-  int i, j;
-
-  const GEOSCoordSequence *coordSeq;
-
-  type = GEOSGeomTypeId( geom );
-
-  if ( type == GEOS_POLYGON )
+  /*
+   * \brief read coordinates from a GEOS geom
+   */
+  void FeaturePart::extractCoords( const GEOSGeometry* geom )
   {
-    if ( GEOSGetNumInteriorRings( geom ) > 0 )
+    int i, j;
+
+    const GEOSCoordSequence *coordSeq;
+
+    type = GEOSGeomTypeId( geom );
+
+    if ( type == GEOS_POLYGON )
     {
-      // set nbHoles, holes member variables
-      nbHoles = GEOSGetNumInteriorRings( geom );
-      holes = new PointSet*[nbHoles];
-
-      for ( i = 0;i < nbHoles;i++ )
+      if ( GEOSGetNumInteriorRings( geom ) > 0 )
       {
-        holes[i] = new PointSet();
-        holes[i]->holeOf = NULL;
+        // set nbHoles, holes member variables
+        nbHoles = GEOSGetNumInteriorRings( geom );
+        holes = new PointSet*[nbHoles];
 
-        const GEOSGeometry* interior =  GEOSGetInteriorRingN( geom, i );
-        holes[i]->nbPoints = GEOSGetNumCoordinates( interior );
-        holes[i]->x = new double[holes[i]->nbPoints];
-        holes[i]->y = new double[holes[i]->nbPoints];
-
-        holes[i]->xmin = holes[i]->ymin = DBL_MAX;
-        holes[i]->xmax = holes[i]->ymax = -DBL_MAX;
-
-        coordSeq = GEOSGeom_getCoordSeq( interior );
-
-        for ( j = 0;j < holes[i]->nbPoints;j++ )
+        for ( i = 0;i < nbHoles;i++ )
         {
-          GEOSCoordSeq_getX( coordSeq, j, &holes[i]->x[j] );
-          GEOSCoordSeq_getY( coordSeq, j, &holes[i]->y[j] );
+          holes[i] = new PointSet();
+          holes[i]->holeOf = NULL;
 
-          holes[i]->xmax = holes[i]->x[j] > holes[i]->xmax ? holes[i]->x[j] : holes[i]->xmax;
-          holes[i]->xmin = holes[i]->x[j] < holes[i]->xmin ? holes[i]->x[j] : holes[i]->xmin;
+          const GEOSGeometry* interior =  GEOSGetInteriorRingN( geom, i );
+          holes[i]->nbPoints = GEOSGetNumCoordinates( interior );
+          holes[i]->x = new double[holes[i]->nbPoints];
+          holes[i]->y = new double[holes[i]->nbPoints];
 
-          holes[i]->ymax = holes[i]->y[j] > holes[i]->ymax ? holes[i]->y[j] : holes[i]->ymax;
-          holes[i]->ymin = holes[i]->y[j] < holes[i]->ymin ? holes[i]->y[j] : holes[i]->ymin;
+          holes[i]->xmin = holes[i]->ymin = DBL_MAX;
+          holes[i]->xmax = holes[i]->ymax = -DBL_MAX;
+
+          coordSeq = GEOSGeom_getCoordSeq( interior );
+
+          for ( j = 0;j < holes[i]->nbPoints;j++ )
+          {
+            GEOSCoordSeq_getX( coordSeq, j, &holes[i]->x[j] );
+            GEOSCoordSeq_getY( coordSeq, j, &holes[i]->y[j] );
+
+            holes[i]->xmax = holes[i]->x[j] > holes[i]->xmax ? holes[i]->x[j] : holes[i]->xmax;
+            holes[i]->xmin = holes[i]->x[j] < holes[i]->xmin ? holes[i]->x[j] : holes[i]->xmin;
+
+            holes[i]->ymax = holes[i]->y[j] > holes[i]->ymax ? holes[i]->y[j] : holes[i]->ymax;
+            holes[i]->ymin = holes[i]->y[j] < holes[i]->ymin ? holes[i]->y[j] : holes[i]->ymin;
+          }
+
+          reorderPolygon( holes[i]->nbPoints, holes[i]->x, holes[i]->y );
         }
-
-        reorderPolygon( holes[i]->nbPoints, holes[i]->x, holes[i]->y );
       }
+
+      // use exterior ring for the extraction of coordinates that follows
+      geom = GEOSGetExteriorRing( geom );
+    }
+    else
+    {
+      nbHoles = 0;
+      holes = NULL;
     }
 
-    // use exterior ring for the extraction of coordinates that follows
-    geom = GEOSGetExteriorRing( geom );
-  }
-  else
-  {
-    nbHoles = 0;
-    holes = NULL;
-  }
+    // find out number of points
+    nbPoints = GEOSGetNumCoordinates( geom );
+    coordSeq = GEOSGeom_getCoordSeq( geom );
 
-  // find out number of points
-  nbPoints = GEOSGetNumCoordinates( geom );
-  coordSeq = GEOSGeom_getCoordSeq( geom );
+    // initialize bounding box
+    xmin = ymin = DBL_MAX;
+    xmax = ymax = -DBL_MAX;
 
-  // initialize bounding box
-  xmin = ymin = DBL_MAX;
-  xmax = ymax = -DBL_MAX;
+    // initialize coordinate arrays
+    x = new double[nbPoints];
+    y = new double[nbPoints];
 
-  // initialize coordinate arrays
-  x = new double[nbPoints];
-  y = new double[nbPoints];
-
-  for ( i = 0;i < nbPoints;i++ )
-  {
-    GEOSCoordSeq_getX( coordSeq, i, &x[i] );
-    GEOSCoordSeq_getY( coordSeq, i, &y[i] );
-
-    xmax = x[i] > xmax ? x[i] : xmax;
-    xmin = x[i] < xmin ? x[i] : xmin;
-
-    ymax = y[i] > ymax ? y[i] : ymax;
-    ymin = y[i] < ymin ? y[i] : ymin;
-  }
-}
-
-void FeaturePart::removeDuplicatePoints()
-{
-  // TODO add simplify() process
-  int new_nbPoints = nbPoints;
-  bool *ok = new bool[new_nbPoints];
-  int i,j;
-
-  for ( i = 0;i < nbPoints;i++ )
-  {
-    ok[i] = true;
-    j = ( i + 1 ) % nbPoints;
-    if ( i == j )
-      break;
-    if ( vabs( x[i] - x[j] ) < 0.0000001 && vabs( y[i] - y[j] ) < 0.0000001 )
+    for ( i = 0;i < nbPoints;i++ )
     {
-      new_nbPoints--;
-      ok[i] = false;
+      GEOSCoordSeq_getX( coordSeq, i, &x[i] );
+      GEOSCoordSeq_getY( coordSeq, i, &y[i] );
+
+      xmax = x[i] > xmax ? x[i] : xmax;
+      xmin = x[i] < xmin ? x[i] : xmin;
+
+      ymax = y[i] > ymax ? y[i] : ymax;
+      ymin = y[i] < ymin ? y[i] : ymin;
     }
   }
 
-  if ( new_nbPoints < nbPoints )
+  void FeaturePart::removeDuplicatePoints()
   {
-    double *new_x = new double[new_nbPoints];
-    double *new_y = new double[new_nbPoints];
-    for ( i = 0, j = 0;i < nbPoints;i++ )
+    // TODO add simplify() process
+    int new_nbPoints = nbPoints;
+    bool *ok = new bool[new_nbPoints];
+    int i, j;
+
+    for ( i = 0;i < nbPoints;i++ )
     {
-      if ( ok[i] )
+      ok[i] = true;
+      j = ( i + 1 ) % nbPoints;
+      if ( i == j )
+        break;
+      if ( vabs( x[i] - x[j] ) < 0.0000001 && vabs( y[i] - y[j] ) < 0.0000001 )
       {
-        new_x[j] = x[i];
-        new_y[j] = y[i];
-        j++;
+        new_nbPoints--;
+        ok[i] = false;
       }
     }
-    delete[] x;
-    delete[] y;
-    // interchange the point arrays
-    x = new_x;
-    y = new_y;
-    nbPoints = new_nbPoints;
-  }
 
-  delete[] ok;
-}
+    if ( new_nbPoints < nbPoints )
+    {
+      double *new_x = new double[new_nbPoints];
+      double *new_y = new double[new_nbPoints];
+      for ( i = 0, j = 0;i < nbPoints;i++ )
+      {
+        if ( ok[i] )
+        {
+          new_x[j] = x[i];
+          new_y[j] = y[i];
+          j++;
+        }
+      }
+      delete[] x;
+      delete[] y;
+      // interchange the point arrays
+      x = new_x;
+      y = new_y;
+      nbPoints = new_nbPoints;
+    }
+
+    delete[] ok;
+  }
 
 
 
@@ -274,8 +274,8 @@ void FeaturePart::removeDuplicatePoints()
     ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, alpha, cost,  this );
     // shifted to the sides - with higher cost
     cost = 0.0021;
-    ( *lPos )[1] = new LabelPosition( id, lx+offset, ly, label_x, label_y, alpha, cost,  this );
-    ( *lPos )[2] = new LabelPosition( id, lx-offset, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[1] = new LabelPosition( id, lx + offset, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[2] = new LabelPosition( id, lx - offset, ly, label_x, label_y, alpha, cost,  this );
     return nbp;
   }
 
@@ -574,7 +574,7 @@ void FeaturePart::removeDuplicatePoints()
         cost = ( 1 - cost ) / 100; // < 0.0001, 0.01 > (but 0.005 is already pretty much)
 
       // penalize positions which are further from the line's midpoint
-      double costCenter = vabs( ll/2 - (l+xrm/2) ) / ll; // <0, 0.5>
+      double costCenter = vabs( ll / 2 - ( l + xrm / 2 ) ) / ll; // <0, 0.5>
       cost += costCenter / 1000;  // < 0, 0.0005 >
 
       if (( vabs( ey - by ) < EPSILON ) && ( vabs( ex - bx ) < EPSILON ) )
@@ -596,18 +596,18 @@ void FeaturePart::removeDuplicatePoints()
       {
         //std::cout << alpha*180/M_PI << std::endl;
         if ( flags & FLAG_MAP_ORIENTATION )
-          reversed = ( alpha >= M_PI/2 || alpha < -M_PI/2 );
+          reversed = ( alpha >= M_PI / 2 || alpha < -M_PI / 2 );
 
-        if ( (!reversed && (flags & FLAG_ABOVE_LINE)) || (reversed && (flags & FLAG_BELOW_LINE)) )
+        if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
           positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this ) ); // Line
-        if ( (!reversed && (flags & FLAG_BELOW_LINE)) || (reversed && (flags & FLAG_ABOVE_LINE)) )
+        if (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) )
           positions->push_back( new LabelPosition( i, bx - cos( beta ) * ( distlabel + yrm ) , by - sin( beta ) * ( distlabel + yrm ), xrm, yrm, alpha, cost, this ) ); // Line
         if ( flags & FLAG_ON_LINE )
           positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
       }
-      else if (f->layer->arrangement == P_HORIZ)
+      else if ( f->layer->arrangement == P_HORIZ )
       {
-        positions->push_back( new LabelPosition(i, bx - xrm/2, by - yrm/2, xrm, yrm, 0, cost, this) ); // Line
+        positions->push_back( new LabelPosition( i, bx - xrm / 2, by - yrm / 2, xrm, yrm, 0, cost, this ) ); // Line
         //positions->push_back( new LabelPosition(i, bx -yrm/2, by - yrm*sin(beta)/2, xrm, yrm, alpha, cost, this, line)); // Line
       }
       else
@@ -646,25 +646,25 @@ void FeaturePart::removeDuplicatePoints()
   LabelPosition* FeaturePart::curvedPlacementAtOffset( PointSet* path_positions, double* path_distances, int orientation, int index, double distance )
   {
     // Check that the given distance is on the given index and find the correct index and distance if not
-    while (distance < 0 && index > 1)
+    while ( distance < 0 && index > 1 )
     {
       index--;
       distance += path_distances[index];
     }
 
-    if (index <= 1 && distance < 0) // We've gone off the start, fail out
+    if ( index <= 1 && distance < 0 ) // We've gone off the start, fail out
     {
       std::cerr << "err1" << std::endl;
       return NULL;
     }
 
     // Same thing, checking if we go off the end
-    while (index < path_positions->nbPoints && distance > path_distances[index])
+    while ( index < path_positions->nbPoints && distance > path_distances[index] )
     {
       distance -= path_distances[index];
       index += 1;
     }
-    if (index >= path_positions->nbPoints)
+    if ( index >= path_positions->nbPoints )
     {
       std::cerr << "err2" << std::endl;
       return NULL;
@@ -685,7 +685,7 @@ void FeaturePart::removeDuplicatePoints()
     double dy = new_y - old_y;
 
     double segment_length = path_distances[index];
-    if (segment_length == 0)
+    if ( segment_length == 0 )
     {
       // Not allowed to place across on 0 length segments or discontinuities
       std::cerr << "err3" << std::endl;
@@ -695,44 +695,42 @@ void FeaturePart::removeDuplicatePoints()
     LabelPosition* slp = NULL;
     LabelPosition* slp_tmp = NULL;
     // current_placement = placement_result()
-    double xBase = old_x + dx*distance/segment_length;
-    double yBase = old_y + dy*distance/segment_length;
-    double angle = atan2(-dy, dx);
+    double angle = atan2( -dy, dx );
 
-    bool orientation_forced = (orientation != 0); // Whether the orientation was set by the caller
-    if (!orientation_forced)
-      orientation = (angle > 0.55*M_PI || angle < -0.45*M_PI ? -1 : 1);
+    bool orientation_forced = ( orientation != 0 ); // Whether the orientation was set by the caller
+    if ( !orientation_forced )
+      orientation = ( angle > 0.55 * M_PI || angle < -0.45 * M_PI ? -1 : 1 );
 
     int upside_down_char_count = 0; // Count of characters that are placed upside down.
 
-    for (int i = 0; i < f->labelInfo->char_num; i++)
+    for ( int i = 0; i < f->labelInfo->char_num; i++ )
     {
       double last_character_angle = angle;
 
       // grab the next character according to the orientation
-      LabelInfo::CharacterInfo& ci = (orientation > 0 ? f->labelInfo->char_info[i] : f->labelInfo->char_info[f->labelInfo->char_num-i-1]);
+      LabelInfo::CharacterInfo& ci = ( orientation > 0 ? f->labelInfo->char_info[i] : f->labelInfo->char_info[f->labelInfo->char_num-i-1] );
 
       // Coordinates this character will start at
-      if (segment_length == 0)
+      if ( segment_length == 0 )
       {
         // Not allowed to place across on 0 length segments or discontinuities
         std::cerr << "err4" << std::endl;
         return NULL;
       }
 
-      double start_x = old_x + dx*distance/segment_length;
-      double start_y = old_y + dy*distance/segment_length;
+      double start_x = old_x + dx * distance / segment_length;
+      double start_y = old_y + dy * distance / segment_length;
       // Coordinates this character ends at, calculated below
       double end_x = 0;
       double end_y = 0;
 
       //std::cerr << "segment len " << segment_length << "   distance " << distance << std::endl;
-      if (segment_length - distance  >= ci.width)
+      if ( segment_length - distance  >= ci.width )
       {
         // if the distance remaining in this segment is enough, we just go further along the segment
         distance += ci.width;
-        end_x = old_x + dx*distance/segment_length;
-        end_y = old_y + dy*distance/segment_length;
+        end_x = old_x + dx * distance / segment_length;
+        end_y = old_y + dy * distance / segment_length;
       }
       else
       {
@@ -743,7 +741,7 @@ void FeaturePart::removeDuplicatePoints()
           old_x = new_x;
           old_y = new_y;
           index++;
-          if (index >= path_positions->nbPoints) // Bail out if we run off the end of the shape
+          if ( index >= path_positions->nbPoints ) // Bail out if we run off the end of the shape
           {
             //std::cerr << "err5" << std::endl;
             return NULL;
@@ -756,17 +754,18 @@ void FeaturePart::removeDuplicatePoints()
 
           //std::cerr << "-> " << sqrt(pow(start_x - new_x,2) + pow(start_y - new_y,2)) << " vs " << ci.width << std::endl;
 
-        } while (sqrt(pow(start_x - new_x,2) + pow(start_y - new_y,2)) < ci.width); // Distance from start_ to new_
+        }
+        while ( sqrt( pow( start_x - new_x, 2 ) + pow( start_y - new_y, 2 ) ) < ci.width ); // Distance from start_ to new_
 
         // Calculate the position to place the end of the character on
-        findLineCircleIntersection( start_x, start_y, ci.width, old_x, old_y, new_x, new_y, end_x, end_y);
+        findLineCircleIntersection( start_x, start_y, ci.width, old_x, old_y, new_x, new_y, end_x, end_y );
 
         // Need to calculate distance on the new segment
-        distance = sqrt(pow(old_x - end_x,2) + pow(old_y - end_y,2));
+        distance = sqrt( pow( old_x - end_x, 2 ) + pow( old_y - end_y, 2 ) );
       }
 
       // Calculate angle from the start of the character to the end based on start_/end_ position
-      angle = atan2(start_y-end_y, end_x-start_x);
+      angle = atan2( start_y - end_y, end_x - start_x );
       //angle = atan2(end_y-start_y, end_x-start_x);
 
       // Test last_character_angle vs angle
@@ -774,9 +773,9 @@ void FeaturePart::removeDuplicatePoints()
       // max allowable angle change.
       double angle_delta = last_character_angle - angle;
       // normalise between -180 and 180
-      while (angle_delta > M_PI) angle_delta -= 2*M_PI;
-      while (angle_delta < -M_PI) angle_delta += 2*M_PI;
-      if (f->labelInfo->max_char_angle_delta > 0 && fabs(angle_delta) > f->labelInfo->max_char_angle_delta*(M_PI/180))
+      while ( angle_delta > M_PI ) angle_delta -= 2 * M_PI;
+      while ( angle_delta < -M_PI ) angle_delta += 2 * M_PI;
+      if ( f->labelInfo->max_char_angle_delta > 0 && fabs( angle_delta ) > f->labelInfo->max_char_angle_delta*( M_PI / 180 ) )
       {
         std::cerr << "err6" << std::endl;
         return NULL;
@@ -791,43 +790,43 @@ void FeaturePart::removeDuplicatePoints()
       //render_x -= ((string_height/2.0) - 1.0)*math.cos(render_angle+math.pi/2)
       //render_y += ((string_height/2.0) - 1.0)*math.sin(render_angle+math.pi/2)
 
-      if (orientation < 0)
+      if ( orientation < 0 )
       {
         // rotate in place
-        render_x += ci.width*cos(render_angle); //- (string_height-2)*sin(render_angle);
-        render_y -= ci.width*sin(render_angle); //+ (string_height-2)*cos(render_angle);
+        render_x += ci.width * cos( render_angle ); //- (string_height-2)*sin(render_angle);
+        render_y -= ci.width * sin( render_angle ); //+ (string_height-2)*cos(render_angle);
         render_angle += M_PI;
       }
 
       //std::cerr << "adding part: " << render_x << "  " << render_y << std::endl;
-      LabelPosition* tmp = new LabelPosition(0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this);
-      tmp->setPartId( orientation > 0 ? i : f->labelInfo->char_num-i-1 );
-      if (slp == NULL)
+      LabelPosition* tmp = new LabelPosition( 0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this );
+      tmp->setPartId( orientation > 0 ? i : f->labelInfo->char_num - i - 1 );
+      if ( slp == NULL )
         slp = tmp;
       else
-        slp_tmp->setNextPart(tmp);
+        slp_tmp->setNextPart( tmp );
       slp_tmp = tmp;
 
       //current_placement.add_node(ci.character,render_x, -render_y, render_angle);
       //current_placement.add_node(ci.character,render_x - current_placement.starting_x, render_y - current_placement.starting_y, render_angle)
 
       // Normalise to 0 <= angle < 2PI
-      while (render_angle >= 2*M_PI) render_angle -= 2*M_PI;
-      while (render_angle < 0) render_angle += 2*M_PI;
+      while ( render_angle >= 2*M_PI ) render_angle -= 2 * M_PI;
+      while ( render_angle < 0 ) render_angle += 2 * M_PI;
 
-      if (render_angle > M_PI/2 && render_angle < 1.5*M_PI)
+      if ( render_angle > M_PI / 2 && render_angle < 1.5*M_PI )
         upside_down_char_count++;
     }
     // END FOR
 
     // If we placed too many characters upside down
-    if (upside_down_char_count >= f->labelInfo->char_num/2.0)
+    if ( upside_down_char_count >= f->labelInfo->char_num / 2.0 )
     {
       // if we auto-detected the orientation then retry with the opposite orientation
-      if (!orientation_forced)
+      if ( !orientation_forced )
       {
         orientation = -orientation;
-        slp = curvedPlacementAtOffset(path_positions, path_distances, orientation, initial_index, initial_distance);
+        slp = curvedPlacementAtOffset( path_positions, path_distances, orientation, initial_index, initial_distance );
       }
       else
       {
@@ -840,40 +839,40 @@ void FeaturePart::removeDuplicatePoints()
     return slp;
   }
 
-  static LabelPosition* _createCurvedCandidate(LabelPosition* lp, double angle, double dist)
+  static LabelPosition* _createCurvedCandidate( LabelPosition* lp, double angle, double dist )
   {
-    LabelPosition* newLp = new LabelPosition(*lp);
-    newLp->offsetPosition( dist*cos(angle+M_PI/2), dist*sin(angle+M_PI/2) );
+    LabelPosition* newLp = new LabelPosition( *lp );
+    newLp->offsetPosition( dist*cos( angle + M_PI / 2 ), dist*sin( angle + M_PI / 2 ) );
     return newLp;
   }
 
   int FeaturePart::setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape )
   {
     // label info must be present
-    if (f->labelInfo == NULL || f->labelInfo->char_num == 0)
+    if ( f->labelInfo == NULL || f->labelInfo->char_num == 0 )
       return 0;
 
     // distance calculation
     double* path_distances = new double[mapShape->nbPoints];
     double total_distance = 0;
-    double old_x, old_y, new_x, new_y;
-    for (int i = 0; i < mapShape->nbPoints; i++)
+    double old_x = -1.0, old_y = -1.0;
+    for ( int i = 0; i < mapShape->nbPoints; i++ )
     {
-      if (i == 0)
+      if ( i == 0 )
         path_distances[i] = 0;
       else
-        path_distances[i] = sqrt( pow(old_x - mapShape->x[i], 2) + pow(old_y - mapShape->y[i],2) );
+        path_distances[i] = sqrt( pow( old_x - mapShape->x[i], 2 ) + pow( old_y - mapShape->y[i], 2 ) );
       old_x = mapShape->x[i];
       old_y = mapShape->y[i];
 
       total_distance += path_distances[i];
     }
 
-    if (total_distance == 0)
+    if ( total_distance == 0 )
       return 0;
 
     LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
-    double delta = max( f->labelInfo->label_height, total_distance/10.0 );
+    double delta = max( f->labelInfo->label_height, total_distance / 10.0 );
 
     unsigned long flags = f->layer->getArrangementFlags();
     if ( flags == 0 )
@@ -881,53 +880,53 @@ void FeaturePart::removeDuplicatePoints()
 
     // generate curved labels
     std::cerr << "------" << std::endl;
-    for (int i = 0; i*delta < total_distance; i++)
+    for ( int i = 0; i*delta < total_distance; i++ )
     {
-      LabelPosition* slp = curvedPlacementAtOffset(mapShape, path_distances, 0, 1, i*delta);
+      LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, 0, 1, i * delta );
 
-      if (slp)
+      if ( slp )
       {
         // evaluate cost
-        double angle_diff = 0, angle_last, diff;
+        double angle_diff = 0.0, angle_last = 0.0, diff;
         LabelPosition* tmp = slp;
-        double sin_avg=0, cos_avg=0;
-        while (tmp)
+        double sin_avg = 0, cos_avg = 0;
+        while ( tmp )
         {
-          if (tmp != slp) // not first?
+          if ( tmp != slp ) // not first?
           {
-            diff = fabs(tmp->getAlpha() - angle_last);
-            if (diff > 2*M_PI) diff -= 2*M_PI;
-            diff = min(diff, 2*M_PI - diff); // difference 350 deg is actually just 10 deg...
+            diff = fabs( tmp->getAlpha() - angle_last );
+            if ( diff > 2*M_PI ) diff -= 2 * M_PI;
+            diff = min( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
             angle_diff += diff;
           }
 
-          sin_avg += sin(tmp->getAlpha());
-          cos_avg += cos(tmp->getAlpha());
+          sin_avg += sin( tmp->getAlpha() );
+          cos_avg += cos( tmp->getAlpha() );
           angle_last = tmp->getAlpha();
           tmp = tmp->getNextPart();
         }
 
-        double angle_diff_avg = angle_diff / (f->labelInfo->char_num-1); // <0, pi> but pi/8 is much already
+        double angle_diff_avg = angle_diff / ( f->labelInfo->char_num - 1 ); // <0, pi> but pi/8 is much already
         double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
-        if (cost < 0.0001) cost = 0.0001;
+        if ( cost < 0.0001 ) cost = 0.0001;
 
         // penalize positions which are further from the line's midpoint
-        double labelCenter = (i*delta) + f->label_x/2;
-        double costCenter = vabs( total_distance/2 - labelCenter ) / total_distance; // <0, 0.5>
+        double labelCenter = ( i * delta ) + f->label_x / 2;
+        double costCenter = vabs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
         cost += costCenter / 1000;  // < 0, 0.0005 >
         //std::cerr << "cost " << angle_diff << " vs " << costCenter << std::endl;
-        slp->setCost(cost);
+        slp->setCost( cost );
 
 
         // average angle is calculated with respect to periodicity of angles
-        double angle_avg = atan2( sin_avg / f->labelInfo->char_num, cos_avg / f->labelInfo->char_num);
+        double angle_avg = atan2( sin_avg / f->labelInfo->char_num, cos_avg / f->labelInfo->char_num );
         // displacement
-        if (flags & FLAG_ABOVE_LINE)
-          positions->push_back( _createCurvedCandidate(slp, angle_avg, f->distlabel) );
-        if (flags & FLAG_ON_LINE)
-          positions->push_back( _createCurvedCandidate(slp, angle_avg, -f->labelInfo->label_height/2) );
-        if (flags & FLAG_BELOW_LINE)
-          positions->push_back( _createCurvedCandidate(slp, angle_avg, -f->labelInfo->label_height - f->distlabel) );
+        if ( flags & FLAG_ABOVE_LINE )
+          positions->push_back( _createCurvedCandidate( slp, angle_avg, f->distlabel ) );
+        if ( flags & FLAG_ON_LINE )
+          positions->push_back( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height / 2 ) );
+        if ( flags & FLAG_BELOW_LINE )
+          positions->push_back( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height - f->distlabel ) );
 
         // delete original candidate
         delete slp;
@@ -937,9 +936,9 @@ void FeaturePart::removeDuplicatePoints()
 
     int nbp = positions->size();
     ( *lPos ) = new LabelPosition*[nbp];
-    for (int i = 0; i < nbp; i++)
+    for ( int i = 0; i < nbp; i++ )
     {
-      (*lPos)[i] = positions->pop_front();
+      ( *lPos )[i] = positions->pop_front();
     }
     delete positions;
 
@@ -1221,12 +1220,12 @@ void FeaturePart::removeDuplicatePoints()
   }
 
   int FeaturePart::setPosition( double scale, LabelPosition ***lPos,
-                            double bbox_min[2], double bbox_max[2],
-                            PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates
+                                double bbox_min[2], double bbox_max[2],
+                                PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates
 #ifdef _EXPORT_MAP_
-                            , std::ofstream &svgmap
+                                , std::ofstream &svgmap
 #endif
-                          )
+                              )
   {
     int nbp = 0;
     int i;
@@ -1305,32 +1304,32 @@ void FeaturePart::removeDuplicatePoints()
     return rnbp;
   }
 
-  void FeaturePart::addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4])
+  void FeaturePart::addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] )
   {
-    int geomType = GEOSGeomTypeId(the_geom);
+    int geomType = GEOSGeomTypeId( the_geom );
 
     double sizeCost = 0;
-    if (geomType == GEOS_LINESTRING)
+    if ( geomType == GEOS_LINESTRING )
     {
       double length;
-      if (GEOSLength(the_geom, &length) != 1)
+      if ( GEOSLength( the_geom, &length ) != 1 )
         return; // failed to calculate length
-      double bbox_length = max(bbx[2]-bbx[0], bby[2]-bby[0]);
-      if (length >= bbox_length/4)
+      double bbox_length = max( bbx[2] - bbx[0], bby[2] - bby[0] );
+      if ( length >= bbox_length / 4 )
         return; // the line is longer than quarter of height or width - don't penalize it
 
-      sizeCost = 1 - (length / (bbox_length/4)); // < 0,1 >
+      sizeCost = 1 - ( length / ( bbox_length / 4 ) ); // < 0,1 >
     }
-    else if (geomType == GEOS_POLYGON)
+    else if ( geomType == GEOS_POLYGON )
     {
       double area;
-      if (GEOSArea(the_geom, &area) != 1)
+      if ( GEOSArea( the_geom, &area ) != 1 )
         return;
-      double bbox_area = (bbx[2]-bbx[0])*(bby[2]-bby[0]);
-      if (area >= bbox_area/16)
+      double bbox_area = ( bbx[2] - bbx[0] ) * ( bby[2] - bby[0] );
+      if ( area >= bbox_area / 16 )
         return; // covers more than 1/16 of our view - don't penalize it
 
-      sizeCost = 1 - (area / (bbox_area/16)); // < 0, 1 >
+      sizeCost = 1 - ( area / ( bbox_area / 16 ) ); // < 0, 1 >
     }
     else
       return; // no size penalty for points
@@ -1338,41 +1337,41 @@ void FeaturePart::removeDuplicatePoints()
     std::cout << "size cost " << sizeCost << std::endl;
 
     // apply the penalty
-    for (int i = 0; i < nbp; i++)
+    for ( int i = 0; i < nbp; i++ )
     {
       lPos[i]->setCost( lPos[i]->getCost() + sizeCost / 100 );
     }
   }
 
-  bool FeaturePart::isConnected(FeaturePart* p2)
+  bool FeaturePart::isConnected( FeaturePart* p2 )
   {
-    return (GEOSTouches(the_geom, p2->the_geom) == 1);
+    return ( GEOSTouches( the_geom, p2->the_geom ) == 1 );
   }
 
-  bool FeaturePart::mergeWithFeaturePart(FeaturePart* other)
+  bool FeaturePart::mergeWithFeaturePart( FeaturePart* other )
   {
-    GEOSGeometry* g1 = GEOSGeom_clone(the_geom);
-    GEOSGeometry* g2 = GEOSGeom_clone(other->the_geom);
+    GEOSGeometry* g1 = GEOSGeom_clone( the_geom );
+    GEOSGeometry* g2 = GEOSGeom_clone( other->the_geom );
     GEOSGeometry* geoms[2] = { g1, g2 };
-    GEOSGeometry* g = GEOSGeom_createCollection(GEOS_MULTILINESTRING, geoms, 2);
-    GEOSGeometry* gTmp = GEOSLineMerge(g);
-    GEOSGeom_destroy(g);
+    GEOSGeometry* g = GEOSGeom_createCollection( GEOS_MULTILINESTRING, geoms, 2 );
+    GEOSGeometry* gTmp = GEOSLineMerge( g );
+    GEOSGeom_destroy( g );
 
-    if (GEOSGeomTypeId(gTmp) != GEOS_LINESTRING)
+    if ( GEOSGeomTypeId( gTmp ) != GEOS_LINESTRING )
     {
       // sometimes it's not possible to merge lines (e.g. they don't touch at endpoints)
-      GEOSGeom_destroy(gTmp);
+      GEOSGeom_destroy( gTmp );
       return false;
     }
 
-    if (ownsGeom) // delete old geometry if we own it
-      GEOSGeom_destroy(the_geom);
+    if ( ownsGeom ) // delete old geometry if we own it
+      GEOSGeom_destroy( the_geom );
     // set up new geometry
     the_geom = gTmp;
     ownsGeom = true;
 
     deleteCoords();
-    extractCoords(the_geom);
+    extractCoords( the_geom );
     return true;
   }
 

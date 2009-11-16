@@ -309,6 +309,7 @@ int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex )
     case LayerSettings::Curved:      arrangement = P_CURVED; break;
     case LayerSettings::Horizontal:  arrangement = P_HORIZ; break;
     case LayerSettings::Free:        arrangement = P_FREE; break;
+		default: Q_ASSERT( "unsupported placement" && 0 ); return 0; break;
   }
 
   // create the pal layer
@@ -367,6 +368,7 @@ void PalLabeling::initPal()
   SearchMethod s;
   switch ( mSearch )
   {
+	  default:
     case Chain: s = CHAIN; break;
     case Popmusic_Tabu: s = POPMUSIC_TABU; break;
     case Popmusic_Chain: s = POPMUSIC_CHAIN; break;

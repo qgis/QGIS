@@ -4,38 +4,38 @@
 
 #include <QComboBox>
 
-class QgsPenStyleComboBox : public QComboBox
+class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
 {
-public:
-  QgsPenStyleComboBox(QWidget* parent = NULL);
-  
-  Qt::PenStyle penStyle() const;
-  
-  void setPenStyle(Qt::PenStyle style);
-  
-protected:
-  QIcon iconForPen(Qt::PenStyle style);
-    
+  public:
+    QgsPenStyleComboBox( QWidget* parent = NULL );
+
+    Qt::PenStyle penStyle() const;
+
+    void setPenStyle( Qt::PenStyle style );
+
+  protected:
+    QIcon iconForPen( Qt::PenStyle style );
+
 };
 
-class QgsPenJoinStyleComboBox : public QComboBox
+class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
 {
-public:
-  QgsPenJoinStyleComboBox(QWidget* parent = NULL);
+  public:
+    QgsPenJoinStyleComboBox( QWidget* parent = NULL );
 
-  Qt::PenJoinStyle penJoinStyle() const;
+    Qt::PenJoinStyle penJoinStyle() const;
 
-  void setPenJoinStyle(Qt::PenJoinStyle style);
+    void setPenJoinStyle( Qt::PenJoinStyle style );
 };
 
-class QgsPenCapStyleComboBox : public QComboBox
+class GUI_EXPORT QgsPenCapStyleComboBox : public QComboBox
 {
-public:
-  QgsPenCapStyleComboBox(QWidget* parent = NULL);
+  public:
+    QgsPenCapStyleComboBox( QWidget* parent = NULL );
 
-  Qt::PenCapStyle penCapStyle() const;
+    Qt::PenCapStyle penCapStyle() const;
 
-  void setPenCapStyle(Qt::PenCapStyle style);
+    void setPenCapStyle( Qt::PenCapStyle style );
 };
 
 #endif

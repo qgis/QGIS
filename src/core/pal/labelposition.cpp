@@ -55,7 +55,7 @@
 namespace pal
 {
   LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature )
-    : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 ), alpha( alpha ), w( w ), h( h ), nextPart(NULL), partId(-1)
+      : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 ), alpha( alpha ), w( w ), h( h ), nextPart( NULL ), partId( -1 )
   {
 
     // alpha take his value bw 0 and 2*pi rad
@@ -126,14 +126,14 @@ namespace pal
     probFeat = other.probFeat;
     nbOverlap = other.nbOverlap;
 
-    memcpy(x, other.x, sizeof(double)*4);
-    memcpy(y, other.y, sizeof(double)*4);
+    memcpy( x, other.x, sizeof( double )*4 );
+    memcpy( y, other.y, sizeof( double )*4 );
     alpha = other.alpha;
     w = other.w;
     h = other.h;
 
-    if (other.nextPart)
-      nextPart = new LabelPosition(*other.nextPart);
+    if ( other.nextPart )
+      nextPart = new LabelPosition( *other.nextPart );
     else
       nextPart = NULL;
     partId = other.partId;
@@ -150,8 +150,8 @@ namespace pal
         return true;
     }
 
-    if (nextPart)
-      return nextPart->isIn(bbox);
+    if ( nextPart )
+      return nextPart->isIn( bbox );
     else
       return false;
 
@@ -174,10 +174,10 @@ namespace pal
     if ( this->probFeat == lp->probFeat ) // bugfix #1
       return false; // always overlaping itself !
 
-    if (nextPart == NULL && lp->nextPart == NULL)
-      return isInConflictSinglePart(lp);
+    if ( nextPart == NULL && lp->nextPart == NULL )
+      return isInConflictSinglePart( lp );
     else
-      return isInConflictMultiPart(lp);
+      return isInConflictMultiPart( lp );
   }
 
   bool LabelPosition::isInConflictSinglePart( LabelPosition* lp )
@@ -221,13 +221,13 @@ namespace pal
   {
     // check all parts against all parts of other one
     LabelPosition* tmp1 = this;
-    while (tmp1)
+    while ( tmp1 )
     {
       // check tmp1 against parts of other label
       LabelPosition* tmp2 = lp;
-      while (tmp2)
+      while ( tmp2 )
       {
-        if (tmp1->isInConflictSinglePart(tmp2))
+        if ( tmp1->isInConflictSinglePart( tmp2 ) )
           return true;
         tmp2 = tmp2->nextPart;
       }
@@ -239,14 +239,14 @@ namespace pal
 
   void LabelPosition::offsetPosition( double xOffset, double yOffset )
   {
-    for (int i=0; i < 4; i++)
+    for ( int i = 0; i < 4; i++ )
     {
       x[i] += xOffset;
       y[i] += yOffset;
     }
 
-    if (nextPart)
-      nextPart->offsetPosition(xOffset, yOffset);
+    if ( nextPart )
+      nextPart->offsetPosition( xOffset, yOffset );
   }
 
 
@@ -257,12 +257,12 @@ namespace pal
 
   double LabelPosition::getX( int i ) const
   {
-    return (i >= 0 && i < 4 ? x[i] : -1);
+    return ( i >= 0 && i < 4 ? x[i] : -1 );
   }
 
   double LabelPosition::getY( int i ) const
   {
-    return (i >= 0 && i < 4 ? y[i] : -1);
+    return ( i >= 0 && i < 4 ? y[i] : -1 );
   }
 
   double LabelPosition::getAlpha() const
@@ -289,12 +289,12 @@ namespace pal
     return feature;
   }
 
-  void LabelPosition::getBoundingBox(double amin[2], double amax[2]) const
+  void LabelPosition::getBoundingBox( double amin[2], double amax[2] ) const
   {
-    if (nextPart)
+    if ( nextPart )
     {
       //std::cout << "using next part" <<
-      nextPart->getBoundingBox(amin, amax);
+      nextPart->getBoundingBox( amin, amax );
     }
     else
     {
@@ -352,7 +352,7 @@ namespace pal
   {
     double amin[2];
     double amax[2];
-    getBoundingBox(amin, amax);
+    getBoundingBox( amin, amax );
     index->Remove( amin, amax, this );
   }
 
@@ -361,7 +361,7 @@ namespace pal
   {
     double amin[2];
     double amax[2];
-    getBoundingBox(amin, amax);
+    getBoundingBox( amin, amax );
     index->Insert( amin, amax, this );
   }
 
@@ -371,15 +371,13 @@ namespace pal
   bool LabelPosition::pruneCallback( LabelPosition *lp, void *ctx )
   {
     PointSet *feat = (( PruneCtx* ) ctx )->obstacle;
-    double scale = (( PruneCtx* ) ctx )->scale;
-    Pal* pal = (( PruneCtx* ) ctx )->pal;
 
     if (( feat == lp->feature ) || ( feat->getHoleOf() && feat->getHoleOf() != lp->feature ) )
     {
       return true;
     }
 
-    CostCalculator::addObstacleCostPenalty(lp, feat);
+    CostCalculator::addObstacleCostPenalty( lp, feat );
 
     return true;
   }
@@ -483,8 +481,8 @@ namespace pal
         dist_min = dist;
     }
 
-    if (nextPart && dist_min > 0)
-      return min( dist_min, nextPart->getDistanceToPoint(xp, yp) );
+    if ( nextPart && dist_min > 0 )
+      return min( dist_min, nextPart->getDistanceToPoint( xp, yp ) );
 
     return dist_min;
   }
@@ -514,7 +512,7 @@ namespace pal
       }
     }
 
-    if (nextPart)
+    if ( nextPart )
       return nextPart->isBorderCrossingLine( feat );
 
     return false;

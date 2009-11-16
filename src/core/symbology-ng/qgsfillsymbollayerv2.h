@@ -11,42 +11,42 @@
 #include <QPen>
 #include <QBrush>
 
-class QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
+class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 {
-public:
-  QgsSimpleFillSymbolLayerV2(QColor color = DEFAULT_SIMPLEFILL_COLOR,
-                             QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
-                             Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE);
-	
-	// static stuff
-	
-  static QgsSymbolLayerV2* create(const QgsStringMap& properties = QgsStringMap());
+  public:
+    QgsSimpleFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
+                                QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
+                                Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE );
 
-	// implemented from base classes
-	
-  QString layerType() const;
+    // static stuff
 
-  void startRender(QgsRenderContext& context);
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
 
-  void stopRender(QgsRenderContext& context);
+    // implemented from base classes
 
-  void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context);
+    QString layerType() const;
 
-  QgsStringMap properties() const;
-	
-  QgsSymbolLayerV2* clone() const;
-  
-  Qt::BrushStyle brushStyle() const { return mBrushStyle; }
-  void setBrushStyle(Qt::BrushStyle style) { mBrushStyle = style; }
-  
-  QColor borderColor() const { return mBorderColor; }
-  void setBorderColor(QColor borderColor) { mBorderColor = borderColor; }
-	
-protected:
-  QBrush mBrush;
-  Qt::BrushStyle mBrushStyle;
-  QColor mBorderColor;
-  QPen mPen;
+    void startRender( QgsRenderContext& context );
+
+    void stopRender( QgsRenderContext& context );
+
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const;
+
+    Qt::BrushStyle brushStyle() const { return mBrushStyle; }
+    void setBrushStyle( Qt::BrushStyle style ) { mBrushStyle = style; }
+
+    QColor borderColor() const { return mBorderColor; }
+    void setBorderColor( QColor borderColor ) { mBorderColor = borderColor; }
+
+  protected:
+    QBrush mBrush;
+    Qt::BrushStyle mBrushStyle;
+    QColor mBorderColor;
+    QPen mPen;
 };
 
 #endif

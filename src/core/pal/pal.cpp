@@ -237,7 +237,7 @@ namespace pal
     // all feature which are obstacle will be inserted into obstacles
     if ( context->layer->obstacle )
     {
-      ft_ptr->getBoundingBox(amin, amax);
+      ft_ptr->getBoundingBox( amin, amax );
       context->obstacles->Insert( amin, amax, ft_ptr );
     }
 
@@ -260,10 +260,10 @@ namespace pal
     // Holes of the feature are obstacles
     for ( int i = 0;i < ft_ptr->getNumSelfObstacles();i++ )
     {
-      ft_ptr->getSelfObstacle(i)->getBoundingBox(amin, amax);
-      context->obstacles->Insert( amin, amax, ft_ptr->getSelfObstacle(i) );
+      ft_ptr->getSelfObstacle( i )->getBoundingBox( amin, amax );
+      context->obstacles->Insert( amin, amax, ft_ptr->getSelfObstacle( i ) );
 
-      if ( !ft_ptr->getSelfObstacle(i)->getHoleOf() )
+      if ( !ft_ptr->getSelfObstacle( i )->getHoleOf() )
       {
         std::cout << "ERROR: SHOULD HAVE A PARENT!!!!!" << std::endl;
       }
@@ -273,9 +273,9 @@ namespace pal
     LabelPosition** lPos = NULL;
     int nblp = ft_ptr->setPosition( context->scale, &lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates
 #ifdef _EXPORT_MAP_
-                                               , *context->svgmap
+                                    , *context->svgmap
 #endif
-                                             );
+                                  );
 
     if ( nblp > 0 )
     {
@@ -315,7 +315,7 @@ namespace pal
     Pal* pal = (( FilterContext* )ctx )->pal;
 
     double amin[2], amax[2];
-    pset->getBoundingBox(amin, amax);
+    pset->getBoundingBox( amin, amax );
 
     LabelPosition::PruneCtx pruneContext;
 
@@ -348,7 +348,7 @@ namespace pal
 
     Problem *prob = new Problem();
 
-    int i, j, c;
+    int i, j;
 
     double bbx[4];
     double bby[4];
@@ -417,7 +417,7 @@ namespace pal
           if ( strcmp( layersName[i], layer->name ) == 0 )
           {
             // check for connected features with the same label text and join them
-            if (layer->getMergeConnectedLines())
+            if ( layer->getMergeConnectedLines() )
               layer->joinConnectedFeatures();
 
             context->layer = layer;
@@ -587,7 +587,7 @@ namespace pal
         prob->labelpositions[idlp] = lp;
         //prob->feat[idlp] = j;
 
-        lp->getBoundingBox(amin, amax);
+        lp->getBoundingBox( amin, amax );
 
         // lookup for overlapping candidate
         prob->candidates->Search( amin, amax, LabelPosition::countOverlapCallback, ( void* ) lp );
@@ -793,7 +793,7 @@ namespace pal
     return solution;
   }
 
-  Problem* Pal::extractProblem(double scale, double bbox[4])
+  Problem* Pal::extractProblem( double scale, double bbox[4] )
   {
     // find out: nbLayers, layersName, layersFactor
     lyrsMutex->lock();
@@ -812,7 +812,7 @@ namespace pal
     }
     lyrsMutex->unlock();
 
-    Problem* prob = extract( nbLayers, layersName, priorities, bbox[0], bbox[1], bbox[2], bbox[3], scale, NULL);
+    Problem* prob = extract( nbLayers, layersName, priorities, bbox[0], bbox[1], bbox[2], bbox[3], scale, NULL );
 
     delete[] layersName;
     delete[] priorities;
@@ -820,9 +820,9 @@ namespace pal
     return prob;
   }
 
-  std::list<LabelPosition*>* Pal::solveProblem(Problem* prob, bool displayAll )
+  std::list<LabelPosition*>* Pal::solveProblem( Problem* prob, bool displayAll )
   {
-    if (prob == NULL)
+    if ( prob == NULL )
       return new std::list<LabelPosition*>();
 
     prob->reduce();

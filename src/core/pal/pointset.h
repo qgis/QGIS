@@ -89,7 +89,7 @@ namespace pal
   }
 
 
-  class PointSet
+  class CORE_EXPORT PointSet
   {
       friend class FeaturePart;
       friend class LabelPosition;
@@ -121,7 +121,7 @@ namespace pal
       double ymin;
       double ymax;
 
-public:
+    public:
       PointSet();
       PointSet( int nbPoints, double *x, double *y );
       virtual ~PointSet();
@@ -165,10 +165,10 @@ public:
 
       int getGeosType() const { return type; }
 
-      void getBoundingBox(double min[2], double max[2]) const
+      void getBoundingBox( double min[2], double max[2] ) const
       {
-          min[0] = xmin; min[1] = ymin;
-          max[0] = xmax; max[1] = ymax;
+        min[0] = xmin; min[1] = ymin;
+        max[0] = xmax; max[1] = ymax;
       }
 
       /** returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */

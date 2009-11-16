@@ -9,24 +9,24 @@
 #include "ui_qgssymbollevelsv2dialogbase.h"
 
 
-class QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbolLevelsV2DialogBase
+class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbolLevelsV2DialogBase
 {
-  Q_OBJECT
-public:
-    QgsSymbolLevelsV2Dialog(QgsSymbolV2List symbols, bool usingSymbolLevels, QWidget* parent = NULL);
+    Q_OBJECT
+  public:
+    QgsSymbolLevelsV2Dialog( QgsSymbolV2List symbols, bool usingSymbolLevels, QWidget* parent = NULL );
 
     bool usingLevels() const;
 
-public slots:
+  public slots:
     void updateUi();
 
     void renderingPassChanged( int row, int column );
 
-protected:
+  protected:
     void populateTable();
     void setDefaultLevels();
 
-protected:
+  protected:
     //! maximal number of layers from all symbols
     int mMaxLayers;
     QgsSymbolV2List mSymbols;

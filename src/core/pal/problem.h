@@ -93,7 +93,7 @@ namespace pal
   /**
    * \brief Represent a problem
    */
-  class Problem
+  class CORE_EXPORT Problem
   {
 
       friend class Pal;
@@ -157,7 +157,7 @@ namespace pal
       Sol *sol;         // [nbft]
       int nbActive;
 
-      int nbOverlap;
+      double nbOverlap;
 
       int *featWrap;
 
@@ -170,7 +170,7 @@ namespace pal
       void solution_cost();
       void check_solution();
 
-  public:
+    public:
       Problem();
 
       //Problem(char *lorena_file, bool displayAll);
@@ -181,9 +181,9 @@ namespace pal
       // problem inspection functions
       int getNumFeatures() { return nbft; }
       // features counted 0...n-1
-      int getFeatureCandidateCount(int i) { return featNbLp[i]; }
+      int getFeatureCandidateCount( int i ) { return featNbLp[i]; }
       // both features and candidates counted 0..n-1
-      LabelPosition* getFeatureCandidate(int fi, int ci) { return labelpositions[ featStartId[fi] + ci]; }
+      LabelPosition* getFeatureCandidate( int fi, int ci ) { return labelpositions[ featStartId[fi] + ci]; }
       /////////////////
 
 
