@@ -156,10 +156,10 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! @note deprecated
     static const QString svgPath();
 
-    //! Returns the path to user's style. Added in QGIS 1.2
+    //! Returns the path to user's style. Added in QGIS 1.4
     static const QString userStyleV2Path();
 
-    //! Returns the path to default style (works as a starting point). Added in QGIS 1.2
+    //! Returns the path to default style (works as a starting point). Added in QGIS 1.4
     static const QString defaultStyleV2Path();
 
     //! Returns the path to the application prefix directory.
