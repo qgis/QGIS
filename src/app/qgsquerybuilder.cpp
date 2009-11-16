@@ -179,7 +179,7 @@ void QgsQueryBuilder::on_btnTest_clicked()
 // Slot for showing help
 void QgsQueryBuilder::helpClicked()
 {
-    // QgsContextHelp::run( context_id );
+  // QgsContextHelp::run( context_id );
 }
 
 void QgsQueryBuilder::accept()

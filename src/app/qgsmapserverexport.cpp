@@ -38,7 +38,7 @@ QgsMapserverExport::QgsMapserverExport( QgsMapCanvas * _map, QWidget * parent, Q
     : QDialog( parent, fl ), map( _map )
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( helpRequested() ),this,SLOT( help() ) );
+  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( help() ) );
   connect( buttonOk, SIGNAL( clicked() ), this, SLOT( accept() ) );
   connect( buttonCancel, SIGNAL( clicked() ), this, SLOT( reject() ) );
   // These values shouldn't be translated, the units should be in english in the map file

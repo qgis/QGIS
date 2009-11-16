@@ -74,26 +74,26 @@ Labeling::~Labeling()
 
 class LabelingTool : public QgsMapTool
 {
-public:
-  LabelingTool(PalLabeling* lbl, QgsMapCanvas* canvas) : QgsMapTool(canvas), mLBL(lbl) {}
+  public:
+    LabelingTool( PalLabeling* lbl, QgsMapCanvas* canvas ) : QgsMapTool( canvas ), mLBL( lbl ) {}
 
-  virtual void canvasPressEvent( QMouseEvent * e )
-  {
-    const QList<LabelCandidate>& cand = mLBL->candidates();
-    QPointF pt = e->posF();
-    for (int i = 0; i < cand.count(); i++)
+    virtual void canvasPressEvent( QMouseEvent * e )
     {
-      const LabelCandidate& c = cand[i];
-      if (c.rect.contains(pt)) // TODO: handle rotated candidates
+      const QList<LabelCandidate>& cand = mLBL->candidates();
+      QPointF pt = e->posF();
+      for ( int i = 0; i < cand.count(); i++ )
       {
-        QToolTip::showText( mCanvas->mapToGlobal(e->pos()), QString::number(c.cost), mCanvas);
-        break;
+        const LabelCandidate& c = cand[i];
+        if ( c.rect.contains( pt ) ) // TODO: handle rotated candidates
+        {
+          QToolTip::showText( mCanvas->mapToGlobal( e->pos() ), QString::number( c.cost ), mCanvas );
+          break;
+        }
       }
     }
-  }
 
-protected:
-  PalLabeling* mLBL;
+  protected:
+    PalLabeling* mLBL;
 };
 
 ///////////
@@ -105,7 +105,7 @@ protected:
  */
 void Labeling::initGui()
 {
-  mLBL = new PalLabeling(mQGisIface->mapCanvas()->mapRenderer());
+  mLBL = new PalLabeling( mQGisIface->mapCanvas()->mapRenderer() );
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/labeling/labeling.png" ), tr( "Labeling" ), this );
@@ -121,29 +121,29 @@ void Labeling::initGui()
   mQGisIface->addToolBarIcon( mActionTool );
   connect( mActionTool, SIGNAL( triggered() ), this, SLOT( setTool() ) );
 
-  mTool = new LabelingTool(mLBL, mQGisIface->mapCanvas());
+  mTool = new LabelingTool( mLBL, mQGisIface->mapCanvas() );
 
   connect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( doLabeling( QPainter * ) ) );
 
   // connect to newly added layers so the labeling hook will be set up
-  connect( QgsMapLayerRegistry::instance(), SIGNAL(layerWasAdded(QgsMapLayer*)), this, SLOT(layerWasAdded(QgsMapLayer*)) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerWasAdded( QgsMapLayer* ) ) );
 
   // add labeling hooks to all existing layers
   QMap<QString, QgsMapLayer*>& layers = QgsMapLayerRegistry::instance()->mapLayers();
-  for (QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it)
+  for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
     QgsMapLayer* layer = it.value();
-    if (layer->type() == QgsMapLayer::VectorLayer)
+    if ( layer->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(layer);
-      vlayer->setLabelingEngine(mLBL);
+      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+      vlayer->setLabelingEngine( mLBL );
     }
   }
 }
 
 void Labeling::doLabeling( QPainter * painter )
 {
-  mLBL->doLabeling(painter, mQGisIface->mapCanvas()->extent());
+  mLBL->doLabeling( painter, mQGisIface->mapCanvas()->extent() );
 }
 
 // Slot called when the menu item is triggered
@@ -153,19 +153,19 @@ void Labeling::doLabeling( QPainter * painter )
 void Labeling::run()
 {
   QgsMapLayer* layer = mQGisIface->activeLayer();
-  if (layer == NULL || layer->type() != QgsMapLayer::VectorLayer)
+  if ( layer == NULL || layer->type() != QgsMapLayer::VectorLayer )
   {
-    QMessageBox::warning(mQGisIface->mainWindow(), "Labeling", "Please select a vector layer first.");
+    QMessageBox::warning( mQGisIface->mainWindow(), "Labeling", "Please select a vector layer first." );
     return;
   }
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(layer);
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
 
   LabelingGui myPluginGui( mLBL, vlayer, mQGisIface->mainWindow() );
 
-  if (myPluginGui.exec())
+  if ( myPluginGui.exec() )
   {
     // alter labeling - save the changes
-    myPluginGui.layerSettings().writeToLayer(vlayer);
+    myPluginGui.layerSettings().writeToLayer( vlayer );
 
     // trigger refresh
     mQGisIface->mapCanvas()->refresh();
@@ -175,28 +175,28 @@ void Labeling::run()
 
 void Labeling::setTool()
 {
-  mQGisIface->mapCanvas()->setMapTool(mTool);
+  mQGisIface->mapCanvas()->setMapTool( mTool );
 }
 
 // Unload the plugin by cleaning up the GUI
 void Labeling::unload()
 {
-  mQGisIface->mapCanvas()->unsetMapTool(mTool);
+  mQGisIface->mapCanvas()->unsetMapTool( mTool );
   delete mTool;
 
   // remove labeling hook from all layers!
   QMap<QString, QgsMapLayer*>& layers = QgsMapLayerRegistry::instance()->mapLayers();
-  for (QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it)
+  for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
     QgsMapLayer* layer = it.value();
-    if (layer->type() == QgsMapLayer::VectorLayer)
+    if ( layer->type() == QgsMapLayer::VectorLayer )
     {
-      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(layer);
-      vlayer->setLabelingEngine(NULL);
+      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+      vlayer->setLabelingEngine( NULL );
     }
   }
 
-  disconnect( QgsMapLayerRegistry::instance(), SIGNAL(layerWasAdded(QgsMapLayer*)), this, SLOT(layerWasAdded(QgsMapLayer*)) );
+  disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerWasAdded( QgsMapLayer* ) ) );
   disconnect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( doLabeling( QPainter * ) ) );
 
   // remove the GUI
@@ -212,12 +212,12 @@ void Labeling::unload()
 
 void Labeling::layerWasAdded( QgsMapLayer* layer )
 {
-  if (layer->type() != QgsMapLayer::VectorLayer)
+  if ( layer->type() != QgsMapLayer::VectorLayer )
     return; // not interested in rasters
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(layer);
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
   // add labeling hook for the newly added layer
-  vlayer->setLabelingEngine(mLBL);
+  vlayer->setLabelingEngine( mLBL );
 }
 
 

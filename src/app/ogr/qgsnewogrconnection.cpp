@@ -34,10 +34,10 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
     : QDialog( parent, fl )
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( helpRequested() ),this,SLOT( help() ) );
+  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( help() ) );
   //add database drivers
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ";" );
-  for ( int i = 0;i < dbDrivers.count();i++ )
+  for ( int i = 0; i < dbDrivers.count(); i++ )
   {
     QString dbDrive = dbDrivers.at( i );
     cmbDatabaseTypes->addItem( dbDrive.split( "," ).at( 0 ) );

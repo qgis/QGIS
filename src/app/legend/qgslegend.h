@@ -323,7 +323,7 @@ class QgsLegend : public QTreeWidget
     QTreeWidgetItem *lastVisibleItem();
 
     /** read layer settings from XML element and add item */
-    QgsLegendLayer* readLayerFromXML(QDomElement& childelem, bool& isOpen);
+    QgsLegendLayer* readLayerFromXML( QDomElement& childelem, bool& isOpen );
 
   private slots:
 

@@ -442,15 +442,15 @@ void QgsUniqueValueDialog::updateEntryIcon( QgsSymbol *thepSymbol, QListWidgetIt
   switch ( myType )
   {
     case QGis::Point:
-      {
-        double size = thepSymbol->pointSize();
-        if( size > 50.0 )
-          thepSymbol->setPointSize( 50.0 );
-        thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPointSymbolAsImage( 4.0, false, Qt::yellow, 1.0, 0.0001 ) ) ) );
-        if( size > 50.0 )
-          thepSymbol->setPointSize( size );
-      }
-      break;
+    {
+      double size = thepSymbol->pointSize();
+      if ( size > 50.0 )
+        thepSymbol->setPointSize( 50.0 );
+      thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPointSymbolAsImage( 4.0, false, Qt::yellow, 1.0, 0.0001 ) ) ) );
+      if ( size > 50.0 )
+        thepSymbol->setPointSize( size );
+    }
+    break;
     case QGis::Line:
       thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getLineSymbolAsImage() ) ) );
       break;

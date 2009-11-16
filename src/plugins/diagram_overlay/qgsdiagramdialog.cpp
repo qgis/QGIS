@@ -57,7 +57,7 @@ QgsDiagramDialog::QgsDiagramDialog( QgsVectorLayer* vl ): mVectorLayer( vl )
     }
   }
 
-  mClassificationTypeComboBox->insertItem( 0, tr("linearly scaling") );
+  mClassificationTypeComboBox->insertItem( 0, tr( "linearly scaling" ) );
 
   //if mVectorLayer already has a diagram overlay, apply its settings to this dialog
   const QgsVectorOverlay* previousOverlay = mVectorLayer->findOverlayByType( "diagram" );
@@ -80,7 +80,7 @@ QgsDiagramDialog::~QgsDiagramDialog()
 
 void QgsDiagramDialog::on_mClassificationTypeComboBox_currentIndexChanged( const QString& newType )
 {
-  if ( newType == tr("linearly scaling") )
+  if ( newType == tr( "linearly scaling" ) )
   {
     QWidget* currentWidget = mWidgetStackRenderers->currentWidget();
     if ( currentWidget )
@@ -316,7 +316,7 @@ void QgsDiagramDialog::restoreSettings( const QgsVectorOverlay* overlay )
         mClassificationComboBox->setCurrentIndex( mClassificationComboBox->findText( classFieldName ) );
 
         //classification type (specific for renderer subclass)
-        mClassificationTypeComboBox->setCurrentIndex( mClassificationTypeComboBox->findText( tr("linearly scaling") ) );
+        mClassificationTypeComboBox->setCurrentIndex( mClassificationTypeComboBox->findText( tr( "linearly scaling" ) ) );
       }
 
       //apply the renderer settings to the renderer specific dialog

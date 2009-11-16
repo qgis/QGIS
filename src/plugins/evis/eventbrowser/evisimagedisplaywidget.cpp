@@ -130,7 +130,7 @@ void eVisImageDisplayWidget::resizeEvent( QResizeEvent *event )
 void eVisImageDisplayWidget::displayImage( QString path )
 {
   mImageLoaded = mImage->load( path, 0, Qt::AutoColor );
-  this->setToolTip(path);
+  this->setToolTip( path );
 
   mCurrentZoomStep = 0;
   pbtnZoomOut->setEnabled( false );
@@ -160,12 +160,12 @@ void eVisImageDisplayWidget::displayImage( )
     //TODO: See about migrating these nasty scaling routines to use a QMatrix
     if ( mScaleByWidth )
     {
-      mySize.setWidth( static_cast<int>( mImage->width( ) * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
+      mySize.setWidth( static_cast<int>( mImage->width( ) *( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
       mySize.setHeight( static_cast<int>(( double )mySize.width( ) * mImageSizeRatio ) );
     }
     else
     {
-      mySize.setHeight( static_cast<int>( mImage->height( ) * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
+      mySize.setHeight( static_cast<int>( mImage->height( ) *( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
       mySize.setWidth( static_cast<int>(( double )mySize.height( ) * mImageSizeRatio ) );
     }
   }

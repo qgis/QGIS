@@ -28,24 +28,24 @@ instances and change title of existing ones*/
 class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 {
     Q_OBJECT
-    public:
-        QgsComposerManager(QgisApp* app, QWidget * parent = 0, Qt::WindowFlags f = 0);
-        ~QgsComposerManager();
+  public:
+    QgsComposerManager( QgisApp* app, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    ~QgsComposerManager();
 
 
-    private:
-        QgisApp* mQgisApp;
-        /**Stores the relation between items and composer pointers */
-        QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;
-        /**Enters the composer instances and created the item-composer map*/
-        void initialize();
+  private:
+    QgisApp* mQgisApp;
+    /**Stores the relation between items and composer pointers */
+    QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;
+    /**Enters the composer instances and created the item-composer map*/
+    void initialize();
 
-    private slots:
-        void on_mAddButton_clicked();
-        void on_mRemoveButton_clicked();
-        void on_mShowPushButton_clicked();
-        void on_mRenamePushButton_clicked();
-        void on_mComposerListWidget_itemChanged( QListWidgetItem * item );
+  private slots:
+    void on_mAddButton_clicked();
+    void on_mRemoveButton_clicked();
+    void on_mShowPushButton_clicked();
+    void on_mRenamePushButton_clicked();
+    void on_mComposerListWidget_itemChanged( QListWidgetItem * item );
 };
 
 #endif // QGSCOMPOSERMANAGER_H

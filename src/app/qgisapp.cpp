@@ -1057,7 +1057,7 @@ void QgisApp::createActions()
   mActionAbout->setMenuRole( QAction::AboutRole ); // put in application menu on Mac OS X
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
 
-  mActionStyleManagerV2 = new QAction( tr("Style manager..."), this );
+  mActionStyleManagerV2 = new QAction( tr( "Style manager..." ), this );
   shortcuts->registerAction( mActionStyleManagerV2 );
   mActionStyleManagerV2->setStatusTip( tr( "Show style manager V2" ) );
   connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
@@ -1068,7 +1068,7 @@ void QgisApp::createActions()
 
 void QgisApp::showStyleManagerV2()
 {
-  QgsStyleV2ManagerDialog dlg(QgsStyleV2::defaultStyle(), QgsApplication::userStyleV2Path(), this);
+  QgsStyleV2ManagerDialog dlg( QgsStyleV2::defaultStyle(), QgsApplication::userStyleV2Path(), this );
   dlg.exec();
 }
 

@@ -58,7 +58,7 @@ MapCoordsDialog::~MapCoordsDialog()
 void MapCoordsDialog::updateOK()
 {
   bool enable = ( leXCoord->text().size() != 0 && leYCoord->text().size() != 0 );
-  buttonBox->button( QDialogButtonBox::Ok  )->setEnabled( enable );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enable );
 }
 
 void MapCoordsDialog::accept()

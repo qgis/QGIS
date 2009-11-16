@@ -160,7 +160,7 @@ void QgsSingleSymbolDialog::refreshMarkers()
   cboOutlineStyle->addItem( QIcon( QgsSymbologyUtils::char2LinePixmap( "DashLine" ) ), "", "DashLine" );
   cboOutlineStyle->addItem( QIcon( QgsSymbologyUtils::char2LinePixmap( "DotLine" ) ), "", "DotLine" );
   cboOutlineStyle->addItem( QIcon( QgsSymbologyUtils::char2LinePixmap( "DashDotLine" ) ), "" , "DashDotLine" );
-  cboOutlineStyle->addItem( QIcon( QgsSymbologyUtils::char2LinePixmap( "DashDotDotLine" ) ),"", "DashDotDotLine" );
+  cboOutlineStyle->addItem( QIcon( QgsSymbologyUtils::char2LinePixmap( "DashDotDotLine" ) ), "", "DashDotDotLine" );
   cboOutlineStyle->addItem( QIcon( QgsSymbologyUtils::char2LinePixmap( "NoPen" ) ), tr( "None" ), "NoPen" );
 
   //
@@ -169,7 +169,7 @@ void QgsSingleSymbolDialog::refreshMarkers()
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "SolidPattern" ) ), "", "SolidPattern" );
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "HorPattern" ) ), "", "HorPattern" );
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "VerPattern" ) ), "", "VerPattern" );
-  cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "CrossPattern" ) ),"", "CrossPattern" );
+  cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "CrossPattern" ) ), "", "CrossPattern" );
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "BDiagPattern" ) ), "", "BDiagPattern" );
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "FDiagPattern" ) ), "", "FDiagPattern" );
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "DiagCrossPattern" ) ), "", "DiagCrossPattern" );

@@ -389,7 +389,7 @@ void QgsAttributeTableDialog::updateRowSelection( int first, int last, int click
   if ( clickType == 0 ) // Single click
   {
     if ( mSelectedFeatures.size() == 1 && wasSelected ) // One item selected
-        return; // Click over a selected item doesn't do anything
+      return; // Click over a selected item doesn't do anything
 
     mView->setCurrentIndex( mFilterModel->index( first, 0 ) );
     mView->selectRow( first );
@@ -418,10 +418,14 @@ void QgsAttributeTableDialog::updateRowSelection( int first, int last, int click
 
     // Remove items in mSelectedFeatures if they aren't in mNewSelection
     QgsFeatureIds::Iterator it = mSelectedFeatures.begin();
-    while ( it != mSelectedFeatures.end() ) {
-      if ( !newSelection.contains( *it ) ) {
+    while ( it != mSelectedFeatures.end() )
+    {
+      if ( !newSelection.contains( *it ) )
+      {
         it = mSelectedFeatures.erase( it );
-      } else {
+      }
+      else
+      {
         ++it;
       }
     }
@@ -461,10 +465,14 @@ void QgsAttributeTableDialog::updateRowSelection( int first, int last, int click
 
     // Remove items in mSelectedFeatures if they aren't in mNewSelection
     QgsFeatureIds::Iterator it = mSelectedFeatures.begin();
-    while ( it != mSelectedFeatures.end() ) {
-      if ( !newSelection.contains( *it ) ) {
+    while ( it != mSelectedFeatures.end() )
+    {
+      if ( !newSelection.contains( *it ) )
+      {
         it = mSelectedFeatures.erase( it );
-      } else {
+      }
+      else
+      {
         ++it;
       }
     }

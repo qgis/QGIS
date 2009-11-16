@@ -132,12 +132,12 @@ void QgsAttributeTypeDialog::loadFromCSVButtonPushed()
     QMessageBox::information( NULL,
                               tr( "Error" ),
                               tr( "Could not open file %1\nError was:%2" ).arg( fileName ).arg( f.errorString() ),
-			      QMessageBox::Cancel );
+                              QMessageBox::Cancel );
     return;
   }
 
-  QTextStream s(&f);
-  s.setAutoDetectUnicode(true);
+  QTextStream s( &f );
+  s.setAutoDetectUnicode( true );
 
   QRegExp re0( "^([^;]*);(.*)$" );
   re0.setMinimal( true );
