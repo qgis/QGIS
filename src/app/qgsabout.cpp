@@ -74,7 +74,7 @@ void QgsAbout::init()
       //ignore the line if it starts with a hash....
       if ( line.left( 1 ) == "#" ) continue;
       QStringList myTokens = line.split( "\t", QString::SkipEmptyParts );
-      lines += myTokens[0];
+      lines << myTokens[0];
     }
     file.close();
     lstDevelopers->clear();
