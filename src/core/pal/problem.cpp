@@ -2448,8 +2448,8 @@ namespace pal
 
     while ( list->size() > 0 )
     {
-      int probFeatId = lp->getProblemFeatureId();
       lp = list->pop_front();
+      int probFeatId = lp->getProblemFeatureId();
       if ( solution[probFeatId] >= 0 )
       {
         std::cerr << "Doublon : " << probFeatId << " "
