@@ -175,7 +175,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   {
     buttonBox->clear();
 
-    if( vl->isEditable() )
+    if ( vl->isEditable() )
     {
       buttonBox->setStandardButtons( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
       connect( buttonBox, SIGNAL( accepted() ), mDialog, SLOT( accept() ) );

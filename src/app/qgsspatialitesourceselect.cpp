@@ -41,8 +41,8 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
   setupUi( this );
   mAddButton = new QPushButton( tr( "&Add" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton,SIGNAL( clicked() ), this, SLOT( addClicked() ) );
-  connect( buttonBox,SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
+  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
 
   mAddButton->setEnabled( false );
   populateConnectionList();

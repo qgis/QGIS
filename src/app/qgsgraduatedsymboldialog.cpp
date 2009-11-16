@@ -347,8 +347,8 @@ void QgsGraduatedSymbolDialog::adjustClassification()
     {
       if ( last_it != quantileBorders.end() )
       {
-        lowerString = QString::number( QVariant( *last_it ).toDouble(), 'f', 3 ); 
-        upperString = QString::number( QVariant( *it ).toDouble(), 'f', 3 ); 
+        lowerString = QString::number( QVariant( *last_it ).toDouble(), 'f', 3 );
+        upperString = QString::number( QVariant( *it ).toDouble(), 'f', 3 );
         ( *symbol_it )->setLowerValue( lowerString );
         ( *symbol_it )->setUpperValue( upperString );
 
@@ -371,8 +371,8 @@ void QgsGraduatedSymbolDialog::adjustClassification()
       //switch if attribute is int or double
       double lower = minimum + ( maximum - minimum ) / numberofclassesspinbox->value() * i;
       double upper = minimum + ( maximum - minimum ) / numberofclassesspinbox->value() * ( i + 1 );
-      lowerString = QString::number( lower, 'f', 3 ); 
-      upperString = QString::number( upper, 'f', 3 ); 
+      lowerString = QString::number( lower, 'f', 3 );
+      upperString = QString::number( upper, 'f', 3 );
       ( *symbol_it )->setLowerValue( lowerString );
       ( *symbol_it )->setUpperValue( upperString );
       listBoxText = lowerString + " - " + upperString;

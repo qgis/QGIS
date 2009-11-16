@@ -58,11 +58,11 @@ const int AUTOSCROLL_MARGIN = 16;
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
 QgsLegend::QgsLegend( QWidget * parent, const char *name )
-    : QTreeWidget( parent ), 
-    mMousePressedFlag( false ), 
+    : QTreeWidget( parent ),
+    mMousePressedFlag( false ),
     mItemBeingMoved( 0 ),
-    mToggleEditingAction( 0 ), 
-    mMapCanvas( 0 ), 
+    mToggleEditingAction( 0 ),
+    mMapCanvas( 0 ),
     mMinimumIconSize( 20, 20 )
 {
   connect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
@@ -941,9 +941,9 @@ bool QgsLegend::readXML( QDomNode& legendnode )
       else if ( childelem.tagName() == "legendlayer" )
       {
         bool isOpen; // to receive info whether the item is open or closed
-        lastLayer = readLayerFromXML(childelem, isOpen);
+        lastLayer = readLayerFromXML( childelem, isOpen );
 
-        if (lastLayer)
+        if ( lastLayer )
         {
 
           // add to tree - either as a top-level node or a child of a group
@@ -953,7 +953,7 @@ bool QgsLegend::readXML( QDomNode& legendnode )
           }
           else
           {
-            addTopLevelItem(lastLayer);
+            addTopLevelItem( lastLayer );
             lastGroup = 0;
           }
 
@@ -992,14 +992,14 @@ bool QgsLegend::readXML( QDomNode& legendnode )
 }
 
 
-QgsLegendLayer* QgsLegend::readLayerFromXML(QDomElement& childelem, bool& isOpen)
+QgsLegendLayer* QgsLegend::readLayerFromXML( QDomElement& childelem, bool& isOpen )
 {
-  QDomElement fileGroupElem = childelem.firstChildElement("filegroup");
-  if (fileGroupElem.isNull())
+  QDomElement fileGroupElem = childelem.firstChildElement( "filegroup" );
+  if ( fileGroupElem.isNull() )
     return NULL; // we need a file group!
 
-  QDomElement fileElem = fileGroupElem.firstChildElement("legendlayerfile");
-  if (fileElem.isNull()) // we need a file element!
+  QDomElement fileElem = fileGroupElem.firstChildElement( "legendlayerfile" );
+  if ( fileElem.isNull() ) // we need a file element!
     return NULL;
 
   QgsMapLayer* theMapLayer = QgsMapLayerRegistry::instance()->mapLayer( fileElem.attribute( "layerid" ) );
@@ -1026,20 +1026,20 @@ QgsLegendLayer* QgsLegend::readLayerFromXML(QDomElement& childelem, bool& isOpen
   }
 
   // expanded or collapsed
-  isOpen = (childelem.attribute( "open" ) == "true");
+  isOpen = ( childelem.attribute( "open" ) == "true" );
 
   //set the checkbox of the legend layer to the right state
   blockSignals( true );
   QString checked = childelem.attribute( "checked", "Qt::Checked" ); // Default is to show
   if ( checked == "Qt::Checked" )
   {
-    ll->setVisible(true);
+    ll->setVisible( true );
     ll->setCheckState( 0, Qt::Checked );
     ll->setData( 0, Qt::UserRole, Qt::Checked );
   }
   else if ( checked == "Qt::Unchecked" )
   {
-    ll->setVisible(false);
+    ll->setVisible( false );
     ll->setCheckState( 0, Qt::Unchecked );
     ll->setData( 0, Qt::UserRole, Qt::Unchecked );
   }
@@ -1121,7 +1121,7 @@ QgsLegendLayer* QgsLegend::findLegendLayer( const QString& layerKey )
     theLegendLayer = dynamic_cast<QgsLegendLayer *>( theItem );
     if ( theLegendLayer ) //item is a legend layer
     {
-      if (theLegendLayer->layer()->getLayerID() == layerKey)
+      if ( theLegendLayer->layer()->getLayerID() == layerKey )
       {
         return theLegendLayer;
       }
@@ -1479,7 +1479,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
   }
 
   // has the checkState changed?
-  if ( item->data(0, Qt::UserRole).toInt() == item->checkState( 0 ) )
+  if ( item->data( 0, Qt::UserRole ).toInt() == item->checkState( 0 ) )
     return;
 
   QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( item ); //item is a legend group
@@ -1529,7 +1529,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
     ll->setCheckState( 0, item->checkState( 0 ) );
     blockSignals( false );
     ll->setData( 0, Qt::UserRole, ll->checkState( 0 ) );
-    if (ll->layer() )
+    if ( ll->layer() )
     {
       ll->setVisible( item->checkState( 0 ) == Qt::Checked );
     }

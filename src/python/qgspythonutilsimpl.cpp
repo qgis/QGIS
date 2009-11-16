@@ -87,7 +87,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 
   // import QGIS utils
   error_msg = QObject::tr( "Couldn't load QGIS utils." ) + "\n" + QObject::tr( "Python support will be disabled." );
-  if ( !runString("import qgis.utils", error_msg) )
+  if ( !runString( "import qgis.utils", error_msg ) )
   {
     exitPython();
     return;
@@ -304,7 +304,7 @@ QString QgsPythonUtilsImpl::getResult()
   QString res;
   evalString( "qgis.utils.console_output", res );
   // clear output
-  runString("qgis.utils.console_output = None");
+  runString( "qgis.utils.console_output = None" );
   return res;
 }
 
@@ -441,8 +441,8 @@ QStringList QgsPythonUtilsImpl::pluginList()
 QString QgsPythonUtilsImpl::getPluginMetadata( QString pluginName, QString function )
 {
   QString res;
-  QString str = "qgis.utils.pluginMetadata('" + pluginName + "', '"+function+"')";
-  evalString(str, res);
+  QString str = "qgis.utils.pluginMetadata('" + pluginName + "', '" + function + "')";
+  evalString( str, res );
   //QgsDebugMsg("metadata "+pluginName+" - '"+function+"' = "+res);
   return res;
 }
@@ -451,22 +451,22 @@ QString QgsPythonUtilsImpl::getPluginMetadata( QString pluginName, QString funct
 bool QgsPythonUtilsImpl::loadPlugin( QString packageName )
 {
   QString output;
-  evalString("qgis.utils.loadPlugin('" + packageName + "')", output);
-  return (output == "True");
+  evalString( "qgis.utils.loadPlugin('" + packageName + "')", output );
+  return ( output == "True" );
 }
 
 
 bool QgsPythonUtilsImpl::startPlugin( QString packageName )
 {
   QString output;
-  evalString("qgis.utils.startPlugin('" + packageName + "')", output);
-  return (output == "True");
+  evalString( "qgis.utils.startPlugin('" + packageName + "')", output );
+  return ( output == "True" );
 }
 
 
 bool QgsPythonUtilsImpl::unloadPlugin( QString packageName )
 {
   QString output;
-  evalString("qgis.utils.unloadPlugin('" + packageName + "')", output);
-  return (output == "True");
+  evalString( "qgis.utils.unloadPlugin('" + packageName + "')", output );
+  return ( output == "True" );
 }

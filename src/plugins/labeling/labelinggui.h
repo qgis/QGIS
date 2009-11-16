@@ -27,7 +27,7 @@ class QgsVectorLayer;
 
 class LabelingGui : public QDialog, private Ui::LabelingGuiBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* parent );
@@ -48,7 +48,7 @@ class LabelingGui : public QDialog, private Ui::LabelingGuiBase
   protected:
     void populatePlacementMethods();
     void populateFieldNames();
-    void updateFont(QFont font);
+    void updateFont( QFont font );
 
   private:
     PalLabeling* mLBL;

@@ -56,7 +56,7 @@
 
 
 QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
-  : QgsLegendItem( ),
+    : QgsLegendItem( ),
     mLyr( layer )
 {
   mType = LEGEND_LAYER;
@@ -282,12 +282,12 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
 
 void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
 {
-  QSize iconSize(16,16);
+  QSize iconSize( 16, 16 );
 
   QSettings settings;
   bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
 
-  SymbologyList itemList = layer->rendererV2()->legendSymbologyItems(iconSize);
+  SymbologyList itemList = layer->rendererV2()->legendSymbologyItems( iconSize );
 
   changeSymbologySettings( layer, itemList );
 }

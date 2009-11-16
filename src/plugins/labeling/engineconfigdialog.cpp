@@ -2,22 +2,22 @@
 
 #include "pallabeling.h"
 
-EngineConfigDialog::EngineConfigDialog(PalLabeling* lbl, QWidget* parent)
-  : QDialog(parent), mLBL(lbl)
+EngineConfigDialog::EngineConfigDialog( PalLabeling* lbl, QWidget* parent )
+    : QDialog( parent ), mLBL( lbl )
 {
-  setupUi(this);
+  setupUi( this );
 
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(onOK()) );
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
 
   // search method
   cboSearchMethod->setCurrentIndex( mLBL->searchMethod() );
 
   // candidate numbers
   int candPoint, candLine, candPolygon;
-  mLBL->numCandidatePositions(candPoint, candLine, candPolygon);
-  spinCandPoint->setValue(candPoint);
-  spinCandLine->setValue(candLine);
-  spinCandPolygon->setValue(candPolygon);
+  mLBL->numCandidatePositions( candPoint, candLine, candPolygon );
+  spinCandPoint->setValue( candPoint );
+  spinCandLine->setValue( candLine );
+  spinCandPolygon->setValue( candPolygon );
 
   chkShowCandidates->setChecked( mLBL->isShowingCandidates() );
 
@@ -28,11 +28,11 @@ EngineConfigDialog::EngineConfigDialog(PalLabeling* lbl, QWidget* parent)
 void EngineConfigDialog::onOK()
 {
   // save
-  mLBL->setSearchMethod( (PalLabeling::Search) cboSearchMethod->currentIndex() );
+  mLBL->setSearchMethod(( PalLabeling::Search ) cboSearchMethod->currentIndex() );
 
-  mLBL->setNumCandidatePositions(spinCandPoint->value(),
-                                 spinCandLine->value(),
-                                 spinCandPolygon->value());
+  mLBL->setNumCandidatePositions( spinCandPoint->value(),
+                                  spinCandLine->value(),
+                                  spinCandPolygon->value() );
 
   mLBL->setShowingCandidates( chkShowCandidates->isChecked() );
 

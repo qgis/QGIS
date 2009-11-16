@@ -115,7 +115,7 @@ std::list<QgsLegendLayer*> QgsLegendGroup::legendLayers()
     QgsLegendLayer* childItem = dynamic_cast<QgsLegendLayer *>( child( i ) );
     if ( childItem )
     {
-      result.push_back(childItem);
+      result.push_back( childItem );
     }
   }
   return result;

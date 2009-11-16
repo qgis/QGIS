@@ -9,14 +9,14 @@ class PalLabeling;
 
 class EngineConfigDialog : public QDialog, private Ui::EngineConfigDialog
 {
-  Q_OBJECT
-public:
-    EngineConfigDialog(PalLabeling* lbl, QWidget* parent = NULL);
+    Q_OBJECT
+  public:
+    EngineConfigDialog( PalLabeling* lbl, QWidget* parent = NULL );
 
-public slots:
+  public slots:
     void onOK();
 
-protected:
+  protected:
     PalLabeling* mLBL;
 };
 

@@ -58,8 +58,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
   setupUi( this );
   mAddButton = new QPushButton( tr( "&Add" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton,SIGNAL( clicked() ), this, SLOT( addClicked() ) );
-  connect( buttonBox,SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
+  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
 
   mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.png" ) );
   mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.png" ) );

@@ -128,7 +128,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
 
     void helpClicked();
     void addClicked();
-    
+
     /*! Connects to the database using the stored connection parameters.
     * Once connected, available layers are displayed.
     */

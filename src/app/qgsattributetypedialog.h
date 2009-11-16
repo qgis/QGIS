@@ -75,7 +75,7 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * Setter to checked state to be displayed and edited in this dialog
      * @param checked string that represents the checked state
      */
-    void setCheckedState( QString checked, QString unchecked ); 
+    void setCheckedState( QString checked, QString unchecked );
 
     /**
      * Getter for checked state after editing

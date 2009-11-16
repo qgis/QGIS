@@ -141,7 +141,7 @@ bool QgsClipboard::empty()
   return mFeatureClipboard.empty();
 }
 
-QgsFeatureList QgsClipboard::transformedCopyOf(QgsCoordinateReferenceSystem destCRS)
+QgsFeatureList QgsClipboard::transformedCopyOf( QgsCoordinateReferenceSystem destCRS )
 {
 
   QgsFeatureList featureList = copyOf();
@@ -150,9 +150,9 @@ QgsFeatureList QgsClipboard::transformedCopyOf(QgsCoordinateReferenceSystem dest
   QgsDebugMsg( "transforming clipboard." );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
   {
-    iter->geometry()->transform(ct);
+    iter->geometry()->transform( ct );
   }
-  
+
   return featureList;
 }
 

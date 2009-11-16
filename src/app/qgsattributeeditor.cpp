@@ -266,7 +266,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         le = qobject_cast<QLineEdit *>( editor );
         te = qobject_cast<QTextEdit *>( editor );
         pte = qobject_cast<QPlainTextEdit *>( editor );
-      }     
+      }
       else
       {
         le = new QLineEdit( parent );
@@ -300,14 +300,14 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
         myWidget = le;
       }
-      
-      if( te )
+
+      if ( te )
       {
-        te->setAcceptRichText(true);
+        te->setAcceptRichText( true );
         myWidget = te;
       }
 
-      if( pte )
+      if ( pte )
       {
         myWidget = pte;
       }
@@ -327,7 +327,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         if ( le )
           myWidget = le;
 
-        if( editor->parent() )
+        if ( editor->parent() )
         {
           pb = editor->parent()->findChild<QPushButton *>();
         }
@@ -388,7 +388,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   {
     text = te->toHtml();
     modified = te->document()->isModified();
-    if( text == "NULL" )
+    if ( text == "NULL" )
     {
       text = QString::null;
     }
@@ -399,7 +399,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   {
     text = pte->toPlainText();
     modified = pte->document()->isModified();
-    if( text == "NULL" )
+    if ( text == "NULL" )
     {
       text = QString::null;
     }
@@ -552,7 +552,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::CheckBox:
     {
       QCheckBox *cb = qobject_cast<QCheckBox *>( editor );
-      if( cb )
+      if ( cb )
       {
         QPair<QString, QString> states = vl->checkedState( idx );
         cb->setChecked( value == states.first );
@@ -582,11 +582,11 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       else
         text = value.toString();
 
-      if( le )
+      if ( le )
         le->setText( text );
-      if( te )
+      if ( te )
         te->setHtml( text );
-      if( pte )
+      if ( pte )
         pte->setPlainText( text );
     }
     break;

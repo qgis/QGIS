@@ -31,11 +31,11 @@ QgsPasteTransformations::QgsPasteTransformations()
     : QgsPasteTransformationsBase()
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( helpRequested() ),this,SLOT( help() ) );
+  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( help() ) );
 
   mAddTransferButton = new QPushButton( tr( "&Add New Transfer" ) );
   buttonBox->addButton( mAddTransferButton, QDialogButtonBox::ActionRole );
-  connect( mAddTransferButton,SIGNAL( clicked() ), this, SLOT( addNewTransfer() ) );
+  connect( mAddTransferButton, SIGNAL( clicked() ), this, SLOT( addNewTransfer() ) );
 
   // Populate the dialog with the loaded layers
   QMap<QString, QgsMapLayer*> mapLayers =

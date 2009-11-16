@@ -74,18 +74,18 @@ void QgsConfigureShortcutsDialog::populateActions()
 void QgsConfigureShortcutsDialog::saveShortcuts()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save shortcuts" ), ".", tr( "XML file (*.xml);; All files (*.*)" ) );
-  
+
   if ( fileName.isEmpty() )
     return;
 
   QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
-     QMessageBox::warning( this, tr( "Saving shortcuts" ),
-                                 tr( "Cannot write file %1:\n%2." )
-                              .arg( fileName )
-                              .arg( file.errorString() ) );
-     return;
+    QMessageBox::warning( this, tr( "Saving shortcuts" ),
+                          tr( "Cannot write file %1:\n%2." )
+                          .arg( fileName )
+                          .arg( file.errorString() ) );
+    return;
   }
 
   QSettings settings;
@@ -94,33 +94,33 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
   QDomElement root = doc.createElement( "qgsshortcuts" );
   root.setAttribute( "version", "1.0" );
   root.setAttribute( "locale", settings.value( "locale/userLocale", "en_US" ).toString() );
-  doc.appendChild(root);
+  doc.appendChild( root );
 
   settings.beginGroup( "/shortcuts/" );
   QStringList keys = settings.childKeys();
 
   QString actionText;
   QString actionShortcut;
-  
-  for( int i = 0; i < keys.count(); ++i )
+
+  for ( int i = 0; i < keys.count(); ++i )
   {
     actionText = keys[ i ];
     actionShortcut = settings.value( actionText, "" ).toString();
-    
+
     QDomElement el = doc.createElement( "act" );
     el.setAttribute( "name", actionText );
     el.setAttribute( "shortcut", actionShortcut );
     root.appendChild( el );
   }
 
-  QTextStream out( &file ); 
-  doc.save(out, 4);
+  QTextStream out( &file );
+  doc.save( out, 4 );
 }
 
 void QgsConfigureShortcutsDialog::loadShortcuts()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load shortcuts" ), ".", tr( "XML file (*.xml);; All files (*.*)" ) );
-  
+
   if ( fileName.isEmpty() )
   {
     return;
@@ -129,11 +129,11 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-     QMessageBox::warning( this, tr( "Loading shortcuts" ),
-                                 tr( "Cannot read file %1:\n%2." )
-                                 .arg( fileName )
-                                 .arg( file.errorString() ) );
-     return;
+    QMessageBox::warning( this, tr( "Loading shortcuts" ),
+                          tr( "Cannot read file %1:\n%2." )
+                          .arg( fileName )
+                          .arg( file.errorString() ) );
+    return;
   }
 
   QDomDocument  doc;
@@ -143,25 +143,25 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
 
   if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
   {
-     QMessageBox::information( this, tr( "Loading shortcuts" ),
-                                     tr( "Parse error at line %1, column %2:\n%3" )
-                                     .arg( errorLine )
-                                     .arg( errorColumn )
-                                     .arg( errorStr ) );
-     return;
+    QMessageBox::information( this, tr( "Loading shortcuts" ),
+                              tr( "Parse error at line %1, column %2:\n%3" )
+                              .arg( errorLine )
+                              .arg( errorColumn )
+                              .arg( errorStr ) );
+    return;
   }
 
   QDomElement root = doc.documentElement();
   if ( root.tagName() != "qgsshortcuts" )
   {
-     QMessageBox::information( this, tr( "Loading shortcuts" ),
-                                     tr( "The file is not an shortcuts exchange file.") );
-     return;
+    QMessageBox::information( this, tr( "Loading shortcuts" ),
+                              tr( "The file is not an shortcuts exchange file." ) );
+    return;
   }
 
   QSettings settings;
   QString currentLocale;
-  
+
   bool localeOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();
   if ( localeOverrideFlag )
   {
@@ -174,9 +174,9 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
 
   if ( root.attribute( "locale" ) != currentLocale )
   {
-     QMessageBox::information( this, tr( "Loading shortcuts" ),
-                                     tr( "The file contains shortcuts created with different locale, so you can't use it.") );
-     return;
+    QMessageBox::information( this, tr( "Loading shortcuts" ),
+                              tr( "The file contains shortcuts created with different locale, so you can't use it." ) );
+    return;
   }
 
   QAction* action;
@@ -186,11 +186,11 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QDomElement child = root.firstChildElement();
   while ( !child.isNull() )
   {
-     actionName = child.attribute( "name" );
-     actionShortcut = child.attribute( "shortcut" );
-     action = QgsShortcutsManager::instance()->actionByName( actionName );
-     QgsShortcutsManager::instance()->setActionShortcut( action, actionShortcut );
-     child = child.nextSiblingElement();
+    actionName = child.attribute( "name" );
+    actionShortcut = child.attribute( "shortcut" );
+    action = QgsShortcutsManager::instance()->actionByName( actionName );
+    QgsShortcutsManager::instance()->setActionShortcut( action, actionShortcut );
+    child = child.nextSiblingElement();
   }
 
   treeActions->clear();

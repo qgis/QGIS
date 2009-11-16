@@ -478,14 +478,14 @@ void QgsVectorLayerProperties::reset( void )
       legendtypecombobox->addItem( tr( "Unique Value" ) );
     }
   }
-  
+
   //find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
   delete mRendererDialog;
   mRendererDialog = 0;
-  
-  if (layer->isUsingRendererV2())
+
+  if ( layer->isUsingRendererV2() )
   {
-    mRendererDialog = new QgsRendererV2PropertiesDialog(layer, QgsStyleV2::defaultStyle(), true);
+    mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
 
     // hide unused widgets
     legendtypecombobox->hide();
@@ -495,31 +495,31 @@ void QgsVectorLayerProperties::reset( void )
   }
   else
   {
-  
-  QString rtype = layer->renderer()->name();
-  if ( rtype == "Single Symbol" )
-  {
-    mRendererDialog = new QgsSingleSymbolDialog( layer );
-    legendtypecombobox->setCurrentIndex( 0 );
-  }
-  else if ( rtype == "Graduated Symbol" )
-  {
-    mRendererDialog = new QgsGraduatedSymbolDialog( layer );
-    legendtypecombobox->setCurrentIndex( 1 );
-  }
-  else if ( rtype == "Continuous Color" )
-  {
-    mRendererDialog = new QgsContinuousColorDialog( layer );
-    legendtypecombobox->setCurrentIndex( 2 );
-  }
-  else if ( rtype == "Unique Value" )
-  {
-    mRendererDialog = new QgsUniqueValueDialog( layer );
-    legendtypecombobox->setCurrentIndex( 3 );
-  }
 
-  QObject::connect( legendtypecombobox, SIGNAL( activated( const QString & ) ), this,
-                    SLOT( alterLayerDialog( const QString & ) ) );
+    QString rtype = layer->renderer()->name();
+    if ( rtype == "Single Symbol" )
+    {
+      mRendererDialog = new QgsSingleSymbolDialog( layer );
+      legendtypecombobox->setCurrentIndex( 0 );
+    }
+    else if ( rtype == "Graduated Symbol" )
+    {
+      mRendererDialog = new QgsGraduatedSymbolDialog( layer );
+      legendtypecombobox->setCurrentIndex( 1 );
+    }
+    else if ( rtype == "Continuous Color" )
+    {
+      mRendererDialog = new QgsContinuousColorDialog( layer );
+      legendtypecombobox->setCurrentIndex( 2 );
+    }
+    else if ( rtype == "Unique Value" )
+    {
+      mRendererDialog = new QgsUniqueValueDialog( layer );
+      legendtypecombobox->setCurrentIndex( 3 );
+    }
+
+    QObject::connect( legendtypecombobox, SIGNAL( activated( const QString & ) ), this,
+                      SLOT( alterLayerDialog( const QString & ) ) );
 
   }
 
@@ -660,10 +660,10 @@ void QgsVectorLayerProperties::apply()
     }
   }
 
-  if (layer->isUsingRendererV2())
+  if ( layer->isUsingRendererV2() )
   {
     QgsRendererV2PropertiesDialog* dlg =
-      static_cast<QgsRendererV2PropertiesDialog*>(widgetStackRenderers->currentWidget());
+      static_cast<QgsRendererV2PropertiesDialog*>( widgetStackRenderers->currentWidget() );
     dlg->apply();
   }
   else

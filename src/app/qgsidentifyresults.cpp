@@ -264,7 +264,7 @@ void QgsIdentifyResults::show()
     QTreeWidgetItem *layItem = lstResults->topLevelItem( 0 );
     QTreeWidgetItem *featItem = layItem->child( 0 );
 
-    if ( layItem->childCount() == 1 && QSettings().value("/Map/identifyAutoFeatureForm", false).toBool() )
+    if ( layItem->childCount() == 1 && QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
     {
       QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
       if ( layer )
