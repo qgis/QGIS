@@ -532,6 +532,7 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document, const QgsVec
 
   appendText( symbol, document, "pointsymbol", name );
   appendText( symbol, document, "pointsize", QString::number( pointSize() ) );
+  appendText( symbol, document, "pointsizeunits", pointSizeUnits() ? "mapunits" : "pixels" );
 
   if ( vl )
   {
