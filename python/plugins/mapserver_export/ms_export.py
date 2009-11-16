@@ -17,7 +17,7 @@
 # presents a Qt based GUI that collects the needed information for this
 # script. 
 # Matthew Perry contributed major portions of this work.
-# Adapted by Erik van de Pol, B3Partners BV.
+# Adapted by Erik van de Pol
 #
 # CHANGES SHOULD NOT BE MADE TO THE writeMapFile METHOD UNLESS YOU
 # ARE CHANGING THE QgsMapserverExport CLASS AND YOU KNOW WHAT YOU ARE
@@ -25,6 +25,7 @@
 
 from xml.dom import minidom
 from string import *
+import platform
 from qgis.core import QgsDataSourceURI
 from qgis.core import QgsMapLayerRegistry
 #from qgis.core import QgsProject
@@ -89,7 +90,10 @@ defaults = Qgis2MapDefaults()
 
 defaults.fontsPath = "./fonts/fonts.txt"
 defaults.symbolsPath = "./symbols/symbols.txt"
-defaults.mapServerUrl = "http://my.host.com/cgi-bin/mapserv.exe"
+if platform.system() == "Windows":
+  defaults.mapServerUrl = "http://my.host.com/cgi-bin/mapserv.exe"
+else:
+  defaults.mapServerUrl = "http://localhost/cgi-bin/mapserv"
 defaults.width = "100"
 defaults.height = "100"
 
@@ -101,11 +105,8 @@ defaults.antialias = True
 
 
 class Qgis2Map:
-  def __init__(self, projectFile, mapFile):
-    self.project = projectFile
+  def __init__(self, mapFile):
     self.mapFile = mapFile
-    # create the DOM 
-    self.qgs = minidom.parse(projectFile)
     # init the other members that are not set by the constructor
     self.mapServerUrl = defaults.mapServerUrl
     self.fontsPath = defaults.fontsPath
@@ -126,6 +127,14 @@ class Qgis2Map:
     self.partials = bool2str[defaults.partials]
     self.symbolQueue = {}
 
+  def setQgsProject(self, projectFileName):
+    try:
+      self.projectFileName = projectFileName 
+      # create the DOM
+      self.qgs = minidom.parse(unicode(self.projectFileName))
+      return True
+    except:
+      return False
 
   # Set the options collected from the GUI
   def setOptions(self, msUrl, units, image, mapname, width, height, template, header, footer, dump, force, antialias, partials, exportLayersOnly, fontsPath, symbolsPath):
@@ -150,15 +159,20 @@ class Qgis2Map:
 
     #self.minimumScale = minscale
     #self.maximumScale = maxscale
-    self.template = template.encode('utf-8')
+    # TEMPLATE is needed for getFeatureInfo requests in WMS:
+    # always set someting ...
+    template = template.encode('utf-8')
+    if template == "":
+      template = "fooOnlyForWMSGetFeatureInfo"
+    self.template = template
     self.header = header.encode('utf-8')
     self.footer = footer.encode('utf-8')
     #print units, image, mapname, width, height, template, header, footer
 
-    self.dump            = bool2str[dump]
-    self.force           = bool2str[force]
-    self.antialias       = bool2str[antialias]
-    self.partials        = bool2str[partials]
+    self.dump               = bool2str[dump]
+    self.force              = bool2str[force]
+    self.antialias          = bool2str[antialias]
+    self.partials           = bool2str[partials]
     self.exportLayersOnly   = exportLayersOnly
 
 
@@ -218,13 +232,18 @@ class Qgis2Map:
         self.outFile.write("END")
         self.outFile.close()
 
-    logmsg += "Map file completed for " + self.project + "\n"
+    logmsg += "Map file completed for " + self.projectFileName + "\n"
     logmsg += "Map file saved as " + self.mapFile + "\n"
+    if self.exportLayersOnly:
+      logmsg += "\n> We only saved the LAYER portion of the map file. \nMerge this into an excisting map file to see it working\n"
+    else:
+      logmsg += "\n> If this mapfile is accessible by your mapserver, you\nshould be able to see the capabilities by firing this url:\n" + self.mapServerUrl + "?MAP="+self.mapFile+"&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetCapabilities\n"
+      logmsg += "\n> if this mapfile is accessible by your mapserver, you\nshould be able to see a map by firing this url:\n" + self.mapServerUrl + "?MAP="+self.mapFile+"&SERVICE=WMS&LAYERS=ALL&MODE=MAP\n"
     return logmsg
 
   # Write the general parts of the map section
   def writeMapSection(self):
-    self.outFile.write("# Map file created from QGIS project file " + self.project.encode('utf-8') + "\n")
+    self.outFile.write("# Map file created from QGIS project file " + str(self.projectFileName).encode('utf-8') + "\n")
     self.outFile.write("# Edit this file to customize for your map interface\n")
     self.outFile.write("# (Created with PyQgis MapServer Export plugin)\n")
     self.outFile.write("MAP\n")
@@ -241,14 +260,14 @@ class Qgis2Map:
     self.outFile.write(self.getExtentString())
 
     self.outFile.write("  FONTSET '" + self.fontsPath + "'\n")
-    # B3Partners uses external symbol set
+    # use of external symbol set
     self.outFile.write("  SYMBOLSET '" + self.symbolsPath + "'\n")
 
   def getExtentString(self):
     stringToAddTo = ""
 
     xmin = self.qgs.getElementsByTagName("xmin")
-    stringToAddTo += "  EXTENT "
+    stringToAddTo += "    EXTENT "
     stringToAddTo += xmin[0].childNodes[0].nodeValue.encode('utf-8')
     stringToAddTo += " "
 
@@ -279,7 +298,6 @@ class Qgis2Map:
     self.outFile.write("    MIMETYPE 'image/" + lower(self.imageType) + "'\n")
     if self.imageType.lower() != "gif":
       self.outFile.write("    IMAGEMODE RGBA\n")
-    #self.outFile.write("    #IMAGEMODE PC256\n")
     self.outFile.write("    EXTENSION '" + lower(self.imageType) + "'\n")
     self.outFile.write("  END\n")
     
@@ -346,9 +364,9 @@ class Qgis2Map:
 
     self.outFile.write("    # WMS server settings\n")
     self.outFile.write("    METADATA\n")
-    self.outFile.write("      'wms_title'           '" + self.mapName + "'\n")
-    self.outFile.write("      'wms_onlineresource'  '" + self.mapServerUrl + "?" + "map" + "=" + self.mapFile + "'\n")
-    self.outFile.write("      'wms_srs'             'EPSG:" + epsg + "'\n")
+    self.outFile.write("      'ows_title'           '" + self.mapName + "'\n")
+    self.outFile.write("      'ows_onlineresource'  '" + self.mapServerUrl + "?" + "map" + "=" + self.mapFile + "'\n")
+    self.outFile.write("      'ows_srs'             'EPSG:" + epsg + "'\n")
     self.outFile.write("    END\n\n")
 
     self.outFile.write("    #Scale range at which web interface will operate\n")
@@ -375,10 +393,11 @@ class Qgis2Map:
     # get the list of legend nodes so the layers can be written in the
     # proper order
     resultMsg = ''
+    
     legend_nodes = self.qgs.getElementsByTagName("legendlayer")
     self.z_order = list()
     for legend_node in legend_nodes:
-        self.z_order.append(legend_node.getAttribute("name").encode('utf-8').replace("\"", ""))
+        self.z_order.append(legend_node.getAttribute("name").encode('utf-8').replace("\"", "").replace(" ","_"))
 
     # get the list of maplayer nodes
     maplayers = self.qgs.getElementsByTagName("maplayer")
@@ -440,7 +459,8 @@ class Qgis2Map:
         #layer_def += "    DATA '" + uri.geometryColumn() + " FROM " + uri.quotedTablename() + "'\n"
 
         layer_id = lyr.getElementsByTagName("id")[0].childNodes[0].nodeValue.encode("utf-8")
-        
+        # TODO: check if this project is actually loaded in QGis
+        # only in loaded project files it's possible to determine the primary key of a postgis table
         uniqueId = self.getPrimaryKey(layer_id, uri.table())
         # %tablename% is returned when no uniqueId is found: inform user
         if uniqueId.find("%") >= 0:
@@ -471,16 +491,17 @@ class Qgis2Map:
         # Create necesssary wms metadata
         format = rasterProp.getElementsByTagName('wmsFormat')[0].childNodes[0].nodeValue.encode('utf-8')
         layer_def += "    METADATA\n"
-        layer_def += "      'wms_name' '" + ','.join(wmsNames) + "'\n"
+        layer_def += "      'ows_name' '" + ','.join(wmsNames) + "'\n"
         layer_def += "      'wms_server_version' '1.1.1'\n"
         try:
           #ct = lyr.getElementsByTagName('coordinatetransform')[0]
           #srs = ct.getElementsByTagName('sourcesrs')[0].getElementsByTagName('spatialrefsys')[0]
           #epsg = srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
           #layer_def += "      'wms_srs' 'EPSG:4326 EPSG:" + epsg + "'\n"
-          layer_def += "      'wms_srs' 'EPSG:" + self.getEpsg(lyr) + "'\n"
+          layer_def += "      'ows_srs' 'EPSG:" + self.getEpsg(lyr) + "'\n"
           # TODO: add epsg to all METADATA tags??
         except:
+          print "ERROR while trying to write ows_srs METADATA"
 	  pass
         layer_def += "      'wms_format' '" + format + "'\n"
         layer_def += "      'wms_style' '" + ','.join(wmsStyles) + "'\n"
@@ -492,7 +513,7 @@ class Qgis2Map:
       
       # WMS settings for all layers
       layer_def += "    METADATA\n"
-      layer_def += "      'wms_title' '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n"
+      layer_def += "      'ows_title' '" + lyr.getElementsByTagName("layername")[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") + "'\n"
       layer_def += "    END\n"
 
       layer_def += "    STATUS OFF\n"
@@ -511,9 +532,18 @@ class Qgis2Map:
       layer_def += "    TRANSPARENCY " + str(opacity) + "\n"
 
       layer_def += "    PROJECTION\n"
-      # Get the data srs for this layer and use it to create the projection section
-      datasrs = lyr.getElementsByTagName("srs")[0] 
-      proj4Text = datasrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
+      
+       # Get the destination srs for this layer and use it to create the projection section 
+      destsrs = self.qgs.getElementsByTagName("destinationsrs")[0]  
+      proj4Text = destsrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8')
+      # TODO: you would think: take DATA-srs here, but often projected
+      # shapefiles do not contain srs data ... If we want to do this
+      # we should take make the map-srs the qgs-project srs first
+      # instead of taking the srs of the first layer 
+      # Get the data srs for this layer and use it to create the projection section 
+      # datasrs = lyr.getElementsByTagName("srs")[0]  
+      # proj4Text = datasrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
+      
       # the proj4 text string needs to be reformatted to make mapserver happy
       layer_def += self.formatProj4(proj4Text)
       layer_def += "    END\n"
@@ -556,7 +586,7 @@ class Qgis2Map:
       layer_list[layer_name] = layer_def
     # all layers have been processed, reverse the list and write
     # not necessary since z-order is mapped by the legend list order
-#    self.z_order.reverse()
+    self.z_order.reverse()
     for layer in self.z_order:
       self.outFile.write(layer_list[layer])
     return resultMsg
@@ -573,11 +603,17 @@ class Qgis2Map:
     we approximate the primary key by finding an integer type field containing "fid" or "id"
     This is obviously a lousy solution at best.
 
-    This script requires the project you export to be open in QGis.
+    This script requires the project you export to be open in QGis!!
     """
 
     mlr = QgsMapLayerRegistry.instance()
     layers = mlr.mapLayers()
+    if not QString(layerId) in layers:
+      # layerId of this postgis layer NOT in the layerlist... probably 
+      # the project is not loaded in qgis (to be able to find the primary
+      # key, one should load the project in QGis
+      raise Exception("ERROR: layer not found in project layers.... \nThis happens with postgis layers in a project which \nis not loaded in QGis.\nDid you load this project into QGis? \nIf not please load project first, and then export it to mapserver.")
+
     layer = layers[QString(layerId)]
     dataProvider = layer.dataProvider()
     fields = dataProvider.fields()

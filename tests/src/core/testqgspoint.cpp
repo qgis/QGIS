@@ -112,7 +112,7 @@ void TestQgsPoint::toDegreesMinutesSeconds()
   mReport += "<p>" + mPoint2.toDegreesMinutesSeconds( 2 )  +  "</p>";
   mReport += "<p>" + mPoint3.toDegreesMinutesSeconds( 2 )  +  "</p>";
   mReport += "<p>" + mPoint4.toDegreesMinutesSeconds( 2 )  +  "</p>";
-  QVERIFY( mPoint4.toString( 2 ) == QString("80°0'0.00\"E,20°0'0.00\"N") );
+  QVERIFY( mPoint4.toDegreesMinutesSeconds( 2 ) == QString("80°0'0.00\"E,20°0'0.00\"N") );
 
 };
 void TestQgsPoint::wellKnownText()

@@ -294,7 +294,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   else if ( vlayer && vlayer->providerType() == "ogr" )
   {
     QStringList theURIParts = src.split( "|" );
-    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0] );
     src = theURIParts.join( "|" );
   }
   else

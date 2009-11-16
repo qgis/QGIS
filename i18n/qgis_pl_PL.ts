@@ -540,7 +540,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="239"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="250"/>
-        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="142"/>
+        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="130"/>
         <source>Use only selected features</source>
         <translation>Użyj tylko wybranych obiektów</translation>
     </message>
@@ -948,7 +948,7 @@ p, li { white-space: pre-wrap; }
         <translation>Lista unikalnych wartości</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="104"/>
+        <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="92"/>
         <source>Unique value count</source>
         <translation>Liczba unikalnych wartości</translation>
     </message>
@@ -2675,7 +2675,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można wczytać wtyczki &apos;%1&apos; z [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
@@ -3641,17 +3641,17 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="34"/>
         <source>Diagram Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartodiagramy</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="35"/>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Wtyczka do tworzenia kartodiagramów</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="36"/>
         <source>Version 0.0.1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wersja 0.0.1</translation>
     </message>
 </context>
 <context>
@@ -5320,7 +5320,7 @@ i uaktualnień.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3694"/>
         <source>Map Composer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Okno &amp;wydruku %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3747"/>
@@ -5491,22 +5491,22 @@ i uaktualnień.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="720"/>
         <source>Add Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj część</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="722"/>
         <source>Add part to multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj część do multipoligonu</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="734"/>
         <source>Click a vertex of the ring to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz werteks pierścienia do usunięcia</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="740"/>
         <source>Click a vertex of the part to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz  werteks części do usunięcia</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="756"/>
@@ -6175,103 +6175,103 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeActionDialogBase</name>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="136"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="144"/>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
         <translation>Lista zawiera wszystkie akcje zdefiniowane dla bieżącej warstwy. Dodaj akcje wprowadzając szczegóły w kontrolkach poniżej, a następnie kliknij przycisk Dodaj. Akcje mogą być edytowane po dwukrotnym kliknięciu na jedną z nich.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="206"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="214"/>
         <source>Move up</source>
         <translation>Przesuń w górę</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="203"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="211"/>
         <source>Move the selected action up</source>
         <translation>Przesuń wybraną akcję wyżej</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="216"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="224"/>
         <source>Move down</source>
         <translation>Przesuń w dół</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="213"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="221"/>
         <source>Move the selected action down</source>
         <translation>Przesuń wybraną akcję niżej</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="242"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="250"/>
         <source>Remove</source>
         <translation>Usuń</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="239"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="247"/>
         <source>Remove the selected action</source>
         <translation>Usuń wybraną akcję</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="48"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="56"/>
         <source>Enter the action name here</source>
         <translation>Wpisz tutaj nazwę akcji</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="71"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="79"/>
         <source>Enter the action command here</source>
         <translation>Wpisz tutaj polecenie akcji</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="170"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="178"/>
         <source>Insert action</source>
         <translation>Wstaw akcję</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="107"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="115"/>
         <source>Insert field</source>
         <translation>Dodaj pole</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="97"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="105"/>
         <source>The valid attribute names for this layer</source>
         <translation>Poprawne nazwy dla atrybutu warstwy</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="104"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="112"/>
         <source>Inserts the selected field into the action, prepended with a %</source>
         <translation>Wstawia wybrane pole do akcji, poprzedzone znakiem %</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="35"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="51"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="43"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="59"/>
         <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
         <translation>Tutaj wpisz nazwę akcji. Nazwa powinna być unikalna (qgis zmieni ją na taką jeśli będzie to konieczne).</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="167"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="175"/>
         <source>Inserts the action into the list above</source>
         <translation>Wstawia akcję na listę</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="180"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="188"/>
         <source>Update action</source>
         <translation>Aktualizuj akcję</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="177"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="185"/>
         <source>Update the selected action</source>
         <translation>Aktualizuj wybraną akcję</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="120"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="128"/>
         <source>Capture output</source>
         <translation>Przechwyć wynik</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="114"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="122"/>
         <source>Captures any output from the action</source>
         <translation>Przechwytuje wynik działania akcji</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="117"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="125"/>
         <source>Captures the standard output or error generated by the action and displays it in a dialog box</source>
         <translation>Przechwytuje standardowe wyjście lub błąd wygenerowany przez akację i wyświetla je w oknie dialogowym</translation>
     </message>
@@ -6280,55 +6280,55 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Tutaj wpisz akcję. Może to być dowolny program, skrypt lub komenda dostępna w Twoim systemie. Kiedy akcja zostanie wywołana, parametry rozpoczynające się od znaku % i będące nazwami pól zostaną zamienione na wartość tych pól. Znaki specjalne %% zostaną zastąpione wartościami wybranych pól. Podwójny cudzysłów grupuje tekst w jeden argument dla programu, skryptu lub komendy. Podwójny cudzysłów będzie ignorowany jeśli poprzedzi się go ukośnikiem</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="20"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="19"/>
         <source>Attribute Actions</source>
         <translation>Atrybuty akcji</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="29"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="37"/>
         <source>Action properties</source>
         <translation>Właściwości akcji</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="38"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="149"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="46"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="157"/>
         <source>Name</source>
         <translation>Nazwa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="58"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="74"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="66"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="82"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
         <translation>Tutaj wpisz akcję. Może to być dowolny program, skrypt lub komenda dostępna w Twoim systemie. Kiedy akcja zostanie wywołana, parametry rozpoczynające się od znaku % i będące nazwami pól zostaną zamienione na wartość tych pól. Znaki specjalne %% zostaną zastąpione wartościami wybranych pól. Podwójny cudzysłów grupuje tekst w jeden argument dla programu, skryptu lub komendy. Podwójny cudzysłów będzie ignorowany jeśli poprzedzi się go ukośnikiem</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="61"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="154"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="69"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="162"/>
         <source>Action</source>
         <translation>Akcja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="81"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="89"/>
         <source>Browse for action</source>
         <translation>Wyszukaj akcję</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="84"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="92"/>
         <source>Click to browse for an action</source>
         <translation>Kliknij aby wyszukać akcję</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="90"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="98"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="159"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="167"/>
         <source>Capture</source>
         <translation>Przechwyć</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="87"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="95"/>
         <source>Clicking the button will let you select an application to use as the action</source>
         <translation>Kliknięcie przycisku umożliwi wybór aplikacji, która zostanie wykorzystana jako akcja</translation>
     </message>
@@ -7481,7 +7481,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="34"/>
         <source>Opacity</source>
-        <translation type="unfinished">Nieprzezroczystość</translation>
+        <translation>Przezroczystość</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="57"/>
@@ -7528,7 +7528,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="30"/>
         <source>Item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości obiektu</translation>
     </message>
 </context>
 <context>
@@ -7541,7 +7541,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="41"/>
         <source>Label</source>
-        <translation type="unfinished">Etykieta</translation>
+        <translation>Etykieta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="53"/>
@@ -7588,7 +7588,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="30"/>
         <source>Item Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje obiektu</translation>
     </message>
 </context>
 <context>
@@ -7611,22 +7611,22 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Title Font...</source>
-        <translation>Czcionka tytułu...</translation>
+        <translation>Cz&amp;cionka tytułu...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Layer Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Czcionka &amp;warstwy...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Item Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Czcionka o&amp;biektu...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Symbol width </source>
-        <translation>Szerokość symbolu</translation>
+        <translation>Szerokość symbolu </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
@@ -7641,27 +7641,27 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
         <source>Symbol height </source>
-        <translation>Wysokość symbolu</translation>
+        <translation>Wysokość symbolu </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="122"/>
         <source>Layer space </source>
-        <translation>Odstęp między warstwami</translation>
+        <translation>Odstęp warstwy </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="132"/>
         <source>Symbol space </source>
-        <translation type="unfinished"></translation>
+        <translation>Odstęp symbolu </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="142"/>
         <source>Icon label space </source>
-        <translation type="unfinished"></translation>
+        <translation>Odstęp etykiety ikony </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation>Odstęp ramki </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
@@ -7686,7 +7686,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="238"/>
         <source>All</source>
-        <translation type="unfinished">Wszystko</translation>
+        <translation>Wszystko</translation>
     </message>
     <message>
         <source>Title:</source>
@@ -7792,7 +7792,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="184"/>
         <source>Legend items</source>
-        <translation type="unfinished">Pozycje w legendzie</translation>
+        <translation>Legenda obiektów</translation>
     </message>
     <message>
         <source>down</source>
@@ -7838,7 +7838,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia ogólne</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="44"/>
@@ -7899,7 +7899,7 @@ Błąd brzmi:%2</translation>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="357"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="670"/>
         <source>Horizontal and Vertical</source>
-        <translation>Poprzecznie do ramki</translation>
+        <translation>W poprzek ramki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="57"/>
@@ -7955,7 +7955,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="190"/>
         <source>Extents</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zakresy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="205"/>
@@ -7970,7 +7970,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="286"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="292"/>
@@ -8172,7 +8172,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="38"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia ogólne</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="68"/>
@@ -8222,7 +8222,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
         <source>Picture options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje obrazu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="53"/>
@@ -8277,7 +8277,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="263"/>
         <source>Sync from map</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronizuj z mapą</translation>
     </message>
     <message>
         <source>Take rotation from composer map</source>
@@ -8289,7 +8289,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia ogólne</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="34"/>
@@ -8389,7 +8389,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="41"/>
         <source>Scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Podziałka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="47"/>
@@ -8842,29 +8842,30 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <source>Save shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz skróty</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="122"/>
         <source>XML file (*.xml);; All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Plik XML (*.xml);; Wszystkie pliki (*.*)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="84"/>
         <source>Saving shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zapisywanie skrótów</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="85"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zapisać pliku %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="122"/>
         <source>Load shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj skróty</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="132"/>
@@ -8872,13 +8873,14 @@ Błąd brzmi:%2</translation>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="157"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="177"/>
         <source>Loading shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytywanie skrótów</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="133"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można odczytać pliku %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="147"/>
@@ -8889,12 +8891,12 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="158"/>
         <source>The file is not an shortcuts exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik nie jest poprawnym plikiem wymiany skrótów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="178"/>
         <source>The file contains shortcuts created with different locale, so you can&apos;t use it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik zawiera skróty stworzone w innym języku i nie może być użyty.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="242"/>
@@ -8955,12 +8957,12 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="82"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="92"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz...</translation>
     </message>
 </context>
 <context>
@@ -9196,7 +9198,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="48"/>
         <source>Enable copyright label</source>
-        <translation>Włącz etykietę o prawach autorskich</translation>
+        <translation>Włącz etykietę</translation>
     </message>
     <message>
         <source>Enable Copyright Label</source>
@@ -9929,12 +9931,12 @@ p, li { white-space: pre-wrap; }
         <translation>Formularz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="70"/>
+        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="64"/>
         <source>Heading Label</source>
         <translation>Etykieta nagłówka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="112"/>
+        <location filename="../src/ui/qgsdetaileditemwidgetbase.ui" line="106"/>
         <source>Detail label</source>
         <translation>Etykieta szczegółów</translation>
     </message>
@@ -14782,64 +14784,64 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="489"/>
         <source>Save layer as...</source>
-        <translation type="unfinished">Zapisz warstwę jako...</translation>
+        <translation>Zapisz warstwę jako...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="525"/>
         <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished">Wybierz układ współrzędnych dla zapisywanego pliku Shapefile. Dane zostaną przetransformowane z układu współrzędnych warstwy.</translation>
+        <translation>Wybierz układ współrzędnych dla zapisywanego pliku Shapefile. Dane zostaną przetransformowane z układu współrzędnych warstwy.</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="564"/>
         <source>Saving done</source>
-        <translation type="unfinished">Zapisano</translation>
+        <translation>Zapisano</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="564"/>
         <source>Export to Shapefile has been completed</source>
-        <translation type="unfinished">Zakończono pomyślnie eksport do pliku Shapefile</translation>
+        <translation>Zakończono pomyślnie eksport do pliku Shapefile</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="568"/>
         <source>Driver not found</source>
-        <translation type="unfinished">Nie znaleziono sterownika</translation>
+        <translation>Nie znaleziono sterownika</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="568"/>
         <source>ESRI Shapefile driver is not available</source>
-        <translation type="unfinished">Sterownik plików ESRI Shapefile nie jest dostępny</translation>
+        <translation>Sterownik plików ESRI Shapefile nie jest dostępny</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="572"/>
         <source>Error creating shapefile</source>
-        <translation type="unfinished">Błąd tworzenia pliku Shapefile</translation>
+        <translation>Błąd tworzenia pliku Shapefile</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="573"/>
         <source>The shapefile could not be created (%1)</source>
-        <translation type="unfinished">Plik Shapefile nie może być utworzony (%1)</translation>
+        <translation>Plik Shapefile nie może być utworzony (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="577"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="581"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="586"/>
         <source>Error</source>
-        <translation type="unfinished">Błąd</translation>
+        <translation>Błąd</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="577"/>
         <source>Layer creation failed</source>
-        <translation type="unfinished">Błąd tworzenia warstwy</translation>
+        <translation>Błąd tworzenia warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="582"/>
         <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="unfinished">Tabela atrybutów warstwy zawiera nieobsługiwany typ danych</translation>
+        <translation>Tabela atrybutów warstwy zawiera nieobsługiwany typ danych</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="587"/>
         <source>Creation of an attribute failed</source>
-        <translation type="unfinished">Tworzenie atrybutu nie powiodło się</translation>
+        <translation>Tworzenie atrybutu nie powiodło się</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -15847,22 +15849,22 @@ Czy chcesz go nadpisać?</translation>
         <translation>Wymuś</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="420"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="424"/>
         <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="423"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="427"/>
         <source>Anti-alias</source>
         <translation>Wygładzanie</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="433"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="437"/>
         <source>Can text run off the edge of the map?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="436"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="440"/>
         <source>Partials</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15872,19 +15874,19 @@ Czy chcesz go nadpisać?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="464"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="472"/>
         <source>Paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Ścieżki</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="487"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="495"/>
         <source>MapServer url</source>
-        <translation type="unfinished"></translation>
+        <translation>URL MapServera</translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="497"/>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="537"/>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="577"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="505"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="545"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="585"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -15896,12 +15898,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="527"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="535"/>
         <source>Fontset path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="567"/>
+        <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="575"/>
         <source>Symbolset path</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16700,7 +16702,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="94"/>
         <source>Placement</source>
-        <translation>Umiejscowienie</translation>
+        <translation>Położenie</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="147"/>
@@ -17869,7 +17871,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspastetransformations.cpp" line="36"/>
         <source>&amp;Add New Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj &amp;nową transformację</translation>
     </message>
 </context>
 <context>
@@ -18215,7 +18217,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="46"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">Dod&amp;aj</translation>
+        <translation>Dod&amp;aj</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="54"/>
@@ -20428,12 +20430,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="39"/>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Testuj</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="43"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wyczyść</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="105"/>
@@ -21197,7 +21199,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="439"/>
         <source>Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga: Wartości min/max są szacowane, definiowane przez użytkownika lub obliczone z bieżącego zasięgu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="608"/>
@@ -21654,7 +21656,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="780"/>
         <source>Current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Bieżący &amp;zasięg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="810"/>
@@ -23670,12 +23672,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="169"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>Układ współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="198"/>
         <source>Use default SRID</source>
-        <translation type="unfinished">Użyj domyślnego SRID</translation>
+        <translation>Użyj domyślnego układu współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="205"/>
@@ -24136,7 +24138,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="542"/>
         <source>Line edit</source>
-        <translation>Edycja linii</translation>
+        <translation>Linia edycyjna</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="543"/>
@@ -24166,7 +24168,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="548"/>
         <source>Slider range</source>
-        <translation>Zakres suwaka</translation>
+        <translation>Zakres</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="549"/>
@@ -26859,92 +26861,76 @@ Wtyczka nie zostanie włączona.</translation>
 <context>
     <name>visualThread</name>
     <message>
-        <source>Max. len:</source>
+        <source>Max. len: </source>
+        <translation>Max. dł.: </translation>
+    </message>
+    <message>
+        <source>Min. len: </source>
+        <translation>Min. dł.  : </translation>
+    </message>
+    <message>
+        <source>Mean. len: </source>
+        <translation>Średnia dł.: </translation>
+    </message>
+    <message>
+        <source>Filled: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Min. len:</source>
+        <source>Empty: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mean. len:</source>
+        <source>N: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Filled:</source>
+        <source>Mean: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Empty:</source>
+        <source>StdDev: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>N:</source>
+        <source>Sum: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mean:</source>
+        <source>Min: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>StdDev:</source>
+        <source>Max: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sum:</source>
+        <source>CV: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Min:</source>
+        <source>Number of unique values: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Max:</source>
+        <source>Range: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>CV:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of unique values:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Range:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Median:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Observed mean distance:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expected mean distance:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nearest neighbour index:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Z-Score:</source>
+        <source>Median: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation type="obsolete">Faktyczna średnia odległość:</translation>
+        <translation>Faktyczna średnia odległość:</translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation type="obsolete">Oczekiwana średnia odległość:</translation>
+        <translation>Oczekiwana średnia odległość:</translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation type="obsolete">Wskaźnik najbliższego sąsiedztwa:</translation>
+        <translation>Wskaźnik najbliższego sąsiedztwa:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>

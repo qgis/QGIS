@@ -87,12 +87,16 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void updateRowSelection( int index );
     /**
+     * Updates the index pressed
+     */
+    void updateRowPressed( int index );
+    /**
      * Updates selection of specifed rows
      * @param first first row
      * @param last last row
-     * @param startNewSelection if true, then new selection is started
+     * @param clickType 0:Single click, 1:Shift, 2:Ctrl, 3:dragged click
      */
-    void updateRowSelection( int first, int last, bool startNewSelection );
+    void updateRowSelection( int first, int last, int clickType );
 
     /**
      * Toggle showing of selected line only
@@ -183,6 +187,7 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
     QgsAttributeTableFilterModel *mFilterModel;
     QgsVectorLayer *mLayer;
     QgsFeatureIds mSelectedFeatures;
+    int mIndexPressed;
 
     QItemSelectionModel* mSelectionModel;
     int mLastClickedHeaderIndex;

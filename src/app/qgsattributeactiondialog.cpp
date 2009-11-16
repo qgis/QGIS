@@ -68,24 +68,26 @@ void QgsAttributeActionDialog::init()
   attributeActionTable->setRowCount( 0 );
 
   // Populate with our actions.
-  QgsAttributeAction::AttributeActions::const_iterator
-  iter = mActions->begin();
-  int i = 0;
-  for ( ; iter != mActions->end(); ++iter, ++i )
+  for ( int i = 0; i < mActions->size(); i++ )
   {
-    insertRow( i, iter->name(), iter->action(), iter->capture() );
+    const QgsAction action = ( *mActions )[i];
+    insertRow( i, action.type(), action.name(), action.action(), action.capture() );
   }
 }
 
-void QgsAttributeActionDialog::insertRow( int row, const QString &name, const QString &action, bool capture )
+void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, bool capture )
 {
+  QTableWidgetItem* item;
   attributeActionTable->insertRow( row );
-  attributeActionTable->setItem( row, 0, new QTableWidgetItem( name ) );
-  attributeActionTable->setItem( row, 1, new QTableWidgetItem( action ) );
-  QTableWidgetItem* item = new QTableWidgetItem();
+  item = new QTableWidgetItem( actionType->itemText( type ) );
+  item->setFlags( item->flags() & ~Qt::ItemIsEditable );
+  attributeActionTable->setItem( row, 0, item );
+  attributeActionTable->setItem( row, 1, new QTableWidgetItem( name ) );
+  attributeActionTable->setItem( row, 2, new QTableWidgetItem( action ) );
+  item = new QTableWidgetItem();
   item->setFlags( item->flags() & ~( Qt::ItemIsEditable | Qt::ItemIsUserCheckable ) );
   item->setCheckState( capture ? Qt::Checked : Qt::Unchecked );
-  attributeActionTable->setItem( row, 2, item );
+  attributeActionTable->setItem( row, 3, item );
 }
 
 void QgsAttributeActionDialog::moveUp()
@@ -208,15 +210,15 @@ void QgsAttributeActionDialog::insert( int pos )
     if ( pos >= numRows )
     {
       // Expand the table to have a row with index pos
-      insertRow( pos, name, actionAction->text(), captureCB->isChecked() );
+      insertRow( pos, ( QgsAction::ActionType ) actionType->currentIndex(), name, actionAction->text(), captureCB->isChecked() );
     }
     else
     {
       // Update existing row
-      attributeActionTable->item( pos, 0 )->setText( name );
-      attributeActionTable->item( pos, 1 )->setText( actionAction->text() );
-      attributeActionTable->item( pos, 2 )->setCheckState(
-        captureCB->isChecked() ? Qt::Checked : Qt::Unchecked );
+      attributeActionTable->item( pos, 0 )->setText( actionType->currentText() );
+      attributeActionTable->item( pos, 1 )->setText( name );
+      attributeActionTable->item( pos, 2 )->setText( actionAction->text() );
+      attributeActionTable->item( pos, 3 )->setCheckState( captureCB->isChecked() ? Qt::Checked : Qt::Unchecked );
     }
   }
 }
@@ -253,12 +255,13 @@ void QgsAttributeActionDialog::apply()
   mActions->clearActions();
   for ( int i = 0; i < attributeActionTable->rowCount(); ++i )
   {
-    const QString &name = attributeActionTable->item( i, 0 )->text();
-    const QString &action = attributeActionTable->item( i, 1 )->text();
+    const QgsAction::ActionType type = ( QgsAction::ActionType ) actionType->findText( attributeActionTable->item( i, 0 )->text() );
+    const QString &name = attributeActionTable->item( i, 1 )->text();
+    const QString &action = attributeActionTable->item( i, 2 )->text();
     if ( !name.isEmpty() && !action.isEmpty() )
     {
-      QTableWidgetItem *item = attributeActionTable->item( i, 2 );
-      mActions->addAction( name, action, item->checkState() == Qt::Checked );
+      QTableWidgetItem *item = attributeActionTable->item( i, 3 );
+      mActions->addAction( type, name, action, item->checkState() == Qt::Checked );
     }
   }
 }
@@ -292,8 +295,9 @@ void QgsAttributeActionDialog::rowSelected( int row )
   if ( item )
   {
     // Only if a populated row was selected
-    actionName->setText( attributeActionTable->item( row, 0 )->text() );
-    actionAction->setText( attributeActionTable->item( row, 1 )->text() );
+    actionType->setCurrentIndex( actionType->findText( attributeActionTable->item( row, 0 )->text() ) );
+    actionName->setText( attributeActionTable->item( row, 1 )->text() );
+    actionAction->setText( attributeActionTable->item( row, 2 )->text() );
     captureCB->setChecked( item->checkState() == Qt::Checked );
   }
 }

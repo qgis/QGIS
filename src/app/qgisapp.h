@@ -340,6 +340,9 @@ class QgisApp : public QMainWindow
     QToolBar *pluginToolBar() { return mPluginToolBar; }
     QToolBar *helpToolBar() { return mHelpToolBar; }
 
+    //! run python
+    void runPythonString( const QString &expr );
+
   public slots:
     //! Zoom to full extent
     void zoomFull();

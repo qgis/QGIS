@@ -63,7 +63,7 @@ public:
 
   QgsLabel *label();
 
-  // TODO: wrap QgsAttributeAction* actions();
+  QgsAttributeAction *actions();
 
   /** The number of features that are selected in this layer */
   int selectedFeatureCount();

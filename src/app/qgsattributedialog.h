@@ -45,6 +45,8 @@ class QgsAttributeDialog : public QObject
      */
     void restoreGeometry();
 
+    QDialog *dialog() { return mDialog; }
+
   public slots:
     /** Overloaded accept method which will write the feature field
      * values, then delegate to QDialog::accept()
