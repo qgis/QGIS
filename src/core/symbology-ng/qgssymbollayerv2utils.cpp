@@ -14,22 +14,22 @@
 #include <QIcon>
 #include <QPainter>
 
-QString QgsSymbolLayerV2Utils::encodeColor(QColor color)
+QString QgsSymbolLayerV2Utils::encodeColor( QColor color )
 {
-  return QString("%1,%2,%3").arg(color.red()).arg(color.green()).arg(color.blue());
+  return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
-QColor QgsSymbolLayerV2Utils::decodeColor(QString str)
+QColor QgsSymbolLayerV2Utils::decodeColor( QString str )
 {
-  QStringList lst = str.split(",");
-  if (lst.count() != 3)
+  QStringList lst = str.split( "," );
+  if ( lst.count() != 3 )
     return QColor();
-  return QColor(lst[0].toInt(), lst[1].toInt(), lst[2].toInt());
+  return QColor( lst[0].toInt(), lst[1].toInt(), lst[2].toInt() );
 }
 
-QString QgsSymbolLayerV2Utils::encodePenStyle(Qt::PenStyle style)
+QString QgsSymbolLayerV2Utils::encodePenStyle( Qt::PenStyle style )
 {
-  switch (style)
+  switch ( style )
   {
     case Qt::SolidLine:      return "solid";
     case Qt::DashLine:       return "dash";
@@ -40,19 +40,19 @@ QString QgsSymbolLayerV2Utils::encodePenStyle(Qt::PenStyle style)
   }
 }
 
-Qt::PenStyle QgsSymbolLayerV2Utils::decodePenStyle(QString str)
+Qt::PenStyle QgsSymbolLayerV2Utils::decodePenStyle( QString str )
 {
-  if (str == "solid") return Qt::SolidLine;
-  if (str == "dash") return Qt::DashLine;
-  if (str == "dot") return Qt::DotLine;
-  if (str == "dash dot") return Qt::DashDotLine;
-  if (str == "dast dot dot") return Qt::DashDotDotLine;
+  if ( str == "solid" ) return Qt::SolidLine;
+  if ( str == "dash" ) return Qt::DashLine;
+  if ( str == "dot" ) return Qt::DotLine;
+  if ( str == "dash dot" ) return Qt::DashDotLine;
+  if ( str == "dast dot dot" ) return Qt::DashDotDotLine;
   return Qt::SolidLine;
 }
 
-QString QgsSymbolLayerV2Utils::encodePenJoinStyle(Qt::PenJoinStyle style)
+QString QgsSymbolLayerV2Utils::encodePenJoinStyle( Qt::PenJoinStyle style )
 {
-  switch (style)
+  switch ( style )
   {
     case Qt::BevelJoin: return "bevel";
     case Qt::MiterJoin: return "miter";
@@ -61,17 +61,17 @@ QString QgsSymbolLayerV2Utils::encodePenJoinStyle(Qt::PenJoinStyle style)
   }
 }
 
-Qt::PenJoinStyle QgsSymbolLayerV2Utils::decodePenJoinStyle(QString str)
+Qt::PenJoinStyle QgsSymbolLayerV2Utils::decodePenJoinStyle( QString str )
 {
-  if (str == "bevel") return Qt::BevelJoin;
-  if (str == "miter") return Qt::MiterJoin;
-  if (str == "round") return Qt::RoundJoin;
+  if ( str == "bevel" ) return Qt::BevelJoin;
+  if ( str == "miter" ) return Qt::MiterJoin;
+  if ( str == "round" ) return Qt::RoundJoin;
   return Qt::BevelJoin;
 }
 
-QString QgsSymbolLayerV2Utils::encodePenCapStyle(Qt::PenCapStyle style)
+QString QgsSymbolLayerV2Utils::encodePenCapStyle( Qt::PenCapStyle style )
 {
-  switch (style)
+  switch ( style )
   {
     case Qt::SquareCap: return "square";
     case Qt::FlatCap:   return "flat";
@@ -80,18 +80,18 @@ QString QgsSymbolLayerV2Utils::encodePenCapStyle(Qt::PenCapStyle style)
   }
 }
 
-Qt::PenCapStyle QgsSymbolLayerV2Utils::decodePenCapStyle(QString str)
+Qt::PenCapStyle QgsSymbolLayerV2Utils::decodePenCapStyle( QString str )
 {
-  if (str == "square") return Qt::SquareCap;
-  if (str == "flat") return Qt::FlatCap;
-  if (str == "round") return Qt::RoundCap;
+  if ( str == "square" ) return Qt::SquareCap;
+  if ( str == "flat" ) return Qt::FlatCap;
+  if ( str == "round" ) return Qt::RoundCap;
   return Qt::SquareCap;
 }
 
 
-QString QgsSymbolLayerV2Utils::encodeBrushStyle(Qt::BrushStyle style)
+QString QgsSymbolLayerV2Utils::encodeBrushStyle( Qt::BrushStyle style )
 {
-  switch (style)
+  switch ( style )
   {
     case Qt::SolidPattern : return "solid";
     case Qt::HorPattern : return "horizontal";
@@ -112,85 +112,85 @@ QString QgsSymbolLayerV2Utils::encodeBrushStyle(Qt::BrushStyle style)
   }
 }
 
-Qt::BrushStyle QgsSymbolLayerV2Utils::decodeBrushStyle(QString str)
+Qt::BrushStyle QgsSymbolLayerV2Utils::decodeBrushStyle( QString str )
 {
-  if (str == "solid") return Qt::SolidPattern;
-  if (str == "horizontal") return Qt::HorPattern;
-  if (str == "vertical") return Qt::VerPattern;
-  if (str == "cross") return Qt::CrossPattern;
-  if (str == "b_diagonal") return Qt::BDiagPattern;
-  if (str == "f_diagonal") return Qt::FDiagPattern;
-  if (str == "diagonal_x") return Qt::DiagCrossPattern;
-  if (str == "dense1") return Qt::Dense1Pattern;
-  if (str == "dense2") return Qt::Dense2Pattern;
-  if (str == "dense3") return Qt::Dense3Pattern;
-  if (str == "dense4") return Qt::Dense4Pattern;
-  if (str == "dense5") return Qt::Dense5Pattern;
-  if (str == "dense6") return Qt::Dense6Pattern;
-  if (str == "dense7") return Qt::Dense7Pattern;
+  if ( str == "solid" ) return Qt::SolidPattern;
+  if ( str == "horizontal" ) return Qt::HorPattern;
+  if ( str == "vertical" ) return Qt::VerPattern;
+  if ( str == "cross" ) return Qt::CrossPattern;
+  if ( str == "b_diagonal" ) return Qt::BDiagPattern;
+  if ( str == "f_diagonal" ) return Qt::FDiagPattern;
+  if ( str == "diagonal_x" ) return Qt::DiagCrossPattern;
+  if ( str == "dense1" ) return Qt::Dense1Pattern;
+  if ( str == "dense2" ) return Qt::Dense2Pattern;
+  if ( str == "dense3" ) return Qt::Dense3Pattern;
+  if ( str == "dense4" ) return Qt::Dense4Pattern;
+  if ( str == "dense5" ) return Qt::Dense5Pattern;
+  if ( str == "dense6" ) return Qt::Dense6Pattern;
+  if ( str == "dense7" ) return Qt::Dense7Pattern;
   return Qt::SolidPattern;
 }
 
-QString QgsSymbolLayerV2Utils::encodePoint(QPointF point)
+QString QgsSymbolLayerV2Utils::encodePoint( QPointF point )
 {
-  return QString("%1,%2").arg(point.x()).arg(point.y());
+  return QString( "%1,%2" ).arg( point.x() ).arg( point.y() );
 }
 
-QPointF QgsSymbolLayerV2Utils::decodePoint(QString str)
+QPointF QgsSymbolLayerV2Utils::decodePoint( QString str )
 {
-  QStringList lst = str.split(',');
-  if (lst.count() != 2)
-    return QPointF(0,0);
+  QStringList lst = str.split( ',' );
+  if ( lst.count() != 2 )
+    return QPointF( 0, 0 );
   return QPointF( lst[0].toDouble(), lst[1].toDouble() );
 }
 
-QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon(QgsSymbolV2* symbol, QSize size)
+QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon( QgsSymbolV2* symbol, QSize size )
 {
-  return QIcon(symbolPreviewPixmap(symbol, size));
+  return QIcon( symbolPreviewPixmap( symbol, size ) );
 }
 
-QPixmap QgsSymbolLayerV2Utils::symbolPreviewPixmap(QgsSymbolV2* symbol, QSize size)
+QPixmap QgsSymbolLayerV2Utils::symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size )
 {
-  QPixmap pixmap(size);
+  QPixmap pixmap( size );
   QPainter painter;
-  painter.begin(&pixmap);
+  painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
-  painter.eraseRect(QRect(QPoint(0,0),size));
-  symbol->drawPreviewIcon(&painter, size);
+  painter.eraseRect( QRect( QPoint( 0, 0 ), size ) );
+  symbol->drawPreviewIcon( &painter, size );
   painter.end();
   return pixmap;
 }
 
 
-QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon(QgsSymbolLayerV2* layer, QSize size)
+QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QSize size )
 {
-  QPixmap pixmap(size);
+  QPixmap pixmap( size );
   QPainter painter;
-  painter.begin(&pixmap);
+  painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
-  painter.eraseRect(QRect(QPoint(0,0),size));
-  layer->drawPreviewIcon(&painter, size);
+  painter.eraseRect( QRect( QPoint( 0, 0 ), size ) );
+  layer->drawPreviewIcon( &painter, size );
   painter.end();
-  return QIcon(pixmap);
+  return QIcon( pixmap );
 }
 
-QIcon QgsSymbolLayerV2Utils::colorRampPreviewIcon(QgsVectorColorRampV2* ramp, QSize size)
+QIcon QgsSymbolLayerV2Utils::colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size )
 {
-  return QIcon(colorRampPreviewPixmap(ramp, size));
+  return QIcon( colorRampPreviewPixmap( ramp, size ) );
 }
 
-QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap(QgsVectorColorRampV2* ramp, QSize size)
+QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size )
 {
-  QPixmap pixmap(size);
+  QPixmap pixmap( size );
   QPainter painter;
-  painter.begin(&pixmap);
+  painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
-  painter.eraseRect(QRect(QPoint(0,0),size));
-  for (int i = 0; i < size.width(); i++)
+  painter.eraseRect( QRect( QPoint( 0, 0 ), size ) );
+  for ( int i = 0; i < size.width(); i++ )
   {
-    QPen pen( ramp->color( (double) i / size.width() ) );
-    painter.setPen(pen);
-    painter.drawLine(i,0,i,size.height()-1);
+    QPen pen( ramp->color(( double ) i / size.width() ) );
+    painter.setPen( pen );
+    painter.drawLine( i, 0, i, size.height() - 1 );
   }
   painter.end();
   return pixmap;
@@ -204,46 +204,46 @@ QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap(QgsVectorColorRampV2* ramp
 
 
 // calculate line's angle and tangent
-static bool lineInfo(QPointF p1, QPointF p2, double& angle, double& t)
+static bool lineInfo( QPointF p1, QPointF p2, double& angle, double& t )
 {
   double x1 = p1.x(), y1 = p1.y(), x2 = p2.x(), y2 = p2.y();
 
-  if (x1 == x2 && y1 == y2)
+  if ( x1 == x2 && y1 == y2 )
     return false;
 
   // tangent
-  t = ( x1 == x2 ? t = DBL_MAX : (y2-y1)/(x2-x1) );
+  t = ( x1 == x2 ? t = DBL_MAX : ( y2 - y1 ) / ( x2 - x1 ) );
 
   // angle
-  if (t == DBL_MAX)
-    angle = ( y2 >= y1 ? M_PI/2 : M_PI*3/2 );  // angle is 90 or 270
-  else if (t >= 0)
-    angle = ( y2 >= y1 ? atan(t) : M_PI + atan(t) );
+  if ( t == DBL_MAX )
+    angle = ( y2 >= y1 ? M_PI / 2 : M_PI * 3 / 2 );  // angle is 90 or 270
+  else if ( t >= 0 )
+    angle = ( y2 >= y1 ? atan( t ) : M_PI + atan( t ) );
   else // t < 0
-    angle = ( y2 >= y1 ? M_PI + atan(t) : M_PI*2 + atan(t) );
+    angle = ( y2 >= y1 ? M_PI + atan( t ) : M_PI * 2 + atan( t ) );
 
   return true;
 }
 
 // offset a point with an angle and distance
-static QPointF offsetPoint(QPointF pt, double angle, double dist)
+static QPointF offsetPoint( QPointF pt, double angle, double dist )
 {
-  return QPointF(pt.x() + dist * cos(angle), pt.y() + dist * sin(angle));
+  return QPointF( pt.x() + dist * cos( angle ), pt.y() + dist * sin( angle ) );
 }
 
 // calc intersection of two (infinite) lines defined by one point and tangent
-static QPointF linesIntersection(QPointF p1, double t1, QPointF p2, double t2)
+static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
 {
   // parallel lines?
-  if ( (t1 == DBL_MAX && t2 == DBL_MAX) || t1 == t2)
+  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || t1 == t2 )
     return QPointF();
 
-  double x,y;
-  if (t1 == DBL_MAX || t2 == DBL_MAX)
+  double x, y;
+  if ( t1 == DBL_MAX || t2 == DBL_MAX )
   {
     // in case one line is with angle 90 resp. 270 degrees (tangent undefined)
     // swap them so that line 2 is with undefined tangent
-    if (t1 == DBL_MAX)
+    if ( t1 == DBL_MAX )
     {
       QPointF pSwp = p1; p1 = p2; p2 = pSwp;
       double  tSwp = t1; t1 = t2; t2 = tSwp;
@@ -254,42 +254,42 @@ static QPointF linesIntersection(QPointF p1, double t1, QPointF p2, double t2)
   else
   {
     // usual case
-    x = ( (p1.y() - p2.y()) + t2*p2.x() - t1*p1.x() ) / (t2 - t1);
+    x = (( p1.y() - p2.y() ) + t2 * p2.x() - t1 * p1.x() ) / ( t2 - t1 );
   }
 
-  y = p1.y() + t1 * (x - p1.x());
-  return QPointF(x,y);
+  y = p1.y() + t1 * ( x - p1.x() );
+  return QPointF( x, y );
 }
 
 
-QPolygonF offsetLine(QPolygonF polyline, double dist)
+QPolygonF offsetLine( QPolygonF polyline, double dist )
 {
   QPolygonF newLine;
 
-  if (polyline.count() < 2)
+  if ( polyline.count() < 2 )
     return newLine;
 
-  double angle, t_new, t_old=0;
+  double angle, t_new, t_old = 0;
   QPointF pt_old, pt_new;
   QPointF p1 = polyline[0], p2;
 
-  for (int i = 1; i < polyline.count(); i++)
+  for ( int i = 1; i < polyline.count(); i++ )
   {
     p2 = polyline[i];
 
-    if ( !lineInfo(p1, p2, angle, t_new) )
+    if ( !lineInfo( p1, p2, angle, t_new ) )
       continue; // not a line...
 
-    pt_new = offsetPoint(p1, angle + M_PI/2, dist);
+    pt_new = offsetPoint( p1, angle + M_PI / 2, dist );
 
-    if (i != 1)
+    if ( i != 1 )
     {
       // if it's not the first line segment
       // calc intersection with last line (with offset)
-      pt_new = linesIntersection(pt_old, t_old, pt_new, t_new);
+      pt_new = linesIntersection( pt_old, t_old, pt_new, t_new );
     }
 
-    newLine.append(pt_new);
+    newLine.append( pt_new );
 
     pt_old = pt_new;
     t_old = t_new;
@@ -297,133 +297,134 @@ QPolygonF offsetLine(QPolygonF polyline, double dist)
   }
 
   // last line segment:
-  pt_new = offsetPoint(p2, angle + M_PI/2, dist);
-  newLine.append(pt_new);
+  pt_new = offsetPoint( p2, angle + M_PI / 2, dist );
+  newLine.append( pt_new );
   return newLine;
 }
 
 /////
 
 
-QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol(QDomElement& element)
+QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
 {
   QgsSymbolLayerV2List layers;
   QDomNode layerNode = element.firstChild();
 
-  while (!layerNode.isNull())
+  while ( !layerNode.isNull() )
   {
     QDomElement e = layerNode.toElement();
-    if (!e.isNull())
+    if ( !e.isNull() )
     {
-      if (e.tagName() != "layer")
+      if ( e.tagName() != "layer" )
       {
-        QgsDebugMsg("unknown tag " + e.tagName());
+        QgsDebugMsg( "unknown tag " + e.tagName() );
       }
       else
       {
-        QgsSymbolLayerV2* layer = loadSymbolLayer(e);
-        if (layer != NULL)
-          layers.append(layer);
+        QgsSymbolLayerV2* layer = loadSymbolLayer( e );
+        if ( layer != NULL )
+          layers.append( layer );
       }
     }
     layerNode = layerNode.nextSibling();
   }
 
-  if (layers.count() == 0)
+  if ( layers.count() == 0 )
   {
-    QgsDebugMsg("no layers for symbol");
+    QgsDebugMsg( "no layers for symbol" );
     return NULL;
   }
 
-  QString symbolType = element.attribute("type");
-  if (symbolType == "line")
-    return new QgsLineSymbolV2(layers);
-  else if (symbolType == "fill")
-    return new QgsFillSymbolV2(layers);
-  else if (symbolType == "marker")
-    return new QgsMarkerSymbolV2(layers);
+  QString symbolType = element.attribute( "type" );
+  if ( symbolType == "line" )
+    return new QgsLineSymbolV2( layers );
+  else if ( symbolType == "fill" )
+    return new QgsFillSymbolV2( layers );
+  else if ( symbolType == "marker" )
+    return new QgsMarkerSymbolV2( layers );
   else
   {
-    QgsDebugMsg("unknown symbol type " + symbolType);
+    QgsDebugMsg( "unknown symbol type " + symbolType );
     return NULL;
   }
 }
 
-QgsSymbolLayerV2* QgsSymbolLayerV2Utils::loadSymbolLayer(QDomElement& element)
+QgsSymbolLayerV2* QgsSymbolLayerV2Utils::loadSymbolLayer( QDomElement& element )
 {
-  QString layerClass = element.attribute("class");
-  bool locked = element.attribute("locked").toInt();
+  QString layerClass = element.attribute( "class" );
+  bool locked = element.attribute( "locked" ).toInt();
 
   // parse properties
-  QgsStringMap props = parseProperties(element);
+  QgsStringMap props = parseProperties( element );
 
   QgsSymbolLayerV2* layer;
-  layer = QgsSymbolLayerV2Registry::instance()->createSymbolLayer(layerClass, props);
-  if (layer)
+  layer = QgsSymbolLayerV2Registry::instance()->createSymbolLayer( layerClass, props );
+  if ( layer )
   {
-    layer->setLocked(locked);
+    layer->setLocked( locked );
     return layer;
   }
   else
   {
-    QgsDebugMsg("unknown class " + layerClass);
+    QgsDebugMsg( "unknown class " + layerClass );
     return NULL;
   }
 }
 
-static QString _nameForSymbolType(QgsSymbolV2::SymbolType type)
+static QString _nameForSymbolType( QgsSymbolV2::SymbolType type )
 {
-  switch (type)
+  switch ( type )
   {
     case QgsSymbolV2::Line: return "line";
     case QgsSymbolV2::Marker: return "marker";
     case QgsSymbolV2::Fill: return "fill";
+    default: return "";
   }
 }
 
-QDomElement QgsSymbolLayerV2Utils::saveSymbol(QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols)
+QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols )
 {
-  QDomElement symEl = doc.createElement("symbol");
-  symEl.setAttribute("type", _nameForSymbolType(symbol->type()) );
-  symEl.setAttribute("name", name);
+  QDomElement symEl = doc.createElement( "symbol" );
+  symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
+  symEl.setAttribute( "name", name );
 
-  QgsDebugMsg("num layers " + QString::number(symbol->symbolLayerCount()));
-  for (int i = 0; i < symbol->symbolLayerCount(); i++)
+  QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
+  for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
-    QgsSymbolLayerV2* layer = symbol->symbolLayer(i);
+    QgsSymbolLayerV2* layer = symbol->symbolLayer( i );
 
-    QDomElement layerEl = doc.createElement("layer");
-    layerEl.setAttribute("class", layer->layerType());
-    layerEl.setAttribute("locked", layer->isLocked());
+    QDomElement layerEl = doc.createElement( "layer" );
+    layerEl.setAttribute( "class", layer->layerType() );
+    layerEl.setAttribute( "locked", layer->isLocked() );
 
-    if (subSymbols != NULL && layer->subSymbol() != NULL)
+    if ( subSymbols != NULL && layer->subSymbol() != NULL )
     {
-      QString subname = QString("@%1@%2").arg(name).arg(i);
-      subSymbols->insert(subname, layer->subSymbol());
+      QString subname = QString( "@%1@%2" ).arg( name ).arg( i );
+      subSymbols->insert( subname, layer->subSymbol() );
     }
 
-    saveProperties(layer->properties(), doc, layerEl);
-    symEl.appendChild(layerEl);
+    saveProperties( layer->properties(), doc, layerEl );
+    symEl.appendChild( layerEl );
   }
 
   return symEl;
 }
 
 
-QgsStringMap QgsSymbolLayerV2Utils::parseProperties(QDomElement& element)
+QgsStringMap QgsSymbolLayerV2Utils::parseProperties( QDomElement& element )
 {
   QgsStringMap props;
   QDomElement e = element.firstChildElement();
-  while (!e.isNull())
+  while ( !e.isNull() )
   {
-    if (e.tagName() != "prop")
+    if ( e.tagName() != "prop" )
     {
-      QgsDebugMsg("unknown tag " + e.tagName());
+      QgsDebugMsg( "unknown tag " + e.tagName() );
     }
     else
     {
-      QString propKey = e.attribute("k");
-      QString propValue = e.attribute("v");
+      QString propKey = e.attribute( "k" );
+      QString propValue = e.attribute( "v" );
       props[propKey] = propValue;
     }
     e = e.nextSiblingElement();
@@ -432,35 +433,35 @@ QgsStringMap QgsSymbolLayerV2Utils::parseProperties(QDomElement& element)
 }
 
 
-void QgsSymbolLayerV2Utils::saveProperties(QgsStringMap props, QDomDocument& doc, QDomElement& element)
+void QgsSymbolLayerV2Utils::saveProperties( QgsStringMap props, QDomDocument& doc, QDomElement& element )
 {
-  for (QgsStringMap::iterator it = props.begin(); it != props.end(); ++it)
+  for ( QgsStringMap::iterator it = props.begin(); it != props.end(); ++it )
   {
-    QDomElement propEl = doc.createElement("prop");
-    propEl.setAttribute("k", it.key());
-    propEl.setAttribute("v", it.value());
-    element.appendChild(propEl);
+    QDomElement propEl = doc.createElement( "prop" );
+    propEl.setAttribute( "k", it.key() );
+    propEl.setAttribute( "v", it.value() );
+    element.appendChild( propEl );
   }
 }
 
-QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols(QDomElement& element)
+QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
 {
   // go through symbols one-by-one and load them
 
   QgsSymbolV2Map symbols;
   QDomElement e = element.firstChildElement();
 
-  while (!e.isNull())
+  while ( !e.isNull() )
   {
-    if (e.tagName() == "symbol")
+    if ( e.tagName() == "symbol" )
     {
-      QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol(e);
-      if (symbol != NULL)
-        symbols.insert(e.attribute("name"), symbol);
+      QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol( e );
+      if ( symbol != NULL )
+        symbols.insert( e.attribute( "name" ), symbol );
     }
     else
     {
-      QgsDebugMsg("unknown tag: " + e.tagName());
+      QgsDebugMsg( "unknown tag: " + e.tagName() );
     }
     e = e.nextSiblingElement();
   }
@@ -471,114 +472,114 @@ QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols(QDomElement& element)
   // e.g. symbol named "@foo@1" is sub-symbol of layer 1 in symbol "foo"
   QStringList subsymbols;
 
-  for (QMap<QString, QgsSymbolV2*>::iterator it = symbols.begin(); it != symbols.end(); ++it)
+  for ( QMap<QString, QgsSymbolV2*>::iterator it = symbols.begin(); it != symbols.end(); ++it )
   {
-    if (it.key()[0] != '@')
+    if ( it.key()[0] != '@' )
       continue;
 
     // add to array (for deletion)
-    subsymbols.append(it.key());
+    subsymbols.append( it.key() );
 
-    QStringList parts = it.key().split("@");
-    if (parts.count() < 3)
+    QStringList parts = it.key().split( "@" );
+    if ( parts.count() < 3 )
     {
-      QgsDebugMsg("found subsymbol with invalid name: "+it.key());
+      QgsDebugMsg( "found subsymbol with invalid name: " + it.key() );
       delete it.value(); // we must delete it
       continue; // some invalid syntax
     }
     QString symname = parts[1];
     int symlayer = parts[2].toInt();
 
-    if (!symbols.contains(symname))
+    if ( !symbols.contains( symname ) )
     {
-      QgsDebugMsg("subsymbol references invalid symbol: " + symname);
+      QgsDebugMsg( "subsymbol references invalid symbol: " + symname );
       delete it.value(); // we must delete it
       continue;
     }
 
     QgsSymbolV2* sym = symbols[symname];
-    if (symlayer < 0 || symlayer >= sym->symbolLayerCount())
+    if ( symlayer < 0 || symlayer >= sym->symbolLayerCount() )
     {
-      QgsDebugMsg("subsymbol references invalid symbol layer: "+ QString::number(symlayer));
+      QgsDebugMsg( "subsymbol references invalid symbol layer: " + QString::number( symlayer ) );
       delete it.value(); // we must delete it
       continue;
     }
 
     // set subsymbol takes ownership
-    bool res = sym->symbolLayer(symlayer)->setSubSymbol( it.value() );
-    if (!res)
+    bool res = sym->symbolLayer( symlayer )->setSubSymbol( it.value() );
+    if ( !res )
     {
-      QgsDebugMsg("symbol layer refused subsymbol: " + it.key());
+      QgsDebugMsg( "symbol layer refused subsymbol: " + it.key() );
     }
 
 
   }
 
   // now safely remove sub-symbol entries (they have been already deleted or the ownership was taken away)
-  for (int i = 0; i < subsymbols.count(); i++)
-    symbols.take(subsymbols[i]);
+  for ( int i = 0; i < subsymbols.count(); i++ )
+    symbols.take( subsymbols[i] );
 
   return symbols;
 }
 
-QDomElement QgsSymbolLayerV2Utils::saveSymbols(QgsSymbolV2Map& symbols, QString tagName, QDomDocument& doc)
+QDomElement QgsSymbolLayerV2Utils::saveSymbols( QgsSymbolV2Map& symbols, QString tagName, QDomDocument& doc )
 {
-  QDomElement symbolsElem = doc.createElement(tagName);
+  QDomElement symbolsElem = doc.createElement( tagName );
 
   QMap<QString, QgsSymbolV2*> subSymbols;
 
   // save symbols
-  for (QMap<QString, QgsSymbolV2*>::iterator its = symbols.begin(); its != symbols.end(); ++its)
+  for ( QMap<QString, QgsSymbolV2*>::iterator its = symbols.begin(); its != symbols.end(); ++its )
   {
-    QDomElement symEl = saveSymbol(its.key(), its.value(), doc, &subSymbols);
-    symbolsElem.appendChild(symEl);
+    QDomElement symEl = saveSymbol( its.key(), its.value(), doc, &subSymbols );
+    symbolsElem.appendChild( symEl );
   }
 
   // add subsymbols, don't allow subsymbols for them (to keep things simple)
-  for (QMap<QString, QgsSymbolV2*>::iterator itsub = subSymbols.begin(); itsub != subSymbols.end(); ++itsub)
+  for ( QMap<QString, QgsSymbolV2*>::iterator itsub = subSymbols.begin(); itsub != subSymbols.end(); ++itsub )
   {
-    QDomElement subsymEl = saveSymbol(itsub.key(), itsub.value(), doc);
-    symbolsElem.appendChild(subsymEl);
+    QDomElement subsymEl = saveSymbol( itsub.key(), itsub.value(), doc );
+    symbolsElem.appendChild( subsymEl );
   }
 
   return symbolsElem;
 }
 
-void QgsSymbolLayerV2Utils::clearSymbolMap(QgsSymbolV2Map& symbols)
+void QgsSymbolLayerV2Utils::clearSymbolMap( QgsSymbolV2Map& symbols )
 {
-  foreach (QString name, symbols.keys())
-    delete symbols.value(name);
+  foreach( QString name, symbols.keys() )
+  delete symbols.value( name );
   symbols.clear();
 }
 
 
-QgsVectorColorRampV2* QgsSymbolLayerV2Utils::loadColorRamp(QDomElement& element)
+QgsVectorColorRampV2* QgsSymbolLayerV2Utils::loadColorRamp( QDomElement& element )
 {
-  QString rampType = element.attribute("type");
+  QString rampType = element.attribute( "type" );
 
   // parse properties
-  QgsStringMap props = QgsSymbolLayerV2Utils::parseProperties(element);
+  QgsStringMap props = QgsSymbolLayerV2Utils::parseProperties( element );
 
-  if (rampType == "gradient")
-    return QgsVectorGradientColorRampV2::create(props);
-  else if (rampType == "random")
-    return QgsVectorRandomColorRampV2::create(props);
-  else if (rampType == "colorbrewer")
-    return QgsVectorColorBrewerColorRampV2::create(props);
+  if ( rampType == "gradient" )
+    return QgsVectorGradientColorRampV2::create( props );
+  else if ( rampType == "random" )
+    return QgsVectorRandomColorRampV2::create( props );
+  else if ( rampType == "colorbrewer" )
+    return QgsVectorColorBrewerColorRampV2::create( props );
   else
   {
-    QgsDebugMsg("unknown colorramp type " + rampType);
+    QgsDebugMsg( "unknown colorramp type " + rampType );
     return NULL;
   }
 }
 
 
-QDomElement QgsSymbolLayerV2Utils::saveColorRamp(QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc)
+QDomElement QgsSymbolLayerV2Utils::saveColorRamp( QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc )
 {
-  QDomElement rampEl = doc.createElement("colorramp");
-  rampEl.setAttribute("type", ramp->type());
-  rampEl.setAttribute("name", name);
+  QDomElement rampEl = doc.createElement( "colorramp" );
+  rampEl.setAttribute( "type", ramp->type() );
+  rampEl.setAttribute( "name", name );
 
-  QgsSymbolLayerV2Utils::saveProperties(ramp->properties(), doc, rampEl);
+  QgsSymbolLayerV2Utils::saveProperties( ramp->properties(), doc, rampEl );
   return rampEl;
 }

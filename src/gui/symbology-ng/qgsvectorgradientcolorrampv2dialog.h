@@ -8,22 +8,22 @@
 
 class QgsVectorGradientColorRampV2;
 
-class QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui::QgsVectorGradientColorRampV2DialogBase
+class GUI_EXPORT QgsVectorGradientColorRampV2Dialog : public QDialog, private Ui::QgsVectorGradientColorRampV2DialogBase
 {
-  Q_OBJECT
-      
-public:
-  QgsVectorGradientColorRampV2Dialog(QgsVectorGradientColorRampV2* ramp, QWidget* parent = NULL);
-  
-public slots:
-  void setColor1();
-  void setColor2();
-  
-protected:
-  
-  void updatePreview();
-  
-  QgsVectorGradientColorRampV2* mRamp;
+    Q_OBJECT
+
+  public:
+    QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent = NULL );
+
+  public slots:
+    void setColor1();
+    void setColor2();
+
+  protected:
+
+    void updatePreview();
+
+    QgsVectorGradientColorRampV2* mRamp;
 };
 
 #endif

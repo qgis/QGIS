@@ -50,7 +50,7 @@ namespace pal
   /**
    * \brief LabelPositon is a candidate feature label position
    */
-  class LabelPosition
+  class CORE_EXPORT LabelPosition
   {
       friend class CostCalculator;
       friend class PolygonCostCalculator;

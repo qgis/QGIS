@@ -20,17 +20,17 @@ WORKFLOW:
 - on any change of renderer type, create some default (dummy?) version and change the stacked widget
 - when clicked ok/apply, get the renderer from active widget and clone it for the layer
 */
-class QgsRendererV2Widget : public QWidget
+class GUI_EXPORT QgsRendererV2Widget : public QWidget
 {
-public:
-    QgsRendererV2Widget(QgsVectorLayer* layer, QgsStyleV2* style);
+  public:
+    QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style );
 
     virtual ~QgsRendererV2Widget() {}
 
     //! return pointer to the renderer (no transfer of ownership)
     virtual QgsFeatureRendererV2* renderer() = 0;
 
-protected:
+  protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
 };

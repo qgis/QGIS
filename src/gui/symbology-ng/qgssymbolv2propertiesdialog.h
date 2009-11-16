@@ -13,57 +13,57 @@ class SymbolLayerItem;
 #include <QMap>
 
 
-class QgsSymbolV2PropertiesDialog : public QDialog, private Ui::DlgSymbolV2Properties
+class GUI_EXPORT QgsSymbolV2PropertiesDialog : public QDialog, private Ui::DlgSymbolV2Properties
 {
-  Q_OBJECT
-  
-public:
-  QgsSymbolV2PropertiesDialog(QgsSymbolV2* symbol, QWidget* parent = NULL);
-  
-  
-public slots:
-  void moveLayerDown();
-  void moveLayerUp();
+    Q_OBJECT
 
-  void addLayer();
-  void removeLayer();
+  public:
+    QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, QWidget* parent = NULL );
 
-  void lockLayer();
 
-  void layerTypeChanged();
-  
-  void layerChanged();
+  public slots:
+    void moveLayerDown();
+    void moveLayerUp();
 
-  void updateLayerPreview();
-  void updatePreview();
-  
-protected:
-  
-  //! Reimplements dialog keyPress event so we can ignore it
-  void keyPressEvent( QKeyEvent * event );
+    void addLayer();
+    void removeLayer();
 
-  void loadSymbol();
-  
-  void populateLayerTypes();
-  
-  void updateUi();
-  
-  void loadPropertyWidgets();
-  
-  void updateSymbolLayerWidget(QgsSymbolLayerV2* layer);
-  void updateLockButton();
-  
-  int currentRowIndex();
-  int currentLayerIndex();
-  SymbolLayerItem* currentLayerItem();
-  QgsSymbolLayerV2* currentLayer();
-  
-  void moveLayerByOffset(int offset);
-  
-protected: // data
-  QgsSymbolV2* mSymbol;
-  
-  QMap<QString, QgsSymbolLayerV2Widget*> mWidgets;
+    void lockLayer();
+
+    void layerTypeChanged();
+
+    void layerChanged();
+
+    void updateLayerPreview();
+    void updatePreview();
+
+  protected:
+
+    //! Reimplements dialog keyPress event so we can ignore it
+    void keyPressEvent( QKeyEvent * event );
+
+    void loadSymbol();
+
+    void populateLayerTypes();
+
+    void updateUi();
+
+    void loadPropertyWidgets();
+
+    void updateSymbolLayerWidget( QgsSymbolLayerV2* layer );
+    void updateLockButton();
+
+    int currentRowIndex();
+    int currentLayerIndex();
+    SymbolLayerItem* currentLayerItem();
+    QgsSymbolLayerV2* currentLayer();
+
+    void moveLayerByOffset( int offset );
+
+  protected: // data
+    QgsSymbolV2* mSymbol;
+
+    QMap<QString, QgsSymbolLayerV2Widget*> mWidgets;
 };
 
 #endif

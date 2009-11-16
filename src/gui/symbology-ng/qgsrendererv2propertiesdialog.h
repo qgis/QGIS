@@ -14,14 +14,14 @@ class QgsSymbolV2;
 
 class QgsRendererV2Widget;
 
-class QgsRendererV2PropertiesDialog : public QDialog, private Ui::QgsRendererV2PropsDialogBase
+class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::QgsRendererV2PropsDialogBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-    QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false);
+  public:
+    QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false );
 
-public slots:
+  public slots:
     //! called when user changes renderer type
     void rendererChanged();
 
@@ -30,7 +30,7 @@ public slots:
 
     void showSymbolLevels();
 
-protected:
+  protected:
 
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event );

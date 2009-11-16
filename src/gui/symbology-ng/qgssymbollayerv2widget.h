@@ -7,17 +7,17 @@
 class QgsSymbolLayerV2;
 
 
-class QgsSymbolLayerV2Widget : public QWidget
+class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    QgsSymbolLayerV2Widget(QWidget* parent) : QWidget(parent) {}
+    QgsSymbolLayerV2Widget( QWidget* parent ) : QWidget( parent ) {}
     virtual ~QgsSymbolLayerV2Widget() {}
-    
-    virtual void setSymbolLayer(QgsSymbolLayerV2* layer) = 0;
+
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
     virtual QgsSymbolLayerV2* symbolLayer() = 0;
-    
+
   signals:
     void changed();
 };
@@ -28,25 +28,25 @@ class QgsSymbolLayerV2Widget : public QWidget
 
 class QgsSimpleLineSymbolLayerV2;
 
-class QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSimpleLine
+class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSimpleLine
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    QgsSimpleLineSymbolLayerV2Widget(QWidget* parent = NULL);
-    
+    QgsSimpleLineSymbolLayerV2Widget( QWidget* parent = NULL );
+
     static QgsSymbolLayerV2Widget* create() { return new QgsSimpleLineSymbolLayerV2Widget(); }
-    
+
     // from base class
-    virtual void setSymbolLayer(QgsSymbolLayerV2* layer);
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
-  
+
   public slots:
     void penWidthChanged();
     void colorChanged();
     void penStyleChanged();
     void offsetChanged();
-    
+
   protected:
     QgsSimpleLineSymbolLayerV2* mLayer;
 };
@@ -57,19 +57,19 @@ class QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private 
 
 class QgsSimpleMarkerSymbolLayerV2;
 
-class QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSimpleMarker
+class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSimpleMarker
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    QgsSimpleMarkerSymbolLayerV2Widget(QWidget* parent = NULL);
-    
+    QgsSimpleMarkerSymbolLayerV2Widget( QWidget* parent = NULL );
+
     static QgsSymbolLayerV2Widget* create() { return new QgsSimpleMarkerSymbolLayerV2Widget(); }
-    
+
     // from base class
-    virtual void setSymbolLayer(QgsSymbolLayerV2* layer);
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
-    
+
   public slots:
     void setName();
     void setColorBorder();
@@ -88,24 +88,24 @@ class QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, privat
 
 class QgsSimpleFillSymbolLayerV2;
 
-class QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSimpleFill
+class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSimpleFill
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    QgsSimpleFillSymbolLayerV2Widget(QWidget* parent = NULL);
-    
+    QgsSimpleFillSymbolLayerV2Widget( QWidget* parent = NULL );
+
     static QgsSymbolLayerV2Widget* create() { return new QgsSimpleFillSymbolLayerV2Widget(); }
-    
+
     // from base class
-    virtual void setSymbolLayer(QgsSymbolLayerV2* layer);
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
-    
+
   public slots:
     void setColor();
     void setBorderColor();
     void setBrushStyle();
-    
+
   protected:
     QgsSimpleFillSymbolLayerV2* mLayer;
 };
@@ -117,30 +117,30 @@ class QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private 
 
 class QgsMarkerLineSymbolLayerV2;
 
-class QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetMarkerLine
+class GUI_EXPORT QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetMarkerLine
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    QgsMarkerLineSymbolLayerV2Widget(QWidget* parent = NULL);
-    
+    QgsMarkerLineSymbolLayerV2Widget( QWidget* parent = NULL );
+
     static QgsSymbolLayerV2Widget* create() { return new QgsMarkerLineSymbolLayerV2Widget(); }
-    
+
     // from base class
-    virtual void setSymbolLayer(QgsSymbolLayerV2* layer);
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
-    
+
   public slots:
-    
-    void setInterval(double val);
+
+    void setInterval( double val );
     void setMarker();
     void setRotate();
     void setOffset();
-    
+
   protected:
-    
+
     void updateMarker();
-    
+
     QgsMarkerLineSymbolLayerV2* mLayer;
 };
 
@@ -151,29 +151,29 @@ class QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private 
 
 class QgsSvgMarkerSymbolLayerV2;
 
-class QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSvgMarker
+class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetSvgMarker
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    QgsSvgMarkerSymbolLayerV2Widget(QWidget* parent = NULL);
-    
+    QgsSvgMarkerSymbolLayerV2Widget( QWidget* parent = NULL );
+
     static QgsSymbolLayerV2Widget* create() { return new QgsSvgMarkerSymbolLayerV2Widget(); }
-    
+
     // from base class
-    virtual void setSymbolLayer(QgsSymbolLayerV2* layer);
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
-    
+
   public slots:
-    void setName(const QModelIndex& idx);
+    void setName( const QModelIndex& idx );
     void setSize();
     void setAngle();
     void setOffset();
 
   protected:
-    
+
     void populateList();
-    
+
     QgsSvgMarkerSymbolLayerV2* mLayer;
 };
 
@@ -184,22 +184,22 @@ class QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private U
 
 class QgsLineDecorationSymbolLayerV2;
 
-class QgsLineDecorationSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetLineDecoration
+class GUI_EXPORT QgsLineDecorationSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetLineDecoration
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    QgsLineDecorationSymbolLayerV2Widget(QWidget* parent = NULL);
-    
+    QgsLineDecorationSymbolLayerV2Widget( QWidget* parent = NULL );
+
     static QgsSymbolLayerV2Widget* create() { return new QgsLineDecorationSymbolLayerV2Widget(); }
-    
+
     // from base class
-    virtual void setSymbolLayer(QgsSymbolLayerV2* layer);
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
-    
+
   public slots:
     void colorChanged();
-    
+
   protected:
     QgsLineDecorationSymbolLayerV2* mLayer;
 };

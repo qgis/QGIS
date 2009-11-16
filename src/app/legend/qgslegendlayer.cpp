@@ -284,8 +284,10 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
 {
   QSize iconSize( 16, 16 );
 
+#if 0 // unused
   QSettings settings;
   bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
+#endif
 
   SymbologyList itemList = layer->rendererV2()->legendSymbologyItems( iconSize );
 

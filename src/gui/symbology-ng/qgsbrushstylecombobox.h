@@ -4,18 +4,18 @@
 
 #include <QComboBox>
 
-class QgsBrushStyleComboBox : public QComboBox
+class GUI_EXPORT QgsBrushStyleComboBox : public QComboBox
 {
   public:
-    QgsBrushStyleComboBox(QWidget* parent = NULL);
-  
+    QgsBrushStyleComboBox( QWidget* parent = NULL );
+
     Qt::BrushStyle brushStyle() const;
-  
-    void setBrushStyle(Qt::BrushStyle style);
-  
+
+    void setBrushStyle( Qt::BrushStyle style );
+
   protected:
-    QIcon iconForBrush(Qt::BrushStyle style);
-    
+    QIcon iconForBrush( Qt::BrushStyle style );
+
 };
 
 #endif

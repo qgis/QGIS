@@ -62,7 +62,7 @@ namespace pal
    *
    *  \author Maxence Laurent <maxence _dot_ laurent _at_ heig-vd _dot_ ch>
    */
-  class Layer
+  class CORE_EXPORT Layer
   {
       friend class Pal;
       friend class FeaturePart;
@@ -275,7 +275,7 @@ namespace pal
       void setLabelMode( LabelMode m ) { mode = m; }
       LabelMode getLabelMode() const { return mode; }
 
-      void setMergeConnectedLines(bool m) { mergeLines = m; }
+      void setMergeConnectedLines( bool m ) { mergeLines = m; }
       bool getMergeConnectedLines() const { return mergeLines; }
 
       /**

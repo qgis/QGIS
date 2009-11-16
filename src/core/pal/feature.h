@@ -49,43 +49,43 @@
 namespace pal
 {
   /** optional additional info about label (for curved labels) */
-  class LabelInfo
+  class CORE_EXPORT LabelInfo
   {
-  public:
-    typedef struct
-    {
+    public:
+      typedef struct
+      {
         unsigned short chr;
         double width;
-    } CharacterInfo;
+      } CharacterInfo;
 
-    LabelInfo(int num, double height)
-    {
-      max_char_angle_delta = 20;
-      label_height = height;
-      char_num = num;
-      char_info = new CharacterInfo[num];
-    }
-    ~LabelInfo() { delete [] char_info; }
+      LabelInfo( int num, double height )
+      {
+        max_char_angle_delta = 20;
+        label_height = height;
+        char_num = num;
+        char_info = new CharacterInfo[num];
+      }
+      ~LabelInfo() { delete [] char_info; }
 
-    double max_char_angle_delta;
-    double label_height;
-    int char_num;
-    CharacterInfo* char_info;
+      double max_char_angle_delta;
+      double label_height;
+      int char_num;
+      CharacterInfo* char_info;
   };
 
   class LabelPosition;
   class FeaturePart;
 
-  class Feature
+  class CORE_EXPORT Feature
   {
-    friend class FeaturePart;
+      friend class FeaturePart;
 
     public:
-      Feature(Layer* l, const char* id, PalGeometry* userG, double lx, double ly);
+      Feature( Layer* l, const char* id, PalGeometry* userG, double lx, double ly );
       ~Feature();
 
-      void setLabelInfo(LabelInfo* info) { labelInfo = info; }
-      void setDistLabel(double dist) { distlabel = dist; }
+      void setLabelInfo( LabelInfo* info ) { labelInfo = info; }
+      void setDistLabel( double dist ) { distlabel = dist; }
 
     protected:
       double label_x;
@@ -107,7 +107,7 @@ namespace pal
   /**
    * \brief Main class to handle feature
    */
-  class FeaturePart : public PointSet
+  class CORE_EXPORT FeaturePart : public PointSet
   {
 
     protected:
@@ -127,7 +127,7 @@ namespace pal
        */
       void removeDuplicatePoints();
 
-public:
+    public:
 
       /**
         * \brief create a new generic feature
@@ -168,7 +168,7 @@ public:
       int setPositionForLine( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
 
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
-                                                      int orientation, int index, double distance );
+                                              int orientation, int index, double distance );
 
       /**
        * Generate curved candidates for line features
@@ -250,24 +250,24 @@ public:
 
       PalGeometry* getUserGeometry() { return f->userGeom; }
 
-      void setLabelSize(double lx, double ly) { f->label_x = lx; f->label_y = ly; }
+      void setLabelSize( double lx, double ly ) { f->label_x = lx; f->label_y = ly; }
       double getLabelWidth() const { return f->label_x; }
       double getLabelHeight() const { return f->label_y; }
-      void setLabelDistance(double dist) { f->distlabel = dist; }
+      void setLabelDistance( double dist ) { f->distlabel = dist; }
       double getLabelDistance() const { return f->distlabel; }
-      void setLabelInfo(LabelInfo* info) { f->labelInfo = info; }
+      void setLabelInfo( LabelInfo* info ) { f->labelInfo = info; }
 
       int getNumSelfObstacles() const { return nbHoles; }
-      PointSet* getSelfObstacle(int i) { return holes[i]; }
+      PointSet* getSelfObstacle( int i ) { return holes[i]; }
 
       /** check whether this part is connected with some other part */
-      bool isConnected(FeaturePart* p2);
+      bool isConnected( FeaturePart* p2 );
 
       /** merge other (connected) part with this one and save the result in this part (other is unchanged).
        * Return true on success, false if the feature wasn't modified */
-      bool mergeWithFeaturePart(FeaturePart* other);
+      bool mergeWithFeaturePart( FeaturePart* other );
 
-      void addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4]);
+      void addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] );
 
   };
 

@@ -58,7 +58,7 @@
 #include "util.h"
 #include "priorityqueue.h"
 
-#define UNUSED(x)	(void)x;
+#define UNUSED(x) (void)x;
 
 namespace pal
 {
@@ -179,8 +179,6 @@ namespace pal
     double amax[2];
     LabelPosition *lp;
     LabelPosition *lp2;
-    int c;
-
 
     while ( run )
     {
@@ -207,7 +205,7 @@ namespace pal
                 ok[lpid] = true;
                 lp2 = labelpositions[lpid];
 
-                lp2->getBoundingBox(amin, amax);
+                lp2->getBoundingBox( amin, amax );
 
                 nbOverlap -= lp2->getNumOverlaps();
                 candidates->Search( amin, amax, LabelPosition::removeOverlapCallback, ( void* ) lp2 );
@@ -286,13 +284,12 @@ namespace pal
     context->list = list;
     double amin[2];
     double amax[2];
-    int c;
 
     if ( list->isIn( lp->getId() ) )
     {
       list->remove( lp->getId() );
 
-      lp->getBoundingBox(amin, amax);
+      lp->getBoundingBox( amin, amax );
 
       context->lp = lp;
       candidates->Search( amin, amax, falpCallback2, context );
@@ -336,7 +333,6 @@ namespace pal
 
     double amin[2];
     double amax[2];
-    int c;
 
     FalpContext *context = new FalpContext();
     context->candidates = candidates;
@@ -377,7 +373,7 @@ namespace pal
       }
 
 
-      lp->getBoundingBox(amin, amax);
+      lp->getBoundingBox( amin, amax );
 
       context->lp = lp;
       candidates->Search( amin, amax, falpCallback1, ( void* ) context );
@@ -407,7 +403,7 @@ namespace pal
             lp = labelpositions[start_p+p];
             lp->resetNumOverlaps();
 
-            lp->getBoundingBox(amin, amax);
+            lp->getBoundingBox( amin, amax );
 
 
             candidates_sol->Search( amin, amax, LabelPosition::countOverlapCallback, lp );
@@ -415,7 +411,7 @@ namespace pal
             if ( lp->getNumOverlaps() < nbOverlap )
             {
               retainedLabel = lp;
-              nbOverlap = lp->getNumOverlaps();
+              nbOverlap = static_cast<int>( lp->getNumOverlaps() );
             }
           }
           sol->s[i] = retainedLabel->getId();
@@ -672,7 +668,6 @@ namespace pal
     register int featS;
     register int p;
     int i;
-    int c;
 
     int n = 0;
     int nb = 0;
@@ -701,7 +696,7 @@ namespace pal
       {
         lp = labelpositions[i];
 
-        lp->getBoundingBox(amin, amax);
+        lp->getBoundingBox( amin, amax );
 
         context.lp = lp;
         candidates->Search( amin, amax, subPartCallback, ( void* ) &context );
@@ -751,8 +746,6 @@ namespace pal
     double cost;
     *nbOverlap = 0;
 
-    int c;
-
     LabelPosition::CountContext context;
     context.inactiveCost = inactiveCost;
     context.nbOv = nbOverlap;
@@ -768,7 +761,7 @@ namespace pal
     {
       lp = labelpositions[label_id];
 
-      lp->getBoundingBox(amin, amax);
+      lp->getBoundingBox( amin, amax );
 
       context.lp = lp;
       candidates_subsol->Search( amin, amax, LabelPosition::countFullOverlapCallback, ( void* ) &context );
@@ -1190,7 +1183,6 @@ namespace pal
 
         double amin[2];
         double amax[2];
-        int c;
         LabelPosition *lp;
 
         UpdateContext context;
@@ -1206,7 +1198,7 @@ namespace pal
         {
           lp = labelpositions[old_label];
 
-          lp->getBoundingBox(amin, amax);
+          lp->getBoundingBox( amin, amax );
 
           context.diff_cost = -local_inactive - labelpositions[old_label]->getCost();
           context.lp = labelpositions[old_label];
@@ -1218,7 +1210,7 @@ namespace pal
         {
           lp = labelpositions[choosed_label];
 
-          lp->getBoundingBox(amin, amax);
+          lp->getBoundingBox( amin, amax );
 
           context.diff_cost = local_inactive + labelpositions[choosed_label]->getCost();
           context.lp = labelpositions[choosed_label];
@@ -1407,7 +1399,6 @@ namespace pal
     LabelPosition *lp;
     double amin[2];
     double amax[2];
-    int c;
 
     ChainContext context;
     context.featWrap = featWrap;
@@ -1453,7 +1444,7 @@ namespace pal
               lp = labelpositions[lid];
 
               // evaluate conflicts graph in solution after moving seed's label
-              lp->getBoundingBox(amin, amax);
+              lp->getBoundingBox( amin, amax );
 
               context.lp = lp;
 
@@ -1607,7 +1598,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
           std::cout << "catch int " << i << std::endl;
 #else
-          UNUSED(i);
+          UNUSED( i );
 #endif
           while ( conflicts->size() > 0 )
             conflicts->pop_front();
@@ -1705,7 +1696,6 @@ namespace pal
     LabelPosition *lp;
     double amin[2];
     double amax[2];
-    int c;
 
     ChainContext context;
     context.featWrap = NULL;
@@ -1747,7 +1737,7 @@ namespace pal
               lp = labelpositions[lid];
 
               // evaluate conflicts graph in solution after moving seed's label
-              lp->getBoundingBox(amin, amax);
+              lp->getBoundingBox( amin, amax );
 
               context.lp = lp;
               if ( conflicts->size() != 0 )
@@ -1898,7 +1888,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
           std::cout << "catch Cycle in chain" << std::endl;
 #else
-          UNUSED(i);
+          UNUSED( i );
 #endif
           while ( conflicts->size() > 0 )
             conflicts->pop_front();
@@ -2673,7 +2663,6 @@ namespace pal
 
     int popit = 0;
 
-    int c;
     double amin[2];
     double amax[2];
 
@@ -2758,7 +2747,7 @@ namespace pal
             LabelPosition *old = labelpositions[sol->s[fid]];
             old->removeFromIndex( candidates_sol );
 
-            old->getBoundingBox(amin, amax);
+            old->getBoundingBox( amin, amax );
 
             context.lp = old;
             candidates->Search( amin, amax, nokCallback, &context );
@@ -2917,7 +2906,7 @@ namespace pal
             LabelPosition *old = labelpositions[sol[fid]];
             old->removeFromIndex( candidates_subsol );
 
-            old->getBoundingBox(amin, amax);
+            old->getBoundingBox( amin, amax );
 
             context.lp = old;
             candidates->Search( amin, amax, nokCallback, &context );
@@ -3144,7 +3133,7 @@ namespace pal
         nbOv = 0;
         lp = labelpositions[sol->s[i]];
 
-        lp->getBoundingBox(amin, amax);
+        lp->getBoundingBox( amin, amax );
 
         context.lp = lp;
         candidates_sol->Search( amin, amax, LabelPosition::countFullOverlapCallback, &context );
