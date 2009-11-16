@@ -1,8 +1,39 @@
 libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN10QByteArray4dataEv@Base 1.4.0
  _ZN10QByteArrayD1Ev@Base 1.4.0
+ _ZN12TriDecorator10calcNormalEddP8Vector3D@Base 1.4.0
+ _ZN12TriDecorator11getTriangleEddP7Point3DPiS1_S2_S1_S2_@Base 1.4.0
+ _ZN12TriDecorator11getTriangleEddP7Point3DS1_S1_@Base 1.4.0
+ _ZN12TriDecorator11pointInsideEdd@Base 1.4.0
+ _ZN12TriDecorator12setEdgeColorEiii@Base 1.4.0
+ _ZN12TriDecorator16addTriangulationEP13Triangulation@Base 1.4.0
+ _ZN12TriDecorator16getOppositePointEii@Base 1.4.0
+ _ZN12TriDecorator17ruppertRefinementEv@Base 1.4.0
+ _ZN12TriDecorator17setBreakEdgeColorEiii@Base 1.4.0
+ _ZN12TriDecorator18setForcedEdgeColorEiii@Base 1.4.0
+ _ZN12TriDecorator19getPointsAroundEdgeEdd@Base 1.4.0
+ _ZN12TriDecorator22performConsistencyTestEv@Base 1.4.0
+ _ZN12TriDecorator23getSurroundingTrianglesEi@Base 1.4.0
+ _ZN12TriDecorator23setForcedCrossBehaviourEN13Triangulation20forcedCrossBehaviourE@Base 1.4.0
+ _ZN12TriDecorator23setTriangleInterpolatorEP20TriangleInterpolator@Base 1.4.0
+ _ZN12TriDecorator28eliminateHorizontalTrianglesEv@Base 1.4.0
+ _ZN12TriDecorator7addLineEP6Line3Db@Base 1.4.0
+ _ZN12TriDecorator8addPointEP7Point3D@Base 1.4.0
+ _ZN12TriDecorator8swapEdgeEdd@Base 1.4.0
+ _ZN12TriDecorator9calcPointEddP7Point3D@Base 1.4.0
+ _ZN12TriDecoratorD0Ev@Base 1.4.0
+ _ZN12TriDecoratorD1Ev@Base 1.4.0
  _ZN13TriangulationD0Ev@Base 1.4.0
  _ZN13TriangulationD1Ev@Base 1.4.0
+ _ZN14ParametricLine10calcSecDerEfP8Vector3D@Base 1.4.0
+ _ZN14ParametricLine12calcFirstDerEfP8Vector3D@Base 1.4.0
+ _ZN14ParametricLine14setControlPolyEP7QVectorIP7Point3DE@Base 1.4.0
+ _ZN14ParametricLine3addEPS_@Base 1.4.0
+ _ZN14ParametricLine6removeEi@Base 1.4.0
+ _ZN14ParametricLine9calcPointEfP7Point3D@Base 1.4.0
+ _ZN14ParametricLine9setParentEPS_@Base 1.4.0
+ _ZN14ParametricLineD0Ev@Base 1.4.0
+ _ZN14ParametricLineD1Ev@Base 1.4.0
  _ZN14QgsSlopeFilter21processNineCellWindowEPfS0_S0_S0_S0_S0_S0_S0_S0_@Base 1.4.0
  _ZN14QgsSlopeFilterC1ERK7QStringS2_S2_@Base 1.4.0
  _ZN14QgsSlopeFilterC2ERK7QStringS2_S2_@Base 1.4.0
@@ -24,6 +55,21 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN15QgsInterpolatorD0Ev@Base 1.4.0
  _ZN15QgsInterpolatorD1Ev@Base 1.4.0
  _ZN15QgsInterpolatorD2Ev@Base 1.4.0
+ _ZN16NormVecDecorator10calcNormalEddP8Vector3D@Base 1.4.0
+ _ZN16NormVecDecorator11getTriangleEddP7Point3DP8Vector3DS1_S3_S1_S3_@Base 1.4.0
+ _ZN16NormVecDecorator11getTriangleEddP7Point3DPiP8Vector3DPNS_10pointStateES1_S2_S4_S6_S1_S2_S4_S6_@Base 1.4.0
+ _ZN16NormVecDecorator18calcNormalForPointEddiP8Vector3D@Base 1.4.0
+ _ZN16NormVecDecorator23estimateFirstDerivativeEi@Base 1.4.0
+ _ZN16NormVecDecorator23setTriangleInterpolatorEP20TriangleInterpolator@Base 1.4.0
+ _ZN16NormVecDecorator24estimateFirstDerivativesEv@Base 1.4.0
+ _ZN16NormVecDecorator28eliminateHorizontalTrianglesEv@Base 1.4.0
+ _ZN16NormVecDecorator8addPointEP7Point3D@Base 1.4.0
+ _ZN16NormVecDecorator8setStateEiNS_10pointStateE@Base 1.4.0
+ _ZN16NormVecDecorator8swapEdgeEdd@Base 1.4.0
+ _ZN16NormVecDecorator9calcPointEddP7Point3D@Base 1.4.0
+ _ZN16NormVecDecoratorD0Ev@Base 1.4.0
+ _ZN16NormVecDecoratorD1Ev@Base 1.4.0
+ _ZN16NormVecDecoratorD2Ev@Base 1.4.0
  _ZN17QgsGridFileWriter11writeHeaderER11QTextStream@Base 1.4.0
  _ZN17QgsGridFileWriter9writeFileEb@Base 1.4.0
  _ZN17QgsGridFileWriterC1EP15QgsInterpolator7QString12QgsRectangleiidd@Base 1.4.0
@@ -51,10 +97,16 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN18QgsIDWInterpolatorD0Ev@Base 1.4.0
  _ZN18QgsIDWInterpolatorD1Ev@Base 1.4.0
  _ZN18QgsIDWInterpolatorD2Ev@Base 1.4.0
+ _ZN18QgsOverlayAnalyzer12intersectionEP14QgsVectorLayerS1_RK7QStringbP15QProgressDialog@Base 1.4.0
+ _ZN18QgsOverlayAnalyzer16intersectFeatureER10QgsFeatureP19QgsVectorFileWriterP14QgsVectorLayerP15QgsSpatialIndex@Base 1.4.0
+ _ZN18QgsOverlayAnalyzer17combineFieldListsER4QMapIi8QgsFieldES2_@Base 1.4.0
+ _ZN18QgsOverlayAnalyzer20combineAttributeMapsER4QMapIi8QVariantES2_@Base 1.4.0
  _ZN18QgsTINInterpolator10initializeEv@Base 1.4.0
  _ZN18QgsTINInterpolator10insertDataEP10QgsFeaturebiN15QgsInterpolator9InputTypeE@Base 1.4.0
  _ZN18QgsTINInterpolator16interpolatePointEddRd@Base 1.4.0
+ _ZN18QgsTINInterpolatorC1ERK5QListIN15QgsInterpolator9LayerDataEENS_17TIN_INTERPOLATIONEb@Base 1.4.0
  _ZN18QgsTINInterpolatorC1ERK5QListIN15QgsInterpolator9LayerDataEEb@Base 1.4.0
+ _ZN18QgsTINInterpolatorC2ERK5QListIN15QgsInterpolator9LayerDataEENS_17TIN_INTERPOLATIONEb@Base 1.4.0
  _ZN18QgsTINInterpolatorC2ERK5QListIN15QgsInterpolator9LayerDataEEb@Base 1.4.0
  _ZN18QgsTINInterpolatorD0Ev@Base 1.4.0
  _ZN18QgsTINInterpolatorD1Ev@Base 1.4.0
@@ -73,16 +125,21 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN19QgsDerivativeFilterD0Ev@Base 1.4.0
  _ZN19QgsDerivativeFilterD1Ev@Base 1.4.0
  _ZN19QgsDerivativeFilterD2Ev@Base 1.4.0
+ _ZN19QgsGeometryAnalyzer10convexHullEP14QgsVectorLayerRK7QStringbiP15QProgressDialog@Base 1.4.0
  _ZN19QgsGeometryAnalyzer11layerExtentEP14QgsVectorLayerRK7QStringS4_@Base 1.4.0
  _ZN19QgsGeometryAnalyzer12extractLinesEP11QgsGeometry@Base 1.4.0
  _ZN19QgsGeometryAnalyzer12extractNodesEP14QgsVectorLayerRK7QStringS4_@Base 1.4.0
  _ZN19QgsGeometryAnalyzer13bufferFeatureER10QgsFeatureiP19QgsVectorFileWriterbPP11QgsGeometrydi@Base 1.4.0
+ _ZN19QgsGeometryAnalyzer13convexFeatureER10QgsFeatureiPP11QgsGeometry@Base 1.4.0
  _ZN19QgsGeometryAnalyzer13extractPointsEP11QgsGeometry@Base 1.4.0
  _ZN19QgsGeometryAnalyzer13simpleMeasureEP11QgsGeometry@Base 1.4.0
  _ZN19QgsGeometryAnalyzer14extractAsMultiEP11QgsGeometry@Base 1.4.0
+ _ZN19QgsGeometryAnalyzer15centroidFeatureER10QgsFeatureP19QgsVectorFileWriter@Base 1.4.0
  _ZN19QgsGeometryAnalyzer15convertGeometryEP11QgsGeometry@Base 1.4.0
+ _ZN19QgsGeometryAnalyzer15dissolveFeatureER10QgsFeatureiPP11QgsGeometry@Base 1.4.0
  _ZN19QgsGeometryAnalyzer15extractAsSingleEP11QgsGeometry@Base 1.4.0
  _ZN19QgsGeometryAnalyzer15polygonsToLinesEP14QgsVectorLayerRK7QStringS4_@Base 1.4.0
+ _ZN19QgsGeometryAnalyzer15simplifyFeatureER10QgsFeatureP19QgsVectorFileWriterd@Base 1.4.0
  _ZN19QgsGeometryAnalyzer16perimeterMeasureEP11QgsGeometryR15QgsDistanceArea@Base 1.4.0
  _ZN19QgsGeometryAnalyzer16polygonCentroidsEP14QgsVectorLayerRK7QStringS4_@Base 1.4.0
  _ZN19QgsGeometryAnalyzer16simplifyGeometryEP14QgsVectorLayer7QStringS2_d@Base 1.4.0
@@ -91,6 +148,10 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN19QgsGeometryAnalyzer22singlepartsToMultipartEP14QgsVectorLayerRK7QStringS4_i@Base 1.4.0
  _ZN19QgsGeometryAnalyzer25exportGeometryInformationEP14QgsVectorLayerRK7QStringS4_@Base 1.4.0
  _ZN19QgsGeometryAnalyzer6bufferEP14QgsVectorLayerRK7QStringdbbiP15QProgressDialog@Base 1.4.0
+ _ZN19QgsGeometryAnalyzer6extentEP14QgsVectorLayerRK7QStringbP15QProgressDialog@Base 1.4.0
+ _ZN19QgsGeometryAnalyzer8dissolveEP14QgsVectorLayerRK7QStringbiP15QProgressDialog@Base 1.4.0
+ _ZN19QgsGeometryAnalyzer8simplifyEP14QgsVectorLayerRK7QStringdbP15QProgressDialog@Base 1.4.0
+ _ZN19QgsGeometryAnalyzer9centroidsEP14QgsVectorLayerRK7QStringbP15QProgressDialog@Base 1.4.0
  _ZN19QgsRuggednessFilter21processNineCellWindowEPfS0_S0_S0_S0_S0_S0_S0_S0_@Base 1.4.0
  _ZN19QgsRuggednessFilterC1ERK7QStringS2_S2_@Base 1.4.0
  _ZN19QgsRuggednessFilterC1Ev@Base 1.4.0
@@ -148,19 +209,34 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN23QgsTotalCurvatureFilterD0Ev@Base 1.4.0
  _ZN23QgsTotalCurvatureFilterD1Ev@Base 1.4.0
  _ZN23QgsTotalCurvatureFilterD2Ev@Base 1.4.0
+ _ZN24CloughTocherInterpolator11calcNormVecEddP8Vector3D@Base 1.4.0
+ _ZN24CloughTocherInterpolator16setTriangulationEP16NormVecDecorator@Base 1.4.0
+ _ZN24CloughTocherInterpolator17calcBernsteinPolyEiiiiddd@Base 1.4.0
+ _ZN24CloughTocherInterpolator4initEdd@Base 1.4.0
+ _ZN24CloughTocherInterpolator9calcPointEddP7Point3D@Base 1.4.0
+ _ZN24CloughTocherInterpolatorD0Ev@Base 1.4.0
+ _ZN24CloughTocherInterpolatorD1Ev@Base 1.4.0
  _ZN4NodeC1ERKS_@Base 1.4.0
  _ZN4NodeC2ERKS_@Base 1.4.0
  _ZN4NodeaSERKS_@Base 1.4.0
+ _ZN4QMapI7QStringiE8freeDataEP8QMapData@Base 1.4.0
  _ZN4QMapIi8QVariantE13detach_helperEv@Base 1.4.0
  _ZN4QMapIi8QVariantE6insertERKiRKS0_@Base 1.4.0
  _ZN4QMapIi8QVariantE8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QMapIi8QVariantED1Ev@Base 1.4.0
  _ZN4QMapIi8QgsFieldE11node_createEP8QMapDataPPNS2_4NodeERKiRKS0_@Base 1.4.0
+ _ZN4QMapIi8QgsFieldE6detachEv@Base 1.4.0
  _ZN4QMapIi8QgsFieldE6insertERKiRKS0_@Base 1.4.0
  _ZN4QMapIi8QgsFieldE8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QMapIi8QgsFieldED1Ev@Base 1.4.0
  _ZN4QMapIiS_Ii8QVariantEE11node_createEP8QMapDataPPNS3_4NodeERKiRKS1_@Base 1.4.0
  _ZN4QMapIiS_Ii8QVariantEE8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QSetIiEC1ERKS0_@Base 1.4.0
+ _ZN4QSetIiED1Ev@Base 1.4.0
  _ZN5QHashIi15QHashDummyValueE13duplicateNodeEPN9QHashData4NodeEPv@Base 1.4.0
  _ZN5QHashIi15QHashDummyValueE8freeDataEP9QHashData@Base 1.4.0
+ _ZN5QListI7QStringE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI7QStringE6appendERKS0_@Base 1.4.0
  _ZN5QListI8QgsFieldE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI8QgsFieldE6appendERKS0_@Base 1.4.0
  _ZN5QListIN15QgsInterpolator9LayerDataEE13detach_helperEv@Base 1.4.0
@@ -176,6 +252,7 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListIiE5eraseENS0_8iteratorE@Base 1.4.0
  _ZN5QListIiE5firstEv@Base 1.4.0
  _ZN5QListIiE6appendERKi@Base 1.4.0
+ _ZN5QListIiE6detachEv@Base 1.4.0
  _ZN5QListIiE7prependERKi@Base 1.4.0
  _ZN5QListIiE9pop_frontEv@Base 1.4.0
  _ZN5QListIiED1Ev@Base 1.4.0
@@ -197,6 +274,8 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN7QVectorI10vertexDataED1Ev@Base 1.4.0
  _ZN7QVectorI8QgsPointE6appendERKS0_@Base 1.4.0
  _ZN7QVectorI8QgsPointE7reallocEii@Base 1.4.0
+ _ZN7QVectorIN16NormVecDecorator10pointStateEE7reallocEii@Base 1.4.0
+ _ZN7QVectorIN16NormVecDecorator10pointStateEEixEi@Base 1.4.0
  _ZN7QVectorIP7Point3DE6removeEi@Base 1.4.0
  _ZN7QVectorIP7Point3DE7reallocEii@Base 1.4.0
  _ZN7QVectorIP7Point3DE7reserveEi@Base 1.4.0
@@ -206,11 +285,25 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN7QVectorIP8HalfEdgeE7reserveEi@Base 1.4.0
  _ZN7QVectorIP8HalfEdgeED1Ev@Base 1.4.0
  _ZN7QVectorIP8HalfEdgeEixEi@Base 1.4.0
+ _ZN7QVectorIP8Vector3DE6insertEiRKS1_@Base 1.4.0
+ _ZN7QVectorIP8Vector3DE6resizeEi@Base 1.4.0
+ _ZN7QVectorIP8Vector3DE7reallocEii@Base 1.4.0
+ _ZN7QVectorIP8Vector3DEixEi@Base 1.4.0
  _ZN7QVectorIS_I8QgsPointEE4freeEP16QVectorTypedDataIS1_E@Base 1.4.0
  _ZN7QVectorIS_I8QgsPointEE7reallocEii@Base 1.4.0
  _ZN7QVectorIS_I8QgsPointEED1Ev@Base 1.4.0
  _ZN7QVectorIS_IS_I8QgsPointEEE4freeEP16QVectorTypedDataIS2_E@Base 1.4.0
  _ZN7QVectorIS_IS_I8QgsPointEEE7reallocEii@Base 1.4.0
+ _ZN8Bezier3D10calcSecDerEfP8Vector3D@Base 1.4.0
+ _ZN8Bezier3D12calcFirstDerEfP8Vector3D@Base 1.4.0
+ _ZN8Bezier3D14setControlPolyEP7QVectorIP7Point3DE@Base 1.4.0
+ _ZN8Bezier3D15changeDirectionEv@Base 1.4.0
+ _ZN8Bezier3D3addEP14ParametricLine@Base 1.4.0
+ _ZN8Bezier3D6removeEi@Base 1.4.0
+ _ZN8Bezier3D9calcPointEfP7Point3D@Base 1.4.0
+ _ZN8Bezier3D9setParentEP14ParametricLine@Base 1.4.0
+ _ZN8Bezier3DD0Ev@Base 1.4.0
+ _ZN8Bezier3DD1Ev@Base 1.4.0
  _ZN8Vector3D11standardiseEv@Base 1.4.0
  _ZN8Vector3DaSERKS_@Base 1.4.0
  _ZN8Vector3DeqERKS_@Base 1.4.0
@@ -243,6 +336,19 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN9MathUtils8crossVecEP7Point3DP8Vector3DS1_S3_@Base 1.4.0
  _ZN9MathUtils8inCircleEP7Point3DS1_S1_S1_@Base 1.4.0
  _ZN9MathUtils9planeTestEP7Point3DS1_S1_S1_@Base 1.4.0
+ _ZN9QMultiMapI7QStringiED1Ev@Base 1.4.0
+ _ZNK12TriDecorator17getNumberOfPointsEv@Base 1.4.0
+ _ZNK12TriDecorator7getXMaxEv@Base 1.4.0
+ _ZNK12TriDecorator7getXMinEv@Base 1.4.0
+ _ZNK12TriDecorator7getYMaxEv@Base 1.4.0
+ _ZNK12TriDecorator7getYMinEv@Base 1.4.0
+ _ZNK12TriDecorator8getPointEj@Base 1.4.0
+ _ZNK14ParametricLine14getControlPolyEv@Base 1.4.0
+ _ZNK14ParametricLine15getControlPointEi@Base 1.4.0
+ _ZNK14ParametricLine9getDegreeEv@Base 1.4.0
+ _ZNK14ParametricLine9getParentEv@Base 1.4.0
+ _ZNK16NormVecDecorator15saveAsShapefileERK7QString@Base 1.4.0
+ _ZNK16NormVecDecorator8getStateEi@Base 1.4.0
  _ZNK18QgsZonalStatistics15cellInfoForBBoxERK12QgsRectangleS2_ddRiS3_S3_S3_@Base 1.4.0
  _ZNK21DualEdgeTriangulation12swapMinAngleEi@Base 1.4.0
  _ZNK21DualEdgeTriangulation15saveAsShapefileERK7QString@Base 1.4.0
@@ -257,6 +363,10 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK6Line3D5emptyEv@Base 1.4.0
  _ZNK7Point3D6dist3DEPS_@Base 1.4.0
  _ZNK7QVectorIP8HalfEdgeE2atEi@Base 1.4.0
+ _ZNK8Bezier3D14getControlPolyEv@Base 1.4.0
+ _ZNK8Bezier3D15getControlPointEi@Base 1.4.0
+ _ZNK8Bezier3D9getDegreeEv@Base 1.4.0
+ _ZNK8Bezier3D9getParentEv@Base 1.4.0
  _ZNK8Vector3D9getLengthEv@Base 1.4.0
  _ZNSt3setIiSt4lessIiESaIiEE6insertERKi@Base 1.4.0
  _ZNSt3setIiSt4lessIiESaIiEED1Ev@Base 1.4.0
@@ -265,10 +375,13 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNSt8_Rb_treeIiSt4pairIKidESt10_Select1stIS2_ESt4lessIiESaIS2_EE8_M_eraseEPSt13_Rb_tree_nodeIS2_E@Base 1.4.0
  _ZNSt8_Rb_treeIiiSt9_IdentityIiESt4lessIiESaIiEE10_M_insert_EPKSt18_Rb_tree_node_baseS8_RKi@Base 1.4.0
  _ZNSt8_Rb_treeIiiSt9_IdentityIiESt4lessIiESaIiEE8_M_eraseEPSt13_Rb_tree_nodeIiE@Base 1.4.0
+ _ZTI12TriDecorator@Base 1.4.0
  _ZTI13Triangulation@Base 1.4.0
+ _ZTI14ParametricLine@Base 1.4.0
  _ZTI14QgsSlopeFilter@Base 1.4.0
  _ZTI15QgsAspectFilter@Base 1.4.0
  _ZTI15QgsInterpolator@Base 1.4.0
+ _ZTI16NormVecDecorator@Base 1.4.0
  _ZTI17QgsNineCellFilter@Base 1.4.0
  _ZTI18QgsIDWInterpolator@Base 1.4.0
  _ZTI18QgsTINInterpolator@Base 1.4.0
@@ -278,10 +391,15 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI21DualEdgeTriangulation@Base 1.4.0
  _ZTI23LinTriangleInterpolator@Base 1.4.0
  _ZTI23QgsTotalCurvatureFilter@Base 1.4.0
+ _ZTI24CloughTocherInterpolator@Base 1.4.0
+ _ZTI8Bezier3D@Base 1.4.0
+ _ZTS12TriDecorator@Base 1.4.0
  _ZTS13Triangulation@Base 1.4.0
+ _ZTS14ParametricLine@Base 1.4.0
  _ZTS14QgsSlopeFilter@Base 1.4.0
  _ZTS15QgsAspectFilter@Base 1.4.0
  _ZTS15QgsInterpolator@Base 1.4.0
+ _ZTS16NormVecDecorator@Base 1.4.0
  _ZTS17QgsNineCellFilter@Base 1.4.0
  _ZTS18QgsIDWInterpolator@Base 1.4.0
  _ZTS18QgsTINInterpolator@Base 1.4.0
@@ -291,10 +409,15 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS21DualEdgeTriangulation@Base 1.4.0
  _ZTS23LinTriangleInterpolator@Base 1.4.0
  _ZTS23QgsTotalCurvatureFilter@Base 1.4.0
+ _ZTS24CloughTocherInterpolator@Base 1.4.0
+ _ZTS8Bezier3D@Base 1.4.0
+ _ZTV12TriDecorator@Base 1.4.0
  _ZTV13Triangulation@Base 1.4.0
+ _ZTV14ParametricLine@Base 1.4.0
  _ZTV14QgsSlopeFilter@Base 1.4.0
  _ZTV15QgsAspectFilter@Base 1.4.0
  _ZTV15QgsInterpolator@Base 1.4.0
+ _ZTV16NormVecDecorator@Base 1.4.0
  _ZTV17QgsNineCellFilter@Base 1.4.0
  _ZTV18QgsIDWInterpolator@Base 1.4.0
  _ZTV18QgsTINInterpolator@Base 1.4.0
@@ -304,9 +427,12 @@ libqgis_analysis.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV21DualEdgeTriangulation@Base 1.4.0
  _ZTV23LinTriangleInterpolator@Base 1.4.0
  _ZTV23QgsTotalCurvatureFilter@Base 1.4.0
+ _ZTV24CloughTocherInterpolator@Base 1.4.0
+ _ZTV8Bezier3D@Base 1.4.0
  _ZplRK7QStringPKc@Base 1.4.0
  leftOfTresh@Base 1.4.0
 libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
+ _Z10offsetLine9QPolygonFd@Base 1.4.0
  _Z10yyget_lengv@Base 1.4.0
  _Z10yyget_textv@Base 1.4.0
  _Z11yyget_debugv@Base 1.4.0
@@ -342,6 +468,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _Z7yyparsev@Base 1.4.0
  _Z8yyget_inv@Base 1.4.0
  _Z8yyset_inP8_IO_FILE@Base 1.4.0
+ _Z9qMakePairI7QString7QPixmapE5QPairIT_T0_ERKS3_RKS4_@Base 1.4.0
  _Z9yyget_outv@Base 1.4.0
  _Z9yyreallocPvj@Base 1.4.0
  _Z9yyreallocPvm@Base 1.4.0
@@ -417,6 +544,25 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN10QgsSnapperC2Ev@Base 1.4.0
  _ZN10QgsSnapperD1Ev@Base 1.4.0
  _ZN10QgsSnapperD2Ev@Base 1.4.0
+ _ZN10QgsStyleV211symbolCountEv@Base 1.4.0
+ _ZN10QgsStyleV211symbolNamesEv@Base 1.4.0
+ _ZN10QgsStyleV212addColorRampE7QStringP20QgsVectorColorRampV2@Base 1.4.0
+ _ZN10QgsStyleV212defaultStyleEv@Base 1.4.0
+ _ZN10QgsStyleV212removeSymbolE7QString@Base 1.4.0
+ _ZN10QgsStyleV213mDefaultStyleE@Base 1.4.0
+ _ZN10QgsStyleV214colorRampCountEv@Base 1.4.0
+ _ZN10QgsStyleV214colorRampNamesEv@Base 1.4.0
+ _ZN10QgsStyleV215removeColorRampE7QString@Base 1.4.0
+ _ZN10QgsStyleV24loadE7QString@Base 1.4.0
+ _ZN10QgsStyleV24saveE7QString@Base 1.4.0
+ _ZN10QgsStyleV25clearEv@Base 1.4.0
+ _ZN10QgsStyleV26symbolE7QString@Base 1.4.0
+ _ZN10QgsStyleV29addSymbolE7QStringP11QgsSymbolV2@Base 1.4.0
+ _ZN10QgsStyleV29colorRampE7QString@Base 1.4.0
+ _ZN10QgsStyleV2C1Ev@Base 1.4.0
+ _ZN10QgsStyleV2C2Ev@Base 1.4.0
+ _ZN10QgsStyleV2D1Ev@Base 1.4.0
+ _ZN10QgsStyleV2D2Ev@Base 1.4.0
  _ZN11QLinkedListIP15QgsComposerItemE4freeEP15QLinkedListData@Base 1.4.0
  _ZN11QLinkedListIP15QgsComposerItemED1Ev@Base 1.4.0
  _ZN11QStringListD1Ev@Base 1.4.0
@@ -529,12 +675,16 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN11QgsMapLayer16repaintRequestedEv@Base 1.4.0
  _ZN11QgsMapLayer16saveDefaultStyleERb@Base 1.4.0
  _ZN11QgsMapLayer16staticMetaObjectE@Base 1.4.0
+ _ZN11QgsMapLayer17setCustomPropertyERK7QStringRK8QVariant@Base 1.4.0
  _ZN11QgsMapLayer18recalculateExtentsEv@Base 1.4.0
  _ZN11QgsMapLayer19capitaliseLayerNameE7QString@Base 1.4.0
  _ZN11QgsMapLayer20loadNamedStyleFromDbE7QStringS0_RS0_@Base 1.4.0
+ _ZN11QgsMapLayer20readCustomPropertiesER8QDomNode@Base 1.4.0
+ _ZN11QgsMapLayer20removeCustomPropertyERK7QString@Base 1.4.0
  _ZN11QgsMapLayer21invalidTransformInputEv@Base 1.4.0
  _ZN11QgsMapLayer21screenUpdateRequestedEv@Base 1.4.0
  _ZN11QgsMapLayer21setSubLayerVisibilityE7QStringb@Base 1.4.0
+ _ZN11QgsMapLayer21writeCustomPropertiesER8QDomNodeR12QDomDocument@Base 1.4.0
  _ZN11QgsMapLayer23hasScaleBasedVisibilityEv@Base 1.4.0
  _ZN11QgsMapLayer26toggleScaleBasedVisibilityEb@Base 1.4.0
  _ZN11QgsMapLayer2trEPKcS1_@Base 1.4.0
@@ -558,6 +708,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN11QgsPropertyD0Ev@Base 1.4.0
  _ZN11QgsPropertyD1Ev@Base 1.4.0
  _ZN11QgsRenderer10scaleBrushER6QBrushd@Base 1.4.0
+ _ZN11QgsRenderer14selectionColorEv@Base 1.4.0
  _ZN11QgsRenderer15mSelectionColorE@Base 1.4.0
  _ZN11QgsRenderer17setSelectionColorE6QColor@Base 1.4.0
  _ZN11QgsRenderer17willRenderFeatureEP10QgsFeature@Base 1.4.0
@@ -566,6 +717,25 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN11QgsRendererD0Ev@Base 1.4.0
  _ZN11QgsRendererD1Ev@Base 1.4.0
  _ZN11QgsRendererD2Ev@Base 1.4.0
+ _ZN11QgsSymbolV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN11QgsSymbolV211startRenderER16QgsRenderContext@Base 1.4.0
+ _ZN11QgsSymbolV211symbolLayerEi@Base 1.4.0
+ _ZN11QgsSymbolV213defaultSymbolEN4QGis12GeometryTypeE@Base 1.4.0
+ _ZN11QgsSymbolV215drawPreviewIconEP8QPainter5QSize@Base 1.4.0
+ _ZN11QgsSymbolV215takeSymbolLayerEi@Base 1.4.0
+ _ZN11QgsSymbolV217appendSymbolLayerEP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN11QgsSymbolV217changeSymbolLayerEiP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN11QgsSymbolV217deleteSymbolLayerEi@Base 1.4.0
+ _ZN11QgsSymbolV217insertSymbolLayerEiP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN11QgsSymbolV221bigSymbolPreviewImageEv@Base 1.4.0
+ _ZN11QgsSymbolV24dumpEv@Base 1.4.0
+ _ZN11QgsSymbolV25colorEv@Base 1.4.0
+ _ZN11QgsSymbolV28setColorERK6QColor@Base 1.4.0
+ _ZN11QgsSymbolV2C1ENS_10SymbolTypeE5QListIP16QgsSymbolLayerV2E@Base 1.4.0
+ _ZN11QgsSymbolV2C2ENS_10SymbolTypeE5QListIP16QgsSymbolLayerV2E@Base 1.4.0
+ _ZN11QgsSymbolV2D0Ev@Base 1.4.0
+ _ZN11QgsSymbolV2D1Ev@Base 1.4.0
+ _ZN11QgsSymbolV2D2Ev@Base 1.4.0
  _ZN12QgsExceptionD0Ev@Base 1.4.0
  _ZN12QgsExceptionD1Ev@Base 1.4.0
  _ZN12QgsExceptionD2Ev@Base 1.4.0
@@ -849,10 +1019,12 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsApplication15activeThemePathEv@Base 1.4.0
  _ZN14QgsApplication15authorsFilePathEv@Base 1.4.0
  _ZN14QgsApplication15msexportAppPathEv@Base 1.4.0
+ _ZN14QgsApplication15userStyleV2PathEv@Base 1.4.0
  _ZN14QgsApplication16defaultThemePathEv@Base 1.4.0
  _ZN14QgsApplication16reportStyleSheetEv@Base 1.4.0
  _ZN14QgsApplication16sponsorsFilePathEv@Base 1.4.0
  _ZN14QgsApplication16staticMetaObjectE@Base 1.4.0
+ _ZN14QgsApplication18defaultStyleV2PathEv@Base 1.4.0
  _ZN14QgsApplication18qgisUserDbFilePathEv@Base 1.4.0
  _ZN14QgsApplication18registerOgrDriversEv@Base 1.4.0
  _ZN14QgsApplication19qgisSettingsDirPathEv@Base 1.4.0
@@ -1134,6 +1306,8 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsRasterLayer31setContrastEnhancementAlgorithmEN22QgsContrastEnhancement28ContrastEnhancementAlgorithmEb@Base 1.4.0
  _ZN14QgsRasterLayer33drawPalettedSingleBandPseudoColorEP8QPainterP17QgsRasterViewPortPK13QgsMapToPixeli@Base 1.4.0
  _ZN14QgsRasterLayer34drawMultiBandSingleBandPseudoColorEP8QPainterP17QgsRasterViewPortPK13QgsMapToPixeli@Base 1.4.0
+ _ZN14QgsRasterLayer35computeMinimumMaximumFromLastExtentE7QStringPd@Base 1.4.0
+ _ZN14QgsRasterLayer35computeMinimumMaximumFromLastExtentEiPd@Base 1.4.0
  _ZN14QgsRasterLayer4drawEP8QPainterP17QgsRasterViewPortPK13QgsMapToPixel@Base 1.4.0
  _ZN14QgsRasterLayer4drawER16QgsRenderContext@Base 1.4.0
  _ZN14QgsRasterLayer6updateEv@Base 1.4.0
@@ -1177,6 +1351,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsVectorLayer10addOverlayEP16QgsVectorOverlay@Base 1.4.0
  _ZN14QgsVectorLayer10drawLabelsER16QgsRenderContext@Base 1.4.0
  _ZN14QgsVectorLayer10moveVertexEddii@Base 1.4.0
+ _ZN14QgsVectorLayer10rendererV2Ev@Base 1.4.0
  _ZN14QgsVectorLayer11addFeaturesE5QListI10QgsFeatureEb@Base 1.4.0
  _ZN14QgsVectorLayer11drawFeatureER16QgsRenderContextR10QgsFeatureP6QImage@Base 1.4.0
  _ZN14QgsVectorLayer11drawPolygonEPhR16QgsRenderContext@Base 1.4.0
@@ -1190,6 +1365,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsVectorLayer11setRendererEP11QgsRenderer@Base 1.4.0
  _ZN14QgsVectorLayer12addAttributeE7QStringS0_@Base 1.4.0
  _ZN14QgsVectorLayer12addAttributeERK8QgsField@Base 1.4.0
+ _ZN14QgsVectorLayer12checkedStateEi@Base 1.4.0
  _ZN14QgsVectorLayer12commitErrorsEv@Base 1.4.0
  _ZN14QgsVectorLayer12dataProviderEv@Base 1.4.0
  _ZN14QgsVectorLayer12deleteVertexEii@Base 1.4.0
@@ -1203,11 +1379,13 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsVectorLayer13layerModifiedEb@Base 1.4.0
  _ZN14QgsVectorLayer13readSymbologyERK8QDomNodeR7QString@Base 1.4.0
  _ZN14QgsVectorLayer13removeOverlayERK7QString@Base 1.4.0
+ _ZN14QgsVectorLayer13setRendererV2EP20QgsFeatureRendererV2@Base 1.4.0
  _ZN14QgsVectorLayer13splitFeaturesERK5QListI8QgsPointEb@Base 1.4.0
  _ZN14QgsVectorLayer13updateExtentsEv@Base 1.4.0
  _ZN14QgsVectorLayer14attributeAddedEi@Base 1.4.0
  _ZN14QgsVectorLayer14changeGeometryEiP11QgsGeometry@Base 1.4.0
  _ZN14QgsVectorLayer14drawLineStringEPhR16QgsRenderContext@Base 1.4.0
+ _ZN14QgsVectorLayer14drawRendererV2ER16QgsRenderContextb@Base 1.4.0
  _ZN14QgsVectorLayer14editFeatureAddER10QgsFeature@Base 1.4.0
  _ZN14QgsVectorLayer14editingStartedEv@Base 1.4.0
  _ZN14QgsVectorLayer14editingStoppedEv@Base 1.4.0
@@ -1220,6 +1398,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsVectorLayer15invertSelectionEv@Base 1.4.0
  _ZN14QgsVectorLayer15redoEditCommandEP14QgsUndoCommand@Base 1.4.0
  _ZN14QgsVectorLayer15removeSelectionEb@Base 1.4.0
+ _ZN14QgsVectorLayer15setCheckedStateEi7QStringS0_@Base 1.4.0
  _ZN14QgsVectorLayer15setDataProviderERK7QString@Base 1.4.0
  _ZN14QgsVectorLayer15setDisplayFieldE7QString@Base 1.4.0
  _ZN14QgsVectorLayer15setSubsetStringE7QString@Base 1.4.0
@@ -1235,8 +1414,11 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsVectorLayer17addAttributeAliasEi7QString@Base 1.4.0
  _ZN14QgsVectorLayer17editFeatureDeleteEi@Base 1.4.0
  _ZN14QgsVectorLayer17findOverlayByTypeERK7QString@Base 1.4.0
+ _ZN14QgsVectorLayer17isUsingRendererV2Ev@Base 1.4.0
+ _ZN14QgsVectorLayer17setLabelingEngineEP26QgsLabelingEngineInterface@Base 1.4.0
  _ZN14QgsVectorLayer18destroyEditCommandEv@Base 1.4.0
  _ZN14QgsVectorLayer18editGeometryChangeEiR11QgsGeometry@Base 1.4.0
+ _ZN14QgsVectorLayer18setUsingRendererV2Eb@Base 1.4.0
  _ZN14QgsVectorLayer19editAttributeChangeEii8QVariant@Base 1.4.0
  _ZN14QgsVectorLayer19pendingFeatureCountEv@Base 1.4.0
  _ZN14QgsVectorLayer19setCoordinateSystemEv@Base 1.4.0
@@ -1245,6 +1427,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsVectorLayer20addTopologicalPointsEP11QgsGeometry@Base 1.4.0
  _ZN14QgsVectorLayer20addTopologicalPointsERK8QgsPoint@Base 1.4.0
  _ZN14QgsVectorLayer20changeAttributeValueEii8QVariantb@Base 1.4.0
+ _ZN14QgsVectorLayer20drawRendererV2LevelsER16QgsRenderContextb@Base 1.4.0
  _ZN14QgsVectorLayer20selectedFeatureCountEv@Base 1.4.0
  _ZN14QgsVectorLayer21attributeValueChangedEiiRK8QVariant@Base 1.4.0
  _ZN14QgsVectorLayer21boundingBoxOfSelectedEv@Base 1.4.0
@@ -1350,6 +1533,18 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN15QgsDistanceAreaC2Ev@Base 1.4.0
  _ZN15QgsDistanceAreaD1Ev@Base 1.4.0
  _ZN15QgsDistanceAreaD2Ev@Base 1.4.0
+ _ZN15QgsFillSymbolV213renderPolygonERK9QPolygonFP5QListIS0_ER16QgsRenderContexti@Base 1.4.0
+ _ZN15QgsFillSymbolV2C1E5QListIP16QgsSymbolLayerV2E@Base 1.4.0
+ _ZN15QgsFillSymbolV2C2E5QListIP16QgsSymbolLayerV2E@Base 1.4.0
+ _ZN15QgsFillSymbolV2D0Ev@Base 1.4.0
+ _ZN15QgsFillSymbolV2D1Ev@Base 1.4.0
+ _ZN15QgsLineSymbolV214renderPolylineERK9QPolygonFR16QgsRenderContexti@Base 1.4.0
+ _ZN15QgsLineSymbolV25widthEv@Base 1.4.0
+ _ZN15QgsLineSymbolV28setWidthEd@Base 1.4.0
+ _ZN15QgsLineSymbolV2C1E5QListIP16QgsSymbolLayerV2E@Base 1.4.0
+ _ZN15QgsLineSymbolV2C2E5QListIP16QgsSymbolLayerV2E@Base 1.4.0
+ _ZN15QgsLineSymbolV2D0Ev@Base 1.4.0
+ _ZN15QgsLineSymbolV2D1Ev@Base 1.4.0
  _ZN15QgsRasterShader15setMaximumValueEd@Base 1.4.0
  _ZN15QgsRasterShader15setMinimumValueEd@Base 1.4.0
  _ZN15QgsRasterShader23setRasterShaderFunctionEP23QgsRasterShaderFunction@Base 1.4.0
@@ -1437,6 +1632,11 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN16QgsScaleBarStyleD0Ev@Base 1.4.0
  _ZN16QgsScaleBarStyleD1Ev@Base 1.4.0
  _ZN16QgsScaleBarStyleD2Ev@Base 1.4.0
+ _ZN16QgsSymbolLayerV212setSubSymbolEP11QgsSymbolV2@Base 1.4.0
+ _ZN16QgsSymbolLayerV28setColorERK6QColor@Base 1.4.0
+ _ZN16QgsSymbolLayerV29subSymbolEv@Base 1.4.0
+ _ZN16QgsSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN16QgsSymbolLayerV2D1Ev@Base 1.4.0
  _ZN16QgsVectorOverlay20removeOverlayObjectsEv@Base 1.4.0
  _ZN16QgsVectorOverlayC1EP14QgsVectorLayer@Base 1.4.0
  _ZN16QgsVectorOverlayC2EP14QgsVectorLayer@Base 1.4.0
@@ -1472,6 +1672,15 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN17QgsFreakOutShaderC2Edd@Base 1.4.0
  _ZN17QgsFreakOutShaderD0Ev@Base 1.4.0
  _ZN17QgsFreakOutShaderD1Ev@Base 1.4.0
+ _ZN17QgsMarkerSymbolV211renderPointERK7QPointFR16QgsRenderContexti@Base 1.4.0
+ _ZN17QgsMarkerSymbolV24sizeEv@Base 1.4.0
+ _ZN17QgsMarkerSymbolV25angleEv@Base 1.4.0
+ _ZN17QgsMarkerSymbolV27setSizeEd@Base 1.4.0
+ _ZN17QgsMarkerSymbolV28setAngleEd@Base 1.4.0
+ _ZN17QgsMarkerSymbolV2C1E5QListIP16QgsSymbolLayerV2E@Base 1.4.0
+ _ZN17QgsMarkerSymbolV2C2E5QListIP16QgsSymbolLayerV2E@Base 1.4.0
+ _ZN17QgsMarkerSymbolV2D0Ev@Base 1.4.0
+ _ZN17QgsMarkerSymbolV2D1Ev@Base 1.4.0
  _ZN17QgsProjectVersion4textEv@Base 1.4.0
  _ZN17QgsProjectVersionC1E7QString@Base 1.4.0
  _ZN17QgsProjectVersionC1Eiii7QString@Base 1.4.0
@@ -1511,10 +1720,14 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN17QgsSymbologyUtils18qString2BrushStyleE7QString@Base 1.4.0
  _ZN17QgsSymbologyUtils18qString2LinePixmapE7QString@Base 1.4.0
  _ZN17QgsSymbologyUtils21qString2PatternPixmapE7QString@Base 1.4.0
+ _ZN18QAlgorithmsPrivate11qSortHelperIN5QListIdE8iteratorEd5qLessIdEEEvT_S6_RKT0_T1_@Base 1.4.0
+ _ZN18QgsAttributeAction12expandActionE7QStringRK5QListI5QPairIS0_S0_EEj@Base 1.4.0
  _ZN18QgsAttributeAction12expandActionE7QStringRKSt6vectorISt4pairIS0_S0_ESaIS3_EEj@Base 1.4.0
  _ZN18QgsAttributeAction7readXMLERK8QDomNode@Base 1.4.0
+ _ZN18QgsAttributeAction8doActionEiRK5QListI5QPairI7QStringS2_EEiPFvRKS2_E@Base 1.4.0
  _ZN18QgsAttributeAction8doActionEjRKSt6vectorISt4pairI7QStringS2_ESaIS3_EEj@Base 1.4.0
  _ZN18QgsAttributeAction9addActionE7QStringS0_b@Base 1.4.0
+ _ZN18QgsAttributeAction9addActionEN9QgsAction10ActionTypeE7QStringS2_b@Base 1.4.0
  _ZN18QgsAttributeActionD0Ev@Base 1.4.0
  _ZN18QgsAttributeActionD1Ev@Base 1.4.0
  _ZN18QgsColorRampShader10exactColorEdPiS0_S0_@Base 1.4.0
@@ -1628,6 +1841,15 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN18QgsRasterBandStatsC1Ev@Base 1.4.0
  _ZN18QgsRasterBandStatsD1Ev@Base 1.4.0
  _ZN18QgsRasterBandStatsaSERKS_@Base 1.4.0
+ _ZN18QgsRendererRangeV24dumpEv@Base 1.4.0
+ _ZN18QgsRendererRangeV28setLabelE7QString@Base 1.4.0
+ _ZN18QgsRendererRangeV29setSymbolEP11QgsSymbolV2@Base 1.4.0
+ _ZN18QgsRendererRangeV2C1ERKS_@Base 1.4.0
+ _ZN18QgsRendererRangeV2C1EddP11QgsSymbolV27QString@Base 1.4.0
+ _ZN18QgsRendererRangeV2C2ERKS_@Base 1.4.0
+ _ZN18QgsRendererRangeV2C2EddP11QgsSymbolV27QString@Base 1.4.0
+ _ZN18QgsRendererRangeV2D1Ev@Base 1.4.0
+ _ZN18QgsRendererRangeV2D2Ev@Base 1.4.0
  _ZN18QgsScaleCalculator11setMapUnitsEN4QGis8UnitTypeE@Base 1.4.0
  _ZN18QgsScaleCalculator27calculateGeographicDistanceERK12QgsRectangle@Base 1.4.0
  _ZN18QgsScaleCalculator3dpiEv@Base 1.4.0
@@ -1698,7 +1920,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN19QgsVectorFileWriter19createEmptyGeometryEN4QGis7WkbTypeE@Base 1.4.0
  _ZN19QgsVectorFileWriter8hasErrorEv@Base 1.4.0
  _ZN19QgsVectorFileWriterC1ERK7QStringS2_RK4QMapIi8QgsFieldEN4QGis7WkbTypeEPK28QgsCoordinateReferenceSystem@Base 1.4.0
+ _ZN19QgsVectorFileWriterC1ERK7QStringS2_RK4QMapIi8QgsFieldEN4QGis7WkbTypeEPK28QgsCoordinateReferenceSystemS2_@Base 1.4.0
  _ZN19QgsVectorFileWriterC2ERK7QStringS2_RK4QMapIi8QgsFieldEN4QGis7WkbTypeEPK28QgsCoordinateReferenceSystem@Base 1.4.0
+ _ZN19QgsVectorFileWriterC2ERK7QStringS2_RK4QMapIi8QgsFieldEN4QGis7WkbTypeEPK28QgsCoordinateReferenceSystemS2_@Base 1.4.0
  _ZN19QgsVectorFileWriterD1Ev@Base 1.4.0
  _ZN19QgsVectorFileWriterD2Ev@Base 1.4.0
  _ZN20QgsComposerItemGroup11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
@@ -1716,6 +1940,27 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN20QgsComposerItemGroupD0Ev@Base 1.4.0
  _ZN20QgsComposerItemGroupD1Ev@Base 1.4.0
  _ZN20QgsComposerItemGroupD2Ev@Base 1.4.0
+ _ZN20QgsFeatureRendererV213renderFeatureER10QgsFeatureR16QgsRenderContexti@Base 1.4.0
+ _ZN20QgsFeatureRendererV214fieldNameIndexERK4QMapIi8QgsFieldERK7QString@Base 1.4.0
+ _ZN20QgsFeatureRendererV215defaultRendererEN4QGis12GeometryTypeE@Base 1.4.0
+ _ZN20QgsFeatureRendererV220legendSymbologyItemsE5QSize@Base 1.4.0
+ _ZN20QgsFeatureRendererV24dumpEv@Base 1.4.0
+ _ZN20QgsFeatureRendererV24loadER11QDomElement@Base 1.4.0
+ _ZN20QgsFeatureRendererV24saveER12QDomDocument@Base 1.4.0
+ _ZN20QgsFeatureRendererV2C1E7QString@Base 1.4.0
+ _ZN20QgsFeatureRendererV2C2E7QString@Base 1.4.0
+ _ZN20QgsFeatureRendererV2D0Ev@Base 1.4.0
+ _ZN20QgsFeatureRendererV2D1Ev@Base 1.4.0
+ _ZN20QgsFillSymbolLayerV215drawPreviewIconEP8QPainter5QSize@Base 1.4.0
+ _ZN20QgsFillSymbolLayerV2C1Eb@Base 1.4.0
+ _ZN20QgsFillSymbolLayerV2C2Eb@Base 1.4.0
+ _ZN20QgsFillSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN20QgsFillSymbolLayerV2D1Ev@Base 1.4.0
+ _ZN20QgsLineSymbolLayerV215drawPreviewIconEP8QPainter5QSize@Base 1.4.0
+ _ZN20QgsLineSymbolLayerV2C1Eb@Base 1.4.0
+ _ZN20QgsLineSymbolLayerV2C2Eb@Base 1.4.0
+ _ZN20QgsLineSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN20QgsLineSymbolLayerV2D1Ev@Base 1.4.0
  _ZN20QgsPseudoColorShader14setClassBreaksEv@Base 1.4.0
  _ZN20QgsPseudoColorShader15setMaximumValueEd@Base 1.4.0
  _ZN20QgsPseudoColorShader15setMinimumValueEd@Base 1.4.0
@@ -1725,6 +1970,10 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN20QgsPseudoColorShaderC2Edd@Base 1.4.0
  _ZN20QgsPseudoColorShaderD0Ev@Base 1.4.0
  _ZN20QgsPseudoColorShaderD1Ev@Base 1.4.0
+ _ZN20QgsVectorColorRampV2D0Ev@Base 1.4.0
+ _ZN20QgsVectorColorRampV2D1Ev@Base 1.4.0
+ _ZN21QgsColorBrewerPalette16listSchemeColorsE7QStringi@Base 1.4.0
+ _ZN21QgsColorBrewerPalette18listSchemeVariantsE7QString@Base 1.4.0
  _ZN21QgsRasterDataProvider11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
  _ZN21QgsRasterDataProvider11qt_metacastEPKc@Base 1.4.0
  _ZN21QgsRasterDataProvider16staticMetaObjectE@Base 1.4.0
@@ -1741,6 +1990,52 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN21QgsRasterTransparencyC1Ev@Base 1.4.0
  _ZN21QgsRasterTransparencyC2Ev@Base 1.4.0
  _ZN21QgsRasterTransparencyD1Ev@Base 1.4.0
+ _ZN21QgsRendererCategoryV24dumpEv@Base 1.4.0
+ _ZN21QgsRendererCategoryV28setLabelE7QString@Base 1.4.0
+ _ZN21QgsRendererCategoryV29setSymbolEP11QgsSymbolV2@Base 1.4.0
+ _ZN21QgsRendererCategoryV2C1E8QVariantP11QgsSymbolV27QString@Base 1.4.0
+ _ZN21QgsRendererCategoryV2C1ERKS_@Base 1.4.0
+ _ZN21QgsRendererCategoryV2C2E8QVariantP11QgsSymbolV27QString@Base 1.4.0
+ _ZN21QgsRendererCategoryV2C2ERKS_@Base 1.4.0
+ _ZN21QgsRendererCategoryV2D1Ev@Base 1.4.0
+ _ZN21QgsRendererCategoryV2D2Ev@Base 1.4.0
+ _ZN21QgsRendererV2MetadataD1Ev@Base 1.4.0
+ _ZN21QgsRendererV2Registry11addRendererERK21QgsRendererV2Metadata@Base 1.4.0
+ _ZN21QgsRendererV2Registry13renderersListEv@Base 1.4.0
+ _ZN21QgsRendererV2Registry14removeRendererE7QString@Base 1.4.0
+ _ZN21QgsRendererV2Registry16rendererMetadataE7QString@Base 1.4.0
+ _ZN21QgsRendererV2Registry25setRendererWidgetFunctionE7QStringPFP19QgsRendererV2WidgetP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2E@Base 1.4.0
+ _ZN21QgsRendererV2Registry8instanceEv@Base 1.4.0
+ _ZN21QgsRendererV2Registry9mInstanceE@Base 1.4.0
+ _ZN21QgsRendererV2RegistryC1Ev@Base 1.4.0
+ _ZN21QgsRendererV2RegistryC2Ev@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils10loadSymbolER11QDomElement@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils10saveSymbolE7QStringP11QgsSymbolV2R12QDomDocumentP4QMapIS0_S2_E@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils11decodeColorE7QString@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils11decodePointE7QString@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils11encodeColorE6QColor@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils11encodePointE7QPointF@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils11loadSymbolsER11QDomElement@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils11saveSymbolsER4QMapI7QStringP11QgsSymbolV2ES1_R12QDomDocument@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils13loadColorRampER11QDomElement@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils13saveColorRampE7QStringP20QgsVectorColorRampV2R12QDomDocument@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils14clearSymbolMapER4QMapI7QStringP11QgsSymbolV2E@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils14decodePenStyleE7QString@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils14encodePenStyleEN2Qt8PenStyleE@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils14savePropertiesE4QMapI7QStringS1_ER12QDomDocumentR11QDomElement@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils15loadSymbolLayerER11QDomElement@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils15parsePropertiesER11QDomElement@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils16decodeBrushStyleE7QString@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils16encodeBrushStyleEN2Qt10BrushStyleE@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils17decodePenCapStyleE7QString@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils17encodePenCapStyleEN2Qt11PenCapStyleE@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils17symbolPreviewIconEP11QgsSymbolV25QSize@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils18decodePenJoinStyleE7QString@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils18encodePenJoinStyleEN2Qt12PenJoinStyleE@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils19symbolPreviewPixmapEP11QgsSymbolV25QSize@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils20colorRampPreviewIconEP20QgsVectorColorRampV25QSize@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils22colorRampPreviewPixmapEP20QgsVectorColorRampV25QSize@Base 1.4.0
+ _ZN21QgsSymbolLayerV2Utils22symbolLayerPreviewIconEP16QgsSymbolLayerV25QSize@Base 1.4.0
  _ZN21QgsTicksScaleBarStyleC1EPK19QgsComposerScaleBar@Base 1.4.0
  _ZN21QgsTicksScaleBarStyleC1Ev@Base 1.4.0
  _ZN21QgsTicksScaleBarStyleC2EPK19QgsComposerScaleBar@Base 1.4.0
@@ -1810,6 +2105,11 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN22QgsCoordinateTransformD0Ev@Base 1.4.0
  _ZN22QgsCoordinateTransformD1Ev@Base 1.4.0
  _ZN22QgsCoordinateTransformD2Ev@Base 1.4.0
+ _ZN22QgsMarkerSymbolLayerV215drawPreviewIconEP8QPainter5QSize@Base 1.4.0
+ _ZN22QgsMarkerSymbolLayerV2C1Eb@Base 1.4.0
+ _ZN22QgsMarkerSymbolLayerV2C2Eb@Base 1.4.0
+ _ZN22QgsMarkerSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN22QgsMarkerSymbolLayerV2D1Ev@Base 1.4.0
  _ZN22QgsUniqueValueRenderer11clearValuesEv@Base 1.4.0
  _ZN22QgsUniqueValueRenderer11insertValueE7QStringP9QgsSymbol@Base 1.4.0
  _ZN22QgsUniqueValueRenderer13renderFeatureER16QgsRenderContextR10QgsFeatureP6QImagebd@Base 1.4.0
@@ -1875,6 +2175,14 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN23QgsSingleSymbolRendererD1Ev@Base 1.4.0
  _ZN23QgsSingleSymbolRendererD2Ev@Base 1.4.0
  _ZN23QgsSingleSymbolRendereraSERKS_@Base 1.4.0
+ _ZN24QgsSymbolLayerV2Registry18addSymbolLayerTypeERK24QgsSymbolLayerV2Metadata@Base 1.4.0
+ _ZN24QgsSymbolLayerV2Registry18defaultSymbolLayerEN11QgsSymbolV210SymbolTypeE@Base 1.4.0
+ _ZN24QgsSymbolLayerV2Registry19symbolLayersForTypeEN11QgsSymbolV210SymbolTypeE@Base 1.4.0
+ _ZN24QgsSymbolLayerV2Registry26setLayerTypeWidgetFunctionE7QStringPFP22QgsSymbolLayerV2WidgetvE@Base 1.4.0
+ _ZN24QgsSymbolLayerV2Registry8instanceEv@Base 1.4.0
+ _ZN24QgsSymbolLayerV2Registry9mInstanceE@Base 1.4.0
+ _ZN24QgsSymbolLayerV2RegistryC1Ev@Base 1.4.0
+ _ZN24QgsSymbolLayerV2RegistryC2Ev@Base 1.4.0
  _ZN25QgsDoubleBoxScaleBarStyleC1EPK19QgsComposerScaleBar@Base 1.4.0
  _ZN25QgsDoubleBoxScaleBarStyleC1Ev@Base 1.4.0
  _ZN25QgsDoubleBoxScaleBarStyleC2EPK19QgsComposerScaleBar@Base 1.4.0
@@ -1893,6 +2201,30 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN25QgsSingleBoxScaleBarStyleD0Ev@Base 1.4.0
  _ZN25QgsSingleBoxScaleBarStyleD1Ev@Base 1.4.0
  _ZN25QgsSingleBoxScaleBarStyleD2Ev@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV211startRenderER16QgsRenderContextRK4QMapIi8QgsFieldE@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV214usedAttributesEv@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV216symbolForFeatureER10QgsFeature@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV220legendSymbologyItemsE5QSize@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV24dumpEv@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV24saveER12QDomDocument@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV25cloneEv@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV26createER11QDomElement@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV27symbolsEv@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV29setSymbolEP11QgsSymbolV2@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV2C1EP11QgsSymbolV2@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV2C2EP11QgsSymbolV2@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV2D0Ev@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV2D1Ev@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV2D2Ev@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV211renderPointERK7QPointFR16QgsRenderContext@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV211startRenderER16QgsRenderContext@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV26createERK4QMapI7QStringS1_E@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV2C1E7QStringdd@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV2C2E7QStringdd@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV2D1Ev@Base 1.4.0
  _ZN26QgsClipToMinMaxEnhancement25isValueInDisplayableRangeEd@Base 1.4.0
  _ZN26QgsClipToMinMaxEnhancement7enhanceEd@Base 1.4.0
  _ZN26QgsClipToMinMaxEnhancementC1EN22QgsContrastEnhancement17QgsRasterDataTypeEdd@Base 1.4.0
@@ -1931,10 +2263,45 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN26QgsLinearMinMaxEnhancementC2EN22QgsContrastEnhancement17QgsRasterDataTypeEdd@Base 1.4.0
  _ZN26QgsLinearMinMaxEnhancementD0Ev@Base 1.4.0
  _ZN26QgsLinearMinMaxEnhancementD1Ev@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV211startRenderER16QgsRenderContext@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV212setSubSymbolEP11QgsSymbolV2@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV214renderPolylineERK9QPolygonFR16QgsRenderContext@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV222renderPolylineNoOffsetERK9QPolygonFR16QgsRenderContext@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV26createERK4QMapI7QStringS1_E@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV28setColorE6QColor@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV29subSymbolEv@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV2C1Ebd@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV2C2Ebd@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV2D1Ev@Base 1.4.0
+ _ZN26QgsMarkerLineSymbolLayerV2D2Ev@Base 1.4.0
  _ZN26QgsProviderExtentCalcEventC1EP12QgsRectangle@Base 1.4.0
  _ZN26QgsProviderExtentCalcEventC2EP12QgsRectangle@Base 1.4.0
  _ZN26QgsProviderExtentCalcEventD0Ev@Base 1.4.0
  _ZN26QgsProviderExtentCalcEventD1Ev@Base 1.4.0
+ _ZN26QgsSimpleFillSymbolLayerV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN26QgsSimpleFillSymbolLayerV211startRenderER16QgsRenderContext@Base 1.4.0
+ _ZN26QgsSimpleFillSymbolLayerV213renderPolygonERK9QPolygonFP5QListIS0_ER16QgsRenderContext@Base 1.4.0
+ _ZN26QgsSimpleFillSymbolLayerV26createERK4QMapI7QStringS1_E@Base 1.4.0
+ _ZN26QgsSimpleFillSymbolLayerV2C1E6QColorS0_N2Qt10BrushStyleE@Base 1.4.0
+ _ZN26QgsSimpleFillSymbolLayerV2C2E6QColorS0_N2Qt10BrushStyleE@Base 1.4.0
+ _ZN26QgsSimpleFillSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN26QgsSimpleFillSymbolLayerV2D1Ev@Base 1.4.0
+ _ZN26QgsSimpleLineSymbolLayerV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN26QgsSimpleLineSymbolLayerV211startRenderER16QgsRenderContext@Base 1.4.0
+ _ZN26QgsSimpleLineSymbolLayerV214renderPolylineERK9QPolygonFR16QgsRenderContext@Base 1.4.0
+ _ZN26QgsSimpleLineSymbolLayerV26createERK4QMapI7QStringS1_E@Base 1.4.0
+ _ZN26QgsSimpleLineSymbolLayerV2C1E6QColordN2Qt8PenStyleE@Base 1.4.0
+ _ZN26QgsSimpleLineSymbolLayerV2C2E6QColordN2Qt8PenStyleE@Base 1.4.0
+ _ZN26QgsSimpleLineSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN26QgsSimpleLineSymbolLayerV2D1Ev@Base 1.4.0
+ _ZN26QgsVectorRandomColorRampV212updateColorsEv@Base 1.4.0
+ _ZN26QgsVectorRandomColorRampV26createERK4QMapI7QStringS1_E@Base 1.4.0
+ _ZN26QgsVectorRandomColorRampV2C1Eiiiiiii@Base 1.4.0
+ _ZN26QgsVectorRandomColorRampV2C2Eiiiiiii@Base 1.4.0
+ _ZN26QgsVectorRandomColorRampV2D0Ev@Base 1.4.0
+ _ZN26QgsVectorRandomColorRampV2D1Ev@Base 1.4.0
  _ZN27QgsPALObjectPositionManager12removeLayersEv@Base 1.4.0
  _ZN27QgsPALObjectPositionManager19deletePALGeometriesEv@Base 1.4.0
  _ZN27QgsPALObjectPositionManager19findObjectPositionsERK16QgsRenderContextN4QGis8UnitTypeE@Base 1.4.0
@@ -1994,6 +2361,69 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN28QgsCoordinateReferenceSystemaSERKS_@Base 1.4.0
  _ZN28QgsCoordinateReferenceSystemeqERKS_@Base 1.4.0
  _ZN28QgsCoordinateReferenceSystemneERKS_@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV211startRenderER16QgsRenderContextRK4QMapIi8QgsFieldE@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV212sourceSymbolEv@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV214createRendererEP14QgsVectorLayer7QStringiNS_4ModeEP11QgsSymbolV2P20QgsVectorColorRampV2@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV214symbolForValueEd@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV214usedAttributesEv@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV215setSourceSymbolEP11QgsSymbolV2@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV215sourceColorRampEv@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV216symbolForFeatureER10QgsFeature@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV216updateRangeLabelEi7QString@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV217updateRangeSymbolEiP11QgsSymbolV2@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV218setSourceColorRampEP20QgsVectorColorRampV2@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV220legendSymbologyItemsE5QSize@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV24dumpEv@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV24saveER12QDomDocument@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV25cloneEv@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV26createER11QDomElement@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV27symbolsEv@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV2C1E7QString5QListI18QgsRendererRangeV2E@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV2C2E7QString5QListI18QgsRendererRangeV2E@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV2D0Ev@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV2D1Ev@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV2D2Ev@Base 1.4.0
+ _ZN28QgsSimpleMarkerSymbolLayerV210drawMarkerEP8QPainter@Base 1.4.0
+ _ZN28QgsSimpleMarkerSymbolLayerV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN28QgsSimpleMarkerSymbolLayerV211renderPointERK7QPointFR16QgsRenderContext@Base 1.4.0
+ _ZN28QgsSimpleMarkerSymbolLayerV211startRenderER16QgsRenderContext@Base 1.4.0
+ _ZN28QgsSimpleMarkerSymbolLayerV26createERK4QMapI7QStringS1_E@Base 1.4.0
+ _ZN28QgsSimpleMarkerSymbolLayerV2C1E7QString6QColorS1_dd@Base 1.4.0
+ _ZN28QgsSimpleMarkerSymbolLayerV2C2E7QString6QColorS1_dd@Base 1.4.0
+ _ZN28QgsSimpleMarkerSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN28QgsSimpleMarkerSymbolLayerV2D1Ev@Base 1.4.0
+ _ZN28QgsVectorGradientColorRampV26createERK4QMapI7QStringS1_E@Base 1.4.0
+ _ZN28QgsVectorGradientColorRampV2C1E6QColorS0_@Base 1.4.0
+ _ZN28QgsVectorGradientColorRampV2C2E6QColorS0_@Base 1.4.0
+ _ZN28QgsVectorGradientColorRampV2D0Ev@Base 1.4.0
+ _ZN28QgsVectorGradientColorRampV2D1Ev@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV211rebuildHashEv@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV211startRenderER16QgsRenderContextRK4QMapIi8QgsFieldE@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV212sourceSymbolEv@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV214deleteCategoryEi@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV214symbolForValueE8QVariant@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV214usedAttributesEv@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV215setSourceSymbolEP11QgsSymbolV2@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV215sourceColorRampEv@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV216symbolForFeatureER10QgsFeature@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV218setSourceColorRampEP20QgsVectorColorRampV2@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV219deleteAllCategoriesEv@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV219updateCategoryLabelEi7QString@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV220legendSymbologyItemsE5QSize@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV220updateCategorySymbolEiP11QgsSymbolV2@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV221categoryIndexForValueE8QVariant@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV24dumpEv@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV24saveER12QDomDocument@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV25cloneEv@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV26createER11QDomElement@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV27symbolsEv@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV2C1E7QString5QListI21QgsRendererCategoryV2E@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV2C2E7QString5QListI21QgsRendererCategoryV2E@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV2D0Ev@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV2D1Ev@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV2D2Ev@Base 1.4.0
  _ZN30QgsCentralPointPositionManager12removeLayersEv@Base 1.4.0
  _ZN30QgsCentralPointPositionManager19findObjectPositionsERK16QgsRenderContextN4QGis8UnitTypeE@Base 1.4.0
  _ZN30QgsCentralPointPositionManager8addLayerEP14QgsVectorLayerR5QListIP16QgsVectorOverlayE@Base 1.4.0
@@ -2010,8 +2440,25 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN30QgsContrastEnhancementFunctionC2EN22QgsContrastEnhancement17QgsRasterDataTypeEdd@Base 1.4.0
  _ZN30QgsContrastEnhancementFunctionD0Ev@Base 1.4.0
  _ZN30QgsContrastEnhancementFunctionD1Ev@Base 1.4.0
+ _ZN30QgsLineDecorationSymbolLayerV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN30QgsLineDecorationSymbolLayerV211startRenderER16QgsRenderContext@Base 1.4.0
+ _ZN30QgsLineDecorationSymbolLayerV214renderPolylineERK9QPolygonFR16QgsRenderContext@Base 1.4.0
+ _ZN30QgsLineDecorationSymbolLayerV26createERK4QMapI7QStringS1_E@Base 1.4.0
+ _ZN30QgsLineDecorationSymbolLayerV2C1E6QColor@Base 1.4.0
+ _ZN30QgsLineDecorationSymbolLayerV2C2E6QColor@Base 1.4.0
+ _ZN30QgsLineDecorationSymbolLayerV2D0Ev@Base 1.4.0
+ _ZN30QgsLineDecorationSymbolLayerV2D1Ev@Base 1.4.0
+ _ZN30QgsLineDecorationSymbolLayerV2D2Ev@Base 1.4.0
  _ZN31QgsOverlayObjectPositionManagerD0Ev@Base 1.4.0
  _ZN31QgsOverlayObjectPositionManagerD1Ev@Base 1.4.0
+ _ZN31QgsVectorColorBrewerColorRampV211loadPaletteEv@Base 1.4.0
+ _ZN31QgsVectorColorBrewerColorRampV215listSchemeNamesEv@Base 1.4.0
+ _ZN31QgsVectorColorBrewerColorRampV218listSchemeVariantsE7QString@Base 1.4.0
+ _ZN31QgsVectorColorBrewerColorRampV26createERK4QMapI7QStringS1_E@Base 1.4.0
+ _ZN31QgsVectorColorBrewerColorRampV2C1E7QStringi@Base 1.4.0
+ _ZN31QgsVectorColorBrewerColorRampV2C2E7QStringi@Base 1.4.0
+ _ZN31QgsVectorColorBrewerColorRampV2D0Ev@Base 1.4.0
+ _ZN31QgsVectorColorBrewerColorRampV2D1Ev@Base 1.4.0
  _ZN34QgsLinearMinMaxEnhancementWithClip25isValueInDisplayableRangeEd@Base 1.4.0
  _ZN34QgsLinearMinMaxEnhancementWithClip7enhanceEd@Base 1.4.0
  _ZN34QgsLinearMinMaxEnhancementWithClipC1EN22QgsContrastEnhancement17QgsRasterDataTypeEdd@Base 1.4.0
@@ -2019,10 +2466,15 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN34QgsLinearMinMaxEnhancementWithClipD0Ev@Base 1.4.0
  _ZN34QgsLinearMinMaxEnhancementWithClipD1Ev@Base 1.4.0
  _ZN3pal10LinkedListIPK10GEOSGeom_tE9push_backES3_@Base 1.4.0
+ _ZN3pal10LinkedListIPNS_11FeaturePartEE9pop_frontEv@Base 1.4.0
+ _ZN3pal10LinkedListIPNS_11FeaturePartEE9push_backES2_@Base 1.4.0
  _ZN3pal10LinkedListIPNS_13LabelPositionEE9push_backES2_@Base 1.4.0
+ _ZN3pal10LinkedListIPNS_14HashTableEntryIPNS0_IPNS_11FeaturePartEEEEEE9push_backES7_@Base 1.4.0
  _ZN3pal10LinkedListIPNS_14HashTableEntryIPNS_4CellIPNS_7FeatureEEEEEE9push_backES8_@Base 1.4.0
+ _ZN3pal10LinkedListIPNS_14HashTableEntryIPNS_7FeatureEEEE9push_backES5_@Base 1.4.0
  _ZN3pal10LinkedListIPNS_26_elementary_transformationEE9push_backES2_@Base 1.4.0
  _ZN3pal10LinkedListIPNS_4FeatEE9push_backES2_@Base 1.4.0
+ _ZN3pal10LinkedListIPNS_5FeatsEE9push_backES2_@Base 1.4.0
  _ZN3pal10LinkedListIPNS_6_crossEE9push_backES2_@Base 1.4.0
  _ZN3pal10LinkedListIPNS_6_featsEE9push_backES2_@Base 1.4.0
  _ZN3pal10LinkedListIPNS_8PointSetEE9push_backES2_@Base 1.4.0
@@ -2031,6 +2483,27 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal10costShrinkEPvS0_@Base 1.4.0
  _ZN3pal10geosNoticeEPKcz@Base 1.4.0
  _ZN3pal10intCompareEii@Base 1.4.0
+ _ZN3pal10strCompareEPcS0_@Base 1.4.0
+ _ZN3pal11FeaturePart11isConnectedEPS0_@Base 1.4.0
+ _ZN3pal11FeaturePart11setPositionEdPPPNS_13LabelPositionEPdS5_PNS_8PointSetEPNS_5RTreeIS2_dLi2EdLi8ELi4EEE@Base 1.4.0
+ _ZN3pal11FeaturePart13extractCoordsEPK10GEOSGeom_t@Base 1.4.0
+ _ZN3pal11FeaturePart14addSizePenaltyEiPPNS_13LabelPositionEPdS4_@Base 1.4.0
+ _ZN3pal11FeaturePart18setPositionForLineEdPPPNS_13LabelPositionEPNS_8PointSetEd@Base 1.4.0
+ _ZN3pal11FeaturePart19setPositionForPointEdddPPPNS_13LabelPositionEd@Base 1.4.0
+ _ZN3pal11FeaturePart20mergeWithFeaturePartEPS0_@Base 1.4.0
+ _ZN3pal11FeaturePart20setPositionOverPointEdddPPPNS_13LabelPositionEd@Base 1.4.0
+ _ZN3pal11FeaturePart21removeDuplicatePointsEv@Base 1.4.0
+ _ZN3pal11FeaturePart21setPositionForPolygonEdPPPNS_13LabelPositionEPNS_8PointSetEd@Base 1.4.0
+ _ZN3pal11FeaturePart23curvedPlacementAtOffsetEPNS_8PointSetEPdiid@Base 1.4.0
+ _ZN3pal11FeaturePart24setPositionForLineCurvedEPPPNS_13LabelPositionEPNS_8PointSetE@Base 1.4.0
+ _ZN3pal11FeaturePart5printEv@Base 1.4.0
+ _ZN3pal11FeaturePart6getUIDEv@Base 1.4.0
+ _ZN3pal11FeaturePart8getLayerEv@Base 1.4.0
+ _ZN3pal11FeaturePartC1EPNS_7FeatureEPK10GEOSGeom_t@Base 1.4.0
+ _ZN3pal11FeaturePartC2EPNS_7FeatureEPK10GEOSGeom_t@Base 1.4.0
+ _ZN3pal11FeaturePartD0Ev@Base 1.4.0
+ _ZN3pal11FeaturePartD1Ev@Base 1.4.0
+ _ZN3pal11FeaturePartD2Ev@Base 1.4.0
  _ZN3pal11PalGeometryD0Ev@Base 1.4.0
  _ZN3pal11PalGeometryD1Ev@Base 1.4.0
  _ZN3pal11ignoreLabelEPNS_13LabelPositionEPNS_13PriorityQueueEPNS_5RTreeIS1_dLi2EdLi8ELi4EEE@Base 1.4.0
@@ -2051,11 +2524,19 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal12degree2meterEd@Base 1.4.0
  _ZN3pal12increaseCostEPvS0_@Base 1.4.0
  _ZN3pal12ptrETCompareEPNS_26_elementary_transformationES1_@Base 1.4.0
+ _ZN3pal13LabelPosition10costShrinkEPvS1_@Base 1.4.0
  _ZN3pal13LabelPosition10getFeatureEv@Base 1.4.0
  _ZN3pal13LabelPosition12isInConflictEPS0_@Base 1.4.0
+ _ZN3pal13LabelPosition12validateCostEv@Base 1.4.0
+ _ZN3pal13LabelPosition13pruneCallbackEPS0_Pv@Base 1.4.0
+ _ZN3pal13LabelPosition14getFeaturePartEv@Base 1.4.0
+ _ZN3pal13LabelPosition14offsetPositionEdd@Base 1.4.0
  _ZN3pal13LabelPosition15insertIntoIndexEPNS_5RTreeIPS0_dLi2EdLi8ELi4EEE@Base 1.4.0
  _ZN3pal13LabelPosition15removeFromIndexEPNS_5RTreeIPS0_dLi2EdLi8ELi4EEE@Base 1.4.0
+ _ZN3pal13LabelPosition18getDistanceToPointEdd@Base 1.4.0
  _ZN3pal13LabelPosition18setCostFromPolygonEPNS_5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EEEPdS6_@Base 1.4.0
+ _ZN3pal13LabelPosition20countOverlapCallbackEPS0_Pv@Base 1.4.0
+ _ZN3pal13LabelPosition20isBorderCrossingLineEPNS_8PointSetE@Base 1.4.0
  _ZN3pal13LabelPosition21PolygonCostCalculator11updatePointEPNS_8PointSetE@Base 1.4.0
  _ZN3pal13LabelPosition21PolygonCostCalculator14updateLinePolyEPNS_8PointSetE@Base 1.4.0
  _ZN3pal13LabelPosition21PolygonCostCalculator6updateEPNS_8PointSetE@Base 1.4.0
@@ -2063,6 +2544,12 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal13LabelPosition21PolygonCostCalculator8getLabelEv@Base 1.4.0
  _ZN3pal13LabelPosition21PolygonCostCalculatorC1EPS0_@Base 1.4.0
  _ZN3pal13LabelPosition21PolygonCostCalculatorC2EPS0_@Base 1.4.0
+ _ZN3pal13LabelPosition21getNumPointsInPolygonEiPdS1_@Base 1.4.0
+ _ZN3pal13LabelPosition21isInConflictMultiPartEPS0_@Base 1.4.0
+ _ZN3pal13LabelPosition21removeOverlapCallbackEPS0_Pv@Base 1.4.0
+ _ZN3pal13LabelPosition22isInConflictSinglePartEPS0_@Base 1.4.0
+ _ZN3pal13LabelPosition23polygonObstacleCallbackEPNS_8PointSetEPv@Base 1.4.0
+ _ZN3pal13LabelPosition24countFullOverlapCallbackEPS0_Pv@Base 1.4.0
  _ZN3pal13LabelPosition4getXEv@Base 1.4.0
  _ZN3pal13LabelPosition4getYEv@Base 1.4.0
  _ZN3pal13LabelPosition4isInEPd@Base 1.4.0
@@ -2071,9 +2558,15 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal13LabelPosition7getCostEv@Base 1.4.0
  _ZN3pal13LabelPosition7setCostEiPPS0_iPNS_5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EEEPdS8_@Base 1.4.0
  _ZN3pal13LabelPosition7toLabelEb@Base 1.4.0
+ _ZN3pal13LabelPosition8costGrowEPvS1_@Base 1.4.0
  _ZN3pal13LabelPosition8getAlphaEv@Base 1.4.0
+ _ZN3pal13LabelPositionC1ERKS0_@Base 1.4.0
+ _ZN3pal13LabelPositionC1EiddddddPNS_11FeaturePartE@Base 1.4.0
  _ZN3pal13LabelPositionC1EiddddddPNS_7FeatureE@Base 1.4.0
+ _ZN3pal13LabelPositionC2ERKS0_@Base 1.4.0
+ _ZN3pal13LabelPositionC2EiddddddPNS_11FeaturePartE@Base 1.4.0
  _ZN3pal13LabelPositionC2EiddddddPNS_7FeatureE@Base 1.4.0
+ _ZN3pal13LabelPositionD1Ev@Base 1.4.0
  _ZN3pal13PriorityQueue11decreaseKeyEi@Base 1.4.0
  _ZN3pal13PriorityQueue11setPriorityEid@Base 1.4.0
  _ZN3pal13PriorityQueue12getSizeByPosEv@Base 1.4.0
@@ -2096,16 +2589,23 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal13checkCallbackEPNS_13LabelPositionEPv@Base 1.4.0
  _ZN3pal13falpCallback1EPNS_13LabelPositionEPv@Base 1.4.0
  _ZN3pal13falpCallback2EPNS_13LabelPositionEPv@Base 1.4.0
+ _ZN3pal14CostCalculator22addObstacleCostPenaltyEPNS_13LabelPositionEPNS_8PointSetE@Base 1.4.0
+ _ZN3pal14CostCalculator23finalizeCandidatesCostsEPNS_5FeatsEiPNS_5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EEEPdS8_@Base 1.4.0
+ _ZN3pal14CostCalculator24setPolygonCandidatesCostEiPPNS_13LabelPositionEiPNS_5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EEEPdS9_@Base 1.4.0
+ _ZN3pal14CostCalculator27setCandidateCostFromPolygonEPNS_13LabelPositionEPNS_5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EEEPdS8_@Base 1.4.0
  _ZN3pal14extractXYCoordEPNS_4FeatE@Base 1.4.0
  _ZN3pal14ptrFeatCompareEPNS_4FeatES1_@Base 1.4.0
  _ZN3pal14ptrLPosCompareEPNS_13LabelPositionES1_@Base 1.4.0
  _ZN3pal14ptrPSetCompareEPNS_8PointSetES1_@Base 1.4.0
  _ZN3pal14reorderPolygonEiPdS0_@Base 1.4.0
  _ZN3pal15isSegIntersectsEdddddddd@Base 1.4.0
+ _ZN3pal15ptrFeatsCompareEPNS_5FeatsES1_@Base 1.4.0
  _ZN3pal15ptrFeatsCompareEPNS_6_featsES1_@Base 1.4.0
  _ZN3pal15releaseCallbackEPNS_8PointSetEPv@Base 1.4.0
  _ZN3pal15subPartCallbackEPNS_13LabelPositionEPv@Base 1.4.0
+ _ZN3pal16hashEntryCompareIPNS_10LinkedListIPNS_11FeaturePartEEEEEbPNS_14HashTableEntryIT_EES9_@Base 1.4.0
  _ZN3pal16hashEntryCompareIPNS_4CellIPNS_7FeatureEEEEEbPNS_14HashTableEntryIT_EES9_@Base 1.4.0
+ _ZN3pal16hashEntryCompareIPNS_7FeatureEEEbPNS_14HashTableEntryIT_EES6_@Base 1.4.0
  _ZN3pal16isPointInPolygonEiPdS0_dd@Base 1.4.0
  _ZN3pal16obstacleCallbackEPNS_8PointSetEPv@Base 1.4.0
  _ZN3pal17InternalException15UnknownGeometryD0Ev@Base 1.4.0
@@ -2119,21 +2619,33 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal17ptrFeatureCompareEPNS_7FeatureES1_@Base 1.4.0
  _ZN3pal17releaseAllInIndexEPNS_5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZN3pal18ptrCrossingCompareEPNS_6_crossES1_@Base 1.4.0
+ _ZN3pal19extractFeatCallbackEPNS_11FeaturePartEPv@Base 1.4.0
  _ZN3pal19extractFeatCallbackEPNS_7FeatureEPv@Base 1.4.0
  _ZN3pal20countOverlapCallbackEPNS_13LabelPositionEPv@Base 1.4.0
  _ZN3pal20updateCandidatesCostEPNS_13LabelPositionEPv@Base 1.4.0
+ _ZN3pal21PolygonCostCalculator11updatePointEPNS_8PointSetE@Base 1.4.0
+ _ZN3pal21PolygonCostCalculator14updateLinePolyEPNS_8PointSetE@Base 1.4.0
+ _ZN3pal21PolygonCostCalculator6updateEPNS_8PointSetE@Base 1.4.0
+ _ZN3pal21PolygonCostCalculator7getCostEv@Base 1.4.0
+ _ZN3pal21PolygonCostCalculator8getLabelEv@Base 1.4.0
+ _ZN3pal21PolygonCostCalculatorC1EPNS_13LabelPositionE@Base 1.4.0
+ _ZN3pal21PolygonCostCalculatorC2EPNS_13LabelPositionE@Base 1.4.0
+ _ZN3pal21ptrFeaturePartCompareEPNS_11FeaturePartES1_@Base 1.4.0
  _ZN3pal21removeOverlapCallbackEPNS_13LabelPositionEPv@Base 1.4.0
  _ZN3pal22computeSegIntersectionEddddddddPdS0_@Base 1.4.0
  _ZN3pal23computeLineIntersectionEddddddddPdS0_@Base 1.4.0
  _ZN3pal24countFullOverlapCallbackEPNS_13LabelPositionEPv@Base 1.4.0
  _ZN3pal25computeSegIntersectionExtEddddddddddddPdS0_@Base 1.4.0
  _ZN3pal26computeLineSegIntersectionEddddddddPdS0_@Base 1.4.0
+ _ZN3pal26findLineCircleIntersectionEdddddddRdS0_@Base 1.4.0
  _ZN3pal26pruneLabelPositionCallbackEPNS_13LabelPositionEPv@Base 1.4.0
  _ZN3pal3Pal10getMapUnitEv@Base 1.4.0
  _ZN3pal3Pal10setMapUnitENS_6_UnitsE@Base 1.4.0
  _ZN3pal3Pal11removeLayerEPNS_5LayerE@Base 1.4.0
  _ZN3pal3Pal12setPopmusicREi@Base 1.4.0
+ _ZN3pal3Pal12solveProblemEPNS_7ProblemEb@Base 1.4.0
  _ZN3pal3Pal13setEjChainDegEi@Base 1.4.0
+ _ZN3pal3Pal14extractProblemEdPd@Base 1.4.0
  _ZN3pal3Pal15setCandListSizeEd@Base 1.4.0
  _ZN3pal3Pal6getDpiEv@Base 1.4.0
  _ZN3pal3Pal6setDpiEi@Base 1.4.0
@@ -2176,6 +2688,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal5LabelC2EPdS1_dPKcS3_PNS_11PalGeometryE@Base 1.4.0
  _ZN3pal5LabelD1Ev@Base 1.4.0
  _ZN3pal5LabelD2Ev@Base 1.4.0
+ _ZN3pal5Layer10getFeatureEPKc@Base 1.4.0
  _ZN3pal5Layer10isObstacleEv@Base 1.4.0
  _ZN3pal5Layer10setToLabelEb@Base 1.4.0
  _ZN3pal5Layer11getMaxScaleEv@Base 1.4.0
@@ -2190,14 +2703,17 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal5Layer12isScaleValidEd@Base 1.4.0
  _ZN3pal5Layer12setLabelUnitENS_6_UnitsE@Base 1.4.0
  _ZN3pal5Layer13getNbFeaturesEv@Base 1.4.0
+ _ZN3pal5Layer14addFeaturePartEPNS_11FeaturePartEPKc@Base 1.4.0
  _ZN3pal5Layer14getArrangementEv@Base 1.4.0
  _ZN3pal5Layer14setArrangementENS_12_arrangementE@Base 1.4.0
  _ZN3pal5Layer15registerFeatureEPKcPNS_11PalGeometryEdd@Base 1.4.0
+ _ZN3pal5Layer15registerFeatureEPKcPNS_11PalGeometryEddS2_@Base 1.4.0
  _ZN3pal5Layer19getFeatureDistlabelEPKc@Base 1.4.0
  _ZN3pal5Layer19setFeatureDistlabelEPKci@Base 1.4.0
  _ZN3pal5Layer19setFeatureLabelSizeEPKcdd@Base 1.4.0
  _ZN3pal5Layer20getFeatureLabelWidthEPKc@Base 1.4.0
  _ZN3pal5Layer21getFeatureLabelHeightEPKc@Base 1.4.0
+ _ZN3pal5Layer21joinConnectedFeaturesEv@Base 1.4.0
  _ZN3pal5Layer6renameEPc@Base 1.4.0
  _ZN3pal5Layer7getNameEv@Base 1.4.0
  _ZN3pal5Layer8isActiveEv@Base 1.4.0
@@ -2208,6 +2724,29 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal5LayerD0Ev@Base 1.4.0
  _ZN3pal5LayerD1Ev@Base 1.4.0
  _ZN3pal5LayerD2Ev@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE10InsertRectEPNS3_4RectERKS2_PPNS3_4NodeEi@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE10PickBranchEPNS3_4RectEPNS3_4NodeE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE10RemoveRectEPNS3_4RectERKS2_PPNS3_4NodeE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE11CombineRectEPNS3_4RectES5_@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE11GetBranchesEPNS3_4NodeEPNS3_6BranchEPNS3_13PartitionVarsE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE11InitParVarsEPNS3_13PartitionVarsEii@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE12RemoveAllRecEPNS3_4NodeE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE13InsertRectRecEPNS3_4RectERKS2_PNS3_4NodeEPS9_i@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE13RemoveRectRecEPNS3_4RectERKS2_PNS3_4NodeEPPNS3_8ListNodeE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE15ChoosePartitionEPNS3_13PartitionVarsEi@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE16DisconnectBranchEPNS3_4NodeEi@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE19RectSphericalVolumeEPNS3_4RectE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE6SearchEPNS3_4NodeEPNS3_4RectERiPFbS2_PvES9_@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE7OverlapEPNS3_4RectES5_@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE8ClassifyEiiPNS3_13PartitionVarsE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE8FreeNodeEPNS3_4NodeE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE9AddBranchEPNS3_6BranchEPNS3_4NodeEPS7_@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE9LoadNodesEPNS3_4NodeES5_PNS3_13PartitionVarsE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE9NodeCoverEPNS3_4NodeE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE9PickSeedsEPNS3_13PartitionVarsE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE9SplitNodeEPNS3_4NodeEPNS3_6BranchEPS5_@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EED0Ev@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EED1Ev@Base 1.4.0
  _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE10InsertRectEPNS3_4RectERKS2_PPNS3_4NodeEi@Base 1.4.0
  _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE10PickBranchEPNS3_4RectEPNS3_4NodeE@Base 1.4.0
  _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE10RemoveRectEPNS3_4RectERKS2_PPNS3_4NodeE@Base 1.4.0
@@ -2288,7 +2827,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal7Feature6getUIDEv@Base 1.4.0
  _ZN3pal7Feature8getLayerEv@Base 1.4.0
  _ZN3pal7FeatureC1EPNS_4FeatEPNS_5LayerEiiPNS_11PalGeometryE@Base 1.4.0
+ _ZN3pal7FeatureC1EPNS_5LayerEPKcPNS_11PalGeometryEdd@Base 1.4.0
  _ZN3pal7FeatureC2EPNS_4FeatEPNS_5LayerEiiPNS_11PalGeometryE@Base 1.4.0
+ _ZN3pal7FeatureC2EPNS_5LayerEPKcPNS_11PalGeometryEdd@Base 1.4.0
  _ZN3pal7FeatureD0Ev@Base 1.4.0
  _ZN3pal7FeatureD1Ev@Base 1.4.0
  _ZN3pal7FeatureD2Ev@Base 1.4.0
@@ -2331,10 +2872,12 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal8PointSet10reduceLineEPS0_PNS_10LinkedListIS1_EEPdS5_@Base 1.4.0
  _ZN3pal8PointSet11extractPathEiiiPdS1_PNS_6_crossES3_i@Base 1.4.0
  _ZN3pal8PointSet11getCentroidERdS1_@Base 1.4.0
+ _ZN3pal8PointSet12deleteCoordsEv@Base 1.4.0
  _ZN3pal8PointSet12extractShapeEiiiiidd@Base 1.4.0
  _ZN3pal8PointSet13reducePolygonEPS0_PNS_10LinkedListIS1_EEPdS5_@Base 1.4.0
  _ZN3pal8PointSet13splitPolygonsEPNS_10LinkedListIPS0_EES4_ddPc@Base 1.4.0
  _ZN3pal8PointSet18compute_chull_bboxEv@Base 1.4.0
+ _ZN3pal8PointSet29createProblemSpecificPointSetEPdS1_Pb@Base 1.4.0
  _ZN3pal8PointSet29createProblemSpecificPointSetEPdS1_PbS2_@Base 1.4.0
  _ZN3pal8PointSet7getDistEddPdS1_@Base 1.4.0
  _ZN3pal8PointSet7getPathEiiPi@Base 1.4.0
@@ -2346,13 +2889,20 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal8PointSetC2Edd@Base 1.4.0
  _ZN3pal8PointSetC2EiPdS1_@Base 1.4.0
  _ZN3pal8PointSetC2Ev@Base 1.4.0
+ _ZN3pal8PointSetD0Ev@Base 1.4.0
  _ZN3pal8PointSetD1Ev@Base 1.4.0
  _ZN3pal8PointSetD2Ev@Base 1.4.0
  _ZN3pal8costGrowEPvS0_@Base 1.4.0
  _ZN3pal8heapsortEPiS0_PKdi@Base 1.4.0
+ _ZN3pal9HashTableIPNS_10LinkedListIPNS_11FeaturePartEEEE10insertItemEPKcS5_@Base 1.4.0
+ _ZN3pal9HashTableIPNS_10LinkedListIPNS_11FeaturePartEEEE4findEPKc@Base 1.4.0
+ _ZN3pal9HashTableIPNS_10LinkedListIPNS_11FeaturePartEEEED1Ev@Base 1.4.0
  _ZN3pal9HashTableIPNS_4CellIPNS_7FeatureEEEE10insertItemEPKcS5_@Base 1.4.0
  _ZN3pal9HashTableIPNS_4CellIPNS_7FeatureEEEE4findEPKc@Base 1.4.0
  _ZN3pal9HashTableIPNS_4CellIPNS_7FeatureEEEED1Ev@Base 1.4.0
+ _ZN3pal9HashTableIPNS_7FeatureEE10insertItemEPKcS2_@Base 1.4.0
+ _ZN3pal9HashTableIPNS_7FeatureEE4findEPKc@Base 1.4.0
+ _ZN3pal9HashTableIPNS_7FeatureEED1Ev@Base 1.4.0
  _ZN3pal9geosErrorEPKcz@Base 1.4.0
  _ZN3pal9heapsort2EPiPdi@Base 1.4.0
  _ZN3pal9ptrGeomEqEPK10GEOSGeom_tS2_@Base 1.4.0
@@ -2364,7 +2914,18 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN4QGis17QGIS_RELEASE_NAMEE@Base 1.4.0
  _ZN4QGis22qgisVectorGeometryTypeE@Base 1.4.0
  _ZN4QGis23DEFAULT_IDENTIFY_RADIUSE@Base 1.4.0
+ _ZN4QMapI7QString21QgsRendererV2MetadataE11node_createEP8QMapDataPPNS3_4NodeERKS0_RKS1_@Base 1.4.0
+ _ZN4QMapI7QString21QgsRendererV2MetadataE6removeERKS0_@Base 1.4.0
+ _ZN4QMapI7QString21QgsRendererV2MetadataE8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QMapI7QString24QgsSymbolLayerV2MetadataE11node_createEP8QMapDataPPNS3_4NodeERKS0_RKS1_@Base 1.4.0
+ _ZN4QMapI7QString24QgsSymbolLayerV2MetadataE8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QMapI7QString5QPairIS0_S0_EE11node_createEP8QMapDataPPNS4_4NodeERKS0_RKS2_@Base 1.4.0
+ _ZN4QMapI7QString5QPairIS0_S0_EE8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QMapI7QString5QPairIS0_S0_EED1Ev@Base 1.4.0
+ _ZN4QMapI7QString5QPairIS0_S0_EEixERKS0_@Base 1.4.0
+ _ZN4QMapI7QString8QVariantE11node_createEP8QMapDataPPNS3_4NodeERKS0_RKS1_@Base 1.4.0
  _ZN4QMapI7QString8QVariantE13detach_helperEv@Base 1.4.0
+ _ZN4QMapI7QString8QVariantE6removeERKS0_@Base 1.4.0
  _ZN4QMapI7QString8QVariantE8freeDataEP8QMapData@Base 1.4.0
  _ZN4QMapI7QString8QVariantED1Ev@Base 1.4.0
  _ZN4QMapI7QStringN14QgsVectorLayer8EditTypeEE11node_createEP8QMapDataPPNS4_4NodeERKS0_RKS2_@Base 1.4.0
@@ -2383,6 +2944,16 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN4QMapI7QStringP11QgsMapLayerE8freeDataEP8QMapData@Base 1.4.0
  _ZN4QMapI7QStringP11QgsMapLayerED1Ev@Base 1.4.0
  _ZN4QMapI7QStringP11QgsMapLayerEixERKS0_@Base 1.4.0
+ _ZN4QMapI7QStringP11QgsSymbolV2E11node_createEP8QMapDataPPNS4_4NodeERKS0_RKS2_@Base 1.4.0
+ _ZN4QMapI7QStringP11QgsSymbolV2E13detach_helperEv@Base 1.4.0
+ _ZN4QMapI7QStringP11QgsSymbolV2E4takeERKS0_@Base 1.4.0
+ _ZN4QMapI7QStringP11QgsSymbolV2E8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QMapI7QStringP11QgsSymbolV2ED1Ev@Base 1.4.0
+ _ZN4QMapI7QStringP11QgsSymbolV2EaSERKS3_@Base 1.4.0
+ _ZN4QMapI7QStringP20QgsVectorColorRampV2E11node_createEP8QMapDataPPNS4_4NodeERKS0_RKS2_@Base 1.4.0
+ _ZN4QMapI7QStringP20QgsVectorColorRampV2E13detach_helperEv@Base 1.4.0
+ _ZN4QMapI7QStringP20QgsVectorColorRampV2E8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QMapI7QStringP20QgsVectorColorRampV2ED1Ev@Base 1.4.0
  _ZN4QMapI7QStringP9QgsSymbolE11node_createEP8QMapDataPPNS4_4NodeERKS0_RKS2_@Base 1.4.0
  _ZN4QMapI7QStringP9QgsSymbolE13detach_helperEv@Base 1.4.0
  _ZN4QMapI7QStringP9QgsSymbolE8freeDataEP8QMapData@Base 1.4.0
@@ -2458,6 +3029,13 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QHashI7QStringP11QgsPropertyE4takeERKS0_@Base 1.4.0
  _ZN5QHashI7QStringP11QgsPropertyE8freeDataEP9QHashData@Base 1.4.0
  _ZN5QHashI7QStringP11QgsPropertyED1Ev@Base 1.4.0
+ _ZN5QHashI7QStringP11QgsSymbolV2E13detach_helperEv@Base 1.4.0
+ _ZN5QHashI7QStringP11QgsSymbolV2E13duplicateNodeEPN9QHashData4NodeEPv@Base 1.4.0
+ _ZN5QHashI7QStringP11QgsSymbolV2E8freeDataEP9QHashData@Base 1.4.0
+ _ZN5QHashI7QStringP11QgsSymbolV2ED1Ev@Base 1.4.0
+ _ZN5QHashIP11QgsSymbolV25QListI10QgsFeatureEE10createNodeEjRKS1_RKS4_PP9QHashNodeIS1_S4_E@Base 1.4.0
+ _ZN5QHashIP11QgsSymbolV25QListI10QgsFeatureEE13duplicateNodeEPN9QHashData4NodeEPv@Base 1.4.0
+ _ZN5QHashIP11QgsSymbolV25QListI10QgsFeatureEE8freeDataEP9QHashData@Base 1.4.0
  _ZN5QHashIP15QgsComposerItem15QHashDummyValueE13detach_helperEv@Base 1.4.0
  _ZN5QHashIP15QgsComposerItem15QHashDummyValueE13duplicateNodeEPN9QHashData4NodeEPv@Base 1.4.0
  _ZN5QHashIP15QgsComposerItem15QHashDummyValueE8freeDataEP9QHashData@Base 1.4.0
@@ -2475,6 +3053,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI10QgsFeatureE5eraseENS1_8iteratorE@Base 1.4.0
  _ZN5QListI10QgsFeatureE6appendERKS0_@Base 1.4.0
  _ZN5QListI10QgsFeatureED1Ev@Base 1.4.0
+ _ZN5QListI10QgsFeatureEaSERKS1_@Base 1.4.0
  _ZN5QListI16QgsRasterPyramidE13detach_helperEv@Base 1.4.0
  _ZN5QListI16QgsRasterPyramidE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI16QgsRasterPyramidE5clearEv@Base 1.4.0
@@ -2488,8 +3067,22 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI18QgsRasterBandStatsE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI18QgsRasterBandStatsED1Ev@Base 1.4.0
  _ZN5QListI18QgsRasterBandStatsEixEi@Base 1.4.0
+ _ZN5QListI18QgsRendererRangeV2E13detach_helperEv@Base 1.4.0
+ _ZN5QListI18QgsRendererRangeV2E4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI18QgsRendererRangeV2E5clearEv@Base 1.4.0
+ _ZN5QListI18QgsRendererRangeV2E6appendERKS0_@Base 1.4.0
+ _ZN5QListI18QgsRendererRangeV2ED1Ev@Base 1.4.0
+ _ZN5QListI20QgsSymbolV2LevelItemE13detach_helperEv@Base 1.4.0
+ _ZN5QListI20QgsSymbolV2LevelItemE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI20QgsSymbolV2LevelItemED1Ev@Base 1.4.0
+ _ZN5QListI21QgsRendererCategoryV2E13detach_helperEv@Base 1.4.0
+ _ZN5QListI21QgsRendererCategoryV2E4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI21QgsRendererCategoryV2E5clearEv@Base 1.4.0
+ _ZN5QListI21QgsRendererCategoryV2ED1Ev@Base 1.4.0
  _ZN5QListI22QgsContrastEnhancementE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI22QgsContrastEnhancementED1Ev@Base 1.4.0
+ _ZN5QListI5QPairI7QString7QPixmapEE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI5QPairI7QString7QPixmapEE6appendERKS3_@Base 1.4.0
  _ZN5QListI5QPairId6QLineFEE13detach_helperEv@Base 1.4.0
  _ZN5QListI5QPairId6QLineFEE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI5QPairId6QLineFEE5clearEv@Base 1.4.0
@@ -2498,6 +3091,10 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI5QPairIddEE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI5QPairIddEE5clearEv@Base 1.4.0
  _ZN5QListI5QPairIddEED1Ev@Base 1.4.0
+ _ZN5QListI6QColorE13detach_helperEv@Base 1.4.0
+ _ZN5QListI6QColorE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI6QColorE6appendERKS0_@Base 1.4.0
+ _ZN5QListI6QColorED1Ev@Base 1.4.0
  _ZN5QListI6QLineFE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI6QLineFE6appendERKS0_@Base 1.4.0
  _ZN5QListI7QPointFE13detach_helperEv@Base 1.4.0
@@ -2512,6 +3109,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI7QStringE6detachEv@Base 1.4.0
  _ZN5QListI7QStringE6insertEiRKS0_@Base 1.4.0
  _ZN5QListI7QStringE9removeAllERKS0_@Base 1.4.0
+ _ZN5QListI7QStringED1Ev@Base 1.4.0
  _ZN5QListI7QStringEixEi@Base 1.4.0
  _ZN5QListI7QStringEpLERKS1_@Base 1.4.0
  _ZN5QListI8QVariantE13detach_helperEv@Base 1.4.0
@@ -2526,6 +3124,12 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI8QgsPointED1Ev@Base 1.4.0
  _ZN5QListI9QFileInfoE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI9QFileInfoED1Ev@Base 1.4.0
+ _ZN5QListI9QPolygonFE13detach_helperEv@Base 1.4.0
+ _ZN5QListI9QPolygonFE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI9QPolygonFED1Ev@Base 1.4.0
+ _ZN5QListI9QgsActionE13detach_helperEv@Base 1.4.0
+ _ZN5QListI9QgsActionE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI9QgsActionE5clearEv@Base 1.4.0
  _ZN5QListIN10QgsSnapper9SnapLayerEE13detach_helperEv@Base 1.4.0
  _ZN5QListIN10QgsSnapper9SnapLayerEE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListIN18QgsColorRampShader13ColorRampItemEE13detach_helperEv@Base 1.4.0
@@ -2551,6 +3155,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListIP14QgsPALGeometryE13detach_helperEv@Base 1.4.0
  _ZN5QListIP14QgsPALGeometryED1Ev@Base 1.4.0
  _ZN5QListIP15QgsComposerItemED1Ev@Base 1.4.0
+ _ZN5QListIP16QgsSymbolLayerV2E13detach_helperEv@Base 1.4.0
+ _ZN5QListIP16QgsSymbolLayerV2E6appendERKS1_@Base 1.4.0
+ _ZN5QListIP16QgsSymbolLayerV2ED1Ev@Base 1.4.0
  _ZN5QListIP16QgsVectorOverlayE13detach_helperEv@Base 1.4.0
  _ZN5QListIP16QgsVectorOverlayE6detachEv@Base 1.4.0
  _ZN5QListIP16QgsVectorOverlayED1Ev@Base 1.4.0
@@ -2562,10 +3169,17 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListIP9QgsSymbolE6detachEv@Base 1.4.0
  _ZN5QListIP9QgsSymbolED1Ev@Base 1.4.0
  _ZN5QListIPK14QgsComposerMapED1Ev@Base 1.4.0
+ _ZN5QListIS_I20QgsSymbolV2LevelItemEE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListIdE13detach_helperEv@Base 1.4.0
  _ZN5QListIdE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListIdE6appendERKd@Base 1.4.0
+ _ZN5QListIdED1Ev@Base 1.4.0
  _ZN5QListIiE13detach_helperEv@Base 1.4.0
  _ZN5QListIiE6appendERKi@Base 1.4.0
  _ZN5QListIiED1Ev@Base 1.4.0
+ _ZN5QPairI7QString7QPixmapED1Ev@Base 1.4.0
+ _ZN5QPairI7QStringS0_EC1ERKS0_S3_@Base 1.4.0
+ _ZN5QPairI7QStringS0_ED1Ev@Base 1.4.0
  _ZN5Tools11PointerPoolIN12SpatialIndex5RTree4NodeEE7releaseEPS3_@Base 1.4.0
  _ZN5Tools11PointerPoolIN12SpatialIndex5RTree4NodeEED1Ev@Base 1.4.0
  _ZN5Tools11PointerPoolINS_8Geometry5PointEE7releaseEPS2_@Base 1.4.0
@@ -2779,7 +3393,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN7QVectorI6QLineFE7reallocEii@Base 1.4.0
  _ZN7QVectorI6QLineFED1Ev@Base 1.4.0
  _ZN7QVectorI6QPointE7reallocEii@Base 1.4.0
+ _ZN7QVectorI7QPointFE6appendERKS0_@Base 1.4.0
  _ZN7QVectorI7QPointFE7reallocEii@Base 1.4.0
+ _ZN7QVectorI7QPointFEaSERKS1_@Base 1.4.0
  _ZN7QVectorI7QPointFElsERKS0_@Base 1.4.0
  _ZN7QVectorI8QgsPointE6appendERKS0_@Base 1.4.0
  _ZN7QVectorI8QgsPointE7reallocEii@Base 1.4.0
@@ -2918,17 +3534,21 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK10QgsProject9readEntryERK7QStringS2_S2_Pb@Base 1.4.0
  _ZNK10QgsProject9writePathE7QString@Base 1.4.0
  _ZNK10QgsSnapper15cleanResultListER9QMultiMapId17QgsSnappingResultERK5QListI8QgsPointE@Base 1.4.0
+ _ZNK10QgsStyleV212colorRampRefE7QString@Base 1.4.0
+ _ZNK10QgsStyleV29symbolRefE7QString@Base 1.4.0
  _ZNK11QgsGeometry18numberOfGeometriesEP10GEOSGeom_t@Base 1.4.0
  _ZNK11QgsGeometry26topologicalTestPointsSplitEPK10GEOSGeom_tR5QListI8QgsPointE@Base 1.4.0
  _ZNK11QgsMapLayer10getLayerIDEv@Base 1.4.0
  _ZNK11QgsMapLayer10metaObjectEv@Base 1.4.0
  _ZNK11QgsMapLayer12publicSourceEv@Base 1.4.0
+ _ZNK11QgsMapLayer14customPropertyERK7QStringRK8QVariant@Base 1.4.0
  _ZNK11QgsMapLayer4nameEv@Base 1.4.0
  _ZNK11QgsMapLayer4typeEv@Base 1.4.0
  _ZNK11QgsMapLayer6extentEv@Base 1.4.0
  _ZNK11QgsMapLayer6sourceEv@Base 1.4.0
  _ZNK11QgsRenderer14containsPixmapEv@Base 1.4.0
  _ZNK11QgsRenderer16usesTransparencyEv@Base 1.4.0
+ _ZNK11QgsSymbolV211cloneLayersEv@Base 1.4.0
  _ZNK12QgsException4whatEv@Base 1.4.0
  _ZNK12QgsPaperItem8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZNK12QgsRectangle10intersectsERKS_@Base 1.4.0
@@ -3075,6 +3695,8 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK15QgsDataProvider17fileRasterFiltersEv@Base 1.4.0
  _ZNK15QgsDataProvider17fileVectorFiltersEv@Base 1.4.0
  _ZNK15QgsDataProvider9subLayersEv@Base 1.4.0
+ _ZNK15QgsFillSymbolV25cloneEv@Base 1.4.0
+ _ZNK15QgsLineSymbolV25cloneEv@Base 1.4.0
  _ZNK16QgsComposerLabel11displayTextEv@Base 1.4.0
  _ZNK16QgsComposerLabel15replaceDateTextER7QString@Base 1.4.0
  _ZNK16QgsComposerLabel4fontEv@Base 1.4.0
@@ -3103,6 +3725,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK16QgsPropertyValue7isValueEv@Base 1.4.0
  _ZNK16QgsScaleBarStyle10drawLabelsEP8QPainter@Base 1.4.0
  _ZNK16QgsScaleBarStyle16calculateBoxSizeEv@Base 1.4.0
+ _ZNK16QgsSymbolLayerV25colorEv@Base 1.4.0
  _ZNK17QgsComposerLegend10drawSymbolEP8QPainterP9QgsSymboldRdS4_i@Base 1.4.0
  _ZNK17QgsComposerLegend10metaObjectEv@Base 1.4.0
  _ZNK17QgsComposerLegend11layerIdListEv@Base 1.4.0
@@ -3113,6 +3736,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK17QgsComposerLegend8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZNK17QgsComposerLegend9layerFontEv@Base 1.4.0
  _ZNK17QgsComposerLegend9titleFontEv@Base 1.4.0
+ _ZNK17QgsMarkerSymbolV25cloneEv@Base 1.4.0
  _ZNK18QgsAttributeAction14retrieveActionEj@Base 1.4.0
  _ZNK18QgsAttributeAction8writeXMLER8QDomNodeR12QDomDocument@Base 1.4.0
  _ZNK18QgsComposerPicture10metaObjectEv@Base 1.4.0
@@ -3162,6 +3786,10 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK18QgsLabelAttributes9textIsSetEv@Base 1.4.0
  _ZNK18QgsLabelAttributes9underlineEv@Base 1.4.0
  _ZNK18QgsMarkerCatalogue10metaObjectEv@Base 1.4.0
+ _ZNK18QgsRendererRangeV210lowerValueEv@Base 1.4.0
+ _ZNK18QgsRendererRangeV210upperValueEv@Base 1.4.0
+ _ZNK18QgsRendererRangeV25labelEv@Base 1.4.0
+ _ZNK18QgsRendererRangeV26symbolEv@Base 1.4.0
  _ZNK18QgsScaleCalculator8mapUnitsEv@Base 1.4.0
  _ZNK19QgsComposerScaleBar10metaObjectEv@Base 1.4.0
  _ZNK19QgsComposerScaleBar16firstLabelStringEv@Base 1.4.0
@@ -3191,6 +3819,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK21QgsRasterTransparency10alphaValueEdi@Base 1.4.0
  _ZNK21QgsRasterTransparency30transparentThreeValuePixelListEv@Base 1.4.0
  _ZNK21QgsRasterTransparency31transparentSingleValuePixelListEv@Base 1.4.0
+ _ZNK21QgsRendererCategoryV25labelEv@Base 1.4.0
+ _ZNK21QgsRendererCategoryV25valueEv@Base 1.4.0
+ _ZNK21QgsRendererCategoryV26symbolEv@Base 1.4.0
  _ZNK21QgsTicksScaleBarStyle4drawEP8QPainterd@Base 1.4.0
  _ZNK21QgsTicksScaleBarStyle4nameEv@Base 1.4.0
  _ZNK21QgsVectorDataProvider11dataCommentEv@Base 1.4.0
@@ -3230,11 +3861,17 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK23QgsSingleSymbolRenderer5cloneEv@Base 1.4.0
  _ZNK23QgsSingleSymbolRenderer7symbolsEv@Base 1.4.0
  _ZNK23QgsSingleSymbolRenderer8writeXMLER8QDomNodeR12QDomDocumentRK14QgsVectorLayer@Base 1.4.0
+ _ZNK24QgsSymbolLayerV2Registry17createSymbolLayerE7QStringRK4QMapIS0_S0_E@Base 1.4.0
+ _ZNK24QgsSymbolLayerV2Registry19symbolLayerMetadataE7QString@Base 1.4.0
  _ZNK25QgsDoubleBoxScaleBarStyle4drawEP8QPainterd@Base 1.4.0
  _ZNK25QgsDoubleBoxScaleBarStyle4nameEv@Base 1.4.0
  _ZNK25QgsProviderCountCalcEvent15featuresCountedEv@Base 1.4.0
  _ZNK25QgsSingleBoxScaleBarStyle4drawEP8QPainterd@Base 1.4.0
  _ZNK25QgsSingleBoxScaleBarStyle4nameEv@Base 1.4.0
+ _ZNK25QgsSingleSymbolRendererV26symbolEv@Base 1.4.0
+ _ZNK25QgsSvgMarkerSymbolLayerV210propertiesEv@Base 1.4.0
+ _ZNK25QgsSvgMarkerSymbolLayerV25cloneEv@Base 1.4.0
+ _ZNK25QgsSvgMarkerSymbolLayerV29layerTypeEv@Base 1.4.0
  _ZNK26QgsContinuousColorRenderer15needsAttributesEv@Base 1.4.0
  _ZNK26QgsContinuousColorRenderer24classificationAttributesEv@Base 1.4.0
  _ZNK26QgsContinuousColorRenderer4nameEv@Base 1.4.0
@@ -3248,7 +3885,20 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK26QgsGraduatedSymbolRenderer5cloneEv@Base 1.4.0
  _ZNK26QgsGraduatedSymbolRenderer7symbolsEv@Base 1.4.0
  _ZNK26QgsGraduatedSymbolRenderer8writeXMLER8QDomNodeR12QDomDocumentRK14QgsVectorLayer@Base 1.4.0
+ _ZNK26QgsMarkerLineSymbolLayerV210propertiesEv@Base 1.4.0
+ _ZNK26QgsMarkerLineSymbolLayerV25cloneEv@Base 1.4.0
+ _ZNK26QgsMarkerLineSymbolLayerV29layerTypeEv@Base 1.4.0
  _ZNK26QgsProviderExtentCalcEvent11layerExtentEv@Base 1.4.0
+ _ZNK26QgsSimpleFillSymbolLayerV210propertiesEv@Base 1.4.0
+ _ZNK26QgsSimpleFillSymbolLayerV25cloneEv@Base 1.4.0
+ _ZNK26QgsSimpleFillSymbolLayerV29layerTypeEv@Base 1.4.0
+ _ZNK26QgsSimpleLineSymbolLayerV210propertiesEv@Base 1.4.0
+ _ZNK26QgsSimpleLineSymbolLayerV25cloneEv@Base 1.4.0
+ _ZNK26QgsSimpleLineSymbolLayerV29layerTypeEv@Base 1.4.0
+ _ZNK26QgsVectorRandomColorRampV210propertiesEv@Base 1.4.0
+ _ZNK26QgsVectorRandomColorRampV24typeEv@Base 1.4.0
+ _ZNK26QgsVectorRandomColorRampV25cloneEv@Base 1.4.0
+ _ZNK26QgsVectorRandomColorRampV25colorEd@Base 1.4.0
  _ZNK28QgsCoordinateReferenceSystem11descriptionEv@Base 1.4.0
  _ZNK28QgsCoordinateReferenceSystem11postgisSridEv@Base 1.4.0
  _ZNK28QgsCoordinateReferenceSystem14geographicFlagEv@Base 1.4.0
@@ -3261,21 +3911,49 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK28QgsCoordinateReferenceSystem7toProj4Ev@Base 1.4.0
  _ZNK28QgsCoordinateReferenceSystem8mapUnitsEv@Base 1.4.0
  _ZNK28QgsCoordinateReferenceSystem8writeXMLER8QDomNodeR12QDomDocument@Base 1.4.0
+ _ZNK28QgsSimpleMarkerSymbolLayerV210propertiesEv@Base 1.4.0
+ _ZNK28QgsSimpleMarkerSymbolLayerV25cloneEv@Base 1.4.0
+ _ZNK28QgsSimpleMarkerSymbolLayerV29layerTypeEv@Base 1.4.0
+ _ZNK28QgsVectorGradientColorRampV210propertiesEv@Base 1.4.0
+ _ZNK28QgsVectorGradientColorRampV24typeEv@Base 1.4.0
+ _ZNK28QgsVectorGradientColorRampV25cloneEv@Base 1.4.0
+ _ZNK28QgsVectorGradientColorRampV25colorEd@Base 1.4.0
  _ZNK30QgsCentralPointPositionManager18findObjectPositionEPKhR8QgsPoint@Base 1.4.0
  _ZNK30QgsCentralPointPositionManager24calculatePolygonCentroidEPdS0_iRdS1_@Base 1.4.0
+ _ZNK30QgsLineDecorationSymbolLayerV210propertiesEv@Base 1.4.0
+ _ZNK30QgsLineDecorationSymbolLayerV25cloneEv@Base 1.4.0
+ _ZNK30QgsLineDecorationSymbolLayerV29layerTypeEv@Base 1.4.0
+ _ZNK31QgsVectorColorBrewerColorRampV210propertiesEv@Base 1.4.0
+ _ZNK31QgsVectorColorBrewerColorRampV24typeEv@Base 1.4.0
+ _ZNK31QgsVectorColorBrewerColorRampV25cloneEv@Base 1.4.0
+ _ZNK31QgsVectorColorBrewerColorRampV25colorEd@Base 1.4.0
  _ZNK3pal12PalException11LayerExists4whatEv@Base 1.4.0
  _ZNK3pal12PalException12UnknownLayer4whatEv@Base 1.4.0
  _ZNK3pal12PalException13FeatureExists4whatEv@Base 1.4.0
  _ZNK3pal12PalException14UnknownFeature4whatEv@Base 1.4.0
  _ZNK3pal12PalException15ValueNotInRange4whatEv@Base 1.4.0
+ _ZNK3pal13LabelPosition12getLayerNameEv@Base 1.4.0
+ _ZNK3pal13LabelPosition14getBoundingBoxEPdS1_@Base 1.4.0
+ _ZNK3pal13LabelPosition4getXEi@Base 1.4.0
+ _ZNK3pal13LabelPosition4getYEi@Base 1.4.0
+ _ZNK3pal13LabelPosition5getIdEv@Base 1.4.0
+ _ZNK3pal13LabelPosition7getCostEv@Base 1.4.0
+ _ZNK3pal13LabelPosition8getAlphaEv@Base 1.4.0
  _ZNK3pal17InternalException15UnknownGeometry4whatEv@Base 1.4.0
  _ZNK3pal17InternalException4Full4whatEv@Base 1.4.0
  _ZNK3pal17InternalException5Empty4whatEv@Base 1.4.0
  _ZNK4QMapI7QStringN14QgsVectorLayer8EditTypeEE15mutableFindNodeEPPN8QMapData4NodeERKS0_@Base 1.4.0
+ _ZNK4QMapI7QStringP11QgsSymbolV2E15mutableFindNodeEPPN8QMapData4NodeERKS0_@Base 1.4.0
+ _ZNK4QMapI7QStringP11QgsSymbolV2E8findNodeERKS0_@Base 1.4.0
+ _ZNK4QMapI7QStringP20QgsVectorColorRampV2E15mutableFindNodeEPPN8QMapData4NodeERKS0_@Base 1.4.0
+ _ZNK4QMapI7QStringP20QgsVectorColorRampV2E8findNodeERKS0_@Base 1.4.0
  _ZNK4QMapI7QStringS_IS0_8QVariantEE15mutableFindNodeEPPN8QMapData4NodeERKS0_@Base 1.4.0
+ _ZNK4QMapIi8QgsFieldE8containsERKi@Base 1.4.0
  _ZNK4QMapIi8QgsFieldEixERKi@Base 1.4.0
  _ZNK5QHashI7QString15QHashDummyValueE8findNodeERKS0_Pj@Base 1.4.0
  _ZNK5QHashI7QStringP11QgsPropertyE8findNodeERKS0_Pj@Base 1.4.0
+ _ZNK5QHashI7QStringP11QgsSymbolV2E8findNodeERKS0_Pj@Base 1.4.0
+ _ZNK5QHashIP11QgsSymbolV25QListI10QgsFeatureEE8findNodeERKS1_Pj@Base 1.4.0
  _ZNK5QHashIP15QgsComposerItem15QHashDummyValueE8findNodeERKS1_Pj@Base 1.4.0
  _ZNK5QHashIP9QgsSymbol15QHashDummyValueE8findNodeERKS1_Pj@Base 1.4.0
  _ZNK5QHashIi15QHashDummyValueE8findNodeERKiPj@Base 1.4.0
@@ -3506,6 +4184,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI11QgsMapLayer@Base 1.4.0
  _ZTI11QgsProperty@Base 1.4.0
  _ZTI11QgsRenderer@Base 1.4.0
+ _ZTI11QgsSymbolV2@Base 1.4.0
  _ZTI12QgsException@Base 1.4.0
  _ZTI12QgsPaperItem@Base 1.4.0
  _ZTI13GEOSException@Base 1.4.0
@@ -3525,14 +4204,18 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI14QgsVectorLayer@Base 1.4.0
  _ZTI15QgsComposerItem@Base 1.4.0
  _ZTI15QgsDataProvider@Base 1.4.0
+ _ZTI15QgsFillSymbolV2@Base 1.4.0
+ _ZTI15QgsLineSymbolV2@Base 1.4.0
  _ZTI16QgsComposerLabel@Base 1.4.0
  _ZTI16QgsMessageOutput@Base 1.4.0
  _ZTI16QgsOverlayObject@Base 1.4.0
  _ZTI16QgsPropertyValue@Base 1.4.0
  _ZTI16QgsScaleBarStyle@Base 1.4.0
+ _ZTI16QgsSymbolLayerV2@Base 1.4.0
  _ZTI16QgsVectorOverlay@Base 1.4.0
  _ZTI17QgsComposerLegend@Base 1.4.0
  _ZTI17QgsFreakOutShader@Base 1.4.0
+ _ZTI17QgsMarkerSymbolV2@Base 1.4.0
  _ZTI18QgsAttributeAction@Base 1.4.0
  _ZTI18QgsColorRampShader@Base 1.4.0
  _ZTI18QgsComposerPicture@Base 1.4.0
@@ -3542,11 +4225,16 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI19QgsMapLayerRegistry@Base 1.4.0
  _ZTI19QgsProviderRegistry@Base 1.4.0
  _ZTI20QgsComposerItemGroup@Base 1.4.0
+ _ZTI20QgsFeatureRendererV2@Base 1.4.0
+ _ZTI20QgsFillSymbolLayerV2@Base 1.4.0
+ _ZTI20QgsLineSymbolLayerV2@Base 1.4.0
  _ZTI20QgsPseudoColorShader@Base 1.4.0
+ _ZTI20QgsVectorColorRampV2@Base 1.4.0
  _ZTI21QgsRasterDataProvider@Base 1.4.0
  _ZTI21QgsTicksScaleBarStyle@Base 1.4.0
  _ZTI21QgsVectorDataProvider@Base 1.4.0
  _ZTI22QgsCoordinateTransform@Base 1.4.0
+ _ZTI22QgsMarkerSymbolLayerV2@Base 1.4.0
  _ZTI22QgsUniqueValueRenderer@Base 1.4.0
  _ZTI23QgsMessageOutputConsole@Base 1.4.0
  _ZTI23QgsNumericScaleBarStyle@Base 1.4.0
@@ -3555,16 +4243,28 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI25QgsDoubleBoxScaleBarStyle@Base 1.4.0
  _ZTI25QgsProviderCountCalcEvent@Base 1.4.0
  _ZTI25QgsSingleBoxScaleBarStyle@Base 1.4.0
+ _ZTI25QgsSingleSymbolRendererV2@Base 1.4.0
+ _ZTI25QgsSvgMarkerSymbolLayerV2@Base 1.4.0
  _ZTI26QgsClipToMinMaxEnhancement@Base 1.4.0
  _ZTI26QgsContinuousColorRenderer@Base 1.4.0
  _ZTI26QgsGraduatedSymbolRenderer@Base 1.4.0
  _ZTI26QgsLinearMinMaxEnhancement@Base 1.4.0
+ _ZTI26QgsMarkerLineSymbolLayerV2@Base 1.4.0
  _ZTI26QgsProviderExtentCalcEvent@Base 1.4.0
+ _ZTI26QgsSimpleFillSymbolLayerV2@Base 1.4.0
+ _ZTI26QgsSimpleLineSymbolLayerV2@Base 1.4.0
+ _ZTI26QgsVectorRandomColorRampV2@Base 1.4.0
  _ZTI27QgsPALObjectPositionManager@Base 1.4.0
  _ZTI27QgsProjectBadLayerException@Base 1.4.0
+ _ZTI28QgsGraduatedSymbolRendererV2@Base 1.4.0
+ _ZTI28QgsSimpleMarkerSymbolLayerV2@Base 1.4.0
+ _ZTI28QgsVectorGradientColorRampV2@Base 1.4.0
+ _ZTI30QgsCategorizedSymbolRendererV2@Base 1.4.0
  _ZTI30QgsCentralPointPositionManager@Base 1.4.0
  _ZTI30QgsContrastEnhancementFunction@Base 1.4.0
+ _ZTI30QgsLineDecorationSymbolLayerV2@Base 1.4.0
  _ZTI31QgsOverlayObjectPositionManager@Base 1.4.0
+ _ZTI31QgsVectorColorBrewerColorRampV2@Base 1.4.0
  _ZTI34QgsLinearMinMaxEnhancementWithClip@Base 1.4.0
  _ZTI6CPLErr@Base 1.4.0
  _ZTI9QgsSymbol@Base 1.4.0
@@ -3592,6 +4292,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTIN12SpatialIndex5RTree5RTreeE@Base 1.4.0
  _ZTIN12SpatialIndex6IEntryE@Base 1.4.0
  _ZTIN12SpatialIndex8IVisitorE@Base 1.4.0
+ _ZTIN3pal11FeaturePartE@Base 1.4.0
  _ZTIN3pal11PalGeometryE@Base 1.4.0
  _ZTIN3pal12PalException11LayerExistsE@Base 1.4.0
  _ZTIN3pal12PalException12UnknownLayerE@Base 1.4.0
@@ -3602,6 +4303,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTIN3pal17InternalException4FullE@Base 1.4.0
  _ZTIN3pal17InternalException5EmptyE@Base 1.4.0
  _ZTIN3pal5LayerE@Base 1.4.0
+ _ZTIN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTIN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTIN3pal5RTreeIPNS_7FeatureEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTIN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EEE@Base 1.4.0
@@ -3641,6 +4343,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS11QgsMapLayer@Base 1.4.0
  _ZTS11QgsProperty@Base 1.4.0
  _ZTS11QgsRenderer@Base 1.4.0
+ _ZTS11QgsSymbolV2@Base 1.4.0
  _ZTS12QgsException@Base 1.4.0
  _ZTS12QgsPaperItem@Base 1.4.0
  _ZTS13GEOSException@Base 1.4.0
@@ -3660,14 +4363,18 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS14QgsVectorLayer@Base 1.4.0
  _ZTS15QgsComposerItem@Base 1.4.0
  _ZTS15QgsDataProvider@Base 1.4.0
+ _ZTS15QgsFillSymbolV2@Base 1.4.0
+ _ZTS15QgsLineSymbolV2@Base 1.4.0
  _ZTS16QgsComposerLabel@Base 1.4.0
  _ZTS16QgsMessageOutput@Base 1.4.0
  _ZTS16QgsOverlayObject@Base 1.4.0
  _ZTS16QgsPropertyValue@Base 1.4.0
  _ZTS16QgsScaleBarStyle@Base 1.4.0
+ _ZTS16QgsSymbolLayerV2@Base 1.4.0
  _ZTS16QgsVectorOverlay@Base 1.4.0
  _ZTS17QgsComposerLegend@Base 1.4.0
  _ZTS17QgsFreakOutShader@Base 1.4.0
+ _ZTS17QgsMarkerSymbolV2@Base 1.4.0
  _ZTS18QgsAttributeAction@Base 1.4.0
  _ZTS18QgsColorRampShader@Base 1.4.0
  _ZTS18QgsComposerPicture@Base 1.4.0
@@ -3677,11 +4384,16 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS19QgsMapLayerRegistry@Base 1.4.0
  _ZTS19QgsProviderRegistry@Base 1.4.0
  _ZTS20QgsComposerItemGroup@Base 1.4.0
+ _ZTS20QgsFeatureRendererV2@Base 1.4.0
+ _ZTS20QgsFillSymbolLayerV2@Base 1.4.0
+ _ZTS20QgsLineSymbolLayerV2@Base 1.4.0
  _ZTS20QgsPseudoColorShader@Base 1.4.0
+ _ZTS20QgsVectorColorRampV2@Base 1.4.0
  _ZTS21QgsRasterDataProvider@Base 1.4.0
  _ZTS21QgsTicksScaleBarStyle@Base 1.4.0
  _ZTS21QgsVectorDataProvider@Base 1.4.0
  _ZTS22QgsCoordinateTransform@Base 1.4.0
+ _ZTS22QgsMarkerSymbolLayerV2@Base 1.4.0
  _ZTS22QgsUniqueValueRenderer@Base 1.4.0
  _ZTS23QgsMessageOutputConsole@Base 1.4.0
  _ZTS23QgsNumericScaleBarStyle@Base 1.4.0
@@ -3690,16 +4402,28 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS25QgsDoubleBoxScaleBarStyle@Base 1.4.0
  _ZTS25QgsProviderCountCalcEvent@Base 1.4.0
  _ZTS25QgsSingleBoxScaleBarStyle@Base 1.4.0
+ _ZTS25QgsSingleSymbolRendererV2@Base 1.4.0
+ _ZTS25QgsSvgMarkerSymbolLayerV2@Base 1.4.0
  _ZTS26QgsClipToMinMaxEnhancement@Base 1.4.0
  _ZTS26QgsContinuousColorRenderer@Base 1.4.0
  _ZTS26QgsGraduatedSymbolRenderer@Base 1.4.0
  _ZTS26QgsLinearMinMaxEnhancement@Base 1.4.0
+ _ZTS26QgsMarkerLineSymbolLayerV2@Base 1.4.0
  _ZTS26QgsProviderExtentCalcEvent@Base 1.4.0
+ _ZTS26QgsSimpleFillSymbolLayerV2@Base 1.4.0
+ _ZTS26QgsSimpleLineSymbolLayerV2@Base 1.4.0
+ _ZTS26QgsVectorRandomColorRampV2@Base 1.4.0
  _ZTS27QgsPALObjectPositionManager@Base 1.4.0
  _ZTS27QgsProjectBadLayerException@Base 1.4.0
+ _ZTS28QgsGraduatedSymbolRendererV2@Base 1.4.0
+ _ZTS28QgsSimpleMarkerSymbolLayerV2@Base 1.4.0
+ _ZTS28QgsVectorGradientColorRampV2@Base 1.4.0
+ _ZTS30QgsCategorizedSymbolRendererV2@Base 1.4.0
  _ZTS30QgsCentralPointPositionManager@Base 1.4.0
  _ZTS30QgsContrastEnhancementFunction@Base 1.4.0
+ _ZTS30QgsLineDecorationSymbolLayerV2@Base 1.4.0
  _ZTS31QgsOverlayObjectPositionManager@Base 1.4.0
+ _ZTS31QgsVectorColorBrewerColorRampV2@Base 1.4.0
  _ZTS34QgsLinearMinMaxEnhancementWithClip@Base 1.4.0
  _ZTS6CPLErr@Base 1.4.0
  _ZTS9QgsSymbol@Base 1.4.0
@@ -3727,6 +4451,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTSN12SpatialIndex5RTree5RTreeE@Base 1.4.0
  _ZTSN12SpatialIndex6IEntryE@Base 1.4.0
  _ZTSN12SpatialIndex8IVisitorE@Base 1.4.0
+ _ZTSN3pal11FeaturePartE@Base 1.4.0
  _ZTSN3pal11PalGeometryE@Base 1.4.0
  _ZTSN3pal12PalException11LayerExistsE@Base 1.4.0
  _ZTSN3pal12PalException12UnknownLayerE@Base 1.4.0
@@ -3737,6 +4462,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTSN3pal17InternalException4FullE@Base 1.4.0
  _ZTSN3pal17InternalException5EmptyE@Base 1.4.0
  _ZTSN3pal5LayerE@Base 1.4.0
+ _ZTSN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTSN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTSN3pal5RTreeIPNS_7FeatureEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTSN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EEE@Base 1.4.0
@@ -3780,6 +4506,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV11QgsMapLayer@Base 1.4.0
  _ZTV11QgsProperty@Base 1.4.0
  _ZTV11QgsRenderer@Base 1.4.0
+ _ZTV11QgsSymbolV2@Base 1.4.0
  _ZTV12QgsException@Base 1.4.0
  _ZTV12QgsPaperItem@Base 1.4.0
  _ZTV13QgsRunProcess@Base 1.4.0
@@ -3798,14 +4525,18 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV14QgsVectorLayer@Base 1.4.0
  _ZTV15QgsComposerItem@Base 1.4.0
  _ZTV15QgsDataProvider@Base 1.4.0
+ _ZTV15QgsFillSymbolV2@Base 1.4.0
+ _ZTV15QgsLineSymbolV2@Base 1.4.0
  _ZTV16QgsComposerLabel@Base 1.4.0
  _ZTV16QgsMessageOutput@Base 1.4.0
  _ZTV16QgsOverlayObject@Base 1.4.0
  _ZTV16QgsPropertyValue@Base 1.4.0
  _ZTV16QgsScaleBarStyle@Base 1.4.0
+ _ZTV16QgsSymbolLayerV2@Base 1.4.0
  _ZTV16QgsVectorOverlay@Base 1.4.0
  _ZTV17QgsComposerLegend@Base 1.4.0
  _ZTV17QgsFreakOutShader@Base 1.4.0
+ _ZTV17QgsMarkerSymbolV2@Base 1.4.0
  _ZTV18QgsAttributeAction@Base 1.4.0
  _ZTV18QgsColorRampShader@Base 1.4.0
  _ZTV18QgsComposerPicture@Base 1.4.0
@@ -3815,11 +4546,16 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV19QgsMapLayerRegistry@Base 1.4.0
  _ZTV19QgsProviderRegistry@Base 1.4.0
  _ZTV20QgsComposerItemGroup@Base 1.4.0
+ _ZTV20QgsFeatureRendererV2@Base 1.4.0
+ _ZTV20QgsFillSymbolLayerV2@Base 1.4.0
+ _ZTV20QgsLineSymbolLayerV2@Base 1.4.0
  _ZTV20QgsPseudoColorShader@Base 1.4.0
+ _ZTV20QgsVectorColorRampV2@Base 1.4.0
  _ZTV21QgsRasterDataProvider@Base 1.4.0
  _ZTV21QgsTicksScaleBarStyle@Base 1.4.0
  _ZTV21QgsVectorDataProvider@Base 1.4.0
  _ZTV22QgsCoordinateTransform@Base 1.4.0
+ _ZTV22QgsMarkerSymbolLayerV2@Base 1.4.0
  _ZTV22QgsUniqueValueRenderer@Base 1.4.0
  _ZTV23QgsMessageOutputConsole@Base 1.4.0
  _ZTV23QgsNumericScaleBarStyle@Base 1.4.0
@@ -3828,16 +4564,28 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV25QgsDoubleBoxScaleBarStyle@Base 1.4.0
  _ZTV25QgsProviderCountCalcEvent@Base 1.4.0
  _ZTV25QgsSingleBoxScaleBarStyle@Base 1.4.0
+ _ZTV25QgsSingleSymbolRendererV2@Base 1.4.0
+ _ZTV25QgsSvgMarkerSymbolLayerV2@Base 1.4.0
  _ZTV26QgsClipToMinMaxEnhancement@Base 1.4.0
  _ZTV26QgsContinuousColorRenderer@Base 1.4.0
  _ZTV26QgsGraduatedSymbolRenderer@Base 1.4.0
  _ZTV26QgsLinearMinMaxEnhancement@Base 1.4.0
+ _ZTV26QgsMarkerLineSymbolLayerV2@Base 1.4.0
  _ZTV26QgsProviderExtentCalcEvent@Base 1.4.0
+ _ZTV26QgsSimpleFillSymbolLayerV2@Base 1.4.0
+ _ZTV26QgsSimpleLineSymbolLayerV2@Base 1.4.0
+ _ZTV26QgsVectorRandomColorRampV2@Base 1.4.0
  _ZTV27QgsPALObjectPositionManager@Base 1.4.0
  _ZTV27QgsProjectBadLayerException@Base 1.4.0
+ _ZTV28QgsGraduatedSymbolRendererV2@Base 1.4.0
+ _ZTV28QgsSimpleMarkerSymbolLayerV2@Base 1.4.0
+ _ZTV28QgsVectorGradientColorRampV2@Base 1.4.0
+ _ZTV30QgsCategorizedSymbolRendererV2@Base 1.4.0
  _ZTV30QgsCentralPointPositionManager@Base 1.4.0
  _ZTV30QgsContrastEnhancementFunction@Base 1.4.0
+ _ZTV30QgsLineDecorationSymbolLayerV2@Base 1.4.0
  _ZTV31QgsOverlayObjectPositionManager@Base 1.4.0
+ _ZTV31QgsVectorColorBrewerColorRampV2@Base 1.4.0
  _ZTV34QgsLinearMinMaxEnhancementWithClip@Base 1.4.0
  _ZTV9QgsSymbol@Base 1.4.0
  _ZTVN12SpatialIndex11IDataStreamE@Base 1.4.0
@@ -3864,6 +4612,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTVN12SpatialIndex5RTree5RTreeE@Base 1.4.0
  _ZTVN12SpatialIndex6IEntryE@Base 1.4.0
  _ZTVN12SpatialIndex8IVisitorE@Base 1.4.0
+ _ZTVN3pal11FeaturePartE@Base 1.4.0
  _ZTVN3pal11PalGeometryE@Base 1.4.0
  _ZTVN3pal12PalException11LayerExistsE@Base 1.4.0
  _ZTVN3pal12PalException12UnknownLayerE@Base 1.4.0
@@ -3874,10 +4623,12 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTVN3pal17InternalException4FullE@Base 1.4.0
  _ZTVN3pal17InternalException5EmptyE@Base 1.4.0
  _ZTVN3pal5LayerE@Base 1.4.0
+ _ZTVN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTVN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTVN3pal5RTreeIPNS_7FeatureEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTVN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EEE@Base 1.4.0
  _ZTVN3pal7FeatureE@Base 1.4.0
+ _ZTVN3pal8PointSetE@Base 1.4.0
  _ZTVN5Tools11PropertySetE@Base 1.4.0
  _ZTVN5Tools12ExternalSortE@Base 1.4.0
  _ZTVN5Tools13IObjectStreamE@Base 1.4.0
@@ -4103,6 +4854,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZplRK7QStringPKc@Base 1.4.0
  _ZplRK7QStringS1_@Base 1.4.0
  _ZplRK7QStringc@Base 1.4.0
+ brewerString@Base 1.4.0
  gParserErrorMsg@Base 1.4.0
  gTmpNodes@Base 1.4.0
  gaiaAddDbfField@Base 1.4.0
@@ -4500,6 +5252,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _Z21qMetaTypeDeleteHelperI19QgsDetailedItemDataEvPT_@Base 1.4.0
  _Z23qStringComparisonHelperRK7QStringPKc@Base 1.4.0
  _Z24qMetaTypeConstructHelperI19QgsDetailedItemDataEPvPKT_@Base 1.4.0
+ _Z9qMakePairIN2Qt10BrushStyleE7QStringE5QPairIT_T0_ERKS4_RKS5_@Base 1.4.0
  _ZN10QByteArrayD1Ev@Base 1.4.0
  _ZN10QgsMapTool10deactivateEv@Base 1.4.0
  _ZN10QgsMapTool10isEditToolEv@Base 1.4.0
@@ -4751,6 +5504,13 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN15QgsVertexMarkerC2EP12QgsMapCanvas@Base 1.4.0
  _ZN15QgsVertexMarkerD0Ev@Base 1.4.0
  _ZN15QgsVertexMarkerD1Ev@Base 1.4.0
+ _ZN15SymbolLayerItemD0Ev@Base 1.4.0
+ _ZN15SymbolLayerItemD1Ev@Base 1.4.0
+ _ZN16QgsColorButtonV28setColorERK6QColor@Base 1.4.0
+ _ZN16QgsColorButtonV2C1EP7QWidget@Base 1.4.0
+ _ZN16QgsColorButtonV2C2EP7QWidget@Base 1.4.0
+ _ZN16QgsColorButtonV2D0Ev@Base 1.4.0
+ _ZN16QgsColorButtonV2D1Ev@Base 1.4.0
  _ZN16QgsMapCanvasItem12updateCanvasEv@Base 1.4.0
  _ZN16QgsMapCanvasItem14updatePositionEv@Base 1.4.0
  _ZN16QgsMapCanvasItem16setPanningOffsetERK6QPoint@Base 1.4.0
@@ -4787,6 +5547,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN16QgsPanningWidget11resizeEventEP12QResizeEvent@Base 1.4.0
  _ZN16QgsPanningWidgetD0Ev@Base 1.4.0
  _ZN16QgsPanningWidgetD1Ev@Base 1.4.0
+ _ZN18Ui_WidgetSvgMarker7setupUiEP7QWidget@Base 1.4.0
  _ZN19QgsDetailedItemData10setCheckedEb@Base 1.4.0
  _ZN19QgsDetailedItemData10setEnabledEb@Base 1.4.0
  _ZN19QgsDetailedItemData12setCheckableEb@Base 1.4.0
@@ -4819,7 +5580,22 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN19QgsMapToolEmitPointC2EP12QgsMapCanvas@Base 1.4.0
  _ZN19QgsMapToolEmitPointD0Ev@Base 1.4.0
  _ZN19QgsMapToolEmitPointD1Ev@Base 1.4.0
+ _ZN19QgsPenStyleComboBox10iconForPenEN2Qt8PenStyleE@Base 1.4.0
+ _ZN19QgsPenStyleComboBox11setPenStyleEN2Qt8PenStyleE@Base 1.4.0
+ _ZN19QgsPenStyleComboBoxC1EP7QWidget@Base 1.4.0
+ _ZN19QgsPenStyleComboBoxC2EP7QWidget@Base 1.4.0
+ _ZN19QgsPenStyleComboBoxD0Ev@Base 1.4.0
+ _ZN19QgsPenStyleComboBoxD1Ev@Base 1.4.0
+ _ZN19QgsRendererV2WidgetC1EP14QgsVectorLayerP10QgsStyleV2@Base 1.4.0
+ _ZN19QgsRendererV2WidgetC2EP14QgsVectorLayerP10QgsStyleV2@Base 1.4.0
+ _ZN19QgsRendererV2WidgetD0Ev@Base 1.4.0
+ _ZN19QgsRendererV2WidgetD1Ev@Base 1.4.0
+ _ZN19QgsRendererV2WidgetD2Ev@Base 1.4.0
  _ZN19Ui_QgsMessageViewer7setupUiEP7QDialog@Base 1.4.0
+ _ZN19Ui_WidgetMarkerLine7setupUiEP7QWidget@Base 1.4.0
+ _ZN19Ui_WidgetSimpleFill7setupUiEP7QWidget@Base 1.4.0
+ _ZN19Ui_WidgetSimpleLine13retranslateUiEP7QWidget@Base 1.4.0
+ _ZN19Ui_WidgetSimpleLine7setupUiEP7QWidget@Base 1.4.0
  _ZN20QgsMapOverviewCanvas10paintEventEP11QPaintEvent@Base 1.4.0
  _ZN20QgsMapOverviewCanvas11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
  _ZN20QgsMapOverviewCanvas11qt_metacastEPKc@Base 1.4.0
@@ -4842,6 +5618,12 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN20QgsMapOverviewCanvasD0Ev@Base 1.4.0
  _ZN20QgsMapOverviewCanvasD1Ev@Base 1.4.0
  _ZN20QgsMapOverviewCanvasD2Ev@Base 1.4.0
+ _ZN21QgsBrushStyleComboBox12iconForBrushEN2Qt10BrushStyleE@Base 1.4.0
+ _ZN21QgsBrushStyleComboBox13setBrushStyleEN2Qt10BrushStyleE@Base 1.4.0
+ _ZN21QgsBrushStyleComboBoxC1EP7QWidget@Base 1.4.0
+ _ZN21QgsBrushStyleComboBoxC2EP7QWidget@Base 1.4.0
+ _ZN21QgsBrushStyleComboBoxD0Ev@Base 1.4.0
+ _ZN21QgsBrushStyleComboBoxD1Ev@Base 1.4.0
  _ZN21QgsDetailedItemWidget10setCheckedEb@Base 1.4.0
  _ZN21QgsDetailedItemWidget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
  _ZN21QgsDetailedItemWidget11qt_metacastEPKc@Base 1.4.0
@@ -4903,6 +5685,21 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN21QgsProjectionSelectorD0Ev@Base 1.4.0
  _ZN21QgsProjectionSelectorD1Ev@Base 1.4.0
  _ZN21QgsProjectionSelectorD2Ev@Base 1.4.0
+ _ZN21QgsRendererV2MetadataD1Ev@Base 1.4.0
+ _ZN21Ui_WidgetSimpleMarker13retranslateUiEP7QWidget@Base 1.4.0
+ _ZN21Ui_WidgetSimpleMarker7setupUiEP7QWidget@Base 1.4.0
+ _ZN22QgsPenCapStyleComboBox14setPenCapStyleEN2Qt11PenCapStyleE@Base 1.4.0
+ _ZN22QgsPenCapStyleComboBoxC1EP7QWidget@Base 1.4.0
+ _ZN22QgsPenCapStyleComboBoxC2EP7QWidget@Base 1.4.0
+ _ZN22QgsPenCapStyleComboBoxD0Ev@Base 1.4.0
+ _ZN22QgsPenCapStyleComboBoxD1Ev@Base 1.4.0
+ _ZN22QgsSymbolLayerV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN22QgsSymbolLayerV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN22QgsSymbolLayerV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN22QgsSymbolLayerV2Widget7changedEv@Base 1.4.0
+ _ZN22QgsSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZN22QgsSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZN22QgsSymbolLayerV2WidgetD2Ev@Base 1.4.0
  _ZN23QgsDetailedItemDelegate11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
  _ZN23QgsDetailedItemDelegate11qt_metacastEPKc@Base 1.4.0
  _ZN23QgsDetailedItemDelegate16staticMetaObjectE@Base 1.4.0
@@ -4913,6 +5710,96 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN23QgsDetailedItemDelegateD0Ev@Base 1.4.0
  _ZN23QgsDetailedItemDelegateD1Ev@Base 1.4.0
  _ZN23QgsDetailedItemDelegateD2Ev@Base 1.4.0
+ _ZN23QgsPenJoinStyleComboBox15setPenJoinStyleEN2Qt12PenJoinStyleE@Base 1.4.0
+ _ZN23QgsPenJoinStyleComboBoxC1EP7QWidget@Base 1.4.0
+ _ZN23QgsPenJoinStyleComboBoxC2EP7QWidget@Base 1.4.0
+ _ZN23QgsPenJoinStyleComboBoxD0Ev@Base 1.4.0
+ _ZN23QgsPenJoinStyleComboBoxD1Ev@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog10editSymbolEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog10onFinishedEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog10removeItemEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog11qt_metacastEPKc@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog12addColorRampEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog12populateListEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog12removeSymbolEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog13editColorRampEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog13populateTypesEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog15currentItemNameEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog15currentItemTypeEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog15populateSymbolsEi@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog15removeColorRampEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog16staticMetaObjectE@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog18populateColorRampsEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog7addItemEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog8editItemEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialog9addSymbolEv@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialogC1EP10QgsStyleV27QStringP7QWidget@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialogC2EP10QgsStyleV27QStringP7QWidget@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialogD0Ev@Base 1.4.0
+ _ZN23QgsStyleV2ManagerDialogD1Ev@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2Dialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2Dialog11qt_metacastEPKc@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2Dialog13populateTableEv@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2Dialog16setDefaultLevelsEv@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2Dialog16staticMetaObjectE@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2Dialog20renderingPassChangedEii@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2Dialog8updateUiEv@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2DialogC1E5QListIP11QgsSymbolV2EbP7QWidget@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2DialogC2E5QListIP11QgsSymbolV2EbP7QWidget@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2DialogD0Ev@Base 1.4.0
+ _ZN23QgsSymbolLevelsV2DialogD1Ev@Base 1.4.0
+ _ZN23Ui_WidgetLineDecoration7setupUiEP7QWidget@Base 1.4.0
+ _ZN24Ui_DlgSymbolV2Properties13retranslateUiEP7QDialog@Base 1.4.0
+ _ZN24Ui_DlgSymbolV2Properties7setupUiEP7QDialog@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog11qt_metacastEPKc@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog12setLineWidthEd@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog13keyPressEventEP9QKeyEvent@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog13setMarkerSizeEd@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog14setMarkerAngleEd@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog14setSymbolColorEv@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog14symbolModifiedEv@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog16addSymbolToStyleEv@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog16staticMetaObjectE@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog16updateSymbolInfoEv@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog17updateSymbolColorEv@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog18populateSymbolViewEv@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog18setSymbolFromStyleERK11QModelIndex@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog19updateSymbolPreviewEv@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialog22changeSymbolPropertiesEv@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialogC1EP11QgsSymbolV2P10QgsStyleV2P7QWidgetb@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialogC2EP11QgsSymbolV2P10QgsStyleV2P7QWidgetb@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialogD0Ev@Base 1.4.0
+ _ZN25QgsSymbolV2SelectorDialogD1Ev@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog10loadSymbolEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog11moveLayerUpEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog11qt_metacastEPKc@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog11removeLayerEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog12currentLayerEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog12layerChangedEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog13keyPressEventEP9QKeyEvent@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog13moveLayerDownEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog13updatePreviewEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog15currentRowIndexEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog16currentLayerItemEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog16layerTypeChangedEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog16staticMetaObjectE@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog16updateLockButtonEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog17currentLayerIndexEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog17moveLayerByOffsetEi@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog18populateLayerTypesEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog18updateLayerPreviewEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog19loadPropertyWidgetsEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog23updateSymbolLayerWidgetEP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog8addLayerEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog8updateUiEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialog9lockLayerEv@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialogC1EP11QgsSymbolV2P7QWidget@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialogC2EP11QgsSymbolV2P7QWidget@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialogD0Ev@Base 1.4.0
+ _ZN27QgsSymbolV2PropertiesDialogD1Ev@Base 1.4.0
  _ZN28QgsGenericProjectionSelector10setMessageE7QString@Base 1.4.0
  _ZN28QgsGenericProjectionSelector11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
  _ZN28QgsGenericProjectionSelector11qt_metacastEPKc@Base 1.4.0
@@ -4932,7 +5819,210 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN28Ui_QgsDetailedItemWidgetBase7setupUiEP7QWidget@Base 1.4.0
  _ZN28Ui_QgsProjectionSelectorBase13retranslateUiEP7QWidget@Base 1.4.0
  _ZN28Ui_QgsProjectionSelectorBase7setupUiEP7QWidget@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialog11qt_metacastEPKc@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialog13keyPressEventEP9QKeyEvent@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialog15rendererChangedEv@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialog16showSymbolLevelsEv@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialog16staticMetaObjectE@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialog4onOKEv@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialog5applyEv@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialogC1EP14QgsVectorLayerP10QgsStyleV2b@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialogC2EP14QgsVectorLayerP10QgsStyleV2b@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialogD0Ev@Base 1.4.0
+ _ZN29QgsRendererV2PropertiesDialogD1Ev@Base 1.4.0
+ _ZN30Ui_QgsStyleV2ManagerDialogBase7setupUiEP7QDialog@Base 1.4.0
+ _ZN30Ui_QgsSymbolLevelsV2DialogBase7setupUiEP7QDialog@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2Widget18changeSingleSymbolEv@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2Widget6createEP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2Widget8rendererEv@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2WidgetC1EP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2WidgetC2EP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2WidgetD0Ev@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2WidgetD1Ev@Base 1.4.0
+ _ZN31QgsSingleSymbolRendererV2WidgetD2Ev@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget11symbolLayerEv@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget12populateListEv@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget14setSymbolLayerEP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget6createEv@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget7setNameERK11QModelIndex@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget7setSizeEv@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget8setAngleEv@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2Widget9setOffsetEv@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2WidgetC1EP7QWidget@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2WidgetC2EP7QWidget@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZN31QgsSvgMarkerSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZN31Ui_QgsRendererV2PropsDialogBase7setupUiEP7QDialog@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget11setIntervalEd@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget11symbolLayerEv@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget12updateMarkerEv@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget14setSymbolLayerEP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget6createEv@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget9setMarkerEv@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget9setOffsetEv@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2Widget9setRotateEv@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2WidgetC1EP7QWidget@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2WidgetC2EP7QWidget@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZN32QgsMarkerLineSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2Widget11symbolLayerEv@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2Widget13setBrushStyleEv@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2Widget14setBorderColorEv@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2Widget14setSymbolLayerEP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2Widget6createEv@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2Widget8setColorEv@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2WidgetC1EP7QWidget@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2WidgetC2EP7QWidget@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZN32QgsSimpleFillSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget11symbolLayerEv@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget12colorChangedEv@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget13offsetChangedEv@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget14setSymbolLayerEP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget15penStyleChangedEv@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget15penWidthChangedEv@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2Widget6createEv@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2WidgetC1EP7QWidget@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2WidgetC2EP7QWidget@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZN32QgsSimpleLineSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog11qt_metacastEPKc@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog13updatePreviewEv@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog16staticMetaObjectE@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog7setHue1Ei@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog7setHue2Ei@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog7setSat1Ei@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog7setSat2Ei@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog7setVal1Ei@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog7setVal2Ei@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2Dialog8setCountEi@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2DialogC1EP26QgsVectorRandomColorRampV2P7QWidget@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2DialogC2EP26QgsVectorRandomColorRampV2P7QWidget@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2DialogD0Ev@Base 1.4.0
+ _ZN32QgsVectorRandomColorRampV2DialogD1Ev@Base 1.4.0
+ _ZN32Ui_QgsSymbolV2SelectorDialogBase13retranslateUiEP7QDialog@Base 1.4.0
+ _ZN32Ui_QgsSymbolV2SelectorDialogBase7setupUiEP7QDialog@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget14populateRangesEv@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget15populateColumnsEv@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget17changeRangeSymbolEi@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget17classifyGraduatedEv@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget18populateColorRampsEv@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget19rangesDoubleClickedERK11QModelIndex@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget20updateUiFromRendererEv@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget21changeGraduatedSymbolEv@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget25updateGraduatedSymbolIconEv@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget6createEP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2Widget8rendererEv@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2WidgetC1EP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2WidgetC2EP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2WidgetD0Ev@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2WidgetD1Ev@Base 1.4.0
+ _ZN34QgsGraduatedSymbolRendererV2WidgetD2Ev@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget11symbolLayerEv@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget12setColorFillEv@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget14setColorBorderEv@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget14setSymbolLayerEP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget6createEv@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget7setNameEv@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget7setSizeEv@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget8setAngleEv@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2Widget9setOffsetEv@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2WidgetC1EP7QWidget@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2WidgetC2EP7QWidget@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZN34QgsSimpleMarkerSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2Dialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2Dialog11qt_metacastEPKc@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2Dialog13updatePreviewEv@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2Dialog16staticMetaObjectE@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2Dialog9setColor1Ev@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2Dialog9setColor2Ev@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2DialogC1EP28QgsVectorGradientColorRampV2P7QWidget@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2DialogC2EP28QgsVectorGradientColorRampV2P7QWidget@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2DialogD0Ev@Base 1.4.0
+ _ZN34QgsVectorGradientColorRampV2DialogD1Ev@Base 1.4.0
  _ZN35Ui_QgsGenericProjectionSelectorBase7setupUiEP7QDialog@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget13addCategoriesEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget14deleteCategoryEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget15currentCategoryEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget15populateColumnsEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget18currentCategoryRowEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget18populateCategoriesEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget18populateColorRampsEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget19deleteAllCategoriesEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget20changeCategorySymbolEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget20updateUiFromRendererEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget21categoryColumnChangedEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget23categoriesDoubleClickedERK11QModelIndex@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget23changeCategorizedSymbolEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget27updateCategorizedSymbolIconEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget6createEP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget8rendererEv@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2WidgetC1EP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2WidgetC2EP14QgsVectorLayerP10QgsStyleV2P20QgsFeatureRendererV2@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2WidgetD0Ev@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2WidgetD1Ev@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2WidgetD2Ev@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2Widget11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2Widget11qt_metacastEPKc@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2Widget11symbolLayerEv@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2Widget12colorChangedEv@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2Widget14setSymbolLayerEP16QgsSymbolLayerV2@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2Widget6createEv@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2WidgetC1EP7QWidget@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2WidgetC2EP7QWidget@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZN36QgsLineDecorationSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2Dialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2Dialog11qt_metacastEPKc@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2Dialog13setSchemeNameEv@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2Dialog13updatePreviewEv@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2Dialog16populateVariantsEv@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2Dialog16staticMetaObjectE@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2Dialog9setColorsEv@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2DialogC1EP31QgsVectorColorBrewerColorRampV2P7QWidget@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2DialogC2EP31QgsVectorColorBrewerColorRampV2P7QWidget@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2DialogD0Ev@Base 1.4.0
+ _ZN37QgsVectorColorBrewerColorRampV2DialogD1Ev@Base 1.4.0
+ _ZN37Ui_QgsGraduatedSymbolRendererV2Widget13retranslateUiEP7QWidget@Base 1.4.0
+ _ZN37Ui_QgsGraduatedSymbolRendererV2Widget7setupUiEP7QWidget@Base 1.4.0
+ _ZN39Ui_QgsCategorizedSymbolRendererV2Widget13retranslateUiEP7QWidget@Base 1.4.0
+ _ZN39Ui_QgsCategorizedSymbolRendererV2Widget7setupUiEP7QWidget@Base 1.4.0
+ _ZN39Ui_QgsVectorRandomColorRampV2DialogBase13retranslateUiEP7QDialog@Base 1.4.0
+ _ZN39Ui_QgsVectorRandomColorRampV2DialogBase7setupUiEP7QDialog@Base 1.4.0
+ _ZN41Ui_QgsVectorGradientColorRampV2DialogBase13retranslateUiEP7QDialog@Base 1.4.0
+ _ZN41Ui_QgsVectorGradientColorRampV2DialogBase7setupUiEP7QDialog@Base 1.4.0
+ _ZN44Ui_QgsVectorColorBrewerColorRampV2DialogBase7setupUiEP7QDialog@Base 1.4.0
+ _ZN4QMapI7QStringP22QgsSymbolLayerV2WidgetE11node_createEP8QMapDataPPNS4_4NodeERKS0_RKS2_@Base 1.4.0
+ _ZN4QMapI7QStringP22QgsSymbolLayerV2WidgetE8freeDataEP8QMapData@Base 1.4.0
+ _ZN4QMapI7QStringS0_ED1Ev@Base 1.4.0
  _ZN4QMapIi8QVariantE8freeDataEP8QMapData@Base 1.4.0
  _ZN4QSetI7QStringED1Ev@Base 1.4.0
  _ZN5QHashI7QString15QHashDummyValueE13detach_helperEv@Base 1.4.0
@@ -4943,7 +6033,17 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI17QgsSnappingResultE13detach_helperEv@Base 1.4.0
  _ZN5QListI17QgsSnappingResultE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI17QgsSnappingResultE5clearEv@Base 1.4.0
+ _ZN5QListI18QgsRendererRangeV2ED1Ev@Base 1.4.0
+ _ZN5QListI21QgsRendererCategoryV2E13detach_helperEv@Base 1.4.0
+ _ZN5QListI21QgsRendererCategoryV2E4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI21QgsRendererCategoryV2ED1Ev@Base 1.4.0
  _ZN5QListI4QUrlE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI5QPairIN2Qt10BrushStyleE7QStringEE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI5QPairIN2Qt10BrushStyleE7QStringEE6appendERKS4_@Base 1.4.0
+ _ZN5QListI5QPairIN2Qt10BrushStyleE7QStringEED1Ev@Base 1.4.0
+ _ZN5QListI5QPairIN2Qt8PenStyleE7QStringEE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI5QPairIN2Qt8PenStyleE7QStringEE6appendERKS4_@Base 1.4.0
+ _ZN5QListI5QPairIN2Qt8PenStyleE7QStringEED1Ev@Base 1.4.0
  _ZN5QListI5QPairIiiEED1Ev@Base 1.4.0
  _ZN5QListI7QStringE13detach_helperEv@Base 1.4.0
  _ZN5QListI7QStringE4freeEPN9QListData4DataE@Base 1.4.0
@@ -4951,6 +6051,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI7QStringE5eraseENS1_8iteratorE@Base 1.4.0
  _ZN5QListI7QStringE6appendERKS0_@Base 1.4.0
  _ZN5QListI7QStringE9removeAllERKS0_@Base 1.4.0
+ _ZN5QListI8QVariantE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI8QgsPointE13detach_helperEv@Base 1.4.0
  _ZN5QListI8QgsPointE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI8QgsPointE5eraseENS1_8iteratorE@Base 1.4.0
@@ -4959,10 +6060,14 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListIN10QgsSnapper9SnapLayerEE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListIN10QgsSnapper9SnapLayerEE6appendERKS1_@Base 1.4.0
  _ZN5QListIN10QgsSnapper9SnapLayerEED1Ev@Base 1.4.0
+ _ZN5QListIP11QgsSymbolV2E13detach_helperEv@Base 1.4.0
+ _ZN5QListIP11QgsSymbolV2ED1Ev@Base 1.4.0
  _ZN5QListIP13QGraphicsItemED1Ev@Base 1.4.0
+ _ZN5QListIP13QStandardItemED1Ev@Base 1.4.0
  _ZN5QListIP15QTreeWidgetItemE5firstEv@Base 1.4.0
  _ZN5QListIP15QTreeWidgetItemED1Ev@Base 1.4.0
  _ZN5QListIP15QgsComposerItemED1Ev@Base 1.4.0
+ _ZN5QListIP16QgsSymbolLayerV2ED1Ev@Base 1.4.0
  _ZN5QListIP9QgsSymbolED1Ev@Base 1.4.0
  _ZN5QListIS_I8QgsPointEE13detach_helperEv@Base 1.4.0
  _ZN5QListIS_I8QgsPointEE4freeEPN9QListData4DataE@Base 1.4.0
@@ -5017,6 +6122,8 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK15QgsFileDropEdit18acceptableFilePathEP10QDropEvent@Base 1.4.0
  _ZNK15QgsMapCanvasMap12boundingRectEv@Base 1.4.0
  _ZNK15QgsVertexMarker12boundingRectEv@Base 1.4.0
+ _ZNK15SymbolLayerItem4dataEi@Base 1.4.0
+ _ZNK15SymbolLayerItem4typeEv@Base 1.4.0
  _ZNK16QgsMapCanvasItem12boundingRectEv@Base 1.4.0
  _ZNK16QgsMapCanvasItem4rectEv@Base 1.4.0
  _ZNK16QgsMessageViewer10metaObjectEv@Base 1.4.0
@@ -5028,11 +6135,15 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK19QgsDetailedItemData9isCheckedEv@Base 1.4.0
  _ZNK19QgsDetailedItemData9isEnabledEv@Base 1.4.0
  _ZNK19QgsMapToolEmitPoint10metaObjectEv@Base 1.4.0
+ _ZNK19QgsPenStyleComboBox8penStyleEv@Base 1.4.0
  _ZNK20QgsMapOverviewCanvas10metaObjectEv@Base 1.4.0
+ _ZNK21QgsBrushStyleComboBox10brushStyleEv@Base 1.4.0
  _ZNK21QgsDetailedItemWidget10metaObjectEv@Base 1.4.0
  _ZNK21QgsEncodingFileDialog10metaObjectEv@Base 1.4.0
  _ZNK21QgsEncodingFileDialog8encodingEv@Base 1.4.0
  _ZNK21QgsProjectionSelector10metaObjectEv@Base 1.4.0
+ _ZNK22QgsPenCapStyleComboBox11penCapStyleEv@Base 1.4.0
+ _ZNK22QgsSymbolLayerV2Widget10metaObjectEv@Base 1.4.0
  _ZNK23QgsDetailedItemDelegate10detailFontERK20QStyleOptionViewItem@Base 1.4.0
  _ZNK23QgsDetailedItemDelegate10metaObjectEv@Base 1.4.0
  _ZNK23QgsDetailedItemDelegate13drawHighlightERK20QStyleOptionViewItemP8QPainteri@Base 1.4.0
@@ -5045,7 +6156,26 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK23QgsDetailedItemDelegate8sizeHintERK20QStyleOptionViewItemRK11QModelIndex@Base 1.4.0
  _ZNK23QgsDetailedItemDelegate8wordWrapE7QString12QFontMetricsi@Base 1.4.0
  _ZNK23QgsDetailedItemDelegate9titleFontERK20QStyleOptionViewItem@Base 1.4.0
+ _ZNK23QgsPenJoinStyleComboBox12penJoinStyleEv@Base 1.4.0
+ _ZNK23QgsStyleV2ManagerDialog10metaObjectEv@Base 1.4.0
+ _ZNK23QgsSymbolLevelsV2Dialog10metaObjectEv@Base 1.4.0
+ _ZNK23QgsSymbolLevelsV2Dialog11usingLevelsEv@Base 1.4.0
+ _ZNK25QgsSymbolV2SelectorDialog10metaObjectEv@Base 1.4.0
+ _ZNK27QgsSymbolV2PropertiesDialog10metaObjectEv@Base 1.4.0
  _ZNK28QgsGenericProjectionSelector10metaObjectEv@Base 1.4.0
+ _ZNK29QgsRendererV2PropertiesDialog10metaObjectEv@Base 1.4.0
+ _ZNK31QgsSingleSymbolRendererV2Widget10metaObjectEv@Base 1.4.0
+ _ZNK31QgsSvgMarkerSymbolLayerV2Widget10metaObjectEv@Base 1.4.0
+ _ZNK32QgsMarkerLineSymbolLayerV2Widget10metaObjectEv@Base 1.4.0
+ _ZNK32QgsSimpleFillSymbolLayerV2Widget10metaObjectEv@Base 1.4.0
+ _ZNK32QgsSimpleLineSymbolLayerV2Widget10metaObjectEv@Base 1.4.0
+ _ZNK32QgsVectorRandomColorRampV2Dialog10metaObjectEv@Base 1.4.0
+ _ZNK34QgsGraduatedSymbolRendererV2Widget10metaObjectEv@Base 1.4.0
+ _ZNK34QgsSimpleMarkerSymbolLayerV2Widget10metaObjectEv@Base 1.4.0
+ _ZNK34QgsVectorGradientColorRampV2Dialog10metaObjectEv@Base 1.4.0
+ _ZNK36QgsCategorizedSymbolRendererV2Widget10metaObjectEv@Base 1.4.0
+ _ZNK36QgsLineDecorationSymbolLayerV2Widget10metaObjectEv@Base 1.4.0
+ _ZNK37QgsVectorColorBrewerColorRampV2Dialog10metaObjectEv@Base 1.4.0
  _ZNK7QStringeqEPKc@Base 1.4.0
  _ZNK9QgsSymbol10lowerValueEv@Base 1.4.0
  _ZNK9QgsSymbol10upperValueEv@Base 1.4.0
@@ -5064,26 +6194,83 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI15QgsFileDropEdit@Base 1.4.0
  _ZTI15QgsMapCanvasMap@Base 1.4.0
  _ZTI15QgsVertexMarker@Base 1.4.0
+ _ZTI15SymbolLayerItem@Base 1.4.0
+ _ZTI16QgsColorButtonV2@Base 1.4.0
  _ZTI16QgsMapCanvasItem@Base 1.4.0
  _ZTI16QgsMessageViewer@Base 1.4.0
  _ZTI16QgsPanningWidget@Base 1.4.0
+ _ZTI18Ui_WidgetSvgMarker@Base 1.4.0
  _ZTI19QgsMapToolEmitPoint@Base 1.4.0
+ _ZTI19QgsPenStyleComboBox@Base 1.4.0
+ _ZTI19QgsRendererV2Widget@Base 1.4.0
  _ZTI19Ui_QgsMessageViewer@Base 1.4.0
+ _ZTI19Ui_WidgetMarkerLine@Base 1.4.0
+ _ZTI19Ui_WidgetSimpleFill@Base 1.4.0
+ _ZTI19Ui_WidgetSimpleLine@Base 1.4.0
  _ZTI20QgsMapOverviewCanvas@Base 1.4.0
+ _ZTI21QgsBrushStyleComboBox@Base 1.4.0
  _ZTI21QgsDetailedItemWidget@Base 1.4.0
  _ZTI21QgsEncodingFileDialog@Base 1.4.0
  _ZTI21QgsProjectionSelector@Base 1.4.0
+ _ZTI21Ui_WidgetSimpleMarker@Base 1.4.0
+ _ZTI22QgsPenCapStyleComboBox@Base 1.4.0
+ _ZTI22QgsSymbolLayerV2Widget@Base 1.4.0
  _ZTI23QgsDetailedItemDelegate@Base 1.4.0
+ _ZTI23QgsPenJoinStyleComboBox@Base 1.4.0
+ _ZTI23QgsStyleV2ManagerDialog@Base 1.4.0
+ _ZTI23QgsSymbolLevelsV2Dialog@Base 1.4.0
+ _ZTI23Ui_WidgetLineDecoration@Base 1.4.0
+ _ZTI24Ui_DlgSymbolV2Properties@Base 1.4.0
+ _ZTI25QgsSymbolV2SelectorDialog@Base 1.4.0
+ _ZTI27QgsSymbolV2PropertiesDialog@Base 1.4.0
  _ZTI28QgsGenericProjectionSelector@Base 1.4.0
  _ZTI28Ui_QgsDetailedItemWidgetBase@Base 1.4.0
  _ZTI28Ui_QgsProjectionSelectorBase@Base 1.4.0
+ _ZTI29QgsRendererV2PropertiesDialog@Base 1.4.0
+ _ZTI30Ui_QgsStyleV2ManagerDialogBase@Base 1.4.0
+ _ZTI30Ui_QgsSymbolLevelsV2DialogBase@Base 1.4.0
+ _ZTI31QgsSingleSymbolRendererV2Widget@Base 1.4.0
+ _ZTI31QgsSvgMarkerSymbolLayerV2Widget@Base 1.4.0
+ _ZTI31Ui_QgsRendererV2PropsDialogBase@Base 1.4.0
+ _ZTI32QgsMarkerLineSymbolLayerV2Widget@Base 1.4.0
+ _ZTI32QgsSimpleFillSymbolLayerV2Widget@Base 1.4.0
+ _ZTI32QgsSimpleLineSymbolLayerV2Widget@Base 1.4.0
+ _ZTI32QgsVectorRandomColorRampV2Dialog@Base 1.4.0
+ _ZTI32Ui_QgsSymbolV2SelectorDialogBase@Base 1.4.0
+ _ZTI34QgsGraduatedSymbolRendererV2Widget@Base 1.4.0
+ _ZTI34QgsSimpleMarkerSymbolLayerV2Widget@Base 1.4.0
+ _ZTI34QgsVectorGradientColorRampV2Dialog@Base 1.4.0
  _ZTI35Ui_QgsGenericProjectionSelectorBase@Base 1.4.0
+ _ZTI36QgsCategorizedSymbolRendererV2Widget@Base 1.4.0
+ _ZTI36QgsLineDecorationSymbolLayerV2Widget@Base 1.4.0
+ _ZTI37QgsVectorColorBrewerColorRampV2Dialog@Base 1.4.0
+ _ZTI37Ui_QgsGraduatedSymbolRendererV2Widget@Base 1.4.0
+ _ZTI39Ui_QgsCategorizedSymbolRendererV2Widget@Base 1.4.0
+ _ZTI39Ui_QgsVectorRandomColorRampV2DialogBase@Base 1.4.0
+ _ZTI41Ui_QgsVectorGradientColorRampV2DialogBase@Base 1.4.0
+ _ZTI44Ui_QgsVectorColorBrewerColorRampV2DialogBase@Base 1.4.0
  _ZTI9QgsMapTip@Base 1.4.0
  _ZTI9QgsSymbol@Base 1.4.0
+ _ZTIN2Ui15WidgetSvgMarkerE@Base 1.4.0
  _ZTIN2Ui16QgsMessageViewerE@Base 1.4.0
+ _ZTIN2Ui16WidgetMarkerLineE@Base 1.4.0
+ _ZTIN2Ui16WidgetSimpleFillE@Base 1.4.0
+ _ZTIN2Ui16WidgetSimpleLineE@Base 1.4.0
+ _ZTIN2Ui18WidgetSimpleMarkerE@Base 1.4.0
+ _ZTIN2Ui20WidgetLineDecorationE@Base 1.4.0
+ _ZTIN2Ui21DlgSymbolV2PropertiesE@Base 1.4.0
  _ZTIN2Ui25QgsDetailedItemWidgetBaseE@Base 1.4.0
  _ZTIN2Ui25QgsProjectionSelectorBaseE@Base 1.4.0
+ _ZTIN2Ui27QgsStyleV2ManagerDialogBaseE@Base 1.4.0
+ _ZTIN2Ui27QgsSymbolLevelsV2DialogBaseE@Base 1.4.0
+ _ZTIN2Ui28QgsRendererV2PropsDialogBaseE@Base 1.4.0
+ _ZTIN2Ui29QgsSymbolV2SelectorDialogBaseE@Base 1.4.0
  _ZTIN2Ui32QgsGenericProjectionSelectorBaseE@Base 1.4.0
+ _ZTIN2Ui34QgsGraduatedSymbolRendererV2WidgetE@Base 1.4.0
+ _ZTIN2Ui36QgsCategorizedSymbolRendererV2WidgetE@Base 1.4.0
+ _ZTIN2Ui36QgsVectorRandomColorRampV2DialogBaseE@Base 1.4.0
+ _ZTIN2Ui38QgsVectorGradientColorRampV2DialogBaseE@Base 1.4.0
+ _ZTIN2Ui41QgsVectorColorBrewerColorRampV2DialogBaseE@Base 1.4.0
  _ZTS10QgsMapTool@Base 1.4.0
  _ZTS12QgsMapCanvas@Base 1.4.0
  _ZTS13QgisInterface@Base 1.4.0
@@ -5096,26 +6283,83 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS15QgsFileDropEdit@Base 1.4.0
  _ZTS15QgsMapCanvasMap@Base 1.4.0
  _ZTS15QgsVertexMarker@Base 1.4.0
+ _ZTS15SymbolLayerItem@Base 1.4.0
+ _ZTS16QgsColorButtonV2@Base 1.4.0
  _ZTS16QgsMapCanvasItem@Base 1.4.0
  _ZTS16QgsMessageViewer@Base 1.4.0
  _ZTS16QgsPanningWidget@Base 1.4.0
+ _ZTS18Ui_WidgetSvgMarker@Base 1.4.0
  _ZTS19QgsMapToolEmitPoint@Base 1.4.0
+ _ZTS19QgsPenStyleComboBox@Base 1.4.0
+ _ZTS19QgsRendererV2Widget@Base 1.4.0
  _ZTS19Ui_QgsMessageViewer@Base 1.4.0
+ _ZTS19Ui_WidgetMarkerLine@Base 1.4.0
+ _ZTS19Ui_WidgetSimpleFill@Base 1.4.0
+ _ZTS19Ui_WidgetSimpleLine@Base 1.4.0
  _ZTS20QgsMapOverviewCanvas@Base 1.4.0
+ _ZTS21QgsBrushStyleComboBox@Base 1.4.0
  _ZTS21QgsDetailedItemWidget@Base 1.4.0
  _ZTS21QgsEncodingFileDialog@Base 1.4.0
  _ZTS21QgsProjectionSelector@Base 1.4.0
+ _ZTS21Ui_WidgetSimpleMarker@Base 1.4.0
+ _ZTS22QgsPenCapStyleComboBox@Base 1.4.0
+ _ZTS22QgsSymbolLayerV2Widget@Base 1.4.0
  _ZTS23QgsDetailedItemDelegate@Base 1.4.0
+ _ZTS23QgsPenJoinStyleComboBox@Base 1.4.0
+ _ZTS23QgsStyleV2ManagerDialog@Base 1.4.0
+ _ZTS23QgsSymbolLevelsV2Dialog@Base 1.4.0
+ _ZTS23Ui_WidgetLineDecoration@Base 1.4.0
+ _ZTS24Ui_DlgSymbolV2Properties@Base 1.4.0
+ _ZTS25QgsSymbolV2SelectorDialog@Base 1.4.0
+ _ZTS27QgsSymbolV2PropertiesDialog@Base 1.4.0
  _ZTS28QgsGenericProjectionSelector@Base 1.4.0
  _ZTS28Ui_QgsDetailedItemWidgetBase@Base 1.4.0
  _ZTS28Ui_QgsProjectionSelectorBase@Base 1.4.0
+ _ZTS29QgsRendererV2PropertiesDialog@Base 1.4.0
+ _ZTS30Ui_QgsStyleV2ManagerDialogBase@Base 1.4.0
+ _ZTS30Ui_QgsSymbolLevelsV2DialogBase@Base 1.4.0
+ _ZTS31QgsSingleSymbolRendererV2Widget@Base 1.4.0
+ _ZTS31QgsSvgMarkerSymbolLayerV2Widget@Base 1.4.0
+ _ZTS31Ui_QgsRendererV2PropsDialogBase@Base 1.4.0
+ _ZTS32QgsMarkerLineSymbolLayerV2Widget@Base 1.4.0
+ _ZTS32QgsSimpleFillSymbolLayerV2Widget@Base 1.4.0
+ _ZTS32QgsSimpleLineSymbolLayerV2Widget@Base 1.4.0
+ _ZTS32QgsVectorRandomColorRampV2Dialog@Base 1.4.0
+ _ZTS32Ui_QgsSymbolV2SelectorDialogBase@Base 1.4.0
+ _ZTS34QgsGraduatedSymbolRendererV2Widget@Base 1.4.0
+ _ZTS34QgsSimpleMarkerSymbolLayerV2Widget@Base 1.4.0
+ _ZTS34QgsVectorGradientColorRampV2Dialog@Base 1.4.0
  _ZTS35Ui_QgsGenericProjectionSelectorBase@Base 1.4.0
+ _ZTS36QgsCategorizedSymbolRendererV2Widget@Base 1.4.0
+ _ZTS36QgsLineDecorationSymbolLayerV2Widget@Base 1.4.0
+ _ZTS37QgsVectorColorBrewerColorRampV2Dialog@Base 1.4.0
+ _ZTS37Ui_QgsGraduatedSymbolRendererV2Widget@Base 1.4.0
+ _ZTS39Ui_QgsCategorizedSymbolRendererV2Widget@Base 1.4.0
+ _ZTS39Ui_QgsVectorRandomColorRampV2DialogBase@Base 1.4.0
+ _ZTS41Ui_QgsVectorGradientColorRampV2DialogBase@Base 1.4.0
+ _ZTS44Ui_QgsVectorColorBrewerColorRampV2DialogBase@Base 1.4.0
  _ZTS9QgsMapTip@Base 1.4.0
  _ZTS9QgsSymbol@Base 1.4.0
+ _ZTSN2Ui15WidgetSvgMarkerE@Base 1.4.0
  _ZTSN2Ui16QgsMessageViewerE@Base 1.4.0
+ _ZTSN2Ui16WidgetMarkerLineE@Base 1.4.0
+ _ZTSN2Ui16WidgetSimpleFillE@Base 1.4.0
+ _ZTSN2Ui16WidgetSimpleLineE@Base 1.4.0
+ _ZTSN2Ui18WidgetSimpleMarkerE@Base 1.4.0
+ _ZTSN2Ui20WidgetLineDecorationE@Base 1.4.0
+ _ZTSN2Ui21DlgSymbolV2PropertiesE@Base 1.4.0
  _ZTSN2Ui25QgsDetailedItemWidgetBaseE@Base 1.4.0
  _ZTSN2Ui25QgsProjectionSelectorBaseE@Base 1.4.0
+ _ZTSN2Ui27QgsStyleV2ManagerDialogBaseE@Base 1.4.0
+ _ZTSN2Ui27QgsSymbolLevelsV2DialogBaseE@Base 1.4.0
+ _ZTSN2Ui28QgsRendererV2PropsDialogBaseE@Base 1.4.0
+ _ZTSN2Ui29QgsSymbolV2SelectorDialogBaseE@Base 1.4.0
  _ZTSN2Ui32QgsGenericProjectionSelectorBaseE@Base 1.4.0
+ _ZTSN2Ui34QgsGraduatedSymbolRendererV2WidgetE@Base 1.4.0
+ _ZTSN2Ui36QgsCategorizedSymbolRendererV2WidgetE@Base 1.4.0
+ _ZTSN2Ui36QgsVectorRandomColorRampV2DialogBaseE@Base 1.4.0
+ _ZTSN2Ui38QgsVectorGradientColorRampV2DialogBaseE@Base 1.4.0
+ _ZTSN2Ui41QgsVectorColorBrewerColorRampV2DialogBaseE@Base 1.4.0
  _ZTV10QgsMapTool@Base 1.4.0
  _ZTV12QgsMapCanvas@Base 1.4.0
  _ZTV13QgisInterface@Base 1.4.0
@@ -5128,16 +6372,41 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV15QgsFileDropEdit@Base 1.4.0
  _ZTV15QgsMapCanvasMap@Base 1.4.0
  _ZTV15QgsVertexMarker@Base 1.4.0
+ _ZTV15SymbolLayerItem@Base 1.4.0
+ _ZTV16QgsColorButtonV2@Base 1.4.0
  _ZTV16QgsMapCanvasItem@Base 1.4.0
  _ZTV16QgsMessageViewer@Base 1.4.0
  _ZTV16QgsPanningWidget@Base 1.4.0
  _ZTV19QgsMapToolEmitPoint@Base 1.4.0
+ _ZTV19QgsPenStyleComboBox@Base 1.4.0
+ _ZTV19QgsRendererV2Widget@Base 1.4.0
  _ZTV20QgsMapOverviewCanvas@Base 1.4.0
+ _ZTV21QgsBrushStyleComboBox@Base 1.4.0
  _ZTV21QgsDetailedItemWidget@Base 1.4.0
  _ZTV21QgsEncodingFileDialog@Base 1.4.0
  _ZTV21QgsProjectionSelector@Base 1.4.0
+ _ZTV22QgsPenCapStyleComboBox@Base 1.4.0
+ _ZTV22QgsSymbolLayerV2Widget@Base 1.4.0
  _ZTV23QgsDetailedItemDelegate@Base 1.4.0
+ _ZTV23QgsPenJoinStyleComboBox@Base 1.4.0
+ _ZTV23QgsStyleV2ManagerDialog@Base 1.4.0
+ _ZTV23QgsSymbolLevelsV2Dialog@Base 1.4.0
+ _ZTV25QgsSymbolV2SelectorDialog@Base 1.4.0
+ _ZTV27QgsSymbolV2PropertiesDialog@Base 1.4.0
  _ZTV28QgsGenericProjectionSelector@Base 1.4.0
+ _ZTV29QgsRendererV2PropertiesDialog@Base 1.4.0
+ _ZTV31QgsSingleSymbolRendererV2Widget@Base 1.4.0
+ _ZTV31QgsSvgMarkerSymbolLayerV2Widget@Base 1.4.0
+ _ZTV32QgsMarkerLineSymbolLayerV2Widget@Base 1.4.0
+ _ZTV32QgsSimpleFillSymbolLayerV2Widget@Base 1.4.0
+ _ZTV32QgsSimpleLineSymbolLayerV2Widget@Base 1.4.0
+ _ZTV32QgsVectorRandomColorRampV2Dialog@Base 1.4.0
+ _ZTV34QgsGraduatedSymbolRendererV2Widget@Base 1.4.0
+ _ZTV34QgsSimpleMarkerSymbolLayerV2Widget@Base 1.4.0
+ _ZTV34QgsVectorGradientColorRampV2Dialog@Base 1.4.0
+ _ZTV36QgsCategorizedSymbolRendererV2Widget@Base 1.4.0
+ _ZTV36QgsLineDecorationSymbolLayerV2Widget@Base 1.4.0
+ _ZTV37QgsVectorColorBrewerColorRampV2Dialog@Base 1.4.0
  _ZTV9QgsMapTip@Base 1.4.0
  _ZTV9QgsSymbol@Base 1.4.0
  _ZThn16_N12QgsMapCanvasD0Ev@Base 1.4.0
@@ -5148,20 +6417,68 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZThn16_N15QgsComposerViewD1Ev@Base 1.4.0
  _ZThn16_N15QgsFileDropEditD0Ev@Base 1.4.0
  _ZThn16_N15QgsFileDropEditD1Ev@Base 1.4.0
+ _ZThn16_N16QgsColorButtonV2D0Ev@Base 1.4.0
+ _ZThn16_N16QgsColorButtonV2D1Ev@Base 1.4.0
  _ZThn16_N16QgsMessageViewerD0Ev@Base 1.4.0
  _ZThn16_N16QgsMessageViewerD1Ev@Base 1.4.0
  _ZThn16_N16QgsPanningWidgetD0Ev@Base 1.4.0
  _ZThn16_N16QgsPanningWidgetD1Ev@Base 1.4.0
+ _ZThn16_N19QgsPenStyleComboBoxD0Ev@Base 1.4.0
+ _ZThn16_N19QgsPenStyleComboBoxD1Ev@Base 1.4.0
+ _ZThn16_N19QgsRendererV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N19QgsRendererV2WidgetD1Ev@Base 1.4.0
  _ZThn16_N20QgsMapOverviewCanvasD0Ev@Base 1.4.0
  _ZThn16_N20QgsMapOverviewCanvasD1Ev@Base 1.4.0
+ _ZThn16_N21QgsBrushStyleComboBoxD0Ev@Base 1.4.0
+ _ZThn16_N21QgsBrushStyleComboBoxD1Ev@Base 1.4.0
  _ZThn16_N21QgsDetailedItemWidgetD0Ev@Base 1.4.0
  _ZThn16_N21QgsDetailedItemWidgetD1Ev@Base 1.4.0
  _ZThn16_N21QgsEncodingFileDialogD0Ev@Base 1.4.0
  _ZThn16_N21QgsEncodingFileDialogD1Ev@Base 1.4.0
  _ZThn16_N21QgsProjectionSelectorD0Ev@Base 1.4.0
  _ZThn16_N21QgsProjectionSelectorD1Ev@Base 1.4.0
+ _ZThn16_N22QgsPenCapStyleComboBoxD0Ev@Base 1.4.0
+ _ZThn16_N22QgsPenCapStyleComboBoxD1Ev@Base 1.4.0
+ _ZThn16_N22QgsSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N22QgsSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N23QgsPenJoinStyleComboBoxD0Ev@Base 1.4.0
+ _ZThn16_N23QgsPenJoinStyleComboBoxD1Ev@Base 1.4.0
+ _ZThn16_N23QgsStyleV2ManagerDialogD0Ev@Base 1.4.0
+ _ZThn16_N23QgsStyleV2ManagerDialogD1Ev@Base 1.4.0
+ _ZThn16_N23QgsSymbolLevelsV2DialogD0Ev@Base 1.4.0
+ _ZThn16_N23QgsSymbolLevelsV2DialogD1Ev@Base 1.4.0
+ _ZThn16_N25QgsSymbolV2SelectorDialogD0Ev@Base 1.4.0
+ _ZThn16_N25QgsSymbolV2SelectorDialogD1Ev@Base 1.4.0
+ _ZThn16_N27QgsSymbolV2PropertiesDialogD0Ev@Base 1.4.0
+ _ZThn16_N27QgsSymbolV2PropertiesDialogD1Ev@Base 1.4.0
  _ZThn16_N28QgsGenericProjectionSelectorD0Ev@Base 1.4.0
  _ZThn16_N28QgsGenericProjectionSelectorD1Ev@Base 1.4.0
+ _ZThn16_N29QgsRendererV2PropertiesDialogD0Ev@Base 1.4.0
+ _ZThn16_N29QgsRendererV2PropertiesDialogD1Ev@Base 1.4.0
+ _ZThn16_N31QgsSingleSymbolRendererV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N31QgsSingleSymbolRendererV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N31QgsSvgMarkerSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N31QgsSvgMarkerSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N32QgsMarkerLineSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N32QgsMarkerLineSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N32QgsSimpleFillSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N32QgsSimpleFillSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N32QgsSimpleLineSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N32QgsSimpleLineSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N32QgsVectorRandomColorRampV2DialogD0Ev@Base 1.4.0
+ _ZThn16_N32QgsVectorRandomColorRampV2DialogD1Ev@Base 1.4.0
+ _ZThn16_N34QgsGraduatedSymbolRendererV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N34QgsGraduatedSymbolRendererV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N34QgsSimpleMarkerSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N34QgsSimpleMarkerSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N34QgsVectorGradientColorRampV2DialogD0Ev@Base 1.4.0
+ _ZThn16_N34QgsVectorGradientColorRampV2DialogD1Ev@Base 1.4.0
+ _ZThn16_N36QgsCategorizedSymbolRendererV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N36QgsCategorizedSymbolRendererV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N36QgsLineDecorationSymbolLayerV2WidgetD0Ev@Base 1.4.0
+ _ZThn16_N36QgsLineDecorationSymbolLayerV2WidgetD1Ev@Base 1.4.0
+ _ZThn16_N37QgsVectorColorBrewerColorRampV2DialogD0Ev@Base 1.4.0
+ _ZThn16_N37QgsVectorColorBrewerColorRampV2DialogD1Ev@Base 1.4.0
  _ZThn20_N16QgsMessageViewer10setMessageERK7QStringN16QgsMessageOutput11MessageTypeE@Base 1.4.0
  _ZThn20_N16QgsMessageViewer11showMessageEb@Base 1.4.0
  _ZThn20_N16QgsMessageViewer13appendMessageERK7QString@Base 1.4.0
