@@ -16,14 +16,7 @@
 #include <QStandardItemModel>
 #include <QSvgRenderer>
 
-static void updateColorButton(QAbstractButton* button, QColor color)
-{
-	QPixmap p(20,20);
-	p.fill(color);
-	button->setIcon(QIcon(p));
-}
 
-//////////
 
 QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget(QWidget* parent)
   : QgsSymbolLayerV2Widget(parent)
@@ -51,7 +44,7 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
 
   // set values
   spinWidth->setValue(mLayer->width());
-  updateColorButton(btnChangeColor, mLayer->color());
+  btnChangeColor->setColor(mLayer->color());
   cboPenStyle->setPenStyle(mLayer->penStyle());
   spinOffset->setValue(mLayer->offset());
   cboJoinStyle->setPenJoinStyle(mLayer->penJoinStyle());
@@ -75,7 +68,7 @@ void QgsSimpleLineSymbolLayerV2Widget::colorChanged()
   if (!color.isValid())
     return;
   mLayer->setColor(color);
-  updateColorButton(btnChangeColor, mLayer->color());
+  btnChangeColor->setColor(mLayer->color());
   emit changed();
 }
 
@@ -145,8 +138,8 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
       break;
     }
   }
-  updateColorButton(btnChangeColorBorder, mLayer->borderColor());
-  updateColorButton(btnChangeColorFill, mLayer->color());
+  btnChangeColorBorder->setColor(mLayer->borderColor());
+  btnChangeColorFill->setColor(mLayer->color());
   spinSize->setValue(mLayer->size());
   spinAngle->setValue(mLayer->angle());
 
@@ -176,7 +169,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorBorder()
   if (!borderColor.isValid())
     return;
   mLayer->setBorderColor(borderColor);
-  updateColorButton(btnChangeColorBorder, mLayer->borderColor());
+  btnChangeColorBorder->setColor(mLayer->borderColor());
   emit changed();
 }
 
@@ -186,7 +179,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorFill()
   if (!color.isValid())
     return;
   mLayer->setColor(color);
-  updateColorButton(btnChangeColorFill, mLayer->color());
+  btnChangeColorFill->setColor(mLayer->color());
   emit changed();
 }
 
@@ -232,8 +225,8 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
   mLayer = static_cast<QgsSimpleFillSymbolLayerV2*>(layer);
   
   // set values
-  updateColorButton(btnChangeColor, mLayer->color());
-  updateColorButton(btnChangeBorderColor, mLayer->borderColor());
+  btnChangeColor->setColor(mLayer->color());
+  btnChangeBorderColor->setColor(mLayer->borderColor());
   cboFillStyle->setBrushStyle(mLayer->brushStyle());
 }
 
@@ -248,7 +241,7 @@ void QgsSimpleFillSymbolLayerV2Widget::setColor()
   if (!color.isValid())
     return;
   mLayer->setColor(color);
-  updateColorButton(btnChangeColor, mLayer->color());
+  btnChangeColor->setColor(mLayer->color());
   emit changed();
 }
 
@@ -258,7 +251,7 @@ void QgsSimpleFillSymbolLayerV2Widget::setBorderColor()
   if (!color.isValid())
     return;
   mLayer->setBorderColor(color);
-  updateColorButton(btnChangeBorderColor, mLayer->borderColor());
+  btnChangeBorderColor->setColor(mLayer->borderColor());
   emit changed();
 }
 
@@ -482,7 +475,7 @@ void QgsLineDecorationSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* laye
   mLayer = static_cast<QgsLineDecorationSymbolLayerV2*>(layer);
 
   // set values
-  updateColorButton(btnChangeColor, mLayer->color());
+  btnChangeColor->setColor(mLayer->color());
 }
 
 QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2Widget::symbolLayer()
@@ -496,6 +489,6 @@ void QgsLineDecorationSymbolLayerV2Widget::colorChanged()
   if (!color.isValid())
     return;
   mLayer->setColor(color);
-  updateColorButton(btnChangeColor, mLayer->color());
+  btnChangeColor->setColor(mLayer->color());
   emit changed();
 }

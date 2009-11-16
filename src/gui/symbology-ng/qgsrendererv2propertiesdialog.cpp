@@ -27,6 +27,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
   if (embedded)
   {
     buttonBox->hide();
+    layout()->setContentsMargins(0,0,0,0);
   }
 
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(onOK()));

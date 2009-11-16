@@ -27,6 +27,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsSty
   if (embedded)
   {
     buttonBox->hide();
+    layout()->setContentsMargins(0,0,0,0);
   }
   
   connect(btnSymbolProperties, SIGNAL(clicked()), this, SLOT(changeSymbolProperties()));
@@ -44,12 +45,15 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsSty
   // there's a correspondence between symbol type number and page numbering => exploit it!
   stackedWidget->setCurrentIndex(symbol->type());
   
-  connect(btnSetColor, SIGNAL(clicked()), this, SLOT(setSymbolColor()));
+  connect(btnColorMarker, SIGNAL(clicked()), this, SLOT(setSymbolColor()));
+  connect(btnColorLine, SIGNAL(clicked()), this, SLOT(setSymbolColor()));
+  connect(btnColorFill, SIGNAL(clicked()), this, SLOT(setSymbolColor()));
   connect(spinAngle, SIGNAL(valueChanged(double)), this, SLOT(setMarkerAngle(double)));
   connect(spinSize, SIGNAL(valueChanged(double)), this, SLOT(setMarkerSize(double)));
   connect(spinWidth, SIGNAL(valueChanged(double)), this, SLOT(setLineWidth(double)));
 
   connect(btnAddToStyle, SIGNAL(clicked()), this, SLOT(addSymbolToStyle()));
+  btnSymbolProperties->setIcon( QIcon( QgsApplication::defaultThemePath() + "mActionOptions.png" ) );
   btnAddToStyle->setIcon( QIcon( QgsApplication::defaultThemePath() + "symbologyAdd.png" ) );
 }
 
@@ -114,9 +118,10 @@ void QgsSymbolV2SelectorDialog::updateSymbolPreview()
 
 void QgsSymbolV2SelectorDialog::updateSymbolColor()
 {
-  QPixmap p(20,20);
-  p.fill(mSymbol->color());
-  btnSetColor->setIcon(QIcon(p));
+  QColor c = mSymbol->color();
+  btnColorMarker->setColor(c);
+  btnColorLine->setColor(c);
+  btnColorFill->setColor(c);
 }
 
 void QgsSymbolV2SelectorDialog::updateSymbolInfo()

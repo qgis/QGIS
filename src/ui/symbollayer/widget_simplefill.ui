@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>WidgetSimpleFill</class>
- <widget class="QWidget" name="WidgetSimpleFill" >
-  <property name="geometry" >
+ <widget class="QWidget" name="WidgetSimpleFill">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,35 +10,35 @@
     <height>154</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout">
    <item>
-    <layout class="QGridLayout" >
-     <item row="0" column="0" >
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+    <layout class="QGridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>Color:</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" >
-      <widget class="QPushButton" name="btnChangeColor" >
-       <property name="text" >
-        <string>change</string>
+     <item row="0" column="1">
+      <widget class="QgsColorButtonV2" name="btnChangeColor">
+       <property name="text">
+        <string>Change</string>
        </property>
       </widget>
      </item>
-     <item rowspan="3" row="0" column="2" >
+     <item row="0" column="2" rowspan="3">
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeType">
         <enum>QSizePolicy::Preferred</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>91</width>
          <height>51</height>
@@ -45,27 +46,27 @@
        </property>
       </spacer>
      </item>
-     <item row="2" column="0" >
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
         <string>Fill style:</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1" >
-      <widget class="QgsBrushStyleComboBox" name="cboFillStyle" />
+     <item row="2" column="1">
+      <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
      </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="label_3" >
-       <property name="text" >
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
         <string>Border color:</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QPushButton" name="btnChangeBorderColor" >
-       <property name="text" >
-        <string>change</string>
+     <item row="1" column="1">
+      <widget class="QgsColorButtonV2" name="btnChangeBorderColor">
+       <property name="text">
+        <string>Change</string>
        </property>
       </widget>
      </item>
@@ -73,10 +74,10 @@
    </item>
    <item>
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>244</width>
        <height>21</height>
@@ -91,6 +92,11 @@
    <class>QgsBrushStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsbrushstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

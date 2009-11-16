@@ -24,9 +24,9 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QPushButton" name="btnChangeColorBorder">
+      <widget class="QgsColorButtonV2" name="btnChangeColorBorder">
        <property name="text">
-        <string>change</string>
+        <string>Change</string>
        </property>
       </widget>
      </item>
@@ -54,9 +54,9 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QPushButton" name="btnChangeColorFill">
+      <widget class="QgsColorButtonV2" name="btnChangeColorFill">
        <property name="text">
-        <string>change</string>
+        <string>Change</string>
        </property>
       </widget>
      </item>
@@ -191,6 +191,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
