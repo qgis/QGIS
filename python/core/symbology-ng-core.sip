@@ -670,11 +670,15 @@ public:
   //! load a file into the style
   bool load(QString filename);
   
-  //! save style into a file
-  bool save(QString filename);
+  //! save style into a file (will use current filename if empty string is passed)
+  bool save(QString filename = QString());
   
   //! return last error from load/save operation
   QString errorString();
+
+  //! return current file name of the style
+  QString fileName();
+
 };
 
 //////////
