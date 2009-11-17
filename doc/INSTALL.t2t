@@ -363,7 +363,13 @@ on qgis.nsi and choose the option 'Compile NSIS Script'.
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 
-Included are a few notes for building on Mac OS X 10.5 (__Leopard__).
+Included are a few notes for building on Mac OS X 10.5 (__Leopard__) and 10.6 
+(__Snow Leopard__). 
+
+__Snow Leopard note:__ A cmake/qt/sip bug currently exists where a 32-bit
+cmake build fails to provide python bindings. This means that python plugin support
+is currently lacking for 32-bit builds using cmake in Snow Leopard. See the Xcode
+build method to if you require python support.
 
 == Install XCODE ==
 
@@ -381,7 +387,15 @@ sudo ln -s /usr/local/ local
 
 == Install Qt4 from .dmg ==
 
-You need a minimum of Qt4.3.0. I suggest getting the latest (at time of writing).
+You need a minimum of Qt-4.3.0. I suggest getting the latest (at time of writing).
+
+__Snow Leopard note:__ If you are building on Snow Leopard, you will need to
+decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
+support in the Qt Cocoa branch. Appropriate installers are available for both
+as of Qt-4.6.0, but the beta version of Qt-4.6.0 has proven to introduce numerous
+bugs in Qgis. Unfortunately, the 32-bit branch of Qt currently does not build with
+python bindings (see notes below). You can achieve support for python in Qgis with
+the Xcode build method noted below.
 
 ``` 
 ftp://ftp.trolltech.com/qt/source/
@@ -420,10 +434,11 @@ sudo ln -sf macx-g++ default
 
 /!\ Note: this doesn't seem to be needed since version 4.4.
 
+
 == Install development frameworks for QGIS dependencies ==
 
 Download William Kyngesburye's excellent all in one framework that includes
-proj, gdal, sqlite3 etc
+proj, gdal, sqlite3, etc.
 
 ``` 
 http://www.kyngchaos.com/wiki/software:frameworks
@@ -443,9 +458,15 @@ Also available is a GRASS application:
 ```
 http://www.kyngchaos.com/wiki/software:grass
 ```
+=== Additional Dependencies : General compatibility note ===
 
-There are some additional dependencies that at the time of writing are not
+There are some additional dependencies that, at the time of writing, are not
 provided as frameworks or installers so we will need to build these from source.
+If you are wanting to build Qgis as a 64-bit application, you will need to 
+provide the appropriate build commands to produce 64-bit support in dependencies.
+Likewise, for 32-bit support on Snow Leopard, you will need to override the
+default system architecture, which is 64-bit according to instructions for
+individual dependency packages.
 
 === Additional Dependencies : GSL ===
 
@@ -464,7 +485,24 @@ make
 sudo make install
 ```
 
+__Snow Leopard note:__ For explicit 32-bit support in gsl, substitute the standard
+configure line with:
+
+```
+./configure --build=i386
+```
+
+And for 64-bit gsl:
+
+```
+./configure --build=x86_64
+```
+
+
 === Additional Dependencies : Expat ===
+
+__Snow Leopard note:__ Snow Leopard includes a usable expat, so this step is 
+not necessary.
 
 Get the expat sources:
 
@@ -480,15 +518,17 @@ make
 sudo make install 
 ```
 
+
 === Additional Dependencies : SIP ===
 
-Make sure you have the latest Python 2.5 fom 
+__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include a usable Python
+2.5 or 2.6, respectively.  You can install Python from python.org if preferred.
+
+Make sure you have the latest Python 2.5 from 
 
 ```
 http://www.python.org/download/mac/
 ```
-
-__Leopard note:__ Leopard includes a usable Python 2.5.  Though you can install Python from python.org if preferred.
 
 Retrieve the python bindings toolkit SIP from
 
@@ -507,11 +547,29 @@ sudo make install
 
 __Leopard notes__
 
-If building on Leopard, using Leopard's bundled Python, SIP wants to install in the system path -- this is not a good idea.  Use this configure command instead of the basic configure above:
+If building on Leopard, using Leopard's bundled Python, SIP wants to install in the
+system path -- this is not a good idea.  Use this configure command instead of the 
+basic configure above:
 
 ```
 python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -e /usr/local/include -v /usr/local/share/sip
 ```
+
+__Snow Leopard notes__
+
+If building on Snow Leopard, you need to use one of the following configure lines 
+based on your installed version of Qt. If you are using 32-bit Qt (Qt Carbon):
+
+```
+python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin -e /usr/local/include -v /usr/local/share/sip --arch i386
+```
+
+For 64-bit Qt (Qt Cocoa), use this configure line:
+
+```
+python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin -e /usr/local/include -v /usr/local/share/sip --arch x86_64
+```
+
 
 === Additional Dependencies : PyQt ===
 
@@ -552,11 +610,26 @@ If there is a problem with undefined symbols in QtOpenGL on Leopard, edit
 QtOpenGL/makefile and add ""-undefined dynamic_lookup"" to LFLAGS.
 Then make again.
 
+__Snow Leopard notes__
+
+If building on Snow Leopard, you need to use one of the following configure lines based on your installed version of Qt. If you are using 32-bit Qt (Qt Carbon):
+
+```
+python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
+```
+
+For 64-bit Qt (Qt Cocoa), use this configure line:
+
+```
+python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
+```
+
+
 === Additional Dependencies : Bison ===
 
-__Leopard note:__ Leopard includes Bison 2.3, so this step can be skipped on Leopard.
+__Leopard and Snow Leopard note:__ Leopard and Snow Leopard includes Bison 2.3, so this step can be skipped on Leopard and Snow Leopard.
 
-The version of bison available by default on Mac OSX is too old so you need to
+The version of bison available by default on Mac OS X 10.4 and older is too old so you need to
 get a more recent one on your system. Download at least version 2.3 from:
 
 ``` 
@@ -582,7 +655,7 @@ http://www.cmake.org/cmake/resources/software.html
 
 Binary installers are available for OS X, but they are not recommended
 (2.4 versions install in /usr instead of /usr/local, and 2.6 versions are a
-strange application).Ê Download the source.Ê Double-click the source tarball,
+strange application). Instead, download the source, double-click the source tarball,
 then cd to the source folder and:
 
 ``` 
@@ -593,7 +666,7 @@ sudo make install
 
 == Install subversion for OSX ==
 
-__Leopard note:__ Leopard includes SVN, so this step can be skipped on Leopard.
+__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include SVN, so this step can be skipped on these Operating Systems.
 
 The [http://sourceforge.net/projects/macsvn/ MacSVN] project has a downloadable
 build of svn. If you are a GUI inclined person you may want to grab their gui
@@ -602,7 +675,6 @@ client too. Get the command line client here:
 ``` 
 curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Subversion_1.4.2.zip 
 ```
-
 
 Once downloaded open the zip file and run the installer.
 
@@ -675,10 +747,10 @@ I suggest you press 'p' to accept the key permanently.
 
 == Configure the build ==
 
-There are 2 different methods to build QGIS.Ê The traditional Cmake method,
+There are 2 different methods to build QGIS: the traditional Cmake method,
 and the new Xcode project (starting with QGIS 1.1). The Xcode project has
-additional bundling steps, though some optional QGIS features are required due
-to limited conditional compilation.Ê The Cmake build handles optional features,
+additional bundling steps, though some optional Qgis features must be explicitly
+stated in a user configuration file. The Cmake build handles optional features,
 and some bundling steps are available with scripts in the mac directory.
 
 === Configure the Cmake build ===
@@ -701,8 +773,10 @@ D SIP_BINARY_PATH=/usr/local/bin/sip"" to the cmake command above,
 before the "".."" at the end, ie:
 
 ```
-cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ -D CMAKE_BUILD_TYPE=Release -
-D SIP_BINARY_PATH=/usr/local/bin/sip ..
+cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ \
+	  -D CMAKE_BUILD_TYPE=Release \
+	  -D SIP_BINARY_PATH=/usr/local/bin/sip \
+	  ..
 ```
 
 To use the application build of GRASS on OSX, you can optionally use the
@@ -730,18 +804,48 @@ cmake -D CMAKE_INSTALL_PREFIX=${HOME}/apps/ \
   ..
 ```
 
+__Snow Leopard note:__ To handle the appropriate version of Qt (32-bit or 64-bit), you will need to invoke cmake based on which version of Qt you installed.
+
+For 32-bit Qt (Carbon) with GRASS-6.4:
+
+```
+cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ \
+	  -D CMAKE_BUILD_TYPE=Release \
+	  -D SIP_BINARY_PATH=/usr/local/bin/sip 
+	  -D CMAKE_C_FLAGS=-m32 \
+	  -D CMAKE_CXX_FLAGS=-m32
+	  -D CMAKE_OSX_ARCHITECTURES=i386
+	  -D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
+	  -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include\
+	  ..
+```
+
+For 64-bit Qt (Cocoa) with GRASS-6.4:
+
+```
+cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ \
+	  -D CMAKE_BUILD_TYPE=Release \
+	  -D SIP_BINARY_PATH=/usr/local/bin/sip 
+	  -D CMAKE_C_FLAGS=-m64 \
+	  -D CMAKE_CXX_FLAGS=-m64
+	  -D CMAKE_OSX_ARCHITECTURES=x86_64
+	  -D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
+	  -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include\
+	  ..
+```
+
 === Configure the Xcode build ===
 
 In the mac/xcode folder in the source, duplicate the 'qgis_user-template.xcconfig'
-file and name it 'qgis_user.xcconfig'.Ê A default build will use the KyngChaos
+file and name it 'qgis_user.xcconfig'. A default build will use the KyngChaos
 frameworks, Postgres, GRASS 6.4, the python.org Python 2.5 and extra dependencies
-as described above, and compile for the build OSX version, so no extra configuration
-is necessary. If building on Leopard, you may want to use the system Python, which
-requires editing qgis_user.xcconfig.
+as described above, and compile for the current OSX architecture and version, so no
+extra configuration is necessary. If building on Leopard or newer, you may want to
+use the system Python, which requires editing qgis_user.xcconfig.
 
 See the mac/xcode/readme.rtf for details, if you need to customize the build.
 The default build will also bundle the Qt frameworks, Postgres library, and
-other dependency libraries to create a self-contained package.Ê The KyngChaos
+other dependency libraries to create a self-contained package. The KyngChaos
 frameworks and GRASS application are not bundled.
 
 == Building ==
@@ -757,15 +861,37 @@ make
 If all built without errors you can then install it:
 
 ``` 
-sudo make install 
+make install 
+```
+
+or, for a Unix-style build
+```
+sudo make install
 ```
 
 === Building with Xcode ===
 
-Open the xcode project file in Xcode.Ê Select 'Release' build configuration
-and select the 'Full Qgis' target, then build.
+Open the Xcode project file in the mac/xcode directory. Select 'Release' build
+configuration and select the 'Full Qgis' target, then build. If you use ccache,
+there have been compilation problems reported, so it is suggested that you disable
+ccache support.
 
-The Qgis application will be found in the 'build/Release' folder in the xcode folder.
+
+Alternatively, from within the mac/xcode directory, build with the command:
+
+```
+xcodebuild
+```
+__Snow Leopard note:__ You can also build Qgis using the new llvm compilers supplied
+with Xcode 3.2.x. To do this, you first need to export the proper compiler settings:
+
+```
+export CC=/Developer/usr/bin/llvm-gcc
+export CXX=/Developer/usr/bin/llvm-g++
+xcodebuild
+```
+
+The Qgis application will be found in the 'build/$SYSTEM/Release' folder in the xcode folder.
 Copy this to whereever you like.
 
 % -----------------------------------------------------------------------------
