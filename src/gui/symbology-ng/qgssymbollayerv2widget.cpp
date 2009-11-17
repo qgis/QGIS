@@ -212,8 +212,10 @@ QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget(QWidget* pare
   setupUi(this);
   
   connect(btnChangeColor, SIGNAL(clicked()), this, SLOT(setColor()));
-  connect(btnChangeBorderColor, SIGNAL(clicked()), this, SLOT(setBorderColor()));
   connect(cboFillStyle, SIGNAL(currentIndexChanged(int)), this, SLOT(setBrushStyle()));
+  connect(btnChangeBorderColor, SIGNAL(clicked()), this, SLOT(setBorderColor()));
+  connect(spinBorderWidth, SIGNAL(valueChanged(double)), this, SLOT(borderWidthChanged()));
+  connect(cboBorderStyle, SIGNAL(currentIndexChanged(int)), this, SLOT(borderStyleChanged()));
 }
 
 void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
@@ -226,8 +228,10 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer(QgsSymbolLayerV2* layer)
   
   // set values
   btnChangeColor->setColor(mLayer->color());
-  btnChangeBorderColor->setColor(mLayer->borderColor());
   cboFillStyle->setBrushStyle(mLayer->brushStyle());
+  btnChangeBorderColor->setColor(mLayer->borderColor());
+  cboBorderStyle->setPenStyle(mLayer->borderStyle());
+  spinBorderWidth->setValue(mLayer->borderWidth());
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
@@ -258,6 +262,18 @@ void QgsSimpleFillSymbolLayerV2Widget::setBorderColor()
 void QgsSimpleFillSymbolLayerV2Widget::setBrushStyle()
 {
   mLayer->setBrushStyle(cboFillStyle->brushStyle());
+  emit changed();
+}
+
+void QgsSimpleFillSymbolLayerV2Widget::borderWidthChanged()
+{
+  mLayer->setBorderWidth(spinBorderWidth->value());
+  emit changed();
+}
+
+void QgsSimpleFillSymbolLayerV2Widget::borderStyleChanged()
+{
+  mLayer->setBorderStyle(cboBorderStyle->penStyle());
   emit changed();
 }
 
