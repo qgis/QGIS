@@ -12,6 +12,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h" // for uniqueValues
 
+#include <QMessageBox>
 #include <QStandardItemModel>
 #include <QStandardItem>
 
@@ -255,6 +256,15 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
     ramp = mRenderer->sourceColorRamp()->clone();
   else
     ramp = mStyle->colorRamp( rampName );
+
+  if ( ramp == NULL )
+  {
+    if ( cboCategorizedColorRamp->count() == 0 )
+      QMessageBox::critical( this, tr("Error"), tr("There are no available color ramps. You can add them in Style Manager.") );
+    else
+      QMessageBox::critical( this, tr("Error"), tr("The selected color ramp is not available.") );
+    return;
+  }
 
   QgsCategoryList cats;
   _createCategories( cats, unique_vals, mCategorizedSymbol, ramp );

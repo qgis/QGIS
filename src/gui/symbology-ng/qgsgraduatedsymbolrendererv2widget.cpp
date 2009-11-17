@@ -11,6 +11,7 @@
 
 #include "qgssymbolv2selectordialog.h"
 
+#include <QMessageBox>
 #include <QStandardItemModel>
 #include <QStandardItem>
 
@@ -156,6 +157,15 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
     ramp = mRenderer->sourceColorRamp()->clone();
   else
     ramp = mStyle->colorRamp( rampName );
+
+  if ( ramp == NULL )
+  {
+    if ( cboGraduatedColorRamp->count() == 0 )
+      QMessageBox::critical( this, tr("Error"), tr("There are no available color ramps. You can add them in Style Manager.") );
+    else
+      QMessageBox::critical( this, tr("Error"), tr("The selected color ramp is not available.") );
+    return;
+  }
 
   QgsGraduatedSymbolRendererV2::Mode mode;
   if (cboGraduatedMode->currentIndex() == 0)
