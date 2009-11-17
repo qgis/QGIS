@@ -242,7 +242,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       if ( editor )
         cb = qobject_cast<QCheckBox*>( editor );
       else
-        cb = new QCheckBox();
+        cb = new QCheckBox( parent );
 
       if ( cb )
       {
@@ -254,8 +254,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     // fall-through
 
     case QgsVectorLayer::LineEdit:
+    case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::UniqueValuesEditable:
-    default:
     {
       QLineEdit *le = NULL;
       QTextEdit *te = NULL;
@@ -266,6 +266,10 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         le = qobject_cast<QLineEdit *>( editor );
         te = qobject_cast<QTextEdit *>( editor );
         pte = qobject_cast<QPlainTextEdit *>( editor );
+      }
+      else if ( editType == QgsVectorLayer::TextEdit )
+      {
+        pte = new QPlainTextEdit( parent );
       }
       else
       {

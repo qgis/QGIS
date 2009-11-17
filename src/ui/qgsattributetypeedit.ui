@@ -66,6 +66,11 @@
        <string>Checkbox</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Text edit</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>
@@ -77,7 +82,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>9</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="lineEditPage">
       <layout class="QVBoxLayout" name="verticalLayout_1">
@@ -538,6 +543,33 @@
           <size>
            <width>20</width>
            <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="textEditPage">
+      <layout class="QVBoxLayout" name="verticalLayout_25">
+       <item>
+        <widget class="QLabel" name="hiddenLabel_3">
+         <property name="text">
+          <string>A text edit field that accepts multiple lines will be used.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_17">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>302</height>
           </size>
          </property>
         </spacer>

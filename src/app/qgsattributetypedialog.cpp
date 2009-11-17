@@ -249,6 +249,9 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
       setPage( 9 );
       break;
 
+    case QgsVectorLayer::TextEdit:
+      setPage( 10 );
+
     case QgsVectorLayer::LineEdit:
       setPage( 0 );
       break;
@@ -459,6 +462,7 @@ void QgsAttributeTypeDialog::accept()
   //store data to output variables
   switch ( selectionComboBox->currentIndex() )
   {
+    default:
     case 0:
       mEditType = QgsVectorLayer::LineEdit;
       break;
@@ -530,8 +534,9 @@ void QgsAttributeTypeDialog::accept()
     case 9:
       mEditType = QgsVectorLayer::CheckBox;
       break;
-    default:
-      mEditType = QgsVectorLayer::LineEdit;
+    case 10:
+      mEditType = QgsVectorLayer::TextEdit;
+      break;
   }
 
   QDialog::accept();
