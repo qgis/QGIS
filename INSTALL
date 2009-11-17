@@ -1106,7 +1106,7 @@ First you need to install the debian packaging tools once:
 The QGIS packages will be created with:
 
 
-  dpkg-buildpackage -us -us -b
+  dpkg-buildpackage -us -uc -b
 
 
 /!\ *Note:* If dpkg-buildpackage complains about unmet build dependencies
