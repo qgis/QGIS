@@ -32,8 +32,8 @@ static QString iconPath( QString iconFile )
 
 ///////
 
-QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QString styleFilename, QWidget* parent )
-    : QDialog( parent ), mStyle( style ), mStyleFilename( styleFilename )
+QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent )
+    : QDialog( parent ), mStyle( style )
 {
 
   setupUi( this );
@@ -65,8 +65,7 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QString sty
 void QgsStyleV2ManagerDialog::onFinished()
 {
   // TODO: save only when modified
-  if ( !mStyleFilename.isEmpty() )
-    mStyle->save( mStyleFilename );
+  mStyle->save();
 }
 
 void QgsStyleV2ManagerDialog::populateTypes()

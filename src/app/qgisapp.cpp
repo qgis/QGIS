@@ -1068,7 +1068,7 @@ void QgisApp::createActions()
 
 void QgisApp::showStyleManagerV2()
 {
-  QgsStyleV2ManagerDialog dlg( QgsStyleV2::defaultStyle(), QgsApplication::userStyleV2Path(), this );
+  QgsStyleV2ManagerDialog dlg( QgsStyleV2::defaultStyle(), this );
   dlg.exec();
 }
 

@@ -216,6 +216,7 @@ bool QgsStyleV2::load(QString filename)
     e = e.nextSiblingElement();
   }
 
+  mFileName = filename;
   return true;
 }
 
@@ -224,8 +225,8 @@ bool QgsStyleV2::load(QString filename)
 bool QgsStyleV2::save(QString filename)
 {
   mErrorString = QString();
-  //if (filename.isEmpty())
-  //  filename = mFilename;
+  if (filename.isEmpty())
+    filename = mFileName;
   
   QDomDocument doc("qgis_style");
   QDomElement root = doc.createElement("qgis_style");
@@ -257,5 +258,6 @@ bool QgsStyleV2::save(QString filename)
   doc.save(ts, 2);
   f.close();
   
+  mFileName = filename;
   return true;
 }

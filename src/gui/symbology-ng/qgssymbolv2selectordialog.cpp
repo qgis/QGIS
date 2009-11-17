@@ -206,6 +206,9 @@ void QgsSymbolV2SelectorDialog::addSymbolToStyle()
   // add new symbol to style and re-populate the list
   mStyle->addSymbol(name, mSymbol->clone());
 
+  // make sure the symbol is stored
+  mStyle->save();
+
   populateSymbolView();
 }
 
