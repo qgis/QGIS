@@ -579,6 +579,7 @@ void QgsVectorLayerProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::Immutable, tr( "Immutable" ) );
   editTypeMap.insert( QgsVectorLayer::Hidden, tr( "Hidden" ) );
   editTypeMap.insert( QgsVectorLayer::CheckBox, tr( "Checkbox" ) );
+  editTypeMap.insert( QgsVectorLayer::TextEdit, tr( "Text edit" ) );
 }
 
 QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )

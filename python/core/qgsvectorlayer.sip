@@ -16,7 +16,9 @@ public:
     CheckBox,    /* @note added in 1.4 */
     FileName,
     Enumeration, /* @note added in 1.4 */
-    Immutable    /* @note added in 1.4 */
+    Immutable,   /* @note added in 1.4 */
+    Hidden,      /* @note added in 1.4 */
+    TextEdit     /* @note added in 1.4 */
   };
    
   struct RangeData {
