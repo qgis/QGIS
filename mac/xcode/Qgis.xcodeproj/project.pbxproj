@@ -80,6 +80,7 @@
 				7256F1C10F411C7C0022BE1F /* PBXTargetDependency */,
 				72FB0B6D0FFD6B8F0052360B /* PBXTargetDependency */,
 				7256F1AD0F411C120022BE1F /* PBXTargetDependency */,
+				7225EF3010B2273D00D23EA2 /* PBXTargetDependency */,
 				7256F1AB0F411C120022BE1F /* PBXTargetDependency */,
 				7256F1BF0F411C7C0022BE1F /* PBXTargetDependency */,
 				7223B7A60F96AA6C00D905B4 /* PBXTargetDependency */,
@@ -181,7 +182,6 @@
 		720383720F8B93450083B883 /* qgswkndiagramfactorywidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 720383430F8B8FC40083B883 /* qgswkndiagramfactorywidget.h */; };
 		720383780F8BA8C50083B883 /* feature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382E20F8B8B540083B883 /* feature.cpp */; };
 		720383790F8BA8C50083B883 /* geomfunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382E40F8B8B540083B883 /* geomfunction.cpp */; };
-		7203837A0F8BA8C50083B883 /* label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382E80F8B8B540083B883 /* label.cpp */; };
 		7203837B0F8BA8C50083B883 /* labelposition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382EA0F8B8B540083B883 /* labelposition.cpp */; };
 		7203837C0F8BA8C50083B883 /* layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382EC0F8B8B540083B883 /* layer.cpp */; };
 		7203837D0F8BA8C50083B883 /* pal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382EF0F8B8B540083B883 /* pal.cpp */; };
@@ -575,6 +575,76 @@
 		7223B79D0F96A9BF00D905B4 /* qgsselectgeoraster_ui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */; };
 		7223B79E0F96AA2000D905B4 /* oracleplugin.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7750F969A9D00D905B4 /* oracleplugin.qrc */; };
 		7224A24E0FEA732A004E87E3 /* qgsmaptoolnodetool.h in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB60FDAC1F4000E8CB0 /* qgsmaptoolnodetool.h */; };
+		7225EF1B10B2265A00D23EA2 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		7225EF1C10B2265A00D23EA2 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
+		7225EF2510B2268F00D23EA2 /* engineconfigdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF0810B2264D00D23EA2 /* engineconfigdialog.cpp */; };
+		7225EF2610B2268F00D23EA2 /* labeling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF0B10B2264D00D23EA2 /* labeling.cpp */; };
+		7225EF2710B2268F00D23EA2 /* labelinggui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF0F10B2264D00D23EA2 /* labelinggui.cpp */; };
+		7225EF2810B2268F00D23EA2 /* labelpreview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF1210B2264D00D23EA2 /* labelpreview.cpp */; };
+		7225EF2910B2268F00D23EA2 /* pallabeling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF1410B2264D00D23EA2 /* pallabeling.cpp */; };
+		7225EF2A10B2269A00D23EA2 /* engineconfigdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF0910B2264D00D23EA2 /* engineconfigdialog.h */; };
+		7225EF2B10B2269A00D23EA2 /* labeling.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF0C10B2264D00D23EA2 /* labeling.h */; };
+		7225EF2C10B2269A00D23EA2 /* labelinggui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF1010B2264D00D23EA2 /* labelinggui.h */; };
+		7225EF2D10B226A300D23EA2 /* labeling.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF0E10B2264D00D23EA2 /* labeling.qrc */; };
+		7225EF8B10B229FA00D23EA2 /* qgscategorizedsymbolrendererv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF6D10B2298A00D23EA2 /* qgscategorizedsymbolrendererv2.cpp */; };
+		7225EF8C10B229FA00D23EA2 /* qgsfillsymbollayerv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF7010B2298A00D23EA2 /* qgsfillsymbollayerv2.cpp */; };
+		7225EF8D10B229FA00D23EA2 /* qgsgraduatedsymbolrendererv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF7210B2298A00D23EA2 /* qgsgraduatedsymbolrendererv2.cpp */; };
+		7225EF8E10B229FA00D23EA2 /* qgslinesymbollayerv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF7410B2298A00D23EA2 /* qgslinesymbollayerv2.cpp */; };
+		7225EF8F10B229FA00D23EA2 /* qgsmarkersymbollayerv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF7610B2298A00D23EA2 /* qgsmarkersymbollayerv2.cpp */; };
+		7225EF9010B229FA00D23EA2 /* qgsrendererv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF7810B2298A00D23EA2 /* qgsrendererv2.cpp */; };
+		7225EF9110B229FA00D23EA2 /* qgsrendererv2registry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF7A10B2298A00D23EA2 /* qgsrendererv2registry.cpp */; };
+		7225EF9210B229FA00D23EA2 /* qgssinglesymbolrendererv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF7C10B2298A00D23EA2 /* qgssinglesymbolrendererv2.cpp */; };
+		7225EF9310B229FA00D23EA2 /* qgsstylev2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF7E10B2298A00D23EA2 /* qgsstylev2.cpp */; };
+		7225EF9410B229FA00D23EA2 /* qgssymbollayerv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF8010B2298A00D23EA2 /* qgssymbollayerv2.cpp */; };
+		7225EF9510B229FA00D23EA2 /* qgssymbollayerv2registry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF8210B2298A00D23EA2 /* qgssymbollayerv2registry.cpp */; };
+		7225EF9610B229FA00D23EA2 /* qgssymbollayerv2utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF8410B2298A00D23EA2 /* qgssymbollayerv2utils.cpp */; };
+		7225EF9710B229FA00D23EA2 /* qgssymbolv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF8610B2298A00D23EA2 /* qgssymbolv2.cpp */; };
+		7225EF9810B229FA00D23EA2 /* qgsvectorcolorrampv2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF8810B2298B00D23EA2 /* qgsvectorcolorrampv2.cpp */; };
+		7225EF9D10B22AEF00D23EA2 /* costcalculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF9A10B22AC400D23EA2 /* costcalculator.cpp */; };
+		7225EFB310B22D2000D23EA2 /* qgsgraduatedsymbolrendererv2widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3610B2275E00D23EA2 /* qgsgraduatedsymbolrendererv2widget.cpp */; };
+		7225EFB410B22D2000D23EA2 /* qgspenstylecombobox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3810B2275E00D23EA2 /* qgspenstylecombobox.cpp */; };
+		7225EFB510B22D2000D23EA2 /* qgsrendererv2propertiesdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3A10B2275E00D23EA2 /* qgsrendererv2propertiesdialog.cpp */; };
+		7225EFB610B22D2000D23EA2 /* qgsrendererv2widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3C10B2275E00D23EA2 /* qgsrendererv2widget.cpp */; };
+		7225EFB710B22D2000D23EA2 /* qgssinglesymbolrendererv2widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3E10B2275E00D23EA2 /* qgssinglesymbolrendererv2widget.cpp */; };
+		7225EFB810B22D2000D23EA2 /* qgsstylev2managerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4010B2275E00D23EA2 /* qgsstylev2managerdialog.cpp */; };
+		7225EFB910B22D2000D23EA2 /* qgssymbollayerv2widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4210B2275E00D23EA2 /* qgssymbollayerv2widget.cpp */; };
+		7225EFBA10B22D2000D23EA2 /* qgssymbollevelsv2dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4410B2275E00D23EA2 /* qgssymbollevelsv2dialog.cpp */; };
+		7225EFBB10B22D2000D23EA2 /* qgssymbolv2propertiesdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4610B2275E00D23EA2 /* qgssymbolv2propertiesdialog.cpp */; };
+		7225EFBC10B22D2000D23EA2 /* qgssymbolv2selectordialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4810B2275E00D23EA2 /* qgssymbolv2selectordialog.cpp */; };
+		7225EFBD10B22D2000D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4A10B2275E00D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.cpp */; };
+		7225EFBE10B22D2000D23EA2 /* qgsvectorgradientcolorrampv2dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4C10B2275E00D23EA2 /* qgsvectorgradientcolorrampv2dialog.cpp */; };
+		7225EFBF10B22D2000D23EA2 /* qgsvectorrandomcolorrampv2dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4E10B2275E00D23EA2 /* qgsvectorrandomcolorrampv2dialog.cpp */; };
+		7225EFC010B22D2000D23EA2 /* qgscategorizedsymbolrendererv2widget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3510B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.h */; };
+		7225EFC110B22D2000D23EA2 /* qgsgraduatedsymbolrendererv2widget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3710B2275E00D23EA2 /* qgsgraduatedsymbolrendererv2widget.h */; };
+		7225EFC210B22D2000D23EA2 /* qgsrendererv2propertiesdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3B10B2275E00D23EA2 /* qgsrendererv2propertiesdialog.h */; };
+		7225EFC310B22D2000D23EA2 /* qgssinglesymbolrendererv2widget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3F10B2275E00D23EA2 /* qgssinglesymbolrendererv2widget.h */; };
+		7225EFC410B22D2000D23EA2 /* qgsstylev2managerdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4110B2275E00D23EA2 /* qgsstylev2managerdialog.h */; };
+		7225EFC510B22D2000D23EA2 /* qgssymbollayerv2widget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4310B2275E00D23EA2 /* qgssymbollayerv2widget.h */; };
+		7225EFC610B22D2000D23EA2 /* qgssymbollevelsv2dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4510B2275E00D23EA2 /* qgssymbollevelsv2dialog.h */; };
+		7225EFC710B22D2000D23EA2 /* qgssymbolv2propertiesdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4710B2275E00D23EA2 /* qgssymbolv2propertiesdialog.h */; };
+		7225EFC810B22D2000D23EA2 /* qgssymbolv2selectordialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4910B2275E00D23EA2 /* qgssymbolv2selectordialog.h */; };
+		7225EFC910B22D2000D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4B10B2275E00D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.h */; };
+		7225EFCA10B22D2000D23EA2 /* qgsvectorgradientcolorrampv2dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4D10B2275E00D23EA2 /* qgsvectorgradientcolorrampv2dialog.h */; };
+		7225EFCB10B22D2000D23EA2 /* qgsvectorrandomcolorrampv2dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4F10B2275E00D23EA2 /* qgsvectorrandomcolorrampv2dialog.h */; };
+		7225EFDE10B22E6C00D23EA2 /* cap_flat.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFCD10B22E5B00D23EA2 /* cap_flat.png */; };
+		7225EFDF10B22E6C00D23EA2 /* cap_round.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFCE10B22E5B00D23EA2 /* cap_round.png */; };
+		7225EFE010B22E6C00D23EA2 /* cap_square.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFCF10B22E5B00D23EA2 /* cap_square.png */; };
+		7225EFE110B22E6C00D23EA2 /* cap_style.svg in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD010B22E5B00D23EA2 /* cap_style.svg */; };
+		7225EFE210B22E6C00D23EA2 /* join_bevel.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD110B22E5B00D23EA2 /* join_bevel.png */; };
+		7225EFE310B22E6C00D23EA2 /* join_miter.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD210B22E5B00D23EA2 /* join_miter.png */; };
+		7225EFE410B22E6C00D23EA2 /* join_round.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD310B22E5B00D23EA2 /* join_round.png */; };
+		7225EFE510B22E6C00D23EA2 /* join_style.svg in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD410B22E5B00D23EA2 /* join_style.svg */; };
+		7225EFE610B22E6C00D23EA2 /* rendererCategorizedSymbol.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD510B22E5B00D23EA2 /* rendererCategorizedSymbol.png */; };
+		7225EFE710B22E6C00D23EA2 /* rendererGraduatedSymbol.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD610B22E5B00D23EA2 /* rendererGraduatedSymbol.png */; };
+		7225EFE810B22E6C00D23EA2 /* rendererSingleSymbol.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD710B22E5B00D23EA2 /* rendererSingleSymbol.png */; };
+		7225EFE910B22E6C00D23EA2 /* symbologyAdd.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD810B22E5B00D23EA2 /* symbologyAdd.png */; };
+		7225EFEA10B22E6C00D23EA2 /* symbologyDown.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD910B22E5B00D23EA2 /* symbologyDown.png */; };
+		7225EFEB10B22E6C00D23EA2 /* symbologyEdit.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFDA10B22E5B00D23EA2 /* symbologyEdit.png */; };
+		7225EFEC10B22E6C00D23EA2 /* symbologyLock.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFDB10B22E5B00D23EA2 /* symbologyLock.png */; };
+		7225EFED10B22E6C00D23EA2 /* symbologyRemove.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFDC10B22E5B00D23EA2 /* symbologyRemove.png */; };
+		7225EFEE10B22E6C00D23EA2 /* symbologyUp.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFDD10B22E5B00D23EA2 /* symbologyUp.png */; };
+		7225EFF710B236C400D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3410B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp */; };
+		7225EFF810B2375300D23EA2 /* qgsbrushstylecombobox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3210B2275E00D23EA2 /* qgsbrushstylecombobox.cpp */; };
 		72267A470F9A1CC900010C18 /* mActionZoomNext.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 72267A460F9A1CB400010C18 /* mActionZoomNext.png */; };
 		72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */; };
 		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
@@ -1985,6 +2055,28 @@
 			);
 			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
+		7225EF1D10B2265A00D23EA2 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.qrc";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/qrc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTRCC -name $INPUT_FILE_BASE -o \"$DERIVED_FILES_DIR/qrc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		7225EF1E10B2265A00D23EA2 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
 		7262ED980F7A770300498385 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
@@ -2559,6 +2651,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 7223B77E0F96A96500D905B4;
 			remoteInfo = oracleplugin;
+		};
+		7225EF2F10B2273D00D23EA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7225EF1710B2265A00D23EA2 /* labelingplugin */;
+			remoteInfo = labelingplugin;
 		};
 		7256F18F0F411B110022BE1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3399,6 +3498,23 @@
 				72683FFD0FD6B21A00D90FFC /* mActionRemoveSelectedFeature.png in Copy - theme-default */,
 				72779E9F1040615000CA9DE5 /* mActionAddImage.png in Copy - theme-default */,
 				72779EA01040615000CA9DE5 /* mActionAddMap.png in Copy - theme-default */,
+				7225EFDE10B22E6C00D23EA2 /* cap_flat.png in Copy - theme-default */,
+				7225EFDF10B22E6C00D23EA2 /* cap_round.png in Copy - theme-default */,
+				7225EFE010B22E6C00D23EA2 /* cap_square.png in Copy - theme-default */,
+				7225EFE110B22E6C00D23EA2 /* cap_style.svg in Copy - theme-default */,
+				7225EFE210B22E6C00D23EA2 /* join_bevel.png in Copy - theme-default */,
+				7225EFE310B22E6C00D23EA2 /* join_miter.png in Copy - theme-default */,
+				7225EFE410B22E6C00D23EA2 /* join_round.png in Copy - theme-default */,
+				7225EFE510B22E6C00D23EA2 /* join_style.svg in Copy - theme-default */,
+				7225EFE610B22E6C00D23EA2 /* rendererCategorizedSymbol.png in Copy - theme-default */,
+				7225EFE710B22E6C00D23EA2 /* rendererGraduatedSymbol.png in Copy - theme-default */,
+				7225EFE810B22E6C00D23EA2 /* rendererSingleSymbol.png in Copy - theme-default */,
+				7225EFE910B22E6C00D23EA2 /* symbologyAdd.png in Copy - theme-default */,
+				7225EFEA10B22E6C00D23EA2 /* symbologyDown.png in Copy - theme-default */,
+				7225EFEB10B22E6C00D23EA2 /* symbologyEdit.png in Copy - theme-default */,
+				7225EFEC10B22E6C00D23EA2 /* symbologyLock.png in Copy - theme-default */,
+				7225EFED10B22E6C00D23EA2 /* symbologyRemove.png in Copy - theme-default */,
+				7225EFEE10B22E6C00D23EA2 /* symbologyUp.png in Copy - theme-default */,
 			);
 			name = "Copy - theme-default";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4193,8 +4309,6 @@
 		720382E50F8B8B540083B883 /* geomfunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = geomfunction.h; path = ../../src/core/pal/geomfunction.h; sourceTree = SOURCE_ROOT; };
 		720382E60F8B8B540083B883 /* hashtable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = hashtable.hpp; path = ../../src/core/pal/hashtable.hpp; sourceTree = SOURCE_ROOT; };
 		720382E70F8B8B540083B883 /* internalexception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = internalexception.h; path = ../../src/core/pal/internalexception.h; sourceTree = SOURCE_ROOT; };
-		720382E80F8B8B540083B883 /* label.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = label.cpp; path = ../../src/core/pal/label.cpp; sourceTree = SOURCE_ROOT; };
-		720382E90F8B8B540083B883 /* label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = label.h; path = ../../src/core/pal/label.h; sourceTree = SOURCE_ROOT; };
 		720382EA0F8B8B540083B883 /* labelposition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = labelposition.cpp; path = ../../src/core/pal/labelposition.cpp; sourceTree = SOURCE_ROOT; };
 		720382EB0F8B8B540083B883 /* labelposition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = labelposition.h; path = ../../src/core/pal/labelposition.h; sourceTree = SOURCE_ROOT; };
 		720382EC0F8B8B540083B883 /* layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = layer.cpp; path = ../../src/core/pal/layer.cpp; sourceTree = SOURCE_ROOT; };
@@ -6072,6 +6186,120 @@
 		7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsselectgeoraster_ui.h; path = ../../src/plugins/oracle_raster/qgsselectgeoraster_ui.h; sourceTree = SOURCE_ROOT; };
 		7223B77D0F969A9D00D905B4 /* qgsselectgeorasterbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsselectgeorasterbase.ui; path = ../../src/plugins/oracle_raster/qgsselectgeorasterbase.ui; sourceTree = SOURCE_ROOT; };
 		7223B78D0F96A96500D905B4 /* liboracleplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = liboracleplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		7225EF0310B225DD00D23EA2 /* symbology-ng-gui.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "symbology-ng-gui.sip"; path = "../../python/gui/symbology-ng-gui.sip"; sourceTree = SOURCE_ROOT; };
+		7225EF0410B2260200D23EA2 /* symbology-ng-core.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "symbology-ng-core.sip"; path = "../../python/core/symbology-ng-core.sip"; sourceTree = SOURCE_ROOT; };
+		7225EF0510B2261C00D23EA2 /* qgsattributeaction.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsattributeaction.sip; path = ../../python/core/qgsattributeaction.sip; sourceTree = SOURCE_ROOT; };
+		7225EF0710B2264D00D23EA2 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/labeling/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		7225EF0810B2264D00D23EA2 /* engineconfigdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = engineconfigdialog.cpp; path = ../../src/plugins/labeling/engineconfigdialog.cpp; sourceTree = SOURCE_ROOT; };
+		7225EF0910B2264D00D23EA2 /* engineconfigdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = engineconfigdialog.h; path = ../../src/plugins/labeling/engineconfigdialog.h; sourceTree = SOURCE_ROOT; };
+		7225EF0A10B2264D00D23EA2 /* engineconfigdialog.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = engineconfigdialog.ui; path = ../../src/plugins/labeling/engineconfigdialog.ui; sourceTree = SOURCE_ROOT; };
+		7225EF0B10B2264D00D23EA2 /* labeling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = labeling.cpp; path = ../../src/plugins/labeling/labeling.cpp; sourceTree = SOURCE_ROOT; };
+		7225EF0C10B2264D00D23EA2 /* labeling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = labeling.h; path = ../../src/plugins/labeling/labeling.h; sourceTree = SOURCE_ROOT; };
+		7225EF0D10B2264D00D23EA2 /* labeling.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = labeling.png; path = ../../src/plugins/labeling/labeling.png; sourceTree = SOURCE_ROOT; };
+		7225EF0E10B2264D00D23EA2 /* labeling.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = labeling.qrc; path = ../../src/plugins/labeling/labeling.qrc; sourceTree = SOURCE_ROOT; };
+		7225EF0F10B2264D00D23EA2 /* labelinggui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = labelinggui.cpp; path = ../../src/plugins/labeling/labelinggui.cpp; sourceTree = SOURCE_ROOT; };
+		7225EF1010B2264D00D23EA2 /* labelinggui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = labelinggui.h; path = ../../src/plugins/labeling/labelinggui.h; sourceTree = SOURCE_ROOT; };
+		7225EF1110B2264D00D23EA2 /* labelingguibase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = labelingguibase.ui; path = ../../src/plugins/labeling/labelingguibase.ui; sourceTree = SOURCE_ROOT; };
+		7225EF1210B2264D00D23EA2 /* labelpreview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = labelpreview.cpp; path = ../../src/plugins/labeling/labelpreview.cpp; sourceTree = SOURCE_ROOT; };
+		7225EF1310B2264D00D23EA2 /* labelpreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = labelpreview.h; path = ../../src/plugins/labeling/labelpreview.h; sourceTree = SOURCE_ROOT; };
+		7225EF1410B2264D00D23EA2 /* pallabeling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pallabeling.cpp; path = ../../src/plugins/labeling/pallabeling.cpp; sourceTree = SOURCE_ROOT; };
+		7225EF1510B2264D00D23EA2 /* pallabeling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pallabeling.h; path = ../../src/plugins/labeling/pallabeling.h; sourceTree = SOURCE_ROOT; };
+		7225EF2210B2265A00D23EA2 /* liblabelingplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = liblabelingplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		7225EF3210B2275E00D23EA2 /* qgsbrushstylecombobox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsbrushstylecombobox.cpp; path = "../../src/gui/symbology-ng/qgsbrushstylecombobox.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF3310B2275E00D23EA2 /* qgsbrushstylecombobox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsbrushstylecombobox.h; path = "../../src/gui/symbology-ng/qgsbrushstylecombobox.h"; sourceTree = SOURCE_ROOT; };
+		7225EF3410B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscategorizedsymbolrendererv2widget.cpp; path = "../../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF3510B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscategorizedsymbolrendererv2widget.h; path = "../../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.h"; sourceTree = SOURCE_ROOT; };
+		7225EF3610B2275E00D23EA2 /* qgsgraduatedsymbolrendererv2widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgraduatedsymbolrendererv2widget.cpp; path = "../../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF3710B2275E00D23EA2 /* qgsgraduatedsymbolrendererv2widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgraduatedsymbolrendererv2widget.h; path = "../../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.h"; sourceTree = SOURCE_ROOT; };
+		7225EF3810B2275E00D23EA2 /* qgspenstylecombobox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspenstylecombobox.cpp; path = "../../src/gui/symbology-ng/qgspenstylecombobox.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF3910B2275E00D23EA2 /* qgspenstylecombobox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspenstylecombobox.h; path = "../../src/gui/symbology-ng/qgspenstylecombobox.h"; sourceTree = SOURCE_ROOT; };
+		7225EF3A10B2275E00D23EA2 /* qgsrendererv2propertiesdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrendererv2propertiesdialog.cpp; path = "../../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF3B10B2275E00D23EA2 /* qgsrendererv2propertiesdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrendererv2propertiesdialog.h; path = "../../src/gui/symbology-ng/qgsrendererv2propertiesdialog.h"; sourceTree = SOURCE_ROOT; };
+		7225EF3C10B2275E00D23EA2 /* qgsrendererv2widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrendererv2widget.cpp; path = "../../src/gui/symbology-ng/qgsrendererv2widget.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF3D10B2275E00D23EA2 /* qgsrendererv2widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrendererv2widget.h; path = "../../src/gui/symbology-ng/qgsrendererv2widget.h"; sourceTree = SOURCE_ROOT; };
+		7225EF3E10B2275E00D23EA2 /* qgssinglesymbolrendererv2widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssinglesymbolrendererv2widget.cpp; path = "../../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF3F10B2275E00D23EA2 /* qgssinglesymbolrendererv2widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssinglesymbolrendererv2widget.h; path = "../../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.h"; sourceTree = SOURCE_ROOT; };
+		7225EF4010B2275E00D23EA2 /* qgsstylev2managerdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsstylev2managerdialog.cpp; path = "../../src/gui/symbology-ng/qgsstylev2managerdialog.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF4110B2275E00D23EA2 /* qgsstylev2managerdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsstylev2managerdialog.h; path = "../../src/gui/symbology-ng/qgsstylev2managerdialog.h"; sourceTree = SOURCE_ROOT; };
+		7225EF4210B2275E00D23EA2 /* qgssymbollayerv2widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssymbollayerv2widget.cpp; path = "../../src/gui/symbology-ng/qgssymbollayerv2widget.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF4310B2275E00D23EA2 /* qgssymbollayerv2widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssymbollayerv2widget.h; path = "../../src/gui/symbology-ng/qgssymbollayerv2widget.h"; sourceTree = SOURCE_ROOT; };
+		7225EF4410B2275E00D23EA2 /* qgssymbollevelsv2dialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssymbollevelsv2dialog.cpp; path = "../../src/gui/symbology-ng/qgssymbollevelsv2dialog.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF4510B2275E00D23EA2 /* qgssymbollevelsv2dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssymbollevelsv2dialog.h; path = "../../src/gui/symbology-ng/qgssymbollevelsv2dialog.h"; sourceTree = SOURCE_ROOT; };
+		7225EF4610B2275E00D23EA2 /* qgssymbolv2propertiesdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssymbolv2propertiesdialog.cpp; path = "../../src/gui/symbology-ng/qgssymbolv2propertiesdialog.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF4710B2275E00D23EA2 /* qgssymbolv2propertiesdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssymbolv2propertiesdialog.h; path = "../../src/gui/symbology-ng/qgssymbolv2propertiesdialog.h"; sourceTree = SOURCE_ROOT; };
+		7225EF4810B2275E00D23EA2 /* qgssymbolv2selectordialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssymbolv2selectordialog.cpp; path = "../../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF4910B2275E00D23EA2 /* qgssymbolv2selectordialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssymbolv2selectordialog.h; path = "../../src/gui/symbology-ng/qgssymbolv2selectordialog.h"; sourceTree = SOURCE_ROOT; };
+		7225EF4A10B2275E00D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsvectorcolorbrewercolorrampv2dialog.cpp; path = "../../src/gui/symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF4B10B2275E00D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectorcolorbrewercolorrampv2dialog.h; path = "../../src/gui/symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h"; sourceTree = SOURCE_ROOT; };
+		7225EF4C10B2275E00D23EA2 /* qgsvectorgradientcolorrampv2dialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsvectorgradientcolorrampv2dialog.cpp; path = "../../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF4D10B2275E00D23EA2 /* qgsvectorgradientcolorrampv2dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectorgradientcolorrampv2dialog.h; path = "../../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.h"; sourceTree = SOURCE_ROOT; };
+		7225EF4E10B2275E00D23EA2 /* qgsvectorrandomcolorrampv2dialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsvectorrandomcolorrampv2dialog.cpp; path = "../../src/gui/symbology-ng/qgsvectorrandomcolorrampv2dialog.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF4F10B2275E00D23EA2 /* qgsvectorrandomcolorrampv2dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectorrandomcolorrampv2dialog.h; path = "../../src/gui/symbology-ng/qgsvectorrandomcolorrampv2dialog.h"; sourceTree = SOURCE_ROOT; };
+		7225EF6D10B2298A00D23EA2 /* qgscategorizedsymbolrendererv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscategorizedsymbolrendererv2.cpp; path = "../../src/core/symbology-ng/qgscategorizedsymbolrendererv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF6E10B2298A00D23EA2 /* qgscategorizedsymbolrendererv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscategorizedsymbolrendererv2.h; path = "../../src/core/symbology-ng/qgscategorizedsymbolrendererv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF6F10B2298A00D23EA2 /* qgscolorbrewerpalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscolorbrewerpalette.h; path = "../../src/core/symbology-ng/qgscolorbrewerpalette.h"; sourceTree = SOURCE_ROOT; };
+		7225EF7010B2298A00D23EA2 /* qgsfillsymbollayerv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsfillsymbollayerv2.cpp; path = "../../src/core/symbology-ng/qgsfillsymbollayerv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF7110B2298A00D23EA2 /* qgsfillsymbollayerv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsfillsymbollayerv2.h; path = "../../src/core/symbology-ng/qgsfillsymbollayerv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF7210B2298A00D23EA2 /* qgsgraduatedsymbolrendererv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgraduatedsymbolrendererv2.cpp; path = "../../src/core/symbology-ng/qgsgraduatedsymbolrendererv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF7310B2298A00D23EA2 /* qgsgraduatedsymbolrendererv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgraduatedsymbolrendererv2.h; path = "../../src/core/symbology-ng/qgsgraduatedsymbolrendererv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF7410B2298A00D23EA2 /* qgslinesymbollayerv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgslinesymbollayerv2.cpp; path = "../../src/core/symbology-ng/qgslinesymbollayerv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF7510B2298A00D23EA2 /* qgslinesymbollayerv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgslinesymbollayerv2.h; path = "../../src/core/symbology-ng/qgslinesymbollayerv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF7610B2298A00D23EA2 /* qgsmarkersymbollayerv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmarkersymbollayerv2.cpp; path = "../../src/core/symbology-ng/qgsmarkersymbollayerv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF7710B2298A00D23EA2 /* qgsmarkersymbollayerv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmarkersymbollayerv2.h; path = "../../src/core/symbology-ng/qgsmarkersymbollayerv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF7810B2298A00D23EA2 /* qgsrendererv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrendererv2.cpp; path = "../../src/core/symbology-ng/qgsrendererv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF7910B2298A00D23EA2 /* qgsrendererv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrendererv2.h; path = "../../src/core/symbology-ng/qgsrendererv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF7A10B2298A00D23EA2 /* qgsrendererv2registry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrendererv2registry.cpp; path = "../../src/core/symbology-ng/qgsrendererv2registry.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF7B10B2298A00D23EA2 /* qgsrendererv2registry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrendererv2registry.h; path = "../../src/core/symbology-ng/qgsrendererv2registry.h"; sourceTree = SOURCE_ROOT; };
+		7225EF7C10B2298A00D23EA2 /* qgssinglesymbolrendererv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssinglesymbolrendererv2.cpp; path = "../../src/core/symbology-ng/qgssinglesymbolrendererv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF7D10B2298A00D23EA2 /* qgssinglesymbolrendererv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssinglesymbolrendererv2.h; path = "../../src/core/symbology-ng/qgssinglesymbolrendererv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF7E10B2298A00D23EA2 /* qgsstylev2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsstylev2.cpp; path = "../../src/core/symbology-ng/qgsstylev2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF7F10B2298A00D23EA2 /* qgsstylev2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsstylev2.h; path = "../../src/core/symbology-ng/qgsstylev2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF8010B2298A00D23EA2 /* qgssymbollayerv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssymbollayerv2.cpp; path = "../../src/core/symbology-ng/qgssymbollayerv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF8110B2298A00D23EA2 /* qgssymbollayerv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssymbollayerv2.h; path = "../../src/core/symbology-ng/qgssymbollayerv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF8210B2298A00D23EA2 /* qgssymbollayerv2registry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssymbollayerv2registry.cpp; path = "../../src/core/symbology-ng/qgssymbollayerv2registry.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF8310B2298A00D23EA2 /* qgssymbollayerv2registry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssymbollayerv2registry.h; path = "../../src/core/symbology-ng/qgssymbollayerv2registry.h"; sourceTree = SOURCE_ROOT; };
+		7225EF8410B2298A00D23EA2 /* qgssymbollayerv2utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssymbollayerv2utils.cpp; path = "../../src/core/symbology-ng/qgssymbollayerv2utils.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF8510B2298A00D23EA2 /* qgssymbollayerv2utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssymbollayerv2utils.h; path = "../../src/core/symbology-ng/qgssymbollayerv2utils.h"; sourceTree = SOURCE_ROOT; };
+		7225EF8610B2298A00D23EA2 /* qgssymbolv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssymbolv2.cpp; path = "../../src/core/symbology-ng/qgssymbolv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF8710B2298A00D23EA2 /* qgssymbolv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssymbolv2.h; path = "../../src/core/symbology-ng/qgssymbolv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF8810B2298B00D23EA2 /* qgsvectorcolorrampv2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsvectorcolorrampv2.cpp; path = "../../src/core/symbology-ng/qgsvectorcolorrampv2.cpp"; sourceTree = SOURCE_ROOT; };
+		7225EF8910B2298B00D23EA2 /* qgsvectorcolorrampv2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectorcolorrampv2.h; path = "../../src/core/symbology-ng/qgsvectorcolorrampv2.h"; sourceTree = SOURCE_ROOT; };
+		7225EF9A10B22AC400D23EA2 /* costcalculator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = costcalculator.cpp; path = ../../src/core/pal/costcalculator.cpp; sourceTree = SOURCE_ROOT; };
+		7225EF9B10B22AC400D23EA2 /* costcalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = costcalculator.h; path = ../../src/core/pal/costcalculator.h; sourceTree = SOURCE_ROOT; };
+		7225EFA010B22C4400D23EA2 /* qgscategorizedsymbolrendererv2widget.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgscategorizedsymbolrendererv2widget.ui; path = ../../src/ui/qgscategorizedsymbolrendererv2widget.ui; sourceTree = SOURCE_ROOT; };
+		7225EFA110B22C4400D23EA2 /* qgsgraduatedsymbolrendererv2widget.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsgraduatedsymbolrendererv2widget.ui; path = ../../src/ui/qgsgraduatedsymbolrendererv2widget.ui; sourceTree = SOURCE_ROOT; };
+		7225EFA210B22C4400D23EA2 /* qgsrendererv2propsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsrendererv2propsdialogbase.ui; path = ../../src/ui/qgsrendererv2propsdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7225EFA310B22C4400D23EA2 /* qgsstylev2managerdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsstylev2managerdialogbase.ui; path = ../../src/ui/qgsstylev2managerdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7225EFA410B22C4400D23EA2 /* qgssymbollevelsv2dialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgssymbollevelsv2dialogbase.ui; path = ../../src/ui/qgssymbollevelsv2dialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7225EFA510B22C4400D23EA2 /* qgssymbolv2propertiesdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgssymbolv2propertiesdialogbase.ui; path = ../../src/ui/qgssymbolv2propertiesdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7225EFA610B22C4400D23EA2 /* qgssymbolv2selectordialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgssymbolv2selectordialogbase.ui; path = ../../src/ui/qgssymbolv2selectordialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7225EFA710B22C4400D23EA2 /* qgsvectorcolorbrewercolorrampv2dialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsvectorcolorbrewercolorrampv2dialogbase.ui; path = ../../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7225EFA810B22C4400D23EA2 /* qgsvectorgradientcolorrampv2dialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsvectorgradientcolorrampv2dialogbase.ui; path = ../../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7225EFA910B22C4400D23EA2 /* qgsvectorrandomcolorrampv2dialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsvectorrandomcolorrampv2dialogbase.ui; path = ../../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7225EFAB10B22C5000D23EA2 /* widget_linedecoration.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_linedecoration.ui; path = ../../src/ui/symbollayer/widget_linedecoration.ui; sourceTree = SOURCE_ROOT; };
+		7225EFAC10B22C5000D23EA2 /* widget_markerline.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_markerline.ui; path = ../../src/ui/symbollayer/widget_markerline.ui; sourceTree = SOURCE_ROOT; };
+		7225EFAD10B22C5000D23EA2 /* widget_simplefill.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_simplefill.ui; path = ../../src/ui/symbollayer/widget_simplefill.ui; sourceTree = SOURCE_ROOT; };
+		7225EFAE10B22C5000D23EA2 /* widget_simpleline.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_simpleline.ui; path = ../../src/ui/symbollayer/widget_simpleline.ui; sourceTree = SOURCE_ROOT; };
+		7225EFAF10B22C5000D23EA2 /* widget_simplemarker.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_simplemarker.ui; path = ../../src/ui/symbollayer/widget_simplemarker.ui; sourceTree = SOURCE_ROOT; };
+		7225EFB010B22C5000D23EA2 /* widget_svgmarker.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_svgmarker.ui; path = ../../src/ui/symbollayer/widget_svgmarker.ui; sourceTree = SOURCE_ROOT; };
+		7225EFCD10B22E5B00D23EA2 /* cap_flat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cap_flat.png; path = ../../images/themes/default/cap_flat.png; sourceTree = SOURCE_ROOT; };
+		7225EFCE10B22E5B00D23EA2 /* cap_round.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cap_round.png; path = ../../images/themes/default/cap_round.png; sourceTree = SOURCE_ROOT; };
+		7225EFCF10B22E5B00D23EA2 /* cap_square.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = cap_square.png; path = ../../images/themes/default/cap_square.png; sourceTree = SOURCE_ROOT; };
+		7225EFD010B22E5B00D23EA2 /* cap_style.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = cap_style.svg; path = ../../images/themes/default/cap_style.svg; sourceTree = SOURCE_ROOT; };
+		7225EFD110B22E5B00D23EA2 /* join_bevel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = join_bevel.png; path = ../../images/themes/default/join_bevel.png; sourceTree = SOURCE_ROOT; };
+		7225EFD210B22E5B00D23EA2 /* join_miter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = join_miter.png; path = ../../images/themes/default/join_miter.png; sourceTree = SOURCE_ROOT; };
+		7225EFD310B22E5B00D23EA2 /* join_round.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = join_round.png; path = ../../images/themes/default/join_round.png; sourceTree = SOURCE_ROOT; };
+		7225EFD410B22E5B00D23EA2 /* join_style.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = join_style.svg; path = ../../images/themes/default/join_style.svg; sourceTree = SOURCE_ROOT; };
+		7225EFD510B22E5B00D23EA2 /* rendererCategorizedSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = rendererCategorizedSymbol.png; path = ../../images/themes/default/rendererCategorizedSymbol.png; sourceTree = SOURCE_ROOT; };
+		7225EFD610B22E5B00D23EA2 /* rendererGraduatedSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = rendererGraduatedSymbol.png; path = ../../images/themes/default/rendererGraduatedSymbol.png; sourceTree = SOURCE_ROOT; };
+		7225EFD710B22E5B00D23EA2 /* rendererSingleSymbol.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = rendererSingleSymbol.png; path = ../../images/themes/default/rendererSingleSymbol.png; sourceTree = SOURCE_ROOT; };
+		7225EFD810B22E5B00D23EA2 /* symbologyAdd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = symbologyAdd.png; path = ../../images/themes/default/symbologyAdd.png; sourceTree = SOURCE_ROOT; };
+		7225EFD910B22E5B00D23EA2 /* symbologyDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = symbologyDown.png; path = ../../images/themes/default/symbologyDown.png; sourceTree = SOURCE_ROOT; };
+		7225EFDA10B22E5B00D23EA2 /* symbologyEdit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = symbologyEdit.png; path = ../../images/themes/default/symbologyEdit.png; sourceTree = SOURCE_ROOT; };
+		7225EFDB10B22E5B00D23EA2 /* symbologyLock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = symbologyLock.png; path = ../../images/themes/default/symbologyLock.png; sourceTree = SOURCE_ROOT; };
+		7225EFDC10B22E5B00D23EA2 /* symbologyRemove.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = symbologyRemove.png; path = ../../images/themes/default/symbologyRemove.png; sourceTree = SOURCE_ROOT; };
+		7225EFDD10B22E5B00D23EA2 /* symbologyUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = symbologyUp.png; path = ../../images/themes/default/symbologyUp.png; sourceTree = SOURCE_ROOT; };
+		7225EFF110B22E9700D23EA2 /* symbology-ng-style.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "symbology-ng-style.xml"; path = "../../resources/symbology-ng-style.xml"; sourceTree = SOURCE_ROOT; };
 		72267A460F9A1CB400010C18 /* mActionZoomNext.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionZoomNext.png; path = ../../images/themes/classic/mActionZoomNext.png; sourceTree = SOURCE_ROOT; };
 		72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionZoomNext.png; path = ../../images/themes/default/mActionZoomNext.png; sourceTree = SOURCE_ROOT; };
 		72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionZoomNext.png; path = ../../images/themes/gis/mActionZoomNext.png; sourceTree = SOURCE_ROOT; };
@@ -7678,6 +7906,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7225EF1A10B2265A00D23EA2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7225EF1B10B2265A00D23EA2 /* libqgis_core.dylib in Frameworks */,
+				7225EF1C10B2265A00D23EA2 /* libqgis_gui.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7262ED960F7A770300498385 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -8002,6 +8239,7 @@
 				72DB68E31021D08400ED5F3A /* libosmprovider.so */,
 				726C67411046030F00EFEDCC /* librasterterrainplugin.so */,
 				721598191052B46D003D1610 /* libqgis_analysis.dylib */,
+				7225EF2210B2265A00D23EA2 /* liblabelingplugin.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8091,14 +8329,14 @@
 		720382E10F8B8B540083B883 /* pal */ = {
 			isa = PBXGroup;
 			children = (
+				7225EF9A10B22AC400D23EA2 /* costcalculator.cpp */,
+				7225EF9B10B22AC400D23EA2 /* costcalculator.h */,
 				720382E20F8B8B540083B883 /* feature.cpp */,
 				720382E30F8B8B540083B883 /* feature.h */,
 				720382E40F8B8B540083B883 /* geomfunction.cpp */,
 				720382E50F8B8B540083B883 /* geomfunction.h */,
 				720382E60F8B8B540083B883 /* hashtable.hpp */,
 				720382E70F8B8B540083B883 /* internalexception.h */,
-				720382E80F8B8B540083B883 /* label.cpp */,
-				720382E90F8B8B540083B883 /* label.h */,
 				720382EA0F8B8B540083B883 /* labelposition.cpp */,
 				720382EB0F8B8B540083B883 /* labelposition.h */,
 				720382EC0F8B8B540083B883 /* layer.cpp */,
@@ -8527,6 +8765,7 @@
 				7209E7000F39E57A003DC336 /* spatialindex */,
 				72F8D9470F89268C00D10CE5 /* spatialite */,
 				7209E7360F39E57A003DC336 /* symbology */,
+				7225EF6C10B2298A00D23EA2 /* symbology-ng */,
 				7209E6800F39E57A003DC336 /* genlexyacc.bat */,
 			);
 			name = core;
@@ -8756,6 +8995,7 @@
 		7209E7400F39E57A003DC336 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				7209E7410F39E57A003DC336 /* CMakeLists.txt */,
 				7209E7420F39E57A003DC336 /* qgisgui.cpp */,
 				7209E7430F39E57A003DC336 /* qgisgui.h */,
 				7209E7440F39E57A003DC336 /* qgisinterface.cpp */,
@@ -8808,7 +9048,7 @@
 				7209E7730F39E57A003DC336 /* qgsrubberband.h */,
 				7209E7740F39E57A003DC336 /* qgsvertexmarker.cpp */,
 				7209E7750F39E57A003DC336 /* qgsvertexmarker.h */,
-				7209E7410F39E57A003DC336 /* CMakeLists.txt */,
+				7225EF3110B2275E00D23EA2 /* symbology-ng */,
 			);
 			name = gui;
 			path = ../../src/gui;
@@ -8884,6 +9124,7 @@
 				7209E7C60F39E57B003DC336 /* dxf2shp_converter */,
 				72FB0B170FFD657D0052360B /* evis */,
 				7209EBB90F39E57B003DC336 /* interpolation */,
+				7225EF0610B2264D00D23EA2 /* labeling */,
 				7209EBE90F39E57B003DC336 /* north_arrow */,
 				7209EBF90F39E57B003DC336 /* ogr_converter */,
 				7223B7720F969A9D00D905B4 /* oracle_raster */,
@@ -9676,6 +9917,17 @@
 				7262ED8B0F7A763C00498385 /* qgsspatialitesourceselectbase.ui */,
 				72820FEB0FACCF370011C963 /* qgssimplifytolerancedialog.ui */,
 				72A892C70FAF7B3800108152 /* qgsconfigureshortcutsdialog.ui */,
+				7225EFA010B22C4400D23EA2 /* qgscategorizedsymbolrendererv2widget.ui */,
+				7225EFA110B22C4400D23EA2 /* qgsgraduatedsymbolrendererv2widget.ui */,
+				7225EFA210B22C4400D23EA2 /* qgsrendererv2propsdialogbase.ui */,
+				7225EFA310B22C4400D23EA2 /* qgsstylev2managerdialogbase.ui */,
+				7225EFA410B22C4400D23EA2 /* qgssymbollevelsv2dialogbase.ui */,
+				7225EFA510B22C4400D23EA2 /* qgssymbolv2propertiesdialogbase.ui */,
+				7225EFA610B22C4400D23EA2 /* qgssymbolv2selectordialogbase.ui */,
+				7225EFA710B22C4400D23EA2 /* qgsvectorcolorbrewercolorrampv2dialogbase.ui */,
+				7225EFA810B22C4400D23EA2 /* qgsvectorgradientcolorrampv2dialogbase.ui */,
+				7225EFA910B22C4400D23EA2 /* qgsvectorrandomcolorrampv2dialogbase.ui */,
+				7225EFAA10B22C5000D23EA2 /* symbollayer */,
 			);
 			name = ui;
 			path = ../../src/ui;
@@ -9892,6 +10144,7 @@
 				7209ED830F39E5D9003DC336 /* qgis_help.db */,
 				72C4241D103DE67F005CD18E /* README */,
 				7209ED840F39E5D9003DC336 /* srs.db */,
+				7225EFF110B22E9700D23EA2 /* symbology-ng-style.xml */,
 			);
 			name = resources;
 			path = ../../resources;
@@ -10026,6 +10279,7 @@
 				7209ED8B0F39E5D9003DC336 /* core.sip */,
 				7209ED8C0F39E5D9003DC336 /* qgis.sip */,
 				7209ED8D0F39E5D9003DC336 /* qgsapplication.sip */,
+				7225EF0510B2261C00D23EA2 /* qgsattributeaction.sip */,
 				7209ED8E0F39E5D9003DC336 /* qgscontexthelp.sip */,
 				7209ED8F0F39E5D9003DC336 /* qgscontinuouscolorrenderer.sip */,
 				7209ED900F39E5D9003DC336 /* qgscontrastenhancement.sip */,
@@ -10087,6 +10341,7 @@
 				72E9A3C70F5AE63500E78E3C /* qgscomposerlabel.sip */,
 				72331DFA0F8E2A2100398D2B /* qgsvectoroverlay.sip */,
 				72331DFB0F8E2A2100398D2B /* qgsoverlayobject.sip */,
+				7225EF0410B2260200D23EA2 /* symbology-ng-core.sip */,
 			);
 			name = core;
 			path = ../../python/core;
@@ -10115,6 +10370,7 @@
 				7209EDCD0F39E5D9003DC336 /* qgsquickprint.sip */,
 				7209EDCE0F39E5D9003DC336 /* qgsrubberband.sip */,
 				7209EDCF0F39E5D9003DC336 /* qgsvertexmarker.sip */,
+				7225EF0310B225DD00D23EA2 /* symbology-ng-gui.sip */,
 			);
 			name = gui;
 			path = ../../python/gui;
@@ -10707,6 +10963,23 @@
 				727CEC210FBAFF6000F5B88C /* mIconLock.png */,
 				72779E9D1040614100CA9DE5 /* mActionAddMap.png */,
 				72779E9E1040614100CA9DE5 /* mActionAddImage.png */,
+				7225EFCD10B22E5B00D23EA2 /* cap_flat.png */,
+				7225EFCE10B22E5B00D23EA2 /* cap_round.png */,
+				7225EFCF10B22E5B00D23EA2 /* cap_square.png */,
+				7225EFD010B22E5B00D23EA2 /* cap_style.svg */,
+				7225EFD110B22E5B00D23EA2 /* join_bevel.png */,
+				7225EFD210B22E5B00D23EA2 /* join_miter.png */,
+				7225EFD310B22E5B00D23EA2 /* join_round.png */,
+				7225EFD410B22E5B00D23EA2 /* join_style.svg */,
+				7225EFD510B22E5B00D23EA2 /* rendererCategorizedSymbol.png */,
+				7225EFD610B22E5B00D23EA2 /* rendererGraduatedSymbol.png */,
+				7225EFD710B22E5B00D23EA2 /* rendererSingleSymbol.png */,
+				7225EFD810B22E5B00D23EA2 /* symbologyAdd.png */,
+				7225EFD910B22E5B00D23EA2 /* symbologyDown.png */,
+				7225EFDA10B22E5B00D23EA2 /* symbologyEdit.png */,
+				7225EFDB10B22E5B00D23EA2 /* symbologyLock.png */,
+				7225EFDC10B22E5B00D23EA2 /* symbologyRemove.png */,
+				7225EFDD10B22E5B00D23EA2 /* symbologyUp.png */,
 				72EB12940F7E9B51002C38FA /* plugins */,
 			);
 			name = default;
@@ -11201,6 +11474,118 @@
 			);
 			name = oracle_raster;
 			path = ../../src/plugins/oracle_raster;
+			sourceTree = SOURCE_ROOT;
+		};
+		7225EF0610B2264D00D23EA2 /* labeling */ = {
+			isa = PBXGroup;
+			children = (
+				7225EF0710B2264D00D23EA2 /* CMakeLists.txt */,
+				7225EF0810B2264D00D23EA2 /* engineconfigdialog.cpp */,
+				7225EF0910B2264D00D23EA2 /* engineconfigdialog.h */,
+				7225EF0A10B2264D00D23EA2 /* engineconfigdialog.ui */,
+				7225EF0B10B2264D00D23EA2 /* labeling.cpp */,
+				7225EF0C10B2264D00D23EA2 /* labeling.h */,
+				7225EF0D10B2264D00D23EA2 /* labeling.png */,
+				7225EF0E10B2264D00D23EA2 /* labeling.qrc */,
+				7225EF0F10B2264D00D23EA2 /* labelinggui.cpp */,
+				7225EF1010B2264D00D23EA2 /* labelinggui.h */,
+				7225EF1110B2264D00D23EA2 /* labelingguibase.ui */,
+				7225EF1210B2264D00D23EA2 /* labelpreview.cpp */,
+				7225EF1310B2264D00D23EA2 /* labelpreview.h */,
+				7225EF1410B2264D00D23EA2 /* pallabeling.cpp */,
+				7225EF1510B2264D00D23EA2 /* pallabeling.h */,
+			);
+			name = labeling;
+			path = ../../src/plugins/labeling;
+			sourceTree = SOURCE_ROOT;
+		};
+		7225EF3110B2275E00D23EA2 /* symbology-ng */ = {
+			isa = PBXGroup;
+			children = (
+				7225EF3210B2275E00D23EA2 /* qgsbrushstylecombobox.cpp */,
+				7225EF3310B2275E00D23EA2 /* qgsbrushstylecombobox.h */,
+				7225EF3410B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp */,
+				7225EF3510B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.h */,
+				7225EF3610B2275E00D23EA2 /* qgsgraduatedsymbolrendererv2widget.cpp */,
+				7225EF3710B2275E00D23EA2 /* qgsgraduatedsymbolrendererv2widget.h */,
+				7225EF3810B2275E00D23EA2 /* qgspenstylecombobox.cpp */,
+				7225EF3910B2275E00D23EA2 /* qgspenstylecombobox.h */,
+				7225EF3A10B2275E00D23EA2 /* qgsrendererv2propertiesdialog.cpp */,
+				7225EF3B10B2275E00D23EA2 /* qgsrendererv2propertiesdialog.h */,
+				7225EF3C10B2275E00D23EA2 /* qgsrendererv2widget.cpp */,
+				7225EF3D10B2275E00D23EA2 /* qgsrendererv2widget.h */,
+				7225EF3E10B2275E00D23EA2 /* qgssinglesymbolrendererv2widget.cpp */,
+				7225EF3F10B2275E00D23EA2 /* qgssinglesymbolrendererv2widget.h */,
+				7225EF4010B2275E00D23EA2 /* qgsstylev2managerdialog.cpp */,
+				7225EF4110B2275E00D23EA2 /* qgsstylev2managerdialog.h */,
+				7225EF4210B2275E00D23EA2 /* qgssymbollayerv2widget.cpp */,
+				7225EF4310B2275E00D23EA2 /* qgssymbollayerv2widget.h */,
+				7225EF4410B2275E00D23EA2 /* qgssymbollevelsv2dialog.cpp */,
+				7225EF4510B2275E00D23EA2 /* qgssymbollevelsv2dialog.h */,
+				7225EF4610B2275E00D23EA2 /* qgssymbolv2propertiesdialog.cpp */,
+				7225EF4710B2275E00D23EA2 /* qgssymbolv2propertiesdialog.h */,
+				7225EF4810B2275E00D23EA2 /* qgssymbolv2selectordialog.cpp */,
+				7225EF4910B2275E00D23EA2 /* qgssymbolv2selectordialog.h */,
+				7225EF4A10B2275E00D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.cpp */,
+				7225EF4B10B2275E00D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.h */,
+				7225EF4C10B2275E00D23EA2 /* qgsvectorgradientcolorrampv2dialog.cpp */,
+				7225EF4D10B2275E00D23EA2 /* qgsvectorgradientcolorrampv2dialog.h */,
+				7225EF4E10B2275E00D23EA2 /* qgsvectorrandomcolorrampv2dialog.cpp */,
+				7225EF4F10B2275E00D23EA2 /* qgsvectorrandomcolorrampv2dialog.h */,
+			);
+			name = "symbology-ng";
+			path = "../../src/gui/symbology-ng";
+			sourceTree = SOURCE_ROOT;
+		};
+		7225EF6C10B2298A00D23EA2 /* symbology-ng */ = {
+			isa = PBXGroup;
+			children = (
+				7225EF6D10B2298A00D23EA2 /* qgscategorizedsymbolrendererv2.cpp */,
+				7225EF6E10B2298A00D23EA2 /* qgscategorizedsymbolrendererv2.h */,
+				7225EF6F10B2298A00D23EA2 /* qgscolorbrewerpalette.h */,
+				7225EF7010B2298A00D23EA2 /* qgsfillsymbollayerv2.cpp */,
+				7225EF7110B2298A00D23EA2 /* qgsfillsymbollayerv2.h */,
+				7225EF7210B2298A00D23EA2 /* qgsgraduatedsymbolrendererv2.cpp */,
+				7225EF7310B2298A00D23EA2 /* qgsgraduatedsymbolrendererv2.h */,
+				7225EF7410B2298A00D23EA2 /* qgslinesymbollayerv2.cpp */,
+				7225EF7510B2298A00D23EA2 /* qgslinesymbollayerv2.h */,
+				7225EF7610B2298A00D23EA2 /* qgsmarkersymbollayerv2.cpp */,
+				7225EF7710B2298A00D23EA2 /* qgsmarkersymbollayerv2.h */,
+				7225EF7810B2298A00D23EA2 /* qgsrendererv2.cpp */,
+				7225EF7910B2298A00D23EA2 /* qgsrendererv2.h */,
+				7225EF7A10B2298A00D23EA2 /* qgsrendererv2registry.cpp */,
+				7225EF7B10B2298A00D23EA2 /* qgsrendererv2registry.h */,
+				7225EF7C10B2298A00D23EA2 /* qgssinglesymbolrendererv2.cpp */,
+				7225EF7D10B2298A00D23EA2 /* qgssinglesymbolrendererv2.h */,
+				7225EF7E10B2298A00D23EA2 /* qgsstylev2.cpp */,
+				7225EF7F10B2298A00D23EA2 /* qgsstylev2.h */,
+				7225EF8010B2298A00D23EA2 /* qgssymbollayerv2.cpp */,
+				7225EF8110B2298A00D23EA2 /* qgssymbollayerv2.h */,
+				7225EF8210B2298A00D23EA2 /* qgssymbollayerv2registry.cpp */,
+				7225EF8310B2298A00D23EA2 /* qgssymbollayerv2registry.h */,
+				7225EF8410B2298A00D23EA2 /* qgssymbollayerv2utils.cpp */,
+				7225EF8510B2298A00D23EA2 /* qgssymbollayerv2utils.h */,
+				7225EF8610B2298A00D23EA2 /* qgssymbolv2.cpp */,
+				7225EF8710B2298A00D23EA2 /* qgssymbolv2.h */,
+				7225EF8810B2298B00D23EA2 /* qgsvectorcolorrampv2.cpp */,
+				7225EF8910B2298B00D23EA2 /* qgsvectorcolorrampv2.h */,
+			);
+			name = "symbology-ng";
+			path = "../../src/core/symbology-ng";
+			sourceTree = SOURCE_ROOT;
+		};
+		7225EFAA10B22C5000D23EA2 /* symbollayer */ = {
+			isa = PBXGroup;
+			children = (
+				7225EFAB10B22C5000D23EA2 /* widget_linedecoration.ui */,
+				7225EFAC10B22C5000D23EA2 /* widget_markerline.ui */,
+				7225EFAD10B22C5000D23EA2 /* widget_simplefill.ui */,
+				7225EFAE10B22C5000D23EA2 /* widget_simpleline.ui */,
+				7225EFAF10B22C5000D23EA2 /* widget_simplemarker.ui */,
+				7225EFB010B22C5000D23EA2 /* widget_svgmarker.ui */,
+			);
+			name = symbollayer;
+			path = ../../src/ui/symbollayer;
 			sourceTree = SOURCE_ROOT;
 		};
 		723FD0650FBCB94600EFA55D /* scripts */ = {
@@ -13051,6 +13436,25 @@
 			productReference = 7223B78D0F96A96500D905B4 /* liboracleplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
+		7225EF1710B2265A00D23EA2 /* labelingplugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7225EF1F10B2265A00D23EA2 /* Build configuration list for PBXNativeTarget "labelingplugin" */;
+			buildPhases = (
+				7225EF1810B2265A00D23EA2 /* Script - ui */,
+				7225EF1910B2265A00D23EA2 /* Sources */,
+				7225EF1A10B2265A00D23EA2 /* Frameworks */,
+			);
+			buildRules = (
+				7225EF1D10B2265A00D23EA2 /* PBXBuildRule */,
+				7225EF1E10B2265A00D23EA2 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = labelingplugin;
+			productName = testprog;
+			productReference = 7225EF2210B2265A00D23EA2 /* liblabelingplugin.so */;
+			productType = "com.apple.product-type.tool";
+		};
 		7262ED920F7A770300498385 /* spatialiteprovider */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7262ED990F7A770300498385 /* Build configuration list for PBXNativeTarget "spatialiteprovider" */;
@@ -13715,6 +14119,7 @@
 				72A56BFB0F3C887000BA32A1 /* dxf2shpconverterplugin */,
 				72FB0B4A0FFD680F0052360B /* evisplugin */,
 				72A56B6C0F3C824400BA32A1 /* interpolationplugin */,
+				7225EF1710B2265A00D23EA2 /* labelingplugin */,
 				72A56B760F3C824400BA32A1 /* northarrowplugin */,
 				72A56C060F3C887300BA32A1 /* ogrconverterplugin */,
 				7223B77E0F96A96500D905B4 /* oracleplugin */,
@@ -13793,6 +14198,21 @@
 			showEnvVarsInLog = 0;
 		};
 		7223B7830F96A96500D905B4 /* Script - ui */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - ui";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
+			showEnvVarsInLog = 0;
+		};
+		7225EF1810B2265A00D23EA2 /* Script - ui */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -13969,7 +14389,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/ui\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
+			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/ui\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\ncd symbollayer\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		729287E70F71E576006D9489 /* Script - ui */ = {
@@ -14475,9 +14895,9 @@
 				7203830C0F8B8C8F0083B883 /* qgspalobjectpositionmanager.cpp in Sources */,
 				723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */,
 				7203830D0F8B8C8F0083B883 /* qgsvectoroverlay.cpp in Sources */,
+				7225EF9D10B22AEF00D23EA2 /* costcalculator.cpp in Sources */,
 				720383780F8BA8C50083B883 /* feature.cpp in Sources */,
 				720383790F8BA8C50083B883 /* geomfunction.cpp in Sources */,
-				7203837A0F8BA8C50083B883 /* label.cpp in Sources */,
 				7203837B0F8BA8C50083B883 /* labelposition.cpp in Sources */,
 				7203837C0F8BA8C50083B883 /* layer.cpp in Sources */,
 				7203837D0F8BA8C50083B883 /* pal.cpp in Sources */,
@@ -14489,6 +14909,20 @@
 				7216ADEF0FE571C000552832 /* qgsvectorlayerundocommand.cpp in Sources */,
 				727E6AF10FEA90E200DF6F64 /* x_sqlite3.c in Sources */,
 				727E6B040FEA9BC000DF6F64 /* x_spatialite.c in Sources */,
+				7225EF8B10B229FA00D23EA2 /* qgscategorizedsymbolrendererv2.cpp in Sources */,
+				7225EF8C10B229FA00D23EA2 /* qgsfillsymbollayerv2.cpp in Sources */,
+				7225EF8D10B229FA00D23EA2 /* qgsgraduatedsymbolrendererv2.cpp in Sources */,
+				7225EF8E10B229FA00D23EA2 /* qgslinesymbollayerv2.cpp in Sources */,
+				7225EF8F10B229FA00D23EA2 /* qgsmarkersymbollayerv2.cpp in Sources */,
+				7225EF9010B229FA00D23EA2 /* qgsrendererv2.cpp in Sources */,
+				7225EF9110B229FA00D23EA2 /* qgsrendererv2registry.cpp in Sources */,
+				7225EF9210B229FA00D23EA2 /* qgssinglesymbolrendererv2.cpp in Sources */,
+				7225EF9310B229FA00D23EA2 /* qgsstylev2.cpp in Sources */,
+				7225EF9410B229FA00D23EA2 /* qgssymbollayerv2.cpp in Sources */,
+				7225EF9510B229FA00D23EA2 /* qgssymbollayerv2registry.cpp in Sources */,
+				7225EF9610B229FA00D23EA2 /* qgssymbollayerv2utils.cpp in Sources */,
+				7225EF9710B229FA00D23EA2 /* qgssymbolv2.cpp in Sources */,
+				7225EF9810B229FA00D23EA2 /* qgsvectorcolorrampv2.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14534,6 +14968,33 @@
 				7292879E0F71D415006D9489 /* qgsmessageviewer.h in Sources */,
 				7292879F0F71D415006D9489 /* qgsprojectionselector.h in Sources */,
 				729287A00F71D415006D9489 /* qgsquickprint.h in Sources */,
+				7225EFF810B2375300D23EA2 /* qgsbrushstylecombobox.cpp in Sources */,
+				7225EFF710B236C400D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp in Sources */,
+				7225EFB310B22D2000D23EA2 /* qgsgraduatedsymbolrendererv2widget.cpp in Sources */,
+				7225EFB410B22D2000D23EA2 /* qgspenstylecombobox.cpp in Sources */,
+				7225EFB510B22D2000D23EA2 /* qgsrendererv2propertiesdialog.cpp in Sources */,
+				7225EFB610B22D2000D23EA2 /* qgsrendererv2widget.cpp in Sources */,
+				7225EFB710B22D2000D23EA2 /* qgssinglesymbolrendererv2widget.cpp in Sources */,
+				7225EFB810B22D2000D23EA2 /* qgsstylev2managerdialog.cpp in Sources */,
+				7225EFB910B22D2000D23EA2 /* qgssymbollayerv2widget.cpp in Sources */,
+				7225EFBA10B22D2000D23EA2 /* qgssymbollevelsv2dialog.cpp in Sources */,
+				7225EFBB10B22D2000D23EA2 /* qgssymbolv2propertiesdialog.cpp in Sources */,
+				7225EFBC10B22D2000D23EA2 /* qgssymbolv2selectordialog.cpp in Sources */,
+				7225EFBD10B22D2000D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.cpp in Sources */,
+				7225EFBE10B22D2000D23EA2 /* qgsvectorgradientcolorrampv2dialog.cpp in Sources */,
+				7225EFBF10B22D2000D23EA2 /* qgsvectorrandomcolorrampv2dialog.cpp in Sources */,
+				7225EFC010B22D2000D23EA2 /* qgscategorizedsymbolrendererv2widget.h in Sources */,
+				7225EFC110B22D2000D23EA2 /* qgsgraduatedsymbolrendererv2widget.h in Sources */,
+				7225EFC210B22D2000D23EA2 /* qgsrendererv2propertiesdialog.h in Sources */,
+				7225EFC310B22D2000D23EA2 /* qgssinglesymbolrendererv2widget.h in Sources */,
+				7225EFC410B22D2000D23EA2 /* qgsstylev2managerdialog.h in Sources */,
+				7225EFC510B22D2000D23EA2 /* qgssymbollayerv2widget.h in Sources */,
+				7225EFC610B22D2000D23EA2 /* qgssymbollevelsv2dialog.h in Sources */,
+				7225EFC710B22D2000D23EA2 /* qgssymbolv2propertiesdialog.h in Sources */,
+				7225EFC810B22D2000D23EA2 /* qgssymbolv2selectordialog.h in Sources */,
+				7225EFC910B22D2000D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.h in Sources */,
+				7225EFCA10B22D2000D23EA2 /* qgsvectorgradientcolorrampv2dialog.h in Sources */,
+				7225EFCB10B22D2000D23EA2 /* qgsvectorrandomcolorrampv2dialog.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14583,6 +15044,22 @@
 				7223B7980F96A99500D905B4 /* qgsoracle_plugin.cpp in Sources */,
 				7223B7990F96A99500D905B4 /* qgsoracleconnect_ui.cpp in Sources */,
 				7223B79A0F96A99500D905B4 /* qgsselectgeoraster_ui.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7225EF1910B2265A00D23EA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7225EF2510B2268F00D23EA2 /* engineconfigdialog.cpp in Sources */,
+				7225EF2610B2268F00D23EA2 /* labeling.cpp in Sources */,
+				7225EF2710B2268F00D23EA2 /* labelinggui.cpp in Sources */,
+				7225EF2810B2268F00D23EA2 /* labelpreview.cpp in Sources */,
+				7225EF2910B2268F00D23EA2 /* pallabeling.cpp in Sources */,
+				7225EF2A10B2269A00D23EA2 /* engineconfigdialog.h in Sources */,
+				7225EF2B10B2269A00D23EA2 /* labeling.h in Sources */,
+				7225EF2C10B2269A00D23EA2 /* labelinggui.h in Sources */,
+				7225EF2D10B226A300D23EA2 /* labeling.qrc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15224,6 +15701,11 @@
 			target = 7223B77E0F96A96500D905B4 /* oracleplugin */;
 			targetProxy = 7223B7A50F96AA6C00D905B4 /* PBXContainerItemProxy */;
 		};
+		7225EF3010B2273D00D23EA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7225EF1710B2265A00D23EA2 /* labelingplugin */;
+			targetProxy = 7225EF2F10B2273D00D23EA2 /* PBXContainerItemProxy */;
+		};
 		7256F1900F411B110022BE1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 72A07D140F3BD625004FC2A4 /* delimitedtextprovider */;
@@ -15538,6 +16020,7 @@
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
+					"../../src/core/symbology-ng",
 					../../src/core/spatialindex/include,
 					../../src/core/pal,
 					"$(GDAL_INC)",
@@ -15579,6 +16062,7 @@
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
+					"../../src/core/symbology-ng",
 					../../src/core/spatialindex/include,
 					../../src/core/pal,
 					"$(GDAL_INC)",
@@ -15615,11 +16099,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/gui,
+					"../../src/gui/symbology-ng",
 					../../src/core,
 					../../src/core/composer,
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
+					"../../src/core/symbology-ng",
 					"$(GEOS_INC)",
 					"$(SQLITE_INC)",
 				);
@@ -15648,11 +16134,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					../../src/gui,
+					"../../src/gui/symbology-ng",
 					../../src/core,
 					../../src/core/composer,
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
+					"../../src/core/symbology-ng",
 					"$(GEOS_INC)",
 					"$(SQLITE_INC)",
 				);
@@ -15804,6 +16292,81 @@
 				);
 				PRODUCT_NAME = oracleplugin.so;
 				TARGET_PLUGINDIR = oracle_raster;
+			};
+			name = Release;
+		};
+		7225EF2010B2265A00D23EA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					plugin_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/plugin,
+					../../src/plugins/labeling,
+					../../src/core,
+					../../src/core/pal,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(GEOS_LIB)",
+				);
+				PRODUCT_NAME = labelingplugin.so;
+				TARGET_PLUGINDIR = labeling;
+			};
+			name = Debug;
+		};
+		7225EF2110B2265A00D23EA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					plugin_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/plugin,
+					../../src/plugins/labeling,
+					../../src/core,
+					../../src/core/pal,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(GEOS_LIB)",
+				);
+				PRODUCT_NAME = labelingplugin.so;
+				TARGET_PLUGINDIR = labeling;
 			};
 			name = Release;
 		};
@@ -18084,7 +18647,9 @@
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
+					"../../src/core/symbology-ng",
 					../../src/gui,
+					"../../src/gui/symbology-ng",
 					../../src/python,
 					../../src/plugins,
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
@@ -18138,7 +18703,9 @@
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
+					"../../src/core/symbology-ng",
 					../../src/gui,
+					"../../src/gui/symbology-ng",
 					../../src/python,
 					../../src/plugins,
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
@@ -18181,7 +18748,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12095;
+				QGIS_VERSION_BUILD = 12155;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18192,7 +18759,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12095;
+				QGIS_VERSION_BUILD = 12155;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
@@ -18250,6 +18817,15 @@
 			buildConfigurations = (
 				7223B78B0F96A96500D905B4 /* Debug */,
 				7223B78C0F96A96500D905B4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7225EF1F10B2265A00D23EA2 /* Build configuration list for PBXNativeTarget "labelingplugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7225EF2010B2265A00D23EA2 /* Debug */,
+				7225EF2110B2265A00D23EA2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
