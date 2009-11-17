@@ -1,7 +1,7 @@
 /* 
  gaiageo.h -- Gaia common support for geometries
   
- version 2.3, 2008 October 13
+ version 2.4, 2009 September 17
 
  Author: Sandro Furieri a.furieri@lqt.it
 
@@ -77,14 +77,45 @@ extern "C"
 #define GAIA_MARK_ENTITY	0x69
 
 /* constants that defines GEOMETRY CLASSes */
-#define GAIA_UNKNOWN		0
-#define GAIA_POINT		1
-#define GAIA_LINESTRING		2
-#define GAIA_POLYGON		3
-#define GAIA_MULTIPOINT		4
-#define GAIA_MULTILINESTRING	5
-#define GAIA_MULTIPOLYGON	6
-#define GAIA_GEOMETRYCOLLECTION	7
+#define GAIA_UNKNOWN			0
+#define GAIA_POINT			1
+#define GAIA_LINESTRING			2
+#define GAIA_POLYGON			3
+#define GAIA_MULTIPOINT			4
+#define GAIA_MULTILINESTRING		5
+#define GAIA_MULTIPOLYGON		6
+#define GAIA_GEOMETRYCOLLECTION		7
+#define GAIA_POINTZ			1001
+#define GAIA_LINESTRINGZ		1002
+#define GAIA_POLYGONZ			1003
+#define GAIA_MULTIPOINTZ		1004
+#define GAIA_MULTILINESTRINGZ		1005
+#define GAIA_MULTIPOLYGONZ		1006
+#define GAIA_GEOMETRYCOLLECTIONZ	1007
+#define GAIA_POINTM			2001
+#define GAIA_LINESTRINGM		2002
+#define GAIA_POLYGONM			2003
+#define GAIA_MULTIPOINTM		2004
+#define GAIA_MULTILINESTRINGM		2005
+#define GAIA_MULTIPOLYGONM		2006
+#define GAIA_GEOMETRYCOLLECTIONM	2007
+#define GAIA_POINTZM			3001
+#define GAIA_LINESTRINGZM		3002
+#define GAIA_POLYGONZM			3003
+#define GAIA_MULTIPOINTZM		3004
+#define GAIA_MULTILINESTRINGZM		3005
+#define GAIA_MULTIPOLYGONZM		3006
+#define GAIA_GEOMETRYCOLLECTIONZM	3007
+
+/* constants that defines Compressed GEOMETRY CLASSes */
+#define GAIA_COMPRESSED_LINESTRING		1000002
+#define GAIA_COMPRESSED_POLYGON			1000003
+#define GAIA_COMPRESSED_LINESTRINGZ		1001002
+#define GAIA_COMPRESSED_POLYGONZ		1001003
+#define GAIA_COMPRESSED_LINESTRINGM		1002002
+#define GAIA_COMPRESSED_POLYGONM		1002003
+#define GAIA_COMPRESSED_LINESTRINGZM		1003002
+#define GAIA_COMPRESSED_POLYGONZM		1003003
 
 /* constants that defines token codes for WKT parsing */
 #define GAIA_COORDINATE		8
@@ -114,29 +145,31 @@ extern "C"
 #define GAIA_MBR_WITHIN		7
 
 /* constants used for FilterMBR */
-#define GAIA_FILTER_MBR_WITHIN			74
-#define GAIA_FILTER_MBR_CONTAINS		77
-#define GAIA_FILTER_MBR_INTERSECTS		79
-#define GAIA_FILTER_MBR_DECLARE			89
+#define GAIA_FILTER_MBR_WITHIN		74
+#define GAIA_FILTER_MBR_CONTAINS	77
+#define GAIA_FILTER_MBR_INTERSECTS	79
+#define GAIA_FILTER_MBR_DECLARE		89
 
 /* constants defining SVG default values */
-#define GAIA_SVG_DEFAULT_RELATIVE 0
-#define GAIA_SVG_DEFAULT_PRECISION 6
+#define GAIA_SVG_DEFAULT_RELATIVE 	0
+#define GAIA_SVG_DEFAULT_PRECISION	6
 #define GAIA_SVG_DEFAULT_MAX_PRECISION 15
 
 /* constants used for VirtualNetwork */
-#define GAIA_NET_START	0x67
-#define GAIA_NET_END	0x87
-#define GAIA_NET_HEADER	0xc0
-#define GAIA_NET_CODE	0xa6
+#define GAIA_NET_START		0x67
+#define GAIA_NET64_START	0x68
+#define GAIA_NET_END		0x87
+#define GAIA_NET_HEADER		0xc0
+#define GAIA_NET_CODE		0xa6
 #define GAIA_NET_ID		0xb5
-#define GAIA_NET_NODE	0xde
-#define GAIA_NET_ARC	0x54
-#define GAIA_NET_TABLE	0xa0
-#define GAIA_NET_FROM	0xa1
+#define GAIA_NET_NODE		0xde
+#define GAIA_NET_ARC		0x54
+#define GAIA_NET_TABLE		0xa0
+#define GAIA_NET_FROM		0xa1
 #define GAIA_NET_TO		0xa2
-#define GAIA_NET_GEOM	0xa3
-#define GAIA_NET_BLOCK	0xed
+#define GAIA_NET_GEOM		0xa3
+#define GAIA_NET_NAME		0xa4
+#define GAIA_NET_BLOCK		0xed
 
 /* constants used for Coordinate Dimensions */
 #define GAIA_XY		0x00
@@ -144,18 +177,95 @@ extern "C"
 #define GAIA_XY_M	0x02
 #define GAIA_XY_Z_M	0x03
 
+/* constants used for length unit conversion */
+#define GAIA_KM		0
+#define GAIA_M		1
+#define GAIA_DM		2
+#define GAIA_CM		3
+#define GAIA_MM		4
+#define GAIA_KMI	5
+#define GAIA_IN		6
+#define GAIA_FT		7
+#define GAIA_YD		8
+#define GAIA_MI		9
+#define GAIA_FATH	10
+#define GAIA_CH		11
+#define GAIA_LINK	12
+#define GAIA_US_IN	13
+#define GAIA_US_FT	14
+#define GAIA_US_YD	15
+#define GAIA_US_CH	16
+#define GAIA_US_MI	17
+#define GAIA_IND_YD	18
+#define GAIA_IND_FT	19
+#define GAIA_IND_CH	20
+#define GAIA_MIN_UNIT	GAIA_KM
+#define GAIA_MAX_UNIT	GAIA_IND_CH
+
+/* constants used for SHAPES */
+#define GAIA_SHP_NULL		0
+#define GAIA_SHP_POINT		1
+#define GAIA_SHP_POLYLINE	3
+#define GAIA_SHP_POLYGON	5
+#define GAIA_SHP_MULTIPOINT	8
+#define GAIA_SHP_POINTZ		11
+#define GAIA_SHP_POLYLINEZ	13
+#define GAIA_SHP_POLYGONZ	15
+#define GAIA_SHP_MULTIPOINTZ	18
+#define GAIA_SHP_POINTM		21
+#define GAIA_SHP_POLYLINEM	23
+#define GAIA_SHP_POLYGONM	25
+#define GAIA_SHP_MULTIPOINTM	28
+
 /* macros */
-#define gaiaGetPoint(xy,v,x,y)	{*x = xy[(v) * 2]; \
+#define gaiaGetPoint(xy,v,x,y)	\
+				{*x = xy[(v) * 2]; \
 				 *y = xy[(v) * 2 + 1];}
 
-#define gaiaSetPoint(xy,v,x,y)	{xy[(v) * 2] = x; \
+#define gaiaSetPoint(xy,v,x,y)	\
+				{xy[(v) * 2] = x; \
 				 xy[(v) * 2 + 1] = y;}
+
+#define gaiaGetPointXYZ(xyz,v,x,y,z)	\
+				{*x = xyz[(v) * 3]; \
+				 *y = xyz[(v) * 3 + 1]; \
+				 *z = xyz[(v) * 3 + 2];}
+
+#define gaiaSetPointXYZ(xyz,v,x,y,z)	\
+				{xyz[(v) * 3] = x; \
+				 xyz[(v) * 3 + 1] = y; \
+				 xyz[(v) * 3 + 2] = z;}
+
+#define gaiaGetPointXYM(xym,v,x,y,m)	\
+				{*x = xym[(v) * 3]; \
+				 *y = xym[(v) * 3 + 1]; \
+				 *m = xym[(v) * 3 + 2];}
+
+#define gaiaSetPointXYM(xym,v,x,y,m)	\
+				{xym[(v) * 3] = x; \
+				 xym[(v) * 3 + 1] = y; \
+				 xym[(v) * 3 + 2] = m;}
+
+#define gaiaGetPointXYZM(xyzm,v,x,y,z,m)	\
+				{*x = xyzm[(v) * 4]; \
+				 *y = xyzm[(v) * 4 + 1]; \
+				 *z = xyzm[(v) * 4 + 2]; \
+				 *m = xyzm[(v) * 4 + 3];}
+
+#define gaiaSetPointXYZM(xyzm,v,x,y,z,m)	\
+				{xyzm[(v) * 4] = x; \
+				 xyzm[(v) * 4 + 1] = y; \
+				 xyzm[(v) * 4 + 2] = z; \
+				 xyzm[(v) * 4 + 3] = m;}
 
     typedef struct gaiaPointStruct
     {
 /* an OpenGis POINT */
 	double X;		/* X,Y coordinates */
 	double Y;
+	double Z;		/* Z coordinate */
+	double M;		/* M measure */
+	int DimensionModel;	/* (x,y), (x,y,z), (x,y,m) or (x,y,z,m) */
 	struct gaiaPointStruct *Next;	/* for double-linked list */
 	struct gaiaPointStruct *Prev;	/* for double-linked list */
     } gaiaPoint;
@@ -178,6 +288,7 @@ extern "C"
 	double MinY;		/* MBR - BBOX */
 	double MaxX;		/* MBR - BBOX */
 	double MaxY;		/* MBR - BBOX */
+	int DimensionModel;	/* (x,y), (x,y,z), (x,y,m) or (x,y,z,m) */
 	struct gaiaLinestringStruct *Next;	/* for linked list */
     } gaiaLinestring;
     typedef gaiaLinestring *gaiaLinestringPtr;
@@ -192,6 +303,7 @@ extern "C"
 	double MinY;		/* MBR - BBOX */
 	double MaxX;		/* MBR - BBOX */
 	double MaxY;		/* MBR - BBOX */
+	int DimensionModel;	/* (x,y), (x,y,z), (x,y,m) or (x,y,z,m) */
 	struct gaiaRingStruct *Next;	/* for linked list */
 	struct gaiaPolygonStruct *Link;	/* polygon reference */
     } gaiaRing;
@@ -208,6 +320,7 @@ extern "C"
 	double MinY;		/* MBR - BBOX */
 	double MaxX;		/* MBR - BBOX */
 	double MaxY;		/* MBR - BBOX */
+	int DimensionModel;	/* (x,y), (x,y,z), (x,y,m) or (x,y,z,m) */
 	struct gaiaPolygonStruct *Next;	/* for linked list */
     } gaiaPolygon;
     typedef gaiaPolygon *gaiaPolygonPtr;
@@ -231,6 +344,7 @@ extern "C"
 	double MinY;		/* MBR - BBOX */
 	double MaxX;		/* MBR - BBOX */
 	double MaxY;		/* MBR - BBOX */
+	int DimensionModel;	/* (x,y), (x,y,z), (x,y,m) or (x,y,z,m) */
 	int DeclaredType;	/* the declared TYPE for this Geometry */
     } gaiaGeomColl;
     typedef gaiaGeomColl *gaiaGeomCollPtr;
@@ -304,7 +418,8 @@ extern "C"
 	double MaxY;
 	void *IconvObj;		/* opaque reference to ICONV converter */
 	char *LastError;	/* last error message */
-	unsigned char EffectiveType;	/* the effective Geometry-type, as determined by gaiaShpAnalyze() */
+	int EffectiveType;	/* the effective Geometry-type, as determined by gaiaShpAnalyze() */
+	int EffectiveDims;	/* the effective Dimensions [XY, XYZ, XYM, XYZM], as determined by gaiaShpAnalyze() */
     } gaiaShapefile;
     typedef gaiaShapefile *gaiaShapefilePtr;
 
@@ -316,35 +431,91 @@ extern "C"
 					int little_endian_arch);
     GAIAGEO_DECLARE int gaiaImport32 (const unsigned char *p, int little_endian,
 				      int little_endian_arch);
+    GAIAGEO_DECLARE float gaiaImportF32 (const unsigned char *p,
+					 int little_endian,
+					 int little_endian_arch);
     GAIAGEO_DECLARE double gaiaImport64 (const unsigned char *p,
 					 int little_endian,
 					 int little_endian_arch);
+    GAIAGEO_DECLARE sqlite3_int64 gaiaImportI64 (const unsigned char *p,
+						 int little_endian,
+						 int little_endian_arch);
     GAIAGEO_DECLARE void gaiaExport16 (unsigned char *p, short value,
 				       int little_endian,
 				       int little_endian_arch);
     GAIAGEO_DECLARE void gaiaExport32 (unsigned char *p, int value,
 				       int little_endian,
 				       int little_endian_arch);
+    GAIAGEO_DECLARE void gaiaExportF32 (unsigned char *p, float value,
+					int little_endian,
+					int little_endian_arch);
     GAIAGEO_DECLARE void gaiaExport64 (unsigned char *p, double value,
 				       int little_endian,
 				       int little_endian_arch);
+    GAIAGEO_DECLARE void gaiaExportI64 (unsigned char *p, sqlite3_int64 value,
+					int little_endian,
+					int little_endian_arch);
     GAIAGEO_DECLARE gaiaPointPtr gaiaAllocPoint (double x, double y);
+    GAIAGEO_DECLARE gaiaPointPtr gaiaAllocPointXYZ (double x, double y,
+						    double z);
+    GAIAGEO_DECLARE gaiaPointPtr gaiaAllocPointXYM (double x, double y,
+						    double m);
+    GAIAGEO_DECLARE gaiaPointPtr gaiaAllocPointXYZM (double x, double y,
+						     double z, double m);
     GAIAGEO_DECLARE void gaiaFreePoint (gaiaPointPtr ptr);
     GAIAGEO_DECLARE gaiaLinestringPtr gaiaAllocLinestring (int vert);
+    GAIAGEO_DECLARE gaiaLinestringPtr gaiaAllocLinestringXYZ (int vert);
+    GAIAGEO_DECLARE gaiaLinestringPtr gaiaAllocLinestringXYM (int vert);
+    GAIAGEO_DECLARE gaiaLinestringPtr gaiaAllocLinestringXYZM (int vert);
     GAIAGEO_DECLARE void gaiaFreeLinestring (gaiaLinestringPtr ptr);
+    GAIAGEO_DECLARE void gaiaCopyLinestringCoords (gaiaLinestringPtr dst,
+						   gaiaLinestringPtr src);
     GAIAGEO_DECLARE gaiaRingPtr gaiaAllocRing (int vert);
+    GAIAGEO_DECLARE gaiaRingPtr gaiaAllocRingXYZ (int vert);
+    GAIAGEO_DECLARE gaiaRingPtr gaiaAllocRingXYM (int vert);
+    GAIAGEO_DECLARE gaiaRingPtr gaiaAllocRingXYZM (int vert);
     GAIAGEO_DECLARE void gaiaFreeRing (gaiaRingPtr ptr);
+    GAIAGEO_DECLARE void gaiaCopyRingCoords (gaiaRingPtr dst, gaiaRingPtr src);
     GAIAGEO_DECLARE gaiaPolygonPtr gaiaAllocPolygon (int vert, int excl);
+    GAIAGEO_DECLARE gaiaPolygonPtr gaiaAllocPolygonXYZ (int vert, int excl);
+    GAIAGEO_DECLARE gaiaPolygonPtr gaiaAllocPolygonXYM (int vert, int excl);
+    GAIAGEO_DECLARE gaiaPolygonPtr gaiaAllocPolygonXYZM (int vert, int excl);
     GAIAGEO_DECLARE gaiaPolygonPtr gaiaCreatePolygon (gaiaRingPtr ring);
     GAIAGEO_DECLARE void gaiaFreePolygon (gaiaPolygonPtr p);
     GAIAGEO_DECLARE gaiaGeomCollPtr gaiaAllocGeomColl (void);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaAllocGeomCollXYZ (void);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaAllocGeomCollXYM (void);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaAllocGeomCollXYZM (void);
     GAIAGEO_DECLARE void gaiaFreeGeomColl (gaiaGeomCollPtr p);
     GAIAGEO_DECLARE void gaiaAddPointToGeomColl (gaiaGeomCollPtr p, double x,
 						 double y);
+    GAIAGEO_DECLARE void gaiaAddPointToGeomCollXYZ (gaiaGeomCollPtr p, double x,
+						    double y, double z);
+    GAIAGEO_DECLARE void gaiaAddPointToGeomCollXYM (gaiaGeomCollPtr p, double x,
+						    double y, double m);
+    GAIAGEO_DECLARE void gaiaAddPointToGeomCollXYZM (gaiaGeomCollPtr p,
+						     double x, double y,
+						     double z, double m);
     GAIAGEO_DECLARE void gaiaMbrLinestring (gaiaLinestringPtr line);
     GAIAGEO_DECLARE void gaiaMbrRing (gaiaRingPtr rng);
     GAIAGEO_DECLARE void gaiaMbrPolygon (gaiaPolygonPtr polyg);
     GAIAGEO_DECLARE void gaiaMbrGeometry (gaiaGeomCollPtr geom);
+    GAIAGEO_DECLARE void gaiaZRangeLinestring (gaiaLinestringPtr line,
+					       double *min, double *max);
+    GAIAGEO_DECLARE void gaiaZRangeRing (gaiaRingPtr rng, double *min,
+					 double *max);
+    GAIAGEO_DECLARE void gaiaZRangePolygon (gaiaPolygonPtr polyg, double *min,
+					    double *max);
+    GAIAGEO_DECLARE void gaiaZRangeGeometry (gaiaGeomCollPtr geom, double *min,
+					     double *max);
+    GAIAGEO_DECLARE void gaiaMRangeLinestring (gaiaLinestringPtr line,
+					       double *min, double *max);
+    GAIAGEO_DECLARE void gaiaMRangeRing (gaiaRingPtr rng, double *min,
+					 double *max);
+    GAIAGEO_DECLARE void gaiaMRangePolygon (gaiaPolygonPtr polyg, double *min,
+					    double *max);
+    GAIAGEO_DECLARE void gaiaMRangeGeometry (gaiaGeomCollPtr geom, double *min,
+					     double *max);
     GAIAGEO_DECLARE gaiaLinestringPtr
 	gaiaAddLinestringToGeomColl (gaiaGeomCollPtr p, int vert);
     GAIAGEO_DECLARE void gaiaInsertLinestringInGeomColl (gaiaGeomCollPtr p,
@@ -402,7 +573,8 @@ extern "C"
 							   int pos);
     GAIAGEO_DECLARE gaiaDynamicLinePtr gaiaCreateDynamicLine (double *coords,
 							      int points);
-    GAIAGEO_DECLARE double gaiaMeasureLength (double *coords, int vert);
+    GAIAGEO_DECLARE double gaiaMeasureLength (int dims, double *coords,
+					      int vert);
     GAIAGEO_DECLARE double gaiaMeasureArea (gaiaRingPtr ring);
     GAIAGEO_DECLARE void gaiaRingCentroid (gaiaRingPtr ring, double *rx,
 					   double *ry);
@@ -410,7 +582,8 @@ extern "C"
     GAIAGEO_DECLARE int gaiaIsPointOnRingSurface (gaiaRingPtr ring, double pt_x,
 						  double pt_y);
     GAIAGEO_DECLARE double gaiaMinDistance (double x0, double y0,
-					    double *coords, int n_vert);
+					    int dims, double *coords,
+					    int n_vert);
     GAIAGEO_DECLARE int gaiaIsPointOnPolygonSurface (gaiaPolygonPtr polyg,
 						     double x, double y);
     GAIAGEO_DECLARE int gaiaIntersect (double *x0, double *y0, double x1,
@@ -422,6 +595,9 @@ extern "C"
 							       unsigned int
 							       size);
     GAIAGEO_DECLARE void gaiaToSpatiaLiteBlobWkb (gaiaGeomCollPtr geom,
+						  unsigned char **result,
+						  int *size);
+    GAIAGEO_DECLARE void gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom,
 						  unsigned char **result,
 						  int *size);
     GAIAGEO_DECLARE gaiaGeomCollPtr gaiaFromSpatiaLiteBlobMbr (const unsigned
@@ -519,6 +695,13 @@ extern "C"
     GAIAGEO_DECLARE void gaiaReflectCoords (gaiaGeomCollPtr geom, int x_axis,
 					    int y_axis);
     GAIAGEO_DECLARE void gaiaSwapCoords (gaiaGeomCollPtr geom);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaCastGeomCollToXY (gaiaGeomCollPtr geom);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaCastGeomCollToXYZ (gaiaGeomCollPtr
+							   geom);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaCastGeomCollToXYM (gaiaGeomCollPtr
+							   geom);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaCastGeomCollToXYZM (gaiaGeomCollPtr
+							    geom);
     GAIAGEO_DECLARE gaiaGeomCollPtr gaiaCloneGeomColl (gaiaGeomCollPtr geom);
     GAIAGEO_DECLARE gaiaLinestringPtr gaiaCloneLinestring (gaiaLinestringPtr
 							   line);
@@ -552,6 +735,23 @@ extern "C"
     GAIAGEO_DECLARE int gaiaGetMbrMaxY (const unsigned char *blob,
 					unsigned int size, double *maxy);
     GAIAGEO_DECLARE gaiaGeomCollPtr gaiaBuildRings (gaiaGeomCollPtr geom);
+    GAIAGEO_DECLARE void gaiaFree (void *ptr);
+    GAIAGEO_DECLARE int gaiaEllipseParams (const char *name, double *a,
+					   double *b, double *rf);
+    GAIAGEO_DECLARE double gaiaGreatCircleDistance (double a, double b,
+						    double lat1, double lon1,
+						    double lat2, double lon2);
+    GAIAGEO_DECLARE double gaiaGeodesicDistance (double a, double b, double rf,
+						 double lat1, double lon1,
+						 double lat2, double lon2);
+    GAIAGEO_DECLARE double gaiaGreatCircleTotalLength (double a, double b,
+						       int dims, double *coords,
+						       int vert);
+    GAIAGEO_DECLARE double gaiaGeodesicTotalLength (double a, double b,
+						    double rf, int dims,
+						    double *coords, int vert);
+    GAIAGEO_DECLARE int gaiaConvertLength (double value, int unit_from,
+					   int unit_to, double *cvt);
 
 #ifndef OMIT_PROJ		/* including PROJ.4 */
 
@@ -624,6 +824,11 @@ extern "C"
 							int points);
     GAIAGEO_DECLARE gaiaGeomCollPtr gaiaPolygonize (gaiaGeomCollPtr geom,
 						    int force_multipolygon);
+    GAIAGEO_DECLARE void *gaiaToGeos (const gaiaGeomCollPtr gaia);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaFromGeos_XY (const void *geos);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaFromGeos_XYZ (const void *geos);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaFromGeos_XYM (const void *geos);
+    GAIAGEO_DECLARE gaiaGeomCollPtr gaiaFromGeos_XYZM (const void *geos);
 
 #endif				/* end including GEOS */
 

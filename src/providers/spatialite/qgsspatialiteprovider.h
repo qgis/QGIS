@@ -143,9 +143,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       */
     const QgsFieldMap & fields() const;
 
-    /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
-     * pointer, setting it to 0 and reloading the field list
-     */
+    /** Reset the layer */
     void rewind();
 
     /** Returns the minimum value of an attribute
@@ -241,7 +239,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
   signals:
     /**
      *   This is emitted whenever the worker thread has fully calculated the
-     *   PostGIS extents for this layer, and its event has been received by this
+     *   extents for this layer, and its event has been received by this
      *   provider.
      */
     void fullExtentCalculated();
@@ -268,6 +266,22 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
        */
     bool valid;
     /**
+       * Flag indicating if the layer data source is based on a plain Table
+       */
+    bool mTableBased;
+    /**
+       * Flag indicating if the layer data source is based on a View
+       */
+    bool mViewBased;
+    /**
+       * Flag indicating if the layer data source is based on a VirtualShape
+       */
+    bool mVShapeBased;
+    /**
+       * Flag indicating if the layer data source has ReadOnly restrictions
+       */
+    bool mReadOnly;
+    /**
        * DB full path
        */
     QString mSqlitePath;
@@ -278,11 +292,19 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
        * Name of the primary key column in the table
        */
-    QString primaryKey;
+    QString mPrimaryKey;
     /**
        * Name of the geometry column in the table
        */
-    QString geometryColumn;
+    QString mGeometryColumn;
+    /**
+     * Name of the SpatialIndex table 
+     */
+    QString mIndexTable;
+    /**
+       * Name of the SpatialIndex geometry column 
+       */
+    QString mIndexGeometry;
     /**
      * Geometry type
      */
@@ -335,7 +357,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //void sqliteOpen();
     void closeDb();
     QString quotedValue( QString value ) const;
+    bool checkLayerType();
     bool getGeometryDetails();
+    bool getTableGeometryDetails();
+    bool getViewGeometryDetails();
+    bool getVShapeGeometryDetails();
+    bool getSridDetails();
     bool getTableSummary();
 
   public:
@@ -361,6 +388,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
         void sqliteClose();
 
         static SqliteHandles *openDb( const QString & dbPath );
+		static bool checkMetadata( sqlite3 * handle );
         static void closeDb( SqliteHandles * &handle );
         static void closeDb( QMap < QString, SqliteHandles * >&handlesRO, SqliteHandles * &handle );
 
