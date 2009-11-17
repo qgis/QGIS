@@ -33,6 +33,10 @@ MapCoordsDialog::MapCoordsDialog( const QgsPoint& pixelCoords, QgsMapCanvas* qgi
     : QDialog( parent, fl )
 {
   setupUi( this );
+
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+
   mPixelCoords = pixelCoords;
   mQgisCanvas = qgisCanvas;
   leXCoord->setValidator( new QDoubleValidator( this ) );
@@ -65,6 +69,7 @@ void MapCoordsDialog::accept()
 {
   QgsPoint mapCoords( leXCoord->text().toDouble(), leYCoord->text().toDouble() );
   emit pointAdded( mPixelCoords, mapCoords );
+  QDialog::accept();
 }
 
 void MapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button )
