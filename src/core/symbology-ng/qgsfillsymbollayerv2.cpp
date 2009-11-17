@@ -6,8 +6,8 @@
 
 #include <QPainter>
 
-QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2(QColor color, QColor borderColor, Qt::BrushStyle style)
-  : mBrushStyle(style), mBorderColor(borderColor)
+QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2(QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth)
+  : mBrushStyle(style), mBorderColor(borderColor), mBorderStyle(borderStyle), mBorderWidth(borderWidth)
 {
   mColor = color;
 }
@@ -16,17 +16,23 @@ QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2(QColor color, QColor bord
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create(const QgsStringMap& props)
 {
   QColor color = DEFAULT_SIMPLEFILL_COLOR;
-  QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR;
   Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE;
-  
+  QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR;
+  Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE;
+  double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH;
+
   if (props.contains("color"))
     color = QgsSymbolLayerV2Utils::decodeColor(props["color"]);
-  if (props.contains("color_border"))
-    borderColor = QgsSymbolLayerV2Utils::decodeColor(props["color_border"]);
   if (props.contains("style"))
     style = QgsSymbolLayerV2Utils::decodeBrushStyle(props["style"]);
-  
-  return new QgsSimpleFillSymbolLayerV2(color, borderColor, style);
+  if (props.contains("color_border"))
+    borderColor = QgsSymbolLayerV2Utils::decodeColor(props["color_border"]);
+  if (props.contains("style_border"))
+    borderStyle = QgsSymbolLayerV2Utils::decodePenStyle(props["style_border"]);
+  if (props.contains("width_border"))
+    borderWidth = props["width_border"].toDouble();
+
+  return new QgsSimpleFillSymbolLayerV2(color, style, borderColor, borderStyle, borderWidth);
 }
 
 
@@ -39,6 +45,8 @@ void QgsSimpleFillSymbolLayerV2::startRender(QgsRenderContext& context)
 {
   mBrush = QBrush(mColor, mBrushStyle);
   mPen = QPen(mBorderColor);
+  mPen.setStyle(mBorderStyle);
+  mPen.setWidthF(mBorderWidth);
 }
 
 void QgsSimpleFillSymbolLayerV2::stopRender(QgsRenderContext& context)
@@ -73,12 +81,14 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
 {
   QgsStringMap map;
   map["color"] = QgsSymbolLayerV2Utils::encodeColor(mColor);
-  map["color_border"] = QgsSymbolLayerV2Utils::encodeColor(mBorderColor);
   map["style"] = QgsSymbolLayerV2Utils::encodeBrushStyle(mBrushStyle);
+  map["color_border"] = QgsSymbolLayerV2Utils::encodeColor(mBorderColor);
+  map["style_border"] = QgsSymbolLayerV2Utils::encodePenStyle(mBorderStyle);
+  map["width_border"] = QString::number(mBorderWidth);
   return map;
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
 {
-  return new QgsSimpleFillSymbolLayerV2(mColor, mBorderColor, mBrushStyle);
+  return new QgsSimpleFillSymbolLayerV2(mColor, mBrushStyle, mBorderColor, mBorderStyle, mBorderWidth);
 }

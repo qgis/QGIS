@@ -7,6 +7,8 @@
 #define DEFAULT_SIMPLEFILL_COLOR        QColor(0,0,255)
 #define DEFAULT_SIMPLEFILL_STYLE        Qt::SolidPattern
 #define DEFAULT_SIMPLEFILL_BORDERCOLOR  QColor(0,0,0)
+#define DEFAULT_SIMPLEFILL_BORDERSTYLE  Qt::SolidLine
+#define DEFAULT_SIMPLEFILL_BORDERWIDTH  1.0
 
 #include <QPen>
 #include <QBrush>
@@ -15,9 +17,11 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 {
   public:
     QgsSimpleFillSymbolLayerV2( QColor color = DEFAULT_SIMPLEFILL_COLOR,
+                                Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
                                 QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
-                                Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE );
-
+                                Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
+                                double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH );
+	
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
@@ -42,10 +46,18 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QColor borderColor() const { return mBorderColor; }
     void setBorderColor( QColor borderColor ) { mBorderColor = borderColor; }
 
+    Qt::PenStyle borderStyle() const { return mBorderStyle; }
+    void setBorderStyle( Qt::PenStyle borderStyle ) { mBorderStyle = borderStyle; }
+
+    double borderWidth() const { return mBorderWidth; }
+    void setBorderWidth( double borderWidth ) { mBorderWidth = borderWidth; }
+
   protected:
     QBrush mBrush;
     Qt::BrushStyle mBrushStyle;
     QColor mBorderColor;
+    Qt::PenStyle mBorderStyle;
+    double mBorderWidth;
     QPen mPen;
 };
 

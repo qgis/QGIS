@@ -105,6 +105,8 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void setColor();
     void setBorderColor();
     void setBrushStyle();
+    void borderWidthChanged();
+    void borderStyleChanged();
 
   protected:
     QgsSimpleFillSymbolLayerV2* mLayer;

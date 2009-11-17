@@ -31,6 +31,7 @@ QString QgsSymbolLayerV2Utils::encodePenStyle( Qt::PenStyle style )
 {
   switch ( style )
   {
+    case Qt::NoPen:          return "no";
     case Qt::SolidLine:      return "solid";
     case Qt::DashLine:       return "dash";
     case Qt::DotLine:        return "dot";
@@ -42,6 +43,7 @@ QString QgsSymbolLayerV2Utils::encodePenStyle( Qt::PenStyle style )
 
 Qt::PenStyle QgsSymbolLayerV2Utils::decodePenStyle( QString str )
 {
+  if ( str == "no" ) return Qt::NoPen;
   if ( str == "solid" ) return Qt::SolidLine;
   if ( str == "dash" ) return Qt::DashLine;
   if ( str == "dot" ) return Qt::DotLine;

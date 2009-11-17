@@ -17,7 +17,8 @@ QgsPenStyleComboBox::QgsPenStyleComboBox(QWidget* parent)
       << qMakePair(Qt::DashLine, QString("Dash Line"))
       << qMakePair(Qt::DotLine, QString("Dot Line"))
       << qMakePair(Qt::DashDotLine, QString("Dash Dot Line"))
-      << qMakePair(Qt::DashDotDotLine, QString("Dash Dot Dot Line"));
+      << qMakePair(Qt::DashDotDotLine, QString("Dash Dot Dot Line"))
+      << qMakePair(Qt::NoPen, QString("No Pen"));
   
   setIconSize(QSize(32,12));
   
