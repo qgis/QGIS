@@ -1334,7 +1334,7 @@ namespace pal
     else
       return; // no size penalty for points
 
-    std::cout << "size cost " << sizeCost << std::endl;
+    //std::cout << "size cost " << sizeCost << std::endl;
 
     // apply the penalty
     for ( int i = 0; i < nbp; i++ )

@@ -539,7 +539,7 @@ void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const
   QString text = (( MyLabel* )label->getFeaturePart()->getUserGeometry() )->text();
   QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
 
-  QgsDebugMsg( "drawLabel " + QString::number( drawBuffer ) + " " + txt );
+  //QgsDebugMsg( "drawLabel " + QString::number( drawBuffer ) + " " + txt );
 
   // shift by one as we have 2px border
   painter->save();
