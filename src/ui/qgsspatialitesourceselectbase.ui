@@ -1,42 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" >
  <class>QgsSpatiaLiteSourceSelectBase</class>
- <widget class="QDialog" name="QgsSpatiaLiteSourceSelectBase">
-  <property name="geometry">
+ <widget class="QDialog" name="QgsSpatiaLiteSourceSelectBase" >
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
+    <width>672</width>
     <height>687</height>
    </rect>
   </property>
-  <property name="windowTitle">
+  <property name="windowTitle" >
    <string>Add SpatiaLite Table(s)</string>
   </property>
-  <property name="windowIcon">
+  <property name="windowIcon" >
    <iconset>
     <normaloff/>
    </iconset>
   </property>
-  <property name="sizeGripEnabled">
+  <property name="sizeGripEnabled" >
    <bool>true</bool>
   </property>
-  <property name="modal">
+  <property name="modal" >
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout">
-   <property name="margin">
+  <layout class="QGridLayout" >
+   <property name="margin" >
     <number>9</number>
    </property>
-   <property name="spacing">
+   <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="2" column="0">
+   <item row="2" column="0" >
     <spacer>
-     <property name="orientation">
+     <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeHint" stdset="0">
+     <property name="sizeHint" >
       <size>
        <width>271</width>
        <height>20</height>
@@ -44,150 +43,202 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QTreeView" name="mTablesTreeView">
-     <property name="selectionMode">
+   <item row="1" column="0" colspan="2" >
+    <widget class="QTreeView" name="mTablesTreeView" >
+     <property name="selectionMode" >
       <enum>QAbstractItemView::MultiSelection</enum>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
+   <item row="0" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
       <string>SpatiaLite DBs</string>
      </property>
-     <layout class="QGridLayout">
-      <property name="margin">
+     <layout class="QGridLayout" >
+      <property name="margin" >
        <number>11</number>
       </property>
-      <property name="spacing">
+      <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="btnDelete">
-        <property name="text">
+      <item row="1" column="2" >
+       <widget class="QPushButton" name="btnDelete" >
+        <property name="text" >
          <string>Delete</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="btnNew">
-        <property name="text">
+      <item row="1" column="1" >
+       <widget class="QPushButton" name="btnNew" >
+        <property name="text" >
          <string>New</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="btnConnect">
-        <property name="text">
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="btnConnect" >
+        <property name="text" >
          <string>Connect</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="3">
-       <widget class="QComboBox" name="cmbConnections"/>
+      <item row="0" column="0" colspan="3" >
+       <widget class="QComboBox" name="cmbConnections" />
       </item>
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="mSearchGroupBox">
-     <property name="title">
+   <item row="4" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>11</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="btnHelp" >
+       <property name="enabled" >
+        <bool>true</bool>
+       </property>
+       <property name="text" >
+        <string>Help</string>
+       </property>
+       <property name="shortcut" >
+        <string>F1</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>141</width>
+         <height>21</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnAdd" >
+       <property name="text" >
+        <string>Add</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCancel" >
+       <property name="text" >
+        <string>Close</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <widget class="QGroupBox" name="mSearchGroupBox" >
+     <property name="title" >
       <string/>
      </property>
-     <layout class="QGridLayout">
-      <property name="margin">
+     <layout class="QGridLayout" >
+      <property name="margin" >
        <number>9</number>
       </property>
-      <property name="spacing">
+      <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="mSearchLabel">
-        <property name="text">
+      <item row="0" column="0" >
+       <widget class="QLabel" name="mSearchLabel" >
+        <property name="text" >
          <string>Search:</string>
         </property>
-        <property name="buddy">
-         <cstring>mSearchTableEdit</cstring>
-        </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="mSearchModeLabel">
-        <property name="text">
+      <item row="2" column="0" colspan="2" >
+       <widget class="QLabel" name="mSearchModeLabel" >
+        <property name="text" >
          <string>Search mode:</string>
         </property>
-        <property name="buddy">
-         <cstring>mSearchModeComboBox</cstring>
-        </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QComboBox" name="mSearchModeComboBox"/>
+      <item row="2" column="2" >
+       <widget class="QComboBox" name="mSearchModeComboBox" />
       </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="mSearchColumnsLabel">
-        <property name="text">
+      <item row="1" column="0" colspan="2" >
+       <widget class="QLabel" name="mSearchColumnsLabel" >
+        <property name="text" >
          <string>Search in columns:</string>
         </property>
-        <property name="buddy">
-         <cstring>mSearchColumnComboBox</cstring>
-        </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QComboBox" name="mSearchColumnComboBox"/>
+      <item row="1" column="2" >
+       <widget class="QComboBox" name="mSearchColumnComboBox" />
       </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="mSearchTableEdit"/>
+      <item row="0" column="1" colspan="2" >
+       <widget class="QLineEdit" name="mSearchTableEdit" />
       </item>
      </layout>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="mSearchOptionsButton">
-     <property name="text">
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="mSearchOptionsButton" >
+     <property name="text" >
       <string>Search options...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
+ <layoutdefault spacing="6" margin="11" />
  <tabstops>
   <tabstop>cmbConnections</tabstop>
   <tabstop>btnConnect</tabstop>
   <tabstop>btnNew</tabstop>
   <tabstop>btnDelete</tabstop>
-  <tabstop>mTablesTreeView</tabstop>
-  <tabstop>mSearchOptionsButton</tabstop>
-  <tabstop>mSearchTableEdit</tabstop>
-  <tabstop>mSearchColumnComboBox</tabstop>
-  <tabstop>mSearchModeComboBox</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>btnHelp</tabstop>
+  <tabstop>btnAdd</tabstop>
+  <tabstop>btnCancel</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
+   <sender>btnCancel</sender>
+   <signal>clicked()</signal>
    <receiver>QgsSpatiaLiteSourceSelectBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel">
-     <x>431</x>
-     <y>666</y>
+    <hint type="sourcelabel" >
+     <x>404</x>
+     <y>446</y>
     </hint>
-    <hint type="destinationlabel">
-     <x>465</x>
-     <y>527</y>
+    <hint type="destinationlabel" >
+     <x>229</x>
+     <y>236</y>
     </hint>
    </hints>
   </connection>

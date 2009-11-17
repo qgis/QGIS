@@ -21,7 +21,6 @@
 #include "qgisgui.h"
 #include "qgsspatialitefilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"
-#include <QPushButton>
 
 extern "C"
 {
@@ -81,14 +80,14 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();
-    void addClicked();
+    void on_btnAdd_clicked();
     void on_btnNew_clicked();
     void on_btnDelete_clicked();
     void on_mSearchOptionsButton_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
-    void helpClicked();
+    void on_btnHelp_clicked();
     void on_cmbConnections_activated( int );
     void setLayerType( QString table, QString column, QString type );
     //!Sets a new regular expression to the model
@@ -106,6 +105,21 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     typedef std::pair < QString, QString > geomPair;
     typedef std::list < geomPair > geomCol;
 
+	/**Checks if geometry_columns_auth table exists*/
+    bool checkGeometryColumnsAuth( sqlite3 * handle );
+
+	/**Checks if views_geometry_columns table exists*/
+    bool checkViewsGeometryColumns( sqlite3 * handle );
+
+	/**Checks if virts_geometry_columns table exists*/
+    bool checkVirtsGeometryColumns( sqlite3 * handle );
+
+	/**Checks if this layer has been declared HIDDEN*/
+    bool isDeclaredHidden( sqlite3 * handle, QString table, QString geom );
+
+    /**cleaning well-formatted SQL strings*/
+    QString quotedValue( QString value ) const;
+
     /**Inserts information about the spatial tables into mTableModel*/
     bool getTableInfo( sqlite3 * handle );
 
@@ -116,6 +130,8 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     // Set the position of the database connection list to the last
     // used one.
     void setConnectionListPosition();
+    // Show the context help for the dialog
+    void showHelp();
     // Combine the table and column data into a single string
     // useful for display to the user
     QString fullDescription( QString table, QString column, QString type );
@@ -131,7 +147,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     //! Model that acts as datasource for mTableTreeWidget
     QgsSpatiaLiteTableModel mTableModel;
     QgsSpatiaLiteFilterProxyModel mProxyModel;
-    QPushButton * mAddButton;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H
