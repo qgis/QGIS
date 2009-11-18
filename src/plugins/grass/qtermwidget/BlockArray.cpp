@@ -39,299 +39,319 @@ using namespace Konsole;
 static int blocksize = 0;
 
 BlockArray::BlockArray()
-    : size(0),
-      current(size_t(-1)),
-      index(size_t(-1)),
-      lastmap(0),
-      lastmap_index(size_t(-1)),
-      lastblock(0), ion(-1),
-      length(0)
+    : size( 0 ),
+    current( size_t( -1 ) ),
+    index( size_t( -1 ) ),
+    lastmap( 0 ),
+    lastmap_index( size_t( -1 ) ),
+    lastblock( 0 ), ion( -1 ),
+    length( 0 )
 {
-    // lastmap_index = index = current = size_t(-1);
-    if (blocksize == 0)
-        blocksize = ((sizeof(Block) / getpagesize()) + 1) * getpagesize();
+  // lastmap_index = index = current = size_t(-1);
+  if ( blocksize == 0 )
+    blocksize = (( sizeof( Block ) / getpagesize() ) + 1 ) * getpagesize();
 
 }
 
 BlockArray::~BlockArray()
 {
-    setHistorySize(0);
-    assert(!lastblock);
+  setHistorySize( 0 );
+  assert( !lastblock );
 }
 
-size_t BlockArray::append(Block *block)
+size_t BlockArray::append( Block *block )
 {
-    if (!size)
-        return size_t(-1);
+  if ( !size )
+    return size_t( -1 );
 
-    ++current;
-    if (current >= size) current = 0;
+  ++current;
+  if ( current >= size ) current = 0;
 
-    int rc;
-    rc = lseek(ion, current * blocksize, SEEK_SET); if (rc < 0) { perror("HistoryBuffer::add.seek"); setHistorySize(0); return size_t(-1); }
-    rc = write(ion, block, blocksize); if (rc < 0) { perror("HistoryBuffer::add.write"); setHistorySize(0); return size_t(-1); }
+  int rc;
+  rc = lseek( ion, current * blocksize, SEEK_SET ); if ( rc < 0 ) { perror( "HistoryBuffer::add.seek" ); setHistorySize( 0 ); return size_t( -1 ); }
+  rc = write( ion, block, blocksize ); if ( rc < 0 ) { perror( "HistoryBuffer::add.write" ); setHistorySize( 0 ); return size_t( -1 ); }
 
-    length++;
-    if (length > size) length = size;
+  length++;
+  if ( length > size ) length = size;
 
-    ++index;
+  ++index;
 
-    delete block;
-    return current;
+  delete block;
+  return current;
 }
 
 size_t BlockArray::newBlock()
 {
-    if (!size)
-        return size_t(-1);
-    append(lastblock);
+  if ( !size )
+    return size_t( -1 );
+  append( lastblock );
 
-    lastblock = new Block();
-    return index + 1;
+  lastblock = new Block();
+  return index + 1;
 }
 
 Block *BlockArray::lastBlock() const
 {
-    return lastblock;
+  return lastblock;
 }
 
-bool BlockArray::has(size_t i) const
+bool BlockArray::has( size_t i ) const
 {
-    if (i == index + 1)
-        return true;
-
-    if (i > index)
-        return false;
-    if (index - i >= length)
-        return false;
+  if ( i == index + 1 )
     return true;
+
+  if ( i > index )
+    return false;
+  if ( index - i >= length )
+    return false;
+  return true;
 }
 
-const Block* BlockArray::at(size_t i)
+const Block* BlockArray::at( size_t i )
 {
-    if (i == index + 1)
-        return lastblock;
+  if ( i == index + 1 )
+    return lastblock;
 
-    if (i == lastmap_index)
-        return lastmap;
+  if ( i == lastmap_index )
+    return lastmap;
 
-    if (i > index) {
-        qDebug() << "BlockArray::at() i > index\n";
-        return 0;
-    }
-    
+  if ( i > index )
+  {
+    qDebug() << "BlockArray::at() i > index\n";
+    return 0;
+  }
+
 //     if (index - i >= length) {
 //         kDebug(1211) << "BlockArray::at() index - i >= length\n";
 //         return 0;
 //     }
 
-    size_t j = i; // (current - (index - i) + (index/size+1)*size) % size ;
+  size_t j = i; // (current - (index - i) + (index/size+1)*size) % size ;
 
-    assert(j < size);
-    unmap();
+  assert( j < size );
+  unmap();
 
-    Block *block = (Block*)mmap(0, blocksize, PROT_READ, MAP_PRIVATE, ion, j * blocksize);
+  Block *block = ( Block* )mmap( 0, blocksize, PROT_READ, MAP_PRIVATE, ion, j * blocksize );
 
-    if (block == (Block*)-1) { perror("mmap"); return 0; }
+  if ( block == ( Block* ) - 1 ) { perror( "mmap" ); return 0; }
 
-    lastmap = block;
-    lastmap_index = i;
+  lastmap = block;
+  lastmap_index = i;
 
-    return block;
+  return block;
 }
 
 void BlockArray::unmap()
 {
-    if (lastmap) {
-        int res = munmap((char*)lastmap, blocksize);
-        if (res < 0) perror("munmap");
-    }
-    lastmap = 0;
-    lastmap_index = size_t(-1);
+  if ( lastmap )
+  {
+    int res = munmap(( char* )lastmap, blocksize );
+    if ( res < 0 ) perror( "munmap" );
+  }
+  lastmap = 0;
+  lastmap_index = size_t( -1 );
 }
 
-bool BlockArray::setSize(size_t newsize)
+bool BlockArray::setSize( size_t newsize )
 {
-    return setHistorySize(newsize * 1024 / blocksize);
+  return setHistorySize( newsize * 1024 / blocksize );
 }
 
-bool BlockArray::setHistorySize(size_t newsize)
+bool BlockArray::setHistorySize( size_t newsize )
 {
 //    kDebug(1211) << "setHistorySize " << size << " " << newsize;
 
-    if (size == newsize)
-        return false;
+  if ( size == newsize )
+    return false;
 
-    unmap();
+  unmap();
 
-    if (!newsize) {
-        delete lastblock;
-        lastblock = 0;
-        if (ion >= 0) close(ion);
-        ion = -1;
-        current = size_t(-1);
-        return true;
+  if ( !newsize )
+  {
+    delete lastblock;
+    lastblock = 0;
+    if ( ion >= 0 ) close( ion );
+    ion = -1;
+    current = size_t( -1 );
+    return true;
+  }
+
+  if ( !size )
+  {
+    FILE* tmp = tmpfile();
+    if ( !tmp )
+    {
+      perror( "konsole: cannot open temp file.\n" );
     }
-
-    if (!size) {
-        FILE* tmp = tmpfile();
-        if (!tmp) {
-            perror("konsole: cannot open temp file.\n");
-        } else {
-            ion = dup(fileno(tmp));
-            if (ion<0) {
-                perror("konsole: cannot dup temp file.\n");
-                fclose(tmp);
-            }
-        }
-        if (ion < 0)
-            return false;
-
-        assert(!lastblock);
-
-        lastblock = new Block();
-        size = newsize;
-        return false;
+    else
+    {
+      ion = dup( fileno( tmp ) );
+      if ( ion < 0 )
+      {
+        perror( "konsole: cannot dup temp file.\n" );
+        fclose( tmp );
+      }
     }
+    if ( ion < 0 )
+      return false;
 
-    if (newsize > size) {
-        increaseBuffer();
-        size = newsize;
-        return false;
-    } else {
-        decreaseBuffer(newsize);
-        ftruncate(ion, length*blocksize);
-        size = newsize;
+    assert( !lastblock );
 
-        return true;
-    }
+    lastblock = new Block();
+    size = newsize;
+    return false;
+  }
+
+  if ( newsize > size )
+  {
+    increaseBuffer();
+    size = newsize;
+    return false;
+  }
+  else
+  {
+    decreaseBuffer( newsize );
+    ftruncate( ion, length*blocksize );
+    size = newsize;
+
+    return true;
+  }
 }
 
-void moveBlock(FILE *fion, int cursor, int newpos, char *buffer2)
+void moveBlock( FILE *fion, int cursor, int newpos, char *buffer2 )
 {
-    int res = fseek(fion, cursor * blocksize, SEEK_SET);
-    if (res)
-        perror("fseek");
-    res = fread(buffer2, blocksize, 1, fion);
-    if (res != 1)
-        perror("fread");
+  int res = fseek( fion, cursor * blocksize, SEEK_SET );
+  if ( res )
+    perror( "fseek" );
+  res = fread( buffer2, blocksize, 1, fion );
+  if ( res != 1 )
+    perror( "fread" );
 
-    res = fseek(fion, newpos * blocksize, SEEK_SET);
-    if (res)
-        perror("fseek");
-    res = fwrite(buffer2, blocksize, 1, fion);
-    if (res != 1)
-        perror("fwrite");
-    //    printf("moving block %d to %d\n", cursor, newpos);
+  res = fseek( fion, newpos * blocksize, SEEK_SET );
+  if ( res )
+    perror( "fseek" );
+  res = fwrite( buffer2, blocksize, 1, fion );
+  if ( res != 1 )
+    perror( "fwrite" );
+  //    printf("moving block %d to %d\n", cursor, newpos);
 }
 
-void BlockArray::decreaseBuffer(size_t newsize)
+void BlockArray::decreaseBuffer( size_t newsize )
 {
-    if (index < newsize) // still fits in whole
-        return;
+  if ( index < newsize ) // still fits in whole
+    return;
 
-    int offset = (current - (newsize - 1) + size) % size;
+  int offset = ( current - ( newsize - 1 ) + size ) % size;
 
-    if (!offset)
-        return;
+  if ( !offset )
+    return;
 
-    // The Block constructor could do somthing in future...
-    char *buffer1 = new char[blocksize];
+  // The Block constructor could do somthing in future...
+  char *buffer1 = new char[blocksize];
 
-    FILE *fion = fdopen(dup(ion), "w+b");
-    if (!fion) {
-        delete [] buffer1;
-        perror("fdopen/dup");
-        return;
-    }
-
-    int firstblock;
-    if (current <= newsize) {
-        firstblock = current + 1;
-    } else {
-        firstblock = 0;
-    }
-
-    size_t oldpos;
-    for (size_t i = 0, cursor=firstblock; i < newsize; i++) {
-        oldpos = (size + cursor + offset) % size;
-        moveBlock(fion, oldpos, cursor, buffer1);
-        if (oldpos < newsize) {
-            cursor = oldpos;
-        } else
-            cursor++;
-    }
-
-    current = newsize - 1;
-    length = newsize;
-
+  FILE *fion = fdopen( dup( ion ), "w+b" );
+  if ( !fion )
+  {
     delete [] buffer1;
+    perror( "fdopen/dup" );
+    return;
+  }
 
-    fclose(fion);
+  int firstblock;
+  if ( current <= newsize )
+  {
+    firstblock = current + 1;
+  }
+  else
+  {
+    firstblock = 0;
+  }
+
+  size_t oldpos;
+  for ( size_t i = 0, cursor = firstblock; i < newsize; i++ )
+  {
+    oldpos = ( size + cursor + offset ) % size;
+    moveBlock( fion, oldpos, cursor, buffer1 );
+    if ( oldpos < newsize )
+    {
+      cursor = oldpos;
+    }
+    else
+      cursor++;
+  }
+
+  current = newsize - 1;
+  length = newsize;
+
+  delete [] buffer1;
+
+  fclose( fion );
 
 }
 
 void BlockArray::increaseBuffer()
 {
-    if (index < size) // not even wrapped once
-        return;
+  if ( index < size ) // not even wrapped once
+    return;
 
-    int offset = (current + size + 1) % size;
-    if (!offset) // no moving needed
-        return;
+  int offset = ( current + size + 1 ) % size;
+  if ( !offset ) // no moving needed
+    return;
 
-    // The Block constructor could do somthing in future...
-    char *buffer1 = new char[blocksize];
-    char *buffer2 = new char[blocksize];
+  // The Block constructor could do somthing in future...
+  char *buffer1 = new char[blocksize];
+  char *buffer2 = new char[blocksize];
 
-    int runs = 1;
-    int bpr = size; // blocks per run
+  int runs = 1;
+  int bpr = size; // blocks per run
 
-    if (size % offset == 0) {
-        bpr = size / offset;
-        runs = offset;
-    }
+  if ( size % offset == 0 )
+  {
+    bpr = size / offset;
+    runs = offset;
+  }
 
-    FILE *fion = fdopen(dup(ion), "w+b");
-    if (!fion) {
-        perror("fdopen/dup");
-	delete [] buffer1;
-	delete [] buffer2;
-        return;
-    }
-
-    int res;
-    for (int i = 0; i < runs; i++)
-    {
-        // free one block in chain
-        int firstblock = (offset + i) % size;
-        res = fseek(fion, firstblock * blocksize, SEEK_SET);
-        if (res)
-            perror("fseek");
-        res = fread(buffer1, blocksize, 1, fion);
-        if (res != 1)
-            perror("fread");
-        int newpos = 0;
-        for (int j = 1, cursor=firstblock; j < bpr; j++)
-        {
-            cursor = (cursor + offset) % size;
-            newpos = (cursor - offset + size) % size;
-            moveBlock(fion, cursor, newpos, buffer2);
-        }
-        res = fseek(fion, i * blocksize, SEEK_SET);
-        if (res)
-            perror("fseek");
-        res = fwrite(buffer1, blocksize, 1, fion);
-        if (res != 1)
-            perror("fwrite");
-    }
-    current = size - 1;
-    length = size;
-
+  FILE *fion = fdopen( dup( ion ), "w+b" );
+  if ( !fion )
+  {
+    perror( "fdopen/dup" );
     delete [] buffer1;
     delete [] buffer2;
+    return;
+  }
 
-    fclose(fion);
+  int res;
+  for ( int i = 0; i < runs; i++ )
+  {
+    // free one block in chain
+    int firstblock = ( offset + i ) % size;
+    res = fseek( fion, firstblock * blocksize, SEEK_SET );
+    if ( res )
+      perror( "fseek" );
+    res = fread( buffer1, blocksize, 1, fion );
+    if ( res != 1 )
+      perror( "fread" );
+    int newpos = 0;
+    for ( int j = 1, cursor = firstblock; j < bpr; j++ )
+    {
+      cursor = ( cursor + offset ) % size;
+      newpos = ( cursor - offset + size ) % size;
+      moveBlock( fion, cursor, newpos, buffer2 );
+    }
+    res = fseek( fion, i * blocksize, SEEK_SET );
+    if ( res )
+      perror( "fseek" );
+    res = fwrite( buffer1, blocksize, 1, fion );
+    if ( res != 1 )
+      perror( "fwrite" );
+  }
+  current = size - 1;
+  length = size;
+
+  delete [] buffer1;
+  delete [] buffer2;
+
+  fclose( fion );
 
 }
 

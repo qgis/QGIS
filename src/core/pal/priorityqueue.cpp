@@ -58,7 +58,7 @@ namespace pal
 
     int i;
 
-    for ( i = 0;i <= maxId;i++ )
+    for ( i = 0; i <= maxId; i++ )
       pos[i] = -1;
 
 
@@ -179,7 +179,7 @@ namespace pal
 
     i = pi / 2 - 2;
 
-    for ( i = size - 1;i >= 0;i-- )
+    for ( i = size - 1; i >= 0; i-- )
       downheap( i );
 
   }
@@ -314,7 +314,7 @@ namespace pal
 
     fprintf( stderr, "Size: %d\nMaxSize: %d\n", size, maxsize );
 
-    for ( i = 0;i < size;i++ )
+    for ( i = 0; i < size; i++ )
     {
       //printf ("key: %7d  ->  index: %7d -> key: %7d   p: %7d\n", i, pos[i], heap[pos[i]], p[pos[i]]);
       fprintf( stderr, "id: %7d  ->  key: %7d -> id: %7d   p: %7f\n", i, heap[i], pos[heap[i]], p[i] );
@@ -328,7 +328,7 @@ namespace pal
   {
     int i;
     int count = 0;
-    for ( i = 0;i < maxsize;i++ )
+    for ( i = 0; i < maxsize; i++ )
     {
       if ( pos[i] >= 0 )
         count++;

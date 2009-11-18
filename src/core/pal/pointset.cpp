@@ -66,7 +66,7 @@ namespace pal
     this->y = new double[nbPoints];
     int i;
 
-    for ( i = 0;i < nbPoints;i++ )
+    for ( i = 0; i < nbPoints; i++ )
     {
       this->x[i] = x[i];
       this->y[i] = y[i];
@@ -99,7 +99,7 @@ namespace pal
     y = new double[nbPoints];
 
 
-    for ( i = 0;i < nbPoints;i++ )
+    for ( i = 0; i < nbPoints; i++ )
     {
       x[i] = ps.x[i];
       y[i] = ps.y[i];
@@ -108,7 +108,7 @@ namespace pal
     if ( ps.cHull )
     {
       cHullSize = ps.cHullSize;
-      for ( i = 0;i < cHullSize;i++ )
+      for ( i = 0; i < cHullSize; i++ )
       {
         cHull[i] = ps.cHull[i];
       }
@@ -162,7 +162,7 @@ namespace pal
     std::cout << "New shape: ";
 #endif
     // new shape # 1 from imin to imax
-    for ( j = 0, i = imin;i != ( imax + 1 ) % nbPoints;i = ( i + 1 ) % nbPoints, j++ )
+    for ( j = 0, i = imin; i != ( imax + 1 ) % nbPoints; i = ( i + 1 ) % nbPoints, j++ )
     {
       newShape->x[j] = x[i];
       newShape->y[j] = y[i];
@@ -252,7 +252,7 @@ namespace pal
       std::cout << " PtSet: ";
 #endif
 
-      for ( i = 0;i < nbp;i++ )
+      for ( i = 0; i < nbp; i++ )
       {
         pts[i] = i;
 #ifdef _DEBUG_FULL_
@@ -273,7 +273,7 @@ namespace pal
 
 #ifdef _DEBUG_FULL_
       std::cout << " CHull: ";
-      for ( i = 0;i < cHullSize;i++ )
+      for ( i = 0; i < cHullSize; i++ )
       {
         std::cout << cHull[i] << " ";
       }
@@ -284,7 +284,7 @@ namespace pal
       retainedPt = -1;
 
       // lookup for a hole
-      for ( ihs = 0;ihs < cHullSize;ihs++ )
+      for ( ihs = 0; ihs < cHullSize; ihs++ )
       {
         // ihs->ihn => cHull'seg
         ihn = ( ihs + 1 ) % cHullSize;
@@ -296,7 +296,7 @@ namespace pal
           bestcp = 0;
           pt = -1;
           // lookup for the deepest point in the hole
-          for ( i = ips;i != cHull[ihn];i = ( i + 1 ) % nbp )
+          for ( i = ips; i != cHull[ihn]; i = ( i + 1 ) % nbp )
           {
             cp = vabs( cross_product( x[cHull[ihs]], y[cHull[ihs]],
                                       x[cHull[ihn]], y[cHull[ihn]],
@@ -362,7 +362,7 @@ namespace pal
         // iterate on all shape points except points which are in the hole
         double isValid;
         int k, l;
-        for ( i = ( cHull[holeE] + 1 ) % nbp;i != ( cHull[holeS] - 1 + nbp ) % nbp;i = j )
+        for ( i = ( cHull[holeE] + 1 ) % nbp; i != ( cHull[holeS] - 1 + nbp ) % nbp; i = j )
         {
           j = ( i + 1 ) % nbp; // i->j is shape segment not in hole
 
@@ -430,7 +430,7 @@ namespace pal
             pointY = pty;
           }
 
-          for ( k = cHull[holeS];k != cHull[holeE];k = ( k + 1 ) % nbp )
+          for ( k = cHull[holeS]; k != cHull[holeE]; k = ( k + 1 ) % nbp )
           {
             l = ( k + 1 ) % nbp;
             //std::cout << "test " << k << " " << l << std::endl;
@@ -509,7 +509,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
           int i = 0;
           std::cout << "push back:" <<  std::endl;
-          for ( i = 0;i < newShape->nbPoints;i++ )
+          for ( i = 0; i < newShape->nbPoints; i++ )
           {
             std::cout << newShape->x[i] << ";" << newShape->y[i] << std::endl;
           }
@@ -531,7 +531,7 @@ namespace pal
 
 #ifdef _DEBUG_FULL_
           std::cout << "push back:" <<  std::endl;
-          for ( i = 0;i < newShape->nbPoints;i++ )
+          for ( i = 0; i < newShape->nbPoints; i++ )
           {
             std::cout << newShape->x[i] << ";" << newShape->y[i] << std::endl;
           }
@@ -572,13 +572,13 @@ namespace pal
 
     *inside = true;
 
-    for ( int i = 0;i < nbPoints;i++ )
+    for ( int i = 0; i < nbPoints; i++ )
     {
       shape->x[i] = this->x[i];
       shape->y[i] = this->y[i];
 
       // check whether it's not outside
-      if (x[i] < bbmin[0] || x[i] > bbmax[0] || y[i] < bbmin[1] || y[i] > bbmax[1])
+      if ( x[i] < bbmin[0] || x[i] > bbmax[0] || y[i] < bbmin[1] || y[i] > bbmax[1] )
         *inside = false;
     }
 
@@ -633,7 +633,7 @@ namespace pal
     std::cout << "Compute_chull_bbox" << std::endl;
 #endif
 
-    for ( i = 0;i < cHullSize;i++ )
+    for ( i = 0; i < cHullSize; i++ )
     {
 #ifdef _DEBUG_FULL_
       std::cout << x[cHull[i]] << ";" << y[cHull[i]] << std::endl;
@@ -654,7 +654,7 @@ namespace pal
 
     dref = bbox[2] - bbox[0];
 
-    for ( alpha_d = 0; alpha_d < 90;alpha_d++ )
+    for ( alpha_d = 0; alpha_d < 90; alpha_d++ )
     {
       alpha = alpha_d *  M_PI / 180.0;
       d1 = cos( alpha ) * dref;
@@ -683,14 +683,14 @@ namespace pal
       bb[15] = bb[13] - d1; // hx, hy
 
       // adjust all points
-      for ( i = 0;i < 16;i += 4 )
+      for ( i = 0; i < 16; i += 4 )
       {
 
         alpha_seg = (( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI / 2 + alpha;
 
         best_cp = DBL_MAX;
         nearestPoint = -1;
-        for ( j = 0;j < nbPoints;j++ )
+        for ( j = 0; j < nbPoints; j++ )
         {
           cp = cross_product( bb[i+2], bb[i+3], bb[i], bb[i+1], x[cHull[j]], y[cHull[j]] );
           if ( cp < best_cp )
@@ -735,7 +735,7 @@ namespace pal
 
     CHullBox * finalBb = new CHullBox();
 
-    for ( i = 0;i < 16;i = i + 4 )
+    for ( i = 0; i < 16; i = i + 4 )
     {
       computeLineIntersection( best_bb[i], best_bb[i+1], best_bb[i+2], best_bb[i+3],
                                best_bb[( i+4 ) %16], best_bb[( i+5 ) %16], best_bb[( i+6 ) %16], best_bb[( i+7 ) %16],
@@ -751,7 +751,7 @@ namespace pal
     std::cout << "Length : " << best_length << std::endl;
     std::cout << "Width : " << best_width << std::endl;
     std::cout << "Alpha: " << best_alpha << "    " << best_alpha*180 / M_PI << std::endl;
-    for ( i = 0;i < 4;i++ )
+    for ( i = 0; i < 4; i++ )
     {
       std::cout << finalBb->x[0] << " " << finalBb->y[0] << " ";
     }
@@ -799,7 +799,7 @@ namespace pal
     */
 
     // Compute references points
-    for ( i = 0;i < 8;i++ )
+    for ( i = 0; i < 8; i++ )
     {
       dist[i] = DBL_MAX;
       ok[i] = false;
@@ -832,11 +832,11 @@ namespace pal
     rpy[7] += height;
 
     int j, k;
-    for ( i = 0;i < nbPoints;i++ )
+    for ( i = 0; i < nbPoints; i++ )
     {
       j = ( i + 1 ) % nbPoints;
 
-      for ( k = 0;k < 8;k++ )
+      for ( k = 0; k < 8; k++ )
       {
         double ix, iy;
         if ( computeSegIntersection( px, py, rpx[k], rpy[k], x[i], y[i], x[j], y[j], &ix, &iy ) )
@@ -855,7 +855,7 @@ namespace pal
     double a, b, c, d;
 
 
-    for ( i = 0;i < 8;i++ )
+    for ( i = 0; i < 8; i++ )
     {
       if ( !ok[i] )
       {
@@ -904,7 +904,7 @@ namespace pal
     double best_dist = DBL_MAX;
     double d;
 
-    for ( a = 0;a < nbP;a++ )
+    for ( a = 0; a < nbP; a++ )
     {
       b = ( a + 1 ) % nbPoints;
 
@@ -960,19 +960,19 @@ namespace pal
     // for explanation see this page:
     // http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
 
-    int i,j;
-    double cx=0, cy=0, A=0, tmp;
+    int i, j;
+    double cx = 0, cy = 0, A = 0, tmp;
     for ( i = 0; i < nbPoints; i++ )
     {
-      j = i+1; if (j == nbPoints) j = 0;
-      tmp = (x[i]*y[j]-x[j]*y[i]);
-      cx += (x[i] + x[j]) * tmp;
-      cy += (y[i] + y[j]) * tmp;
+      j = i + 1; if ( j == nbPoints ) j = 0;
+      tmp = ( x[i] * y[j] - x[j] * y[i] );
+      cx += ( x[i] + x[j] ) * tmp;
+      cy += ( y[i] + y[j] ) * tmp;
       A += tmp;
     }
 
-    px = cx / (3*A);
-    py = cy / (3*A);
+    px = cx / ( 3 * A );
+    py = cy / ( 3 * A );
   }
 
 } // end namespace

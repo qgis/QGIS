@@ -127,7 +127,7 @@ namespace pal
   {
     int i;
 
-    for ( i = 0;i < n;i++ )
+    for ( i = 0; i < n; i++ )
     {
       cx[i] = x[i];
       cy[i] = y[i];
@@ -220,7 +220,7 @@ namespace pal
         case GEOS_MULTILINESTRING:
         case GEOS_MULTIPOLYGON:
           nGeom = GEOSGetNumGeometries( geom );
-          for ( i = 0;i < nGeom;i++ )
+          for ( i = 0; i < nGeom; i++ )
           {
             queue->push_back( GEOSGetGeometryN( geom, i ) );
           }

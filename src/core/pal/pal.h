@@ -330,16 +330,16 @@ namespace pal
        * @return A list of label to display on map
        */
       std::list<LabelPosition*> *labeller( int nbLayers,
-                                   char **layersName,
-                                   double *layersFactor,
-                                   double scale, double bbox[4],
-                                   PalStat **stat,
-                                   bool displayAll );
+                                           char **layersName,
+                                           double *layersFactor,
+                                           double scale, double bbox[4],
+                                           PalStat **stat,
+                                           bool displayAll );
 
 
-      Problem* extractProblem(double scale, double bbox[4]);
+      Problem* extractProblem( double scale, double bbox[4] );
 
-      std::list<LabelPosition*>* solveProblem(Problem* prob, bool displayAll);
+      std::list<LabelPosition*>* solveProblem( Problem* prob, bool displayAll );
 
       /**
        * \brief Set map resolution

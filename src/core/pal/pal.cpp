@@ -123,7 +123,7 @@ namespace pal
   Layer *Pal::getLayer( const char *lyrName )
   {
     lyrsMutex->lock();
-    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end();it++ )
+    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
       if ( strcmp(( *it )->name, lyrName ) == 0 )
       {
         lyrsMutex->unlock();
@@ -178,7 +178,7 @@ namespace pal
     std::cout << "nbLayers:" << layers->size() << std::endl;
 #endif
 
-    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end();it++ )
+    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
     {
       if ( strcmp(( *it )->name, lyrName ) == 0 )   // if layer already known
       {
@@ -258,7 +258,7 @@ namespace pal
     // OK, everything's fine, let's process the feature part
 
     // Holes of the feature are obstacles
-    for ( int i = 0;i < ft_ptr->getNumSelfObstacles();i++ )
+    for ( int i = 0; i < ft_ptr->getNumSelfObstacles(); i++ )
     {
       ft_ptr->getSelfObstacle( i )->getBoundingBox( amin, amax );
       context->obstacles->Insert( amin, amax, ft_ptr->getSelfObstacle( i ) );
@@ -403,9 +403,9 @@ namespace pal
     std::list<char*> *labLayers = new std::list<char*>();
 
     lyrsMutex->lock();
-    for ( i = 0;i < nbLayers;i++ )
+    for ( i = 0; i < nbLayers; i++ )
     {
-      for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end();it++ ) // iterate on pal->layers
+      for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ ) // iterate on pal->layers
       {
         layer = *it;
         // Only select those who are active and labellable (with scale constraint) or those who are active and which must be treated as obstaclewhich must be treated as obstacle
@@ -466,7 +466,7 @@ namespace pal
 
     prob->nbLabelledLayers = labLayers->size();
     prob->labelledLayersName = new char*[prob->nbLabelledLayers];
-    for ( i = 0;i < prob->nbLabelledLayers;i++ )
+    for ( i = 0; i < prob->nbLabelledLayers; i++ )
     {
       prob->labelledLayersName[i] = labLayers->front();
       labLayers->pop_front();
@@ -506,7 +506,7 @@ namespace pal
 
 
     int idlp = 0;
-    for ( i = 0;i < prob->nbft;i++ ) /* foreach feature into prob */
+    for ( i = 0; i < prob->nbft; i++ ) /* foreach feature into prob */
     {
       feat = fFeats->pop_front();
 #ifdef _DEBUG_FULL_
@@ -535,7 +535,7 @@ namespace pal
       std::cout << "All Cost are setted" << std::endl;
 #endif
       // only keep the 'max_p' best candidates
-      for ( j = max_p;j < feat->nblp;j++ )
+      for ( j = max_p; j < feat->nblp; j++ )
       {
         // TODO remove from index
         feat->lPos[j]->removeFromIndex( prob->candidates );
@@ -548,7 +548,7 @@ namespace pal
       prob->nblp += feat->nblp;
 
       // add all candidates into a rtree (to speed up conflicts searching)
-      for ( j = 0;j < feat->nblp;j++, idlp++ )
+      for ( j = 0; j < feat->nblp; j++, idlp++ )
       {
         lp = feat->lPos[j];
         //lp->insertIntoIndex(prob->candidates);
@@ -576,7 +576,7 @@ namespace pal
     while ( fFeats->size() > 0 ) // foreach feature
     {
       feat = fFeats->pop_front();
-      for ( i = 0;i < feat->nblp;i++, idlp++ )  // foreach label candidate
+      for ( i = 0; i < feat->nblp; i++, idlp++ )  // foreach label candidate
       {
         lp = feat->lPos[i];
         lp->resetNumOverlaps();
@@ -638,7 +638,7 @@ namespace pal
     double *priorities = new double[nbLayers];
     Layer *layer;
     i = 0;
-    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end();it++ )
+    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
     {
       layer = *it;
       layersName[i] = layer->name;
@@ -803,7 +803,7 @@ namespace pal
     double *priorities = new double[nbLayers];
     Layer *layer;
     int i = 0;
-    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end();it++ )
+    for ( std::list<Layer*>::iterator it = layers->begin(); it != layers->end(); it++ )
     {
       layer = *it;
       layersName[i] = layer->name;

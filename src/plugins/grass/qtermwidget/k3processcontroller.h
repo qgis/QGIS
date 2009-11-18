@@ -38,99 +38,99 @@
  */
 class K3ProcessController : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  /**
-   * Create an instance if none exists yet.
-   * Called by KApplication::KApplication()
-   */
-  static void ref();
+  public:
+    /**
+     * Create an instance if none exists yet.
+     * Called by KApplication::KApplication()
+     */
+    static void ref();
 
-  /**
-   * Destroy the instance if one exists and it is not referenced any more.
-   * Called by KApplication::~KApplication()
-   */
-  static void deref();
+    /**
+     * Destroy the instance if one exists and it is not referenced any more.
+     * Called by KApplication::~KApplication()
+     */
+    static void deref();
 
-  /**
-   * Only a single instance of this class is allowed at a time.
-   * This method provides access to that instance.
-   */
-  static K3ProcessController *instance();
+    /**
+     * Only a single instance of this class is allowed at a time.
+     * This method provides access to that instance.
+     */
+    static K3ProcessController *instance();
 
-  /**
-   * Automatically called upon SIGCHLD. Never call it directly.
-   * If your application (or some library it uses) redirects SIGCHLD,
-   * the new signal handler (and only it) should call the old handler
-   * returned by sigaction().
-   * @internal
-   */
-  static void theSigCHLDHandler(int signal); // KDE4: private
+    /**
+     * Automatically called upon SIGCHLD. Never call it directly.
+     * If your application (or some library it uses) redirects SIGCHLD,
+     * the new signal handler (and only it) should call the old handler
+     * returned by sigaction().
+     * @internal
+     */
+    static void theSigCHLDHandler( int signal ); // KDE4: private
 
-  /**
-   * Wait for any process to exit and handle their exit without
-   * starting an event loop.
-   * This function may cause K3Process to emit any of its signals.
-   *
-   * @param timeout the timeout in seconds. -1 means no timeout.
-   * @return true if a process exited, false
-   *         if no process exited within @p timeout seconds.
-   */
-  bool waitForProcessExit(int timeout);
+    /**
+     * Wait for any process to exit and handle their exit without
+     * starting an event loop.
+     * This function may cause K3Process to emit any of its signals.
+     *
+     * @param timeout the timeout in seconds. -1 means no timeout.
+     * @return true if a process exited, false
+     *         if no process exited within @p timeout seconds.
+     */
+    bool waitForProcessExit( int timeout );
 
-  /**
-   * Call this function to defer processing of the data that became available
-   * on notifierFd().
-   */
-  void unscheduleCheck();
+    /**
+     * Call this function to defer processing of the data that became available
+     * on notifierFd().
+     */
+    void unscheduleCheck();
 
-  /**
-   * This function @em must be called at some point after calling
-   * unscheduleCheck().
-   */
-  void rescheduleCheck();
+    /**
+     * This function @em must be called at some point after calling
+     * unscheduleCheck().
+     */
+    void rescheduleCheck();
 
-  /*
-   * Obtain the file descriptor K3ProcessController uses to get notified
-   * about process exits. select() or poll() on it if you create a custom
-   * event loop that needs to act upon SIGCHLD.
-   * @return the file descriptor of the reading end of the notification pipe
-   */
-  int notifierFd() const;
+    /*
+     * Obtain the file descriptor K3ProcessController uses to get notified
+     * about process exits. select() or poll() on it if you create a custom
+     * event loop that needs to act upon SIGCHLD.
+     * @return the file descriptor of the reading end of the notification pipe
+     */
+    int notifierFd() const;
 
-  /**
-   * @internal
-   */
-  void addKProcess( K3Process* );
-  /**
-   * @internal
-   */
-  void removeKProcess( K3Process* );
-  /**
-   * @internal
-   */
-  void addProcess( int pid );
+    /**
+     * @internal
+     */
+    void addKProcess( K3Process* );
+    /**
+     * @internal
+     */
+    void removeKProcess( K3Process* );
+    /**
+     * @internal
+     */
+    void addProcess( int pid );
 
-private Q_SLOTS:
-  void slotDoHousekeeping();
+  private Q_SLOTS:
+    void slotDoHousekeeping();
 
-private:
-  friend class I_just_love_gcc;
+  private:
+    friend class I_just_love_gcc;
 
-  static void setupHandlers();
-  static void resetHandlers();
+    static void setupHandlers();
+    static void resetHandlers();
 
-  // Disallow instantiation
-  K3ProcessController();
-  ~K3ProcessController();
+    // Disallow instantiation
+    K3ProcessController();
+    ~K3ProcessController();
 
-  // Disallow assignment and copy-construction
-  K3ProcessController( const K3ProcessController& );
-  K3ProcessController& operator= ( const K3ProcessController& );
+    // Disallow assignment and copy-construction
+    K3ProcessController( const K3ProcessController& );
+    K3ProcessController& operator= ( const K3ProcessController& );
 
-  class Private;
-  Private * const d;
+    class Private;
+    Private * const d;
 };
 
 #endif

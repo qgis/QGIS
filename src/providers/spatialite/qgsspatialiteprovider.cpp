@@ -76,7 +76,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri ): QgsVectorDat
   enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
   if ( mTableBased && !mReadOnly )
   {
-  // enabling editing only for Tables [excluding Views and VirtualShapes]
+    // enabling editing only for Tables [excluding Views and VirtualShapes]
     enabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
     enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
     enabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
@@ -547,47 +547,47 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
                     arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
       whereClause += QString( "Intersects(%1, BuildMbr(%2)) AND " ).arg( mGeometryColumn ).arg( mbr );
     }
-	if ( mVShapeBased )
+    if ( mVShapeBased )
     {
-	  // handling a VirtualShape layer
+      // handling a VirtualShape layer
       QString mbr = QString( "%1, %2, %3, %4" ).
-					arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
-					arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
-					arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
-	  whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( mGeometryColumn ).arg( mbr );
-    } 
-	else
-	{
-	  if ( spatialIndexRTree )
-	  {
-		// using the RTree spatial index
-		QString mbrFilter = QString( "xmin <= %1 AND " ).arg( QString::number( rect.xMaximum(), 'f', 6 ) );
-		mbrFilter += QString( "xmax >= %1 AND " ).arg( QString::number( rect.xMinimum(), 'f', 6 ) );
-		mbrFilter += QString( "ymin <= %1 AND " ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
-		mbrFilter += QString( "ymax >= %1" ).arg( QString::number( rect.yMinimum(), 'f', 6 ) );
-		QString idxName = QString( "idx_%1_%2" ).arg( mIndexTable ).arg( mIndexGeometry );
-		whereClause += QString( "ROWID IN (SELECT pkid FROM %1 WHERE %2)" ).arg( idxName ).arg( mbrFilter );
-	  }
-	  else if ( spatialIndexMbrCache )
-	  {
-		// using the MbrCache spatial index
-		QString mbr = QString( "%1, %2, %3, %4" ).
-					arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
-					arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
-					arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
-		QString idxName = QString( "cache_%1_%2" ).arg( mIndexTable ).arg( mIndexGeometry );
-		whereClause += QString( "ROWID IN (SELECT rowid FROM %1 WHERE mbr = FilterMbrIntersects(%2))" ).arg( idxName ).arg( mbr );
-	  }
-	  else
-	  {
-		// using simple MBR filtering
-		QString mbr = QString( "%1, %2, %3, %4" ).
-					arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
-					arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
-					arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
-		whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( mGeometryColumn ).arg( mbr );
-	  }
-	}
+                    arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
+                    arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
+                    arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
+      whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( mGeometryColumn ).arg( mbr );
+    }
+    else
+    {
+      if ( spatialIndexRTree )
+      {
+        // using the RTree spatial index
+        QString mbrFilter = QString( "xmin <= %1 AND " ).arg( QString::number( rect.xMaximum(), 'f', 6 ) );
+        mbrFilter += QString( "xmax >= %1 AND " ).arg( QString::number( rect.xMinimum(), 'f', 6 ) );
+        mbrFilter += QString( "ymin <= %1 AND " ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
+        mbrFilter += QString( "ymax >= %1" ).arg( QString::number( rect.yMinimum(), 'f', 6 ) );
+        QString idxName = QString( "idx_%1_%2" ).arg( mIndexTable ).arg( mIndexGeometry );
+        whereClause += QString( "ROWID IN (SELECT pkid FROM %1 WHERE %2)" ).arg( idxName ).arg( mbrFilter );
+      }
+      else if ( spatialIndexMbrCache )
+      {
+        // using the MbrCache spatial index
+        QString mbr = QString( "%1, %2, %3, %4" ).
+                      arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
+                      arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
+                      arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
+        QString idxName = QString( "cache_%1_%2" ).arg( mIndexTable ).arg( mIndexGeometry );
+        whereClause += QString( "ROWID IN (SELECT rowid FROM %1 WHERE mbr = FilterMbrIntersects(%2))" ).arg( idxName ).arg( mbr );
+      }
+      else
+      {
+        // using simple MBR filtering
+        QString mbr = QString( "%1, %2, %3, %4" ).
+                      arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
+                      arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
+                      arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
+        whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( mGeometryColumn ).arg( mbr );
+      }
+    }
   }
 
   if ( !whereClause.isEmpty() )
@@ -1406,27 +1406,27 @@ void QgsSpatiaLiteProvider::closeDb()
 
 bool QgsSpatiaLiteProvider::SqliteHandles::checkMetadata( sqlite3 *handle )
 {
-	int ret;
-	int i;
-	char **results;
-	int rows;
-	int columns;
-	int spatial_type = 0;
-	ret = sqlite3_get_table( handle, "SELECT CheckSpatialMetadata()", &results, &rows, &columns, NULL );
-	if (ret != SQLITE_OK)
-		goto skip;
-	if (rows < 1)
-		;
-	else
-    {
-		for (i = 1; i <= rows; i++)
-			spatial_type = atoi(results[(i * columns) + 0]);
-	}
-	sqlite3_free_table(results);
+  int ret;
+  int i;
+  char **results;
+  int rows;
+  int columns;
+  int spatial_type = 0;
+  ret = sqlite3_get_table( handle, "SELECT CheckSpatialMetadata()", &results, &rows, &columns, NULL );
+  if ( ret != SQLITE_OK )
+    goto skip;
+  if ( rows < 1 )
+    ;
+  else
+  {
+    for ( i = 1; i <= rows; i++ )
+      spatial_type = atoi( results[( i * columns ) + 0] );
+  }
+  sqlite3_free_table( results );
 skip:
-	if (spatial_type == 1)
-		return true;
-	return false;
+  if ( spatial_type == 1 )
+    return true;
+  return false;
 }
 
 QgsSpatiaLiteProvider::SqliteHandles * QgsSpatiaLiteProvider::SqliteHandles::openDb( const QString & dbPath )
@@ -1452,20 +1452,20 @@ QgsSpatiaLiteProvider::SqliteHandles * QgsSpatiaLiteProvider::SqliteHandles::ope
     QgsLogger::critical( msg );
     return NULL;
   }
-  
+
   // checking the DB for sanity
-  if (checkMetadata( sqlite_handle) == false)
+  if ( checkMetadata( sqlite_handle ) == false )
   {
     // failure
 
-    QString errCause = tr ( "invalid metadata tables" );
+    QString errCause = tr( "invalid metadata tables" );
     QString msg = tr( "Failure while connecting to: %1\n\n%2" ).arg( dbPath ).arg( errCause );
     QgsLogger::critical( msg );
-	sqlite3_close( sqlite_handle );
+    sqlite3_close( sqlite_handle );
     return NULL;
   }
   // activating Foreign Key constraints
-  sqlite3_exec(sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, NULL);
+  sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, NULL );
 
   QgsDebugMsg( "Connection to the database was successful" );
 
@@ -1526,15 +1526,15 @@ bool QgsSpatiaLiteProvider::checkLayerType()
   int columns;
   char *errMsg = NULL;
   int count = 0;
-  
+
   mTableBased = false;
   mViewBased = false;
   mVShapeBased = false;
-  
+
 // checking if this one is a Table-based layer
   QString sql = QString( "SELECT read_only FROM geometry_columns "
-						 "LEFT JOIN geometry_columns_auth "
-						 "USING (f_table_name, f_geometry_column) "
+                         "LEFT JOIN geometry_columns_auth "
+                         "USING (f_table_name, f_geometry_column) "
                          "WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( quotedValue( mTableName ) ).
                 arg( quotedValue( mGeometryColumn ) );
 
@@ -1545,24 +1545,24 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     ;
   else
   {
-      mTableBased = true;
-	  mReadOnly = false;
-	  for ( i = 1; i <= rows; i++ )
-	  {
-        if (results[( i * columns ) + 0] != NULL)
-		{
-		  if ( atoi( results[( i * columns ) + 0] ) != 0)
-			mReadOnly = true;
-		}
-	  }
-	  count++;
+    mTableBased = true;
+    mReadOnly = false;
+    for ( i = 1; i <= rows; i++ )
+    {
+      if ( results[( i * columns ) + 0] != NULL )
+      {
+        if ( atoi( results[( i * columns ) + 0] ) != 0 )
+          mReadOnly = true;
+      }
+    }
+    count++;
   }
   sqlite3_free_table( results );
-  
+
 // checking if this one is a View-based layer
   sql = QString( "SELECT view_name, view_geometry FROM views_geometry_columns"
-                         " WHERE view_name=%1 and view_geometry=%2" ).arg( quotedValue( mTableName ) ).
-                arg( quotedValue( mGeometryColumn ) );
+                 " WHERE view_name=%1 and view_geometry=%2" ).arg( quotedValue( mTableName ) ).
+        arg( quotedValue( mGeometryColumn ) );
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -1571,16 +1571,16 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     ;
   else
   {
-      mViewBased = true;
-	  mReadOnly = true;
-	  count++;
+    mViewBased = true;
+    mReadOnly = true;
+    count++;
   }
   sqlite3_free_table( results );
 
-// checking if this one is a VirtualShapefile-based layer  
+// checking if this one is a VirtualShapefile-based layer
   sql = QString( "SELECT virt_name, virt_geometry FROM virts_geometry_columns"
-                         " WHERE virt_name=%1 and virt_geometry=%2" ).arg( quotedValue( mTableName ) ).
-                arg( quotedValue( mGeometryColumn ) );
+                 " WHERE virt_name=%1 and virt_geometry=%2" ).arg( quotedValue( mTableName ) ).
+        arg( quotedValue( mGeometryColumn ) );
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -1589,16 +1589,16 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     ;
   else
   {
-      mVShapeBased = true;
-	  mReadOnly = true;
-	  count++;
+    mVShapeBased = true;
+    mReadOnly = true;
+    count++;
   }
   sqlite3_free_table( results );
 
 // cheching for validity
-  if (count != 1)
-	return false;
-  
+  if ( count != 1 )
+    return false;
+
   return true;
 
 error:
@@ -1615,14 +1615,14 @@ error:
 
 bool QgsSpatiaLiteProvider::getGeometryDetails()
 {
-	bool ret = false;
-	if ( mTableBased )
-		ret = getTableGeometryDetails();
-	if ( mViewBased )
-		ret = getViewGeometryDetails();
-	if ( mVShapeBased )
-		ret = getVShapeGeometryDetails();
-	return ret;
+  bool ret = false;
+  if ( mTableBased )
+    ret = getTableGeometryDetails();
+  if ( mViewBased )
+    ret = getViewGeometryDetails();
+  if ( mVShapeBased )
+    ret = getVShapeGeometryDetails();
+  return ret;
 }
 
 bool QgsSpatiaLiteProvider::getTableGeometryDetails()
@@ -1633,7 +1633,7 @@ bool QgsSpatiaLiteProvider::getTableGeometryDetails()
   int rows;
   int columns;
   char *errMsg = NULL;
-  
+
   mIndexTable = mTableName;
   mIndexGeometry = mGeometryColumn;
 
@@ -1694,7 +1694,7 @@ bool QgsSpatiaLiteProvider::getTableGeometryDetails()
 
   if ( geomType == QGis::WKBUnknown || mSrid < 0 )
     goto error;
-  
+
   return getSridDetails();
 
 error:
@@ -1736,8 +1736,8 @@ bool QgsSpatiaLiteProvider::getViewGeometryDetails()
       QString fType = results[( i * columns ) + 0];
       QString xSrid = results[( i * columns ) + 1];
       QString spatialIndex = results[( i * columns ) + 2];
-	  mIndexTable = results[( i * columns ) + 3];
-	  mIndexGeometry = results[( i * columns ) + 4];
+      mIndexTable = results[( i * columns ) + 3];
+      mIndexGeometry = results[( i * columns ) + 4];
 
       if ( fType == "POINT" )
       {
@@ -1779,7 +1779,7 @@ bool QgsSpatiaLiteProvider::getViewGeometryDetails()
 
   if ( geomType == QGis::WKBUnknown || mSrid < 0 )
     goto error;
-  
+
   return getSridDetails();
 
 error:
@@ -1818,7 +1818,7 @@ bool QgsSpatiaLiteProvider::getVShapeGeometryDetails()
     {
       QString fType = results[( i * columns ) + 0];
       QString xSrid = results[( i * columns ) + 1];
-      
+
       if ( fType == "POINT" )
       {
         geomType = QGis::WKBPoint;
@@ -1851,7 +1851,7 @@ bool QgsSpatiaLiteProvider::getVShapeGeometryDetails()
 
   if ( geomType == QGis::WKBUnknown || mSrid < 0 )
     goto error;
-  
+
   return getSridDetails();
 
 error:

@@ -43,128 +43,128 @@ using namespace Konsole;
 
 void Pty::donePty()
 {
-  emit done(exitStatus());
+  emit done( exitStatus() );
 }
 
-void Pty::setWindowSize(int lines, int cols)
+void Pty::setWindowSize( int lines, int cols )
 {
   _windowColumns = cols;
   _windowLines = lines;
 
-  if (pty()->masterFd() >= 0)
-    pty()->setWinSize(lines, cols);
+  if ( pty()->masterFd() >= 0 )
+    pty()->setWinSize( lines, cols );
 }
 QSize Pty::windowSize() const
 {
-    return QSize(_windowColumns,_windowLines);
+  return QSize( _windowColumns, _windowLines );
 }
 
-void Pty::setXonXoff(bool enable)
+void Pty::setXonXoff( bool enable )
 {
   _xonXoff = enable;
 
-  if (pty()->masterFd() >= 0)
+  if ( pty()->masterFd() >= 0 )
   {
     struct ::termios ttmode;
-    pty()->tcGetAttr(&ttmode);
-    if (!enable)
-      ttmode.c_iflag &= ~(IXOFF | IXON);
+    pty()->tcGetAttr( &ttmode );
+    if ( !enable )
+      ttmode.c_iflag &= ~( IXOFF | IXON );
     else
-      ttmode.c_iflag |= (IXOFF | IXON);
-    if (!pty()->tcSetAttr(&ttmode))
-      qWarning("Unable to set terminal attributes.");
+      ttmode.c_iflag |= ( IXOFF | IXON );
+    if ( !pty()->tcSetAttr( &ttmode ) )
+      qWarning( "Unable to set terminal attributes." );
   }
 }
 
-void Pty::setUtf8Mode(bool enable)
+void Pty::setUtf8Mode( bool enable )
 {
 #ifdef IUTF8 // XXX not a reasonable place to check it.
   _utf8 = enable;
 
-  if (pty()->masterFd() >= 0)
+  if ( pty()->masterFd() >= 0 )
   {
     struct ::termios ttmode;
-    pty()->tcGetAttr(&ttmode);
-    if (!enable)
+    pty()->tcGetAttr( &ttmode );
+    if ( !enable )
       ttmode.c_iflag &= ~IUTF8;
     else
       ttmode.c_iflag |= IUTF8;
-    if (!pty()->tcSetAttr(&ttmode))
-      qWarning("Unable to set terminal attributes.");
+    if ( !pty()->tcSetAttr( &ttmode ) )
+      qWarning( "Unable to set terminal attributes." );
   }
 #endif
 }
 
-void Pty::setErase(char erase)
+void Pty::setErase( char erase )
 {
   _eraseChar = erase;
-  
-  if (pty()->masterFd() >= 0)
+
+  if ( pty()->masterFd() >= 0 )
   {
     struct ::termios ttmode;
 
-    pty()->tcGetAttr(&ttmode);
+    pty()->tcGetAttr( &ttmode );
 
     ttmode.c_cc[VERASE] = erase;
 
-    if (!pty()->tcSetAttr(&ttmode))
-      qWarning("Unable to set terminal attributes.");
-  }  
+    if ( !pty()->tcSetAttr( &ttmode ) )
+      qWarning( "Unable to set terminal attributes." );
+  }
 }
 
 char Pty::erase() const
 {
-	if (pty()->masterFd() >= 0)
-	{
-		qDebug() << "Getting erase char";
-		struct ::termios ttyAttributes;
-		pty()->tcGetAttr(&ttyAttributes);
-		return ttyAttributes.c_cc[VERASE];
-	}
+  if ( pty()->masterFd() >= 0 )
+  {
+    qDebug() << "Getting erase char";
+    struct ::termios ttyAttributes;
+    pty()->tcGetAttr( &ttyAttributes );
+    return ttyAttributes.c_cc[VERASE];
+  }
 
-	return _eraseChar;
+  return _eraseChar;
 }
 
-void Pty::addEnvironmentVariables(const QStringList& environment)
+void Pty::addEnvironmentVariables( const QStringList& environment )
 {
-    QListIterator<QString> iter(environment);
-    while (iter.hasNext())
+  QListIterator<QString> iter( environment );
+  while ( iter.hasNext() )
+  {
+    QString pair = iter.next();
+
+    // split on the first '=' character
+    int pos = pair.indexOf( '=' );
+
+    if ( pos >= 0 )
     {
-        QString pair = iter.next();
+      QString variable = pair.left( pos );
+      QString value = pair.mid( pos + 1 );
 
-        // split on the first '=' character
-        int pos = pair.indexOf('=');
-        
-        if ( pos >= 0 )
-        {
-            QString variable = pair.left(pos);
-            QString value = pair.mid(pos+1);
+      //kDebug() << "Setting environment pair" << variable <<
+      //    " set to " << value;
 
-            //kDebug() << "Setting environment pair" << variable <<
-            //    " set to " << value;
-
-            setEnvironment(variable,value);
-        }
+      setEnvironment( variable, value );
     }
+  }
 }
 
-int Pty::start(const QString& program, 
-               const QStringList& programArguments, 
-               const QStringList& environment, 
-               ulong winid, 
-               bool addToUtmp
-//               const QString& dbusService, 
+int Pty::start( const QString& program,
+                const QStringList& programArguments,
+                const QStringList& environment,
+                ulong winid,
+                bool addToUtmp
+//               const QString& dbusService,
 //               const QString& dbusSession)
-		)
+              )
 {
   clearArguments();
 
-  setBinaryExecutable(program.toLatin1());
+  setBinaryExecutable( program.toLatin1() );
 
-  addEnvironmentVariables(environment);
+  addEnvironmentVariables( environment );
 
   QStringListIterator it( programArguments );
-  while (it.hasNext())
+  while ( it.hasNext() )
     arguments.append( it.next().toUtf8() );
 
 //  if ( !dbusService.isEmpty() )
@@ -172,7 +172,7 @@ int Pty::start(const QString& program,
 //  if ( !dbusSession.isEmpty() )
 //     setEnvironment("KONSOLE_DBUS_SESSION", dbusSession);
 
-  setEnvironment("WINDOWID", QString::number(winid));
+  setEnvironment( "WINDOWID", QString::number( winid ) );
 
   // unless the LANGUAGE environment variable has been set explicitly
   // set it to a null string
@@ -185,121 +185,122 @@ int Pty::start(const QString& program,
   // does not have a translation for
   //
   // BR:149300
-  if (!environment.contains("LANGUAGE"))
-      setEnvironment("LANGUAGE",QString());
+  if ( !environment.contains( "LANGUAGE" ) )
+    setEnvironment( "LANGUAGE", QString() );
 
-  setUsePty(All, addToUtmp);
+  setUsePty( All, addToUtmp );
 
   pty()->open();
-  
+
   struct ::termios ttmode;
-  pty()->tcGetAttr(&ttmode);
-  if (!_xonXoff)
-    ttmode.c_iflag &= ~(IXOFF | IXON);
+  pty()->tcGetAttr( &ttmode );
+  if ( !_xonXoff )
+    ttmode.c_iflag &= ~( IXOFF | IXON );
   else
-    ttmode.c_iflag |= (IXOFF | IXON);
+    ttmode.c_iflag |= ( IXOFF | IXON );
 #ifdef IUTF8 // XXX not a reasonable place to check it.
-  if (!_utf8)
+  if ( !_utf8 )
     ttmode.c_iflag &= ~IUTF8;
   else
     ttmode.c_iflag |= IUTF8;
 #endif
 
-  if (_eraseChar != 0)
-  	ttmode.c_cc[VERASE] = _eraseChar;
-  
-  if (!pty()->tcSetAttr(&ttmode))
-    qWarning("Unable to set terminal attributes.");
-  
-  pty()->setWinSize(_windowLines, _windowColumns);
+  if ( _eraseChar != 0 )
+    ttmode.c_cc[VERASE] = _eraseChar;
 
-  if ( K3Process::start(NotifyOnExit, (Communication) (Stdin | Stdout)) == false )
-     return -1;
+  if ( !pty()->tcSetAttr( &ttmode ) )
+    qWarning( "Unable to set terminal attributes." );
+
+  pty()->setWinSize( _windowLines, _windowColumns );
+
+  if ( K3Process::start( NotifyOnExit, ( Communication )( Stdin | Stdout ) ) == false )
+    return -1;
 
   resume(); // Start...
   return 0;
 
 }
 
-void Pty::setWriteable(bool writeable)
+void Pty::setWriteable( bool writeable )
 {
   struct stat sbuf;
-  stat(pty()->ttyName(), &sbuf);
-  if (writeable)
-    chmod(pty()->ttyName(), sbuf.st_mode | S_IWGRP);
+  stat( pty()->ttyName(), &sbuf );
+  if ( writeable )
+    chmod( pty()->ttyName(), sbuf.st_mode | S_IWGRP );
   else
-    chmod(pty()->ttyName(), sbuf.st_mode & ~(S_IWGRP|S_IWOTH));
+    chmod( pty()->ttyName(), sbuf.st_mode & ~( S_IWGRP | S_IWOTH ) );
 }
 
 Pty::Pty()
-    : _bufferFull(false),
-      _windowColumns(0),
-      _windowLines(0),
-      _eraseChar(0),
-      _xonXoff(true),
-      _utf8(true)
+    : _bufferFull( false ),
+    _windowColumns( 0 ),
+    _windowLines( 0 ),
+    _eraseChar( 0 ),
+    _xonXoff( true ),
+    _utf8( true )
 {
-  connect(this, SIGNAL(receivedStdout(K3Process *, char *, int )),
-	  this, SLOT(dataReceived(K3Process *,char *, int)));
-  connect(this, SIGNAL(processExited(K3Process *)),
-          this, SLOT(donePty()));
-  connect(this, SIGNAL(wroteStdin(K3Process *)),
-          this, SLOT(writeReady()));
+  connect( this, SIGNAL( receivedStdout( K3Process *, char *, int ) ),
+           this, SLOT( dataReceived( K3Process *, char *, int ) ) );
+  connect( this, SIGNAL( processExited( K3Process * ) ),
+           this, SLOT( donePty() ) );
+  connect( this, SIGNAL( wroteStdin( K3Process * ) ),
+           this, SLOT( writeReady() ) );
   _pty = new KPty;
 
-  setUsePty(All, false); // utmp will be overridden later
+  setUsePty( All, false ); // utmp will be overridden later
 }
 
 Pty::~Pty()
 {
-    delete _pty;
+  delete _pty;
 }
 
 void Pty::writeReady()
 {
-  _pendingSendJobs.erase(_pendingSendJobs.begin());
+  _pendingSendJobs.erase( _pendingSendJobs.begin() );
   _bufferFull = false;
   doSendJobs();
 }
 
-void Pty::doSendJobs() {
-  if(_pendingSendJobs.isEmpty())
+void Pty::doSendJobs()
+{
+  if ( _pendingSendJobs.isEmpty() )
   {
-     emit bufferEmpty(); 
-     return;
+    emit bufferEmpty();
+    return;
   }
-  
+
   SendJob& job = _pendingSendJobs.first();
 
-  
-  if (!writeStdin( job.data(), job.length() ))
+
+  if ( !writeStdin( job.data(), job.length() ) )
   {
-    qWarning("Pty::doSendJobs - Could not send input data to terminal process.");
+    qWarning( "Pty::doSendJobs - Could not send input data to terminal process." );
     return;
   }
   _bufferFull = true;
 }
 
-void Pty::appendSendJob(const char* s, int len)
+void Pty::appendSendJob( const char* s, int len )
 {
-  _pendingSendJobs.append(SendJob(s,len));
+  _pendingSendJobs.append( SendJob( s, len ) );
 }
 
-void Pty::sendData(const char* s, int len)
+void Pty::sendData( const char* s, int len )
 {
-  appendSendJob(s,len);
-  if (!_bufferFull)
-     doSendJobs();
+  appendSendJob( s, len );
+  if ( !_bufferFull )
+    doSendJobs();
 }
 
-void Pty::dataReceived(K3Process *,char *buf, int len)
+void Pty::dataReceived( K3Process *, char *buf, int len )
 {
-  emit receivedData(buf,len);
+  emit receivedData( buf, len );
 }
 
-void Pty::lockPty(bool lock)
+void Pty::lockPty( bool lock )
 {
-  if (lock)
+  if ( lock )
     suspend();
   else
     resume();
@@ -307,14 +308,14 @@ void Pty::lockPty(bool lock)
 
 int Pty::foregroundProcessGroup() const
 {
-    int pid = tcgetpgrp(pty()->masterFd());
+  int pid = tcgetpgrp( pty()->masterFd() );
 
-    if ( pid != -1 )
-    {
-        return pid;
-    } 
+  if ( pid != -1 )
+  {
+    return pid;
+  }
 
-    return 0;
+  return 0;
 }
 
 //#include "moc_Pty.cpp"

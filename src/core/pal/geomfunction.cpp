@@ -276,7 +276,7 @@ namespace pal
       distance[3] = dist_euc2d( cx, cy, xs2, ys2 ); // l2
       toDist = max( toDist, distance[3] );
 
-      for ( i = 0;i < 4;i++ )
+      for ( i = 0; i < 4; i++ )
       {
         dx = nx[i] - cx;
         dy = ny[i] - cy;
@@ -396,7 +396,7 @@ namespace pal
     int i;
 
     cHull = new int[n];
-    for ( i = 0;i < n;i++ )
+    for ( i = 0; i < n; i++ )
     {
       cHull[i] = i;
     }
@@ -481,7 +481,7 @@ namespace pal
       }
     }
 
-    for ( i = 0;i <= top;i++ )
+    for ( i = 0; i <= top; i++ )
     {
       cHull[i] = stack[i];
     }
@@ -501,7 +501,7 @@ namespace pal
     int i;
 
     int *pts = new int[nbPoints];
-    for ( i = 0;i < nbPoints;i++ )
+    for ( i = 0; i < nbPoints; i++ )
       pts[i] = i;
 
 
@@ -522,12 +522,12 @@ namespace pal
     else
     {
       std::cout << "Warning wrong cHull -> geometry: " << nbPoints << std::endl;
-      for ( i = 0;i < nbPoints;i++ )
+      for ( i = 0; i < nbPoints; i++ )
       {
         std::cout << x[i] << ";" << y[i] << std::endl;
       }
       std::cout << "hull : " << cHullSize << std::endl;
-      for ( i = 0;i < cHullSize;i++ )
+      for ( i = 0; i < cHullSize; i++ )
       {
         std::cout << pts[cHull[i]] << " ";
       }
@@ -541,7 +541,7 @@ namespace pal
     {
       double tmp;
       int j;
-      for ( i = 0, j = nbPoints - 1;i <= j;i++, j-- )
+      for ( i = 0, j = nbPoints - 1; i <= j; i++, j-- )
       {
         tmp = x[i];
         x[i] = x[j];
@@ -572,7 +572,7 @@ namespace pal
     {
       if (((( yp[i] <= y ) && ( y < yp[j] ) ) ||
            (( yp[j] <= y ) && ( y < yp[i] ) ) )
-          && ( x < ( xp[j] - xp[i] ) * ( y - yp[i] ) / ( yp[j] - yp[i] ) + xp[i] ) )
+          && ( x < ( xp[j] - xp[i] ) *( y - yp[i] ) / ( yp[j] - yp[i] ) + xp[i] ) )
       {
         c = !c;
       }
@@ -591,7 +591,7 @@ namespace pal
     if ( nbPoints > 1 )
     {
       out << "  <path style=\"fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1\" d=\"M " << convert2pt( x[0], scale, dpi ) - xmin << "," << ymax - convert2pt( y[0], scale, dpi ) << " ";
-      for ( i = 1;i < nbPoints;i++ )
+      for ( i = 1; i < nbPoints; i++ )
       {
         out << "L " << convert2pt( x[i], scale, dpi ) - xmin  << ", " << ymax - convert2pt( y[i], scale, dpi ) << " ";
       }
@@ -626,39 +626,39 @@ namespace pal
 #endif
 
 
-    void findLineCircleIntersection(double cx, double cy, double radius,
-                                  double x1, double y1, double x2, double y2,
-                                  double& xRes, double& yRes)
+  void findLineCircleIntersection( double cx, double cy, double radius,
+                                   double x1, double y1, double x2, double y2,
+                                   double& xRes, double& yRes )
+  {
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+
+    double A = dx * dx + dy * dy;
+    double B = 2 * ( dx * ( x1 - cx ) + dy * ( y1 - cy ) );
+    double C = ( x1 - cx ) * ( x1 - cx ) + ( y1 - cy ) * ( y1 - cy ) - radius * radius;
+
+    double det = B * B - 4 * A * C;
+    if ( A <= 0.0000001 || det < 0 )
+      // Should never happen, No real solutions.
+      return;
+
+    if ( det == 0 )
     {
-      double dx = x2 - x1;
-      double dy = y2 - y1;
-
-      double A = dx * dx + dy * dy;
-      double B = 2 * (dx * (x1 - cx) + dy * (y1 - cy));
-      double C = (x1 - cx) * (x1 - cx) + (y1 - cy) * (y1 - cy) - radius * radius;
-
-      double det = B * B - 4 * A * C;
-      if (A <= 0.0000001 || det < 0)
-          // Should never happen, No real solutions.
-          return;
-
-      if (det == 0)
-      {
-          // Could potentially happen.... One solution.
-          double t = -B / (2 * A);
-          xRes = x1 + t * dx;
-          yRes = y1 + t * dy;
-      }
-      else
-      {
-          // Two solutions.
-          // Always use the 1st one
-          // We only really have one solution here, as we know the line segment will start in the circle and end outside
-          double t = (-B + sqrt(det)) / (2 * A);
-          xRes = x1 + t * dx;
-          yRes = y1 + t * dy;
-      }
+      // Could potentially happen.... One solution.
+      double t = -B / ( 2 * A );
+      xRes = x1 + t * dx;
+      yRes = y1 + t * dy;
     }
+    else
+    {
+      // Two solutions.
+      // Always use the 1st one
+      // We only really have one solution here, as we know the line segment will start in the circle and end outside
+      double t = ( -B + sqrt( det ) ) / ( 2 * A );
+      xRes = x1 + t * dx;
+      yRes = y1 + t * dy;
+    }
+  }
 
 
 } // end namespace

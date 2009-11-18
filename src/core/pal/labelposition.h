@@ -117,7 +117,7 @@ namespace pal
       bool isInConflict( LabelPosition *ls );
 
       /** return bounding box - amin: xmin,ymin - amax: xmax,ymax */
-      void getBoundingBox(double amin[2], double amax[2]) const;
+      void getBoundingBox( double amin[2], double amax[2] ) const;
 
       /** get distance from this label to a point. If point lies inside, returns negative number. */
       double getDistanceToPoint( double xp, double yp );
@@ -149,8 +149,11 @@ namespace pal
       int getProblemFeatureId() const { return probFeat; }
       /** set problem feature ID and assigned label candidate ID.
        *  called from pal.cpp during extraction */
-      void setProblemIds( int probFid, int lpId ) { probFeat = probFid; id = lpId;
-        if (nextPart) nextPart->setProblemIds(probFid, lpId); }
+      void setProblemIds( int probFid, int lpId )
+      {
+        probFeat = probFid; id = lpId;
+        if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
+      }
 
       /** return pointer to layer's name. used for stats */
       char* getLayerName() const;
@@ -191,11 +194,11 @@ namespace pal
       void print();
 
       LabelPosition* getNextPart() const { return nextPart; }
-      void setNextPart(LabelPosition* next) { nextPart = next; }
+      void setNextPart( LabelPosition* next ) { nextPart = next; }
 
       // -1 if not multi-part
       int getPartId() const { return partId; }
-      void setPartId(int id) { partId = id; }
+      void setPartId( int id ) { partId = id; }
 
 
       void removeFromIndex( RTree<LabelPosition*, double, 2, double> *index );

@@ -58,12 +58,12 @@ namespace pal
    */
   class Feats
   {
-  public:
-    FeaturePart *feature;
-    PointSet *shape;
-    double priority;
-    int nblp;
-    LabelPosition **lPos;
+    public:
+      FeaturePart *feature;
+      PointSet *shape;
+      double priority;
+      int nblp;
+      LabelPosition **lPos;
   };
 
 
@@ -130,13 +130,13 @@ namespace pal
           case pal::FOOT:
             return (( x / double( dpi ) )*12 ) * scale;
           case pal::DEGREE:
-            {
-              double iw = degree2meter( delta_canvas_width ) * 39.3700787;
-              return ( x * delta_canvas_width * scale ) / ( iw * dpi );
-	    }
-	  default:
+          {
+            double iw = degree2meter( delta_canvas_width ) * 39.3700787;
+            return ( x * delta_canvas_width * scale ) / ( iw * dpi );
+          }
+          default:
             fprintf( stderr, "Target unit undefined\n" );
-	    return 0.0;
+            return 0.0;
         }
         break;
       case pal::METER:
@@ -147,13 +147,13 @@ namespace pal
           case pal::FOOT:
             return x / 0.3048;
           case pal::DEGREE:
-            {
-              double mw = degree2meter( delta_canvas_width );
-              return ( x * delta_canvas_width ) / mw;
-	    }
-	  default:
+          {
+            double mw = degree2meter( delta_canvas_width );
+            return ( x * delta_canvas_width ) / mw;
+          }
+          default:
             fprintf( stderr, "Target unit undefined\n" );
-	    return 0.0;
+            return 0.0;
         }
         break;
       case pal::FOOT:
@@ -164,13 +164,13 @@ namespace pal
           case pal::METER:
             return x*0.3048;
           case pal::DEGREE:
-            {
-              double iw = degree2meter( delta_canvas_width ) * 39.3700787;
-              return ( x * delta_canvas_width ) / iw;
-	    }
-	  default:
+          {
+            double iw = degree2meter( delta_canvas_width ) * 39.3700787;
+            return ( x * delta_canvas_width ) / iw;
+          }
+          default:
             fprintf( stderr, "Target unit undefined\n" );
-	    return 0.0;
+            return 0.0;
         }
         break;
       case pal::DEGREE:
@@ -185,14 +185,14 @@ namespace pal
           case pal::FOOT:
             fprintf( stderr, "Degree to foot not yet implemented\n" );
             break;
-	  default:
+          default:
             fprintf( stderr, "Target unit undefined\n" );
-	    return 0.0;
+            return 0.0;
         }
         break;
       default:
-	fprintf( stderr, "Source unit undefined" );
-	return 0.0;
+        fprintf( stderr, "Source unit undefined" );
+        return 0.0;
 
     }
 
