@@ -19,7 +19,7 @@
 #include "qgsrendercontext.h"
 
 QgsRenderContext::QgsRenderContext()
-  : mPainter( 0 ),
+    : mPainter( 0 ),
     mCoordTransform( 0 ),
     mDrawEditingInformation( false ),
     mForceVectorOutput( true ),
