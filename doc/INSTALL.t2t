@@ -151,7 +151,7 @@ document.
 Download qt4.3 opensource precompiled edition exe and install (including the
 download and install of mingw) from here:
 
-http://www.trolltech.com/developer/downloads/qt/windows
+http://qt.nokia.com/downloads
 
 When the installer will ask for MinGW, you don't need to download and install
 it, just point the installer to c:\msys\mingw
@@ -392,24 +392,17 @@ You need a minimum of Qt-4.3.0. I suggest getting the latest (at time of writing
 __Snow Leopard note:__ If you are building on Snow Leopard, you will need to
 decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
-as of Qt-4.6.0, but the beta version of Qt-4.6.0 has proven to introduce numerous
-bugs in Qgis. Unfortunately, the 32-bit branch of Qt currently does not build with
-python bindings (see notes below). You can achieve support for python in Qgis with
+as of Qt-4.5.2, and the release candidate of Qt-4.6.0-cocoa works fairly well
+with Qgis as tested with nightly snapshots of sip and pyqt.
+Unfortunately, the 32-bit branch of Qt currently does not build using cmake with
+python bindings. You can achieve support for python in Qgis with
 the Xcode build method noted below.
 
 ``` 
-ftp://ftp.trolltech.com/qt/source/
+http://qt.nokia.com/downloads
 ```
 
-Mac versions are named as:
-
-```
-qt-mac-opensource-x.y.z.dmg
-```
-
-x, y, z being the major, minor and revision version.
-
-If you want debug frameworks, Qt also provide a dmg with these.  These are in
+If you want debug frameworks, Qt also provides a dmg with these.  These are in
 addition to the non-debug frameworks.
 
 Once downloaded open the dmg and run the installer. Note you need admin
@@ -418,7 +411,7 @@ privileges to install.
 
 == Install development frameworks for QGIS dependencies ==
 
-Download William Kyngesburye's excellent all in GDAL Complete framework that includes proj, gdal, sqlite3, etc.
+Download William Kyngesburye's excellent GDAL Complete package that includes PROJ, GEOS, GDAL, SQLite3, and image libraries, as frameworks.
 
 ``` 
 http://www.kyngchaos.com/wiki/software:frameworks
@@ -426,8 +419,10 @@ http://www.kyngchaos.com/wiki/software:frameworks
 
 Once downloaded, open and install the frameworks.
 
-William provides an additional installer package for Postgresql/PostGIS. It's
-available here:
+William provides an additional installer package for Postgresql (for PostGIS support).
+Qgis just needs the libpq client library, so unless you want to setup the full
+Postgres + PostGIS server, all you need is the client-only package.
+It's available here:
 
 ``` 
 http://www.kyngchaos.com/wiki/software:postgres 
@@ -477,7 +472,7 @@ For explicit 32-bit support in gsl, substitute the standard configure line with:
 === Additional Dependencies : Expat ===
 
 __Snow Leopard note:__ Snow Leopard includes a usable expat, so this step is 
-not necessary.
+not necessary on Snow Leopard.
 
 Get the expat sources:
 
@@ -500,16 +495,22 @@ __Leopard note:__ To compile for 64bit, substitute the standard configure line w
 ```
 
 
+=== Additional Dependencies : Python ===
+
+__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include a usable
+Python 2.5 and 2.6, respectively. So there is no need to install Python on
+Leopard and Snow Leopard You can still install Python from python.org if preferred.
+
+Make sure you install at least the latest Python 2.5 from 
+
+```
+http://www.python.org/download/
+```
+
+Python 3 is a major change, and may have compatibility issues, so try it at your own risk.
+
+
 === Additional Dependencies : SIP ===
-
-__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include a usable Python
-2.5 or 2.6, respectively.  You can install Python from python.org if preferred.
-
-Make sure you have at least the latest Python 2.5 from 
-
-```
-http://www.python.org/download/mac/
-```
 
 Retrieve the python bindings toolkit SIP from
 
@@ -518,7 +519,7 @@ http://www.riverbankcomputing.com/software/sip/download
 ```
 
 Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
-and (this installs by default into the Python framework):
+and (this installs by default into the Python framework, and is appropriate only for python.org Python installs):
 
 ``` 
 python configure.py 
@@ -539,17 +540,20 @@ python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin \
 
 __Snow Leopard notes__
 
-Similar to Leopard, you should install outside the system Python path.  Also, you need to specify the architecture you want (requires at least SIP 4.9). If you are using 32-bit Qt (Qt Carbon):
+Similar to Leopard, you should install outside the system Python path.
+Also, you need to specify the architecture you want (requires at least SIP 4.9),
+and make sure to run the versioned python binary (this one responds to the
+'arch' command, 'python' does not). If you are using 32-bit Qt (Qt Carbon):
 
 ```
-python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
 -e /usr/local/include -v /usr/local/share/sip --arch=i386
 ```
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
 ```
-python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
 -e /usr/local/include -v /usr/local/share/sip --arch=x86_64
 ```
 
@@ -563,7 +567,7 @@ http://www.riverbankcomputing.com/software/pyqt/download
 ```
 
 Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
-and (this installs by default into the Python framework):
+and (this installs by default into the Python framework, and is appropriate only for python.org Python installs):
 
 ``` 
 export QTDIR=/Developer/Applications/Qt
@@ -590,17 +594,19 @@ Then make again.
 __Snow Leopard notes__
 
 Similar to Leopard, you should install outside the system Python path.
-Also, you need to specify the architecture you want (requires at least PyQt 4.6).
+Also, you need to specify the architecture you want (requires at least PyQt 4.6),
+and make sure to run the versioned python binary (this one responds to the
+'arch' command, which is important for pyuic4, 'python' does not).
 If you are using 32-bit Qt (Qt Carbon):
 
 ```
-python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
 ```
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
 ```
-python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
 ```
 
 
@@ -645,7 +651,8 @@ sudo make install
 
 == Install subversion for OSX ==
 
-__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include SVN, so this step can be skipped on Leopard and Snow Leopard.
+__Leopard and Snow Leopard note:__ Leopard and Snow Leopard (Xcode 3+)
+include SVN, so this step can be skipped on Leopard and Snow Leopard.
 
 The [http://sourceforge.net/projects/macsvn/MacSVN] project has a downloadable
 build of svn. If you are a GUI inclined person you may want to grab their gui
@@ -851,8 +858,9 @@ Alternatively, from within the mac/xcode directory, build with the command:
 xcodebuild
 ```
 
-The Qgis application will be found in the 'build/$SYSTEM/Release' folder in the xcode folder.
-Copy this to whereever you like.
+The Qgis application will be found in the 'build/$SDKSYS/Release' folder
+in the xcode folder, where $SDKSYS is the system you configured for in your
+qgis_user.xcconfig. Copy this to whereever you like.
 
 % -----------------------------------------------------------------------------
 % ----Please leave this break marker here for clarity - it wont be rendered ---
@@ -2222,7 +2230,7 @@ support building the open source version of Qt for windows under MSVC.
 Download Qt 4.x.x source for windows from
 
 ```
-http:\\www.trolltech.com
+http://qt.nokia.com/downloads
 ```
 
 Unpack the source to 
