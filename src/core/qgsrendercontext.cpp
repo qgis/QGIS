@@ -18,7 +18,15 @@
 
 #include "qgsrendercontext.h"
 
-QgsRenderContext::QgsRenderContext(): mPainter( 0 ), mCoordTransform( 0 ), mDrawEditingInformation( false ), mForceVectorOutput( true ), mRenderingStopped( false ), mScaleFactor( 1.0 ), mRasterScaleFactor( 1.0 )
+QgsRenderContext::QgsRenderContext()
+  : mPainter( 0 ),
+    mCoordTransform( 0 ),
+    mDrawEditingInformation( false ),
+    mForceVectorOutput( true ),
+    mRenderingStopped( false ),
+    mScaleFactor( 1.0 ),
+    mRasterScaleFactor( 1.0 ),
+    mLabelingEngine( NULL )
 {
 
 }

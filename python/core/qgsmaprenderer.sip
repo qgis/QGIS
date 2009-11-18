@@ -1,4 +1,31 @@
 
+
+/** Labeling engine interface.
+ * \note Added in QGIS v1.4
+ */
+class QgsLabelingEngineInterface
+{
+%TypeHeaderCode
+#include <qgsmaprenderer.h>
+%End
+
+public:
+  virtual ~QgsLabelingEngineInterface();
+
+  //! called when we're going to start with rendering
+  virtual void init() = 0;
+  //! called when starting rendering of a layer
+  virtual int prepareLayer(QgsVectorLayer* layer, int& attrIndex) = 0;
+  //! called for every feature
+  virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat ) = 0;
+  //! called when the map is drawn and labels should be placed
+  virtual void drawLabeling( QgsRenderContext& context ) = 0;
+  //! called when we're done with rendering
+  virtual void exit() = 0;
+
+};
+
+
 /**
  * \class QgsMapRenderer
  * \brief Class for rendering map layer set
@@ -113,6 +140,15 @@ class QgsMapRenderer : QObject
 
     //! Accessor for render context
     QgsRenderContext* rendererContext();
+
+    //! Labeling engine (NULL if there's no custom engine)
+    //! \note Added in QGIS v1.4
+    QgsLabelingEngineInterface* labelingEngine();
+
+    //! Set labeling engine. Previous engine (if any) is deleted.
+    //! Takes ownership of the engine.
+    //! Added in QGIS v1.4
+    void setLabelingEngine(QgsLabelingEngineInterface* iface /Transfer/);
 
   signals:
     

@@ -53,17 +53,6 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
-class QgsLabelingEngineInterface
-{
-  public:
-    virtual ~QgsLabelingEngineInterface() {}
-    virtual int prepareLayer( QgsVectorLayer* layer, int& attrIndex ) = 0;
-    virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat ) = 0;
-    //void calculateLabeling() = 0;
-    //void drawLabeling(QgsRenderContext& context) = 0;
-};
-
-
 
 /** \ingroup core
  * Vector layer backed by a data source provider.
@@ -361,9 +350,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Label is on */
     bool hasLabelsEnabled( void ) const;
-
-    /** Assign a custom labeling engine with layer. Added in v1.4 */
-    void setLabelingEngine( QgsLabelingEngineInterface* engine );
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
@@ -746,9 +732,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Label */
     QgsLabel *mLabel;
-
-    QgsLabelingEngineInterface* mLabelingEngine;
-
 
     /** Display labels */
     bool mLabelOn;

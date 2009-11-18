@@ -104,8 +104,6 @@ class PalLabeling : public QgsLabelingEngineInterface
 
     LayerSettings& layer( const char* layerName );
 
-    void doLabeling( QPainter* painter, QgsRectangle extent );
-
     void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon );
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
 
@@ -123,10 +121,16 @@ class PalLabeling : public QgsLabelingEngineInterface
 
     // implemented methods from labeling engine interface
 
+    //! called when we're going to start with rendering
+    virtual void init();
     //! hook called when drawing layer before issuing select()
     virtual int prepareLayer( QgsVectorLayer* layer, int& attrIndex );
     //! hook called when drawing for every feature in a layer
     virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat );
+    //! called when the map is drawn and labels should be placed
+    virtual void drawLabeling( QgsRenderContext& context );
+    //! called when we're done with rendering
+    virtual void exit();
 
 
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );

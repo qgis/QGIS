@@ -268,14 +268,13 @@ PalLabeling::PalLabeling( QgsMapRenderer* mapRenderer )
 
   mShowingCandidates = FALSE;
   mShowingAllLabels = FALSE;
-
-  initPal();
 }
 
 
 PalLabeling::~PalLabeling()
 {
-  delete mPal;
+  // make sure we've freed everything
+  exit();
 }
 
 
@@ -357,7 +356,7 @@ void PalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f )
 }
 
 
-void PalLabeling::initPal()
+void PalLabeling::init()
 {
   // delete if exists already
   if ( mPal )
@@ -383,6 +382,12 @@ void PalLabeling::initPal()
   mPal->setPolyP( mCandPolygon );
 }
 
+void PalLabeling::exit()
+{
+  delete mPal;
+  mPal = NULL;
+}
+
 LayerSettings& PalLabeling::layer( const char* layerName )
 {
   QHash<QgsVectorLayer*, LayerSettings>::iterator lit;
@@ -396,8 +401,10 @@ LayerSettings& PalLabeling::layer( const char* layerName )
 }
 
 
-void PalLabeling::doLabeling( QPainter* painter, QgsRectangle extent )
+void PalLabeling::drawLabeling( QgsRenderContext& context )
 {
+  QPainter* painter = context.painter();
+  QgsRectangle extent = context.extent();
 
   QTime t;
   t.start();
@@ -478,8 +485,6 @@ void PalLabeling::doLabeling( QPainter* painter, QgsRectangle extent )
   // labeling is done: clear the active layers hashtable
   mActiveLayers.clear();
 
-  // re-create PAL
-  initPal();
 }
 
 void PalLabeling::numCandidatePositions( int& candPoint, int& candLine, int& candPolygon )
