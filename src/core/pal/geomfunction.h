@@ -50,17 +50,17 @@ namespace pal
    */
   inline double cross_product( double x1, double y1, double x2, double y2, double x3, double y3 )
   {
-    return ( x2 - x1 ) * ( y3 - y1 ) - ( x3 - x1 ) * ( y2 - y1 );
+    return ( x2 - x1 ) *( y3 - y1 ) - ( x3 - x1 ) *( y2 - y1 );
   }
 
   inline double dist_euc2d( double x1, double y1, double x2, double y2 )
   {
-    return sqrt(( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) );
+    return sqrt(( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 ) );
   }
 
   inline double dist_euc2d_sq( double x1, double y1, double x2, double y2 )
   {
-    return ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 );
+    return ( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 );
   }
 
   bool isPointInPolygon( int npol, double *xp, double *yp, double x, double y );
@@ -81,9 +81,9 @@ namespace pal
 
 
 
-  void findLineCircleIntersection(double cx, double cy, double radius,
-                                  double x1, double y1, double x2, double y2,
-                                  double& xRes, double& yRes);
+  void findLineCircleIntersection( double cx, double cy, double radius,
+                                   double x1, double y1, double x2, double y2,
+                                   double& xRes, double& yRes );
 
 
   int convexHull( int *id, const double* const x, const double* const y, int n );

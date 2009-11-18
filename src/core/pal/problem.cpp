@@ -104,12 +104,12 @@ namespace pal
     if ( featNbLp )
       delete[] featNbLp;
 
-    for ( i = 0;i < nbLabelledLayers;i++ )
+    for ( i = 0; i < nbLabelledLayers; i++ )
       delete[] labelledLayersName[i];
 
     delete[] labelledLayersName;
 
-    for ( i = 0;i < all_nblp;i++ )
+    for ( i = 0; i < all_nblp; i++ )
       delete labelpositions[i];
 
     if ( labelpositions )
@@ -171,7 +171,7 @@ namespace pal
     bool *ok = new bool[nblp];
     bool run = true;
 
-    for ( i = 0;i < nblp;i++ )
+    for ( i = 0; i < nblp; i++ )
       ok[i] = false;
 
 
@@ -183,10 +183,10 @@ namespace pal
     while ( run )
     {
       run = false;
-      for ( i = 0;i < nbft;i++ )
+      for ( i = 0; i < nbft; i++ )
       {
         // ok[i] = true;
-        for ( j = 0;j < featNbLp[i];j++ )  // foreach candidate
+        for ( j = 0; j < featNbLp[i]; j++ )  // foreach candidate
         {
           if ( !ok[featStartId[i] + j] )
           {
@@ -198,7 +198,7 @@ namespace pal
               // 2) update nb_overlaps
               counter += featNbLp[i] - j - 1;
 
-              for ( k = j + 1;k < featNbLp[i];k++ )
+              for ( k = j + 1; k < featNbLp[i]; k++ )
               {
 
                 lpid = featStartId[i] + k;
@@ -246,7 +246,7 @@ namespace pal
     sol = new Sol();
     sol->s = new int[nbft];
 
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
       sol->s[i] = -1;
 
     sol->cost = nbft;
@@ -340,8 +340,8 @@ namespace pal
 
     LabelPosition *lp;
 
-    for ( i = 0;i < nbft;i++ )
-      for ( j = 0;j < featNbLp[i];j++ )
+    for ( i = 0; i < nbft; i++ )
+      for ( j = 0; j < featNbLp[i]; j++ )
       {
         label = featStartId[i] + j;
         list->insert( label, ( double ) labelpositions[label]->getNumOverlaps() );
@@ -366,7 +366,7 @@ namespace pal
       std::cout << "sol->s[" << lp->probFeat << "] :" << label << std::endl;
 #endif
 
-      for ( i = featStartId[probFeatId];i < featStartId[probFeatId] + featNbLp[probFeatId];i++ )
+      for ( i = featStartId[probFeatId]; i < featStartId[probFeatId] + featNbLp[probFeatId]; i++ )
       {
         ignoreLabel( labelpositions[i], list, candidates );
 
@@ -392,13 +392,13 @@ namespace pal
       LabelPosition* retainedLabel = NULL;
       int p;
 
-      for ( i = 0;i < nbft;i++ ) // forearch hidden feature
+      for ( i = 0; i < nbft; i++ ) // forearch hidden feature
       {
         if ( sol->s[i] == -1 )
         {
           nbOverlap = INT_MAX;
           start_p = featStartId[i];
-          for ( p = 0;p < featNbLp[i];p++ )
+          for ( p = 0; p < featNbLp[i]; p++ )
           {
             lp = labelpositions[start_p+p];
             lp->resetNumOverlaps();
@@ -469,7 +469,7 @@ namespace pal
     memset( isIn, 0, sizeof( int ) *nbft );
 
 
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
     {
       parts[i] = subPart( r, i, isIn );
       subPartTotalSize += parts[i]->subSize;
@@ -506,7 +506,7 @@ namespace pal
     {
       it++;
       /* find the next seed not ok */
-      for ( i = ( seed + 1 ) % nbft;ok[i] && i != seed;i = ( i + 1 ) % nbft );
+      for ( i = ( seed + 1 ) % nbft; ok[i] && i != seed; i = ( i + 1 ) % nbft );
 
       if ( i == seed && ok[seed] )
       {
@@ -522,7 +522,7 @@ namespace pal
       // update sub part solution
       candidates_subsol->RemoveAll();
 
-      for ( i = 0;i < current->subSize;i++ )
+      for ( i = 0; i < current->subSize; i++ )
       {
         current->sol[i] = sol->s[current->sub[i]];
         if ( current->sol[i] != -1 )
@@ -567,12 +567,12 @@ namespace pal
         std::cout << "after modif cost:" << std::endl;
         solution_cost();
 #endif
-        for ( i = 0;i < current->borderSize;i++ )
+        for ( i = 0; i < current->borderSize; i++ )
         {
           ok[current->sub[i]] = false;
         }
 
-        for ( i = current->borderSize;i < current->subSize;i++ )
+        for ( i = current->borderSize; i < current->subSize; i++ )
         {
 
           if ( sol->s[current->sub[i]] != -1 )
@@ -619,7 +619,7 @@ namespace pal
     delete[] labelPositionCost;
     delete[] nbOlap;
 
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
     {
       delete[] parts[i]->sub;
       delete[] parts[i]->sol;
@@ -692,7 +692,7 @@ namespace pal
       featS = featStartId[id];
       p = featNbLp[id];
 
-      for ( i = featS;i < featS + p;i++ )  // foreach candidat of feature 'id'
+      for ( i = featS; i < featS + p; i++ )  // foreach candidat of feature 'id'
       {
         lp = labelpositions[i];
 
@@ -786,7 +786,7 @@ namespace pal
 
     *nbOverlap = 0;
 
-    for ( i = 0;i < part->subSize;i++ )
+    for ( i = 0; i < part->subSize; i++ )
     {
       cost += compute_feature_cost( part, i, s[i], &nbO );
       *nbOverlap += nbO;
@@ -976,13 +976,13 @@ namespace pal
 
 
     int lp;
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
       featWrap[sub[i]] = i;
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
     {
       j = featStartId[sub[i]];
-      for ( lp = 0;lp < featNbLp[sub[i]];lp++ )
+      for ( lp = 0; lp < featNbLp[sub[i]]; lp++ )
       {
         it = j + lp;
         //std::cerr << "it = " << j << " + " << lp << std::endl;
@@ -993,7 +993,7 @@ namespace pal
     }
 
     first_lp = ( displayAll ? 0 : -1 );
-    for ( i = 0;i < probSize;i++ )
+    for ( i = 0; i < probSize; i++ )
     {
 
       tabu_list[i] = -1; // nothing is tabu
@@ -1019,7 +1019,7 @@ namespace pal
     }
 
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
     {
       if ( sol[i] == -1 )
       {
@@ -1036,7 +1036,7 @@ namespace pal
 
     best_cost = cur_cost;
     initial_cost = cur_cost;
-    memcpy( best_sol, sol, sizeof( int ) * ( subSize ) );
+    memcpy( best_sol, sol, sizeof( int ) *( subSize ) );
 
     // START TABU
 
@@ -1053,7 +1053,7 @@ namespace pal
       candidateId   = -1;
 
       // foreach retained Candidate
-      for ( i = 0;i < candidateListSize;i++ )
+      for ( i = 0; i < candidateListSize; i++ )
       {
         feat_id     = candidateList[i]->feat_id;
         feat_sub_id = sub[feat_id];
@@ -1066,7 +1066,7 @@ namespace pal
 
         /* label -1 means inactive feature */
         // foreach labelposition of feature minus the one in the solution
-        for ( j = first_lp;j < p;j++ )
+        for ( j = first_lp; j < p; j++ )
         {
           if ( j != oldPos )
           {
@@ -1226,7 +1226,7 @@ namespace pal
         if ( best_cost - cur_cost > EPSILON ) // new best sol
         {
           best_cost = cur_cost;
-          memcpy( best_sol, sol, sizeof( int ) * ( subSize ) );
+          memcpy( best_sol, sol, sizeof( int ) *( subSize ) );
           stop_it = it + itwImp;
           if ( stop_it > max_it )
             stop_it = max_it;
@@ -1247,12 +1247,12 @@ namespace pal
       it++;
     }
 
-    memcpy( sol, best_sol, sizeof( int ) * ( subSize ) );
+    memcpy( sol, best_sol, sizeof( int ) *( subSize ) );
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
       featWrap[sub[i]] = -1;
 
-    for ( i = 0;i < probSize;i++ )
+    for ( i = 0; i < probSize; i++ )
       delete candidateList[i];
 
     delete[] candidateList;
@@ -1429,7 +1429,7 @@ namespace pal
         delta -= labelpositions[tmpsol[seed]]->getCost();
 
       // TODO modify to handle displayAll param
-      for ( i = -1;i < seedNbLp;i++ )
+      for ( i = -1; i < seedNbLp; i++ )
       {
         try
         {
@@ -1722,7 +1722,7 @@ namespace pal
       else
         delta -= labelpositions[tmpsol[seed]]->getCost();
 
-      for ( i = -1;i < seedNbLp;i++ )
+      for ( i = -1; i < seedNbLp; i++ )
       {
         try
         {
@@ -1972,7 +1972,7 @@ namespace pal
 
     int *best_sol = new int[subSize];
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
     {
       featWrap[sub[i]] = i;
       best_sol[i] = sol[i];
@@ -2004,7 +2004,7 @@ namespace pal
 
     int tenure = pal->tenure;
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
     {
       cur_cost += compute_feature_cost( part, i, sol[i], &featOv );
       nbOverlap += featOv;
@@ -2022,10 +2022,10 @@ namespace pal
     stop_it = itwimp;
 
     // feature on border always are tabu
-    for ( i = 0;i < borderSize;i++ )
+    for ( i = 0; i < borderSize; i++ )
       tabu_list[i] = maxit;   // border always are taboo
 
-    for ( i = 0;i < probSize;i++ )
+    for ( i = 0; i < probSize; i++ )
       tabu_list[i+borderSize] = -1; // others aren't
 
     while ( it < stop_it )
@@ -2041,7 +2041,7 @@ namespace pal
         if ( tabu_list[seed] < it || ( cur_cost + current_chain->delta ) - best_cost < 0.0 )
         {
 
-          for ( i = 0;i < current_chain->degree;i++ )
+          for ( i = 0; i < current_chain->degree; i++ )
           {
             fid = current_chain->feat[i];
             lid = current_chain->label[i];
@@ -2100,7 +2100,7 @@ namespace pal
     }
     */
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
       featWrap[sub[i]] = -1;
 
     delete[] best_sol;
@@ -2130,7 +2130,7 @@ namespace pal
 
     int *best_sol = new int[subSize];
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
     {
       featWrap[sub[i]] = i;
     }
@@ -2174,7 +2174,7 @@ namespace pal
 
     LinkedList<int> *conflicts = new LinkedList<int> ( intCompare );
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
     {
       cur_cost += compute_feature_cost( part, i, sol[i], &featOv );
       nbOverlap += featOv;
@@ -2191,11 +2191,11 @@ namespace pal
 
     stop_it = itwimp;
 
-    for ( i = 0;i < borderSize;i++ )
+    for ( i = 0; i < borderSize; i++ )
       tabu_list[i] = maxit;
 
 
-    for ( i = 0;i < probSize;i++ )
+    for ( i = 0; i < probSize; i++ )
     {
       tabu_list[i+borderSize] = -1;
 
@@ -2232,7 +2232,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
       std::cout << std::endl << std::endl << candidateListSize << std::endl;
 #endif
-      for ( itC = 0;itC < candidateListSize;itC++ )
+      for ( itC = 0; itC < candidateListSize; itC++ )
       {
         seed = candidates[itC]->feat_id;
         seedSh = seed - borderSize;
@@ -2299,7 +2299,7 @@ namespace pal
         std::cout << "   and delta: " << retainedChain->delta << std::endl;
 #endif
 
-        for ( i = 0;i < retainedChain->degree;i++ )
+        for ( i = 0; i < retainedChain->degree; i++ )
         {
           fid = retainedChain->feat[i];
           lid = retainedChain->label[i];
@@ -2376,13 +2376,13 @@ namespace pal
 
     delete conflicts;
 
-    for ( i = 0;i < probSize;i++ )
+    for ( i = 0; i < probSize; i++ )
       delete candidates[i];
 
     delete[] candidates;
     delete[] candidatesUnsorted;
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
       featWrap[sub[i]] = -1;
 
     delete[] best_sol;
@@ -2424,7 +2424,7 @@ namespace pal
 
     int i;
     int nbActive = 0;
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
     {
       solution[i] = -1;
       if ( sol->s[i] >= 0 )
@@ -2451,7 +2451,7 @@ namespace pal
       //std::cout << "lp->id:" << lp->id <<;
     }
 
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
     {
       if ( solution[i] != sol->s[i] )
       {
@@ -2558,7 +2558,7 @@ namespace pal
 
     stop_it = itwimp;
 
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
       tabu_list[i] = -1; // others aren't
 
     while ( it < stop_it )
@@ -2573,7 +2573,7 @@ namespace pal
         if ( tabu_list[seed] < it || ( cur_cost + current_chain->delta ) - best_cost < -EPSILON )
         {
 
-          for ( i = 0;i < current_chain->degree;i++ )
+          for ( i = 0; i < current_chain->degree; i++ )
           {
             fid = current_chain->feat[i];
             lid = current_chain->label[i];
@@ -2620,7 +2620,7 @@ namespace pal
     memcpy( sol->s, best_sol, sizeof( int ) *nbft );
 
     candidates_sol->RemoveAll();
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
       if ( sol->s[i] != -1 )
         labelpositions[sol->s[i]]->insertIntoIndex( candidates_sol );
 
@@ -2675,7 +2675,7 @@ namespace pal
 
     featWrap = NULL;
 
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
     {
       ok[i] = false;
     }
@@ -2727,7 +2727,7 @@ namespace pal
         std::cout << "chain's degree & delta : " << retainedChain->degree << "     " << retainedChain->delta << std::endl;
 #endif
         // apply modification
-        for ( i = 0;i < retainedChain->degree;i++ )
+        for ( i = 0; i < retainedChain->degree; i++ )
         {
           fid = retainedChain->feat[i];
           lid = retainedChain->label[i];
@@ -2811,7 +2811,7 @@ namespace pal
 
     int *best_sol = new int[subSize];
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
     {
       featWrap[sub[i]] = i;
       best_sol[i] = sol[i];
@@ -2846,7 +2846,7 @@ namespace pal
 
     int iter = 0, it = 0;
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
     {
       cur_cost += compute_feature_cost( part, i, sol[i], &featOv );
       nbOverlap += featOv;
@@ -2860,10 +2860,10 @@ namespace pal
 #endif
 
     // feature on border are ok
-    for ( i = 0;i < borderSize;i++ )
+    for ( i = 0; i < borderSize; i++ )
       ok[i] = true;   // border is ok
 
-    for ( i = 0;i < probSize;i++ )
+    for ( i = 0; i < probSize; i++ )
       ok[i+borderSize] = false; // others aren't
 
     while ( true )
@@ -2896,7 +2896,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
         std::cout << "     chain accepted " << std::endl;
 #endif
-        for ( i = 0;i < retainedChain->degree;i++ )
+        for ( i = 0; i < retainedChain->degree; i++ )
         {
           fid = retainedChain->feat[i];
           lid = retainedChain->label[i];
@@ -2935,7 +2935,7 @@ namespace pal
       it++;
     }
 
-    for ( i = 0;i < subSize;i++ )
+    for ( i = 0; i < subSize; i++ )
       featWrap[sub[i]] = -1;
 
     delete[] ok;
@@ -2958,7 +2958,7 @@ namespace pal
     if ( nbft == 0 )
       return solList;
 
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
       if ( sol->s[i] != -1 )
         solList->push_back( labelpositions[sol->s[i]] ); // active labels
       else if ( returnInactive )
@@ -2981,7 +2981,7 @@ namespace pal
     stats->layersNbObjects = new int[stats->nbLayers];
     stats->layersNbLabelledObjects = new int[stats->nbLayers];
 
-    for ( i = 0;i < stats->nbLayers;i++ )
+    for ( i = 0; i < stats->nbLayers; i++ )
     {
       stats->layersName[i] = new char[strlen( labelledLayersName[i] ) + 1];
       strcpy( stats->layersName[i], labelledLayersName[i] );
@@ -2991,11 +2991,11 @@ namespace pal
 
     char *lyrName;
     int k;
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
     {
       lyrName = labelpositions[featStartId[i]]->getLayerName();
       k = -1;
-      for ( j = 0;j < stats->nbLayers;j++ )
+      for ( j = 0; j < stats->nbLayers; j++ )
       {
         if ( strcmp( lyrName, stats->layersName[j] ) == 0 )
         {
@@ -3050,7 +3050,7 @@ namespace pal
 
     std::ofstream solution( "solution.raw" );
     solution << "GeomType ; nbPoints ;  label length ; label height ; down-left X ; down-left Y ; rotation (rad) ; points list" << std::endl;
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
     {
 
       if ( sol->s[i] >= 0 )
@@ -3086,7 +3086,7 @@ namespace pal
         solution << feature->type << ";" << feature->nbPoints << ";0;0;0;0;0;";
       }
 
-      for ( j = 0;j < feature->nbPoints;j++ )
+      for ( j = 0; j < feature->nbPoints; j++ )
       {
         solution << feature->x[j] << " " << feature->y[j] << " ";
       }
@@ -3121,7 +3121,7 @@ namespace pal
 
     int nbHidden = 0;
 
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
     {
       if ( sol->s[i] == -1 )
       {
@@ -3165,7 +3165,7 @@ namespace pal
     <<     "inkscape:groupmode=\"layer\"" << std::endl
     <<     "id=\"label_layer\">" << std::endl << std::endl;
 
-    for ( i = 0;i < nbft;i++ )
+    for ( i = 0; i < nbft; i++ )
     {
       if ( sol->s[i] >= 0 )
       {

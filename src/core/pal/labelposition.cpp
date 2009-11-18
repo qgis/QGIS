@@ -143,7 +143,7 @@ namespace pal
   {
     int i;
 
-    for ( i = 0;i < 4;i++ )
+    for ( i = 0; i < 4; i++ )
     {
       if ( x[i] >= bbox[0] && x[i] <= bbox[2] &&
            y[i] >= bbox[1] && y[i] <= bbox[3] )
@@ -188,13 +188,13 @@ namespace pal
     int d1, d2;
     double cp1, cp2;
 
-    for ( i = 0;i < 4;i++ )
+    for ( i = 0; i < 4; i++ )
     {
       i2 = ( i + 1 ) % 4;
       d1 = -1;
       d2 = -1;
 
-      for ( j = 0;j < 4;j++ )
+      for ( j = 0; j < 4; j++ )
       {
         cp1 = cross_product( x[i], y[i], x[i2], y[i2], lp->x[j], lp->y[j] );
         if ( cp1 > 0 )
@@ -303,7 +303,7 @@ namespace pal
       amin[1] = DBL_MAX;
       amax[1] = -DBL_MAX;
     }
-    for ( int c = 0;c < 4;c++ )
+    for ( int c = 0; c < 4; c++ )
     {
       if ( x[c] < amin[0] )
         amin[0] = x[c];
@@ -445,7 +445,7 @@ namespace pal
     double dist_min = DBL_MAX;
     double dist;
 
-    for ( i = 0;i < 4;i++ )
+    for ( i = 0; i < 4; i++ )
     {
       j = ( i + 1 ) % 4;
       mx[i] = ( x[i] + x[j] ) / 2.0;
@@ -474,7 +474,7 @@ namespace pal
         dist_min = dist;
     }
 
-    for ( i = 0;i < 4;i++ )
+    for ( i = 0; i < 4; i++ )
     {
       dist = dist_euc2d( x[i], y[i], xp, yp );
       if ( vabs( dist ) < vabs( dist_min ) )
@@ -491,9 +491,9 @@ namespace pal
   bool LabelPosition::isBorderCrossingLine( PointSet* feat )
   {
     double ca, cb;
-    for ( int i = 0;i < 4;i++ )
+    for ( int i = 0; i < 4; i++ )
     {
-      for ( int j = 0;j < feat->getNumPoints() - 1;j++ )
+      for ( int j = 0; j < feat->getNumPoints() - 1; j++ )
       {
         ca = cross_product( x[i], y[i], x[( i+1 ) %4], y[( i+1 ) %4],
                             feat->x[j], feat->y[j] );
@@ -524,12 +524,12 @@ namespace pal
     double px, py;
 
     // cheack each corner
-    for ( k = 0;k < 4;k++ )
+    for ( k = 0; k < 4; k++ )
     {
       px = x[k];
       py = y[k];
 
-      for ( a = 0;a < 2;a++ ) // and each middle of segment
+      for ( a = 0; a < 2; a++ ) // and each middle of segment
       {
         if ( isPointInPolygon( npol, xp, yp, px, py ) )
           count++;

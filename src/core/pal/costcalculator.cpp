@@ -18,7 +18,7 @@
 namespace pal
 {
 
-  void CostCalculator::addObstacleCostPenalty(LabelPosition* lp, PointSet* feat)
+  void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, PointSet* feat )
   {
     int n = 0;
     double dist;
@@ -69,7 +69,7 @@ namespace pal
     std::cout << "LabelPosition for feat: " << lPos[0]->feature->uid << std::endl;
 #endif
 
-    for ( i = 0;i < nblp;i++ )
+    for ( i = 0; i < nblp; i++ )
       setCandidateCostFromPolygon( lPos[i], obstacles, bbx, bby );
 
     // lPos with big values came fisrts (value = min distance from label to Polygon's Perimeter)
@@ -94,7 +94,7 @@ namespace pal
 
     // adjust cost => the best is 0.0001, the worst is 0.0021
     // others are set proportionally between best and worst
-    for ( i = 0;i < max_p;i++ )
+    for ( i = 0; i < max_p; i++ )
     {
 #ifdef _DEBUG_
       std::cout << "   lpos[" << i << "] = " << lPos[i]->cost;
@@ -136,7 +136,7 @@ namespace pal
 
     delete extent;
 
-    lp->feature->getBoundingBox(amin, amax);
+    lp->feature->getBoundingBox( amin, amax );
 
     obstacles->Search( amin, amax, LabelPosition::polygonObstacleCallback, pCost );
 
@@ -146,53 +146,53 @@ namespace pal
   }
 
 
-   int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
-   {
-      // If candidates list is smaller than expected
-      if ( max_p > feat->nblp )
-        max_p = feat->nblp;
-      //
-      // sort candidates list, best label to worst
-      sort(( void** ) feat->lPos, feat->nblp, LabelPosition::costGrow );
+  int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+  {
+    // If candidates list is smaller than expected
+    if ( max_p > feat->nblp )
+      max_p = feat->nblp;
+    //
+    // sort candidates list, best label to worst
+    sort(( void** ) feat->lPos, feat->nblp, LabelPosition::costGrow );
 
-      // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
-      double discrim = 0.0;
-      int stop;
-      do
-      {
-        discrim += 1.0;
-        for ( stop = 0;stop < feat->nblp && feat->lPos[stop]->getCost() < discrim;stop++ );
-      }
-      while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->getCost() + 2.0 );
+    // try to exclude all conflitual labels (good ones have cost < 1 by pruning)
+    double discrim = 0.0;
+    int stop;
+    do
+    {
+      discrim += 1.0;
+      for ( stop = 0; stop < feat->nblp && feat->lPos[stop]->getCost() < discrim; stop++ );
+    }
+    while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->getCost() + 2.0 );
 
-      if ( discrim > 1.5 )
-      {
-        int k;
-        for ( k = 0;k < stop;k++ )
-          feat->lPos[k]->setCost( 0.0021 );
-      }
+    if ( discrim > 1.5 )
+    {
+      int k;
+      for ( k = 0; k < stop; k++ )
+        feat->lPos[k]->setCost( 0.0021 );
+    }
 
-      if ( max_p > stop )
-        max_p = stop;
+    if ( max_p > stop )
+      max_p = stop;
 
 #ifdef _DEBUG_FULL_
-      std::cout << "Nblabel kept for feat " << feat->feature->uid << "/" << feat->feature->layer->name << ": " << max_p << "/" << feat->nblp << std::endl;
+    std::cout << "Nblabel kept for feat " << feat->feature->uid << "/" << feat->feature->layer->name << ": " << max_p << "/" << feat->nblp << std::endl;
 #endif
 
-      // Sets costs for candidates of polygon
+    // Sets costs for candidates of polygon
 
-      if ( feat->feature->getGeosType() == GEOS_POLYGON )
-      {
-        int arrangement = feat->feature->getLayer()->getArrangement();
-        if ( arrangement == P_FREE || arrangement == P_HORIZ )
-          setPolygonCandidatesCost( stop, (LabelPosition**) feat->lPos, max_p, obstacles, bbx, bby );
-      }
+    if ( feat->feature->getGeosType() == GEOS_POLYGON )
+    {
+      int arrangement = feat->feature->getLayer()->getArrangement();
+      if ( arrangement == P_FREE || arrangement == P_HORIZ )
+        setPolygonCandidatesCost( stop, ( LabelPosition** ) feat->lPos, max_p, obstacles, bbx, bby );
+    }
 
-      // add size penalty (small lines/polygons get higher cost)
-      feat->feature->addSizePenalty(max_p, feat->lPos, bbx, bby);
+    // add size penalty (small lines/polygons get higher cost)
+    feat->feature->addSizePenalty( max_p, feat->lPos, bbx, bby );
 
-      return max_p;
-   }
+    return max_p;
+  }
 
 
 
@@ -216,7 +216,7 @@ namespace pal
     */
 
     double alpha = lp->getAlpha();
-    for ( i = 0;i < 8;i++, alpha += M_PI / 4 )
+    for ( i = 0; i < 8; i++, alpha += M_PI / 4 )
     {
       dist[i] = DBL_MAX;
       ok[i] = false;
@@ -256,7 +256,7 @@ namespace pal
 
     int i = ( int )( beta / a45 );
 
-    for ( int j = 0;j < 2;j++, i = ( i + 1 ) % 8 )
+    for ( int j = 0; j < 2; j++, i = ( i + 1 ) % 8 )
     {
       double rx, ry;
       rx = px - rpy[i] + py;
@@ -284,11 +284,11 @@ namespace pal
     int nbP = ( pset->type == GEOS_POLYGON ? pset->nbPoints : pset->nbPoints - 1 );
     double min_dist = DBL_MAX;
 
-    for ( i = 0;i < nbP;i++ )
+    for ( i = 0; i < nbP; i++ )
     {
       j = ( i + 1 ) % pset->nbPoints;
 
-      for ( k = 0;k < 8;k++ )
+      for ( k = 0; k < 8; k++ )
       {
         double ix, iy;
         if ( computeSegIntersection( px, py, rpx[k], rpy[k], pset->x[i], pset->y[i], pset->x[j], pset->y[j], &ix, &iy ) )
@@ -318,7 +318,7 @@ namespace pal
   {
     int i;
 
-    for ( i = 0;i < 8;i++ )
+    for ( i = 0; i < 8; i++ )
     {
       /*
       if ( i == 0 || i == 4 ) // horizontal directions

@@ -37,16 +37,16 @@
 
 class K3ProcessController::Private
 {
-public:
+  public:
     Private()
         : needcheck( false ),
-          notifier( 0 )
+        notifier( 0 )
     {
     }
 
     ~Private()
     {
-        delete notifier;
+      delete notifier;
     }
 
     int fd[2];
@@ -65,39 +65,41 @@ int K3ProcessController::Private::refCount = 0;
 
 void K3ProcessController::ref()
 {
-    if ( !Private::refCount ) {
-        Private::instance = new K3ProcessController;
-        setupHandlers();
-    }
-    Private::refCount++;
+  if ( !Private::refCount )
+  {
+    Private::instance = new K3ProcessController;
+    setupHandlers();
+  }
+  Private::refCount++;
 }
 
 void K3ProcessController::deref()
 {
-    Private::refCount--;
-    if( !Private::refCount ) {
-        resetHandlers();
-        delete Private::instance;
-        Private::instance = 0;
-    }
+  Private::refCount--;
+  if ( !Private::refCount )
+  {
+    resetHandlers();
+    delete Private::instance;
+    Private::instance = 0;
+  }
 }
 
 K3ProcessController* K3ProcessController::instance()
 {
-    /*
-     * there were no safety guards in previous revisions, is that ok?
-    if ( !Private::instance ) {
-        ref();
-    }
-     */
+  /*
+   * there were no safety guards in previous revisions, is that ok?
+  if ( !Private::instance ) {
+      ref();
+  }
+   */
 
-    return Private::instance;
+  return Private::instance;
 }
 
 K3ProcessController::K3ProcessController()
-  : d( new Private )
+    : d( new Private )
 {
-  if( pipe( d->fd ) )
+  if ( pipe( d->fd ) )
   {
     perror( "pipe" );
     abort();
@@ -110,14 +112,14 @@ K3ProcessController::K3ProcessController()
 
   d->notifier = new QSocketNotifier( d->fd[0], QSocketNotifier::Read );
   d->notifier->setEnabled( true );
-  QObject::connect( d->notifier, SIGNAL(activated(int)),
-                    SLOT(slotDoHousekeeping()));
+  QObject::connect( d->notifier, SIGNAL( activated( int ) ),
+                    SLOT( slotDoHousekeeping() ) );
 }
 
 K3ProcessController::~K3ProcessController()
 {
 #ifndef Q_OS_MAC
-/* not sure why, but this is causing lockups */
+  /* not sure why, but this is causing lockups */
   close( d->fd[0] );
   close( d->fd[1] );
 #else
@@ -128,11 +130,12 @@ K3ProcessController::~K3ProcessController()
 }
 
 
-extern "C" {
-static void theReaper( int num )
+extern "C"
 {
-  K3ProcessController::theSigCHLDHandler( num );
-}
+  static void theReaper( int num )
+  {
+    K3ProcessController::theSigCHLDHandler( num );
+  }
 }
 
 #ifdef Q_OS_UNIX
@@ -142,8 +145,8 @@ bool K3ProcessController::Private::handlerSet = false;
 
 void K3ProcessController::setupHandlers()
 {
-  if( Private::handlerSet )
-      return;
+  if ( Private::handlerSet )
+    return;
   Private::handlerSet = true;
 
 #ifdef Q_OS_UNIX
@@ -173,8 +176,8 @@ void K3ProcessController::setupHandlers()
 
 void K3ProcessController::resetHandlers()
 {
-  if( !Private::handlerSet )
-      return;
+  if ( !Private::handlerSet )
+    return;
   Private::handlerSet = false;
 
 #ifdef Q_OS_UNIX
@@ -185,9 +188,10 @@ void K3ProcessController::resetHandlers()
 
   struct sigaction act;
   sigaction( SIGCHLD, &Private::oldChildHandlerData, &act );
-  if (act.sa_handler != theReaper) {
-     sigaction( SIGCHLD, &act, 0 );
-     Private::handlerSet = true;
+  if ( act.sa_handler != theReaper )
+  {
+    sigaction( SIGCHLD, &act, 0 );
+    Private::handlerSet = true;
   }
 
   sigprocmask( SIG_SETMASK, &omask, 0 );
@@ -208,10 +212,11 @@ void K3ProcessController::theSigCHLDHandler( int arg )
   ::write( instance()->d->fd[1], &dummy, 1 );
 
 #ifdef Q_OS_UNIX
-    if ( Private::oldChildHandlerData.sa_handler != SIG_IGN &&
-         Private::oldChildHandlerData.sa_handler != SIG_DFL ) {
-        Private::oldChildHandlerData.sa_handler( arg ); // call the old handler
-    }
+  if ( Private::oldChildHandlerData.sa_handler != SIG_IGN &&
+       Private::oldChildHandlerData.sa_handler != SIG_DFL )
+  {
+    Private::oldChildHandlerData.sa_handler( arg ); // call the old handler
+  }
 #else
   //TODO: win32
 #endif
@@ -227,14 +232,14 @@ int K3ProcessController::notifierFd() const
 void K3ProcessController::unscheduleCheck()
 {
   char dummy[16]; // somewhat bigger - just in case several have queued up
-  if( ::read( d->fd[0], dummy, sizeof(dummy) ) > 0 )
+  if ( ::read( d->fd[0], dummy, sizeof( dummy ) ) > 0 )
     d->needcheck = true;
 }
 
 void
 K3ProcessController::rescheduleCheck()
 {
-  if( d->needcheck )
+  if ( d->needcheck )
   {
     d->needcheck = false;
     char dummy = 0;
@@ -245,20 +250,20 @@ K3ProcessController::rescheduleCheck()
 void K3ProcessController::slotDoHousekeeping()
 {
   char dummy[16]; // somewhat bigger - just in case several have queued up
-  ::read( d->fd[0], dummy, sizeof(dummy) );
+  ::read( d->fd[0], dummy, sizeof( dummy ) );
 
   int status;
- again:
+again:
   QList<K3Process*>::iterator it( d->kProcessList.begin() );
   QList<K3Process*>::iterator eit( d->kProcessList.end() );
-  while( it != eit )
+  while ( it != eit )
   {
     K3Process *prc = *it;
-    if( prc->runs && waitpid( prc->pid_, &status, WNOHANG ) > 0 )
+    if ( prc->runs && waitpid( prc->pid_, &status, WNOHANG ) > 0 )
     {
       prc->processHasExited( status );
       // the callback can nuke the whole process list and even 'this'
-      if (!instance())
+      if ( !instance() )
         return;
       goto again;
     }
@@ -266,13 +271,14 @@ void K3ProcessController::slotDoHousekeeping()
   }
   QList<int>::iterator uit( d->unixProcessList.begin() );
   QList<int>::iterator ueit( d->unixProcessList.end() );
-  while( uit != ueit )
+  while ( uit != ueit )
   {
-    if( waitpid( *uit, 0, WNOHANG ) > 0 )
+    if ( waitpid( *uit, 0, WNOHANG ) > 0 )
     {
       uit = d->unixProcessList.erase( uit );
       deref(); // counterpart to addProcess, can invalidate 'this'
-    } else
+    }
+    else
       ++uit;
   }
 }
@@ -280,10 +286,10 @@ void K3ProcessController::slotDoHousekeeping()
 bool K3ProcessController::waitForProcessExit( int timeout )
 {
 #ifdef Q_OS_UNIX
-  for(;;)
+  for ( ;; )
   {
     struct timeval tv, *tvp;
-    if (timeout < 0)
+    if ( timeout < 0 )
       tvp = 0;
     else
     {
@@ -296,17 +302,17 @@ bool K3ProcessController::waitForProcessExit( int timeout )
     FD_ZERO( &fds );
     FD_SET( d->fd[0], &fds );
 
-    switch( select( d->fd[0]+1, &fds, 0, 0, tvp ) )
+    switch ( select( d->fd[0] + 1, &fds, 0, 0, tvp ) )
     {
-    case -1:
-      if( errno == EINTR )
-        continue;
-      // fall through; should never happen
-    case 0:
-      return false;
-    default:
-      slotDoHousekeeping();
-      return true;
+      case -1:
+        if ( errno == EINTR )
+          continue;
+        // fall through; should never happen
+      case 0:
+        return false;
+      default:
+        slotDoHousekeeping();
+        return true;
     }
   }
 #else

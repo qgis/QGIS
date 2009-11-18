@@ -51,7 +51,7 @@ namespace pal
   {
     int i;
 
-    for ( i = 0;i < nbLayers;i++ )
+    for ( i = 0; i < nbLayers; i++ )
     {
       delete[] layersName[i];
     }

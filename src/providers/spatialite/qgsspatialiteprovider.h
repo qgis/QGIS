@@ -298,11 +298,11 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
        */
     QString mGeometryColumn;
     /**
-     * Name of the SpatialIndex table 
+     * Name of the SpatialIndex table
      */
     QString mIndexTable;
     /**
-       * Name of the SpatialIndex geometry column 
+       * Name of the SpatialIndex geometry column
        */
     QString mIndexGeometry;
     /**
@@ -388,7 +388,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
         void sqliteClose();
 
         static SqliteHandles *openDb( const QString & dbPath );
-		static bool checkMetadata( sqlite3 * handle );
+        static bool checkMetadata( sqlite3 * handle );
         static void closeDb( SqliteHandles * &handle );
         static void closeDb( QMap < QString, SqliteHandles * >&handlesRO, SqliteHandles * &handle );
 

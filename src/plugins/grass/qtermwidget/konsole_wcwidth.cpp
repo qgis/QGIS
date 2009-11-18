@@ -9,23 +9,26 @@
 
 #include "konsole_wcwidth.h"
 
-struct interval {
+struct interval
+{
   unsigned short first;
   unsigned short last;
 };
 
 /* auxiliary function for binary search in interval table */
-static int bisearch(quint16 ucs, const struct interval *table, int max) {
+static int bisearch( quint16 ucs, const struct interval *table, int max )
+{
   int min = 0;
   int mid;
 
-  if (ucs < table[0].first || ucs > table[max].last)
+  if ( ucs < table[0].first || ucs > table[max].last )
     return 0;
-  while (max >= min) {
-    mid = (min + max) / 2;
-    if (ucs > table[mid].last)
+  while ( max >= min )
+  {
+    mid = ( min + max ) / 2;
+    if ( ucs > table[mid].last )
       min = mid + 1;
-    else if (ucs < table[mid].first)
+    else if ( ucs < table[mid].first )
       max = mid - 1;
     else
       return 1;
@@ -65,10 +68,11 @@ static int bisearch(quint16 ucs, const struct interval *table, int max) {
  * in ISO 10646.
  */
 
-int konsole_wcwidth(quint16 ucs)
+int konsole_wcwidth( quint16 ucs )
 {
   /* sorted list of non-overlapping intervals of non-spacing characters */
-  static const struct interval combining[] = {
+  static const struct interval combining[] =
+  {
     { 0x0300, 0x034E }, { 0x0360, 0x0362 }, { 0x0483, 0x0486 },
     { 0x0488, 0x0489 }, { 0x0591, 0x05A1 }, { 0x05A3, 0x05B9 },
     { 0x05BB, 0x05BD }, { 0x05BF, 0x05BF }, { 0x05C1, 0x05C2 },
@@ -106,29 +110,29 @@ int konsole_wcwidth(quint16 ucs)
   };
 
   /* test for 8-bit control characters */
-  if (ucs == 0)
+  if ( ucs == 0 )
     return 0;
-  if (ucs < 32 || (ucs >= 0x7f && ucs < 0xa0))
+  if ( ucs < 32 || ( ucs >= 0x7f && ucs < 0xa0 ) )
     return -1;
 
   /* binary search in table of non-spacing characters */
-  if (bisearch(ucs, combining,
-	       sizeof(combining) / sizeof(struct interval) - 1))
+  if ( bisearch( ucs, combining,
+                 sizeof( combining ) / sizeof( struct interval ) - 1 ) )
     return 0;
 
   /* if we arrive here, ucs is not a combining or C0/C1 control character */
 
   return 1 +
-    (ucs >= 0x1100 &&
-     (ucs <= 0x115f ||                    /* Hangul Jamo init. consonants */
-      (ucs >= 0x2e80 && ucs <= 0xa4cf && (ucs & ~0x0011) != 0x300a &&
-       ucs != 0x303f) ||                  /* CJK ... Yi */
-      (ucs >= 0xac00 && ucs <= 0xd7a3) || /* Hangul Syllables */
-      (ucs >= 0xf900 && ucs <= 0xfaff) || /* CJK Compatibility Ideographs */
-      (ucs >= 0xfe30 && ucs <= 0xfe6f) || /* CJK Compatibility Forms */
-      (ucs >= 0xff00 && ucs <= 0xff5f) || /* Fullwidth Forms */
-      (ucs >= 0xffe0 && ucs <= 0xffe6) /* do not compare UINT16 with 0x20000 ||
-      (ucs >= 0x20000 && ucs <= 0x2ffff) */));
+         ( ucs >= 0x1100 &&
+           ( ucs <= 0x115f ||                   /* Hangul Jamo init. consonants */
+             ( ucs >= 0x2e80 && ucs <= 0xa4cf && ( ucs & ~0x0011 ) != 0x300a &&
+               ucs != 0x303f ) ||                 /* CJK ... Yi */
+             ( ucs >= 0xac00 && ucs <= 0xd7a3 ) || /* Hangul Syllables */
+             ( ucs >= 0xf900 && ucs <= 0xfaff ) || /* CJK Compatibility Ideographs */
+             ( ucs >= 0xfe30 && ucs <= 0xfe6f ) || /* CJK Compatibility Forms */
+             ( ucs >= 0xff00 && ucs <= 0xff5f ) || /* Fullwidth Forms */
+             ( ucs >= 0xffe0 && ucs <= 0xffe6 ) /* do not compare UINT16 with 0x20000 ||
+      (ucs >= 0x20000 && ucs <= 0x2ffff) */ ) );
 }
 
 #if 0
@@ -140,11 +144,12 @@ int konsole_wcwidth(quint16 ucs)
  * encodings who want to migrate to UCS. It is not otherwise
  * recommended for general use.
  */
-int konsole_wcwidth_cjk(quint16 ucs)
+int konsole_wcwidth_cjk( quint16 ucs )
 {
   /* sorted list of non-overlapping intervals of East Asian Ambiguous
    * characters */
-  static const struct interval ambiguous[] = {
+  static const struct interval ambiguous[] =
+  {
     { 0x00A1, 0x00A1 }, { 0x00A4, 0x00A4 }, { 0x00A7, 0x00A8 },
     { 0x00AA, 0x00AA }, { 0x00AD, 0x00AD }, { 0x00B0, 0x00B4 },
     { 0x00B6, 0x00BA }, { 0x00BC, 0x00BF }, { 0x00C6, 0x00C6 },
@@ -198,11 +203,11 @@ int konsole_wcwidth_cjk(quint16 ucs)
   };
 
   /* binary search in table of non-spacing characters */
-  if (bisearch(ucs, ambiguous,
-	       sizeof(ambiguous) / sizeof(struct interval) - 1))
+  if ( bisearch( ucs, ambiguous,
+                 sizeof( ambiguous ) / sizeof( struct interval ) - 1 ) )
     return 2;
 
-  return konsole_wcwidth(ucs);
+  return konsole_wcwidth( ucs );
 }
 #endif
 
@@ -211,6 +216,6 @@ int string_width( const QString &txt )
 {
   int w = 0;
   for ( int i = 0; i < txt.length(); ++i )
-     w += konsole_wcwidth( txt[ i ].unicode() );
- return w;
+    w += konsole_wcwidth( txt[ i ].unicode() );
+  return w;
 }

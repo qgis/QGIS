@@ -84,7 +84,7 @@ namespace pal
     extractCoords( geom );
 
     holeOf = NULL;
-    for ( int i = 0;i < nbHoles;i++ )
+    for ( int i = 0; i < nbHoles; i++ )
     {
       holes[i]->holeOf = this;
     }
@@ -97,7 +97,7 @@ namespace pal
 
     if ( holes )
     {
-      for ( int i = 0; i < nbHoles;i++ )
+      for ( int i = 0; i < nbHoles; i++ )
         delete holes[i];
       delete [] holes;
       holes = NULL;
@@ -130,7 +130,7 @@ namespace pal
         nbHoles = GEOSGetNumInteriorRings( geom );
         holes = new PointSet*[nbHoles];
 
-        for ( i = 0;i < nbHoles;i++ )
+        for ( i = 0; i < nbHoles; i++ )
         {
           holes[i] = new PointSet();
           holes[i]->holeOf = NULL;
@@ -145,7 +145,7 @@ namespace pal
 
           coordSeq = GEOSGeom_getCoordSeq( interior );
 
-          for ( j = 0;j < holes[i]->nbPoints;j++ )
+          for ( j = 0; j < holes[i]->nbPoints; j++ )
           {
             GEOSCoordSeq_getX( coordSeq, j, &holes[i]->x[j] );
             GEOSCoordSeq_getY( coordSeq, j, &holes[i]->y[j] );
@@ -182,7 +182,7 @@ namespace pal
     x = new double[nbPoints];
     y = new double[nbPoints];
 
-    for ( i = 0;i < nbPoints;i++ )
+    for ( i = 0; i < nbPoints; i++ )
     {
       GEOSCoordSeq_getX( coordSeq, i, &x[i] );
       GEOSCoordSeq_getY( coordSeq, i, &y[i] );
@@ -202,7 +202,7 @@ namespace pal
     bool *ok = new bool[new_nbPoints];
     int i, j;
 
-    for ( i = 0;i < nbPoints;i++ )
+    for ( i = 0; i < nbPoints; i++ )
     {
       ok[i] = true;
       j = ( i + 1 ) % nbPoints;
@@ -219,7 +219,7 @@ namespace pal
     {
       double *new_x = new double[new_nbPoints];
       double *new_y = new double[new_nbPoints];
-      for ( i = 0, j = 0;i < nbPoints;i++ )
+      for ( i = 0, j = 0; i < nbPoints; i++ )
       {
         if ( ok[i] )
         {
@@ -359,7 +359,7 @@ namespace pal
 
     *lPos = new LabelPosition *[nbp];
 
-    for ( i = 0, alpha = M_PI / 4;i < nbp;i++, alpha += beta )
+    for ( i = 0, alpha = M_PI / 4; i < nbp; i++, alpha += beta )
     {
       lx = x;
       ly = y;
@@ -508,7 +508,7 @@ namespace pal
     ad = new double[nbPoints];
 
     ll = 0.0; // line length
-    for ( i = 0;i < line->nbPoints - 1;i++ )
+    for ( i = 0; i < line->nbPoints - 1; i++ )
     {
       if ( i == 0 )
         ad[i] = 0;
@@ -601,7 +601,7 @@ namespace pal
         if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
           positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this ) ); // Line
         if (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) )
-          positions->push_back( new LabelPosition( i, bx - cos( beta ) * ( distlabel + yrm ) , by - sin( beta ) * ( distlabel + yrm ), xrm, yrm, alpha, cost, this ) ); // Line
+          positions->push_back( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ) , by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this ) );   // Line
         if ( flags & FLAG_ON_LINE )
           positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this ) ); // Line
       }
@@ -1041,11 +1041,11 @@ namespace pal
       int max_try = 10;
       do
       {
-        for ( bbid = 0;bbid < j;bbid++ )
+        for ( bbid = 0; bbid < j; bbid++ )
         {
           CHullBox *box = boxes[bbid];
 
-          if (( box->length * box->width ) > ( xmax - xmin ) * ( ymax - ymin ) *5 )
+          if (( box->length * box->width ) > ( xmax - xmin ) *( ymax - ymin ) *5 )
           {
             std::cout << "Very Large BBOX (should never occurs : bug-report please)" << std::endl;
             std::cout << "   Box size:  " << box->length << "/" << box->width << std::endl;
@@ -1058,7 +1058,7 @@ namespace pal
 
 #ifdef _DEBUG_FULL_
           std::cout << "New BBox : " << bbid << std::endl;
-          for ( i = 0;i < 4;i++ )
+          for ( i = 0; i < 4; i++ )
           {
             std::cout << box->x[i] << "\t" << box->y[i] << std::endl;
           }
@@ -1136,9 +1136,9 @@ namespace pal
           px0 -= ceil( px0 / dx ) * dx;
           py0 -= ceil( py0 / dy ) * dy;
 
-          for ( px = px0;px <= box->width;px += dx )
+          for ( px = px0; px <= box->width; px += dx )
           {
-            for ( py = py0;py <= box->length;py += dy )
+            for ( py = py0; py <= box->length; py += dy )
             {
 
               rx = cos( box->alpha ) * px + cos( box->alpha - M_PI / 2 ) * py;
@@ -1170,12 +1170,12 @@ namespace pal
       nbp = positions->size();
 
       ( *lPos ) = new LabelPosition*[nbp];
-      for ( i = 0;i < nbp;i++ )
+      for ( i = 0; i < nbp; i++ )
       {
         ( *lPos )[i] = positions->pop_front();
       }
 
-      for ( bbid = 0;bbid < j;bbid++ )
+      for ( bbid = 0; bbid < j; bbid++ )
       {
         delete boxes[bbid];
       }
@@ -1203,13 +1203,13 @@ namespace pal
     std::cout << "Type: " << type << std::endl;
     if ( x && y )
     {
-      for ( i = 0;i < nbPoints;i++ )
+      for ( i = 0; i < nbPoints; i++ )
         std::cout << x[i] << ", " << y[i] << std::endl;
       std::cout << "Obstacle: " << nbHoles << std::endl;
-      for ( i = 0;i < nbHoles;i++ )
+      for ( i = 0; i < nbHoles; i++ )
       {
         std::cout << "  obs " << i << std::endl;
-        for ( j = 0;j < holes[i]->nbPoints;j++ )
+        for ( j = 0; j < holes[i]->nbPoints; j++ )
         {
           std::cout << holes[i]->x[j] << ";" << holes[i]->y[j] << std::endl;
         }
@@ -1281,7 +1281,7 @@ namespace pal
     int rnbp = nbp;
 
     // purge candidates that are outside the bbox
-    for ( i = 0;i < nbp;i++ )
+    for ( i = 0; i < nbp; i++ )
     {
       if ( !( *lPos )[i]->isIn( bbox ) )
       {
@@ -1296,7 +1296,7 @@ namespace pal
 
     sort(( void** )( *lPos ), nbp, LabelPosition::costGrow );
 
-    for ( i = rnbp;i < nbp;i++ )
+    for ( i = rnbp; i < nbp; i++ )
     {
       delete( *lPos )[i];
     }
