@@ -46,7 +46,7 @@ for f in $MODIFIED; do
 		continue
 		;;
 
-        *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
+        *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
 		cmd=astyle.sh
                 ;;
 
