@@ -105,8 +105,8 @@ void QgsContextHelp::showContext( QString context )
 #ifdef QGSCONTEXTHELP_REUSE
   // Send context to process
   QTextStream os( mSocket );
-  os << contextId << "\n";
-  QgsDebugMsg( QString( "Sending help process context %1" ).arg( contextId ) );
+  os << context << "\n";
+  QgsDebugMsg( QString( "Sending help process context %1" ).arg( context ) );
 #else
   // Should be NULL here unless previous process termination failed
   // (if it did fail, we abandon the process and delete the object reference)
