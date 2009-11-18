@@ -8,10 +8,21 @@ if ! type -p colordiff >/dev/null; then
 	}
 fi
 
+if ! type -p flip >/dev/null; then
+	echo flip not found
+	exit 1
+fi
+
 set -e
 
 # determine last commit
-REV0=$(svn info | sed -ne "s/Revision: //p")
+if [ -f .lastcommit ]; then
+	REV0=$(<.lastcommit)
+	svn revert -R .
+	svn update -r$REV0
+else
+	REV0=$(svn info | sed -ne "s/Revision: //p")
+fi
 
 # update
 MODIFIED=$(svn update | sed -ne "s/^[^ ]* *//p")
@@ -30,11 +41,22 @@ ASTYLEDIFF=astyle.r$REV0-r$REV1.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
+	src/core/spatialite/*)
+		echo $f skipped
+		continue
+		;;
+
         *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
+		cmd=astyle.sh
                 ;;
 
+	*.ui|*.qgm|*.txt|*.t2t|*.py|*.sip|resources/context_help/*)
+		cmd="flip -ub"
+		;;
+
         *)
-                continue
+		echo $f skipped
+		continue
                 ;;
         esac
 
@@ -46,7 +68,7 @@ for f in $MODIFIED; do
         m=$f.r$REV1.prepare
 
 	cp $f $m
-	astyle.sh $f
+	$cmd $f
 	if diff -u $m $f >>$ASTYLEDIFF; then
 		# no difference found
 		rm $m
@@ -62,7 +84,8 @@ if [ -s "$ASTYLEDIFF" ]; then
 	fi
 
 	# just echo for now
-	echo svn commit -m "automatic indentation update (r$REV0-r$REV1)"
+	echo "svn commit -m \"automatic indentation update (r$REV0-r$REV1)\""
+	echo $REV1 >.lastcommit
 else
 	echo "No indentation updates."
 	rm $ASTYLEDIFF
