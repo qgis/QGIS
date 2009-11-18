@@ -30,6 +30,7 @@ email                : a.furieri@lqt.it
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QStringList>
+#include <QPushButton>
 
 #ifdef _MSC_VER
 #define strcasecmp(a,b) stricmp(a,b)
@@ -39,7 +40,12 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
     QDialog( app, fl ), qgisApp( app )
 {
   setupUi( this );
-  btnAdd->setEnabled( false );
+
+  mAddButton = new QPushButton( tr( "&Add" ) );
+  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+  mAddButton->setEnabled( false );
+
   populateConnectionList();
 
   mSearchModeComboBox->addItem( tr( "Wildcard" ) );
@@ -79,15 +85,9 @@ void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsSpatiaLiteSourceSelect::on_btnAdd_clicked()
+void QgsSpatiaLiteSourceSelect::addClicked()
 {
   addTables();
-}
-
-// Slot for showing help
-void QgsSpatiaLiteSourceSelect::on_btnHelp_clicked()
-{
-  showHelp();
 }
 
 /** End Autoconnected SLOTS **/
@@ -473,10 +473,8 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   }
   closeSpatiaLiteDb( handle );
 
-  // BEGIN CHANGES ECOS
   if ( cmbConnections->count() > 0 )
-    btnAdd->setEnabled( true );
-  // END CHANGES ECOS
+    mAddButton->setEnabled( true );
 
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
 
@@ -518,8 +516,8 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
   mTableModel.setSqliteDb( myName );
 
   // the following query return the tables containing a Geometry column
-  strcpy( sql, "SELECT f_table_name, f_geometry_column, type ");
-  strcat( sql, "FROM geometry_columns");
+  strcpy( sql, "SELECT f_table_name, f_geometry_column, type " );
+  strcat( sql, "FROM geometry_columns" );
   ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
     goto error;
@@ -532,8 +530,8 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
       QString tableName = results[( i * columns ) + 0];
       QString column = results[( i * columns ) + 1];
       QString type = results[( i * columns ) + 2];
-	  if ( isDeclaredHidden( handle, tableName, column ))
-		continue;
+      if ( isDeclaredHidden( handle, tableName, column ) )
+        continue;
 
       mTableModel.addTableEntry( type, tableName, column );
     }
@@ -543,57 +541,57 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
 
   if ( checkViewsGeometryColumns( handle ) )
   {
-	  // the following query return the views supporting a Geometry column
-	  strcpy( sql, "SELECT view_name, view_geometry, type ");
-	  strcat( sql, "FROM views_geometry_columns ");
-	  strcat( sql, "JOIN geometry_columns USING (f_table_name, f_geometry_column)");
-	  ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, &errMsg );
-	  if ( ret != SQLITE_OK )
-		goto error;
-	  if ( rows < 1 )
-		;
-	  else
-	  {
-		for ( i = 1; i <= rows; i++ )
-		{
-		  QString tableName = results[( i * columns ) + 0];
-		  QString column = results[( i * columns ) + 1];
-		  QString type = results[( i * columns ) + 2];
-		  if ( isDeclaredHidden( handle, tableName, column ))
-			continue;
+    // the following query return the views supporting a Geometry column
+    strcpy( sql, "SELECT view_name, view_geometry, type " );
+    strcat( sql, "FROM views_geometry_columns " );
+    strcat( sql, "JOIN geometry_columns USING (f_table_name, f_geometry_column)" );
+    ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, &errMsg );
+    if ( ret != SQLITE_OK )
+      goto error;
+    if ( rows < 1 )
+      ;
+    else
+    {
+      for ( i = 1; i <= rows; i++ )
+      {
+        QString tableName = results[( i * columns ) + 0];
+        QString column = results[( i * columns ) + 1];
+        QString type = results[( i * columns ) + 2];
+        if ( isDeclaredHidden( handle, tableName, column ) )
+          continue;
 
-		  mTableModel.addTableEntry( type, tableName, column );
-		}
-		ok = true;
-	  }
-	  sqlite3_free_table( results );
+        mTableModel.addTableEntry( type, tableName, column );
+      }
+      ok = true;
+    }
+    sqlite3_free_table( results );
   }
 
   if ( checkVirtsGeometryColumns( handle ) )
   {
-	  // the following query return the VirtualShapefiles
-	  strcpy( sql, "SELECT virt_name, virt_geometry, type ");
-	  strcat( sql, "FROM virts_geometry_columns");
-	  ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, &errMsg );
-	  if ( ret != SQLITE_OK )
-		goto error;
-	  if ( rows < 1 )
-		;
-	  else
-	  {
-		for ( i = 1; i <= rows; i++ )
-		{
-		  QString tableName = results[( i * columns ) + 0];
-		  QString column = results[( i * columns ) + 1];
-		  QString type = results[( i * columns ) + 2];
-		  if ( isDeclaredHidden( handle, tableName, column ))
-			continue;
+    // the following query return the VirtualShapefiles
+    strcpy( sql, "SELECT virt_name, virt_geometry, type " );
+    strcat( sql, "FROM virts_geometry_columns" );
+    ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, &errMsg );
+    if ( ret != SQLITE_OK )
+      goto error;
+    if ( rows < 1 )
+      ;
+    else
+    {
+      for ( i = 1; i <= rows; i++ )
+      {
+        QString tableName = results[( i * columns ) + 0];
+        QString column = results[( i * columns ) + 1];
+        QString type = results[( i * columns ) + 2];
+        if ( isDeclaredHidden( handle, tableName, column ) )
+          continue;
 
-		  mTableModel.addTableEntry( type, tableName, column );
-		}
-		ok = true;
-	  }
-	  sqlite3_free_table( results );
+        mTableModel.addTableEntry( type, tableName, column );
+      }
+      ok = true;
+    }
+    sqlite3_free_table( results );
   }
 
   QApplication::restoreOverrideCursor();
@@ -629,10 +627,10 @@ bool QgsSpatiaLiteSourceSelect::checkGeometryColumnsAuth( sqlite3 * handle )
   int rows;
   int columns;
   bool exists = false;
-  
+
   // checking the metadata tables
   QString sql = QString( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'geometry_columns_auth'" );
-				
+
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, NULL );
   if ( ret != SQLITE_OK )
     return false;
@@ -642,12 +640,12 @@ bool QgsSpatiaLiteSourceSelect::checkGeometryColumnsAuth( sqlite3 * handle )
   {
     for ( i = 1; i <= rows; i++ )
     {
-      if ( results[( i * columns ) + 0] != NULL)
-	  {
-		const char *name = results[( i * columns ) + 0];
-		if (name)
-			exists = true;
-	  }
+      if ( results[( i * columns ) + 0] != NULL )
+      {
+        const char *name = results[( i * columns ) + 0];
+        if ( name )
+          exists = true;
+      }
     }
   }
   sqlite3_free_table( results );
@@ -662,10 +660,10 @@ bool QgsSpatiaLiteSourceSelect::checkViewsGeometryColumns( sqlite3 * handle )
   int rows;
   int columns;
   bool exists = false;
-  
+
   // checking the metadata tables
   QString sql = QString( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'views_geometry_columns'" );
-				
+
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, NULL );
   if ( ret != SQLITE_OK )
     return false;
@@ -675,12 +673,12 @@ bool QgsSpatiaLiteSourceSelect::checkViewsGeometryColumns( sqlite3 * handle )
   {
     for ( i = 1; i <= rows; i++ )
     {
-      if ( results[( i * columns ) + 0] != NULL)
-	  {
-		const char *name = results[( i * columns ) + 0];
-		if (name)
-			exists = true;
-	  }
+      if ( results[( i * columns ) + 0] != NULL )
+      {
+        const char *name = results[( i * columns ) + 0];
+        if ( name )
+          exists = true;
+      }
     }
   }
   sqlite3_free_table( results );
@@ -695,10 +693,10 @@ bool QgsSpatiaLiteSourceSelect::checkVirtsGeometryColumns( sqlite3 * handle )
   int rows;
   int columns;
   bool exists = false;
-  
+
   // checking the metadata tables
   QString sql = QString( "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'virts_geometry_columns'" );
-				
+
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, NULL );
   if ( ret != SQLITE_OK )
     return false;
@@ -708,12 +706,12 @@ bool QgsSpatiaLiteSourceSelect::checkVirtsGeometryColumns( sqlite3 * handle )
   {
     for ( i = 1; i <= rows; i++ )
     {
-      if ( results[( i * columns ) + 0] != NULL)
-	  {
-		const char *name = results[( i * columns ) + 0];
-		if (name)
-			exists = true;
-	  }
+      if ( results[( i * columns ) + 0] != NULL )
+      {
+        const char *name = results[( i * columns ) + 0];
+        if ( name )
+          exists = true;
+      }
     }
   }
   sqlite3_free_table( results );
@@ -729,14 +727,14 @@ bool QgsSpatiaLiteSourceSelect::isDeclaredHidden( sqlite3 * handle, QString tabl
   int columns;
   char *errMsg = NULL;
   bool isHidden = false;
-  
+
   if ( checkGeometryColumnsAuth( handle ) == false )
-	return false;
+    return false;
   // checking if some Layer has been declared as HIDDEN
   QString sql = QString( "SELECT hidden FROM geometry_columns_auth"
                          " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( quotedValue( table ) ).
                 arg( quotedValue( geom ) );
-				
+
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
     goto error;
@@ -746,11 +744,11 @@ bool QgsSpatiaLiteSourceSelect::isDeclaredHidden( sqlite3 * handle, QString tabl
   {
     for ( i = 1; i <= rows; i++ )
     {
-      if ( results[( i * columns ) + 0] != NULL)
-	  {
-		if (atoi( results[( i * columns ) + 0] ) != 0)
-			isHidden = true;
-	  }
+      if ( results[( i * columns ) + 0] != NULL )
+      {
+        if ( atoi( results[( i * columns ) + 0] ) != 0 )
+          isHidden = true;
+      }
     }
   }
   sqlite3_free_table( results );
@@ -768,11 +766,6 @@ error:
   QMessageBox::critical( this, tr( "SpatiaLite getTableInfo Error" ),
                          tr( "Failure exploring tables from: %1\n\n%2" ).arg( mSqlitePath ).arg( errCause ) );
   return false;
-}
-
-void QgsSpatiaLiteSourceSelect::showHelp()
-{
-  QgsContextHelp::run( context_id );
 }
 
 QString QgsSpatiaLiteSourceSelect::fullDescription( QString table, QString column, QString type )

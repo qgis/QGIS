@@ -14,6 +14,7 @@
 
 #include <ui_pluginguibase.h>
 #include <QDialog>
+#include "qgscontexthelp.h"
 
 /**
 @author Peter Brewer
@@ -21,6 +22,7 @@
 class QgsScaleBarPluginGui : public QDialog, private Ui::QgsScaleBarPluginGuiBase
 {
     Q_OBJECT
+
   public:
     QgsScaleBarPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsScaleBarPluginGui();
@@ -39,12 +41,8 @@ class QgsScaleBarPluginGui : public QDialog, private Ui::QgsScaleBarPluginGuiBas
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_pbnChangeColour_clicked();
-
-  private:
-
-    static const int context_id = 0;
 
   signals:
     void drawRasterLayer( QString );

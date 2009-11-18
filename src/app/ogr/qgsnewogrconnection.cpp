@@ -34,7 +34,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
     : QDialog( parent, fl )
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( help() ) );
+
   //add database drivers
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ";" );
   for ( int i = 0; i < dbDrivers.count(); i++ )
@@ -115,28 +115,9 @@ void QgsNewOgrConnection::accept()
   QDialog::accept();
 }
 
-void QgsNewOgrConnection::help()
-{
-  helpInfo();
-}
-
 void QgsNewOgrConnection::on_btnConnect_clicked()
 {
   testConnection();
 }
 
-void QgsNewOgrConnection::helpInfo()
-{
-  QgsContextHelp::run( context_id );
-}
-
 /** end  Autoconnected SLOTS **/
-
-
-
-
-
-
-
-
-

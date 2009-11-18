@@ -20,6 +20,7 @@
 #define QGSWMSSOURCESELECT_H
 #include "ui_qgswmssourceselectbase.h"
 #include "qgisgui.h"
+#include "qgscontexthelp.h"
 
 #include <QStringList>
 #include <QPushButton>
@@ -110,9 +111,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Opens the Spatial Reference System dialog.
     void on_btnChangeSpatialRefSys_clicked();
 
-    //! Opens help application
-    void helpClicked();
-
     //! Signaled when a layer selection is changed.  Ensures that only one style is selected per layer.
     void on_lstLayers_itemSelectionChanged();
 
@@ -127,6 +125,8 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     //! Add some default wms servers to the list
     void on_btnAddDefault_clicked();
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
 
@@ -193,8 +193,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     bool retrieveSearchResults( const QString& searchTerm, QByteArray& httpResponse );
     void addWMSListRow( const QDomElement& item, int row );
     void addWMSListItem( const QDomElement& el, int row, int column );
-
-    static const int context_id = 710979116;
 
   private slots:
     void on_btnSearch_clicked();

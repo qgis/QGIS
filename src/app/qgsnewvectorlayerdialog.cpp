@@ -100,11 +100,6 @@ void QgsNewVectorLayerDialog::on_mRemoveAttributeButton_clicked()
   }
 }
 
-void QgsNewVectorLayerDialog::on_buttonBox_helpRequested()
-{
-  QgsContextHelp::run( context_id );
-}
-
 void QgsNewVectorLayerDialog::attributes( std::list<std::pair<QString, QString> >& at ) const
 {
   QTreeWidgetItemIterator it( mAttributeView );

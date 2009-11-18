@@ -53,11 +53,6 @@ void QgsCopyrightLabelPluginGui::on_buttonBox_rejected()
   reject();
 }
 
-void QgsCopyrightLabelPluginGui::on_buttonBox_helpRequested()
-{
-  QgsContextHelp::run( context_id );
-}
-
 void QgsCopyrightLabelPluginGui::on_pbnColorChooser_clicked()
 {
   QColor c = QColorDialog::getColor();

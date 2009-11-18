@@ -27,6 +27,7 @@
 class QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDialogBase
 {
     Q_OBJECT
+
   public:
     QgsNewVectorLayerDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
@@ -40,13 +41,11 @@ class QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDial
   protected slots:
     void on_mAddAttributeButton_clicked();
     void on_mRemoveAttributeButton_clicked();
-    void on_buttonBox_helpRequested();
     void on_mTypeBox_currentIndexChanged( int index );
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
-    QPushButton * mOkButton;
-    static const int context_id = 165149618;
-
+    QPushButton *mOkButton;
 };
 
 #endif //qgsnewvectorlayerdialog_H

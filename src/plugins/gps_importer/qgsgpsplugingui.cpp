@@ -490,14 +490,7 @@ void QgsGPSPluginGui::openDeviceEditor()
   connect( dlg, SIGNAL( devicesChanged() ), this, SLOT( devicesUpdated() ) );
 }
 
-
 void QgsGPSPluginGui::devicesUpdated()
 {
   populateIMPBabelFormats();
-}
-
-
-void QgsGPSPluginGui::on_buttonBox_helpRequested()
-{
-  QgsContextHelp::run( context_id );
 }

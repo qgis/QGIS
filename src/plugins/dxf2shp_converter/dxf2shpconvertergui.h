@@ -30,7 +30,6 @@ class dxf2shpConverterGui: public QDialog, private Ui::dxf2shpConverterGui
     ~dxf2shpConverterGui();
 
   private:
-    static const int context_id = 0;
     void getInputFileName();
     void getOutputFileName();
     void getOutputDir();

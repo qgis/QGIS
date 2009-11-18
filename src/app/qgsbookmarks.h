@@ -19,6 +19,7 @@
 #define QGSBOOKMARKS_H
 #include "ui_qgsbookmarksbase.h"
 #include <QDialog>
+#include "qgscontexthelp.h"
 
 class QString;
 class QWidget;
@@ -27,6 +28,7 @@ struct sqlite3;
 class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
 {
     Q_OBJECT
+
   public:
     QgsBookmarks( QWidget *parent = 0, Qt::WFlags fl = 0 );
     ~QgsBookmarks();
@@ -36,16 +38,16 @@ class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
     void on_btnDelete_clicked();
     void on_btnZoomTo_clicked();
     void on_lstBookmarks_doubleClicked( QTreeWidgetItem * );
-    void helpRequested();
     void refreshBookmarks();
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+
   private:
     QWidget *mParent;
     void initialise();
     int connectDb();
     void zoomToBookmark();
     sqlite3 *db;
-    static const int context_id = 151694916;
-
 };
 #endif // QGSBOOKMARKS_H
 

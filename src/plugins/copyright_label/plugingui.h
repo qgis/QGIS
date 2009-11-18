@@ -15,6 +15,7 @@
 #include <ui_pluginguibase.h>
 #include <QColor>
 #include <QFont>
+#include "qgscontexthelp.h"
 
 /**
 @author Tim Sutton
@@ -22,6 +23,7 @@
 class QgsCopyrightLabelPluginGui : public QDialog, private Ui::QgsCopyrightLabelPluginGuiBase
 {
     Q_OBJECT
+
   public:
     QgsCopyrightLabelPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsCopyrightLabelPluginGui();
@@ -34,11 +36,8 @@ class QgsCopyrightLabelPluginGui : public QDialog, private Ui::QgsCopyrightLabel
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_pbnColorChooser_clicked();
-
-  private:
-    static const int context_id = 32338213;
 
   signals:
     //void drawRasterLayer(QString);

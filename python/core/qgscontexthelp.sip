@@ -20,13 +20,12 @@ class QgsContextHelp : QObject
 %End
 
 public:
-  static void run(int contextId);
+  static void run(QString context);
 
 private:
   //! Constructor
-  QgsContextHelp(int contextId);
+  QgsContextHelp(QString context);
+
   //! Destructor
   ~QgsContextHelp();
-
 };
-

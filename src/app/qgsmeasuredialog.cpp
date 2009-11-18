@@ -28,14 +28,17 @@
 #include <QCloseEvent>
 #include <QLocale>
 #include <QSettings>
+#include <QPushButton>
 
 
 QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
     : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
 {
   setupUi( this );
-  connect( mRestartButton, SIGNAL( clicked() ), this, SLOT( restart() ) );
-  connect( mCloseButton, SIGNAL( clicked() ), this, SLOT( close() ) );
+  
+  QPushButton *nb = new QPushButton( tr( "&New" ) );
+  buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
+  connect( nb, SIGNAL( clicked() ), this, SLOT( restart() ) );
 
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
@@ -139,8 +142,7 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
   }
 }
 
-
-void QgsMeasureDialog::close( void )
+void QgsMeasureDialog::on_buttonBox_rejected( void )
 {
   restart();
   QDialog::close();
@@ -172,12 +174,6 @@ void QgsMeasureDialog::saveWindowLocation()
   const QString &key = mMeasureArea ? "/Windows/Measure/hNoTable" : "/Windows/Measure/h";
   settings.setValue( key, height() );
 }
-
-void QgsMeasureDialog::on_btnHelp_clicked()
-{
-  QgsContextHelp::run( context_id );
-}
-
 
 QString QgsMeasureDialog::formatDistance( double distance )
 {

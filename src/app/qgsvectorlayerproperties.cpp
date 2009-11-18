@@ -555,11 +555,6 @@ void QgsVectorLayerProperties::reset( void )
 // methods reimplemented from qt designer base class
 //
 
-void QgsVectorLayerProperties::on_buttonBox_helpRequested()
-{
-  QgsContextHelp::run( context_id );
-}
-
 QMap< QgsVectorLayer::EditType, QString > QgsVectorLayerProperties::editTypeMap;
 
 void QgsVectorLayerProperties::setupEditTypes()

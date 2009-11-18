@@ -28,6 +28,7 @@
 #include "qgsattributetypedialog.h"
 #include "qgsfield.h"
 #include "qgsmapcanvas.h"
+#include "qgscontexthelp.h"
 
 class QgsMapLayer;
 
@@ -40,6 +41,7 @@ class QgsVectorOverlayPlugin;
 class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPropertiesBase
 {
     Q_OBJECT
+
   public:
     QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsVectorLayerProperties();
@@ -92,7 +94,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     //methods reimplemented from qt designer base class
     //
 
-    void on_buttonBox_helpRequested();
     void on_pbnQueryBuilder_clicked();
     void on_pbnIndex_clicked();
     void on_pbnChangeSpatialRefSys_clicked();
@@ -103,6 +104,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_tblAttributes_cellChanged( int row, int column );
     void on_mCalculateFieldButton_clicked();
     void on_pbnSelectEditForm_clicked();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     void addAttribute();
     void deleteAttribute();
@@ -157,7 +159,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
     //QPixmap bufferPixmap;
-    static const int context_id = 94000531;
 
     static QMap< QgsVectorLayer::EditType, QString > editTypeMap;
     static void setupEditTypes();

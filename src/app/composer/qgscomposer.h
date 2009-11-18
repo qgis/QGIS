@@ -19,6 +19,7 @@
 #define QGSCOMPOSER_H
 #include "ui_qgscomposerbase.h"
 #include "qgscomposeritem.h"
+#include "qgscontexthelp.h"
 
 class QgisApp;
 class QgsComposerLabel;
@@ -188,9 +189,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Save window state
     void saveWindowState();
 
-    //! Slot for when the help button is clicked
-    void on_buttonBox_helpRequested();
-
     /**Add a composer map to the item/widget map and creates a configuration widget for it*/
     void addComposerMap( QgsComposerMap* map );
 
@@ -225,6 +223,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Raise, unminimize and activate this window
     void activate();
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
 
@@ -278,10 +278,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Window menu action to select this window
     QAction *mWindowAction;
-
-    //! Help context id
-    static const int context_id = 985715179;
-
 };
 
 #endif

@@ -21,7 +21,7 @@
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsdbtablemodel.h"
-#include <QPushButton>
+#include "qgscontexthelp.h"
 
 extern "C"
 {
@@ -34,6 +34,7 @@ extern "C"
 #include <QIcon>
 #include <QItemDelegate>
 
+class QPushButton;
 class QStringList;
 class QgsGeomColumnTypeThread;
 class QgisApp;
@@ -101,6 +102,7 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
 class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
 {
     Q_OBJECT
+
   public:
 
     //! Constructor
@@ -125,8 +127,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     void dbChanged();
 
   public slots:
-
-    void helpClicked();
     void addClicked();
 
     /*! Connects to the database using the stored connection parameters.
@@ -149,6 +149,8 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString& regexp );
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
     typedef QPair<QString, QString> geomPair;
@@ -183,7 +185,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
     PGconn *pd;
-    static const int context_id = 939347163;
+
     //! Model that acts as datasource for mTableTreeWidget
     QgsDbTableModel mTableModel;
     QgsDbFilterProxyModel mProxyModel;

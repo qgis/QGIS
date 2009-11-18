@@ -43,10 +43,10 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ), mColumnTypeThread( NULL ), pd( 0 )
 {
   setupUi( this );
+
   mAddButton = new QPushButton( tr( "&Add" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
-  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
 
   mAddButton->setEnabled( false );
   populateConnectionList();
@@ -108,11 +108,6 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
   editConnection();
 }
 
-// Slot for showing help
-void QgsPgSourceSelect::helpClicked()
-{
-  QgsContextHelp::run( context_id );
-}
 /** End Autoconnected SLOTS **/
 
 // Remember which database is selected

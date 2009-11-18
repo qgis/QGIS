@@ -27,11 +27,12 @@
 #include "qgsmaplayerregistry.h"
 #include "qgslogger.h"
 
+#include <QPushButton>
+
 QgsPasteTransformations::QgsPasteTransformations()
     : QgsPasteTransformationsBase()
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( help() ) );
 
   mAddTransferButton = new QPushButton( tr( "&Add New Transfer" ) );
   buttonBox->addButton( mAddTransferButton, QDialogButtonBox::ActionRole );
@@ -78,16 +79,6 @@ void QgsPasteTransformations::accept()
     );
   }
   QDialog::accept();
-}
-
-void QgsPasteTransformations::help()
-{
-  helpInfo();
-}
-
-void QgsPasteTransformations::helpInfo()
-{
-  QgsContextHelp::run( context_id );
 }
 
 void QgsPasteTransformations::addNewTransfer()

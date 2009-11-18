@@ -19,6 +19,7 @@
 #define QGSNEWCONNECTION_H
 #include "ui_qgsnewconnectionbase.h"
 #include "qgisgui.h"
+#include "qgscontexthelp.h"
 /*! \class QgsNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a PostgresQl database
@@ -37,12 +38,11 @@ class QgsNewConnection : public QDialog, private Ui::QgsNewConnectionBase
     void saveConnection();
   public slots:
     void accept();
-    void helpClicked();
     void on_btnConnect_clicked();
     void on_cb_geometryColumnsOnly_clicked();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    static const int context_id = 929865718;
 };
 
 #endif //  QGSNEWCONNECTIONBASE_H

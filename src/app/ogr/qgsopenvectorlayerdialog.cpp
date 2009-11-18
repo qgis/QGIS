@@ -35,6 +35,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
     : QDialog( parent, fl )
 {
   setupUi( this );
+
   cmbDatabaseTypes->blockSignals( true );
   cmbConnections->blockSignals( true );
   radioSrcFile->setChecked( true );
@@ -139,11 +140,6 @@ QStringList QgsOpenVectorLayerDialog::dataSources()
 QString QgsOpenVectorLayerDialog::encoding()
 {
   return cmbEncodings->currentText();
-}
-
-void QgsOpenVectorLayerDialog::helpInfo()
-{
-  QgsContextHelp::run( context_id );
 }
 
 QString QgsOpenVectorLayerDialog::dataSourceType()
@@ -416,11 +412,6 @@ void QgsOpenVectorLayerDialog::on_buttonBox_accepted()
   settings.setValue( "/UI/encoding", encoding() );
 
   accept();
-}
-
-void QgsOpenVectorLayerDialog::on_btnHelp_clicked()
-{
-  helpInfo();
 }
 
 void QgsOpenVectorLayerDialog::on_radioSrcFile_toggled( bool checked )

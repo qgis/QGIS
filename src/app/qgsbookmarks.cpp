@@ -66,8 +66,6 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
   connect( btnZoomTo, SIGNAL( clicked() ), this, SLOT( on_btnZoomTo_clicked() ) );
   // connect the slot up to catch when a new bookmark is added
   connect( mParent, SIGNAL( bookmarkAdded() ), this, SLOT( refreshBookmarks() ) );
-  //and for help requested
-  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpRequested() ) );
 }
 
 // Destructor
@@ -255,9 +253,4 @@ int QgsBookmarks::connectDb()
     assert( rc == 0 );
   }
   return rc;
-}
-
-void QgsBookmarks::helpRequested()
-{
-  QgsContextHelp::run( context_id );
 }
