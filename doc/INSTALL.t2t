@@ -415,30 +415,10 @@ addition to the non-debug frameworks.
 Once downloaded open the dmg and run the installer. Note you need admin
 privileges to install.
 
-After installing you need to make two small changes:
-
-First edit ``/Library/Frameworks/QtCore.framework/Headers/qconfig.h`` and
-change 
-
-/!\ Note: this isn't needed since version 4.2.3
-
-``QT_EDITION_Unknown`` to ``QT_EDITION_OPENSOURCE``
-
-Second change the default mkspec symlink so that it points to macx-g++:
-
-```
-cd /usr/local/Qt4.3/mkspecs/ 
-sudo rm default 
-sudo ln -sf macx-g++ default
-```
-
-/!\ Note: this doesn't seem to be needed since version 4.4.
-
 
 == Install development frameworks for QGIS dependencies ==
 
-Download William Kyngesburye's excellent all in one framework that includes
-proj, gdal, sqlite3, etc.
+Download William Kyngesburye's excellent all in GDAL Complete framework that includes proj, gdal, sqlite3, etc.
 
 ``` 
 http://www.kyngchaos.com/wiki/software:frameworks
@@ -458,6 +438,7 @@ Also available is a GRASS application:
 ```
 http://www.kyngchaos.com/wiki/software:grass
 ```
+
 === Additional Dependencies : General compatibility note ===
 
 There are some additional dependencies that, at the time of writing, are not
@@ -465,7 +446,7 @@ provided as frameworks or installers so we will need to build these from source.
 If you are wanting to build Qgis as a 64-bit application, you will need to 
 provide the appropriate build commands to produce 64-bit support in dependencies.
 Likewise, for 32-bit support on Snow Leopard, you will need to override the
-default system architecture, which is 64-bit according to instructions for
+default system architecture, which is 64-bit, according to instructions for
 individual dependency packages.
 
 === Additional Dependencies : GSL ===
@@ -477,7 +458,7 @@ ftp://ftp.gnu.org/gnu/gsl/
 ```
 
 Then extract it and build it to a prefix of /usr/local.  Double-click the source
-tarball to unpack it, then cd to the source folder and:
+tarball to unpack it, then, in Terminal.app, cd to the source folder and:
 
 ``` 
 ./configure
@@ -485,17 +466,11 @@ make
 sudo make install
 ```
 
-__Snow Leopard note:__ For explicit 32-bit support in gsl, substitute the standard
-configure line with:
+__Snow Leopard note:__ Snow Leopard compiles 64bit by default.
+For explicit 32-bit support in gsl, substitute the standard configure line with:
 
 ```
-./configure --build=i386
-```
-
-And for 64-bit gsl:
-
-```
-./configure --build=x86_64
+./configure CFLAGS="-Os -arch i386"
 ```
 
 
@@ -510,12 +485,18 @@ Get the expat sources:
 http://sourceforge.net/project/showfiles.php?group_id=10127 
 ```
 
-Double-click the source tarball to unpack, then cd to the source folder and:
+Double-click the source tarball to unpack, then, in Terminal.app, cd to the source folder and:
 
 ```
 ./configure
 make 
 sudo make install 
+```
+
+__Leopard note:__ To compile for 64bit, substitute the standard configure line with:
+
+```
+./configure CFLAGS="-Os -arch x86_64"
 ```
 
 
@@ -524,7 +505,7 @@ sudo make install
 __Leopard and Snow Leopard note:__ Leopard and Snow Leopard include a usable Python
 2.5 or 2.6, respectively.  You can install Python from python.org if preferred.
 
-Make sure you have the latest Python 2.5 from 
+Make sure you have at least the latest Python 2.5 from 
 
 ```
 http://www.python.org/download/mac/
@@ -536,7 +517,7 @@ Retrieve the python bindings toolkit SIP from
 http://www.riverbankcomputing.com/software/sip/download
 ```
 
-Double-click the source tarball to unpack it, then cd to the source folder
+Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
 and (this installs by default into the Python framework):
 
 ``` 
@@ -552,34 +533,28 @@ system path -- this is not a good idea.  Use this configure command instead of t
 basic configure above:
 
 ```
-python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -e /usr/local/include -v /usr/local/share/sip
+python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip
 ```
 
 __Snow Leopard notes__
 
-If building on Snow Leopard, you need to use one of the following configure lines 
-based on your installed version of Qt. If you are using 32-bit Qt (Qt Carbon):
+Similar to Leopard, you should install outside the system Python path.  Also, you need to specify the architecture you want (requires at least SIP 4.9). If you are using 32-bit Qt (Qt Carbon):
 
 ```
-python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin -e /usr/local/include -v /usr/local/share/sip --arch i386
+python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip --arch=i386
 ```
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
 ```
-python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin -e /usr/local/include -v /usr/local/share/sip --arch x86_64
+python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip --arch=x86_64
 ```
 
 
 === Additional Dependencies : PyQt ===
-
-If you encounter problems compiling PyQt using the instructions 
-below you can also try adding python from your frameworks dir
-explicitly to your path e.g.
-
-```
-export PATH=/Library/Frameworks/Python.framework/Versions/Current/bin:$PATH
-```
 
 Retrieve the python bindings toolkit for Qt from
 
@@ -587,7 +562,7 @@ Retrieve the python bindings toolkit for Qt from
 http://www.riverbankcomputing.com/software/pyqt/download
 ```
 
-Double-click the source tarball to unpack it, then cd to the source folder
+Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
 and (this installs by default into the Python framework):
 
 ``` 
@@ -600,7 +575,9 @@ sudo make install
 
 __Leopard notes__
 
-If building on Leopard, using Leopard's bundled Python, PyQt wants to install in the system path -- this is not a good idea.  Use this configure command instead of the basic configure above:
+If building on Leopard, using Leopard's bundled Python, PyQt wants to install
+in the system path -- this is not a good idea.  Use this configure command
+instead of the basic configure above:
 
 ```
 python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
@@ -612,7 +589,9 @@ Then make again.
 
 __Snow Leopard notes__
 
-If building on Snow Leopard, you need to use one of the following configure lines based on your installed version of Qt. If you are using 32-bit Qt (Qt Carbon):
+Similar to Leopard, you should install outside the system Python path.
+Also, you need to specify the architecture you want (requires at least PyQt 4.6).
+If you are using 32-bit Qt (Qt Carbon):
 
 ```
 python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
@@ -627,7 +606,7 @@ python configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use
 
 === Additional Dependencies : Bison ===
 
-__Leopard and Snow Leopard note:__ Leopard and Snow Leopard includes Bison 2.3, so this step can be skipped on Leopard and Snow Leopard.
+__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include Bison 2.3, so this step can be skipped on Leopard and Snow Leopard.
 
 The version of bison available by default on Mac OS X 10.4 and older is too old so you need to
 get a more recent one on your system. Download at least version 2.3 from:
@@ -666,9 +645,9 @@ sudo make install
 
 == Install subversion for OSX ==
 
-__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include SVN, so this step can be skipped on these Operating Systems.
+__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include SVN, so this step can be skipped on Leopard and Snow Leopard.
 
-The [http://sourceforge.net/projects/macsvn/ MacSVN] project has a downloadable
+The [http://sourceforge.net/projects/macsvn/MacSVN] project has a downloadable
 build of svn. If you are a GUI inclined person you may want to grab their gui
 client too. Get the command line client here:
 
@@ -711,7 +690,7 @@ Now close and reopen your shell to get the updated vars.
 == Check out QGIS from SVN ==
 
 Now we are going to check out the sources for QGIS. First we will create a
-directory for working in:
+directory for working in (or some folder of your choice):
 
 ``` 
 mkdir -p ~/dev/cpp cd ~/dev/cpp 
@@ -756,27 +735,16 @@ and some bundling steps are available with scripts in the mac directory.
 === Configure the Cmake build ===
 
 CMake supports out of source build so we will create a 'build' dir for the
-build process. By convention I build my software into a dir called 'apps' in
-my home directory. If you have the correct permissions you may want to build
+build process. OS X uses ${HOME}/Applications as a standard user app folder (it gives it the system app folder icon).
+If you have the correct permissions you may want to build
 straight into your /Applications folder. The instructions below assume you are
-building into a pre-existing ${HOME}/apps directory ...
+building into a pre-existing ${HOME}/Applications directory ...
 
 ```
 cd qgis
 mkdir build
 cd build
-cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ -D CMAKE_BUILD_TYPE=Release ..
-```
-
-__Leopard note:__ To find the custom install of SIP on Leopard, add ""-
-D SIP_BINARY_PATH=/usr/local/bin/sip"" to the cmake command above,
-before the "".."" at the end, ie:
-
-```
-cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ \
-	  -D CMAKE_BUILD_TYPE=Release \
-	  -D SIP_BINARY_PATH=/usr/local/bin/sip \
-	  ..
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release ..
 ```
 
 To use the application build of GRASS on OSX, you can optionally use the
@@ -784,12 +752,10 @@ following cmake invocation (minimum GRASS 6.3 required, substitute the GRASS
 version as required):
 
 ```
-cmake -D CMAKE_INSTALL_PREFIX=${HOME}/apps/ \
-      -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/
-      include \
-      -D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
-      -D CMAKE_BUILD_TYPE=Release \
-      ..
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+-D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include \
+-D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
+..
 ```
 
 Or, to use a Unix-style build of GRASS, use the following cmake invocation
@@ -797,51 +763,54 @@ Or, to use a Unix-style build of GRASS, use the following cmake invocation
 path and version as required):
 
 ```
-cmake -D CMAKE_INSTALL_PREFIX=${HOME}/apps/ \
-  -D GRASS_INCLUDE_DIR=/user/local/grass-6.4.0/include \
-  -D GRASS_PREFIX=/user/local/grass-6.4.0 \
-  -D CMAKE_BUILD_TYPE=Release \
-  ..
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+-D GRASS_INCLUDE_DIR=/user/local/grass-6.4.0/include \
+-D GRASS_PREFIX=/user/local/grass-6.4.0 \
+..
+```
+
+__Leopard note:__ To find the custom install of SIP on Leopard, add
+'-D SIP_BINARY_PATH=/usr/local/bin/sip' to the cmake commands above,
+before the '..' at the end, ie:
+
+```
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+-D SIP_BINARY_PATH=/usr/local/bin/sip \
+..
 ```
 
 __Snow Leopard note:__ To handle the appropriate version of Qt (32-bit or 64-bit), you will need to invoke cmake based on which version of Qt you installed.
 
-For 32-bit Qt (Carbon) with GRASS-6.4:
+For 32-bit Qt (Carbon) with GRASS-6.4, add '-D CMAKE_CXX_FLAGS="-arch i386" -D CMAKE_OSX_ARCHITECTURES=i386':
 
 ```
-cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ \
-	  -D CMAKE_BUILD_TYPE=Release \
-	  -D SIP_BINARY_PATH=/usr/local/bin/sip 
-	  -D CMAKE_C_FLAGS=-m32 \
-	  -D CMAKE_CXX_FLAGS=-m32
-	  -D CMAKE_OSX_ARCHITECTURES=i386
-	  -D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
-	  -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include\
-	  ..
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+-D SIP_BINARY_PATH=/usr/local/bin/sip \
+-D CMAKE_CXX_FLAGS="-arch i386" -D CMAKE_OSX_ARCHITECTURES=i386 \
+-D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include \
+-D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
+..
 ```
 
 For 64-bit Qt (Cocoa) with GRASS-6.4:
 
 ```
-cmake -D CMAKE_INSTALL_PREFIX=$HOME/apps/ \
-	  -D CMAKE_BUILD_TYPE=Release \
-	  -D SIP_BINARY_PATH=/usr/local/bin/sip 
-	  -D CMAKE_C_FLAGS=-m64 \
-	  -D CMAKE_CXX_FLAGS=-m64
-	  -D CMAKE_OSX_ARCHITECTURES=x86_64
-	  -D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
-	  -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include\
-	  ..
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+-D SIP_BINARY_PATH=/usr/local/bin/sip \
+-D CMAKE_CXX_FLAGS="-arch x86_64" -D CMAKE_OSX_ARCHITECTURES=x86_64 \
+-D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include \
+-D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
+..
 ```
 
 === Configure the Xcode build ===
 
 In the mac/xcode folder in the source, duplicate the 'qgis_user-template.xcconfig'
 file and name it 'qgis_user.xcconfig'. A default build will use the KyngChaos
-frameworks, Postgres, GRASS 6.4, the python.org Python 2.5 and extra dependencies
+frameworks, Postgres, GRASS 6.4, the python.org Python 2.5 (for Tiger)
+or the system Python (for Leopard and Snow Leopard) and extra dependencies
 as described above, and compile for the current OSX architecture and version, so no
-extra configuration is necessary. If building on Leopard or newer, you may want to
-use the system Python, which requires editing qgis_user.xcconfig.
+extra configuration is necessary.
 
 See the mac/xcode/readme.rtf for details, if you need to customize the build.
 The default build will also bundle the Qt frameworks, Postgres library, and
@@ -876,18 +845,9 @@ configuration and select the 'Full Qgis' target, then build. If you use ccache,
 there have been compilation problems reported, so it is suggested that you disable
 ccache support.
 
-
 Alternatively, from within the mac/xcode directory, build with the command:
 
 ```
-xcodebuild
-```
-__Snow Leopard note:__ You can also build Qgis using the new llvm compilers supplied
-with Xcode 3.2.x. To do this, you first need to export the proper compiler settings:
-
-```
-export CC=/Developer/usr/bin/llvm-gcc
-export CXX=/Developer/usr/bin/llvm-g++
 xcodebuild
 ```
 
