@@ -101,7 +101,7 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
 class MyLine
 {
   public:
-    MyLine( QPointF p1, QPointF p2 ) : mVertical(false), mIncreasing(false), mT(0.0), mLength(0.0)
+    MyLine( QPointF p1, QPointF p2 ) : mVertical( false ), mIncreasing( false ), mT( 0.0 ), mLength( 0.0 )
     {
       if ( p1 == p2 )
         return; // invalid
@@ -356,7 +356,7 @@ static double _calculateAngle( double x1, double y1, double x2, double y2 )
 {
   // return angle (in radians) between two points
   if ( x1 == x2 )
-    return  M_PI * ( y2 >= y1 ? 1 / 2 : 3 / 2 ); // angle is 90 or 270
+    return  M_PI *( y2 >= y1 ? 1 / 2 : 3 / 2 );  // angle is 90 or 270
 
   double t = ( y2 - y1 ) / ( x2 - x1 );
   if ( t >= 0 )

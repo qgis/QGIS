@@ -21,7 +21,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
                                 QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
                                 Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
                                 double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH );
-	
+
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );

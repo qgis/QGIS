@@ -35,7 +35,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
     : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
 {
   setupUi( this );
-  
+
   QPushButton *nb = new QPushButton( tr( "&New" ) );
   buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
   connect( nb, SIGNAL( clicked() ), this, SLOT( restart() ) );

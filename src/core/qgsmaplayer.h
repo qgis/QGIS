@@ -78,10 +78,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString const & name() const;
 
-    /** This is the method that does the actual work of 
+    /** This is the method that does the actual work of
      * drawing the layer onto a paint device.
-     * @param QgsRenderContext - describes the extents, 
-     * resolution etc. that should be used when rendering the 
+     * @param QgsRenderContext - describes the extents,
+     * resolution etc. that should be used when rendering the
      * layer.
      */
     virtual bool draw( QgsRenderContext& rendererContext );
@@ -291,9 +291,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Get the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/
     QImage * cacheImage() { return mpCacheImage; }
-    /** Set the QImage used for caching render operations 
+    /** Set the QImage used for caching render operations
      * @note This method was added in QGIS 1.4 **/
-    void setCacheImage( QImage * thepImage ); 
+    void setCacheImage( QImage * thepImage );
 
   public slots:
 

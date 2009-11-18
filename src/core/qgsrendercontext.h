@@ -76,7 +76,7 @@ class CORE_EXPORT QgsRenderContext
     void setRendererScale( double scale ) {mRendererScale = scale;}
     void setPainter( QPainter* p ) {mPainter = p;}
     //! Added in QGIS v1.4
-    void setLabelingEngine(QgsLabelingEngineInterface* iface) { mLabelingEngine = iface; }
+    void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
 
   private:
 

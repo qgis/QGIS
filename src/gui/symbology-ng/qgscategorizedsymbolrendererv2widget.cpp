@@ -260,9 +260,9 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   if ( ramp == NULL )
   {
     if ( cboCategorizedColorRamp->count() == 0 )
-      QMessageBox::critical( this, tr("Error"), tr("There are no available color ramps. You can add them in Style Manager.") );
+      QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
     else
-      QMessageBox::critical( this, tr("Error"), tr("The selected color ramp is not available.") );
+      QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
     return;
   }
 

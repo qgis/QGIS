@@ -218,9 +218,9 @@ void QgsSymbol::setNamedPointSymbol( QString name )
       QgsDebugMsg( "Name: " + name );
       //see if we can resolve the problem...
       //
-      
+
       QStringList svgPaths = QgsApplication::svgPaths();
-      for( int i=0; i<svgPaths.size(); i++) 
+      for ( int i = 0; i < svgPaths.size(); i++ )
       {
         QgsDebugMsg( "SvgPath: " + svgPaths[i] );
         QFileInfo myInfo( myTempName );
@@ -515,14 +515,14 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document, const QgsVec
 
       QStringList svgPaths = QgsApplication::svgPaths();
 
-      for(int i=0; i<svgPaths.size(); i++)
+      for ( int i = 0; i < svgPaths.size(); i++ )
       {
         QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
 
         if ( !dir.isEmpty() && name.startsWith( dir ) )
         {
           name = name.mid( dir.size() );
-	  break;
+          break;
         }
       }
     }
