@@ -166,9 +166,3 @@ void QuickPrintGui::on_buttonBox_rejected()
 {
   reject();
 }
-
-void QuickPrintGui::on_buttonBox_helpRequested()
-{
-  QgsContextHelp::run( context_id );
-}
-

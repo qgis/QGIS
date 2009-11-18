@@ -21,6 +21,7 @@
 #include "qgisgui.h"
 #include "qgsspatialitefilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"
+#include "qgscontexthelp.h"
 
 extern "C"
 {
@@ -41,6 +42,7 @@ extern "C"
 class QStringList;
 class QTableWidgetItem;
 class QgisApp;
+class QPushButton;
 
 /*! \class QgsSpatiaLiteSourceSelect
  * \brief Dialog to create connections and add tables from SpatiaLite.
@@ -51,7 +53,9 @@ class QgisApp;
  */
 class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSourceSelectBase
 {
-  Q_OBJECT public:
+    Q_OBJECT
+
+  public:
 
     //! Constructor
     QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags fl = QgisGui::ModalDialogFlags );
@@ -80,18 +84,19 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();
-    void on_btnAdd_clicked();
+    void addClicked();
     void on_btnNew_clicked();
     void on_btnDelete_clicked();
     void on_mSearchOptionsButton_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
-    void on_btnHelp_clicked();
     void on_cmbConnections_activated( int );
     void setLayerType( QString table, QString column, QString type );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString & regexp );
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
     enum columns
@@ -105,16 +110,16 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     typedef std::pair < QString, QString > geomPair;
     typedef std::list < geomPair > geomCol;
 
-	/**Checks if geometry_columns_auth table exists*/
+    /**Checks if geometry_columns_auth table exists*/
     bool checkGeometryColumnsAuth( sqlite3 * handle );
 
-	/**Checks if views_geometry_columns table exists*/
+    /**Checks if views_geometry_columns table exists*/
     bool checkViewsGeometryColumns( sqlite3 * handle );
 
-	/**Checks if virts_geometry_columns table exists*/
+    /**Checks if virts_geometry_columns table exists*/
     bool checkVirtsGeometryColumns( sqlite3 * handle );
 
-	/**Checks if this layer has been declared HIDDEN*/
+    /**Checks if this layer has been declared HIDDEN*/
     bool isDeclaredHidden( sqlite3 * handle, QString table, QString geom );
 
     /**cleaning well-formatted SQL strings*/
@@ -130,8 +135,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     // Set the position of the database connection list to the last
     // used one.
     void setConnectionListPosition();
-    // Show the context help for the dialog
-    void showHelp();
     // Combine the table and column data into a single string
     // useful for display to the user
     QString fullDescription( QString table, QString column, QString type );
@@ -143,10 +146,11 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     QMap < QString, QPair < QString, QIcon > >mLayerIcons;
     //! Pointer to the qgis application mainwindow
     QgisApp *qgisApp;
-    static const int context_id = 250632828;
     //! Model that acts as datasource for mTableTreeWidget
     QgsSpatiaLiteTableModel mTableModel;
     QgsSpatiaLiteFilterProxyModel mProxyModel;
+
+    QPushButton *mAddButton;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H

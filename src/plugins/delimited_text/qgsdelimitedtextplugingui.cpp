@@ -62,10 +62,6 @@ QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 {
 }
 /** Autoconnected slots **/
-void QgsDelimitedTextPluginGui::on_buttonBox_helpRequested()
-{
-  QgsContextHelp::run( context_id );
-}
 void QgsDelimitedTextPluginGui::on_btnBrowseForFile_clicked()
 {
   getOpenFileName();
@@ -239,11 +235,6 @@ void QgsDelimitedTextPluginGui::enableButtons()
   pbnParse->setEnabled( txtDelimiter->text().length() > 0 && txtFilePath->text().length() > 0 );
   pbnOK->setEnabled( txtDelimiter->text().length() > 0 && txtFilePath->text().length() > 0 );
 }
-void QgsDelimitedTextPluginGui::help()
-{
-  qI->openURL( "plugins/delimited_text/index.html", true );
-}
-
 void QgsDelimitedTextPluginGui::on_txtDelimiter_textChanged( const QString & text )
 {
   if ( !text.isEmpty() )

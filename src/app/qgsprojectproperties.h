@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgisgui.h"
 #include "qgssnappingdialog.h"
+#include "qgscontexthelp.h"
 
 class QgsMapCanvas;
 
@@ -34,6 +35,7 @@ class QgsMapCanvas;
 class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBase
 {
     Q_OBJECT
+
   public:
     //! Constructor
     QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
@@ -86,7 +88,7 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     /*!
      * Slot to show the context help for this dialog
      */
-    void on_buttonBox_helpRequested();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
     /*!
       *
@@ -100,7 +102,6 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
 
     void on_cbxProjectionEnabled_stateChanged( int state );
 
-
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
@@ -110,8 +111,6 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
 
 
   private:
-    static const int context_id = 361087368;
-
     QgsMapCanvas* mMapCanvas;
 
     /**Snapping settings to pass/read from QgsSnappingDialog.

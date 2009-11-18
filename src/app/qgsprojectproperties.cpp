@@ -503,12 +503,6 @@ void QgsProjectProperties::on_pbnCanvasColor_clicked()
   }
 }
 
-void QgsProjectProperties::on_buttonBox_helpRequested()
-{
-  QgsDebugMsg( "running help" );
-  QgsContextHelp::run( context_id );
-}
-
 void QgsProjectProperties::on_mAvoidIntersectionsPushButton_clicked()
 {
   QgsAvoidIntersectionsDialog d( mMapCanvas, mAvoidIntersectionsSettings );

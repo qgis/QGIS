@@ -312,11 +312,6 @@ void Dialog::on_buttonBox_rejected()
   reject();
 }
 
-void Dialog::on_buttonBox_helpRequested()
-{
-  QgsContextHelp::run( context_id );
-}
-
 void Dialog::on_radioSrcFile_toggled( bool checked )
 {
   if ( checked )

@@ -19,6 +19,7 @@
 #define QGSNEWHTTPCONNECTION_H
 #include "ui_qgsnewhttpconnectionbase.h"
 #include "qgisgui.h"
+#include "qgscontexthelp.h"
 /*!
  * \brief Dialog to allow the user to configure and save connection
  * information for an HTTP Server for WMS, etc.
@@ -26,6 +27,7 @@
 class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBase
 {
     Q_OBJECT
+
   public:
     //! Constructor
     QgsNewHttpConnection( QWidget *parent = 0, const QString& baseKey = "/Qgis/connections-wms/", const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags );
@@ -34,12 +36,12 @@ class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBas
   public slots:
     //! Saves the connection to ~/.qt/qgisrc
     void accept();
-    //! Show context help
-    void helpRequested();
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+
   private:
     QString mBaseKey;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    static const int context_id = 308026563;
 };
 
 #endif //  QGSNEWHTTPCONNECTION_H

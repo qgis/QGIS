@@ -17,6 +17,7 @@
 #include <ui_ogrconverterguibase.h>
 // Qt4
 #include <QDialog>
+#include "qgscontexthelp.h"
 
 /**
 @author Mateusz Loskot
@@ -31,9 +32,6 @@ class Dialog : public QDialog, private Ui::OgrConverterGuiBase
     ~Dialog();
 
   private:
-
-    static const int context_id = 0;
-
     FormatsRegistry mFrmts;
     Format mSrcFormat;
     Format mDstFormat;
@@ -52,7 +50,7 @@ class Dialog : public QDialog, private Ui::OgrConverterGuiBase
 
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_radioSrcFile_toggled( bool checked );
     void on_radioSrcDirectory_toggled( bool checked );
     void on_radioSrcProtocol_toggled( bool checked );

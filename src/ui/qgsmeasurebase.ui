@@ -91,65 +91,12 @@
      </column>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3">
-    <layout class="QHBoxLayout">
-     <property name="spacing">
-      <number>6</number>
+   <item row="2" column="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
-     <property name="margin">
-      <number>4</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="btnHelp">
-       <property name="text">
-        <string>Help</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>30</width>
-         <height>26</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mRestartButton">
-       <property name="text">
-        <string>New</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mCloseButton">
-       <property name="text">
-        <string>Cl&amp;ose</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -157,9 +104,6 @@
  <tabstops>
   <tabstop>mTable</tabstop>
   <tabstop>editTotal</tabstop>
-  <tabstop>btnHelp</tabstop>
-  <tabstop>mRestartButton</tabstop>
-  <tabstop>mCloseButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

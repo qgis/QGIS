@@ -20,6 +20,7 @@
 #include <QDialog>
 #include <ui_quickprintguibase.h>
 #include "qgsmapcanvas.h"
+#include "qgscontexthelp.h"
 
 /**
 @author Tim Sutton
@@ -27,18 +28,18 @@
 class QuickPrintGui : public QDialog, private Ui::QuickPrintGuiBase
 {
     Q_OBJECT
+
   public:
     QuickPrintGui( QgsMapCanvas * thepMapCanvas, QWidget* parent = 0,  Qt::WFlags fl = 0 );
     ~QuickPrintGui();
   private:
-    static const int context_id = 0;
     void readSettings();
     void writeSettings();
     QgsMapCanvas * mpMapCanvas;
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
 };
 

@@ -18,7 +18,6 @@
 /* $Id$ */
 
 #include "qgsidentifyresults.h"
-#include "qgscontexthelp.h"
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
@@ -108,8 +107,6 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
   lstResults->setColumnCount( 2 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
-
-  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
 
   connect( buttonBox, SIGNAL( clicked() ), this, SLOT( close() ) );
 
@@ -532,11 +529,6 @@ QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, 
   }
 
   return featItem;
-}
-// Slot for showing help
-void QgsIdentifyResults::helpClicked()
-{
-  QgsContextHelp::run( context_id );
 }
 
 void QgsIdentifyResults::itemExpanded( QTreeWidgetItem* item )

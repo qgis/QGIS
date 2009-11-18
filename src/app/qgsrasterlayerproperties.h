@@ -23,6 +23,7 @@
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
 #include "qgscolorrampshader.h"
+#include "qgscontexthelp.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -35,6 +36,7 @@ class QgsRasterLayer;
 class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPropertiesBase
 {
     Q_OBJECT
+
   public:
     /** \brief Constructor
      * @param ml Map layer for which properties will be displayed
@@ -56,8 +58,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnAddValuesFromDisplay_clicked();
     /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
     void on_pbnAddValuesManually_clicked();
-    /** Help button */
-    void on_buttonBox_helpRequested();
     /** Override the CRS specified when the layer was loaded */
     void on_pbnChangeSpatialRefSys_clicked();
     /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
@@ -132,6 +132,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnLoadStyle_clicked();
     /** Save a style when appriate button is pressed. */
     void on_pbnSaveStyleAs_clicked();
+    /** Help button */
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   signals:
 
@@ -142,9 +144,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
   private:
     /** \brief  A constant that signals property not used */
     const QString TRSTRING_NOT_SET;
-
-    /** Id for context help */
-    static const int context_id = 394441851;
 
     /** \brief Default contrast enhancement algorithm */
     QString mDefaultContrastEnhancementAlgorithm;

@@ -22,6 +22,7 @@
 #include "ui_qgsgpspluginguibase.h"
 #include "qgsbabelformat.h"
 #include "qgsgpsdevice.h"
+#include "qgscontexthelp.h"
 
 #include <vector>
 
@@ -34,6 +35,7 @@
 class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 {
     Q_OBJECT
+
   public:
     QgsGPSPluginGui( const BabelMap& importers,
                      std::map<QString, QgsGPSDevice*>& devices,
@@ -75,7 +77,7 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     void on_pbnRefresh_clicked();
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   signals:
     void drawRasterLayer( QString );
@@ -103,7 +105,6 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     QString mBabelFilter;
     QString mImpFormat;
     QAbstractButton *pbnOK;
-    static const int context_id = 995980174;
 };
 
 #endif

@@ -33,22 +33,22 @@
 
 QgsContextHelp *QgsContextHelp::gContextHelp = NULL;  // Singleton instance
 
-void QgsContextHelp::run( int contextId )
+void QgsContextHelp::run( QString context )
 {
   if ( gContextHelp == NULL )
   {
     // Create singleton instance if it does not exist
-    gContextHelp = new QgsContextHelp( contextId );
+    gContextHelp = new QgsContextHelp( context );
   }
   else
   {
-    gContextHelp->showContext( contextId );
+    gContextHelp->showContext( context );
   }
 }
 
-QgsContextHelp::QgsContextHelp( int contextId )
+QgsContextHelp::QgsContextHelp( QString context )
 {
-  mProcess = start( contextId );
+  mProcess = start( context );
 #ifdef QGSCONTEXTHELP_REUSE
   // Create socket to communicate with process
   mSocket = new QTcpSocket( this );
@@ -70,20 +70,17 @@ QgsContextHelp::~QgsContextHelp()
   delete mProcess;
 }
 
-QProcess *QgsContextHelp::start( int contextId )
+QProcess *QgsContextHelp::start( QString context )
 {
   // Get the path to the help viewer
   QString helpPath = QgsApplication::helpAppPath();
   QgsDebugMsg( QString( "Help path is %1" ).arg( helpPath ) );
 
-  QString arg1;
-  arg1.setNum( contextId );
   QProcess *process = new QProcess;
-  process->start( helpPath, QStringList( arg1 ) );
+  process->start( helpPath, QStringList( context ) );
 
   // Delete this object if the process terminates
-  connect( process, SIGNAL( finished( int, QProcess::ExitStatus ) ),
-           SLOT( processExited() ) );
+  connect( process, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( processExited() ) );
 
   // Delete the process if the application quits
   connect( qApp, SIGNAL( aboutToQuit() ), process, SLOT( terminate() ) );
@@ -98,12 +95,11 @@ void QgsContextHelp::readPort()
   QString p = mProcess->readAllStandardOutput();
   quint16 port = p.toUShort();
   mSocket->connectToHost( "localhost", port );
-  disconnect( mProcess, SIGNAL( readyReadStandardOutput() ), this,
-              SLOT( readPort() ) );
+  disconnect( mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( readPort() ) );
 #endif
 }
 
-void QgsContextHelp::showContext( int contextId )
+void QgsContextHelp::showContext( QString context )
 {
   // Refresh help process with new context
 #ifdef QGSCONTEXTHELP_REUSE
@@ -116,7 +112,7 @@ void QgsContextHelp::showContext( int contextId )
   // (if it did fail, we abandon the process and delete the object reference)
   delete mNextProcess;
   // Start new help viewer process (asynchronous)
-  mNextProcess = start( contextId );
+  mNextProcess = start( context );
   // Terminate existing help viewer process (asynchronous)
   mProcess->terminate();
 #endif

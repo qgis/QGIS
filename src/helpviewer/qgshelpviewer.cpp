@@ -115,7 +115,7 @@ void QgsHelpViewer::loadContext( const QString &contextId )
     {
       lang = "en_US";
     }
-    QString fullHelpPath = helpFilesPath + contextId + "_" + lang;
+    QString fullHelpPath = helpFilesPath + contextId + "-" + lang;
     // get the help content and title from the localized file
     QString helpContents;
     QFile file( fullHelpPath );
@@ -123,7 +123,7 @@ void QgsHelpViewer::loadContext( const QString &contextId )
     if ( !file.exists() )
     {
       // change the file name to the en_US version (default)
-      fullHelpPath = helpFilesPath + contextId + "_en_US";
+      fullHelpPath = helpFilesPath + contextId + "-en_US";
       file.setFileName( fullHelpPath );
       // Check for some sort of english locale and if not found, include
       // translate this for us message
@@ -171,8 +171,7 @@ void QgsHelpViewer::loadContextFromSqlite( const QString &contextId )
       sqlite3_stmt *ppStmt;
       const char *pzTail;
       // build the sql statement
-      QString sql = "select content,title from context_helps where context_id = "
-                    + contextId;
+      QString sql = "select content,title from context_helps where context = '" + contextId + "'";
       rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
       if ( rc == SQLITE_OK )
       {

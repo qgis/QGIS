@@ -21,6 +21,7 @@
 
 #include "qgspoint.h"
 #include "qgsdistancearea.h"
+#include "qgscontexthelp.h"
 
 class QCloseEvent;
 class QgsMeasureTool;
@@ -50,8 +51,8 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void mousePress( QgsPoint &point );
 
   public slots:
-    //! Close
-    void close( void );
+    //! Reject
+    void on_buttonBox_rejected( void );
 
     //! Reset and start new
     void restart();
@@ -60,7 +61,7 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void closeEvent( QCloseEvent *e );
 
     //! Show the help for the dialog
-    void on_btnHelp_clicked();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
 
@@ -77,9 +78,6 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void convertMeasurement( double &measure, QGis::UnitType &u, bool isArea );
 
     double mTotal;
-
-    //! Help context id
-    static const int context_id = 687883780;
 
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea;

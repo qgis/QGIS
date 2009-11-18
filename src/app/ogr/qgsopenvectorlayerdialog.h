@@ -20,9 +20,9 @@
 #ifndef QGSOPENVECTORLAYERDIALOG_H
 #define QGSOPENVECTORLAYERDIALOG_H
 
-
 #include <ui_qgsopenvectorlayerdialogbase.h>
 #include <QDialog>
+#include "qgscontexthelp.h"
 
 /**
  *  Class for a  dialog to select the type and source for ogr vectors, supports
@@ -43,8 +43,6 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     QStringList dataSources();
     //! Returns the encoding selected for user*/
     QString encoding();
-    //! Display the context help
-    void helpInfo();
     //! Returns the connection type
     QString dataSourceType();
   private:
@@ -59,8 +57,6 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     QString mEnc;
     //! Stores the datasource type
     QString mDataSourceType;
-    static const int context_id = 348772824;
-
 
   private slots:
     //! Opens the create connection dialog to build a new connection
@@ -81,7 +77,6 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     void setSelectedConnection();
 
     void on_buttonBox_accepted();
-    void on_btnHelp_clicked();
     void on_buttonSelectSrc_clicked();
     void on_radioSrcFile_toggled( bool checked );
     void on_radioSrcDirectory_toggled( bool checked );
@@ -92,6 +87,7 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     void on_btnDelete_clicked();
     void on_cmbDatabaseTypes_currentIndexChanged( const QString & text );
     void on_cmbConnections_currentIndexChanged( const QString & text );
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 
 #endif // QGSOPENVECTORDIALOG_H

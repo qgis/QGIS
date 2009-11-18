@@ -15,6 +15,7 @@
 
 #include "ui_qgsdelimitedtextpluginguibase.h"
 #include <QTextStream>
+#include "qgscontexthelp.h"
 
 class QgisInterface;
 
@@ -24,14 +25,12 @@ class QgisInterface;
 class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPluginGuiBase
 {
     Q_OBJECT
+
   public:
     QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsDelimitedTextPluginGui();
 
     static QString readLine( QTextStream & stream );
-
-  public slots:
-    void help();
 
   private:
     void updateFieldLists();
@@ -41,12 +40,11 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     QgisInterface * qI;
     QAbstractButton *pbnOK;
     QAbstractButton *pbnParse;
-    static const int context_id = 1033030847;
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_btnBrowseForFile_clicked();
     void on_txtDelimiter_textChanged( const QString & text );
     void pbnParse_clicked();
@@ -55,6 +53,5 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     void drawRasterLayer( QString );
     void drawVectorLayer( QString, QString, QString );
 };
-
 
 #endif

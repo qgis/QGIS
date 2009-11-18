@@ -33,7 +33,6 @@ QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt
     : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpClicked() ) );
 
   cbxSSLmode->insertItem( QgsDataSourceURI::SSLprefer, tr( "prefer" ) );
   cbxSSLmode->insertItem( QgsDataSourceURI::SSLrequire, tr( "require" ) );
@@ -82,11 +81,6 @@ void QgsNewConnection::accept()
 {
   saveConnection();
   QDialog::accept();
-}
-
-void QgsNewConnection::helpClicked()
-{
-  QgsContextHelp::run( context_id );
 }
 
 void QgsNewConnection::on_btnConnect_clicked()

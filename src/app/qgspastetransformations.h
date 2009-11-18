@@ -21,7 +21,9 @@
 #include "ui_qgspastetransformationsbase.h"
 
 #include "qgsmaplayer.h"
-#include <QPushButton>
+#include "qgscontexthelp.h"
+
+class QPushButton;
 
 /*!
  * \brief Dialog to allow the user to set up how source fields are transformed to destination fields in copy/paste operations
@@ -29,6 +31,7 @@
 class QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformationsBase
 {
     Q_OBJECT
+
   public:
     //! Constructor
     QgsPasteTransformations();
@@ -47,15 +50,14 @@ class QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformati
     QString pasteTo( const QString& sourceLayerName,
                      const QString& destinationLayerName,
                      const QString& sourceFieldName );
-    //! Display the context help
-    void helpInfo();
 
   public slots:
-    void help();
     virtual void accept();
     virtual void addNewTransfer();
     virtual void sourceChanged( const QString& layerName );
     virtual void destinationChanged( const QString& layerName );
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
 
@@ -74,9 +76,6 @@ class QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformati
     std::vector<QComboBox*> mSourceTransfers;
     std::vector<QComboBox*> mDestinationTransfers;
     QPushButton * mAddTransferButton;
-
-    static const int context_id = 1;
-
 };
 
 #endif //  QGSPASTETRANSFORMATIONS_H

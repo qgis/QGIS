@@ -42,7 +42,6 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
 
   }
-  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpRequested() ) );
 }
 
 QgsNewHttpConnection::~QgsNewHttpConnection()
@@ -66,9 +65,4 @@ void QgsNewHttpConnection::accept()
   settings.setValue( credentialsKey + "/password", txtPassword->text() );
 
   QDialog::accept();
-}
-
-void QgsNewHttpConnection::helpRequested()
-{
-  QgsContextHelp::run( context_id );
 }

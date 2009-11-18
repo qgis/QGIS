@@ -45,7 +45,7 @@ class CORE_EXPORT QgsContextHelp : public QObject
 {
     Q_OBJECT
   public:
-    static void run( int contextId );
+    static void run( QString context );
 
   private slots:
     void readPort();
@@ -53,12 +53,12 @@ class CORE_EXPORT QgsContextHelp : public QObject
 
   private:
     //! Constructor
-    QgsContextHelp( int contextId );
+    QgsContextHelp( QString context );
     //! Destructor
     ~QgsContextHelp();
 
-    QProcess *start( int contextId );
-    void showContext( int contextId );
+    QProcess *start( QString context );
+    void showContext( QString context );
 
     static QgsContextHelp *gContextHelp; // Singleton instance
     QProcess *mProcess;
@@ -70,4 +70,5 @@ class CORE_EXPORT QgsContextHelp : public QObject
     QProcess *mNextProcess;
 #endif
 };
+
 #endif //QGSCONTEXTHELP_H

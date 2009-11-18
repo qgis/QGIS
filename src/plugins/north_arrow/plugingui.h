@@ -13,6 +13,7 @@
 #define QGSNORTHARROWPLUGINGUI_H
 
 #include "ui_pluginguibase.h"
+#include "qgscontexthelp.h"
 
 /**
 @author Tim Sutton
@@ -20,6 +21,7 @@
 class QgsNorthArrowPluginGui : public QDialog, private Ui::QgsNorthArrowPluginGuiBase
 {
     Q_OBJECT
+
   public:
     QgsNorthArrowPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsNorthArrowPluginGui();
@@ -28,8 +30,6 @@ class QgsNorthArrowPluginGui : public QDialog, private Ui::QgsNorthArrowPluginGu
     void rotatePixmap( int theRotationInt );
     //    void paintEvent( QPaintEvent * );//overloads qwidget
     void resizeEvent( QResizeEvent * ); //overloads qwidget
-
-    static const int context_id = 0;
 
   signals:
     //void drawRasterLayer(QString);
@@ -52,7 +52,7 @@ class QgsNorthArrowPluginGui : public QDialog, private Ui::QgsNorthArrowPluginGu
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_spinAngle_valueChanged( int theInt );
     void on_sliderRotation_valueChanged( int theInt );
 };

@@ -95,8 +95,3 @@ void QgsScaleBarPluginGui::setColour( QColor theQColor )
 {
   pbnChangeColour->setColor( theQColor );
 }
-
-void QgsScaleBarPluginGui::on_buttonBox_helpRequested()
-{
-  QgsContextHelp::run( context_id );
-}

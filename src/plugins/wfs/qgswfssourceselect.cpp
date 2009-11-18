@@ -39,7 +39,6 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, QgisInterface* iface ):
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addLayer() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( showHelp() ) );
   connect( btnNew, SIGNAL( clicked() ), this, SLOT( addEntryToServerList() ) );
   connect( btnEdit, SIGNAL( clicked() ), this, SLOT( modifyEntryOfServerList() ) );
   connect( btnDelete, SIGNAL( clicked() ), this, SLOT( deleteEntryOfServerList() ) );
@@ -417,9 +416,4 @@ void QgsWFSSourceSelect::changeCRSFilter()
       }
     }
   }
-}
-
-void QgsWFSSourceSelect::showHelp()
-{
-  QgsContextHelp::run( context_id );
 }

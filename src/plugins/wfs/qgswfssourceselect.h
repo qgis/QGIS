@@ -19,6 +19,7 @@
 #define QGSWFSSOURCESELECT_H
 
 #include "ui_qgswfssourceselectbase.h"
+#include "qgscontexthelp.h"
 
 class QgisInterface;
 class QgsGenericProjectionSelector;
@@ -26,6 +27,7 @@ class QgsGenericProjectionSelector;
 class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 {
     Q_OBJECT
+
   public:
 
     enum REQUEST_ENCODING
@@ -47,7 +49,6 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     std::map<QString, std::list<QString> > mAvailableCRS;
-    static const int context_id = 0;
     QAbstractButton* btnAdd;
     void populateConnectionList();
 
@@ -79,7 +80,8 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void addLayer();
     void changeCRS();
     void changeCRSFilter();
-    void showHelp();
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 
 #endif

@@ -1516,11 +1516,6 @@ void QgsRasterLayerProperties::apply()
   QgsProject::instance()->dirty( true );
 }//apply
 
-void QgsRasterLayerProperties::on_buttonBox_helpRequested()
-{
-  QgsContextHelp::run( context_id );
-}
-
 void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 {
 

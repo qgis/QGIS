@@ -21,6 +21,7 @@
 
 #include "ui_qgsidentifyresultsbase.h"
 #include "qgsattributeaction.h"
+#include "qgscontexthelp.h"
 
 #include <QWidget>
 #include <QList>
@@ -43,6 +44,7 @@ class QDockWidget;
 class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 {
     Q_OBJECT
+
   public:
 
     //! Constructor - takes it own copy of the QgsAttributeAction so
@@ -89,9 +91,6 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void expandAll();
     void collapseAll();
 
-    //! Context help
-    void helpClicked();
-
     /* Called when an item is expanded so that we can ensure that the
        column width if expanded to show it */
     void itemExpanded( QTreeWidgetItem * );
@@ -104,14 +103,14 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QList< QPair<QString, QString> > &attributes );
 
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+
   private:
     QMenu *mActionPopup;
     QgsVectorLayer *mRubberBandLayer;
     int mRubberBandFid;
     QgsRubberBand *mRubberBand;
     QgsMapCanvas *mCanvas;
-
-    static const int context_id = 689216579;
 
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
