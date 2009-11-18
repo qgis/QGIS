@@ -387,16 +387,13 @@ sudo ln -s /usr/local/ local
 
 == Install Qt4 from .dmg ==
 
-You need a minimum of Qt-4.3.0. I suggest getting the latest (at time of writing).
+You need a minimum of Qt-4.3.0. I suggest getting the latest.
 
 __Snow Leopard note:__ If you are building on Snow Leopard, you will need to
 decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
 as of Qt-4.5.2, and the release candidate of Qt-4.6.0-cocoa works fairly well
 with Qgis as tested with nightly snapshots of sip and pyqt.
-Unfortunately, the 32-bit branch of Qt currently does not build using cmake with
-python bindings. You can achieve support for python in Qgis with
-the Xcode build method noted below.
 
 ``` 
 http://qt.nokia.com/downloads
@@ -786,16 +783,24 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
 ..
 ```
 
-__Snow Leopard note:__ To handle the appropriate version of Qt (32-bit or 64-bit), you will need to invoke cmake based on which version of Qt you installed.
+__Snow Leopard note:__ To handle the appropriate version of Qt (32-bit or 64-bit), you will need to invoke cmake based on which version of Qt you installed.  Also, SIP/PyQt detection will fail for 32bit because Python runs 64bit.
 
-For 32-bit Qt (Carbon) with GRASS-6.4, add '-D CMAKE_CXX_FLAGS="-arch i386" -D CMAKE_OSX_ARCHITECTURES=i386':
+For 32-bit Qt (Carbon) with GRASS-6.4, create a 32bit python script and add arch flags to the configuration:
 
 ```
+sudo cat >/usr/local/bin/python32 <<EOF
+#!/bin/sh
+exec arch -i386 /usr/bin/python2.6 \${1+"\$@"}
+EOF
+
+sudo chmod +x /usr/local/bin/python32
+
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
 -D SIP_BINARY_PATH=/usr/local/bin/sip \
 -D CMAKE_CXX_FLAGS="-arch i386" -D CMAKE_OSX_ARCHITECTURES=i386 \
 -D GRASS_INCLUDE_DIR=/Applications/GRASS-6.4.app/Contents/MacOS/include \
 -D GRASS_PREFIX=/Applications/GRASS-6.4.app/Contents/MacOS \
+-D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
 ..
 ```
 
