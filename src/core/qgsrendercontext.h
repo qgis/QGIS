@@ -24,6 +24,8 @@
 
 class QPainter;
 
+class QgsLabelingEngineInterface;
+
 /** \ingroup core
  * Contains information about the context of a rendering operation.
  * The context of a rendering operation defines properties such as
@@ -58,6 +60,9 @@ class CORE_EXPORT QgsRenderContext
 
     double rendererScale() const {return mRendererScale;}
 
+    //! Added in QGIS v1.4
+    QgsLabelingEngineInterface* labelingEngine() const { return mLabelingEngine; }
+
     //setters
 
     /**Sets coordinate transformation. QgsRenderContext takes ownership and deletes if necessary*/
@@ -70,6 +75,8 @@ class CORE_EXPORT QgsRenderContext
     void setRasterScaleFactor( double factor ) {mRasterScaleFactor = factor;}
     void setRendererScale( double scale ) {mRendererScale = scale;}
     void setPainter( QPainter* p ) {mPainter = p;}
+    //! Added in QGIS v1.4
+    void setLabelingEngine(QgsLabelingEngineInterface* iface) { mLabelingEngine = iface; }
 
   private:
 
@@ -100,6 +107,9 @@ class CORE_EXPORT QgsRenderContext
 
     /**Map scale*/
     double mRendererScale;
+
+    /**Labeling engine (can be NULL)*/
+    QgsLabelingEngineInterface* mLabelingEngine;
 };
 
 #endif

@@ -109,8 +109,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mVertexMarkerOnlyForSelection( false ),
     mFetching( false ),
     mRendererV2( NULL ),
-    mUsingRendererV2( false ),
-    mLabelingEngine( NULL )
+    mUsingRendererV2( false )
 {
   mActions = new QgsAttributeAction;
 
@@ -686,7 +685,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       mRendererV2->renderFeature( fet, rendererContext );
 
     if ( labeling )
-      mLabelingEngine->registerFeature( this, fet );
+      rendererContext.labelingEngine()->registerFeature( this, fet );
   }
 
   mRendererV2->stopRender( rendererContext );
@@ -725,7 +724,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     features[sym].append( fet );
 
     if ( labeling )
-      mLabelingEngine->registerFeature( this, fet );
+      rendererContext.labelingEngine()->registerFeature( this, fet );
   }
 
   // find out the order
@@ -799,10 +798,10 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     }
 
     bool labeling = FALSE;
-    if ( mLabelingEngine )
+    if ( rendererContext.labelingEngine() )
     {
       int attrIndex;
-      if ( mLabelingEngine->prepareLayer( this, attrIndex ) )
+      if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex ) )
       {
         if ( !attributes.contains( attrIndex ) )
           attributes << attrIndex;
@@ -859,10 +858,10 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QgsAttributeList attributes = mRenderer->classificationAttributes();
 
     bool labeling = FALSE;
-    if ( mLabelingEngine )
+    if ( rendererContext.labelingEngine() )
     {
       int attrIndex;
-      if ( mLabelingEngine->prepareLayer( this, attrIndex ) )
+      if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex ) )
       {
         if ( !attributes.contains( attrIndex ) )
           attributes << attrIndex;
@@ -934,9 +933,9 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         //double scale = rendererContext.scaleFactor() /  markerScaleFactor;
         drawFeature( rendererContext, fet, &marker );
 
-        if ( labeling && mLabelingEngine )
+        if ( labeling )
         {
-          mLabelingEngine->registerFeature( this, fet );
+          rendererContext.labelingEngine()->registerFeature( this, fet );
         }
 
         ++featureCount;
@@ -2255,12 +2254,6 @@ bool QgsVectorLayer::hasLabelsEnabled( void ) const
 {
   return mLabelOn;
 }
-
-void QgsVectorLayer::setLabelingEngine( QgsLabelingEngineInterface* engine )
-{
-  mLabelingEngine = engine;
-}
-
 
 bool QgsVectorLayer::startEditing()
 {

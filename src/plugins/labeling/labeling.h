@@ -58,13 +58,8 @@ class Labeling: public QObject, public QgisPlugin
     //! unload the plugin
     void unload();
 
-    //! hook to renderComplete signal
-    void doLabeling( QPainter* painter );
-
     //! start labeling map tool
     void setTool();
-
-    void layerWasAdded( QgsMapLayer* theMapLayer );
 
   private:
 

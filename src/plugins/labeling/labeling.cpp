@@ -126,27 +126,9 @@ void Labeling::initGui()
 
   mTool = new LabelingTool( mLBL, mQGisIface->mapCanvas() );
 
-  connect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( doLabeling( QPainter * ) ) );
+  // map renderer takes ownership of the labeling engine
+  mQGisIface->mapCanvas()->mapRenderer()->setLabelingEngine( mLBL );
 
-  // connect to newly added layers so the labeling hook will be set up
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerWasAdded( QgsMapLayer* ) ) );
-
-  // add labeling hooks to all existing layers
-  QMap<QString, QgsMapLayer*>& layers = QgsMapLayerRegistry::instance()->mapLayers();
-  for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
-  {
-    QgsMapLayer* layer = it.value();
-    if ( layer->type() == QgsMapLayer::VectorLayer )
-    {
-      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
-      vlayer->setLabelingEngine( mLBL );
-    }
-  }
-}
-
-void Labeling::doLabeling( QPainter * painter )
-{
-  mLBL->doLabeling( painter, mQGisIface->mapCanvas()->extent() );
 }
 
 // Slot called when the menu item is triggered
@@ -187,21 +169,6 @@ void Labeling::unload()
   mQGisIface->mapCanvas()->unsetMapTool( mTool );
   delete mTool;
 
-  // remove labeling hook from all layers!
-  QMap<QString, QgsMapLayer*>& layers = QgsMapLayerRegistry::instance()->mapLayers();
-  for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); ++it )
-  {
-    QgsMapLayer* layer = it.value();
-    if ( layer->type() == QgsMapLayer::VectorLayer )
-    {
-      QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
-      vlayer->setLabelingEngine( NULL );
-    }
-  }
-
-  disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerWasAdded( QgsMapLayer* ) ) );
-  disconnect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( doLabeling( QPainter * ) ) );
-
   // remove the GUI
   mQGisIface->removePluginMenu( "&Labeling", mQActionPointer );
   mQGisIface->removeToolBarIcon( mQActionPointer );
@@ -213,17 +180,8 @@ void Labeling::unload()
   delete mActionTool;
   */
 
-  delete mLBL;
-}
+  mQGisIface->mapCanvas()->mapRenderer()->setLabelingEngine( NULL );
 
-void Labeling::layerWasAdded( QgsMapLayer* layer )
-{
-  if ( layer->type() != QgsMapLayer::VectorLayer )
-    return; // not interested in rasters
-
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
-  // add labeling hook for the newly added layer
-  vlayer->setLabelingEngine( mLBL );
 }
 
 

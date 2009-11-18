@@ -32,6 +32,9 @@ class QgsRenderContext
 
   double rendererScale() const;
 
+  //! Added in QGIS v1.4
+  QgsLabelingEngineInterface* labelingEngine();
+
   //setters
 
   /**Sets coordinate transformation. QgsRenderContext takes ownership and deletes if necessary*/
@@ -44,4 +47,6 @@ class QgsRenderContext
   void setRasterScaleFactor(double factor);
   void setRendererScale( double scale );
   void setPainter(QPainter* p);
+  //! Added in QGIS v1.4
+  void setLabelingEngine(QgsLabelingEngineInterface* iface);
 };

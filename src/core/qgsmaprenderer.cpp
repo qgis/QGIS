@@ -58,6 +58,8 @@ QgsMapRenderer::QgsMapRenderer()
   mDestCRS = new QgsCoordinateReferenceSystem( GEO_EPSG_CRS_ID, QgsCoordinateReferenceSystem::EpsgCrsId ); //WGS 84
 
   mOutputUnits = QgsMapRenderer::Millimeters;
+
+  mLabelingEngine = NULL;
 }
 
 QgsMapRenderer::~QgsMapRenderer()
@@ -65,6 +67,7 @@ QgsMapRenderer::~QgsMapRenderer()
   delete mScaleCalculator;
   delete mDistArea;
   delete mDestCRS;
+  delete mLabelingEngine;
 }
 
 
@@ -281,6 +284,10 @@ void QgsMapRenderer::render( QPainter* painter )
     mLastExtent = mExtent;
     mySameAsLastFlag = false;
   }
+
+  mRenderContext.setLabelingEngine(mLabelingEngine);
+  if ( mLabelingEngine )
+    mLabelingEngine->init();
 
   // know we know if this render is just a repeat of the last time, we 
   // can clear caches if it has changed
@@ -571,6 +578,12 @@ void QgsMapRenderer::render( QPainter* painter )
   delete overlayManager;
   // make sure progress bar arrives at 100%!
   emit drawingProgress( 1, 1 );
+
+  if ( mLabelingEngine )
+  {
+    mLabelingEngine->drawLabeling( mRenderContext );
+    mLabelingEngine->exit();
+  }
 
   QgsDebugMsg( "Rendering completed in (seconds): " + QString( "%1" ).arg( renderTime.elapsed() / 1000.0 ) );
 
@@ -1040,4 +1053,12 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   destinationSrs().writeXML( srsNode, theDoc );
 
   return true;
+}
+
+void QgsMapRenderer::setLabelingEngine(QgsLabelingEngineInterface* iface)
+{
+  if (mLabelingEngine)
+    delete mLabelingEngine;
+
+  mLabelingEngine = iface;
 }
