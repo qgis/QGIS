@@ -403,7 +403,8 @@ void QgsQuickPrint::printMap()
     {
       QgsVectorLayer *mypVectorLayer  =
         qobject_cast<QgsVectorLayer *>( mypLayer );
-      if ( mypVectorLayer )
+      // TODO: add support for symbology-ng renderers
+      if ( mypVectorLayer && mypVectorLayer->renderer() )
       {
         QString myLayerName = mypVectorLayer->name();
         QIcon myIcon;
