@@ -405,6 +405,18 @@ addition to the non-debug frameworks.
 Once downloaded open the dmg and run the installer. Note you need admin
 privileges to install.
 
+__Qt 4.4+ note:__ Starting in Qt 4.4 (?) libQtCLucene was added, and in 4.5 libQtUiTools was added, both in /usr/lib.  When using a system SDK (which will happen in the Xcode build), these libraries will not be found.  To fix this problem, add symlinks to /usr/local:
+
+```
+sudo ln -s /usr/lib/libQtUiTools.a /usr/local/lib/
+sudo ln -s /usr/lib/libQtCLucene.dylib /usr/local/lib/
+```
+
+These should then be found automatically on Leopard and above.  Earlier systems
+may need some help by adding '-L/usr/local/lib' to CMAKE_SHARED_LINKER_FLAGS,
+CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build, or
+adding '/usr/local/lib' to LIBRARY_SEARCH_PATHS in the Xcode build.
+
 
 == Install development frameworks for QGIS dependencies ==
 
