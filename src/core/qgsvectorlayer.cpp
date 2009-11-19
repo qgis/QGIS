@@ -315,10 +315,10 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 {
   QgsDebugMsg( "Starting draw of labels" );
 
-  if ( ( mRenderer || mRendererV2 ) && mLabelOn &&
-       ( !label()->scaleBasedVisibility() ||
-         ( label()->minScale() <= rendererContext.rendererScale() &&
-           rendererContext.rendererScale() <= label()->maxScale() ) ) )
+  if (( mRenderer || mRendererV2 ) && mLabelOn &&
+      ( !label()->scaleBasedVisibility() ||
+        ( label()->minScale() <= rendererContext.rendererScale() &&
+          rendererContext.rendererScale() <= label()->maxScale() ) ) )
   {
     QgsAttributeList attributes;
     if ( mRenderer )
@@ -352,8 +352,8 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
       QgsFeature fet;
       while ( nextFeature( fet ) )
       {
-        if ( ( mRenderer && mRenderer->willRenderFeature( &fet ) )
-          || ( mRendererV2 && mRendererV2->symbolForFeature( fet ) != NULL ) )
+        if (( mRenderer && mRenderer->willRenderFeature( &fet ) )
+            || ( mRendererV2 && mRendererV2->symbolForFeature( fet ) != NULL ) )
         {
           bool sel = mSelectedFeatureIds.contains( fet.id() );
           mLabel->renderLabel( rendererContext, fet, sel, 0 );
@@ -706,6 +706,12 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 
     if ( labeling )
       rendererContext.labelingEngine()->registerFeature( this, fet );
+
+    if ( mEditable )
+    {
+      // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+      mCachedGeometries[fet.id()] = *fet.geometry();
+    }
   }
 
   mRendererV2->stopRender( rendererContext );
@@ -745,6 +751,12 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
 
     if ( labeling )
       rendererContext.labelingEngine()->registerFeature( this, fet );
+
+    if ( mEditable )
+    {
+      // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+      mCachedGeometries[fet.id()] = *fet.geometry();
+    }
   }
 
   // find out the order
@@ -805,6 +817,13 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       return FALSE;
 
     QgsDebugMsg( "rendering v2:\n" + mRendererV2->dump() );
+
+    if ( mEditable )
+    {
+      // Destroy all cached geometries and clear the references to them
+      deleteCachedGeometries();
+      mCachedGeometriesRect = rendererContext.extent();
+    }
 
     // TODO: really needed?
     updateFeatureCount();
