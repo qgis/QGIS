@@ -315,12 +315,26 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 {
   QgsDebugMsg( "Starting draw of labels" );
 
-  if ( mRenderer && mLabelOn &&
+  if ( ( mRenderer || mRendererV2 ) && mLabelOn &&
        ( !label()->scaleBasedVisibility() ||
          ( label()->minScale() <= rendererContext.rendererScale() &&
            rendererContext.rendererScale() <= label()->maxScale() ) ) )
   {
-    QgsAttributeList attributes = mRenderer->classificationAttributes();
+    QgsAttributeList attributes;
+    if ( mRenderer )
+    {
+      attributes = mRenderer->classificationAttributes();
+    }
+    else if ( mRendererV2 )
+    {
+      foreach( QString attrName, mRendererV2->usedAttributes() )
+      {
+        int attrNum = QgsFeatureRendererV2::fieldNameIndex( pendingFields(), attrName );
+        attributes.append( attrNum );
+      }
+      // make sure the renderer is ready for classification ("symbolForFeature")
+      mRendererV2->startRender( rendererContext, pendingFields() );
+    }
 
     // Add fields required for labels
     mLabel->addRequiredFields( attributes );
@@ -338,7 +352,8 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
       QgsFeature fet;
       while ( nextFeature( fet ) )
       {
-        if ( mRenderer->willRenderFeature( &fet ) )
+        if ( ( mRenderer && mRenderer->willRenderFeature( &fet ) )
+          || ( mRendererV2 && mRendererV2->symbolForFeature( fet ) != NULL ) )
         {
           bool sel = mSelectedFeatureIds.contains( fet.id() );
           mLabel->renderLabel( rendererContext, fet, sel, 0 );
@@ -350,6 +365,11 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
     {
       Q_UNUSED( e );
       QgsLogger::critical( "Error projecting label locations, caught in " + QString( __FILE__ ) + ", line " + QString( __LINE__ ) );
+    }
+
+    if ( mRendererV2 )
+    {
+      mRendererV2->stopRender( rendererContext );
     }
 
 #ifdef QGISDEBUG
