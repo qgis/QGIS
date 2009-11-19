@@ -30,6 +30,7 @@ class QgsComposerLegend;
 class QgsComposerMap;
 class QgsComposerPicture;
 class QgsComposerScaleBar;
+class QgsComposerShape;
 
 /** \ingroup MapComposer
  * \ingroup gui
@@ -53,6 +54,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       AddLabel,        // add label
       AddScalebar,     // add scalebar
       AddPicture,       // add raster/vector picture
+      AddShape, //add shape item (ellipse, rectangle, triangle)
       MoveItemContent //move content of item (e.g. content of map)
     };
 
@@ -82,6 +84,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void addComposerLegend( QgsComposerLegend* legend );
     /**Adds picture to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerPicture( QgsComposerPicture* picture );
+    /**Adds a composer shape to the graphics scene and acvices composer to create a widget for it (through signal)*/
+    void addComposerShape( QgsComposerShape* shape );
 
     /**Returns the composer main window*/
     QMainWindow* composerWindow();
@@ -127,6 +131,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void composerLegendAdded( QgsComposerLegend* legend );
     /**Is emitted when a new composer picture has been added*/
     void composerPictureAdded( QgsComposerPicture* picture );
+    /**Is emitted when a new composer shape has been added*/
+    void composerShapeAdded( QgsComposerShape* shape );
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
     /**Current action (e.g. adding composer map) has been finished. The purpose of this signal is that

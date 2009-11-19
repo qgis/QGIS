@@ -19,6 +19,7 @@
 
 #include "qgscomposition.h"
 #include <QGraphicsRectItem>
+#include <QObject>
 
 class QWidget;
 class QDomDocument;
@@ -29,9 +30,9 @@ class QqsComposition;
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
  */
-class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
+class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 {
-
+    Q_OBJECT
   public:
 
     /**Describes the action (move or resize in different directon) to be done during mouse move*/
@@ -168,6 +169,11 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     @note this method was added in version 1.2*/
     void updateCursor( const QPointF& itemPos );
 
+    double rotation() const {return mRotation;}
+
+  public slots:
+    void setRotation( double r );
+
   protected:
 
     QgsComposition* mComposition;
@@ -190,6 +196,9 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
 
     /**Backup to restore item appearance if no view scale factor is available*/
     mutable double mLastValidViewScaleFactor;
+
+    /**Item rotation in degrees, clockwise*/
+    double mRotation;
 
     //event handlers
     virtual void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
@@ -235,6 +244,17 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
       @return the factor or -1 in case of error (e.g. graphic view does not exist)
     @note: this function was introduced in version 1.2*/
     double horizontalViewScaleFactor() const;
+
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
+    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    /**Calculates corner point after rotation and scaling*/
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+
+  signals:
+    /**Is emitted on rotation change to notify north arrow pictures*/
+    void rotationChanged( double newRotation );
 };
 
 #endif

@@ -46,6 +46,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   //add preview icons
   addStandardDirectoriesToPreview();
   connect( mPicture, SIGNAL( settingsChanged() ), this, SLOT( setGuiElementValues() ) );
+  connect( mPicture, SIGNAL( rotationChanged( double ) ), this, SLOT( setGuiElementValues() ) );
 }
 
 QgsComposerPictureWidget::~QgsComposerPictureWidget()

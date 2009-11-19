@@ -21,7 +21,6 @@
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
 #include <QGraphicsRectItem>
-#include <QObject>
 
 class QgsComposition;
 class QgsMapRenderer;
@@ -35,7 +34,7 @@ class QPainter;
  *  \brief Object representing map window.
  */
 // NOTE: QgsComposerMapBase must be first, otherwise does not compile
-class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapBase,*/ public QObject, public QgsComposerItem
+class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 {
     Q_OBJECT
 
@@ -239,15 +238,12 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     @note this function was added in version 1.4*/
     void updateBoundingRect();
 
-    /**Sets the rotation of the map content
-    @note this function was added in version 1.4*/
-    void setRotation( double r );
-    double rotation() const { return mRotation; }
-
     /**Sets length of the cros segments (if grid style is cross)
     @note this function was added in version 1.4*/
     void setCrossLength( double l ) {mCrossLength = l;}
     double crossLength() {return mCrossLength;}
+
+    void setMapRotation( double r );
 
   public slots:
 
@@ -259,8 +255,6 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
   signals:
     /**Is emitted when width/height is changed as a result of user interaction*/
     void extentChanged();
-    /**Is emitted on rotation change to notify north arrow pictures*/
-    void rotationChanged( double newRotation );
 
   private:
 
@@ -345,9 +339,6 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     GridAnnotationDirection mGridAnnotationDirection;
     /**Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
     QRectF mCurrentRectangle;
-
-    /**Rotation of the map. Clockwise in degrees, north direction is 0*/
-    double mRotation;
     /**The length of the cross sides for mGridStyle Cross*/
     double mCrossLength;
 
@@ -395,8 +386,10 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
         @param x in/out: x coordinate before / after the rotation
         @param y in/out: y cooreinate before / after the rotation*/
     void rotate( double angle, double& x, double& y ) const;
+#if 0
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+#endif //0
 };
 
 #endif

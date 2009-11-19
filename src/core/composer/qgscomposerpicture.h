@@ -20,12 +20,11 @@
 #include "qgscomposeritem.h"
 #include <QFile>
 #include <QImage>
-#include <QObject>
 
 /** \ingroup MapComposer
  * A composer class that displays svg files or raster format (jpg, png, ...)
  * */
-class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
+class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 {
     Q_OBJECT
   public:
@@ -42,8 +41,6 @@ class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
     /**Sets this items bound in scene coordinates such that 1 item size units
        corresponds to 1 scene size unit*/
     void setSceneRect( const QRectF& rectangle );
-
-    double rotation() const {return mRotation;}
 
     /** stores state in Dom node
        * @param node is Dom node corresponding to 'Composer' tag
@@ -62,10 +59,6 @@ class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
     int rotationMap() const;
     /**True if the rotation is taken from a map item*/
     bool useRotationMap() const {return mRotationMap;}
-
-  public slots:
-
-    void setRotation( double rotation );
 
   private:
 
@@ -87,18 +80,15 @@ class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
     @param out: boundWidth width of mImage that is used by the svg renderer. May different from mImage.width() to preserve aspect ratio
     @param out: boundHeight height of mImage that is used by the svg renderer*/
     void updateImageFromSvg();
-    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
-    bool imageSizeConsideringRotation( double& width, double& height ) const;
-    /**Calculates corner point after rotation and scaling*/
-    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+
 
     QImage mImage;
-    double mRotation;
     QFile mSourceFile;
     Mode mMode;
     /**False if image needs to be rendered from svg*/
     bool mSvgCacheUpToDate;
     int mCachedDpi; //store dpis for which the svg cache is valid
+    double mCachedRotation; //store last rotation value to generate new pixmap from svg on change
     QSize mDefaultSvgSize;
     /**Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
     const QgsComposerMap* mRotationMap;

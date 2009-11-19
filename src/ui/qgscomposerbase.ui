@@ -169,6 +169,7 @@
    <addaction name="mActionAddNewLabel"/>
    <addaction name="mActionAddNewLegend"/>
    <addaction name="mActionAddNewScalebar"/>
+   <addaction name="mActionAddBasicShape"/>
    <addaction name="mActionSelectMoveItem"/>
    <addaction name="mActionMoveItemContent"/>
    <addaction name="mActionGroupItems"/>
@@ -441,6 +442,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="mActionAddBasicShape">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Basic Shape</string>
    </property>
   </action>
  </widget>

@@ -162,7 +162,7 @@ void QgsComposerMapWidget::on_mRotationSpinBox_valueChanged( int value )
     return;
   }
 
-  mComposerMap->setRotation( value );
+  mComposerMap->setMapRotation( value );
   mComposerMap->cache();
   mComposerMap->update();
 }

@@ -17,7 +17,6 @@
 #define QGSCOMPOSERSCALEBAR_H
 
 #include "qgscomposeritem.h"
-#include <QObject>
 #include <QPen>
 
 class QgsComposerMap;
@@ -26,7 +25,7 @@ class QgsScaleBarStyle;
  * A scale bar item that can be added to a map composition.
  */
 
-class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
+class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 {
 
     Q_OBJECT

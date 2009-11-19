@@ -4261,6 +4261,10 @@ bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
     composer->showMinimized();
 #endif
     composer->zoomFull();
+    if ( composerNodes.at( i ).toElement().attribute( "visible", "1" ).toInt() < 1 )
+    {
+      composer->close();
+    }
   }
   return true;
 }
