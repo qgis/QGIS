@@ -21,7 +21,7 @@
 #include "qgscomposeritem.h"
 
 /**A composer items that draws common shapes (ellipse, triangle, rectangle)*/
-class QgsComposerShape: public QgsComposerItem
+class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 {
   public:
 
