@@ -101,11 +101,6 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     painter->rotate( mRotation );
     painter->translate( -rotatedBoundImageWidthMM / 2.0, -rotatedBoundImageHeightMM / 2.0 );
 
-    /*if ( mComposition && mComposition->plotStyle() == QgsComposition::Preview )
-    {
-      rotatedBoundImageWidthMM /= std::min( viewScaleFactor, 10.0 );
-      rotatedBoundImageHeightMM /= std::min( viewScaleFactor, 10.0 );
-    }*/
     painter->drawImage( QRectF( 0, 0, rotatedBoundImageWidthMM,  rotatedBoundImageHeightMM ), mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
 
     painter->restore();

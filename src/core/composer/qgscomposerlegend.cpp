@@ -75,7 +75,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   {
     painter->save();
     drawBackground( painter );
-    painter->setPen( QPen( QColor( 0, 0, 0 ) ) ); //draw all text black
+    painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
   }
 
   int numLayerItems = rootItem->rowCount();
@@ -326,6 +326,7 @@ void QgsComposerLegend::drawLineSymbol( QPainter* p, QgsSymbol* s, double curren
     QColor penColor = symbolPen.color();
     penColor.setAlpha( opacity );
     symbolPen.setColor( penColor );
+    symbolPen.setCapStyle( Qt::FlatCap );
     p->setPen( symbolPen );
     p->drawLine( QPointF( currentXPosition, yCoord ), QPointF( currentXPosition + mSymbolWidth, yCoord ) );
     p->restore();
