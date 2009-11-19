@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>833</width>
+    <width>813</width>
     <height>532</height>
    </rect>
   </property>
@@ -66,7 +66,7 @@
    </item>
    <item row="0" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
-     <widget class="QWidget" name="stackedWidgetPage1" native="true">
+     <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -266,7 +266,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage2" native="true">
+     <widget class="QWidget" name="stackedWidgetPage2">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -414,7 +414,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage3" native="true">
+     <widget class="QWidget" name="stackedWidgetPage3">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -635,7 +635,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage4" native="true">
+     <widget class="QWidget" name="stackedWidgetPage4">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -687,7 +687,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage5" native="true">
+     <widget class="QWidget" name="stackedWidgetPage5">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -984,7 +984,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage6" native="true">
+     <widget class="QWidget" name="stackedWidgetPage6">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -1015,12 +1015,22 @@
        <item row="0" column="0">
         <widget class="QGroupBox" name="grpProjectionBehaviour">
          <property name="title">
-          <string>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</string>
+          <string>Default Coordinate Reference System</string>
          </property>
          <layout class="QVBoxLayout">
           <property name="margin">
            <number>11</number>
           </property>
+          <item>
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QRadioButton" name="radPromptForProjection">
             <property name="text">
@@ -1047,7 +1057,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage7" native="true">
+     <widget class="QWidget" name="stackedWidgetPage7">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -1115,7 +1125,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="stackedWidgetPage8" native="true">
+     <widget class="QWidget" name="stackedWidgetPage8">
       <layout class="QGridLayout" name="gridLayout_2">
        <property name="margin">
         <number>0</number>
