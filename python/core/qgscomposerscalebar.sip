@@ -2,7 +2,7 @@
  * A scale bar item that can be added to a map composition.
  */
 
-class QgsComposerScaleBar: QObject, QgsComposerItem
+class QgsComposerScaleBar: QgsComposerItem
 {
 %TypeHeaderCode
 #include "qgscomposerscalebar.h"

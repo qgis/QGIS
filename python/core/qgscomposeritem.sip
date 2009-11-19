@@ -1,7 +1,7 @@
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
  */
-class QgsComposerItem: QGraphicsRectItem
+class QgsComposerItem: public QObject, public QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
@@ -130,6 +130,23 @@ class QgsComposerItem: QGraphicsRectItem
     /**Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE*/
     QFont scaledFontPixelSize( const QFont& font ) const;
 
+    /**Locks / unlocks the item position for mouse drags
+    @note this method was added in version 1.2*/
+    void setPositionLock( bool lock );
+
+    /**Returns position lock for mouse drags (true means locked)
+    @note this method was added in version 1.2*/
+    bool positionLock() const;
+
+    /**Update mouse cursor at (item) position
+    @note this method was added in version 1.2*/
+    void updateCursor( const QPointF& itemPos );
+
+    double rotation() const;
+
+  public slots:
+    void setRotation( double r);
+
   protected:
 
     //event handlers
@@ -163,4 +180,28 @@ class QgsComposerItem: QGraphicsRectItem
 
     /**Draw background*/
     virtual void drawBackground( QPainter* p );
+
+    /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the \
+    item border for resizing*/
+    double rectHandlerBorderTolerance() const;
+
+    /**Returns the size of the lock symbol depending on the composer zoom level and the item size
+    @note: this function was introduced in version 1.2*/
+    double lockSymbolSize() const;
+
+    /**Returns the zoom factor of the graphics view.
+      @return the factor or -1 in case of error (e.g. graphic view does not exist)
+    @note: this function was introduced in version 1.2*/
+    double horizontalViewScaleFactor() const;
+
+    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
+    bool imageSizeConsideringRotation( double& width, double& height ) const;
+    /**Calculates corner point after rotation and scaling*/
+    bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
+    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+
+    signals:
+     /**Is emitted on rotation change to notify north arrow pictures*/
+    void rotationChanged( double newRotation );
 };

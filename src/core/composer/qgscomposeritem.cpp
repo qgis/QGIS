@@ -31,10 +31,16 @@
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
 
+#ifndef Q_OS_MACX
+#include <cmath>
+#else
+#include <math.h>
+#endif
+
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
-QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue ): QGraphicsRectItem( 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), \
-    mFrame( true ), mItemPositionLocked( false ), mLastValidViewScaleFactor( -1 )
+QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue ): QObject( 0 ), QGraphicsRectItem( 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), \
+    mFrame( true ), mItemPositionLocked( false ), mLastValidViewScaleFactor( -1 ), mRotation( 0 )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setAcceptsHoverEvents( true );
@@ -53,7 +59,8 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
 }
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue ): \
-    QGraphicsRectItem( 0, 0, width, height, 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true ), mItemPositionLocked( false ), mLastValidViewScaleFactor( -1 )
+    QObject( 0 ), QGraphicsRectItem( 0, 0, width, height, 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true ), \
+    mItemPositionLocked( false ), mLastValidViewScaleFactor( -1 ), mRotation( 0 )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setAcceptsHoverEvents( true );
@@ -124,6 +131,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "height", rect().height() );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
+  composerItemElem.setAttribute( "rotation", mRotation );
 
   //position lock for mouse moves/resizes
   if ( mItemPositionLocked )
@@ -167,6 +175,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   {
     return false;
   }
+
+  //rotation
+  mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
 
   //frame
   QString frame = itemElem.attribute( "frame" );
@@ -793,4 +804,148 @@ double QgsComposerItem::lockSymbolSize() const
 void QgsComposerItem::updateCursor( const QPointF& itemPos )
 {
   setCursor( cursorForPosition( itemPos ) );
+}
+
+void QgsComposerItem::setRotation( double r )
+{
+  if ( r > 360 )
+  {
+    mRotation = (( int )r ) % 360;
+  }
+  else
+  {
+    mRotation = r;
+  }
+  emit rotationChanged( r );
+  update();
+}
+
+bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height ) const
+{
+  if ( abs( mRotation ) <= 0 ) //width and height stays the same if there is no rotation
+  {
+    return true;
+  }
+
+  double x1 = 0;
+  double y1 = 0;
+  double x2 = width;
+  double y2 = 0;
+  double x3 = width;
+  double y3 = height;
+  double x4 = 0;
+  double y4 = height;
+  double midX = width / 2.0;
+  double midY = height / 2.0;
+
+  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height ) )
+  {
+    return false;
+  }
+  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height ) )
+  {
+    return false;
+  }
+  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height ) )
+  {
+    return false;
+  }
+  if ( !cornerPointOnRotatedAndScaledRect( x4, y4, width, height ) )
+  {
+    return false;
+  }
+
+
+  //assume points 1 and 3 are on the rectangle boundaries. Calculate 2 and 4.
+  double distM1 = sqrt(( x1 - midX ) * ( x1 - midX ) + ( y1 - midY ) * ( y1 - midY ) );
+  QPointF p2 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
+  QPointF p4 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x4, y4 ), distM1 );
+
+  if ( p2.x() < width && p2.x() > 0 && p2.y() < height && p2.y() > 0 )
+  {
+    width = sqrt(( p2.x() - x1 ) * ( p2.x() - x1 ) + ( p2.y() - y1 ) * ( p2.y() - y1 ) );
+    height = sqrt(( x3 - p2.x() ) * ( x3 - p2.x() ) + ( y3 - p2.y() ) * ( y3 - p2.y() ) );
+    return true;
+  }
+
+  //else assume that points 2 and 4 are on the rectangle boundaries. Calculate 1 and 3
+  double distM2 = sqrt(( x2 - midX ) * ( x2 - midX ) + ( y2 - midY ) * ( y2 - midY ) );
+  QPointF p1 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x1, y1 ), distM2 );
+  QPointF p3 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x3, y3 ), distM2 );
+  width = sqrt(( x2 - p1.x() ) * ( x2 - p1.x() ) + ( y2 - p1.y() ) * ( y2 - p1.y() ) );
+  height = sqrt(( p3.x() - x2 ) * ( p3.x() - x2 ) + ( p3.y() - y2 ) * ( p3.y() - y2 ) );
+  return true;
+
+
+#if 0
+  double x1 = 0;
+  double y1 = 0;
+  double x2 = width;
+  double y2 = 0;
+  double x3 = width;
+  double y3 = height;
+
+  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height ) )
+  {
+    return false;
+  }
+  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height ) )
+  {
+    return false;
+  }
+  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height ) )
+  {
+    return false;
+  }
+
+  width = sqrt(( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) );
+  height = sqrt(( x3 - x2 ) * ( x3 - x2 ) + ( y3 - y2 ) * ( y3 - y2 ) );
+  return true;
+#endif //0
+}
+
+bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const
+{
+  //first rotate point clockwise
+  double rotToRad = mRotation * M_PI / 180.0;
+  QPointF midpoint( width / 2.0, height / 2.0 );
+  double xVector = x - midpoint.x();
+  double yVector = y - midpoint.y();
+  //double xRotated = cos(rotToRad) * xVector + sin(rotToRad) * yVector;
+  //double yRotated = -sin(rotToRad) * xVector + cos(rotToRad) * yVector;
+  double xRotated = cos( rotToRad ) * xVector - sin( rotToRad ) * yVector;
+  double yRotated = sin( rotToRad ) * xVector + cos( rotToRad ) * yVector;
+
+  //create line from midpoint to rotated point
+  QLineF line( midpoint.x(), midpoint.y(), midpoint.x() + xRotated, midpoint.y() + yRotated );
+
+  //intersect with all four borders and return result
+  QList<QLineF> borders;
+  borders << QLineF( 0, 0, width, 0 );
+  borders << QLineF( width, 0, width, height );
+  borders << QLineF( width, height, 0, height );
+  borders << QLineF( 0, height, 0, 0 );
+
+  QList<QLineF>::const_iterator it = borders.constBegin();
+  QPointF intersectionPoint;
+
+  for ( ; it != borders.constEnd(); ++it )
+  {
+    if ( line.intersect( *it, &intersectionPoint ) == QLineF::BoundedIntersection )
+    {
+      x = intersectionPoint.x();
+      y = intersectionPoint.y();
+      return true;
+    }
+  }
+  return false;
+}
+
+QPointF QgsComposerItem::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const
+{
+  double dx = directionPoint.x() - startPoint.x();
+  double dy = directionPoint.y() - startPoint.y();
+  double length = sqrt( dx * dx + dy * dy );
+  double scaleFactor = distance / length;
+  return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }

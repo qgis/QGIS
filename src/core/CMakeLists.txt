@@ -76,6 +76,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerpicture.cpp
   composer/qgscomposermap.cpp
   composer/qgscomposerscalebar.cpp
+  composer/qgscomposershape.cpp
   composer/qgslegendmodel.cpp
   composer/qgscomposerlegend.cpp
   composer/qgspaperitem.cpp
@@ -198,6 +199,7 @@ composer/qgscomposerlegend.h
 composer/qgscomposermap.h
 composer/qgscomposerpicture.h
 composer/qgscomposerscalebar.h
+composer/qgscomposeritem.h
 composer/qgscomposeritemgroup.h
 composer/qgscomposition.h
 composer/qgslegendmodel.h

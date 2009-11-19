@@ -16,13 +16,12 @@
  ***************************************************************************/
 
 #include "qgscomposeritem.h"
-#include <QObject>
 #include <QSet>
 
 /** \ingroup MapComposer
  * A container for grouping several QgsComposerItems
  */
-class CORE_EXPORT QgsComposerItemGroup: public QObject, public QgsComposerItem
+class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
 {
     Q_OBJECT
   public:

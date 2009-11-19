@@ -1,7 +1,7 @@
 /** \ingroup MapComposer
  * A legend that can be placed onto a map composition
  */
-class QgsComposerLegend: QObject, QgsComposerItem
+class QgsComposerLegend: QgsComposerItem
 {
 %TypeHeaderCode
 #include <qgscomposerlegend.h>

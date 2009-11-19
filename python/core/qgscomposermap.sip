@@ -3,7 +3,7 @@
  *  \brief Object representing map window.
  */
 // NOTE: QgsComposerMapBase must be first, otherwise does not compile
-class QgsComposerMap : QObject, QgsComposerItem
+class QgsComposerMap : QgsComposerItem
 {
 %TypeHeaderCode
 #include <qgscomposermap.h>
@@ -211,11 +211,6 @@ class QgsComposerMap : QObject, QgsComposerItem
     @note this function was added in version 1.4*/
     void updateBoundingRect();
 
-    /**Sets the rotation of the map content
-    @note this function was added in version 1.4*/
-    void setRotation(double r);
-    double rotation() const;
-
     /**Sets length of the cros segments (if grid style is cross)
     @note this function was added in version 1.4*/
     void setCrossLength(double l);
@@ -231,6 +226,4 @@ class QgsComposerMap : QObject, QgsComposerItem
   signals:
     /**Is emitted when width/height is changed as a result of user interaction*/
     void extentChanged();
-    /**Is emitted on rotation change to notify north arrow pictures*/
-    void rotationChanged( double newRotation );
 };

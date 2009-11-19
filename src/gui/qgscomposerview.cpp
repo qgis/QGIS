@@ -26,6 +26,7 @@
 #include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposershape.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f ) :
     QGraphicsView( parent ), mShiftKeyPressed( false ), mRubberBandItem( 0 ), mMoveContentItem( 0 )
@@ -96,8 +97,9 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       break;
     }
 
-    //create rubber band
+    //create rubber band for map and ellipse items
     case AddMap:
+    case AddShape:
     {
       QTransform t;
       mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
@@ -186,6 +188,23 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       break;
     }
 
+    case AddShape:
+    {
+      if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
+      {
+        scene()->removeItem( mRubberBandItem );
+        delete mRubberBandItem;
+        return;
+      }
+
+      QgsComposerShape* composerShape = new QgsComposerShape( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), composition() );
+      addComposerShape( composerShape );
+      scene()->removeItem( mRubberBandItem );
+      delete mRubberBandItem;
+      emit actionFinished();
+      break;
+    }
+
     case AddMap:
     {
       if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
@@ -233,6 +252,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
         break;
 
       case AddMap:
+      case AddShape:
         //adjust rubber band item
       {
         double x = 0;
@@ -444,6 +464,15 @@ void QgsComposerView::addComposerPicture( QgsComposerPicture* picture )
   scene()->clearSelection();
   picture->setSelected( true );
   emit selectedItemChanged( picture );
+}
+
+void QgsComposerView::addComposerShape( QgsComposerShape* shape )
+{
+  scene()->addItem( shape );
+  emit composerShapeAdded( shape );
+  scene()->clearSelection();
+  shape->setSelected( true );
+  emit selectedItemChanged( shape );
 }
 
 void QgsComposerView::groupItems()

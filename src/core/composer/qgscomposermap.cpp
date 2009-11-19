@@ -42,8 +42,7 @@
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), \
-    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), \
-    mRotation( 0 ), mCrossLength( 3 )
+    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), mCrossLength( 3 )
 {
   mComposition = composition;
   mId = mComposition->composerMapItems().size();
@@ -74,8 +73,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), \
-    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), \
-    mRotation( 0 ), mCrossLength( 3 )
+    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), mCrossLength( 3 )
 {
   //Offset
   mXOffset = 0.0;
@@ -505,9 +503,9 @@ void QgsComposerMap::setOffset( double xOffset, double yOffset )
   mYOffset = yOffset;
 }
 
-void QgsComposerMap::setRotation( double r )
+void QgsComposerMap::setMapRotation( double r )
 {
-  mRotation = r;
+  setRotation( r );
   emit rotationChanged( r );
 }
 
@@ -588,8 +586,6 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   {
     composerMapElem.setAttribute( "keepLayerSet", "false" );
   }
-  //rotation
-  composerMapElem.setAttribute( "rotation", mRotation );
 
   //extent
   QDomElement extentElem = doc.createElement( "Extent" );
@@ -669,9 +665,6 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   {
     mPreviewMode = Rectangle;
   }
-
-  //rotation
-  mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
 
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( "Extent" );
@@ -1400,6 +1393,7 @@ void QgsComposerMap::rotate( double angle, double& x, double& y ) const
   y = yRot;
 }
 
+#if 0
 QPointF QgsComposerMap::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const
 {
   double dx = directionPoint.x() - startPoint.x();
@@ -1408,3 +1402,4 @@ QPointF QgsComposerMap::pointOnLineWithDistance( const QPointF& startPoint, cons
   double scaleFactor = distance / length;
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
+#endif //0

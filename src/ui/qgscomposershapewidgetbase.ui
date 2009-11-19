@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsComposerShapeWidgetBase</class>
+ <widget class="QWidget" name="QgsComposerShapeWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>162</width>
+    <height>193</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QComboBox" name="mShapeComboBox"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="mOutlineColorButton">
+     <property name="text">
+      <string>Shape outline color...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
+     <property name="prefix">
+      <string>Outline width </string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="mTransparentCheckBox">
+     <property name="text">
+      <string>Transparent fill</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="mFillColorButton">
+     <property name="text">
+      <string>Shape fill Color...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QSpinBox" name="mRotationSpinBox">
+     <property name="prefix">
+      <string comment="Rotation" extracomment="Rotation">Rotation </string>
+     </property>
+     <property name="maximum">
+      <number>359</number>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
