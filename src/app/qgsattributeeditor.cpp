@@ -325,7 +325,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         myWidget = te;
       }
 
-#if QT_VERSION < 0x040400
+#if QT_VERSION >= 0x040400
       if ( pte )
       {
         myWidget = pte;
@@ -356,13 +356,15 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       {
         le = new QLineEdit();
 
-        QPushButton *pb = new QPushButton( tr( "..." ) );
+        pb = new QPushButton( tr( "..." ) );
 
         QHBoxLayout *hbl = new QHBoxLayout();
         hbl->addWidget( le );
         hbl->addWidget( pb );
 
         myWidget = new QWidget( parent );
+        myWidget->setBackgroundRole( QPalette::Window );
+        myWidget->setAutoFillBackground( true );
         myWidget->setLayout( hbl );
       }
 
