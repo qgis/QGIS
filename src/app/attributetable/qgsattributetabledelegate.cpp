@@ -62,14 +62,12 @@ QWidget *QgsAttributeTableDelegate::createEditor(
   if ( vl == NULL )
     return NULL;
 
-  QWidget *widget = QgsAttributeEditor::createAttributeEditor( parent, 0, vl, fieldIdx( index ), index.model()->data( index, Qt::EditRole ) );
-
-  return widget;
+  return QgsAttributeEditor::createAttributeEditor( parent, 0, vl, fieldIdx( index ), index.model()->data( index, Qt::EditRole ) );
 }
 
 void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsVectorLayer *vl = layer( index.model() );
+  QgsVectorLayer *vl = layer( model );
   if ( vl == NULL )
     return;
 
@@ -87,6 +85,7 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
     return;
 
   QgsAttributeEditor::setValue( editor, vl, fieldIdx( index ), index.model()->data( index, Qt::EditRole ) );
+  editor->adjustSize();
 }
 
 void QgsAttributeTableDelegate::paint( QPainter * painter,
