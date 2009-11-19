@@ -1,7 +1,7 @@
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
  */
-class QgsComposerItem: public QObject, public QGraphicsRectItem
+class QgsComposerItem: QObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
