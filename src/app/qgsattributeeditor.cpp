@@ -25,13 +25,16 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QTextEdit>
-#include <QPlainTextEdit>
 #include <QFileDialog>
 #include <QComboBox>
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QCompleter>
 #include <QHBoxLayout>
+
+#if QT_VERSION >= 0x040400
+#include <QPlainTextEdit>
+#endif
 
 void QgsAttributeEditor::selectFileName( void )
 {
@@ -259,17 +262,26 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     {
       QLineEdit *le = NULL;
       QTextEdit *te = NULL;
+#if QT_VERSION >= 0x040400
       QPlainTextEdit *pte = NULL;
+#endif
 
       if ( editor )
       {
         le = qobject_cast<QLineEdit *>( editor );
         te = qobject_cast<QTextEdit *>( editor );
+#if QT_VERSION >= 0x040400
         pte = qobject_cast<QPlainTextEdit *>( editor );
+#endif
       }
       else if ( editType == QgsVectorLayer::TextEdit )
       {
+#if QT_VERSION >= 0x040400
         pte = new QPlainTextEdit( parent );
+#else
+        te = new QTextEdit( parent );
+        te->setAcceptRichText( false );
+#endif
       }
       else
       {
@@ -307,14 +319,18 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
       if ( te )
       {
+#if QT_VERSION >= 0x040400
         te->setAcceptRichText( true );
+#endif
         myWidget = te;
       }
 
+#if QT_VERSION < 0x040400
       if ( pte )
       {
         myWidget = pte;
       }
+#endif
     }
     break;
 
@@ -390,7 +406,11 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   QTextEdit *te = qobject_cast<QTextEdit *>( widget );
   if ( te )
   {
+#if QT_VERSION >= 0x040400
     text = te->toHtml();
+#else
+    text = te->toPlainText();
+#endif
     modified = te->document()->isModified();
     if ( text == "NULL" )
     {
@@ -398,6 +418,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     }
   }
 
+#if QT_VERSION >= 0x040400
   QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( widget );
   if ( pte )
   {
@@ -408,6 +429,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
       text = QString::null;
     }
   }
+#endif
 
   QComboBox *cb = qobject_cast<QComboBox *>( widget );
   if ( cb )
@@ -574,9 +596,14 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     {
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
       QTextEdit *te = qobject_cast<QTextEdit *>( editor );
+#if QT_VERSION >= 0x040400
       QPlainTextEdit *pte = qobject_cast<QPlainTextEdit *>( editor );
       if ( !le && !te && !pte )
         return false;
+#else
+      if ( !le && !te )
+        return false;
+#endif
 
       QString text;
       if ( value.isNull() )
@@ -589,10 +616,15 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
       if ( le )
         le->setText( text );
+#if QT_VERSION >= 0x040400
       if ( te )
         te->setHtml( text );
       if ( pte )
         pte->setPlainText( text );
+#else
+      if ( te )
+        te->setPlainText( text );
+#endif
     }
     break;
 
