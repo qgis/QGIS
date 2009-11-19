@@ -112,6 +112,9 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
 
+    void useNewSymbology();
+    void setUsingNewSymbology( bool useNewSymbology );
+
   signals:
 
     /** emitted when changes to layer were saved to update legend */
@@ -120,6 +123,9 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void toggleEditing( QgsMapLayer * );
 
   protected:
+
+    void updateSymbologyPage();
+
     enum attrColumns
     {
       attrIdCol = 0,

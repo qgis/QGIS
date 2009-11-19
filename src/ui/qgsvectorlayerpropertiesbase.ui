@@ -157,7 +157,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="4">
+       <item row="1" column="0" colspan="5">
         <widget class="QStackedWidget" name="widgetStackRenderers">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -176,6 +176,13 @@
          </property>
          <widget class="QWidget" name="page"/>
          <widget class="QWidget" name="page_2"/>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QPushButton" name="btnUseNewSymbology">
+         <property name="text">
+          <string>New symbology</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -348,8 +355,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>555</width>
-            <height>401</height>
+            <width>407</width>
+            <height>394</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
