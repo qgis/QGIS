@@ -149,7 +149,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   mColormapTreeWidget->setHeaderLabels( headerLabels );
 
   //disable colormap tab completely until 'Colormap' is selected (and only for type GrayOrUndefined)
-  tabBar->setTabEnabled( tabBar->indexOf( tabPageColormap ), FALSE );
+  tabPageColormap->setEnabled( false );
 
   //
   // Set up the combo boxes that contain band lists using the qstring list generated above
@@ -295,10 +295,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   else if ( mRasterLayerIsWms )
   {
     // disable Pyramids tab completely
-    tabBar->setTabEnabled( tabBar->indexOf( tabPagePyramids ), FALSE );
+    tabPagePyramids->setEnabled( false );
 
     // disable Histogram tab completely
-    tabBar->setTabEnabled( tabBar->indexOf( tabPageHistogram ), FALSE );
+    tabPageHistogram->setEnabled( false );
   }
 
   leSpatialRefSys->setText( mRasterLayer->srs().toProj4() );
@@ -550,13 +550,13 @@ void QgsRasterLayerProperties::sync()
 
   if ( mRasterLayerIsWms )
   {
-    tabBar->setCurrentIndex( tabBar->indexOf( tabPageMetadata ) );
-    tabBar->removeTab( tabBar->indexOf( tabPageColormap ) );
-    tabBar->removeTab( tabBar->indexOf( tabPageSymbology ) );
+    tabBar->setCurrentWidget( tabPageMetadata );
+    tabBar->removeWidget( tabPageColormap );
+    tabBar->removeWidget( tabPageSymbology );
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
-    tabBar->removeTab( tabBar->indexOf( tabPageHistogram ) );
-    tabBar->removeTab( tabBar->indexOf( tabPagePyramids ) );
+    tabBar->removeWidget( tabPageHistogram );
+    tabBar->removeWidget( tabPagePyramids );
   }
 #if 0
   if ( mRasterLayer->rasterType() == QgsRasterLayer::Multiband )
@@ -1690,7 +1690,7 @@ void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged( const QStrin
 {
   if ( mRasterLayerIsGdal && ( theText == tr( "Pseudocolor" ) || theText == tr( "Freak Out" ) ) )
   {
-    tabBar->setTabEnabled( tabBar->indexOf( tabPageColormap ), FALSE );
+    tabPageColormap->setEnabled( false );
     rbtnSingleBandMinMax->setEnabled( false );
     rbtnSingleBandStdDev->setEnabled( true );
     sboxSingleBandStdDev->setEnabled( true );
@@ -1700,7 +1700,7 @@ void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged( const QStrin
   }
   else if ( mRasterLayerIsGdal && theText == tr( "Colormap" ) )
   {
-    tabBar->setTabEnabled( tabBar->indexOf( tabPageColormap ), TRUE );
+    tabPageColormap->setEnabled( true );
     rbtnSingleBandMinMax->setEnabled( false );
     rbtnSingleBandStdDev->setEnabled( false );
     sboxSingleBandStdDev->setEnabled( false );
@@ -1710,7 +1710,7 @@ void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged( const QStrin
   }
   else if ( mRasterLayerIsGdal && theText == tr( "User Defined" ) )
   {
-    tabBar->setTabEnabled( tabBar->indexOf( tabPageColormap ), FALSE );
+    tabPageColormap->setEnabled( false );
     rbtnSingleBandMinMax->setEnabled( true );
     rbtnSingleBandStdDev->setEnabled( true );
     sboxSingleBandStdDev->setEnabled( true );
@@ -1720,7 +1720,7 @@ void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged( const QStrin
   }
   else if ( mRasterLayerIsGdal )
   {
-    tabBar->setTabEnabled( tabBar->indexOf( tabPageColormap ), FALSE );
+    tabPageColormap->setEnabled( false );
     rbtnSingleBandMinMax->setEnabled( true );
     rbtnSingleBandStdDev->setEnabled( true );
     sboxSingleBandStdDev->setEnabled( true );
@@ -2354,7 +2354,7 @@ void QgsRasterLayerProperties::on_rbtnSingleBand_toggled( bool theState )
 
     if ( cboxColorMap->currentText() == tr( "Pseudocolor" ) )
     {
-      tabBar->setTabEnabled( tabBar->indexOf( tabPageColormap ), true );
+      tabPageColormap->setEnabled ( true );
     }
 
     if ( cboxColorMap->currentText() == tr( "Pseudocolor" ) || cboxColorMap->currentText() == tr( "Color Ramp" ) || cboxColorMap->currentText() == tr( "Freak Out" ) || mRasterLayer->rasterType() == QgsRasterLayer::Palette )
@@ -2424,7 +2424,7 @@ void QgsRasterLayerProperties::on_rbtnThreeBand_toggled( bool theState )
     stackedWidget->setCurrentIndex( 0 );
     rbtnSingleBand->setChecked( false );
     cboxColorMap->setEnabled( false );
-    tabBar->setTabEnabled( tabBar->indexOf( tabPageColormap ), false );
+    tabPageColormap->setEnabled( false );
 
     grpRgbBands->setEnabled( true );
 
