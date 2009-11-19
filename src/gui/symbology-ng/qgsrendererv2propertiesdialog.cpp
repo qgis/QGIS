@@ -16,64 +16,65 @@
 #include "qgsvectorlayer.h"
 
 #include <QKeyEvent>
+#include <QMessageBox>
 
-
-QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* layer, QgsStyleV2* style, bool embedded)
-    : mLayer(layer), mStyle(style), mActiveWidget(NULL)
+QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded )
+    : mLayer( layer ), mStyle( style ), mActiveWidget( NULL )
 {
-  setupUi(this);
+  setupUi( this );
 
   // can be embedded in vector layer properties
-  if (embedded)
+  if ( embedded )
   {
     buttonBox->hide();
-    layout()->setContentsMargins(0,0,0,0);
+    layout()->setContentsMargins( 0, 0, 0, 0 );
   }
 
-  connect(buttonBox, SIGNAL(accepted()), this, SLOT(onOK()));
-  connect(btnSymbolLevels, SIGNAL(clicked()), this, SLOT(showSymbolLevels()));
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
+  connect( btnSymbolLevels, SIGNAL( clicked() ), this, SLOT( showSymbolLevels() ) );
+  connect( btnOldSymbology, SIGNAL( clicked() ), this, SLOT( useOldSymbology() ) );
 
   // initialize registry's widget functions
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
-  if (reg->rendererMetadata("singleSymbol").widgetFunction() == NULL)
+  if ( reg->rendererMetadata( "singleSymbol" ).widgetFunction() == NULL )
   {
-    reg->setRendererWidgetFunction("singleSymbol", QgsSingleSymbolRendererV2Widget::create);
-    reg->setRendererWidgetFunction("categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create);
-    reg->setRendererWidgetFunction("graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create);
+    reg->setRendererWidgetFunction( "singleSymbol", QgsSingleSymbolRendererV2Widget::create );
+    reg->setRendererWidgetFunction( "categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create );
+    reg->setRendererWidgetFunction( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create );
   }
 
   QPixmap pix;
   QStringList renderers = reg->renderersList();
-  foreach (QString name, renderers)
+  foreach( QString name, renderers )
   {
-    QgsRendererV2Metadata m = reg->rendererMetadata(name);
+    QgsRendererV2Metadata m = reg->rendererMetadata( name );
 
     QString iconPath = QgsApplication::defaultThemePath() + m.iconName();
-    if (!pix.load(iconPath, "png"))
+    if ( !pix.load( iconPath, "png" ) )
       pix = QPixmap();
 
-    cboRenderers->addItem(QIcon(pix), m.visibleName(), name);
+    cboRenderers->addItem( QIcon( pix ), m.visibleName(), name );
   }
 
-  cboRenderers->setCurrentIndex(-1); // set no current renderer
+  cboRenderers->setCurrentIndex( -1 ); // set no current renderer
 
   // if the layer doesn't use renderer V2, let's start using it!
-  if (!mLayer->isUsingRendererV2())
+  if ( !mLayer->isUsingRendererV2() )
   {
-    mLayer->setRendererV2( QgsFeatureRendererV2::defaultRenderer(mLayer->geometryType()) );
-    mLayer->setUsingRendererV2(true);
+    mLayer->setRendererV2( QgsFeatureRendererV2::defaultRenderer( mLayer->geometryType() ) );
+    mLayer->setUsingRendererV2( true );
   }
 
   // setup slot rendererChanged()
-  connect(cboRenderers, SIGNAL(currentIndexChanged(int)), this, SLOT(rendererChanged()));
+  connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
 
   // set current renderer from layer
   QString rendererName = mLayer->rendererV2()->type();
-  for (int i = 0; i < cboRenderers->count(); i++)
+  for ( int i = 0; i < cboRenderers->count(); i++ )
   {
-    if (cboRenderers->itemData(i).toString() == rendererName)
+    if ( cboRenderers->itemData( i ).toString() == rendererName )
     {
-      cboRenderers->setCurrentIndex(i);
+      cboRenderers->setCurrentIndex( i );
       return;
     }
   }
@@ -87,16 +88,16 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog(QgsVectorLayer* lay
 void QgsRendererV2PropertiesDialog::rendererChanged()
 {
 
-  if (cboRenderers->currentIndex() == -1)
+  if ( cboRenderers->currentIndex() == -1 )
   {
-    QgsDebugMsg("No current item -- this should never happen!");
+    QgsDebugMsg( "No current item -- this should never happen!" );
     return;
   }
 
   QString rendererName = cboRenderers->itemData( cboRenderers->currentIndex() ).toString();
 
   // get rid of old active widget (if any)
-  if (mActiveWidget)
+  if ( mActiveWidget )
   {
     stackedWidget->removeWidget( mActiveWidget );
 
@@ -104,30 +105,30 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
     mActiveWidget = NULL;
   }
 
-  QgsRendererV2Metadata m = QgsRendererV2Registry::instance()->rendererMetadata(rendererName);
+  QgsRendererV2Metadata m = QgsRendererV2Registry::instance()->rendererMetadata( rendererName );
   QgsRendererV2WidgetFunc fWidget = m.widgetFunction();
-  if (fWidget != NULL)
+  if ( fWidget != NULL )
   {
     // instantiate the widget and set as active
-    mActiveWidget = fWidget(mLayer, mStyle, mLayer->rendererV2()->clone());
-    stackedWidget->addWidget(mActiveWidget);
-    stackedWidget->setCurrentWidget(mActiveWidget);
+    mActiveWidget = fWidget( mLayer, mStyle, mLayer->rendererV2()->clone() );
+    stackedWidget->addWidget( mActiveWidget );
+    stackedWidget->setCurrentWidget( mActiveWidget );
 
-    btnSymbolLevels->setEnabled(true);
+    btnSymbolLevels->setEnabled( true );
   }
   else
   {
     // set default "no edit widget available" page
-    stackedWidget->setCurrentWidget(pageNoWidget);
+    stackedWidget->setCurrentWidget( pageNoWidget );
 
-    btnSymbolLevels->setEnabled(false);
+    btnSymbolLevels->setEnabled( false );
   }
 
 }
 
 void QgsRendererV2PropertiesDialog::apply()
 {
-  if (mActiveWidget != NULL)
+  if ( mActiveWidget != NULL )
   {
     mLayer->setRendererV2( mActiveWidget->renderer()->clone() );
   }
@@ -149,22 +150,34 @@ void QgsRendererV2PropertiesDialog::keyPressEvent( QKeyEvent * e )
   }
   else
   {
-    QDialog::keyPressEvent(e);
+    QDialog::keyPressEvent( e );
   }
 }
 
 
 void QgsRendererV2PropertiesDialog::showSymbolLevels()
 {
-  if (!mActiveWidget)
+  if ( !mActiveWidget )
     return;
 
   QgsFeatureRendererV2* r = mActiveWidget->renderer();
   QgsSymbolV2List symbols = r->symbols();
 
-  QgsSymbolLevelsV2Dialog dlg(symbols, r->usingSymbolLevels(), this);
-  if (dlg.exec())
+  QgsSymbolLevelsV2Dialog dlg( symbols, r->usingSymbolLevels(), this );
+  if ( dlg.exec() )
   {
     r->setUsingSymbolLevels( dlg.usingLevels() );
   }
+}
+
+void QgsRendererV2PropertiesDialog::useOldSymbology()
+{
+  int res = QMessageBox::question( this, tr( "Symbology" ),
+                                   tr( "Do you wish to use original symbology implementation for this layer?" ),
+                                   QMessageBox::Yes | QMessageBox::No );
+
+  if ( res != QMessageBox::Yes )
+    return;
+
+  emit useNewSymbology( false );
 }

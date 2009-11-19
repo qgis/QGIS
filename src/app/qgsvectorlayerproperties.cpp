@@ -56,6 +56,8 @@
 
 #include "qgsrendererv2propertiesdialog.h"
 #include "qgsstylev2.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgssinglesymbolrendererv2.h"
 
 #if QT_VERSION < 0x040300
 #define toPlainText() text()
@@ -95,6 +97,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mToggleEditingButton->setIcon( QgisApp::getThemeIcon( "/mActionToggleEditing.png" ) );
   mCalculateFieldButton->setIcon( QgisApp::getThemeIcon( "/mActionCalculateField.png" ) );
 
+  connect( btnUseNewSymbology, SIGNAL( clicked() ), this, SLOT( useNewSymbology() ) );
 
   // Create the Label dialog tab
   QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
@@ -479,55 +482,8 @@ void QgsVectorLayerProperties::reset( void )
     }
   }
 
-  //find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
-  delete mRendererDialog;
-  mRendererDialog = 0;
-
-  if ( layer->isUsingRendererV2() )
-  {
-    mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
-
-    // hide unused widgets
-    legendtypecombobox->hide();
-    legendtypelabel->hide();
-    lblTransparencyPercent->hide();
-    sliderTransparency->hide();
-  }
-  else
-  {
-
-    QString rtype = layer->renderer()->name();
-    if ( rtype == "Single Symbol" )
-    {
-      mRendererDialog = new QgsSingleSymbolDialog( layer );
-      legendtypecombobox->setCurrentIndex( 0 );
-    }
-    else if ( rtype == "Graduated Symbol" )
-    {
-      mRendererDialog = new QgsGraduatedSymbolDialog( layer );
-      legendtypecombobox->setCurrentIndex( 1 );
-    }
-    else if ( rtype == "Continuous Color" )
-    {
-      mRendererDialog = new QgsContinuousColorDialog( layer );
-      legendtypecombobox->setCurrentIndex( 2 );
-    }
-    else if ( rtype == "Unique Value" )
-    {
-      mRendererDialog = new QgsUniqueValueDialog( layer );
-      legendtypecombobox->setCurrentIndex( 3 );
-    }
-
-    QObject::connect( legendtypecombobox, SIGNAL( activated( const QString & ) ), this,
-                      SLOT( alterLayerDialog( const QString & ) ) );
-
-  }
-
-  if ( mRendererDialog )
-  {
-    widgetStackRenderers->addWidget( mRendererDialog );
-    widgetStackRenderers->setCurrentWidget( mRendererDialog );
-  }
+  // load appropriate symbology page (V1 or V2)
+  updateSymbologyPage();
 
   // reset fields in label dialog
   layer->label()->setFields( layer->pendingFields() );
@@ -1135,4 +1091,97 @@ QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const
   }
 
   return pluginList;
+}
+
+void QgsVectorLayerProperties::setUsingNewSymbology( bool useNewSymbology )
+{
+  if ( useNewSymbology )
+  {
+    layer->setUsingRendererV2( true );
+    layer->setRendererV2( QgsFeatureRendererV2::defaultRenderer( layer->geometryType() ) );
+    layer->setRenderer( NULL );
+  }
+  else
+  {
+    layer->setUsingRendererV2( false );
+    layer->setRendererV2( NULL );
+    layer->setRenderer( new QgsSingleSymbolRenderer( layer->geometryType() ) );
+  }
+
+  // update GUI!
+  updateSymbologyPage();
+}
+
+void QgsVectorLayerProperties::useNewSymbology()
+{
+  int res = QMessageBox::question( this, tr( "Symbology" ),
+                                   tr( "Do you wish to use original symbology implementation for this layer?" ),
+                                   QMessageBox::Yes | QMessageBox::No );
+
+  if ( res != QMessageBox::Yes )
+    return;
+
+  setUsingNewSymbology( true );
+}
+
+void QgsVectorLayerProperties::updateSymbologyPage()
+{
+
+  //find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
+  delete mRendererDialog;
+  mRendererDialog = 0;
+
+  bool v2 = layer->isUsingRendererV2();
+
+  // hide unused widgets
+  legendtypecombobox->setVisible( !v2 );
+  legendtypelabel->setVisible( !v2 );
+  lblTransparencyPercent->setVisible( !v2 );
+  sliderTransparency->setVisible( !v2 );
+  btnUseNewSymbology->setVisible( !v2 );
+
+  if ( v2 )
+  {
+    mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
+
+    connect( mRendererDialog, SIGNAL( useNewSymbology( bool ) ), this, SLOT( setUsingNewSymbology( bool ) ) );
+
+  }
+  else
+  {
+
+    QString rtype = layer->renderer()->name();
+    if ( rtype == "Single Symbol" )
+    {
+      mRendererDialog = new QgsSingleSymbolDialog( layer );
+      legendtypecombobox->setCurrentIndex( 0 );
+    }
+    else if ( rtype == "Graduated Symbol" )
+    {
+      mRendererDialog = new QgsGraduatedSymbolDialog( layer );
+      legendtypecombobox->setCurrentIndex( 1 );
+    }
+    else if ( rtype == "Continuous Color" )
+    {
+      mRendererDialog = new QgsContinuousColorDialog( layer );
+      legendtypecombobox->setCurrentIndex( 2 );
+    }
+    else if ( rtype == "Unique Value" )
+    {
+      mRendererDialog = new QgsUniqueValueDialog( layer );
+      legendtypecombobox->setCurrentIndex( 3 );
+    }
+
+    QObject::connect( legendtypecombobox, SIGNAL( activated( const QString & ) ), this,
+                      SLOT( alterLayerDialog( const QString & ) ) );
+
+  }
+
+  if ( mRendererDialog )
+  {
+    widgetStackRenderers->addWidget( mRendererDialog );
+    widgetStackRenderers->setCurrentWidget( mRendererDialog );
+  }
+
+
 }

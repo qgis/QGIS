@@ -46,6 +46,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="btnOldSymbology">
+       <property name="text">
+        <string>Old symbology</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

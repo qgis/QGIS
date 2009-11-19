@@ -30,6 +30,11 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
 
     void showSymbolLevels();
 
+    void useOldSymbology();
+
+  signals:
+    void useNewSymbology( bool );
+
   protected:
 
     //! Reimplements dialog keyPress event so we can ignore it
