@@ -26,12 +26,13 @@
 #include <QPainter>
 #include <QSvgRenderer>
 
+
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ): QgsComposerItem( composition ), mMode( Unknown ), \
-    mSvgCacheUpToDate( false ), mCachedDpi( 0 ), mCachedRotation( 0 ), mRotationMap( 0 )
+    mSvgCacheUpToDate( false ), mCachedDpi( 0 ), mCachedRotation( 0 ), mCachedViewScaleFactor( -1 ), mRotationMap( 0 )
 {
 }
 
-QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mSvgCacheUpToDate( false ), mCachedRotation( 0 ), mRotationMap( 0 )
+QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mSvgCacheUpToDate( false ), mCachedRotation( 0 ), mCachedViewScaleFactor( -1 ), mRotationMap( 0 )
 {
 
 }
@@ -51,7 +52,9 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
   drawBackground( painter );
 
   int newDpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
-  if ( newDpi != mCachedDpi || mCachedRotation != mRotation )
+  double viewScaleFactor = horizontalViewScaleFactor();
+
+  if ( newDpi != mCachedDpi || mCachedRotation != mRotation || mCachedViewScaleFactor != viewScaleFactor )
   {
     mSvgCacheUpToDate = false;
   }
@@ -82,6 +85,12 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     {
       if ( !mSvgCacheUpToDate )
       {
+        //make nicer preview
+        if ( mComposition && mComposition->plotStyle() == QgsComposition::Preview )
+        {
+          rotatedBoundImageWidth *= std::min( viewScaleFactor, 10.0 );
+          rotatedBoundImageHeight *= std::min( viewScaleFactor, 10.0 );
+        }
         mImage = QImage( rotatedBoundImageWidth, rotatedBoundImageHeight, QImage::Format_ARGB32 );
         updateImageFromSvg();
       }
@@ -91,6 +100,12 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
     painter->translate( boundRectWidthMM / 2.0, boundRectHeightMM / 2.0 );
     painter->rotate( mRotation );
     painter->translate( -rotatedBoundImageWidthMM / 2.0, -rotatedBoundImageHeightMM / 2.0 );
+
+    /*if ( mComposition && mComposition->plotStyle() == QgsComposition::Preview )
+    {
+      rotatedBoundImageWidthMM /= std::min( viewScaleFactor, 10.0 );
+      rotatedBoundImageHeightMM /= std::min( viewScaleFactor, 10.0 );
+    }*/
     painter->drawImage( QRectF( 0, 0, rotatedBoundImageWidthMM,  rotatedBoundImageHeightMM ), mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
 
     painter->restore();
@@ -98,6 +113,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
   mCachedDpi = newDpi;
   mCachedRotation = mRotation;
+  mCachedViewScaleFactor = viewScaleFactor;
 
   //frame and selection boxes
   drawFrame( painter );
