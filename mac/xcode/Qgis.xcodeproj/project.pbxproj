@@ -1654,6 +1654,11 @@
 		72C42440103DE72D005CD18E /* mActionUndo.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42425103DE718005CD18E /* mActionUndo.png */; };
 		72C42441103DE72D005CD18E /* mActionUngroupItems.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42424103DE718005CD18E /* mActionUngroupItems.png */; };
 		72C83D5210A5D22600B97B43 /* utils.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 72C83D4F10A5D08E00B97B43 /* utils.py */; };
+		72C93CDA10B58963003A618E /* mActionAddBasicShape.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72C93CD910B58952003A618E /* mActionAddBasicShape.png */; };
+		72C93CDE10B58A79003A618E /* qgscomposershapewidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CDC10B58A07003A618E /* qgscomposershapewidget.cpp */; };
+		72C93CDF10B58A84003A618E /* qgscomposershapewidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CDD10B58A07003A618E /* qgscomposershapewidget.h */; };
+		72C93CE310B58B07003A618E /* qgscomposershape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CE010B58AD2003A618E /* qgscomposershape.cpp */; };
+		72C93CF310B59021003A618E /* qgscomposeritem.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6650F39E57A003DC336 /* qgscomposeritem.h */; };
 		72D0A53A1018971A00EE6279 /* qgsattributetypedialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A539101896AA00EE6279 /* qgsattributetypedialog.cpp */; };
 		72D0A53B1018971A00EE6279 /* qgsattributetypedialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */; };
 		72D0A53C1018971A00EE6279 /* qgsattributetypeloaddialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */; };
@@ -3384,6 +3389,7 @@
 				7256F4250F41C4DD0022BE1F /* geographic.png in Copy - theme-default */,
 				7256F4260F41C4DD0022BE1F /* mAction.png in Copy - theme-default */,
 				7256F4270F41C4DD0022BE1F /* mActionAddAllToOverview.png in Copy - theme-default */,
+				72C93CDA10B58963003A618E /* mActionAddBasicShape.png in Copy - theme-default */,
 				7256F4280F41C4DD0022BE1F /* mActionAddIsland.png in Copy - theme-default */,
 				7256F4290F41C4DD0022BE1F /* mActionAddLayer.png in Copy - theme-default */,
 				7256F42A0F41C4DD0022BE1F /* mActionAddLegend.png in Copy - theme-default */,
@@ -7586,6 +7592,12 @@
 		72C5C90A1059386500555945 /* osm_removeMember.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeMember.png; path = ../../python/plugins/osm/images/osm_removeMember.png; sourceTree = SOURCE_ROOT; };
 		72C5C90B1059386500555945 /* osm_removeTag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osm_removeTag.png; path = ../../python/plugins/osm/images/osm_removeTag.png; sourceTree = SOURCE_ROOT; };
 		72C83D4F10A5D08E00B97B43 /* utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = utils.py; path = ../../python/utils.py; sourceTree = SOURCE_ROOT; };
+		72C93CD910B58952003A618E /* mActionAddBasicShape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddBasicShape.png; path = ../../images/themes/default/mActionAddBasicShape.png; sourceTree = SOURCE_ROOT; };
+		72C93CDB10B589B7003A618E /* qgscomposershapewidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgscomposershapewidgetbase.ui; path = ../../src/ui/qgscomposershapewidgetbase.ui; sourceTree = SOURCE_ROOT; };
+		72C93CDC10B58A07003A618E /* qgscomposershapewidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscomposershapewidget.cpp; path = ../../src/app/composer/qgscomposershapewidget.cpp; sourceTree = SOURCE_ROOT; };
+		72C93CDD10B58A07003A618E /* qgscomposershapewidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposershapewidget.h; path = ../../src/app/composer/qgscomposershapewidget.h; sourceTree = SOURCE_ROOT; };
+		72C93CE010B58AD2003A618E /* qgscomposershape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscomposershape.cpp; path = ../../src/core/composer/qgscomposershape.cpp; sourceTree = SOURCE_ROOT; };
+		72C93CE110B58AD2003A618E /* qgscomposershape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposershape.h; path = ../../src/core/composer/qgscomposershape.h; sourceTree = SOURCE_ROOT; };
 		72D0A536101896AA00EE6279 /* qgsattributetypeloaddialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetypeloaddialog.h; path = ../../src/app/qgsattributetypeloaddialog.h; sourceTree = SOURCE_ROOT; };
 		72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetypeloaddialog.cpp; path = ../../src/app/qgsattributetypeloaddialog.cpp; sourceTree = SOURCE_ROOT; };
 		72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetypedialog.h; path = ../../src/app/qgsattributetypedialog.h; sourceTree = SOURCE_ROOT; };
@@ -8652,6 +8664,8 @@
 				7209E5CB0F39E57A003DC336 /* qgscomposerpicturewidget.h */,
 				7209E5CC0F39E57A003DC336 /* qgscomposerscalebarwidget.cpp */,
 				7209E5CD0F39E57A003DC336 /* qgscomposerscalebarwidget.h */,
+				72C93CDC10B58A07003A618E /* qgscomposershapewidget.cpp */,
+				72C93CDD10B58A07003A618E /* qgscomposershapewidget.h */,
 				7209E5CE0F39E57A003DC336 /* qgscompositionwidget.cpp */,
 				7209E5CF0F39E57A003DC336 /* qgscompositionwidget.h */,
 				72EBC9640F49D49D0016BA3C /* qgsitempositiondialog.cpp */,
@@ -8825,6 +8839,8 @@
 				7209E66F0F39E57A003DC336 /* qgscomposerpicture.h */,
 				7209E6700F39E57A003DC336 /* qgscomposerscalebar.cpp */,
 				7209E6710F39E57A003DC336 /* qgscomposerscalebar.h */,
+				72C93CE010B58AD2003A618E /* qgscomposershape.cpp */,
+				72C93CE110B58AD2003A618E /* qgscomposershape.h */,
 				7209E6720F39E57A003DC336 /* qgscomposition.cpp */,
 				7209E6730F39E57A003DC336 /* qgscomposition.h */,
 				7209E6740F39E57A003DC336 /* qgsdoubleboxscalebarstyle.cpp */,
@@ -9910,6 +9926,7 @@
 				7209EC950F39E57B003DC336 /* qgscomposermapwidgetbase.ui */,
 				7209EC960F39E57B003DC336 /* qgscomposerpicturewidgetbase.ui */,
 				7209EC970F39E57B003DC336 /* qgscomposerscalebarwidgetbase.ui */,
+				72C93CDB10B589B7003A618E /* qgscomposershapewidgetbase.ui */,
 				7209EC980F39E57B003DC336 /* qgscomposervectorlegendbase.ui */,
 				7209EC990F39E57B003DC336 /* qgscompositionbase.ui */,
 				7209EC9A0F39E57B003DC336 /* qgscompositionwidget.h */,
@@ -10861,6 +10878,7 @@
 				7209EEEF0F39E5D9003DC336 /* icon_template22x22.xcf */,
 				7209EEF00F39E5D9003DC336 /* mAction.png */,
 				7209EEF10F39E5D9003DC336 /* mActionAddAllToOverview.png */,
+				72C93CD910B58952003A618E /* mActionAddBasicShape.png */,
 				7209EEF20F39E5D9003DC336 /* mActionAddIsland.png */,
 				7209EEF30F39E5D9003DC336 /* mActionAddLayer.png */,
 				7209EEF40F39E5D9003DC336 /* mActionAddLegend.png */,
@@ -14863,6 +14881,7 @@
 				7209F20B0F39EA55003DC336 /* qgssingleboxscalebarstyle.cpp in Sources */,
 				7209F20C0F39EA55003DC336 /* qgscomposition.cpp in Sources */,
 				7209F20D0F39EA55003DC336 /* qgscomposerscalebar.cpp in Sources */,
+				72C93CE310B58B07003A618E /* qgscomposershape.cpp in Sources */,
 				7209F20E0F39EA55003DC336 /* qgsscalebarstyle.cpp in Sources */,
 				7209F20F0F39EA63003DC336 /* qgsfreakoutshader.cpp in Sources */,
 				7209F2100F39EA63003DC336 /* qgscolorrampshader.cpp in Sources */,
@@ -14904,6 +14923,7 @@
 				7209F2340F39EADF003DC336 /* Tools.cc in Sources */,
 				72EBC9430F49D0E20016BA3C /* qgspaperitem.cpp in Sources */,
 				729287430F71C2CB006D9489 /* qgsapplication.h in Sources */,
+				72C93CF310B59021003A618E /* qgscomposeritem.h in Sources */,
 				729287440F71C2CB006D9489 /* qgscomposeritemgroup.h in Sources */,
 				729287450F71C2CB006D9489 /* qgscomposerlegend.h in Sources */,
 				729287460F71C2CB006D9489 /* qgscomposermap.h in Sources */,
@@ -15596,6 +15616,7 @@
 				7209F4650F3A46EF003DC336 /* qgscomposermapwidget.cpp in Sources */,
 				7209F4660F3A46EF003DC336 /* qgscomposerpicturewidget.cpp in Sources */,
 				7209F4670F3A46EF003DC336 /* qgscomposerscalebarwidget.cpp in Sources */,
+				72C93CDE10B58A79003A618E /* qgscomposershapewidget.cpp in Sources */,
 				7209F4680F3A46EF003DC336 /* qgscompositionwidget.cpp in Sources */,
 				7209F4690F3A470F003DC336 /* qgslegend.cpp in Sources */,
 				7209F46A0F3A470F003DC336 /* qgslegendgroup.cpp in Sources */,
@@ -15629,6 +15650,7 @@
 				729288880F71FE65006D9489 /* qgscomposermapwidget.h in Sources */,
 				729288890F71FE65006D9489 /* qgscomposerpicturewidget.h in Sources */,
 				7292888A0F71FE65006D9489 /* qgscomposerscalebarwidget.h in Sources */,
+				72C93CDF10B58A84003A618E /* qgscomposershapewidget.h in Sources */,
 				7292888B0F71FE65006D9489 /* qgscompositionwidget.h in Sources */,
 				7292888C0F71FE65006D9489 /* qgscontinuouscolordialog.h in Sources */,
 				7292888D0F71FE65006D9489 /* qgscustomprojectiondialog.h in Sources */,
@@ -18784,7 +18806,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12171;
+				QGIS_VERSION_BUILD = 12191;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18795,7 +18817,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12171;
+				QGIS_VERSION_BUILD = 12191;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
