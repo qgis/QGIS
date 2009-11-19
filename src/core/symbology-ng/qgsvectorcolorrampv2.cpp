@@ -160,7 +160,7 @@ QColor QgsVectorColorBrewerColorRampV2::color( double value ) const
     return QColor( 255, 0, 0 ); // red color as a warning :)
 
   int paletteEntry = ( int )( value * mPalette.count() );
-  if ( paletteEntry > mPalette.count() )
+  if ( paletteEntry >= mPalette.count() )
     paletteEntry = mPalette.count() - 1;
   return mPalette.at( paletteEntry );
 }
