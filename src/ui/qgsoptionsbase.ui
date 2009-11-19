@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>722</width>
-    <height>529</height>
+    <width>833</width>
+    <height>532</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,17 +19,58 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout">
+  <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="tabGeneral">
-      <attribute name="title">
-       <string>&amp;General</string>
-      </attribute>
+    <widget class="QListWidget" name="listWidget">
+     <item>
+      <property name="text">
+       <string>General</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Rendering &amp; SVG</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Map tools</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Overlay</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Digitising</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>CRS</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Locale</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Network &amp; Proxy</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QWidget" name="stackedWidgetPage1" native="true">
       <layout class="QGridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_11">
          <property name="title">
@@ -67,9 +108,6 @@
             <property name="text">
              <string>Selection color</string>
             </property>
-            <property name="buddy">
-             <cstring>pbnSelectionColour</cstring>
-            </property>
            </widget>
           </item>
           <item row="0" column="3">
@@ -89,9 +127,6 @@
            <widget class="QLabel" name="label">
             <property name="text">
              <string>Background color</string>
-            </property>
-            <property name="buddy">
-             <cstring>pbnCanvasColor</cstring>
             </property>
            </widget>
           </item>
@@ -153,9 +188,6 @@
             </property>
             <property name="text">
              <string>Icon theme</string>
-            </property>
-            <property name="buddy">
-             <cstring>cmbTheme</cstring>
             </property>
            </widget>
           </item>
@@ -234,11 +266,11 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabRendering">
-      <attribute name="title">
-       <string>&amp;Rendering and SVG</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage2" native="true">
       <layout class="QGridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
@@ -256,9 +288,6 @@
            <widget class="QLabel" name="textLabel1_6">
             <property name="text">
              <string>Number of features to draw before updating the display</string>
-            </property>
-            <property name="buddy">
-             <cstring>spinBoxUpdateThreshold</cstring>
             </property>
            </widget>
           </item>
@@ -385,13 +414,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabMap">
-      <attribute name="title">
-       <string>&amp;Map tools</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage3" native="true">
       <layout class="QGridLayout">
        <property name="margin">
-        <number>11</number>
+        <number>0</number>
        </property>
        <item row="2" column="0">
         <widget class="QGroupBox" name="groupBox_10">
@@ -431,18 +457,12 @@
             <property name="text">
              <string>Zoom factor</string>
             </property>
-            <property name="buddy">
-             <cstring>spinZoomFactor</cstring>
-            </property>
            </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Mouse wheel action</string>
-            </property>
-            <property name="buddy">
-             <cstring>cmbWheelAction</cstring>
             </property>
            </widget>
           </item>
@@ -486,9 +506,6 @@
             <property name="text">
              <string>Search radius for identifying features and displaying map tips</string>
             </property>
-            <property name="buddy">
-             <cstring>spinBoxIdentifyValue</cstring>
-            </property>
            </widget>
           </item>
           <item row="2" column="1">
@@ -514,9 +531,6 @@
            <widget class="QLabel" name="label_4">
             <property name="text">
              <string>Mode</string>
-            </property>
-            <property name="buddy">
-             <cstring>cmbIdentifyMode</cstring>
             </property>
            </widget>
           </item>
@@ -586,9 +600,6 @@
             <property name="text">
              <string>Rubberband color</string>
             </property>
-            <property name="buddy">
-             <cstring>pbnMeasureColour</cstring>
-            </property>
            </widget>
           </item>
           <item row="0" column="0">
@@ -596,18 +607,12 @@
             <property name="text">
              <string>Ellipsoid for distance calculations</string>
             </property>
-            <property name="buddy">
-             <cstring>cmbEllipsoid</cstring>
-            </property>
            </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="textLabel1_11">
             <property name="text">
              <string>Preferred measurements units</string>
-            </property>
-            <property name="buddy">
-             <cstring>radMeters</cstring>
             </property>
            </widget>
           </item>
@@ -630,11 +635,11 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="mOverlayTab">
-      <attribute name="title">
-       <string>Overlay</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage4" native="true">
       <layout class="QGridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QGroupBox" name="mPositionGroupBox">
          <property name="title">
@@ -645,9 +650,6 @@
            <widget class="QLabel" name="mAlgorithmLabel">
             <property name="text">
              <string>Placement algorithm:</string>
-            </property>
-            <property name="buddy">
-             <cstring>mOverlayAlgorithmComboBox</cstring>
             </property>
            </widget>
           </item>
@@ -685,11 +687,11 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabDigitizing">
-      <attribute name="title">
-       <string>Digitizing</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage5" native="true">
       <layout class="QGridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QGroupBox" name="mRubberBandGroupBox">
          <property name="title">
@@ -700,9 +702,6 @@
            <widget class="QLabel" name="mLineWidthTextLabel">
             <property name="text">
              <string>Line width</string>
-            </property>
-            <property name="buddy">
-             <cstring>mLineWidthSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -720,9 +719,6 @@
            <widget class="QLabel" name="mLineColourTextLabel">
             <property name="text">
              <string>Line colour</string>
-            </property>
-            <property name="buddy">
-             <cstring>mLineColourToolButton</cstring>
             </property>
            </widget>
           </item>
@@ -752,9 +748,6 @@
            <widget class="QLabel" name="mDefaultSnapModeLabel">
             <property name="text">
              <string>Default snap mode</string>
-            </property>
-            <property name="buddy">
-             <cstring>mDefaultSnapModeComboBox</cstring>
             </property>
            </widget>
           </item>
@@ -786,9 +779,6 @@
             <property name="text">
              <string>Default snapping tolerance</string>
             </property>
-            <property name="buddy">
-             <cstring>mDefaultSnappingToleranceSpinBox</cstring>
-            </property>
            </widget>
           </item>
           <item row="1" column="2" colspan="2">
@@ -818,9 +808,6 @@
            <widget class="QLabel" name="mVertexSearchRadiusVertexEditLabel">
             <property name="text">
              <string>Search radius for vertex edits</string>
-            </property>
-            <property name="buddy">
-             <cstring>mSearchRadiusVertexEditSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -902,9 +889,6 @@
             <property name="text">
              <string>Marker style</string>
             </property>
-            <property name="buddy">
-             <cstring>mMarkerStyleComboBox</cstring>
-            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -947,9 +931,6 @@
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Marker size</string>
-            </property>
-            <property name="buddy">
-             <cstring>mMarkerSizeSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -1003,13 +984,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabCRS">
-      <attribute name="title">
-       <string>CRS</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage6" native="true">
       <layout class="QGridLayout">
        <property name="margin">
-        <number>11</number>
+        <number>0</number>
        </property>
        <item row="3" column="0">
         <spacer>
@@ -1069,11 +1047,11 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabLocale">
-      <attribute name="title">
-       <string>Locale</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage7" native="true">
       <layout class="QGridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QGroupBox" name="grpLocale">
          <property name="title">
@@ -1087,9 +1065,6 @@
            <widget class="QLabel" name="label_5">
             <property name="text">
              <string>Locale to use instead</string>
-            </property>
-            <property name="buddy">
-             <cstring>cboLocale</cstring>
             </property>
            </widget>
           </item>
@@ -1140,20 +1115,17 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>Network and Proxy</string>
-      </attribute>
+     <widget class="QWidget" name="stackedWidgetPage8" native="true">
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="mNetworkTimeoutLabel">
            <property name="text">
             <string>Timeout for network requests (ms):</string>
-           </property>
-           <property name="buddy">
-            <cstring>mNetworkTimeoutSpinBox</cstring>
            </property>
           </widget>
          </item>
@@ -1183,9 +1155,6 @@
             <property name="text">
              <string>Host</string>
             </property>
-            <property name="buddy">
-             <cstring>leProxyHost</cstring>
-            </property>
            </widget>
           </item>
           <item row="0" column="1" colspan="5">
@@ -1196,9 +1165,6 @@
             <property name="text">
              <string>Port</string>
             </property>
-            <property name="buddy">
-             <cstring>leProxyPort</cstring>
-            </property>
            </widget>
           </item>
           <item row="1" column="1" colspan="5">
@@ -1208,9 +1174,6 @@
            <widget class="QLabel" name="lblUser">
             <property name="text">
              <string>User</string>
-            </property>
-            <property name="buddy">
-             <cstring>leProxyUser</cstring>
             </property>
            </widget>
           </item>
@@ -1225,9 +1188,6 @@
            <widget class="QLabel" name="lblPassword">
             <property name="text">
              <string>Password</string>
-            </property>
-            <property name="buddy">
-             <cstring>leProxyPassword</cstring>
             </property>
            </widget>
           </item>
@@ -1245,9 +1205,6 @@
            <widget class="QLabel" name="mTypeLabel">
             <property name="text">
              <string>Proxy type</string>
-            </property>
-            <property name="buddy">
-             <cstring>mProxyTypeComboBox</cstring>
             </property>
            </widget>
           </item>
@@ -1271,9 +1228,6 @@
            <widget class="QLabel" name="mExcludeUrlsLabel">
             <property name="text">
              <string>Exclude URLs (starting with):</string>
-            </property>
-            <property name="buddy">
-             <cstring>mAddUrlPushButton</cstring>
             </property>
            </widget>
           </item>
@@ -1314,7 +1268,7 @@
      </widget>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="1" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -1335,7 +1289,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>stackedWidget</tabstop>
   <tabstop>chbAskToSaveProjectChanges</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>
   <tabstop>pbnSelectionColour</tabstop>
@@ -1403,8 +1357,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>611</x>
-     <y>531</y>
+     <x>186</x>
+     <y>574</y>
     </hint>
     <hint type="destinationlabel">
      <x>730</x>
@@ -1419,12 +1373,28 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>686</x>
-     <y>525</y>
+     <x>186</x>
+     <y>574</y>
     </hint>
     <hint type="destinationlabel">
      <x>731</x>
      <y>353</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listWidget</sender>
+   <signal>currentRowChanged(int)</signal>
+   <receiver>stackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>864</x>
+     <y>14</y>
     </hint>
    </hints>
   </connection>
