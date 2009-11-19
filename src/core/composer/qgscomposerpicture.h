@@ -89,6 +89,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     bool mSvgCacheUpToDate;
     int mCachedDpi; //store dpis for which the svg cache is valid
     double mCachedRotation; //store last rotation value to generate new pixmap from svg on change
+    double mCachedViewScaleFactor;
+
     QSize mDefaultSvgSize;
     /**Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
     const QgsComposerMap* mRotationMap;
