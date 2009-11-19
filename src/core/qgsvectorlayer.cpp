@@ -992,6 +992,9 @@ void QgsVectorLayer::select( int number, bool emitSignal )
 
   if ( emitSignal )
   {
+    // invalidate cache
+    setCacheImage( 0 );
+
     emit selectionChanged();
   }
 }
@@ -1002,6 +1005,9 @@ void QgsVectorLayer::deselect( int number, bool emitSignal )
 
   if ( emitSignal )
   {
+    // invalidate cache
+    setCacheImage( 0 );
+
     emit selectionChanged();
   }
 }
@@ -1024,6 +1030,9 @@ void QgsVectorLayer::select( QgsRectangle & rect, bool lock )
   {
     select( f.id(), false ); // don't emit signal (not to redraw it everytime)
   }
+
+  // invalidate cache
+  setCacheImage( 0 );
 
   emit selectionChanged(); // now emit signal to redraw layer
 }
@@ -1048,6 +1057,9 @@ void QgsVectorLayer::invertSelection()
     mSelectedFeatureIds.remove( *iter );
   }
 
+  // invalidate cache
+  setCacheImage( 0 );
+
   emit selectionChanged();
 }
 
@@ -1071,6 +1083,9 @@ void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
     }
   }
 
+  // invalidate cache
+  setCacheImage( 0 );
+
   emit selectionChanged();
 }
 
@@ -1079,7 +1094,12 @@ void QgsVectorLayer::removeSelection( bool emitSignal )
   mSelectedFeatureIds.clear();
 
   if ( emitSignal )
+  {
+    // invalidate cache
+    setCacheImage( 0 );
+
     emit selectionChanged();
+  }
 }
 
 void QgsVectorLayer::triggerRepaint()
@@ -1764,6 +1784,9 @@ bool QgsVectorLayer::deleteSelectedFeatures()
     int fid = *mSelectedFeatureIds.begin();
     deleteFeature( fid );  // removes from selection
   }
+
+  // invalidate cache
+  setCacheImage( 0 );
 
   emit selectionChanged();
 
@@ -3355,6 +3378,10 @@ void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids )
 {
   // TODO: check whether features with these ID exist
   mSelectedFeatureIds = ids;
+
+  // invalidate cache
+  setCacheImage( 0 );
+
   emit selectionChanged();
 }
 
@@ -3448,6 +3475,9 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
 
   if ( makeSelected )
   {
+    // invalidate cache
+    setCacheImage( 0 );
+
     emit selectionChanged();
   }
 
