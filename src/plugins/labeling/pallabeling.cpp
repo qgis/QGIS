@@ -216,6 +216,7 @@ void LayerSettings::calculateLabelSize( QString text, double& labelX, double& la
   labelY = fabs( ptSize.y() - ptZero.y() );
 }
 
+
 void LayerSettings::registerFeature( QgsFeature& f )
 {
   QString labelText = f.attributeMap()[fieldIndex].toString();
@@ -232,8 +233,16 @@ void LayerSettings::registerFeature( QgsFeature& f )
   geometries.append( lbl );
 
   // register feature to the layer
-  if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData() ) )
+  try
+  {
+    if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData() ) )
+      return;
+  }
+  catch ( std::exception* e )
+  {
+    std::cerr << "Ignoring feature " << f.id() << " due PAL exception: " << e->what() << std::endl;
     return;
+  }
 
   // TODO: only for placement which needs character info
   pal::Feature* feat = palLayer->getFeature( lbl->strId() );
