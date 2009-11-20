@@ -20,7 +20,7 @@
 #include <QDomElement>
 #include <QPainter>
 
-QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 )
+QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) )
 {
   //default font size is 10 point
   mFont.setPointSizeF( 10 );
@@ -38,7 +38,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 
   drawBackground( painter );
-  painter->setPen( QPen( QColor( 0, 0, 0 ) ) ); //draw all text black
+  painter->setPen( QPen( QColor( mFontColor ) ) ); //draw all text black
   painter->setFont( mFont );
 
   QFontMetricsF fontSize( mFont );
@@ -128,6 +128,13 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
   labelFontElem.setAttribute( "description", mFont.toString() );
   composerLabelElem.appendChild( labelFontElem );
 
+  //font color
+  QDomElement fontColorElem = doc.createElement( "FontColor" );
+  fontColorElem.setAttribute( "red", mFontColor.red() );
+  fontColorElem.setAttribute( "green", mFontColor.green() );
+  fontColorElem.setAttribute( "blue", mFontColor.blue() );
+  composerLabelElem.appendChild( fontColorElem );
+
   elem.appendChild( composerLabelElem );
   return _writeXML( composerLabelElem, doc );
 }
@@ -153,6 +160,21 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   {
     QDomElement labelFontElem = labelFontList.at( 0 ).toElement();
     mFont.fromString( labelFontElem.attribute( "description" ) );
+  }
+
+  //font color
+  QDomNodeList fontColorList = itemElem.elementsByTagName( "FontColor" );
+  if ( fontColorList.size() > 0 )
+  {
+    QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
+    int red = fontColorElem.attribute( "red", "0" ).toInt();
+    int green = fontColorElem.attribute( "green", "0" ).toInt();
+    int blue = fontColorElem.attribute( "blue", "0" ).toInt();
+    mFontColor = QColor( red, green, blue );
+  }
+  else
+  {
+    mFontColor = QColor( 0, 0, 0 );
   }
 
   //restore general composer item properties

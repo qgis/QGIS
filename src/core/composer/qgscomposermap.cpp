@@ -1031,6 +1031,7 @@ void QgsComposerMap::drawAnnotation( QPainter* p, const QPointF& pos, int rotati
   p->save();
   p->translate( pos );
   p->rotate( rotation );
+  p->setPen( QColor( 0, 0, 0 ) );
   drawText( p, 0, 0, annotationText, mGridAnnotationFont );
   p->restore();
 }

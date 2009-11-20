@@ -88,6 +88,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   currentYCoordinate += fontAscentMillimeters( mTitleFont );
   if ( painter )
   {
+    painter->setPen( QColor( 0, 0, 0 ) );
     drawText( painter, mBoxSpace, currentYCoordinate, mTitle, mTitleFont );
   }
 
@@ -126,6 +127,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
           //draw layer Item
           if ( painter )
           {
+            painter->setPen( QColor( 0, 0, 0 ) );
             drawText( painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont );
           }
         }
@@ -237,6 +239,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     //finally draw text
     if ( p )
     {
+      p->setPen( QColor( 0, 0, 0 ) );
       drawText( p, currentXCoord, currentYCoord + fontAscentMillimeters( mItemFont ) + ( realItemHeight - fontAscentMillimeters( mItemFont ) ) / 2, currentItem->text(), mItemFont );
     }
 

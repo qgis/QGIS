@@ -715,7 +715,6 @@ void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& 
 
   p->save();
   p->setFont( textFont );
-  p->setPen( QColor( 0, 0, 0 ) ); //draw text always in black
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
   p->drawText( scaledRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, text );

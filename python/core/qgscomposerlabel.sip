@@ -22,11 +22,18 @@ class QgsComposerLabel: QgsComposerItem
      /**Returns the text as it appears on screen (with replaced data field)
       @note this function was added in version 1.2*/
     QString displayText() const;
-
+    /**Get font color
+      @note: this function was added in version 1.4*/
     QFont font() const;
     void setFont( const QFont& f );
     double margin();
     void setMargin( double m );
+
+    /**Sets text color
+    @note: this function was added in version 1.4*/
+    void setFontColor( const QColor& c);
+
+    QColor fontColor() const;
 
     /** stores state in Dom node
        * @param node is Dom node corresponding to 'Composer' tag
