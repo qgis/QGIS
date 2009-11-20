@@ -23329,8 +23329,8 @@ Per maggiori informazioni visitare la home page e il wiki di Quantum GIS.</trans
         <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="76"/>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation>Plugin python installato.
-Non è necessario abilitarlo nel Gestore di Plugin.</translation>
+        <translation type="unfinished">Plugin Python installato.
+Devi abilitarlo nel Gestore di Plugin.</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="78"/>
