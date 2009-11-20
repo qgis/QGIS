@@ -704,7 +704,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     else
       mRendererV2->renderFeature( fet, rendererContext );
 
-    if ( labeling )
+    if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
       rendererContext.labelingEngine()->registerFeature( this, fet );
 
     if ( mEditable )
@@ -749,7 +749,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     }
     features[sym].append( fet );
 
-    if ( labeling )
+    if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
       rendererContext.labelingEngine()->registerFeature( this, fet );
 
     if ( mEditable )
@@ -972,7 +972,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         //double scale = rendererContext.scaleFactor() /  markerScaleFactor;
         drawFeature( rendererContext, fet, &marker );
 
-        if ( labeling )
+        if ( labeling && mRenderer->willRenderFeature( &fet ) )
         {
           rendererContext.labelingEngine()->registerFeature( this, fet );
         }
