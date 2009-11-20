@@ -36,6 +36,12 @@ QgsComposerShape::~QgsComposerShape()
 
 void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
+  if ( !painter )
+  {
+    return;
+  }
+  drawBackground( painter );
+
   double width = rect().width();
   double height = rect().height();
   imageSizeConsideringRotation( width, height );
