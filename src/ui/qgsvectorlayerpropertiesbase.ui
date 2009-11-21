@@ -21,60 +21,10 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QListWidget" name="listWidget">
-     <property name="iconSize">
-      <size>
-       <width>64</width>
-       <height>64</height>
-      </size>
-     </property>
-     <item>
-      <property name="text">
-       <string>Symbology</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Labels</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Attributes</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>General</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Metadata</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Actions</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <layout class="QHBoxLayout">
-     <property name="spacing">
-      <number>3</number>
-     </property>
-     <property name="margin">
-      <number>1</number>
-     </property>
-    </layout>
-   </item>
    <item row="0" column="2" colspan="3">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_3">
       <layout class="QGridLayout" name="gridLayout_4">
@@ -355,8 +305,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>554</width>
-            <height>397</height>
+            <width>605</width>
+            <height>425</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -652,6 +602,124 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QListWidget" name="listWidget">
+     <property name="minimumSize">
+      <size>
+       <width>110</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>110</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>false</bool>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>64</width>
+       <height>64</height>
+      </size>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="flow">
+      <enum>QListView::TopToBottom</enum>
+     </property>
+     <property name="isWrapping" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
+     <property name="spacing">
+      <number>9</number>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::IconMode</enum>
+     </property>
+     <property name="uniformItemSizes">
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>Symbology</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Labels</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Attributes</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>General</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Metadata</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Actions</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
+     </item>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -691,12 +759,12 @@
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>93</x>
-     <y>19</y>
+     <x>99</x>
+     <y>10</y>
     </hint>
     <hint type="destinationlabel">
-     <x>119</x>
-     <y>16</y>
+     <x>754</x>
+     <y>12</y>
     </hint>
    </hints>
   </connection>
