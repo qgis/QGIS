@@ -747,7 +747,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/frmAbout.ui" line="125"/>
         <location filename="../python/plugins/fTools/python-i18n.cpp" line="141"/>
         <source>Help</source>
-        <translation>Aiuto</translation>
+        <translation>Guida</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="132"/>
@@ -4017,7 +4017,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="293"/>
         <source>yes</source>
-        <translation>si</translation>
+        <translation>sì</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="293"/>
@@ -8427,7 +8427,7 @@ L&apos;errore è: %2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="21"/>
         <source>Line edit</source>
-        <translation>Modifica linea</translation>
+        <translation>Modifica valore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="26"/>
@@ -23329,7 +23329,7 @@ Per maggiori informazioni visitare la home page e il wiki di Quantum GIS.</trans
         <location filename="../python/plugins/plugin_installer/python-i18n.cpp" line="76"/>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished">Plugin Python installato.
+        <translation>Plugin Python installato.
 Devi abilitarlo nel Gestore di Plugin.</translation>
     </message>
     <message>
