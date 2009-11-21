@@ -27,7 +27,6 @@ SET(QGIS_APP_SRCS
   qgshelpviewer.cpp
   qgsidentifyresults.cpp
   qgslabeldialog.cpp
-  qgsludialog.cpp
   qgsmaptooladdfeature.cpp
   qgsmaptooladdvertex.cpp
   qgsmaptooladdisland.cpp
@@ -132,7 +131,6 @@ SET (QGIS_APP_MOC_HDRS
   qgshelpviewer.h
   qgsidentifyresults.h
   qgslabeldialog.h
-  qgsludialog.h
 
   qgsmaptoolidentify.h
   qgsmaptoolsplitfeatures.h

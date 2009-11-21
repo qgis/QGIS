@@ -19,6 +19,8 @@ class CORE_EXPORT QgsRendererRangeV2
 
     void setSymbol( QgsSymbolV2* s );
     void setLabel( QString label );
+    void setLowerValue( double lowerValue );
+    void setUpperValue( double upperValue );
 
     // debugging
     QString dump();
@@ -62,6 +64,11 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     bool updateRangeSymbol( int rangeIndex, QgsSymbolV2* symbol );
     bool updateRangeLabel( int rangeIndex, QString label );
+    bool updateRangeUpperValue( int rangeIndex, double value );
+    bool updateRangeLowerValue( int rangeIndex, double value );
+
+    void addClass( QgsSymbolV2* symbol );
+    void deleteClass( int idx );
 
     enum Mode
     {

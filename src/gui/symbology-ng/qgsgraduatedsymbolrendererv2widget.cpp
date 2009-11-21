@@ -11,6 +11,8 @@
 
 #include "qgssymbolv2selectordialog.h"
 
+#include "qgsludialog.h"
+
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -53,9 +55,14 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   mGraduatedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
   connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( rangesDoubleClicked( const QModelIndex & ) ) );
-
+  connect( viewGraduated, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( rangesClicked( const QModelIndex & ) ) );
+  connect( mg, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( changeCurrentValue( QStandardItem * ) ) );
   connect( btnGraduatedClassify, SIGNAL( clicked() ), this, SLOT( classifyGraduated() ) );
   connect( btnChangeGraduatedSymbol, SIGNAL( clicked() ), this, SLOT( changeGraduatedSymbol() ) );
+  connect( btnGraduatedDelete, SIGNAL( clicked() ), this, SLOT( deleteCurrentClass() ) );
+  connect( btnGraduatedAdd, SIGNAL( clicked() ), this, SLOT( addClass() ) );
+
+
 
   // initialize from previously set renderer
   updateUiFromRenderer();
@@ -202,9 +209,10 @@ void QgsGraduatedSymbolRendererV2Widget::populateRanges()
 
   QStandardItemModel* m = qobject_cast<QStandardItemModel*>( viewGraduated->model() );
   m->clear();
+  mRowSelected = -1;
 
   QStringList labels;
-  labels << "Range" << "Label";
+  labels << "Symbol" << "Range" << "Label";
   m->setHorizontalHeaderLabels( labels );
 
   QSize iconSize( 16, 16 );
@@ -217,12 +225,16 @@ void QgsGraduatedSymbolRendererV2Widget::populateRanges()
     QString rangeStr = QString::number( range.lowerValue(), 'f', 4 ) + " - " + QString::number( range.upperValue(), 'f', 4 );
 
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( range.symbol(), iconSize );
-    QStandardItem* item = new QStandardItem( icon, rangeStr );
+    QStandardItem* item = new QStandardItem( icon, "" );
     //item->setData(k); // set attribute value as user role
     item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
+    QStandardItem* item2 = new QStandardItem( rangeStr );
+    item2->setEditable( 0 );
+
     QList<QStandardItem *> list;
-    list << item << new QStandardItem( range.label() );
+    list << item << item2 << new QStandardItem( range.label() );
+
     m->appendRow( list );
   }
 
@@ -231,25 +243,34 @@ void QgsGraduatedSymbolRendererV2Widget::populateRanges()
 }
 
 
-/*
+#if 0
 int QgsRendererV2PropertiesDialog::currentRangeRow()
 {
   QModelIndex idx = viewGraduated->selectionModel()->currentIndex();
-  if (!idx.isValid())
+  if ( !idx.isValid() )
     return -1;
   return idx.row();
 }
-*/
+#endif
 
 void QgsGraduatedSymbolRendererV2Widget::rangesDoubleClicked( const QModelIndex & idx )
 {
   if ( idx.isValid() && idx.column() == 0 )
     changeRangeSymbol( idx.row() );
+  if ( idx.isValid() && idx.column() == 1 )
+    changeRange( idx.row() );
+}
+
+void QgsGraduatedSymbolRendererV2Widget::rangesClicked( const QModelIndex & idx )
+{
+  if ( !idx.isValid() )
+    mRowSelected = -1;
+  else
+    mRowSelected = idx.row();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
 {
-
   QgsSymbolV2* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
 
   QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, this );
@@ -264,3 +285,45 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
   populateRanges();
 }
 
+void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
+{
+  QgsLUDialog dialog( this );
+
+  const QgsRendererRangeV2& range = mRenderer->ranges()[rangeIdx];
+  dialog.setLowerValue( QString( "%1" ).arg( range.lowerValue() ) );
+  dialog.setUpperValue( QString( "%1" ).arg( range.upperValue() ) );
+
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    double lowerValue = dialog.lowerValue().toDouble();
+    double upperValue = dialog.upperValue().toDouble();
+    mRenderer->updateRangeUpperValue( rangeIdx, upperValue );
+    mRenderer->updateRangeLowerValue( rangeIdx, lowerValue );
+    populateRanges();
+
+  }
+
+}
+
+void QgsGraduatedSymbolRendererV2Widget::addClass()
+{
+  mRenderer->addClass( mGraduatedSymbol );
+  populateRanges();
+}
+
+void QgsGraduatedSymbolRendererV2Widget::deleteCurrentClass()
+{
+
+  mRenderer->deleteClass( mRowSelected );
+  populateRanges();
+}
+
+void QgsGraduatedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * item )
+{
+  if ( item->column() == 2 )
+  {
+    QString label = item->text();
+    int idx = item->row();
+    mRenderer->updateRangeLabel( idx, label );
+  }
+}

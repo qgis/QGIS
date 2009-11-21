@@ -23,7 +23,7 @@
 #include "qgisgui.h"
 
 
-class QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
+class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
 {
     Q_OBJECT
   public:
