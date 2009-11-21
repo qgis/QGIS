@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>757</width>
-    <height>648</height>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,49 +27,137 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QListWidget" name="listWidget">
+     <property name="minimumSize">
+      <size>
+       <width>110</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>110</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>false</bool>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>64</width>
+       <height>64</height>
+      </size>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="flow">
+      <enum>QListView::TopToBottom</enum>
+     </property>
+     <property name="isWrapping" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
+     <property name="spacing">
+      <number>9</number>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::IconMode</enum>
+     </property>
+     <property name="uniformItemSizes">
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
      <item>
       <property name="text">
        <string>Symbology</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Transparency</string>
       </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
      </item>
      <item>
       <property name="text">
        <string>Colormap</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
       </property>
      </item>
      <item>
       <property name="text">
        <string>General</string>
       </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
      </item>
      <item>
       <property name="text">
        <string>Metadata</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Pyramids</string>
       </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
      </item>
      <item>
       <property name="text">
        <string>Histogram</string>
       </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+      </property>
      </item>
     </widget>
    </item>
-   <item row="0" column="1" rowspan="2" colspan="4">
+   <item row="0" column="1" colspan="4">
     <widget class="QStackedWidget" name="tabBar">
      <property name="currentIndex">
       <number>2</number>
      </property>
-     <widget class="QWidget" name="tabPageSymbology" native="true">
+     <widget class="QWidget" name="tabPageSymbology">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -914,7 +1002,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabPageTransparency" native="true">
+     <widget class="QWidget" name="tabPageTransparency">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -1195,7 +1283,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabPageColormap" native="true">
+     <widget class="QWidget" name="tabPageColormap">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -1397,7 +1485,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabPageGeneral" native="true">
+     <widget class="QWidget" name="tabPageGeneral">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -1695,7 +1783,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabPageMetadata" native="true">
+     <widget class="QWidget" name="tabPageMetadata">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -1705,7 +1793,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabPagePyramids" native="true">
+     <widget class="QWidget" name="tabPagePyramids">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -1804,7 +1892,7 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabPageHistogram" native="true">
+     <widget class="QWidget" name="tabPageHistogram">
       <layout class="QGridLayout">
        <property name="margin">
         <number>0</number>
@@ -1968,35 +2056,35 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
    </item>
-   <item row="1" column="2" rowspan="2">
-    <widget class="QPushButton" name="pbnSaveDefaultStyle">
-     <property name="text">
-      <string>Save As Default</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
+   <item row="1" column="0" colspan="2">
     <widget class="QPushButton" name="pbnLoadDefaultStyle">
      <property name="text">
       <string>Restore Default Style</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="3">
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pbnSaveDefaultStyle">
+     <property name="text">
+      <string>Save As Default</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
     <widget class="QPushButton" name="pbnLoadStyle">
      <property name="text">
       <string>Load Style ...</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="4">
+   <item row="1" column="4">
     <widget class="QPushButton" name="pbnSaveStyleAs">
      <property name="text">
       <string>Save Style ...</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="5">
+   <item row="2" column="0" colspan="5">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -2056,8 +2144,8 @@ p, li { white-space: pre-wrap; }
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>467</x>
-     <y>638</y>
+     <x>476</x>
+     <y>620</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -2072,12 +2160,12 @@ p, li { white-space: pre-wrap; }
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>110</x>
-     <y>52</y>
+     <x>59</x>
+     <y>12</y>
     </hint>
     <hint type="destinationlabel">
-     <x>736</x>
-     <y>11</y>
+     <x>722</x>
+     <y>14</y>
     </hint>
    </hints>
   </connection>
