@@ -38,6 +38,7 @@
 #include <QClipboard>
 #include <QDockWidget>
 #include <QMenuBar>
+#include <QPushButton>
 
 #include "qgslogger.h"
 
@@ -733,6 +734,10 @@ void QgsIdentifyResults::featureForm()
       QgsFeatureAction *a = new QgsFeatureAction( action.name(), this, vlayer, i, featItem );
       ad->dialog()->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
+
+      QPushButton *pb = ad->dialog()->findChild<QPushButton *>( action.name() );
+      if ( pb )
+        connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
     }
   }
 
