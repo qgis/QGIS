@@ -102,14 +102,14 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     mEditable( false ),
     mModified( false ),
     mMaxUpdatedIndex( -1 ),
+    mActiveCommand( NULL ),
     mRenderer( 0 ),
+    mRendererV2( NULL ),
+    mUsingRendererV2( false ),
     mLabel( 0 ),
     mLabelOn( false ),
-    mActiveCommand( NULL ),
     mVertexMarkerOnlyForSelection( false ),
-    mFetching( false ),
-    mRendererV2( NULL ),
-    mUsingRendererV2( false )
+    mFetching( false )
 {
   mActions = new QgsAttributeAction;
 
@@ -2687,6 +2687,12 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mEditForm = QgsProject::instance()->readPath( e.text() );
   }
 
+  QDomNode editFormInitNode = node.namedItem( "editforminit" );
+  if ( !editFormInitNode.isNull() )
+  {
+    mEditFormInit = editFormInitNode.toElement().text();
+  }
+
   mAttributeAliasMap.clear();
   QDomNode aliasesNode = node.namedItem( "aliases" );
   if ( !aliasesNode.isNull() )
@@ -2827,6 +2833,11 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( mEditForm ) );
   efField.appendChild( efText );
   node.appendChild( efField );
+
+  QDomElement efiField  = doc.createElement( "editforminit" );
+  QDomText efiText = doc.createTextNode( mEditFormInit );
+  efiField.appendChild( efiText );
+  node.appendChild( efiField );
 
   //attribute aliases
   if ( mAttributeAliasMap.size() > 0 )
@@ -4024,6 +4035,16 @@ QString QgsVectorLayer::editForm()
 void QgsVectorLayer::setEditForm( QString ui )
 {
   mEditForm = ui;
+}
+
+QString QgsVectorLayer::editFormInit()
+{
+  return mEditFormInit;
+}
+
+void QgsVectorLayer::setEditFormInit( QString function )
+{
+  mEditFormInit = function;
 }
 
 QMap< QString, QVariant > &QgsVectorLayer::valueMap( int idx )

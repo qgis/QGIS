@@ -132,6 +132,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   leSpatialRefSys->setCursorPosition( 0 );
 
   leEditForm->setText( layer->editForm() );
+  leEditFormInit->setText( layer->editFormInit() );
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
 
@@ -568,6 +569,7 @@ void QgsVectorLayerProperties::apply()
   layer->setDisplayField( displayFieldComboBox->currentText() );
 
   layer->setEditForm( leEditForm->text() );
+  layer->setEditFormInit( leEditFormInit->text() );
 
   actionDialog->apply();
 

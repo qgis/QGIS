@@ -55,6 +55,8 @@ class QgsAttributeDialog : public QObject
 
     int exec();
 
+    void dialogDestroyed();
+
   private:
 
     QDialog *mDialog;

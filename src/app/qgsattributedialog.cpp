@@ -25,6 +25,8 @@
 #include "qgssymbol.h"
 #include "qgsattributeeditor.h"
 
+#include "qgisapp.h"
+
 #include <QTableWidgetItem>
 #include <QSettings>
 #include <QLabel>
@@ -187,10 +189,33 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     }
 
     connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( reject() ) );
-    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( rejected() ) );
   }
 
   QMetaObject::connectSlotsByName( mDialog );
+
+  connect( mDialog, SIGNAL( destroyed() ), this, SLOT( dialogDestroyed() ) );
+
+  if ( !vl->editFormInit().isEmpty() )
+  {
+#if 0
+    // would be nice if only PyQt's QVariant.toPyObject() wouldn't take ownership
+    vl->setProperty( "featureForm.dialog", QVariant::fromValue( qobject_cast<QObject*>( mDialog ) ) );
+    vl->setProperty( "featureForm.id", QVariant( mpFeature->id() ) );
+#endif
+
+    QString module = vl->editFormInit();
+    int pos = module.lastIndexOf( "." );
+    if ( pos >= 0 )
+    {
+      QgisApp::instance()->runPythonString( QString( "import %1" ).arg( module.left( pos ) ) );
+    }
+
+    QgisApp::instance()->runPythonString( QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" ).arg( mLayer->getLayerID() ).arg(( unsigned long ) mDialog ) );
+
+    QString expr = QString( "%1(_qgis_featureform_%2,'%2',%3)" ).arg( vl->editFormInit() ).arg( vl->getLayerID() ).arg( mpFeature->id() );
+    QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
+    QgisApp::instance()->runPythonString( expr );
+  }
 
   restoreGeometry();
 }
@@ -223,17 +248,41 @@ void QgsAttributeDialog::accept()
 
 int QgsAttributeDialog::exec()
 {
-  return mDialog->exec();
+  if ( mDialog )
+  {
+    return mDialog->exec();
+  }
+  else
+  {
+    QgsDebugMsg( "No dialog" );
+    return QDialog::Rejected;
+  }
 }
 
 void QgsAttributeDialog::saveGeometry()
 {
-  QSettings settings;
-  settings.setValue( mSettingsPath + "geometry", mDialog->saveGeometry() );
+  if ( mDialog )
+  {
+    QSettings settings;
+    settings.setValue( mSettingsPath + "geometry", mDialog->saveGeometry() );
+  }
 }
 
 void QgsAttributeDialog::restoreGeometry()
 {
-  QSettings settings;
-  mDialog->restoreGeometry( settings.value( mSettingsPath + "geometry" ).toByteArray() );
+  if ( mDialog )
+  {
+    QSettings settings;
+    mDialog->restoreGeometry( settings.value( mSettingsPath + "geometry" ).toByteArray() );
+  }
+}
+
+void QgsAttributeDialog::dialogDestroyed()
+{
+#if 0
+  mLayer->setProperty( "featureForm.dialog", QVariant() );
+  mLayer->setProperty( "featureForm.id", QVariant() );
+#endif
+  QgisApp::instance()->runPythonString( QString( "del _qgis_featureform_%1" ).arg( mLayer->getLayerID() ) );
+  mDialog = NULL;
 }

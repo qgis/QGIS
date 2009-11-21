@@ -74,7 +74,7 @@
    <item row="0" column="2" colspan="3">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page_3">
       <layout class="QGridLayout" name="gridLayout_4">
@@ -172,7 +172,7 @@
           <enum>QFrame::Sunken</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page"/>
          <widget class="QWidget" name="page_2"/>
@@ -355,8 +355,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>407</width>
-            <height>394</height>
+            <width>554</width>
+            <height>397</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -409,7 +409,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="1" column="1" colspan="2">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
                  <widget class="QLineEdit" name="leEditForm"/>
@@ -423,7 +423,24 @@
                 </item>
                </layout>
               </item>
-              <item row="1" column="2">
+              <item row="1" column="3">
+               <widget class="QPushButton" name="pbnIndex">
+                <property name="text">
+                 <string>Create Spatial Index</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="4">
+               <widget class="QLineEdit" name="leSpatialRefSys">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QLineEdit" name="leEditFormInit"/>
+              </item>
+              <item row="2" column="3">
                <widget class="QPushButton" name="pbnChangeSpatialRefSys">
                 <property name="toolTip">
                  <string>Specify the coordinate reference system of the layer's geometry.</string>
@@ -436,17 +453,10 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="3">
-               <widget class="QPushButton" name="pbnIndex">
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_3">
                 <property name="text">
-                 <string>Create Spatial Index</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0" colspan="4">
-               <widget class="QLineEdit" name="leSpatialRefSys">
-                <property name="readOnly">
-                 <bool>true</bool>
+                 <string>Init function</string>
                 </property>
                </widget>
               </item>
@@ -650,7 +660,6 @@
   <tabstop>displayFieldComboBox</tabstop>
   <tabstop>leSpatialRefSys</tabstop>
   <tabstop>pbnIndex</tabstop>
-  <tabstop>pbnChangeSpatialRefSys</tabstop>
   <tabstop>spinMinimumScale</tabstop>
   <tabstop>spinMaximumScale</tabstop>
   <tabstop>txtSubsetSQL</tabstop>
