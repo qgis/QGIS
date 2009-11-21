@@ -132,6 +132,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnGraduatedAdd">
+       <property name="text">
+        <string>Add class</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnGraduatedDelete">
        <property name="text">
         <string>Delete class</string>

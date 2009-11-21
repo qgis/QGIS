@@ -2,6 +2,7 @@
 #define QGSGRADUATEDSYMBOLRENDERERV2WIDGET_H
 
 #include "qgsrendererv2widget.h"
+#include <QStandardItem>
 
 class QgsGraduatedSymbolRendererV2;
 
@@ -24,6 +25,13 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void changeGraduatedSymbol();
     void classifyGraduated();
     void rangesDoubleClicked( const QModelIndex & idx );
+    void rangesClicked( const QModelIndex & idx );
+    void changeCurrentValue( QStandardItem * item );
+
+    /**Adds a class manually to the classification*/
+    void addClass();
+    /**Removes a class from the classification*/
+    void deleteCurrentClass();
 
   protected:
     void updateUiFromRenderer();
@@ -39,12 +47,19 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void populateRanges();
 
     void changeRangeSymbol( int rangeIdx );
+    void changeRange( int rangeIdx );
+
+
 
 
   protected:
     QgsGraduatedSymbolRendererV2* mRenderer;
 
     QgsSymbolV2* mGraduatedSymbol;
+
+    int mRowSelected;
+
+
 };
 
 
