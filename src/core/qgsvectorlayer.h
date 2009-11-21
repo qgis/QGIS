@@ -477,6 +477,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** set edit form (added in 1.4) */
     void setEditForm( QString ui );
 
+    /** get python function for edit form initialization (added in 1.4) */
+    QString editFormInit();
+
+    /** set python function for edit form initialization (added in 1.4) */
+    void setEditFormInit( QString function );
+
     /**access value map*/
     QMap<QString, QVariant> &valueMap( int idx );
 
@@ -754,7 +760,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, QMap<QString, QVariant> > mValueMaps;
     QMap< QString, RangeData > mRanges;
     QMap< QString, QPair<QString, QString> > mCheckedStates;
-    QString mEditForm;
+
+    QString mEditForm, mEditFormInit;
 
     bool mFetching;
     QgsRectangle mFetchRect;

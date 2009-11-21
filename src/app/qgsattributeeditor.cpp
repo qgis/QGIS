@@ -372,6 +372,10 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectFileName() ) );
     }
     break;
+
+    case QgsVectorLayer::Immutable:
+      return NULL;
+
   }
 
   if ( editType == QgsVectorLayer::Immutable )

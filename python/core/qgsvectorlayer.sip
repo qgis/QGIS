@@ -425,6 +425,16 @@ public:
    */
   void setEditForm( QString ui );
 
+  /** get edit form init function
+    @note added in 1.4
+   */
+  QString editFormInit();
+
+  /** set edit form init function
+    @note added in 1.4
+   */
+  void setEditFormInit( QString function );
+
   /**access value map*/
   QMap<QString, QVariant> &valueMap(int idx);
 
