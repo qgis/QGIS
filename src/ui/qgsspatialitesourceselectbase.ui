@@ -107,12 +107,18 @@
         <property name="text">
          <string>Search:</string>
         </property>
+        <property name="buddy">
+         <cstring>mSearchTableEdit</cstring>
+        </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="mSearchModeLabel">
         <property name="text">
          <string>Search mode:</string>
+        </property>
+        <property name="buddy">
+         <cstring>mSearchModeComboBox</cstring>
         </property>
        </widget>
       </item>
@@ -123,6 +129,9 @@
        <widget class="QLabel" name="mSearchColumnsLabel">
         <property name="text">
          <string>Search in columns:</string>
+        </property>
+        <property name="buddy">
+         <cstring>mSearchColumnComboBox</cstring>
         </property>
        </widget>
       </item>
@@ -157,7 +166,30 @@
   <tabstop>btnConnect</tabstop>
   <tabstop>btnNew</tabstop>
   <tabstop>btnDelete</tabstop>
+  <tabstop>mTablesTreeView</tabstop>
+  <tabstop>mSearchOptionsButton</tabstop>
+  <tabstop>mSearchTableEdit</tabstop>
+  <tabstop>mSearchColumnComboBox</tabstop>
+  <tabstop>mSearchModeComboBox</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsSpatiaLiteSourceSelectBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>630</x>
+     <y>663</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>666</x>
+     <y>562</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
