@@ -426,6 +426,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
       // QgsDebugMsg( "warning, endless loop" );
 
       //use the secure and slow method
+      //qWarning( "******************warning, using the slow method in baseEdgeOfPoint****************************************" );
       for ( int i = 0;i < mHalfEdge.count();i++ )
       {
         if ( mHalfEdge[i]->getPoint() == point && mHalfEdge[mHalfEdge[i]->getNext()]->getPoint() != -1 )//we found it
@@ -444,6 +445,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
       {
         if ( mHalfEdge[i]->getPoint() == point && mHalfEdge[mHalfEdge[i]->getNext()]->getPoint() != -1 )//we found it
         {
+          mEdgeInside = i;
           return i;
         }
       }
@@ -454,6 +456,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
 
     if ( mHalfEdge[actedge]->getPoint() == point && mHalfEdge[mHalfEdge[actedge]->getNext()]->getPoint() != -1 )//we found the edge
     {
+      mEdgeInside = actedge;
       return actedge;
       break;
     }

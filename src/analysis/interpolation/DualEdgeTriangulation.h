@@ -119,7 +119,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     /**Y-coordinate of the lower left corner of the bounding box*/
     double yMin;
     /**Default value for the number of storable points at the beginning*/
-    const static unsigned int mDefaultStorageForPoints = 50000;
+    const static unsigned int mDefaultStorageForPoints = 100000;
     /**Stores pointers to all points in the triangulations (including the points contained in the lines)*/
     QVector<Point3D*> mPointVector;
     /**Default value for the number of storable HalfEdges at the beginning*/
@@ -182,13 +182,13 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     void evaluateInfluenceRegion( Point3D* point, int edge, std::set<int>* set );
 };
 
-inline DualEdgeTriangulation::DualEdgeTriangulation() : xMax( 0 ), xMin( 0 ), yMax( 0 ), yMin( 0 ), mTriangleInterpolator( 0 ), mForcedCrossBehaviour( Triangulation::INSERT_VERTICE ), mEdgeColor( 0, 255, 0 ), mForcedEdgeColor( 0, 0, 255 ), mBreakEdgeColor( 100, 100, 0 ), mDecorator( this )
+inline DualEdgeTriangulation::DualEdgeTriangulation() : xMax( 0 ), xMin( 0 ), yMax( 0 ), yMin( 0 ), mTriangleInterpolator( 0 ), mForcedCrossBehaviour( Triangulation::DELETE_FIRST ), mEdgeColor( 0, 255, 0 ), mForcedEdgeColor( 0, 0, 255 ), mBreakEdgeColor( 100, 100, 0 ), mDecorator( this )
 {
   mPointVector.reserve( mDefaultStorageForPoints );
   mHalfEdge.reserve( mDefaultStorageForHalfEdges );
 }
 
-inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* decorator ): xMax( 0 ), xMin( 0 ), yMax( 0 ), yMin( 0 ), mTriangleInterpolator( 0 ), mForcedCrossBehaviour( Triangulation::INSERT_VERTICE ), mEdgeColor( 0, 255, 0 ), mForcedEdgeColor( 0, 0, 255 ), mBreakEdgeColor( 100, 100, 0 ), mDecorator( decorator )
+inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* decorator ): xMax( 0 ), xMin( 0 ), yMax( 0 ), yMin( 0 ), mTriangleInterpolator( 0 ), mForcedCrossBehaviour( Triangulation::DELETE_FIRST ), mEdgeColor( 0, 255, 0 ), mForcedEdgeColor( 0, 0, 255 ), mBreakEdgeColor( 100, 100, 0 ), mDecorator( decorator )
 {
   mPointVector.reserve( nop );
   mHalfEdge.reserve( nop );
