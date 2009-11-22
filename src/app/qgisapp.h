@@ -540,6 +540,10 @@ class QgisApp : public QMainWindow
 
     //! activates the selection tool
     void select();
+
+    //! deselect features from all layers
+    void deselectAll();
+
     //! refresh map canvas
     void refreshMapCanvas();
     //! returns pointer to map legend
@@ -773,6 +777,7 @@ class QgisApp : public QMainWindow
     QAction *mActionZoomIn;
     QAction *mActionZoomOut;
     QAction *mActionSelect;
+    QAction *mActionDeselectAll;
     QAction *mActionIdentify;
     QAction *mActionMeasure;
     QAction *mActionMeasureArea;
