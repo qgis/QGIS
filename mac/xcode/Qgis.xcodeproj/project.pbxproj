@@ -333,7 +333,6 @@
 		7209F43A0F3A468C003DC336 /* qgshelpviewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6110F39E57A003DC336 /* qgshelpviewer.cpp */; };
 		7209F43B0F3A468C003DC336 /* qgsidentifyresults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6130F39E57A003DC336 /* qgsidentifyresults.cpp */; };
 		7209F43C0F3A468C003DC336 /* qgslabeldialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6150F39E57A003DC336 /* qgslabeldialog.cpp */; };
-		7209F43D0F3A468C003DC336 /* qgsludialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6170F39E57A003DC336 /* qgsludialog.cpp */; };
 		7209F43E0F3A468C003DC336 /* qgsmaptooladdfeature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E61B0F39E57A003DC336 /* qgsmaptooladdfeature.cpp */; };
 		7209F43F0F3A468C003DC336 /* qgsmaptooladdisland.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E61D0F39E57A003DC336 /* qgsmaptooladdisland.cpp */; };
 		7209F4400F3A468C003DC336 /* qgsmaptooladdring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E61F0F39E57A003DC336 /* qgsmaptooladdring.cpp */; };
@@ -1462,7 +1461,6 @@
 		729288950F71FE65006D9489 /* qgslabeldialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6160F39E57A003DC336 /* qgslabeldialog.h */; };
 		729288960F71FE65006D9489 /* qgslegend.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E5D30F39E57A003DC336 /* qgslegend.h */; };
 		729288970F71FE65006D9489 /* qgslegendlayer.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E5D90F39E57A003DC336 /* qgslegendlayer.h */; };
-		729288990F71FE65006D9489 /* qgsludialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6180F39E57A003DC336 /* qgsludialog.h */; };
 		7292889A0F71FE65006D9489 /* qgsmaptoolidentify.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E62A0F39E57A003DC336 /* qgsmaptoolidentify.h */; };
 		7292889B0F71FE65006D9489 /* qgsmaptoolsplitfeatures.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6320F39E57A003DC336 /* qgsmaptoolsplitfeatures.h */; };
 		7292889C0F71FE65006D9489 /* qgsmaptoolvertexedit.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6340F39E57A003DC336 /* qgsmaptoolvertexedit.h */; };
@@ -1810,6 +1808,8 @@
 		72EA46F30FCD7788009D4CFB /* mActionArrowDown.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EA46F20FCD7772009D4CFB /* mActionArrowDown.png */; };
 		72EA46F40FCD7788009D4CFB /* mActionArrowUp.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EA46F10FCD7772009D4CFB /* mActionArrowUp.png */; };
 		72EB129A0F7E9BCD002C38FA /* plugin_installer.png in Copy - theme-dflt-plugins */ = {isa = PBXBuildFile; fileRef = 72EB12950F7E9B51002C38FA /* plugin_installer.png */; };
+		72EB310010B9997A002A971B /* qgsludialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EB30FE10B99969002A971B /* qgsludialog.cpp */; };
+		72EB310110B9997A002A971B /* qgsludialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72EB30FF10B99969002A971B /* qgsludialog.h */; };
 		72EBC9430F49D0E20016BA3C /* qgspaperitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9420F49D0E20016BA3C /* qgspaperitem.cpp */; };
 		72EBC9630F49D41E0016BA3C /* qgsogrsublayersdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9620F49D4130016BA3C /* qgsogrsublayersdialog.cpp */; };
 		72EBC9660F49D4A20016BA3C /* qgsitempositiondialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9640F49D49D0016BA3C /* qgsitempositiondialog.cpp */; };
@@ -4502,8 +4502,6 @@
 		7209E6140F39E57A003DC336 /* qgsidentifyresults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsidentifyresults.h; path = ../../src/app/qgsidentifyresults.h; sourceTree = SOURCE_ROOT; };
 		7209E6150F39E57A003DC336 /* qgslabeldialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgslabeldialog.cpp; path = ../../src/app/qgslabeldialog.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6160F39E57A003DC336 /* qgslabeldialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgslabeldialog.h; path = ../../src/app/qgslabeldialog.h; sourceTree = SOURCE_ROOT; };
-		7209E6170F39E57A003DC336 /* qgsludialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsludialog.cpp; path = ../../src/app/qgsludialog.cpp; sourceTree = SOURCE_ROOT; };
-		7209E6180F39E57A003DC336 /* qgsludialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsludialog.h; path = ../../src/app/qgsludialog.h; sourceTree = SOURCE_ROOT; };
 		7209E6190F39E57A003DC336 /* qgsmapserverexport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmapserverexport.cpp; path = ../../src/app/qgsmapserverexport.cpp; sourceTree = SOURCE_ROOT; };
 		7209E61A0F39E57A003DC336 /* qgsmapserverexport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmapserverexport.h; path = ../../src/app/qgsmapserverexport.h; sourceTree = SOURCE_ROOT; };
 		7209E61B0F39E57A003DC336 /* qgsmaptooladdfeature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptooladdfeature.cpp; path = ../../src/app/qgsmaptooladdfeature.cpp; sourceTree = SOURCE_ROOT; };
@@ -7687,6 +7685,8 @@
 		72EA46F50FCD77CB009D4CFB /* qgis_xh.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_xh.ts; path = ../../i18n/qgis_xh.ts; sourceTree = SOURCE_ROOT; };
 		72EB12930F7E9AED002C38FA /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../../python/plugins/fTools/LICENSE; sourceTree = SOURCE_ROOT; };
 		72EB12950F7E9B51002C38FA /* plugin_installer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plugin_installer.png; path = ../../images/themes/default/plugins/plugin_installer.png; sourceTree = SOURCE_ROOT; };
+		72EB30FE10B99969002A971B /* qgsludialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsludialog.cpp; path = ../../src/gui/qgsludialog.cpp; sourceTree = SOURCE_ROOT; };
+		72EB30FF10B99969002A971B /* qgsludialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsludialog.h; path = ../../src/gui/qgsludialog.h; sourceTree = SOURCE_ROOT; };
 		72EBC9410F49D0E20016BA3C /* qgspaperitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspaperitem.h; path = ../../src/core/composer/qgspaperitem.h; sourceTree = SOURCE_ROOT; };
 		72EBC9420F49D0E20016BA3C /* qgspaperitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspaperitem.cpp; path = ../../src/core/composer/qgspaperitem.cpp; sourceTree = SOURCE_ROOT; };
 		72EBC94F0F49D1DE0016BA3C /* qgsogrsublayersdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsogrsublayersdialogbase.ui; path = ../../src/ui/qgsogrsublayersdialogbase.ui; sourceTree = SOURCE_ROOT; };
@@ -8531,8 +8531,6 @@
 				7209E6140F39E57A003DC336 /* qgsidentifyresults.h */,
 				7209E6150F39E57A003DC336 /* qgslabeldialog.cpp */,
 				7209E6160F39E57A003DC336 /* qgslabeldialog.h */,
-				7209E6170F39E57A003DC336 /* qgsludialog.cpp */,
-				7209E6180F39E57A003DC336 /* qgsludialog.h */,
 				7209E6190F39E57A003DC336 /* qgsmapserverexport.cpp */,
 				7209E61A0F39E57A003DC336 /* qgsmapserverexport.h */,
 				7209E61B0F39E57A003DC336 /* qgsmaptooladdfeature.cpp */,
@@ -9070,6 +9068,8 @@
 				7209E7550F39E57A003DC336 /* qgsfiledropedit.h */,
 				7209E7560F39E57A003DC336 /* qgsgenericprojectionselector.cpp */,
 				7209E7570F39E57A003DC336 /* qgsgenericprojectionselector.h */,
+				72EB30FE10B99969002A971B /* qgsludialog.cpp */,
+				72EB30FF10B99969002A971B /* qgsludialog.h */,
 				7209E7580F39E57A003DC336 /* qgsmapcanvas.cpp */,
 				7209E7590F39E57A003DC336 /* qgsmapcanvas.h */,
 				7209E75A0F39E57A003DC336 /* qgsmapcanvasitem.cpp */,
@@ -15051,6 +15051,8 @@
 				7225EFC910B22D2000D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.h in Sources */,
 				7225EFCA10B22D2000D23EA2 /* qgsvectorgradientcolorrampv2dialog.h in Sources */,
 				7225EFCB10B22D2000D23EA2 /* qgsvectorrandomcolorrampv2dialog.h in Sources */,
+				72EB310010B9997A002A971B /* qgsludialog.cpp in Sources */,
+				72EB310110B9997A002A971B /* qgsludialog.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15572,7 +15574,6 @@
 				7209F43A0F3A468C003DC336 /* qgshelpviewer.cpp in Sources */,
 				7209F43B0F3A468C003DC336 /* qgsidentifyresults.cpp in Sources */,
 				7209F43C0F3A468C003DC336 /* qgslabeldialog.cpp in Sources */,
-				7209F43D0F3A468C003DC336 /* qgsludialog.cpp in Sources */,
 				7209F43E0F3A468C003DC336 /* qgsmaptooladdfeature.cpp in Sources */,
 				7209F43F0F3A468C003DC336 /* qgsmaptooladdisland.cpp in Sources */,
 				7209F4400F3A468C003DC336 /* qgsmaptooladdring.cpp in Sources */,
@@ -15664,7 +15665,6 @@
 				729288950F71FE65006D9489 /* qgslabeldialog.h in Sources */,
 				729288960F71FE65006D9489 /* qgslegend.h in Sources */,
 				729288970F71FE65006D9489 /* qgslegendlayer.h in Sources */,
-				729288990F71FE65006D9489 /* qgsludialog.h in Sources */,
 				7264FE991024D117004D4CDD /* qgsmaptooladdvertex.h in Sources */,
 				7264FE9A1024D117004D4CDD /* qgsmaptooldeletepart.h in Sources */,
 				7264FE9B1024D117004D4CDD /* qgsmaptooldeletering.h in Sources */,
@@ -18806,7 +18806,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12191;
+				QGIS_VERSION_BUILD = 12221;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18817,7 +18817,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12191;
+				QGIS_VERSION_BUILD = 12221;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
