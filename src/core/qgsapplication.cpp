@@ -125,11 +125,11 @@ const QString QgsApplication::pkgDataPath()
 }
 const QString QgsApplication::defaultThemePath()
 {
-  return mPkgDataPath + "/themes/default/";
+  return ":/images/themes/default/";
 }
 const QString QgsApplication::activeThemePath()
 {
-  return mPkgDataPath + "/themes/" + mThemeName + "/";
+  return ":/images/themes/" + mThemeName + "/";
 }
 
 /*!

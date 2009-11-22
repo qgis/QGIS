@@ -150,7 +150,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
 
   // add the themes to the combo box on the option dialog
-  QDir myThemeDir( QgsApplication::pkgDataPath() + "/themes/" );
+  QDir myThemeDir( ":/images/themes/" );
   myThemeDir.setFilter( QDir::Dirs );
   QStringList myDirList = myThemeDir.entryList( QStringList( "*" ) );
   cmbTheme->clear();

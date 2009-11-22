@@ -14,14 +14,132 @@
    <string>Layer Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>../../../../../.designer/backup</normaloff>../../../../../.designer/backup</iconset>
+   <iconset resource="../../images/images.qrc">
+    <normaloff>:/images/icons/qgis-icon-16x16.png</normaloff>:/images/icons/qgis-icon-16x16.png</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="2" colspan="3">
+   <item row="0" column="0">
+    <widget class="QListWidget" name="listWidget">
+     <property name="minimumSize">
+      <size>
+       <width>110</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>110</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>false</bool>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>64</width>
+       <height>64</height>
+      </size>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="flow">
+      <enum>QListView::TopToBottom</enum>
+     </property>
+     <property name="isWrapping" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
+     <property name="spacing">
+      <number>9</number>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::IconMode</enum>
+     </property>
+     <property name="uniformItemSizes">
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>Symbology</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/symbology.png</normaloff>:/images/themes/newgis/propertyicons/symbology.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Labels</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/labels.png</normaloff>:/images/themes/newgis/propertyicons/labels.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Attributes</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/attributes.png</normaloff>:/images/themes/newgis/propertyicons/attributes.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>General</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/general.png</normaloff>:/images/themes/newgis/propertyicons/general.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Metadata</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/metadata.png</normaloff>:/images/themes/newgis/propertyicons/metadata.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Actions</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/action.png</normaloff>:/images/themes/newgis/propertyicons/action.png</iconset>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
       <number>0</number>
@@ -305,7 +423,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>605</width>
+            <width>401</width>
             <height>425</height>
            </rect>
           </property>
@@ -565,34 +683,38 @@
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
-    <widget class="QPushButton" name="pbnLoadDefaultStyle">
-     <property name="text">
-      <string>Restore Default Style</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pbnLoadDefaultStyle">
+       <property name="text">
+        <string>Restore Default Style</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnSaveDefaultStyle">
+       <property name="text">
+        <string>Save As Default</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnLoadStyle">
+       <property name="text">
+        <string>Load Style ...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnSaveStyleAs">
+       <property name="text">
+        <string>Save Style ...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="1" column="2">
-    <widget class="QPushButton" name="pbnSaveDefaultStyle">
-     <property name="text">
-      <string>Save As Default</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QPushButton" name="pbnLoadStyle">
-     <property name="text">
-      <string>Load Style ...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="QPushButton" name="pbnSaveStyleAs">
-     <property name="text">
-      <string>Save Style ...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="5">
+   <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -600,124 +722,6 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QListWidget" name="listWidget">
-     <property name="minimumSize">
-      <size>
-       <width>110</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>110</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="showDropIndicator" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="alternatingRowColors">
-      <bool>false</bool>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>64</width>
-       <height>64</height>
-      </size>
-     </property>
-     <property name="textElideMode">
-      <enum>Qt::ElideNone</enum>
-     </property>
-     <property name="flow">
-      <enum>QListView::TopToBottom</enum>
-     </property>
-     <property name="isWrapping" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="resizeMode">
-      <enum>QListView::Adjust</enum>
-     </property>
-     <property name="spacing">
-      <number>9</number>
-     </property>
-     <property name="viewMode">
-      <enum>QListView::IconMode</enum>
-     </property>
-     <property name="uniformItemSizes">
-      <bool>false</bool>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <item>
-      <property name="text">
-       <string>Symbology</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Labels</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Attributes</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>General</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Metadata</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Actions</string>
-      </property>
-      <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
-      </property>
-     </item>
     </widget>
    </item>
   </layout>
@@ -734,7 +738,9 @@
   <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>labelCheckBox</sender>
