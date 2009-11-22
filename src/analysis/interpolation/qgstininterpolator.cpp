@@ -142,7 +142,14 @@ void QgsTINInterpolator::initialize()
     NormVecDecorator* dec = dynamic_cast<NormVecDecorator*>( mTriangulation );
     if ( dec )
     {
-      dec->estimateFirstDerivatives();
+      QProgressDialog* progressDialog = 0;
+      if ( mShowProgressDialog ) //show a progress dialog because it can take a long time...
+      {
+        progressDialog = new QProgressDialog();
+        progressDialog->setLabelText( QObject::tr( "Estimating normal derivatives..." ) );
+      }
+      dec->estimateFirstDerivatives( progressDialog );
+      delete progressDialog;
       ctInterpolator->setTriangulation( dec );
       dec->setTriangleInterpolator( ctInterpolator );
       mTriangleInterpolator = ctInterpolator;

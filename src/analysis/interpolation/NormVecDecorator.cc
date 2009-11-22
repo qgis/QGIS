@@ -16,6 +16,8 @@
 
 #include "NormVecDecorator.h"
 #include "qgslogger.h"
+#include <QApplication>
+#include <QProgressDialog>
 
 NormVecDecorator::~NormVecDecorator()
 {
@@ -482,7 +484,6 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
   //insert the new calculated vector
   if ( mNormVec->size() <= mNormVec->count() )//allocate more memory if neccessary
   {
-    QgsDebugMsg( QString( "resizing mNormVec from %1 to %2" ).arg( mNormVec->size() ).arg( mNormVec->size() + 1 ) );
     mNormVec->resize( mNormVec->size() + 1 );
   }
 
@@ -502,7 +503,6 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 
   if ( pointno >= mPointState->size() )
   {
-    QgsDebugMsg( QString( "resizing mPointState from %1 to %2" ).arg( mPointState->size() ).arg( mPointState->size() + 1 ) );
     mPointState->resize( mPointState->size() + 1 );
   }
 
@@ -512,14 +512,30 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 }
 
 //weighted method of little
-bool NormVecDecorator::estimateFirstDerivatives()
+bool NormVecDecorator::estimateFirstDerivatives( QProgressDialog* d )
 {
+  if ( d )
+  {
+    d->setMinimum( 0 );
+    d->setMaximum( getNumberOfPoints() );
+    d->setCancelButton( 0 ); //we cannot cancel derivative estimation
+    d->show();
+  }
+
   for ( int i = 0; i < getNumberOfPoints(); i++ )
   {
+    if ( d )
+    {
+      d->setValue( i );
+    }
     estimateFirstDerivative( i );
   }
-  return true;
 
+  if ( d )
+  {
+    d->setValue( getNumberOfPoints() );
+  }
+  return true;
 }
 
 void NormVecDecorator::eliminateHorizontalTriangles()
