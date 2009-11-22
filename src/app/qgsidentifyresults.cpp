@@ -49,9 +49,10 @@ static void _runPythonString( const QString &expr )
 
 void QgsFeatureAction::execute()
 {
+  int idx;
   QList< QPair<QString, QString> > attributes;
-  mResults->retrieveAttributes( mFeatItem, attributes );
-  mLayer->actions()->doAction( mAction, attributes, 0, _runPythonString );
+  mResults->retrieveAttributes( mFeatItem, attributes, idx );
+  mLayer->actions()->doAction( mAction, attributes, idx, _runPythonString );
 }
 
 class QgsIdentifyResultsDock : public QDockWidget
@@ -442,8 +443,9 @@ void QgsIdentifyResults::clearRubberBand()
 
 void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
 {
+  int idx;
   QList< QPair<QString, QString> > attributes;
-  QTreeWidgetItem *featItem = retrieveAttributes( item, attributes );
+  QTreeWidgetItem *featItem = retrieveAttributes( item, attributes, idx );
   if ( !featItem )
     return;
 
@@ -451,7 +453,7 @@ void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
   if ( !layer )
     return;
 
-  int idx = -1;
+  idx = -1;
   if ( item->parent() == featItem )
   {
     QString fieldName = item->data( 0, Qt::DisplayRole ).toString();
@@ -516,9 +518,11 @@ QgsVectorLayer *QgsIdentifyResults::vectorLayer( QTreeWidgetItem *item )
 }
 
 
-QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, QList< QPair<QString, QString> > &attributes )
+QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, QList< QPair<QString, QString> > &attributes, int &idx )
 {
   QTreeWidgetItem *featItem = featureItem( item );
+
+  idx = -1;
 
   attributes.clear();
   for ( int i = 0; i < featItem->childCount(); i++ )
@@ -526,6 +530,8 @@ QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, 
     QTreeWidgetItem *item = featItem->child( i );
     if ( item->childCount() > 0 )
       continue;
+    if( item==lstResults->currentItem() )
+      idx = attributes.size();
     attributes << QPair<QString, QString>( item->data( 0, Qt::DisplayRole ).toString(), item->data( 1, Qt::DisplayRole ).toString() );
   }
 
@@ -785,8 +791,9 @@ void QgsIdentifyResults::copyFeatureAttributes()
   QClipboard *clipboard = QApplication::clipboard();
   QString text;
 
+  int idx;
   QList< QPair<QString, QString> > attributes;
-  retrieveAttributes( lstResults->currentItem(), attributes );
+  retrieveAttributes( lstResults->currentItem(), attributes, idx );
 
   for ( QList< QPair<QString, QString> >::iterator it = attributes.begin(); it != attributes.end(); it++ )
   {
