@@ -101,7 +101,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     /* Item in tree was clicked */
     void itemClicked( QTreeWidgetItem *lvi, int column );
 
-    QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QList< QPair<QString, QString> > &attributes );
+    QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QList< QPair<QString, QString> > &attributes, int &currentIdx );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
