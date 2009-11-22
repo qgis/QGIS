@@ -33,6 +33,8 @@
 #include <QFrame>
 #include <QScrollArea>
 #include <QFile>
+#include <QFileInfo>
+#include <QDir>
 #include <QDialogButtonBox>
 #include <QUiLoader>
 #include <QDialog>
@@ -58,13 +60,19 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   if ( !vl->editForm().isEmpty() )
   {
     QFile file( vl->editForm() );
-    file.open( QFile::ReadOnly );
-    QUiLoader loader;
-    QWidget *myWidget = loader.load( &file, NULL );
-    file.close();
 
-    mDialog = qobject_cast<QDialog*>( myWidget );
-    buttonBox = myWidget->findChild<QDialogButtonBox*>();
+    if( file.open( QFile::ReadOnly ) )
+    {
+    	QUiLoader loader;
+
+    	QFileInfo fi( vl->editForm() );
+    	loader.setWorkingDirectory( fi.dir() );
+    	QWidget *myWidget = loader.load( &file, NULL );
+    	file.close();
+
+    	mDialog = qobject_cast<QDialog*>( myWidget );
+    	buttonBox = myWidget->findChild<QDialogButtonBox*>();
+    }
   }
 
   if ( !mDialog )
