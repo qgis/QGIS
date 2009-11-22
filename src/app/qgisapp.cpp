@@ -791,6 +791,12 @@ void QgisApp::createActions()
   connect( mActionSelect, SIGNAL( triggered() ), this, SLOT( select() ) );
   mActionSelect->setEnabled( false );
 
+  mActionDeselectAll = new QAction( getThemeIcon( "mActionDeselectAll.png" ), tr( "Deselect features from all layers" ), this );
+  shortcuts->registerAction( mActionDeselectAll );
+  mActionDeselectAll->setStatusTip( tr( "Deselect features from all layers" ) );
+  connect( mActionDeselectAll, SIGNAL( triggered() ), this, SLOT( deselectAll() ) );
+  mActionDeselectAll->setEnabled( true );
+
   mActionIdentify = new QAction( getThemeIcon( "mActionIdentify.png" ), tr( "Identify Features" ), this );
   shortcuts->registerAction( mActionIdentify, tr( "Ctrl+Shift+I", "Click on features to identify them" ) );
   mActionIdentify->setStatusTip( tr( "Click on features to identify them" ) );
@@ -1100,6 +1106,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionIdentify );
   mActionSelect->setCheckable( true );
   mMapToolGroup->addAction( mActionSelect );
+  mActionDeselectAll->setCheckable( false );
+  mMapToolGroup->addAction( mActionDeselectAll );
   mActionMeasure->setCheckable( true );
   mMapToolGroup->addAction( mActionMeasure );
   mActionMeasureArea->setCheckable( true );
@@ -1262,6 +1270,7 @@ void QgisApp::createMenus()
   mViewMenu->addAction( mActionZoomIn );
   mViewMenu->addAction( mActionZoomOut );
   mViewMenu->addAction( mActionSelect );
+  mViewMenu->addAction( mActionDeselectAll );
   mViewMenu->addAction( mActionIdentify );
   mViewMenu->addAction( mActionMeasure );
   mViewMenu->addAction( mActionMeasureArea );
@@ -1479,6 +1488,7 @@ void QgisApp::createToolBars()
   mAttributesToolBar->setObjectName( "Attributes" );
   mAttributesToolBar->addAction( mActionIdentify );
   mAttributesToolBar->addAction( mActionSelect );
+  mAttributesToolBar->addAction( mActionDeselectAll );
   mAttributesToolBar->addAction( mActionOpenTable );
   mAttributesToolBar->addAction( mActionMeasure );
   mAttributesToolBar->addAction( mActionMeasureArea );
@@ -1722,6 +1732,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.png" ) );
   mActionIdentify->setIcon( getThemeIcon( "/mActionIdentify.png" ) );
   mActionSelect->setIcon( getThemeIcon( "/mActionSelect.png" ) );
+  mActionDeselectAll->setIcon( getThemeIcon( "/mActionDeselectAll.png" ) );
   mActionOpenTable->setIcon( getThemeIcon( "/mActionOpenTable.png" ) );
   mActionMeasure->setIcon( getThemeIcon( "/mActionMeasure.png" ) );
   mActionMeasureArea->setIcon( getThemeIcon( "/mActionMeasureArea.png" ) );
@@ -4442,6 +4453,30 @@ void QgisApp::select()
   mMapCanvas->setMapTool( mMapTools.mSelect );
 }
 
+void QgisApp::deselectAll()
+{
+  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  mMapCanvas->setRenderFlag( false );
+
+  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it!=layers.end(); it++ )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+    if( !vl )
+      continue;
+
+    vl->removeSelection();
+  }
+
+  // Turn on rendering (if it was on previously)
+  mMapCanvas->setRenderFlag( renderFlagState );
+}
 
 void QgisApp::addVertex()
 {
