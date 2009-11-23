@@ -147,7 +147,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     position = stackedWidget->insertWidget( stackedWidget->count(), qobject_cast<QDialog*>( d ) );
     stackedWidget->setCurrentIndex( position ); //ugly, but otherwise the properties dialog is a mess
     mOverlayDialogs.push_back( d );
-    listWidget->insertItem( stackedWidget->count(), ( *it )->name() );
+    //shamelessly hard coded - what will we do if other types of layer plugins exist? TS
+    QListWidgetItem * mypItem = new QListWidgetItem( QgisApp::getThemeIcon( "propertyicons/diagram.png" ), ( *it )->name() );
+    listWidget->insertItem( stackedWidget->count(), mypItem );
   }
 
   stackedWidget->setCurrentIndex( 0 );

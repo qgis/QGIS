@@ -1318,7 +1318,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/general.png</normaloff>:/images/themes/newgis/propertyicons/general.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
       </property>
      </item>
      <item>
@@ -1330,7 +1330,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/rendering.png</normaloff>:/images/themes/newgis/propertyicons/rendering.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/rendering.png</normaloff>:/images/themes/default/propertyicons/rendering.png</iconset>
       </property>
      </item>
      <item>
@@ -1339,7 +1339,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/map_tools.png</normaloff>:/images/themes/newgis/propertyicons/map_tools.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/map_tools.png</normaloff>:/images/themes/default/propertyicons/map_tools.png</iconset>
       </property>
      </item>
      <item>
@@ -1348,7 +1348,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/overlay.png</normaloff>:/images/themes/newgis/propertyicons/overlay.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
       </property>
      </item>
      <item>
@@ -1357,7 +1357,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/digitising.png</normaloff>:/images/themes/newgis/propertyicons/digitising.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/digitising.png</normaloff>:/images/themes/default/propertyicons/digitising.png</iconset>
       </property>
      </item>
      <item>
@@ -1366,7 +1366,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/CRS.png</normaloff>:/images/themes/newgis/propertyicons/CRS.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/CRS.png</normaloff>:/images/themes/default/propertyicons/CRS.png</iconset>
       </property>
      </item>
      <item>
@@ -1375,7 +1375,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/locale.png</normaloff>:/images/themes/newgis/propertyicons/locale.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/locale.png</normaloff>:/images/themes/default/propertyicons/locale.png</iconset>
       </property>
      </item>
      <item>
@@ -1384,7 +1384,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/network_and_proxy.png</normaloff>:/images/themes/newgis/propertyicons/network_and_proxy.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</iconset>
       </property>
      </item>
     </widget>
