@@ -232,24 +232,24 @@
     <file>themes/default/symbologyUp.png</file>
     <file>themes/default/tracking.png</file>
     <file>themes/default/qgis.xpm</file>
-    <file>themes/newgis/propertyicons/action.png</file>
-    <file>themes/newgis/propertyicons/attributes.png</file>
-    <file>themes/newgis/propertyicons/colormap.png</file>
-    <file>themes/newgis/propertyicons/CRS.png</file>
-    <file>themes/newgis/propertyicons/diagram.png</file>
-    <file>themes/newgis/propertyicons/digitising.png</file>
-    <file>themes/newgis/propertyicons/general.png</file>
-    <file>themes/newgis/propertyicons/histogram.png</file>
-    <file>themes/newgis/propertyicons/labels.png</file>
-    <file>themes/newgis/propertyicons/locale.png</file>
-    <file>themes/newgis/propertyicons/map_tools.png</file>
-    <file>themes/newgis/propertyicons/metadata.png</file>
-    <file>themes/newgis/propertyicons/network_and_proxy.png</file>
-    <file>themes/newgis/propertyicons/overlay.png</file>
-    <file>themes/newgis/propertyicons/pyramids.png</file>
-    <file>themes/newgis/propertyicons/rendering.png</file>
-    <file>themes/newgis/propertyicons/symbology.png</file>
-    <file>themes/newgis/propertyicons/transparency.png</file>
+    <file>themes/default/propertyicons/action.png</file>
+    <file>themes/default/propertyicons/attributes.png</file>
+    <file>themes/default/propertyicons/colormap.png</file>
+    <file>themes/default/propertyicons/CRS.png</file>
+    <file>themes/default/propertyicons/diagram.png</file>
+    <file>themes/default/propertyicons/digitising.png</file>
+    <file>themes/default/propertyicons/general.png</file>
+    <file>themes/default/propertyicons/histogram.png</file>
+    <file>themes/default/propertyicons/labels.png</file>
+    <file>themes/default/propertyicons/locale.png</file>
+    <file>themes/default/propertyicons/map_tools.png</file>
+    <file>themes/default/propertyicons/metadata.png</file>
+    <file>themes/default/propertyicons/network_and_proxy.png</file>
+    <file>themes/default/propertyicons/overlay.png</file>
+    <file>themes/default/propertyicons/pyramids.png</file>
+    <file>themes/default/propertyicons/rendering.png</file>
+    <file>themes/default/propertyicons/symbology.png</file>
+    <file>themes/default/propertyicons/transparency.png</file>
     <file>icons/qgis-icon-16x16.png</file>
     <file>icons/qgis-icon-60x60.png</file>
     <file>themes/gis/mActionAddGPSLayer.png</file>

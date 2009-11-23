@@ -93,7 +93,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/symbology.png</normaloff>:/images/themes/newgis/propertyicons/symbology.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
       </property>
      </item>
      <item>
@@ -102,7 +102,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/transparency.png</normaloff>:/images/themes/newgis/propertyicons/transparency.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/transparency.png</normaloff>:/images/themes/default/propertyicons/transparency.png</iconset>
       </property>
      </item>
      <item>
@@ -111,7 +111,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/colormap.png</normaloff>:/images/themes/newgis/propertyicons/colormap.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/colormap.png</normaloff>:/images/themes/default/propertyicons/colormap.png</iconset>
       </property>
      </item>
      <item>
@@ -120,7 +120,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/general.png</normaloff>:/images/themes/newgis/propertyicons/general.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
       </property>
      </item>
      <item>
@@ -129,7 +129,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/metadata.png</normaloff>:/images/themes/newgis/propertyicons/metadata.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
       </property>
      </item>
      <item>
@@ -138,7 +138,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/pyramids.png</normaloff>:/images/themes/newgis/propertyicons/pyramids.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/pyramids.png</normaloff>:/images/themes/default/propertyicons/pyramids.png</iconset>
       </property>
      </item>
      <item>
@@ -147,7 +147,7 @@
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/newgis/propertyicons/histogram.png</normaloff>:/images/themes/newgis/propertyicons/histogram.png</iconset>
+        <normaloff>:/images/themes/default/propertyicons/histogram.png</normaloff>:/images/themes/default/propertyicons/histogram.png</iconset>
       </property>
      </item>
     </widget>
