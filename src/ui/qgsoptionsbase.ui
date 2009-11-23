@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>813</width>
-    <height>532</height>
+    <height>537</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1317,8 +1317,8 @@
        <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/general.png</normaloff>:/images/themes/newgis/propertyicons/general.png</iconset>
       </property>
      </item>
      <item>
@@ -1329,8 +1329,8 @@
        <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/rendering.png</normaloff>:/images/themes/newgis/propertyicons/rendering.png</iconset>
       </property>
      </item>
      <item>
@@ -1338,8 +1338,8 @@
        <string>Map tools</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/map_tools.png</normaloff>:/images/themes/newgis/propertyicons/map_tools.png</iconset>
       </property>
      </item>
      <item>
@@ -1347,8 +1347,8 @@
        <string>Overlay</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/overlay.png</normaloff>:/images/themes/newgis/propertyicons/overlay.png</iconset>
       </property>
      </item>
      <item>
@@ -1356,8 +1356,8 @@
        <string>Digitising</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/digitising.png</normaloff>:/images/themes/newgis/propertyicons/digitising.png</iconset>
       </property>
      </item>
      <item>
@@ -1365,8 +1365,8 @@
        <string>CRS</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/CRS.png</normaloff>:/images/themes/newgis/propertyicons/CRS.png</iconset>
       </property>
      </item>
      <item>
@@ -1374,8 +1374,8 @@
        <string>Locale</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/locale.png</normaloff>:/images/themes/newgis/propertyicons/locale.png</iconset>
       </property>
      </item>
      <item>
@@ -1383,8 +1383,8 @@
        <string>Network &amp; Proxy</string>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>../../../../../../../tmp/info.png</normaloff>../../../../../../../tmp/info.png</iconset>
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/newgis/propertyicons/network_and_proxy.png</normaloff>:/images/themes/newgis/propertyicons/network_and_proxy.png</iconset>
       </property>
      </item>
     </widget>
@@ -1459,7 +1459,9 @@
   <tabstop>mExcludeUrlListWidget</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
