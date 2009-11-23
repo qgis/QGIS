@@ -505,7 +505,6 @@
 		720FC8E50F3D5A430069492F /* dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFB0F39E57B003DC336 /* dialog.cpp */; };
 		720FC8E60F3D5A450069492F /* format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFD0F39E57B003DC336 /* format.cpp */; };
 		720FC8E70F3D5A470069492F /* translator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC050F39E57B003DC336 /* translator.cpp */; };
-		7214353F0FA15C1C00B0B7BC /* mActionAddSpatiaLiteLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7214353E0FA15C0A00B0B7BC /* mActionAddSpatiaLiteLayer.png */; };
 		721598141052B46D003D1610 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		721598281052B8C9003D1610 /* DualEdgeTriangulation.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597BC1052B2B0003D1610 /* DualEdgeTriangulation.cc */; };
 		721598291052B8C9003D1610 /* HalfEdge.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597BE1052B2B0003D1610 /* HalfEdge.cc */; };
@@ -533,8 +532,7 @@
 		7216ADEF0FE571C000552832 /* qgsvectorlayerundocommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7216ADEE0FE571C000552832 /* qgsvectorlayerundocommand.cpp */; };
 		7216ADF20FE5721400552832 /* qgsundowidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7216ADF00FE571F000552832 /* qgsundowidget.cpp */; };
 		7216ADF30FE5721400552832 /* qgsundowidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7216ADF10FE571F000552832 /* qgsundowidget.h */; };
-		7216ADF70FE5726700552832 /* mActionRedo.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7216ADF50FE5725B00552832 /* mActionRedo.png */; };
-		7216ADF80FE5726700552832 /* mActionUndo.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7216ADF60FE5725B00552832 /* mActionUndo.png */; };
+		721828C210BA34F7008D715D /* images.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7209EE1E0F39E5D9003DC336 /* images.qrc */; };
 		721E07000FABDC6700558FF9 /* qgsgrassshell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB410F39E57B003DC336 /* qgsgrassshell.cpp */; };
 		721E07360FABDDBA00558FF9 /* BlockArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07050FABDCAB00558FF9 /* BlockArray.cpp */; };
 		721E07370FABDDBA00558FF9 /* Emulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E070C0FABDCAB00558FF9 /* Emulation.cpp */; };
@@ -625,29 +623,8 @@
 		7225EFC910B22D2000D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4B10B2275E00D23EA2 /* qgsvectorcolorbrewercolorrampv2dialog.h */; };
 		7225EFCA10B22D2000D23EA2 /* qgsvectorgradientcolorrampv2dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4D10B2275E00D23EA2 /* qgsvectorgradientcolorrampv2dialog.h */; };
 		7225EFCB10B22D2000D23EA2 /* qgsvectorrandomcolorrampv2dialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF4F10B2275E00D23EA2 /* qgsvectorrandomcolorrampv2dialog.h */; };
-		7225EFDE10B22E6C00D23EA2 /* cap_flat.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFCD10B22E5B00D23EA2 /* cap_flat.png */; };
-		7225EFDF10B22E6C00D23EA2 /* cap_round.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFCE10B22E5B00D23EA2 /* cap_round.png */; };
-		7225EFE010B22E6C00D23EA2 /* cap_square.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFCF10B22E5B00D23EA2 /* cap_square.png */; };
-		7225EFE110B22E6C00D23EA2 /* cap_style.svg in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD010B22E5B00D23EA2 /* cap_style.svg */; };
-		7225EFE210B22E6C00D23EA2 /* join_bevel.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD110B22E5B00D23EA2 /* join_bevel.png */; };
-		7225EFE310B22E6C00D23EA2 /* join_miter.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD210B22E5B00D23EA2 /* join_miter.png */; };
-		7225EFE410B22E6C00D23EA2 /* join_round.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD310B22E5B00D23EA2 /* join_round.png */; };
-		7225EFE510B22E6C00D23EA2 /* join_style.svg in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD410B22E5B00D23EA2 /* join_style.svg */; };
-		7225EFE610B22E6C00D23EA2 /* rendererCategorizedSymbol.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD510B22E5B00D23EA2 /* rendererCategorizedSymbol.png */; };
-		7225EFE710B22E6C00D23EA2 /* rendererGraduatedSymbol.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD610B22E5B00D23EA2 /* rendererGraduatedSymbol.png */; };
-		7225EFE810B22E6C00D23EA2 /* rendererSingleSymbol.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD710B22E5B00D23EA2 /* rendererSingleSymbol.png */; };
-		7225EFE910B22E6C00D23EA2 /* symbologyAdd.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD810B22E5B00D23EA2 /* symbologyAdd.png */; };
-		7225EFEA10B22E6C00D23EA2 /* symbologyDown.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFD910B22E5B00D23EA2 /* symbologyDown.png */; };
-		7225EFEB10B22E6C00D23EA2 /* symbologyEdit.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFDA10B22E5B00D23EA2 /* symbologyEdit.png */; };
-		7225EFEC10B22E6C00D23EA2 /* symbologyLock.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFDB10B22E5B00D23EA2 /* symbologyLock.png */; };
-		7225EFED10B22E6C00D23EA2 /* symbologyRemove.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFDC10B22E5B00D23EA2 /* symbologyRemove.png */; };
-		7225EFEE10B22E6C00D23EA2 /* symbologyUp.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7225EFDD10B22E5B00D23EA2 /* symbologyUp.png */; };
 		7225EFF710B236C400D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3410B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp */; };
 		7225EFF810B2375300D23EA2 /* qgsbrushstylecombobox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3210B2275E00D23EA2 /* qgsbrushstylecombobox.cpp */; };
-		72267A470F9A1CC900010C18 /* mActionZoomNext.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 72267A460F9A1CB400010C18 /* mActionZoomNext.png */; };
-		72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */; };
-		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
-		72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 72267A500F9A1D3100010C18 /* mActionZoomNext.png */; };
 		7238DB6510AA191E00963E09 /* qgsgridfilewriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CB1052B2B0003D1610 /* qgsgridfilewriter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7238DB6610AA191E00963E09 /* qgsidwinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CD1052B2B0003D1610 /* qgsidwinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7238DB6710AA191E00963E09 /* qgsinterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597CF1052B2B0003D1610 /* qgsinterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -656,8 +633,6 @@
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
 		72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */; };
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
-		724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */; };
-		724C9FED1019EE3700A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */; };
 		724D05C610A910F200F9680A /* north-arrow_10_with_map_layers.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BE10A910B400F9680A /* north-arrow_10_with_map_layers.svg */; };
 		724D05C710A910F200F9680A /* north-arrow_11_simple_corner.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BF10A910B400F9680A /* north-arrow_11_simple_corner.svg */; };
 		724D05C810A910F200F9680A /* north-arrow_12_triangular_arrows_with_worldmap.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05C010A910B400F9680A /* north-arrow_12_triangular_arrows_with_worldmap.svg */; };
@@ -675,89 +650,6 @@
 		724D05D410A910F200F9680A /* north-arrow_7_big_circle_with_small_arrow_unfilled_n.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BB10A910B400F9680A /* north-arrow_7_big_circle_with_small_arrow_unfilled_n.svg */; };
 		724D05D510A910F200F9680A /* north-arrow_8_checkered.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BC10A910B400F9680A /* north-arrow_8_checkered.svg */; };
 		724D05D610A910F200F9680A /* north-arrow_9_half_arrow_unfilled.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BD10A910B400F9680A /* north-arrow_9_half_arrow_unfilled.svg */; };
-		724D065410A911A900F9680A /* mActionAddGPSLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05F210A9112D00F9680A /* mActionAddGPSLayer.png */; };
-		724D065510A911A900F9680A /* mActionAddImage.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05F310A9112D00F9680A /* mActionAddImage.png */; };
-		724D065610A911A900F9680A /* mActionAddIsland.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05F410A9112D00F9680A /* mActionAddIsland.png */; };
-		724D065710A911A900F9680A /* mActionAddLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05F510A9112D00F9680A /* mActionAddLayer.png */; };
-		724D065810A911A900F9680A /* mActionAddLegend.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05F610A9112D00F9680A /* mActionAddLegend.png */; };
-		724D065910A911A900F9680A /* mActionAddMap.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05F710A9112D00F9680A /* mActionAddMap.png */; };
-		724D065A10A911A900F9680A /* mActionAddOgrLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05F810A9112D00F9680A /* mActionAddOgrLayer.png */; };
-		724D065B10A911A900F9680A /* mActionAddRasterLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05F910A9112D00F9680A /* mActionAddRasterLayer.png */; };
-		724D065C10A911A900F9680A /* mActionAddRing.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05FA10A9112D00F9680A /* mActionAddRing.png */; };
-		724D065D10A911A900F9680A /* mActionAddSpatiaLiteLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05FB10A9112D00F9680A /* mActionAddSpatiaLiteLayer.png */; };
-		724D065E10A911A900F9680A /* mActionAddVertex.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05FC10A9112D00F9680A /* mActionAddVertex.png */; };
-		724D065F10A911A900F9680A /* mActionAddWfsLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05FD10A9112D00F9680A /* mActionAddWfsLayer.png */; };
-		724D066010A911A900F9680A /* mActionAddWmsLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05FE10A9112D00F9680A /* mActionAddWmsLayer.png */; };
-		724D066110A911A900F9680A /* mActionCaptureLine.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D05FF10A9112D00F9680A /* mActionCaptureLine.png */; };
-		724D066210A911A900F9680A /* mActionCapturePoint.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060010A9112D00F9680A /* mActionCapturePoint.png */; };
-		724D066310A911A900F9680A /* mActionCapturePolygon.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060110A9112D00F9680A /* mActionCapturePolygon.png */; };
-		724D066410A911A900F9680A /* mActionDeletePart.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060210A9112D00F9680A /* mActionDeletePart.png */; };
-		724D066510A911A900F9680A /* mActionDeleteRing.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060310A9112D00F9680A /* mActionDeleteRing.png */; };
-		724D066610A911A900F9680A /* mActionDeleteSelected.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060410A9112D00F9680A /* mActionDeleteSelected.png */; };
-		724D066710A911A900F9680A /* mActionDeleteVertex.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060510A9112D00F9680A /* mActionDeleteVertex.png */; };
-		724D066810A911A900F9680A /* mActionDraw.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060610A9112D00F9680A /* mActionDraw.png */; };
-		724D066910A911A900F9680A /* mActionEditCopy.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060710A9112D00F9680A /* mActionEditCopy.png */; };
-		724D066A10A911A900F9680A /* mActionEditCut.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060810A9112D00F9680A /* mActionEditCut.png */; };
-		724D066B10A911A900F9680A /* mActionEditPaste.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060910A9112D00F9680A /* mActionEditPaste.png */; };
-		724D066C10A911A900F9680A /* mActionFileNew.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060A10A9112D00F9680A /* mActionFileNew.png */; };
-		724D066D10A911A900F9680A /* mActionFileOpen.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060B10A9112D00F9680A /* mActionFileOpen.png */; };
-		724D066E10A911A900F9680A /* mActionFilePrint.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060C10A9112D00F9680A /* mActionFilePrint.png */; };
-		724D066F10A911A900F9680A /* mActionFileSave.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060D10A9112D00F9680A /* mActionFileSave.png */; };
-		724D067010A911A900F9680A /* mActionFileSaveAs.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060E10A9112D00F9680A /* mActionFileSaveAs.png */; };
-		724D067110A911A900F9680A /* mActionGroupItems.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D060F10A9112D00F9680A /* mActionGroupItems.png */; };
-		724D067210A911A900F9680A /* mActionHelpContents.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061010A9112D00F9680A /* mActionHelpContents.png */; };
-		724D067310A911A900F9680A /* mActionHideAllLayers.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061110A9112D00F9680A /* mActionHideAllLayers.png */; };
-		724D067410A911A900F9680A /* mActionIdentify.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061210A9112D00F9680A /* mActionIdentify.png */; };
-		724D067510A911A900F9680A /* mActionInOverview.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061310A9112D00F9680A /* mActionInOverview.png */; };
-		724D067610A911A900F9680A /* mActionLabel.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061410A9112D00F9680A /* mActionLabel.png */; };
-		724D067710A911A900F9680A /* mActionMapTips.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061510A9112D00F9680A /* mActionMapTips.png */; };
-		724D067810A911A900F9680A /* mActionMeasure.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061610A9112D00F9680A /* mActionMeasure.png */; };
-		724D067910A911A900F9680A /* mActionMeasureArea.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061710A9112D00F9680A /* mActionMeasureArea.png */; };
-		724D067A10A911A900F9680A /* mActionMergeFeatures.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061810A9112D00F9680A /* mActionMergeFeatures.png */; };
-		724D067B10A911A900F9680A /* mActionMoveFeature.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061910A9112D00F9680A /* mActionMoveFeature.png */; };
-		724D067C10A911A900F9680A /* mActionMoveItemContent.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061A10A9112D00F9680A /* mActionMoveItemContent.png */; };
-		724D067D10A911A900F9680A /* mActionMoveVertex.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061B10A9112D00F9680A /* mActionMoveVertex.png */; };
-		724D067E10A911A900F9680A /* mActionNewBookmark.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061C10A9112D00F9680A /* mActionNewBookmark.png */; };
-		724D067F10A911A900F9680A /* mActionNewVectorLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061D10A9112D00F9680A /* mActionNewVectorLayer.png */; };
-		724D068010A911A900F9680A /* mActionNodeTool.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061E10A9112D00F9680A /* mActionNodeTool.png */; };
-		724D068110A911A900F9680A /* mActionOpenTable.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D061F10A9112D00F9680A /* mActionOpenTable.png */; };
-		724D068210A911A900F9680A /* mActionPan.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062010A9112D00F9680A /* mActionPan.png */; };
-		724D068310A911A900F9680A /* mActionRedo.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062110A9112D00F9680A /* mActionRedo.png */; };
-		724D068410A911A900F9680A /* mActionRemoveLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062210A9112D00F9680A /* mActionRemoveLayer.png */; };
-		724D068510A911A900F9680A /* mActionReshape.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062310A9112D00F9680A /* mActionReshape.png */; };
-		724D068610A911A900F9680A /* mActionSaveAsPDF.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062410A9112D00F9680A /* mActionSaveAsPDF.png */; };
-		724D068710A911A900F9680A /* mActionSaveAsSVG.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062510A9112D00F9680A /* mActionSaveAsSVG.png */; };
-		724D068810A911A900F9680A /* mActionSaveMapAsImage.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062610A9112D00F9680A /* mActionSaveMapAsImage.png */; };
-		724D068910A911A900F9680A /* mActionScaleBar.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062710A9112D00F9680A /* mActionScaleBar.png */; };
-		724D068A10A911A900F9680A /* mActionSelect.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062810A9112D00F9680A /* mActionSelect.png */; };
-		724D068B10A911A900F9680A /* mActionSelectPan.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062910A9112D00F9680A /* mActionSelectPan.png */; };
-		724D068C10A911A900F9680A /* mActionShowAllLayers.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062A10A9112D00F9680A /* mActionShowAllLayers.png */; };
-		724D068D10A911A900F9680A /* mActionShowBookmarks.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062B10A9112D00F9680A /* mActionShowBookmarks.png */; };
-		724D068E10A911A900F9680A /* mActionSimplify.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062C10A9112D00F9680A /* mActionSimplify.png */; };
-		724D068F10A911A900F9680A /* mActionSplitFeatures.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062D10A9112D00F9680A /* mActionSplitFeatures.png */; };
-		724D069010A911A900F9680A /* mActionToggleEditing.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062E10A9112D00F9680A /* mActionToggleEditing.png */; };
-		724D069110A911A900F9680A /* mActionUndo.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D062F10A9112D00F9680A /* mActionUndo.png */; };
-		724D069210A911A900F9680A /* mActionUngroupItems.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D063010A9112D00F9680A /* mActionUngroupItems.png */; };
-		724D069310A911A900F9680A /* mActionUnselectAttributes.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D063110A9112D00F9680A /* mActionUnselectAttributes.png */; };
-		724D069410A911A900F9680A /* mActionZoomFullExtent.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D063210A9112D00F9680A /* mActionZoomFullExtent.png */; };
-		724D069510A911A900F9680A /* mActionZoomIn.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D063310A9112D00F9680A /* mActionZoomIn.png */; };
-		724D069610A911A900F9680A /* mActionZoomLast.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D063410A9112D00F9680A /* mActionZoomLast.png */; };
-		724D069710A911A900F9680A /* mActionZoomNext.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D063510A9112D00F9680A /* mActionZoomNext.png */; };
-		724D069810A911A900F9680A /* mActionZoomOut.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D063610A9112D00F9680A /* mActionZoomOut.png */; };
-		724D069910A911A900F9680A /* mActionZoomToLayer.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D063710A9112D00F9680A /* mActionZoomToLayer.png */; };
-		724D069A10A911A900F9680A /* mActionZoomToSelected.png in Copy - theme-newgis */ = {isa = PBXBuildFile; fileRef = 724D063810A9112D00F9680A /* mActionZoomToSelected.png */; };
-		724D06A010A9123700F9680A /* copyright_label.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D063C10A9112D00F9680A /* copyright_label.png */; };
-		724D06A110A9123700F9680A /* delimited_text.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D063D10A9112D00F9680A /* delimited_text.png */; };
-		724D06A210A9123700F9680A /* dxf2shp_converter.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D063E10A9112D00F9680A /* dxf2shp_converter.png */; };
-		724D06A310A9123700F9680A /* georeferencer.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D063F10A9112D00F9680A /* georeferencer.png */; };
-		724D06A410A9123700F9680A /* gps_importer.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D064010A9112D00F9680A /* gps_importer.png */; };
-		724D06A510A9123700F9680A /* interpolation.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D064110A9112D00F9680A /* interpolation.png */; };
-		724D06A610A9123700F9680A /* north_arrow.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D064210A9112D00F9680A /* north_arrow.png */; };
-		724D06A710A9123700F9680A /* ogr_converter.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D064310A9112D00F9680A /* ogr_converter.png */; };
-		724D06A810A9123700F9680A /* quick_print.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D064410A9112D00F9680A /* quick_print.png */; };
-		724D06A910A9123700F9680A /* scale_bar.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D064510A9112D00F9680A /* scale_bar.png */; };
-		724D06AA10A9123700F9680A /* spit.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D064610A9112D00F9680A /* spit.png */; };
-		724D06AB10A9123700F9680A /* wfs.png in Copy - theme-newgis-plugins */ = {isa = PBXBuildFile; fileRef = 724D064710A9112D00F9680A /* wfs.png */; };
 		724FFB6710B47275006E3698 /* QgsAttributeTable-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0810B47263006E3698 /* QgsAttributeTable-de_DE */; };
 		724FFB6810B47275006E3698 /* QgsAttributeTable-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0910B47263006E3698 /* QgsAttributeTable-en_US */; };
 		724FFB6910B47275006E3698 /* QgsAttributeTable-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0A10B47263006E3698 /* QgsAttributeTable-pl_PL */; };
@@ -930,337 +822,11 @@
 		7256F38B0F414B200022BE1F /* Star1.svg in Copy - svg-symbol */ = {isa = PBXBuildFile; fileRef = 7209EE7F0F39E5D9003DC336 /* Star1.svg */; };
 		7256F38C0F414B200022BE1F /* Star2.svg in Copy - svg-symbol */ = {isa = PBXBuildFile; fileRef = 7209EE800F39E5D9003DC336 /* Star2.svg */; };
 		7256F38D0F414B200022BE1F /* Star3.svg in Copy - svg-symbol */ = {isa = PBXBuildFile; fileRef = 7209EE810F39E5D9003DC336 /* Star3.svg */; };
-		7256F3980F41C3E20022BE1F /* mAction.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE870F39E5D9003DC336 /* mAction.png */; };
-		7256F3990F41C3E20022BE1F /* mActionAddAllToOverview.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE880F39E5D9003DC336 /* mActionAddAllToOverview.png */; };
-		7256F39A0F41C3E20022BE1F /* mActionAddIsland.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE890F39E5D9003DC336 /* mActionAddIsland.png */; };
-		7256F39B0F41C3E20022BE1F /* mActionAddLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE8A0F39E5D9003DC336 /* mActionAddLayer.png */; };
-		7256F39C0F41C3E20022BE1F /* mActionAddLegend.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE8B0F39E5D9003DC336 /* mActionAddLegend.png */; };
-		7256F39D0F41C3E20022BE1F /* mActionAddOgrLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE8C0F39E5D9003DC336 /* mActionAddOgrLayer.png */; };
-		7256F39E0F41C3E20022BE1F /* mActionAddRasterLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE8D0F39E5D9003DC336 /* mActionAddRasterLayer.png */; };
-		7256F39F0F41C3E20022BE1F /* mActionAddRing.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE8E0F39E5D9003DC336 /* mActionAddRing.png */; };
-		7256F3A00F41C3E20022BE1F /* mActionAddVertex.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE8F0F39E5D9003DC336 /* mActionAddVertex.png */; };
-		7256F3A10F41C3E20022BE1F /* mActionAddWmsLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE900F39E5D9003DC336 /* mActionAddWmsLayer.png */; };
-		7256F3A20F41C3E20022BE1F /* mActionCaptureLine.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE910F39E5D9003DC336 /* mActionCaptureLine.png */; };
-		7256F3A30F41C3E20022BE1F /* mActionCapturePoint.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE920F39E5D9003DC336 /* mActionCapturePoint.png */; };
-		7256F3A40F41C3E20022BE1F /* mActionCapturePolygon.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE930F39E5D9003DC336 /* mActionCapturePolygon.png */; };
-		7256F3A50F41C3E20022BE1F /* mActionCheckQgisVersion.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE940F39E5D9003DC336 /* mActionCheckQgisVersion.png */; };
-		7256F3A60F41C3E20022BE1F /* mActionCollapseTree.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE950F39E5D9003DC336 /* mActionCollapseTree.png */; };
-		7256F3A70F41C3E20022BE1F /* mActionContextHelp.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE960F39E5D9003DC336 /* mActionContextHelp.png */; };
-		7256F3A80F41C3E20022BE1F /* mActionCopySelected.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE970F39E5D9003DC336 /* mActionCopySelected.png */; };
-		7256F3A90F41C3E20022BE1F /* mActionCustomProjection.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE980F39E5D9003DC336 /* mActionCustomProjection.png */; };
-		7256F3AA0F41C3E20022BE1F /* mActionDeleteAttribute.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE990F39E5D9003DC336 /* mActionDeleteAttribute.png */; };
-		7256F3AB0F41C3E20022BE1F /* mActionDeleteSelected.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE9A0F39E5D9003DC336 /* mActionDeleteSelected.png */; };
-		7256F3AC0F41C3E20022BE1F /* mActionDeleteVertex.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE9B0F39E5D9003DC336 /* mActionDeleteVertex.png */; };
-		7256F3AD0F41C3E20022BE1F /* mActionDraw.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE9C0F39E5D9003DC336 /* mActionDraw.png */; };
-		7256F3AE0F41C3E20022BE1F /* mActionEditCopy.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE9D0F39E5D9003DC336 /* mActionEditCopy.png */; };
-		7256F3AF0F41C3E20022BE1F /* mActionEditCut.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE9E0F39E5D9003DC336 /* mActionEditCut.png */; };
-		7256F3B00F41C3E20022BE1F /* mActionEditPaste.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EE9F0F39E5D9003DC336 /* mActionEditPaste.png */; };
-		7256F3B10F41C3E20022BE1F /* mActionExpandTree.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA00F39E5D9003DC336 /* mActionExpandTree.png */; };
-		7256F3B20F41C3E20022BE1F /* mActionExportMapServer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA10F39E5D9003DC336 /* mActionExportMapServer.png */; };
-		7256F3B30F41C3E20022BE1F /* mActionFileExit.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA20F39E5D9003DC336 /* mActionFileExit.png */; };
-		7256F3B40F41C3E20022BE1F /* mActionFileNew.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA30F39E5D9003DC336 /* mActionFileNew.png */; };
-		7256F3B50F41C3E20022BE1F /* mActionFileOpen.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA40F39E5D9003DC336 /* mActionFileOpen.png */; };
-		7256F3B60F41C3E20022BE1F /* mActionFilePrint.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA50F39E5D9003DC336 /* mActionFilePrint.png */; };
-		7256F3B70F41C3E20022BE1F /* mActionFileSave.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA60F39E5D9003DC336 /* mActionFileSave.png */; };
-		7256F3B80F41C3E20022BE1F /* mActionFileSaveAs.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA70F39E5D9003DC336 /* mActionFileSaveAs.png */; };
-		7256F3B90F41C3E20022BE1F /* mActionFileSmall.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA80F39E5D9003DC336 /* mActionFileSmall.png */; };
-		7256F3BA0F41C3E20022BE1F /* mActionFolder.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEA90F39E5D9003DC336 /* mActionFolder.png */; };
-		7256F3BB0F41C3E20022BE1F /* mActionHelpAbout.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEAA0F39E5D9003DC336 /* mActionHelpAbout.png */; };
-		7256F3BC0F41C3E20022BE1F /* mActionHelpContents.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEAB0F39E5D9003DC336 /* mActionHelpContents.png */; };
-		7256F3BD0F41C3E20022BE1F /* mActionHideAllLayers.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEAC0F39E5D9003DC336 /* mActionHideAllLayers.png */; };
-		7256F3BE0F41C3E20022BE1F /* mActionIdentify.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEAD0F39E5D9003DC336 /* mActionIdentify.png */; };
-		7256F3BF0F41C3E20022BE1F /* mActionInOverview.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEAE0F39E5D9003DC336 /* mActionInOverview.png */; };
-		7256F3C00F41C3E20022BE1F /* mActionInvertSelection.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEAF0F39E5D9003DC336 /* mActionInvertSelection.png */; };
-		7256F3C10F41C3E20022BE1F /* mActionLabel.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB00F39E5D9003DC336 /* mActionLabel.png */; };
-		7256F3C20F41C3E20022BE1F /* mActionMeasure.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB10F39E5D9003DC336 /* mActionMeasure.png */; };
-		7256F3C30F41C3E20022BE1F /* mActionMeasureArea.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB20F39E5D9003DC336 /* mActionMeasureArea.png */; };
-		7256F3C40F41C3E20022BE1F /* mActionMoveVertex.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB30F39E5D9003DC336 /* mActionMoveVertex.png */; };
-		7256F3C50F41C3E20022BE1F /* mActionNewAttribute.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB40F39E5D9003DC336 /* mActionNewAttribute.png */; };
-		7256F3C60F41C3E20022BE1F /* mActionNewBookmark.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB50F39E5D9003DC336 /* mActionNewBookmark.png */; };
-		7256F3C70F41C3E20022BE1F /* mActionNewFolder.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB60F39E5D9003DC336 /* mActionNewFolder.png */; };
-		7256F3C80F41C3E20022BE1F /* mActionNewVectorLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB70F39E5D9003DC336 /* mActionNewVectorLayer.png */; };
-		7256F3C90F41C3E20022BE1F /* mActionOpenTable.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB80F39E5D9003DC336 /* mActionOpenTable.png */; };
-		7256F3CA0F41C3E20022BE1F /* mActionOptions.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEB90F39E5D9003DC336 /* mActionOptions.png */; };
-		7256F3CB0F41C3E20022BE1F /* mActionPan.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEBA0F39E5D9003DC336 /* mActionPan.png */; };
-		7256F3CC0F41C3E20022BE1F /* mActionProjectProperties.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEBB0F39E5D9003DC336 /* mActionProjectProperties.png */; };
-		7256F3CD0F41C3E20022BE1F /* mActionPropertyItem.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEBC0F39E5D9003DC336 /* mActionPropertyItem.png */; };
-		7256F3CE0F41C3E20022BE1F /* mActionQgisHomePage.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEBD0F39E5D9003DC336 /* mActionQgisHomePage.png */; };
-		7256F3CF0F41C3E20022BE1F /* mActionRemove.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEBE0F39E5D9003DC336 /* mActionRemove.png */; };
-		7256F3D00F41C3E20022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEBF0F39E5D9003DC336 /* mActionRemoveAllFromOverview.png */; };
-		7256F3D10F41C3E20022BE1F /* mActionRemoveLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC00F39E5D9003DC336 /* mActionRemoveLayer.png */; };
-		7256F3D20F41C3E20022BE1F /* mActionSaveAsSVG.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC10F39E5D9003DC336 /* mActionSaveAsSVG.png */; };
-		7256F3D30F41C3E20022BE1F /* mActionSaveMapAsImage.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC20F39E5D9003DC336 /* mActionSaveMapAsImage.png */; };
-		7256F3D40F41C3E20022BE1F /* mActionScaleBar.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC30F39E5D9003DC336 /* mActionScaleBar.png */; };
-		7256F3D50F41C3E20022BE1F /* mActionSelect.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC40F39E5D9003DC336 /* mActionSelect.png */; };
-		7256F3D60F41C3E20022BE1F /* mActionSelectedToTop.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC50F39E5D9003DC336 /* mActionSelectedToTop.png */; };
-		7256F3D70F41C3E20022BE1F /* mActionShowAllLayers.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC60F39E5D9003DC336 /* mActionShowAllLayers.png */; };
-		7256F3D80F41C3E20022BE1F /* mActionShowBookmarks.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC70F39E5D9003DC336 /* mActionShowBookmarks.png */; };
-		7256F3D90F41C3E20022BE1F /* mActionShowPluginManager.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC80F39E5D9003DC336 /* mActionShowPluginManager.png */; };
-		7256F3DA0F41C3E20022BE1F /* mActionToggleEditing.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEC90F39E5D9003DC336 /* mActionToggleEditing.png */; };
-		7256F3DB0F41C3E20022BE1F /* mActionUnselectAttributes.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EECA0F39E5D9003DC336 /* mActionUnselectAttributes.png */; };
-		7256F3DC0F41C3E20022BE1F /* mActionZoomFullExtent.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EECB0F39E5D9003DC336 /* mActionZoomFullExtent.png */; };
-		7256F3DD0F41C3E20022BE1F /* mActionZoomIn.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EECC0F39E5D9003DC336 /* mActionZoomIn.png */; };
-		7256F3DE0F41C3E20022BE1F /* mActionZoomLast.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EECD0F39E5D9003DC336 /* mActionZoomLast.png */; };
-		7256F3DF0F41C3E20022BE1F /* mActionZoomOut.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EECE0F39E5D9003DC336 /* mActionZoomOut.png */; };
-		7256F3E00F41C3E20022BE1F /* mActionZoomToLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EECF0F39E5D9003DC336 /* mActionZoomToLayer.png */; };
-		7256F3E10F41C3E20022BE1F /* mActionZoomToSelected.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED00F39E5D9003DC336 /* mActionZoomToSelected.png */; };
-		7256F3E20F41C3E20022BE1F /* mIconEditable.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED10F39E5D9003DC336 /* mIconEditable.png */; };
-		7256F3E30F41C3E20022BE1F /* mIconGeometryLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED20F39E5D9003DC336 /* mIconGeometryLayer.png */; };
-		7256F3E40F41C3E20022BE1F /* mIconLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED30F39E5D9003DC336 /* mIconLayer.png */; };
-		7256F3E50F41C3E20022BE1F /* mIconLineLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED40F39E5D9003DC336 /* mIconLineLayer.png */; };
-		7256F3E60F41C3E20022BE1F /* mIconNoPyramid.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED50F39E5D9003DC336 /* mIconNoPyramid.png */; };
-		7256F3E70F41C3E20022BE1F /* mIconPointLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED60F39E5D9003DC336 /* mIconPointLayer.png */; };
-		7256F3E80F41C3E20022BE1F /* mIconPolygonLayer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED70F39E5D9003DC336 /* mIconPolygonLayer.png */; };
-		7256F3E90F41C3E20022BE1F /* mIconProjectionDisabled.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED80F39E5D9003DC336 /* mIconProjectionDisabled.png */; };
-		7256F3EA0F41C3E20022BE1F /* mIconProjectionEnabled.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EED90F39E5D9003DC336 /* mIconProjectionEnabled.png */; };
-		7256F3EB0F41C3E20022BE1F /* mIconProjectionProblem.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEDA0F39E5D9003DC336 /* mIconProjectionProblem.png */; };
-		7256F3EC0F41C3E20022BE1F /* mIconProperties.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEDB0F39E5D9003DC336 /* mIconProperties.png */; };
-		7256F3ED0F41C3E20022BE1F /* mIconPyramid.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEDC0F39E5D9003DC336 /* mIconPyramid.png */; };
-		7256F3EE0F41C3E20022BE1F /* mIconSymbology.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEDD0F39E5D9003DC336 /* mIconSymbology.png */; };
-		7256F3EF0F41C3E20022BE1F /* mIconUnknownLayerType.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEDE0F39E5D9003DC336 /* mIconUnknownLayerType.png */; };
-		7256F3F00F41C3E20022BE1F /* mIconWaitingForLayerType.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEDF0F39E5D9003DC336 /* mIconWaitingForLayerType.png */; };
-		7256F3F10F41C3E20022BE1F /* mMapserverExport.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EEE00F39E5D9003DC336 /* mMapserverExport.png */; };
-		7256F4220F41C4DD0022BE1F /* clearInput.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEE60F39E5D9003DC336 /* clearInput.png */; };
-		7256F4230F41C4DD0022BE1F /* extents.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEE90F39E5D9003DC336 /* extents.png */; };
-		7256F4240F41C4DD0022BE1F /* favourites.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEEB0F39E5D9003DC336 /* favourites.png */; };
-		7256F4250F41C4DD0022BE1F /* geographic.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEED0F39E5D9003DC336 /* geographic.png */; };
-		7256F4260F41C4DD0022BE1F /* mAction.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF00F39E5D9003DC336 /* mAction.png */; };
-		7256F4270F41C4DD0022BE1F /* mActionAddAllToOverview.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF10F39E5D9003DC336 /* mActionAddAllToOverview.png */; };
-		7256F4280F41C4DD0022BE1F /* mActionAddIsland.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF20F39E5D9003DC336 /* mActionAddIsland.png */; };
-		7256F4290F41C4DD0022BE1F /* mActionAddLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF30F39E5D9003DC336 /* mActionAddLayer.png */; };
-		7256F42A0F41C4DD0022BE1F /* mActionAddLegend.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF40F39E5D9003DC336 /* mActionAddLegend.png */; };
-		7256F42B0F41C4DD0022BE1F /* mActionAddNonDbLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF50F39E5D9003DC336 /* mActionAddNonDbLayer.png */; };
-		7256F42C0F41C4DD0022BE1F /* mActionAddOgrLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF60F39E5D9003DC336 /* mActionAddOgrLayer.png */; };
-		7256F42D0F41C4DD0022BE1F /* mActionAddRasterLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF70F39E5D9003DC336 /* mActionAddRasterLayer.png */; };
-		7256F42E0F41C4DD0022BE1F /* mActionAddRing.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF80F39E5D9003DC336 /* mActionAddRing.png */; };
-		7256F42F0F41C4DD0022BE1F /* mActionAddVertex.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEF90F39E5D9003DC336 /* mActionAddVertex.png */; };
-		7256F4300F41C4DD0022BE1F /* mActionAddWmsLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEFA0F39E5D9003DC336 /* mActionAddWmsLayer.png */; };
-		7256F4310F41C4DD0022BE1F /* mActionCaptureLine.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEFB0F39E5D9003DC336 /* mActionCaptureLine.png */; };
-		7256F4320F41C4DD0022BE1F /* mActionCapturePoint.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEFC0F39E5D9003DC336 /* mActionCapturePoint.png */; };
-		7256F4330F41C4DD0022BE1F /* mActionCapturePolygon.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEFD0F39E5D9003DC336 /* mActionCapturePolygon.png */; };
-		7256F4340F41C4DD0022BE1F /* mActionCheckQgisVersion.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEFE0F39E5D9003DC336 /* mActionCheckQgisVersion.png */; };
-		7256F4350F41C4DD0022BE1F /* mActionCollapseTree.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EEFF0F39E5D9003DC336 /* mActionCollapseTree.png */; };
-		7256F4360F41C4DD0022BE1F /* mActionContextHelp.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF000F39E5D9003DC336 /* mActionContextHelp.png */; };
-		7256F4370F41C4DD0022BE1F /* mActionCopySelected.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF010F39E5D9003DC336 /* mActionCopySelected.png */; };
-		7256F4380F41C4DD0022BE1F /* mActionCustomProjection.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF020F39E5D9003DC336 /* mActionCustomProjection.png */; };
-		7256F4390F41C4DD0022BE1F /* mActionDeleteAttribute.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF030F39E5D9003DC336 /* mActionDeleteAttribute.png */; };
-		7256F43A0F41C4DD0022BE1F /* mActionDeleteSelected.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF040F39E5D9003DC336 /* mActionDeleteSelected.png */; };
-		7256F43B0F41C4DD0022BE1F /* mActionDeleteVertex.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF050F39E5D9003DC336 /* mActionDeleteVertex.png */; };
-		7256F43C0F41C4DD0022BE1F /* mActionDraw.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF060F39E5D9003DC336 /* mActionDraw.png */; };
-		7256F43D0F41C4DD0022BE1F /* mActionEditCopy.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF070F39E5D9003DC336 /* mActionEditCopy.png */; };
-		7256F43E0F41C4DD0022BE1F /* mActionEditCut.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF080F39E5D9003DC336 /* mActionEditCut.png */; };
-		7256F43F0F41C4DD0022BE1F /* mActionEditPaste.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF090F39E5D9003DC336 /* mActionEditPaste.png */; };
-		7256F4400F41C4DD0022BE1F /* mActionExpandTree.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF0A0F39E5D9003DC336 /* mActionExpandTree.png */; };
-		7256F4410F41C4DD0022BE1F /* mActionExportMapServer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF0B0F39E5D9003DC336 /* mActionExportMapServer.png */; };
-		7256F4420F41C4DD0022BE1F /* mActionFileExit.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF0C0F39E5D9003DC336 /* mActionFileExit.png */; };
-		7256F4430F41C4DD0022BE1F /* mActionFileNew.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF0D0F39E5D9003DC336 /* mActionFileNew.png */; };
-		7256F4440F41C4DD0022BE1F /* mActionFileOpen.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF0E0F39E5D9003DC336 /* mActionFileOpen.png */; };
-		7256F4450F41C4DD0022BE1F /* mActionFilePrint.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF0F0F39E5D9003DC336 /* mActionFilePrint.png */; };
-		7256F4460F41C4DD0022BE1F /* mActionFileSave.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF100F39E5D9003DC336 /* mActionFileSave.png */; };
-		7256F4470F41C4DD0022BE1F /* mActionFileSaveAs.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF110F39E5D9003DC336 /* mActionFileSaveAs.png */; };
-		7256F4480F41C4DD0022BE1F /* mActionFileSmall.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF120F39E5D9003DC336 /* mActionFileSmall.png */; };
-		7256F4490F41C4DD0022BE1F /* mActionFolder.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF130F39E5D9003DC336 /* mActionFolder.png */; };
-		7256F44A0F41C4DD0022BE1F /* mActionGroupItems.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF140F39E5D9003DC336 /* mActionGroupItems.png */; };
-		7256F44B0F41C4DD0022BE1F /* mActionHelpAbout.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF150F39E5D9003DC336 /* mActionHelpAbout.png */; };
-		7256F44C0F41C4DD0022BE1F /* mActionHelpContents.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF160F39E5D9003DC336 /* mActionHelpContents.png */; };
-		7256F44D0F41C4DD0022BE1F /* mActionHideAllLayers.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF170F39E5D9003DC336 /* mActionHideAllLayers.png */; };
-		7256F44E0F41C4DD0022BE1F /* mActionIdentify.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF180F39E5D9003DC336 /* mActionIdentify.png */; };
-		7256F44F0F41C4DD0022BE1F /* mActionInOverview.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF190F39E5D9003DC336 /* mActionInOverview.png */; };
-		7256F4500F41C4DD0022BE1F /* mActionInvertSelection.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF1A0F39E5D9003DC336 /* mActionInvertSelection.png */; };
-		7256F4510F41C4DD0022BE1F /* mActionLabel.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF1B0F39E5D9003DC336 /* mActionLabel.png */; };
-		7256F4520F41C4DD0022BE1F /* mActionLowerItems.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF1C0F39E5D9003DC336 /* mActionLowerItems.png */; };
-		7256F4530F41C4DD0022BE1F /* mActionMapTips.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF1D0F39E5D9003DC336 /* mActionMapTips.png */; };
-		7256F4540F41C4DD0022BE1F /* mActionMeasure.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF1E0F39E5D9003DC336 /* mActionMeasure.png */; };
-		7256F4550F41C4DD0022BE1F /* mActionMeasureArea.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF1F0F39E5D9003DC336 /* mActionMeasureArea.png */; };
-		7256F4560F41C4DD0022BE1F /* mActionMoveFeature.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF200F39E5D9003DC336 /* mActionMoveFeature.png */; };
-		7256F4570F41C4DD0022BE1F /* mActionMoveItemContent.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF210F39E5D9003DC336 /* mActionMoveItemContent.png */; };
-		7256F4580F41C4DD0022BE1F /* mActionMoveItemsToBottom.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF220F39E5D9003DC336 /* mActionMoveItemsToBottom.png */; };
-		7256F4590F41C4DD0022BE1F /* mActionMoveItemsToTop.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF230F39E5D9003DC336 /* mActionMoveItemsToTop.png */; };
-		7256F45A0F41C4DD0022BE1F /* mActionMoveVertex.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF240F39E5D9003DC336 /* mActionMoveVertex.png */; };
-		7256F45B0F41C4DD0022BE1F /* mActionNewAttribute.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF250F39E5D9003DC336 /* mActionNewAttribute.png */; };
-		7256F45C0F41C4DD0022BE1F /* mActionNewBookmark.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF260F39E5D9003DC336 /* mActionNewBookmark.png */; };
-		7256F45D0F41C4DD0022BE1F /* mActionNewFolder.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF270F39E5D9003DC336 /* mActionNewFolder.png */; };
-		7256F45E0F41C4DD0022BE1F /* mActionNewVectorLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF280F39E5D9003DC336 /* mActionNewVectorLayer.png */; };
-		7256F45F0F41C4DD0022BE1F /* mActionOpenTable.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF290F39E5D9003DC336 /* mActionOpenTable.png */; };
-		7256F4600F41C4DD0022BE1F /* mActionOptions.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF2A0F39E5D9003DC336 /* mActionOptions.png */; };
-		7256F4610F41C4DD0022BE1F /* mActionPan.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF2B0F39E5D9003DC336 /* mActionPan.png */; };
-		7256F4620F41C4DD0022BE1F /* mActionProjectProperties.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF2C0F39E5D9003DC336 /* mActionProjectProperties.png */; };
-		7256F4630F41C4DD0022BE1F /* mActionPropertyItem.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF2D0F39E5D9003DC336 /* mActionPropertyItem.png */; };
-		7256F4640F41C4DD0022BE1F /* mActionQgisHomePage.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF2E0F39E5D9003DC336 /* mActionQgisHomePage.png */; };
-		7256F4650F41C4DD0022BE1F /* mActionRaiseItems.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF2F0F39E5D9003DC336 /* mActionRaiseItems.png */; };
-		7256F4660F41C4DD0022BE1F /* mActionRemove.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF300F39E5D9003DC336 /* mActionRemove.png */; };
-		7256F4670F41C4DD0022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF310F39E5D9003DC336 /* mActionRemoveAllFromOverview.png */; };
-		7256F4680F41C4DD0022BE1F /* mActionRemoveLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF320F39E5D9003DC336 /* mActionRemoveLayer.png */; };
-		7256F4690F41C4DD0022BE1F /* mActionSaveAsSVG.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF330F39E5D9003DC336 /* mActionSaveAsSVG.png */; };
-		7256F46A0F41C4DD0022BE1F /* mActionSaveMapAsImage.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF340F39E5D9003DC336 /* mActionSaveMapAsImage.png */; };
-		7256F46B0F41C4DD0022BE1F /* mActionScaleBar.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF350F39E5D9003DC336 /* mActionScaleBar.png */; };
-		7256F46C0F41C4DD0022BE1F /* mActionSelect.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF360F39E5D9003DC336 /* mActionSelect.png */; };
-		7256F46D0F41C4DD0022BE1F /* mActionSelectedToTop.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF370F39E5D9003DC336 /* mActionSelectedToTop.png */; };
-		7256F46E0F41C4DD0022BE1F /* mActionSelectPan.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF380F39E5D9003DC336 /* mActionSelectPan.png */; };
-		7256F46F0F41C4DD0022BE1F /* mActionShowAllLayers.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF390F39E5D9003DC336 /* mActionShowAllLayers.png */; };
-		7256F4700F41C4DD0022BE1F /* mActionShowBookmarks.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF3A0F39E5D9003DC336 /* mActionShowBookmarks.png */; };
-		7256F4710F41C4DD0022BE1F /* mActionShowPluginManager.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF3B0F39E5D9003DC336 /* mActionShowPluginManager.png */; };
-		7256F4720F41C4DD0022BE1F /* mActionSplitFeatures.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF3C0F39E5D9003DC336 /* mActionSplitFeatures.png */; };
-		7256F4730F41C4DD0022BE1F /* mActionToggleEditing.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF3D0F39E5D9003DC336 /* mActionToggleEditing.png */; };
-		7256F4740F41C4DD0022BE1F /* mActionUngroupItems.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF3E0F39E5D9003DC336 /* mActionUngroupItems.png */; };
-		7256F4750F41C4DD0022BE1F /* mActionUnselectAttributes.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF3F0F39E5D9003DC336 /* mActionUnselectAttributes.png */; };
-		7256F4760F41C4DD0022BE1F /* mActionZoomFullExtent.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF400F39E5D9003DC336 /* mActionZoomFullExtent.png */; };
-		7256F4770F41C4DD0022BE1F /* mActionZoomIn.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF410F39E5D9003DC336 /* mActionZoomIn.png */; };
-		7256F4780F41C4DD0022BE1F /* mActionZoomLast.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF420F39E5D9003DC336 /* mActionZoomLast.png */; };
-		7256F4790F41C4DD0022BE1F /* mActionZoomOut.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF430F39E5D9003DC336 /* mActionZoomOut.png */; };
-		7256F47A0F41C4DD0022BE1F /* mActionZoomToLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF440F39E5D9003DC336 /* mActionZoomToLayer.png */; };
-		7256F47B0F41C4DD0022BE1F /* mActionZoomToSelected.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF450F39E5D9003DC336 /* mActionZoomToSelected.png */; };
-		7256F47C0F41C4DD0022BE1F /* mIconDelete.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF460F39E5D9003DC336 /* mIconDelete.png */; };
-		7256F47D0F41C4DD0022BE1F /* mIconEditable.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF470F39E5D9003DC336 /* mIconEditable.png */; };
-		7256F47E0F41C4DD0022BE1F /* mIconFirst.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF480F39E5D9003DC336 /* mIconFirst.png */; };
-		7256F47F0F41C4DD0022BE1F /* mIconGeometryLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF490F39E5D9003DC336 /* mIconGeometryLayer.png */; };
-		7256F4800F41C4DD0022BE1F /* mIconLast.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF4A0F39E5D9003DC336 /* mIconLast.png */; };
-		7256F4810F41C4DD0022BE1F /* mIconLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF4B0F39E5D9003DC336 /* mIconLayer.png */; };
-		7256F4820F41C4DD0022BE1F /* mIconLineLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF4C0F39E5D9003DC336 /* mIconLineLayer.png */; };
-		7256F4830F41C4DD0022BE1F /* mIconNew.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF4D0F39E5D9003DC336 /* mIconNew.png */; };
-		7256F4840F41C4DD0022BE1F /* mIconNext.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF4E0F39E5D9003DC336 /* mIconNext.png */; };
-		7256F4850F41C4DD0022BE1F /* mIconNoPyramid.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF4F0F39E5D9003DC336 /* mIconNoPyramid.png */; };
-		7256F4860F41C4DD0022BE1F /* mIconPointLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF500F39E5D9003DC336 /* mIconPointLayer.png */; };
-		7256F4870F41C4DD0022BE1F /* mIconPolygonLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF510F39E5D9003DC336 /* mIconPolygonLayer.png */; };
-		7256F4880F41C4DD0022BE1F /* mIconPrevious.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF520F39E5D9003DC336 /* mIconPrevious.png */; };
-		7256F4890F41C4DD0022BE1F /* mIconProjectionDisabled.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF530F39E5D9003DC336 /* mIconProjectionDisabled.png */; };
-		7256F48A0F41C4DD0022BE1F /* mIconProjectionEnabled.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF540F39E5D9003DC336 /* mIconProjectionEnabled.png */; };
-		7256F48B0F41C4DD0022BE1F /* mIconProjectionProblem.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF550F39E5D9003DC336 /* mIconProjectionProblem.png */; };
-		7256F48C0F41C4DD0022BE1F /* mIconProperties.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF560F39E5D9003DC336 /* mIconProperties.png */; };
-		7256F48D0F41C4DD0022BE1F /* mIconPyramid.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF570F39E5D9003DC336 /* mIconPyramid.png */; };
-		7256F48E0F41C4DD0022BE1F /* mIconSymbology.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF580F39E5D9003DC336 /* mIconSymbology.png */; };
-		7256F48F0F41C4DD0022BE1F /* mIconUnknownLayerType.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF590F39E5D9003DC336 /* mIconUnknownLayerType.png */; };
-		7256F4900F41C4DD0022BE1F /* mIconWaitingForLayerType.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF5A0F39E5D9003DC336 /* mIconWaitingForLayerType.png */; };
-		7256F4910F41C4DD0022BE1F /* mMapserverExport.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF5B0F39E5D9003DC336 /* mMapserverExport.png */; };
-		7256F4920F41C4DD0022BE1F /* tracking.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF5D0F39E5D9003DC336 /* tracking.png */; };
-		7256F4930F41C4DD0022BE1F /* transformed.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF5F0F39E5D9003DC336 /* transformed.png */; };
-		7256F4940F41C4DD0022BE1F /* user.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EF600F39E5D9003DC336 /* user.png */; };
-		7256F4C40F41C5510022BE1F /* mActionAddGPSLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF660F39E5D9003DC336 /* mActionAddGPSLayer.png */; };
-		7256F4C50F41C5510022BE1F /* mActionAddIsland.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF670F39E5D9003DC336 /* mActionAddIsland.png */; };
-		7256F4C60F41C5510022BE1F /* mActionAddLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF680F39E5D9003DC336 /* mActionAddLayer.png */; };
-		7256F4C70F41C5510022BE1F /* mActionAddOgrLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF690F39E5D9003DC336 /* mActionAddOgrLayer.png */; };
-		7256F4C80F41C5510022BE1F /* mActionAddRasterLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6A0F39E5D9003DC336 /* mActionAddRasterLayer.png */; };
-		7256F4C90F41C5510022BE1F /* mActionAddRing.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6B0F39E5D9003DC336 /* mActionAddRing.png */; };
-		7256F4CA0F41C5510022BE1F /* mActionAddVertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6C0F39E5D9003DC336 /* mActionAddVertex.png */; };
-		7256F4CB0F41C5510022BE1F /* mActionAddWfsLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6D0F39E5D9003DC336 /* mActionAddWfsLayer.png */; };
-		7256F4CC0F41C5510022BE1F /* mActionAddWmsLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6E0F39E5D9003DC336 /* mActionAddWmsLayer.png */; };
-		7256F4CD0F41C5510022BE1F /* mActionCaptureLine.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6F0F39E5D9003DC336 /* mActionCaptureLine.png */; };
-		7256F4CE0F41C5510022BE1F /* mActionCapturePoint.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF700F39E5D9003DC336 /* mActionCapturePoint.png */; };
-		7256F4CF0F41C5510022BE1F /* mActionCapturePolygon.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF710F39E5D9003DC336 /* mActionCapturePolygon.png */; };
-		7256F4D00F41C5510022BE1F /* mActionDeleteSelected.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF720F39E5D9003DC336 /* mActionDeleteSelected.png */; };
-		7256F4D10F41C5510022BE1F /* mActionDeleteVertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF730F39E5D9003DC336 /* mActionDeleteVertex.png */; };
-		7256F4D20F41C5510022BE1F /* mActionDraw.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF740F39E5D9003DC336 /* mActionDraw.png */; };
-		7256F4D30F41C5510022BE1F /* mActionEditCopy.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF750F39E5D9003DC336 /* mActionEditCopy.png */; };
-		7256F4D40F41C5510022BE1F /* mActionEditCut.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF760F39E5D9003DC336 /* mActionEditCut.png */; };
-		7256F4D50F41C5510022BE1F /* mActionEditPaste.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF770F39E5D9003DC336 /* mActionEditPaste.png */; };
-		7256F4D60F41C5510022BE1F /* mActionFileNew.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF780F39E5D9003DC336 /* mActionFileNew.png */; };
-		7256F4D70F41C5510022BE1F /* mActionFileOpen.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF790F39E5D9003DC336 /* mActionFileOpen.png */; };
-		7256F4D80F41C5510022BE1F /* mActionFilePrint.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7A0F39E5D9003DC336 /* mActionFilePrint.png */; };
-		7256F4D90F41C5510022BE1F /* mActionFileSave.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7B0F39E5D9003DC336 /* mActionFileSave.png */; };
-		7256F4DA0F41C5510022BE1F /* mActionFileSaveAs.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7C0F39E5D9003DC336 /* mActionFileSaveAs.png */; };
-		7256F4DB0F41C5510022BE1F /* mActionHelpContents.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7D0F39E5D9003DC336 /* mActionHelpContents.png */; };
-		7256F4DC0F41C5510022BE1F /* mActionHideAllLayers.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7E0F39E5D9003DC336 /* mActionHideAllLayers.png */; };
-		7256F4DD0F41C5510022BE1F /* mActionIdentify.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7F0F39E5D9003DC336 /* mActionIdentify.png */; };
-		7256F4DE0F41C5510022BE1F /* mActionInOverview.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF800F39E5D9003DC336 /* mActionInOverview.png */; };
-		7256F4DF0F41C5510022BE1F /* mActionMapTips.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF810F39E5D9003DC336 /* mActionMapTips.png */; };
-		7256F4E00F41C5510022BE1F /* mActionMeasure.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF820F39E5D9003DC336 /* mActionMeasure.png */; };
-		7256F4E10F41C5510022BE1F /* mActionMeasureArea.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF830F39E5D9003DC336 /* mActionMeasureArea.png */; };
-		7256F4E20F41C5510022BE1F /* mActionMoveFeature.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF840F39E5D9003DC336 /* mActionMoveFeature.png */; };
-		7256F4E30F41C5510022BE1F /* mActionMoveVertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF850F39E5D9003DC336 /* mActionMoveVertex.png */; };
-		7256F4E40F41C5510022BE1F /* mActionNewBookmark.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF860F39E5D9003DC336 /* mActionNewBookmark.png */; };
-		7256F4E50F41C5510022BE1F /* mActionNewVectorLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF870F39E5D9003DC336 /* mActionNewVectorLayer.png */; };
-		7256F4E60F41C5510022BE1F /* mActionOpenTable.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF880F39E5D9003DC336 /* mActionOpenTable.png */; };
-		7256F4E70F41C5510022BE1F /* mActionPan.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF890F39E5D9003DC336 /* mActionPan.png */; };
-		7256F4E80F41C5510022BE1F /* mActionRemoveLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8A0F39E5D9003DC336 /* mActionRemoveLayer.png */; };
-		7256F4E90F41C5510022BE1F /* mActionSelect.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8B0F39E5D9003DC336 /* mActionSelect.png */; };
-		7256F4EA0F41C5510022BE1F /* mActionShowAllLayers.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8C0F39E5D9003DC336 /* mActionShowAllLayers.png */; };
-		7256F4EB0F41C5510022BE1F /* mActionShowBookmarks.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8D0F39E5D9003DC336 /* mActionShowBookmarks.png */; };
-		7256F4EC0F41C5510022BE1F /* mActionSplitFeatures.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8E0F39E5D9003DC336 /* mActionSplitFeatures.png */; };
-		7256F4ED0F41C5510022BE1F /* mActionToggleEditing.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8F0F39E5D9003DC336 /* mActionToggleEditing.png */; };
-		7256F4EE0F41C5510022BE1F /* mActionUnselectAttributes.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF900F39E5D9003DC336 /* mActionUnselectAttributes.png */; };
-		7256F4EF0F41C5510022BE1F /* mActionZoomFullExtent.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF910F39E5D9003DC336 /* mActionZoomFullExtent.png */; };
-		7256F4F00F41C5510022BE1F /* mActionZoomIn.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF920F39E5D9003DC336 /* mActionZoomIn.png */; };
-		7256F4F10F41C5510022BE1F /* mActionZoomLast.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF930F39E5D9003DC336 /* mActionZoomLast.png */; };
-		7256F4F20F41C5510022BE1F /* mActionZoomOut.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF940F39E5D9003DC336 /* mActionZoomOut.png */; };
-		7256F4F30F41C5510022BE1F /* mActionZoomToLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF950F39E5D9003DC336 /* mActionZoomToLayer.png */; };
-		7256F4F40F41C5510022BE1F /* mActionZoomToSelected.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF960F39E5D9003DC336 /* mActionZoomToSelected.png */; };
-		7256F4F60F41C5720022BE1F /* action.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EF990F39E5D9003DC336 /* action.png */; };
-		7256F4F70F41C5720022BE1F /* contexthelp.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EF9B0F39E5D9003DC336 /* contexthelp.png */; };
-		7256F4F80F41C5720022BE1F /* delete_selected.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EF9C0F39E5D9003DC336 /* delete_selected.png */; };
-		7256F4F90F41C5720022BE1F /* gis_plain_cursor.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EF9D0F39E5D9003DC336 /* gis_plain_cursor.png */; };
-		7256F4FA0F41C5720022BE1F /* inline_table.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EF9E0F39E5D9003DC336 /* inline_table.png */; };
-		7256F4FB0F41C5720022BE1F /* layers.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EF9F0F39E5D9003DC336 /* layers.png */; };
-		7256F4FC0F41C5720022BE1F /* mActionAddAllToOverview.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA00F39E5D9003DC336 /* mActionAddAllToOverview.png */; };
-		7256F4FD0F41C5720022BE1F /* mActionAddLayer.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA10F39E5D9003DC336 /* mActionAddLayer.png */; };
-		7256F4FE0F41C5720022BE1F /* mActionAddNonDbLayer.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA20F39E5D9003DC336 /* mActionAddNonDbLayer.png */; };
-		7256F4FF0F41C5720022BE1F /* mActionAddRasterLayer.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA30F39E5D9003DC336 /* mActionAddRasterLayer.png */; };
-		7256F5000F41C5720022BE1F /* mActionAddWmsLayer.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA40F39E5D9003DC336 /* mActionAddWmsLayer.png */; };
-		7256F5010F41C5720022BE1F /* mActionCaptureLine.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA50F39E5D9003DC336 /* mActionCaptureLine.png */; };
-		7256F5020F41C5720022BE1F /* mActionCapturePoint.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA60F39E5D9003DC336 /* mActionCapturePoint.png */; };
-		7256F5030F41C5720022BE1F /* mActionCapturePolygon.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA70F39E5D9003DC336 /* mActionCapturePolygon.png */; };
-		7256F5040F41C5720022BE1F /* mActionCustomProjection.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA80F39E5D9003DC336 /* mActionCustomProjection.png */; };
-		7256F5050F41C5720022BE1F /* mActionDraw.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFA90F39E5D9003DC336 /* mActionDraw.png */; };
-		7256F5060F41C5720022BE1F /* mActionExportMapServer.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFAA0F39E5D9003DC336 /* mActionExportMapServer.png */; };
-		7256F5070F41C5720022BE1F /* mActionFileExit.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFAB0F39E5D9003DC336 /* mActionFileExit.png */; };
-		7256F5080F41C5720022BE1F /* mActionFileNew.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFAC0F39E5D9003DC336 /* mActionFileNew.png */; };
-		7256F5090F41C5720022BE1F /* mActionFileOpen.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFAD0F39E5D9003DC336 /* mActionFileOpen.png */; };
-		7256F50A0F41C5720022BE1F /* mActionFilePrint.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFAE0F39E5D9003DC336 /* mActionFilePrint.png */; };
-		7256F50B0F41C5720022BE1F /* mActionFileSave.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFAF0F39E5D9003DC336 /* mActionFileSave.png */; };
-		7256F50C0F41C5720022BE1F /* mActionFileSaveAs.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB00F39E5D9003DC336 /* mActionFileSaveAs.png */; };
-		7256F50D0F41C5720022BE1F /* mActionHelpAbout.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB10F39E5D9003DC336 /* mActionHelpAbout.png */; };
-		7256F50E0F41C5720022BE1F /* mActionHelpContents.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB20F39E5D9003DC336 /* mActionHelpContents.png */; };
-		7256F50F0F41C5720022BE1F /* mActionHideAllLayers.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB30F39E5D9003DC336 /* mActionHideAllLayers.png */; };
-		7256F5100F41C5720022BE1F /* mActionIdentify.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB40F39E5D9003DC336 /* mActionIdentify.png */; };
-		7256F5110F41C5720022BE1F /* mActionInOverview.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB50F39E5D9003DC336 /* mActionInOverview.png */; };
-		7256F5120F41C5720022BE1F /* mActionMeasure.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB60F39E5D9003DC336 /* mActionMeasure.png */; };
-		7256F5130F41C5720022BE1F /* mActionNewBookmark.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB70F39E5D9003DC336 /* mActionNewBookmark.png */; };
-		7256F5140F41C5720022BE1F /* mActionNewVectorLayer.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB80F39E5D9003DC336 /* mActionNewVectorLayer.png */; };
-		7256F5150F41C5720022BE1F /* mActionOpenTable.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFB90F39E5D9003DC336 /* mActionOpenTable.png */; };
-		7256F5160F41C5720022BE1F /* mActionOptions.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFBA0F39E5D9003DC336 /* mActionOptions.png */; };
-		7256F5170F41C5720022BE1F /* mActionPan.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFBB0F39E5D9003DC336 /* mActionPan.png */; };
-		7256F5180F41C5720022BE1F /* mActionProjectProperties.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFBC0F39E5D9003DC336 /* mActionProjectProperties.png */; };
-		7256F5190F41C5720022BE1F /* mActionQgisHomePage.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFBD0F39E5D9003DC336 /* mActionQgisHomePage.png */; };
-		7256F51A0F41C5720022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFBE0F39E5D9003DC336 /* mActionRemoveAllFromOverview.png */; };
-		7256F51B0F41C5720022BE1F /* mActionRemoveLayer.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFBF0F39E5D9003DC336 /* mActionRemoveLayer.png */; };
-		7256F51C0F41C5720022BE1F /* mActionSaveMapAsImage.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC00F39E5D9003DC336 /* mActionSaveMapAsImage.png */; };
-		7256F51D0F41C5720022BE1F /* mActionSelect.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC10F39E5D9003DC336 /* mActionSelect.png */; };
-		7256F51E0F41C5720022BE1F /* mActionShowAllLayers.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC20F39E5D9003DC336 /* mActionShowAllLayers.png */; };
-		7256F51F0F41C5720022BE1F /* mActionShowBookmarks.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC30F39E5D9003DC336 /* mActionShowBookmarks.png */; };
-		7256F5200F41C5720022BE1F /* mActionShowPluginManager.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC40F39E5D9003DC336 /* mActionShowPluginManager.png */; };
-		7256F5210F41C5720022BE1F /* mActionZoomFullExtent.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC50F39E5D9003DC336 /* mActionZoomFullExtent.png */; };
-		7256F5220F41C5720022BE1F /* mActionZoomIn.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC60F39E5D9003DC336 /* mActionZoomIn.png */; };
-		7256F5230F41C5720022BE1F /* mActionZoomLast.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC70F39E5D9003DC336 /* mActionZoomLast.png */; };
-		7256F5240F41C5720022BE1F /* mActionZoomOut.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC80F39E5D9003DC336 /* mActionZoomOut.png */; };
-		7256F5250F41C5720022BE1F /* mActionZoomToLayer.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFC90F39E5D9003DC336 /* mActionZoomToLayer.png */; };
-		7256F5260F41C5720022BE1F /* mActionZoomToSelected.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFCA0F39E5D9003DC336 /* mActionZoomToSelected.png */; };
-		7256F5270F41C5720022BE1F /* mIconProjectionDisabled.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFCB0F39E5D9003DC336 /* mIconProjectionDisabled.png */; };
-		7256F5280F41C5720022BE1F /* mIconProjectionEnabled.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFCC0F39E5D9003DC336 /* mIconProjectionEnabled.png */; };
-		7256F5290F41C5720022BE1F /* mIconProjectionProblem.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFCD0F39E5D9003DC336 /* mIconProjectionProblem.png */; };
-		7256F52A0F41C5720022BE1F /* over-.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFCE0F39E5D9003DC336 /* over-.png */; };
-		7256F52B0F41C5720022BE1F /* over.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFCF0F39E5D9003DC336 /* over.png */; };
-		7256F52C0F41C5720022BE1F /* over1.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFD00F39E5D9003DC336 /* over1.png */; };
-		7256F52D0F41C5720022BE1F /* qgis32x32.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFD10F39E5D9003DC336 /* qgis32x32.png */; };
-		7256F52E0F41C5720022BE1F /* remove_all_to_overview.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFD20F39E5D9003DC336 /* remove_all_to_overview.png */; };
-		7256F52F0F41C5720022BE1F /* show_all_layers1.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFD30F39E5D9003DC336 /* show_all_layers1.png */; };
-		7256F5300F41C5720022BE1F /* show_layerReal.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 7209EFD40F39E5D9003DC336 /* show_layerReal.png */; };
 		7256F5350F41C5EF0022BE1F /* qgis.db in Copy - resources */ = {isa = PBXBuildFile; fileRef = 7209ED820F39E5D9003DC336 /* qgis.db */; };
 		7256F5360F41C5EF0022BE1F /* qgis_help.db in Copy - resources */ = {isa = PBXBuildFile; fileRef = 7209ED830F39E5D9003DC336 /* qgis_help.db */; };
 		7256F5370F41C5EF0022BE1F /* srs.db in Copy - resources */ = {isa = PBXBuildFile; fileRef = 7209ED840F39E5D9003DC336 /* srs.db */; };
-		7262ED670F7A6E6F00498385 /* grass_add_vertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED610F7A6E0800498385 /* grass_add_vertex.png */; };
-		7262ED680F7A6E6F00498385 /* grass_close_edit.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5D0F7A6E0800498385 /* grass_close_edit.png */; };
-		7262ED690F7A6E6F00498385 /* grass_delete_line.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED630F7A6E0800498385 /* grass_delete_line.png */; };
-		7262ED6A0F7A6E6F00498385 /* grass_delete_vertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED640F7A6E0800498385 /* grass_delete_vertex.png */; };
-		7262ED6B0F7A6E6F00498385 /* grass_edit_attributes.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5C0F7A6E0800498385 /* grass_edit_attributes.png */; };
-		7262ED6C0F7A6E6F00498385 /* grass_move_line.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5E0F7A6E0800498385 /* grass_move_line.png */; };
-		7262ED6D0F7A6E6F00498385 /* grass_move_vertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5B0F7A6E0800498385 /* grass_move_vertex.png */; };
-		7262ED6E0F7A6E6F00498385 /* grass_new_boundary.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5A0F7A6E0800498385 /* grass_new_boundary.png */; };
-		7262ED6F0F7A6E6F00498385 /* grass_new_centroid.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED620F7A6E0800498385 /* grass_new_centroid.png */; };
-		7262ED700F7A6E6F00498385 /* grass_new_line.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5F0F7A6E0800498385 /* grass_new_line.png */; };
-		7262ED710F7A6E6F00498385 /* grass_new_point.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED650F7A6E0800498385 /* grass_new_point.png */; };
-		7262ED720F7A6E6F00498385 /* grass_split_line.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED600F7A6E0800498385 /* grass_split_line.png */; };
 		7262ED830F7A750F00498385 /* qgsspatialitefilterproxymodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED7E0F7A74B700498385 /* qgsspatialitefilterproxymodel.cpp */; };
 		7262ED840F7A750F00498385 /* qgsspatialitetablemodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED820F7A74B700498385 /* qgsspatialitetablemodel.cpp */; };
-		7262ED8A0F7A760B00498385 /* mActionAddSpatiaLiteLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7262ED890F7A75FB00498385 /* mActionAddSpatiaLiteLayer.png */; };
 		7262ED970F7A770300498385 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8E0F7A767400498385 /* qgsspatialiteprovider.cpp */; };
 		7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */; };
@@ -1271,9 +837,6 @@
 		7264FE9C1024D117004D4CDD /* qgsmaptooldeletevertex.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6260F39E57A003DC336 /* qgsmaptooldeletevertex.h */; };
 		7264FE9D1024D117004D4CDD /* qgsmaptoolmovevertex.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E62E0F39E57A003DC336 /* qgsmaptoolmovevertex.h */; };
 		7264FE9F1024D183004D4CDD /* qgsogrprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC650F39E57B003DC336 /* qgsogrprovider.h */; };
-		72683FFB0FD6B21A00D90FFC /* mActionFromSelectedFeature.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FF90FD6B1EA00D90FFC /* mActionFromSelectedFeature.png */; };
-		72683FFC0FD6B21A00D90FFC /* mActionMergeFeatures.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FF80FD6B1EA00D90FFC /* mActionMergeFeatures.png */; };
-		72683FFD0FD6B21A00D90FFC /* mActionRemoveSelectedFeature.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72683FFA0FD6B1EA00D90FFC /* mActionRemoveSelectedFeature.png */; };
 		726840010FD6B2D200D90FFC /* qgsmergeattributesdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */; };
 		726840020FD6B2D200D90FFC /* qgsmergeattributesdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */; };
 		7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383010F8B8C2D0083B883 /* qgscentralpointpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1295,28 +858,11 @@
 		726FD9A20F6BF83F00D50560 /* delaunay.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 726FD9A10F6BF83100D50560 /* delaunay.png */; };
 		726FD9A30F6BF83F00D50560 /* layer_extent.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 726FD9A00F6BF83100D50560 /* layer_extent.png */; };
 		726FD9A50F6BF87300D50560 /* voronoi.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 726FD9A40F6BF86600D50560 /* voronoi.py */; };
-		72745A090F770319007F4218 /* copyright_label.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459F90F770252007F4218 /* copyright_label.png */; };
-		72745A0A0F770319007F4218 /* delimited_text.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FA0F770252007F4218 /* delimited_text.png */; };
-		72745A0B0F770319007F4218 /* dxf2shp_converter.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FB0F770252007F4218 /* dxf2shp_converter.png */; };
-		72745A0C0F770319007F4218 /* georeferencer.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FC0F770252007F4218 /* georeferencer.png */; };
-		72745A0D0F770319007F4218 /* gps_importer.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FD0F770252007F4218 /* gps_importer.png */; };
-		72745A0E0F770319007F4218 /* interpolation.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FE0F770252007F4218 /* interpolation.png */; };
-		72745A0F0F770319007F4218 /* north_arrow.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FF0F770252007F4218 /* north_arrow.png */; };
-		72745A100F770319007F4218 /* ogr_converter.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A000F770252007F4218 /* ogr_converter.png */; };
-		72745A110F770319007F4218 /* quick_print.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A010F770252007F4218 /* quick_print.png */; };
-		72745A120F770319007F4218 /* scale_bar.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A020F770252007F4218 /* scale_bar.png */; };
-		72745A130F770319007F4218 /* spit.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A030F770252007F4218 /* spit.png */; };
-		72745A140F770319007F4218 /* wfs.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A040F770252007F4218 /* wfs.png */; };
-		72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */ = {isa = PBXBuildFile; fileRef = 727459F80F770252007F4218 /* coordinate_capture.png */; };
 		7276104210A609D300C89AF0 /* Bezier3D.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103810A6099D00C89AF0 /* Bezier3D.cc */; };
 		7276104310A609D300C89AF0 /* CloughTocherInterpolator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103A10A6099D00C89AF0 /* CloughTocherInterpolator.cc */; };
 		7276104410A609D300C89AF0 /* NormVecDecorator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103C10A6099D00C89AF0 /* NormVecDecorator.cc */; };
 		7276104510A609D300C89AF0 /* ParametricLine.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103E10A6099D00C89AF0 /* ParametricLine.cc */; };
 		7276104610A609D300C89AF0 /* TriDecorator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276104010A6099D00C89AF0 /* TriDecorator.cc */; };
-		72779E9F1040615000CA9DE5 /* mActionAddImage.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72779E9E1040614100CA9DE5 /* mActionAddImage.png */; };
-		72779EA01040615000CA9DE5 /* mActionAddMap.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72779E9D1040614100CA9DE5 /* mActionAddMap.png */; };
-		727903F410A1EC48006254DF /* mActionNewComposer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 727903F310A1EC29006254DF /* mActionNewComposer.png */; };
-		727CEC220FBAFFA200F5B88C /* mIconLock.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 727CEC210FBAFF6000F5B88C /* mIconLock.png */; };
 		727E6AF10FEA90E200DF6F64 /* x_sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */; };
 		727E6B040FEA9BC000DF6F64 /* x_spatialite.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B030FEA9BC000DF6F64 /* x_spatialite.c */; };
 		727E6B110FEAA0CF00DF6F64 /* x_qgsspatialitesourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B0C0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.cpp */; };
@@ -1325,10 +871,6 @@
 		72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */; };
 		72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FE00FACCE520011C963 /* qgsmaptoolsimplify.cpp */; };
 		72820FE70FACCEC80011C963 /* qgsmaptoolsimplify.h in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDF0FACCE520011C963 /* qgsmaptoolsimplify.h */; };
-		72820FEF0FACCFA90011C963 /* mActionDeleteRing.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FEE0FACCF970011C963 /* mActionDeleteRing.png */; };
-		72820FF00FACCFA90011C963 /* mActionDeletePart.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FED0FACCF970011C963 /* mActionDeletePart.png */; };
-		72820FF10FACCFA90011C963 /* mActionSimplify.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FEC0FACCF970011C963 /* mActionSimplify.png */; };
-		7286D63B1062763F008D83A6 /* mActionRotatePointSymbols.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7286D63A10627610008D83A6 /* mActionRotatePointSymbols.png */; };
 		7286D640106276D3008D83A6 /* qgsmaptoolrotatepointsymbols.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7286D63C1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.cpp */; };
 		7286D641106276D3008D83A6 /* qgspointrotationitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */; };
 		7292873D0F71C0DF006D9489 /* qgssearchstringparser.yy in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6CE0F39E57A003DC336 /* qgssearchstringparser.yy */; };
@@ -1633,26 +1175,7 @@
 		72AA0BEA107394D900D00B43 /* qgsfieldcalculator.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE81073949C00D00B43 /* qgsfieldcalculator.h */; };
 		72BD9FE510A499D700FEA70F /* qgszonalstatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BD9FE310A4998600FEA70F /* qgszonalstatistics.cpp */; };
 		72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		72C42430103DE72D005CD18E /* mActionAddImage.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242F103DE718005CD18E /* mActionAddImage.png */; };
-		72C42431103DE72D005CD18E /* mActionAddLegend.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4241F103DE718005CD18E /* mActionAddLegend.png */; };
-		72C42432103DE72D005CD18E /* mActionAddMap.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4241E103DE718005CD18E /* mActionAddMap.png */; };
-		72C42433103DE72D005CD18E /* mActionDeletePart.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42423103DE718005CD18E /* mActionDeletePart.png */; };
-		72C42434103DE72D005CD18E /* mActionDeleteRing.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42422103DE718005CD18E /* mActionDeleteRing.png */; };
-		72C42435103DE72D005CD18E /* mActionGroupItems.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42420103DE718005CD18E /* mActionGroupItems.png */; };
-		72C42436103DE72D005CD18E /* mActionLabel.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242C103DE718005CD18E /* mActionLabel.png */; };
-		72C42437103DE72D005CD18E /* mActionMergeFeatures.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242E103DE718005CD18E /* mActionMergeFeatures.png */; };
-		72C42438103DE72D005CD18E /* mActionMoveItemContent.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42428103DE718005CD18E /* mActionMoveItemContent.png */; };
-		72C42439103DE72D005CD18E /* mActionNodeTool.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42421103DE718005CD18E /* mActionNodeTool.png */; };
-		72C4243A103DE72D005CD18E /* mActionRedo.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242D103DE718005CD18E /* mActionRedo.png */; };
-		72C4243B103DE72D005CD18E /* mActionSaveAsSVG.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42427103DE718005CD18E /* mActionSaveAsSVG.png */; };
-		72C4243C103DE72D005CD18E /* mActionSaveMapAsImage.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42426103DE718005CD18E /* mActionSaveMapAsImage.png */; };
-		72C4243D103DE72D005CD18E /* mActionScaleBar.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42429103DE718005CD18E /* mActionScaleBar.png */; };
-		72C4243E103DE72D005CD18E /* mActionSelectPan.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242A103DE718005CD18E /* mActionSelectPan.png */; };
-		72C4243F103DE72D005CD18E /* mActionSimplify.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C4242B103DE718005CD18E /* mActionSimplify.png */; };
-		72C42440103DE72D005CD18E /* mActionUndo.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42425103DE718005CD18E /* mActionUndo.png */; };
-		72C42441103DE72D005CD18E /* mActionUngroupItems.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72C42424103DE718005CD18E /* mActionUngroupItems.png */; };
 		72C83D5210A5D22600B97B43 /* utils.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 72C83D4F10A5D08E00B97B43 /* utils.py */; };
-		72C93CDA10B58963003A618E /* mActionAddBasicShape.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72C93CD910B58952003A618E /* mActionAddBasicShape.png */; };
 		72C93CDE10B58A79003A618E /* qgscomposershapewidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CDC10B58A07003A618E /* qgscomposershapewidget.cpp */; };
 		72C93CDF10B58A84003A618E /* qgscomposershapewidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CDD10B58A07003A618E /* qgscomposershapewidget.h */; };
 		72C93CE310B58B07003A618E /* qgscomposershape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CE010B58AD2003A618E /* qgscomposershape.cpp */; };
@@ -1664,7 +1187,6 @@
 		72D0A5431018980500EE6279 /* qgsmarkercatalogue.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7380F39E57A003DC336 /* qgsmarkercatalogue.h */; };
 		72D0A5471018990100EE6279 /* qgsattributeeditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */; };
 		72D0A5481018990100EE6279 /* qgsattributeeditor.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5441018989600EE6279 /* qgsattributeeditor.h */; };
-		72D84C141044BBC7009F8F39 /* mActionReshape.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72D84C131044BBB7009F8F39 /* mActionReshape.png */; };
 		72D84C1F1044BC3A009F8F39 /* qgsmaptoolreshape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D84C1D1044BBFD009F8F39 /* qgsmaptoolreshape.cpp */; };
 		72DB68DE1021D08400ED5F3A /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72DB68ED1021D0BD00ED5F3A /* osmhandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D11021D06C00ED5F3A /* osmhandler.cpp */; };
@@ -1692,7 +1214,6 @@
 		72DB69731021DCE000ED5F3A /* medium_scale.style in Copy - osm-styles */ = {isa = PBXBuildFile; fileRef = 72DB69411021D98600ED5F3A /* medium_scale.style */; };
 		72DB69741021DCE000ED5F3A /* small_scale.style in Copy - osm-styles */ = {isa = PBXBuildFile; fileRef = 72DB69421021D98600ED5F3A /* small_scale.style */; };
 		72DBAB500FFD744400E587DC /* DONORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 72FDF1640FB4720400580178 /* DONORS */; };
-		72E29CA910739A9200D33C64 /* mActionCalculateField.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72E29CA810739A8000D33C64 /* mActionCalculateField.png */; };
 		72E707040F42691B00142011 /* __init__.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 7209ED860F39E5D9003DC336 /* __init__.py */; };
 		72E7070A0F426A5C00142011 /* __init__.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD30F39E5D9003DC336 /* __init__.py */; };
 		72E7070B0F426A5C00142011 /* mapserver_export.png in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD50F39E5D9003DC336 /* mapserver_export.png */; };
@@ -1712,117 +1233,11 @@
 		72E707280F426AFB00142011 /* version_compare.py in Copy - plugininstall */ = {isa = PBXBuildFile; fileRef = 7209EDF70F39E5D9003DC336 /* version_compare.py */; };
 		72E707350F426C6900142011 /* locations.gml in Copy - grass */ = {isa = PBXBuildFile; fileRef = 7209E8360F39E57B003DC336 /* locations.gml */; };
 		72E707360F426C6900142011 /* world.png in Copy - grass */ = {isa = PBXBuildFile; fileRef = 7209E8350F39E57B003DC336 /* world.png */; };
-		72E70A220F426D1C00142011 /* grass_add_map.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB4E0F39E57B003DC336 /* grass_add_map.png */; };
-		72E70A230F426D1C00142011 /* grass_add_raster.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB4F0F39E57B003DC336 /* grass_add_raster.png */; };
-		72E70A240F426D1C00142011 /* grass_add_vector.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB500F39E57B003DC336 /* grass_add_vector.png */; };
-		72E70A250F426D1C00142011 /* grass_add_vertex.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB510F39E57B003DC336 /* grass_add_vertex.png */; };
-		72E70A260F426D1C00142011 /* grass_browser_raster_layer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB520F39E57B003DC336 /* grass_browser_raster_layer.png */; };
-		72E70A270F426D1C00142011 /* grass_browser_vector_layer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB530F39E57B003DC336 /* grass_browser_vector_layer.png */; };
-		72E70A280F426D1C00142011 /* grass_clear_input.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB540F39E57B003DC336 /* grass_clear_input.png */; };
-		72E70A290F426D1C00142011 /* grass_close_edit.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB550F39E57B003DC336 /* grass_close_edit.png */; };
-		72E70A2A0F426D1C00142011 /* grass_close_mapset.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB560F39E57B003DC336 /* grass_close_mapset.png */; };
-		72E70A2B0F426D1C00142011 /* grass_copy_map.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB570F39E57B003DC336 /* grass_copy_map.png */; };
-		72E70A2C0F426D1C00142011 /* grass_delete_line.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB580F39E57B003DC336 /* grass_delete_line.png */; };
-		72E70A2D0F426D1C00142011 /* grass_delete_map.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB590F39E57B003DC336 /* grass_delete_map.png */; };
-		72E70A2E0F426D1C00142011 /* grass_delete_vertex.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB5A0F39E57B003DC336 /* grass_delete_vertex.png */; };
-		72E70A2F0F426D1C00142011 /* grass_edit.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB5B0F39E57B003DC336 /* grass_edit.png */; };
-		72E70A300F426D1C00142011 /* grass_edit_attributes.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB5C0F39E57B003DC336 /* grass_edit_attributes.png */; };
-		72E70A310F426D1C00142011 /* grass_module_error.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB5D0F39E57B003DC336 /* grass_module_error.png */; };
-		72E70A320F426D1C00142011 /* grass_module_warning.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB5E0F39E57B003DC336 /* grass_module_warning.png */; };
-		72E70A330F426D1C00142011 /* grass_move_line.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB5F0F39E57B003DC336 /* grass_move_line.png */; };
-		72E70A340F426D1C00142011 /* grass_move_vertex.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB600F39E57B003DC336 /* grass_move_vertex.png */; };
-		72E70A350F426D1C00142011 /* grass_new_boundary.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB610F39E57B003DC336 /* grass_new_boundary.png */; };
-		72E70A360F426D1C00142011 /* grass_new_centroid.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB620F39E57B003DC336 /* grass_new_centroid.png */; };
-		72E70A370F426D1C00142011 /* grass_new_line.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB630F39E57B003DC336 /* grass_new_line.png */; };
-		72E70A380F426D1C00142011 /* grass_new_mapset.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB640F39E57B003DC336 /* grass_new_mapset.png */; };
-		72E70A390F426D1C00142011 /* grass_new_point.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB650F39E57B003DC336 /* grass_new_point.png */; };
-		72E70A3A0F426D1C00142011 /* grass_new_vector_layer.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB660F39E57B003DC336 /* grass_new_vector_layer.png */; };
-		72E70A3B0F426D1C00142011 /* grass_open_mapset.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB670F39E57B003DC336 /* grass_open_mapset.png */; };
-		72E70A3C0F426D1C00142011 /* grass_refresh.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB680F39E57B003DC336 /* grass_refresh.png */; };
-		72E70A3D0F426D1C00142011 /* grass_region.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB690F39E57B003DC336 /* grass_region.png */; };
-		72E70A3E0F426D1C00142011 /* grass_region_edit.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB6A0F39E57B003DC336 /* grass_region_edit.png */; };
-		72E70A3F0F426D1C00142011 /* grass_rename_map.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB6B0F39E57B003DC336 /* grass_rename_map.png */; };
-		72E70A400F426D1C00142011 /* grass_set_region.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB6C0F39E57B003DC336 /* grass_set_region.png */; };
-		72E70A410F426D1C00142011 /* grass_shell.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB6D0F39E57B003DC336 /* grass_shell.png */; };
-		72E70A420F426D1C00142011 /* grass_split_line.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB6E0F39E57B003DC336 /* grass_split_line.png */; };
-		72E70A430F426D1C00142011 /* grass_tools.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB6F0F39E57B003DC336 /* grass_tools.png */; };
-		72E70A440F426D1C00142011 /* mapcalc_add_connection.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB700F39E57B003DC336 /* mapcalc_add_connection.png */; };
-		72E70A450F426D1C00142011 /* mapcalc_add_constant.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB710F39E57B003DC336 /* mapcalc_add_constant.png */; };
-		72E70A460F426D1C00142011 /* mapcalc_add_function.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB720F39E57B003DC336 /* mapcalc_add_function.png */; };
-		72E70A470F426D1C00142011 /* mapcalc_add_map.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB730F39E57B003DC336 /* mapcalc_add_map.png */; };
-		72E70A480F426D1C00142011 /* mapcalc_delete.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB740F39E57B003DC336 /* mapcalc_delete.png */; };
-		72E70A490F426D1C00142011 /* mapcalc_open.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB750F39E57B003DC336 /* mapcalc_open.png */; };
-		72E70A4A0F426D1C00142011 /* mapcalc_save.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB760F39E57B003DC336 /* mapcalc_save.png */; };
-		72E70A4B0F426D1C00142011 /* mapcalc_save_as.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB770F39E57B003DC336 /* mapcalc_save_as.png */; };
-		72E70A4C0F426D1C00142011 /* mapcalc_select.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB780F39E57B003DC336 /* mapcalc_select.png */; };
-		72E70A4D0F426D1C00142011 /* world.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 7209EB790F39E57B003DC336 /* world.png */; };
-		72E70A500F426DB700142011 /* mActionAddGPSLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF660F39E5D9003DC336 /* mActionAddGPSLayer.png */; };
-		72E70A510F426DB700142011 /* mActionAddIsland.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF670F39E5D9003DC336 /* mActionAddIsland.png */; };
-		72E70A520F426DB700142011 /* mActionAddLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF680F39E5D9003DC336 /* mActionAddLayer.png */; };
-		72E70A530F426DB700142011 /* mActionAddOgrLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF690F39E5D9003DC336 /* mActionAddOgrLayer.png */; };
-		72E70A540F426DB700142011 /* mActionAddRasterLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6A0F39E5D9003DC336 /* mActionAddRasterLayer.png */; };
-		72E70A550F426DB700142011 /* mActionAddRing.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6B0F39E5D9003DC336 /* mActionAddRing.png */; };
-		72E70A560F426DB700142011 /* mActionAddVertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6C0F39E5D9003DC336 /* mActionAddVertex.png */; };
-		72E70A570F426DB700142011 /* mActionAddWfsLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6D0F39E5D9003DC336 /* mActionAddWfsLayer.png */; };
-		72E70A580F426DB700142011 /* mActionAddWmsLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6E0F39E5D9003DC336 /* mActionAddWmsLayer.png */; };
-		72E70A590F426DB700142011 /* mActionCaptureLine.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF6F0F39E5D9003DC336 /* mActionCaptureLine.png */; };
-		72E70A5A0F426DB700142011 /* mActionCapturePoint.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF700F39E5D9003DC336 /* mActionCapturePoint.png */; };
-		72E70A5B0F426DB700142011 /* mActionCapturePolygon.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF710F39E5D9003DC336 /* mActionCapturePolygon.png */; };
-		72E70A5C0F426DB700142011 /* mActionDeleteSelected.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF720F39E5D9003DC336 /* mActionDeleteSelected.png */; };
-		72E70A5D0F426DB700142011 /* mActionDeleteVertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF730F39E5D9003DC336 /* mActionDeleteVertex.png */; };
-		72E70A5E0F426DB700142011 /* mActionDraw.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF740F39E5D9003DC336 /* mActionDraw.png */; };
-		72E70A5F0F426DB700142011 /* mActionEditCopy.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF750F39E5D9003DC336 /* mActionEditCopy.png */; };
-		72E70A600F426DB700142011 /* mActionEditCut.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF760F39E5D9003DC336 /* mActionEditCut.png */; };
-		72E70A610F426DB700142011 /* mActionEditPaste.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF770F39E5D9003DC336 /* mActionEditPaste.png */; };
-		72E70A620F426DB700142011 /* mActionFileNew.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF780F39E5D9003DC336 /* mActionFileNew.png */; };
-		72E70A630F426DB700142011 /* mActionFileOpen.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF790F39E5D9003DC336 /* mActionFileOpen.png */; };
-		72E70A640F426DB700142011 /* mActionFilePrint.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7A0F39E5D9003DC336 /* mActionFilePrint.png */; };
-		72E70A650F426DB700142011 /* mActionFileSave.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7B0F39E5D9003DC336 /* mActionFileSave.png */; };
-		72E70A660F426DB700142011 /* mActionFileSaveAs.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7C0F39E5D9003DC336 /* mActionFileSaveAs.png */; };
-		72E70A670F426DB700142011 /* mActionHelpContents.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7D0F39E5D9003DC336 /* mActionHelpContents.png */; };
-		72E70A680F426DB700142011 /* mActionHideAllLayers.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7E0F39E5D9003DC336 /* mActionHideAllLayers.png */; };
-		72E70A690F426DB700142011 /* mActionIdentify.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF7F0F39E5D9003DC336 /* mActionIdentify.png */; };
-		72E70A6A0F426DB700142011 /* mActionInOverview.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF800F39E5D9003DC336 /* mActionInOverview.png */; };
-		72E70A6B0F426DB700142011 /* mActionMapTips.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF810F39E5D9003DC336 /* mActionMapTips.png */; };
-		72E70A6C0F426DB700142011 /* mActionMeasure.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF820F39E5D9003DC336 /* mActionMeasure.png */; };
-		72E70A6D0F426DB700142011 /* mActionMeasureArea.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF830F39E5D9003DC336 /* mActionMeasureArea.png */; };
-		72E70A6E0F426DB700142011 /* mActionMoveFeature.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF840F39E5D9003DC336 /* mActionMoveFeature.png */; };
-		72E70A6F0F426DB700142011 /* mActionMoveVertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF850F39E5D9003DC336 /* mActionMoveVertex.png */; };
-		72E70A700F426DB700142011 /* mActionNewBookmark.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF860F39E5D9003DC336 /* mActionNewBookmark.png */; };
-		72E70A710F426DB700142011 /* mActionNewVectorLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF870F39E5D9003DC336 /* mActionNewVectorLayer.png */; };
-		72E70A720F426DB700142011 /* mActionOpenTable.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF880F39E5D9003DC336 /* mActionOpenTable.png */; };
-		72E70A730F426DB700142011 /* mActionPan.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF890F39E5D9003DC336 /* mActionPan.png */; };
-		72E70A740F426DB700142011 /* mActionRemoveLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8A0F39E5D9003DC336 /* mActionRemoveLayer.png */; };
-		72E70A750F426DB700142011 /* mActionSelect.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8B0F39E5D9003DC336 /* mActionSelect.png */; };
-		72E70A760F426DB700142011 /* mActionShowAllLayers.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8C0F39E5D9003DC336 /* mActionShowAllLayers.png */; };
-		72E70A770F426DB700142011 /* mActionShowBookmarks.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8D0F39E5D9003DC336 /* mActionShowBookmarks.png */; };
-		72E70A780F426DB700142011 /* mActionSplitFeatures.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8E0F39E5D9003DC336 /* mActionSplitFeatures.png */; };
-		72E70A790F426DB700142011 /* mActionToggleEditing.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF8F0F39E5D9003DC336 /* mActionToggleEditing.png */; };
-		72E70A7A0F426DB700142011 /* mActionUnselectAttributes.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF900F39E5D9003DC336 /* mActionUnselectAttributes.png */; };
-		72E70A7B0F426DB700142011 /* mActionZoomFullExtent.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF910F39E5D9003DC336 /* mActionZoomFullExtent.png */; };
-		72E70A7C0F426DB700142011 /* mActionZoomIn.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF920F39E5D9003DC336 /* mActionZoomIn.png */; };
-		72E70A7D0F426DB700142011 /* mActionZoomLast.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF930F39E5D9003DC336 /* mActionZoomLast.png */; };
-		72E70A7E0F426DB700142011 /* mActionZoomOut.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF940F39E5D9003DC336 /* mActionZoomOut.png */; };
-		72E70A7F0F426DB700142011 /* mActionZoomToLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF950F39E5D9003DC336 /* mActionZoomToLayer.png */; };
-		72E70A800F426DB700142011 /* mActionZoomToSelected.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF960F39E5D9003DC336 /* mActionZoomToSelected.png */; };
-		72EA46F30FCD7788009D4CFB /* mActionArrowDown.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EA46F20FCD7772009D4CFB /* mActionArrowDown.png */; };
-		72EA46F40FCD7788009D4CFB /* mActionArrowUp.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EA46F10FCD7772009D4CFB /* mActionArrowUp.png */; };
-		72EB129A0F7E9BCD002C38FA /* plugin_installer.png in Copy - theme-dflt-plugins */ = {isa = PBXBuildFile; fileRef = 72EB12950F7E9B51002C38FA /* plugin_installer.png */; };
 		72EB310010B9997A002A971B /* qgsludialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EB30FE10B99969002A971B /* qgsludialog.cpp */; };
 		72EB310110B9997A002A971B /* qgsludialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72EB30FF10B99969002A971B /* qgsludialog.h */; };
 		72EBC9430F49D0E20016BA3C /* qgspaperitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9420F49D0E20016BA3C /* qgspaperitem.cpp */; };
 		72EBC9630F49D41E0016BA3C /* qgsogrsublayersdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9620F49D4130016BA3C /* qgsogrsublayersdialog.cpp */; };
 		72EBC9660F49D4A20016BA3C /* qgsitempositiondialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9640F49D49D0016BA3C /* qgsitempositiondialog.cpp */; };
-		72EBC9810F49D8030016BA3C /* grass_add_raster.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC96E0F49D6D90016BA3C /* grass_add_raster.png */; };
-		72EBC9820F49D8030016BA3C /* grass_add_vector.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC96F0F49D6D90016BA3C /* grass_add_vector.png */; };
-		72EBC9830F49D8030016BA3C /* grass_close_mapset.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC9700F49D6D90016BA3C /* grass_close_mapset.png */; };
-		72EBC9840F49D8030016BA3C /* grass_edit.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC9710F49D6D90016BA3C /* grass_edit.png */; };
-		72EBC9850F49D8030016BA3C /* grass_new_mapset.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC9720F49D6D90016BA3C /* grass_new_mapset.png */; };
-		72EBC9860F49D8030016BA3C /* grass_new_vector_layer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC9730F49D6D90016BA3C /* grass_new_vector_layer.png */; };
-		72EBC9870F49D8030016BA3C /* grass_open_mapset.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC9740F49D6D90016BA3C /* grass_open_mapset.png */; };
-		72EBC9880F49D8030016BA3C /* grass_region.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC9750F49D6D90016BA3C /* grass_region.png */; };
-		72EBC9890F49D8030016BA3C /* grass_region_edit.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC9760F49D6D90016BA3C /* grass_region_edit.png */; };
-		72EBC98A0F49D8030016BA3C /* grass_tools.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72EBC9770F49D6D90016BA3C /* grass_tools.png */; };
 		72EBC98B0F49D8770016BA3C /* grass_add_map.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EB7E0F39E57B003DC336 /* grass_add_map.png */; };
 		72EBC98C0F49D8770016BA3C /* grass_add_raster.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EB7F0F39E57B003DC336 /* grass_add_raster.png */; };
 		72EBC98D0F49D8770016BA3C /* grass_add_vector.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EB800F39E57B003DC336 /* grass_add_vector.png */; };
@@ -1867,12 +1282,6 @@
 		72EBC9B40F49D8770016BA3C /* mapcalc_save_as.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EBA70F39E57B003DC336 /* mapcalc_save_as.png */; };
 		72EBC9B50F49D8770016BA3C /* mapcalc_select.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EBA80F39E57B003DC336 /* mapcalc_select.png */; };
 		72EBC9B60F49D8770016BA3C /* world.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7209EBA90F39E57B003DC336 /* world.png */; };
-		72EBC9BD0F49DBA30016BA3C /* mActionAlignBottom.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EBC9BA0F49DB8F0016BA3C /* mActionAlignBottom.png */; };
-		72EBC9BE0F49DBA30016BA3C /* mActionAlignHCenter.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EBC9B90F49DB8F0016BA3C /* mActionAlignHCenter.png */; };
-		72EBC9BF0F49DBA30016BA3C /* mActionAlignLeft.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EBC9BC0F49DB8F0016BA3C /* mActionAlignLeft.png */; };
-		72EBC9C00F49DBA30016BA3C /* mActionAlignRight.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EBC9BB0F49DB8F0016BA3C /* mActionAlignRight.png */; };
-		72EBC9C10F49DBA30016BA3C /* mActionAlignTop.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EBC9B80F49DB8F0016BA3C /* mActionAlignTop.png */; };
-		72EBC9C20F49DBA30016BA3C /* mActionAlignVCenter.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72EBC9B70F49DB8F0016BA3C /* mActionAlignVCenter.png */; };
 		72EBCA6D0F49DDC00016BA3C /* __init__.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9C50F49DC120016BA3C /* __init__.py */; };
 		72EBCA6E0F49DDC00016BA3C /* doAbout.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9C70F49DC120016BA3C /* doAbout.py */; };
 		72EBCA710F49DDC00016BA3C /* fTools.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9CA0F49DC120016BA3C /* fTools.py */; };
@@ -1991,7 +1400,6 @@
 		72EBCB3D0F49E8240016BA3C /* qgisdoc.css in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0370F39E5DA003DC336 /* qgisdoc.css */; };
 		72EFB924105068590050AC82 /* osmprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D41021D06C00ED5F3A /* osmprovider.h */; };
 		72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */; };
-		72F22FB90FDAC249000E8CB0 /* mActionNodeTool.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */; };
 		72F4862210AB755200E7BFEE /* qgscomposermanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F4862010AB753D00E7BFEE /* qgscomposermanager.cpp */; };
 		72F4862310AB755200E7BFEE /* qgscomposermanager.h in Sources */ = {isa = PBXBuildFile; fileRef = 72F4862110AB753D00E7BFEE /* qgscomposermanager.h */; };
 		72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */; };
@@ -2055,6 +1463,17 @@
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
 			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		721828C110BA34E2008D715D /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.qrc";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/qrc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTRCC -name $INPUT_FILE_BASE -o \"$DERIVED_FILES_DIR/qrc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7223B7880F96A96500D905B4 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2965,109 +2384,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		724D065310A9119E00F9680A /* Copy - theme-newgis */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_DATA_SUBDIR)/themes/newgis";
-			dstSubfolderSpec = 6;
-			files = (
-				724D065410A911A900F9680A /* mActionAddGPSLayer.png in Copy - theme-newgis */,
-				724D065510A911A900F9680A /* mActionAddImage.png in Copy - theme-newgis */,
-				724D065610A911A900F9680A /* mActionAddIsland.png in Copy - theme-newgis */,
-				724D065710A911A900F9680A /* mActionAddLayer.png in Copy - theme-newgis */,
-				724D065810A911A900F9680A /* mActionAddLegend.png in Copy - theme-newgis */,
-				724D065910A911A900F9680A /* mActionAddMap.png in Copy - theme-newgis */,
-				724D065A10A911A900F9680A /* mActionAddOgrLayer.png in Copy - theme-newgis */,
-				724D065B10A911A900F9680A /* mActionAddRasterLayer.png in Copy - theme-newgis */,
-				724D065C10A911A900F9680A /* mActionAddRing.png in Copy - theme-newgis */,
-				724D065D10A911A900F9680A /* mActionAddSpatiaLiteLayer.png in Copy - theme-newgis */,
-				724D065E10A911A900F9680A /* mActionAddVertex.png in Copy - theme-newgis */,
-				724D065F10A911A900F9680A /* mActionAddWfsLayer.png in Copy - theme-newgis */,
-				724D066010A911A900F9680A /* mActionAddWmsLayer.png in Copy - theme-newgis */,
-				724D066110A911A900F9680A /* mActionCaptureLine.png in Copy - theme-newgis */,
-				724D066210A911A900F9680A /* mActionCapturePoint.png in Copy - theme-newgis */,
-				724D066310A911A900F9680A /* mActionCapturePolygon.png in Copy - theme-newgis */,
-				724D066410A911A900F9680A /* mActionDeletePart.png in Copy - theme-newgis */,
-				724D066510A911A900F9680A /* mActionDeleteRing.png in Copy - theme-newgis */,
-				724D066610A911A900F9680A /* mActionDeleteSelected.png in Copy - theme-newgis */,
-				724D066710A911A900F9680A /* mActionDeleteVertex.png in Copy - theme-newgis */,
-				724D066810A911A900F9680A /* mActionDraw.png in Copy - theme-newgis */,
-				724D066910A911A900F9680A /* mActionEditCopy.png in Copy - theme-newgis */,
-				724D066A10A911A900F9680A /* mActionEditCut.png in Copy - theme-newgis */,
-				724D066B10A911A900F9680A /* mActionEditPaste.png in Copy - theme-newgis */,
-				724D066C10A911A900F9680A /* mActionFileNew.png in Copy - theme-newgis */,
-				724D066D10A911A900F9680A /* mActionFileOpen.png in Copy - theme-newgis */,
-				724D066E10A911A900F9680A /* mActionFilePrint.png in Copy - theme-newgis */,
-				724D066F10A911A900F9680A /* mActionFileSave.png in Copy - theme-newgis */,
-				724D067010A911A900F9680A /* mActionFileSaveAs.png in Copy - theme-newgis */,
-				724D067110A911A900F9680A /* mActionGroupItems.png in Copy - theme-newgis */,
-				724D067210A911A900F9680A /* mActionHelpContents.png in Copy - theme-newgis */,
-				724D067310A911A900F9680A /* mActionHideAllLayers.png in Copy - theme-newgis */,
-				724D067410A911A900F9680A /* mActionIdentify.png in Copy - theme-newgis */,
-				724D067510A911A900F9680A /* mActionInOverview.png in Copy - theme-newgis */,
-				724D067610A911A900F9680A /* mActionLabel.png in Copy - theme-newgis */,
-				724D067710A911A900F9680A /* mActionMapTips.png in Copy - theme-newgis */,
-				724D067810A911A900F9680A /* mActionMeasure.png in Copy - theme-newgis */,
-				724D067910A911A900F9680A /* mActionMeasureArea.png in Copy - theme-newgis */,
-				724D067A10A911A900F9680A /* mActionMergeFeatures.png in Copy - theme-newgis */,
-				724D067B10A911A900F9680A /* mActionMoveFeature.png in Copy - theme-newgis */,
-				724D067C10A911A900F9680A /* mActionMoveItemContent.png in Copy - theme-newgis */,
-				724D067D10A911A900F9680A /* mActionMoveVertex.png in Copy - theme-newgis */,
-				724D067E10A911A900F9680A /* mActionNewBookmark.png in Copy - theme-newgis */,
-				724D067F10A911A900F9680A /* mActionNewVectorLayer.png in Copy - theme-newgis */,
-				724D068010A911A900F9680A /* mActionNodeTool.png in Copy - theme-newgis */,
-				724D068110A911A900F9680A /* mActionOpenTable.png in Copy - theme-newgis */,
-				724D068210A911A900F9680A /* mActionPan.png in Copy - theme-newgis */,
-				724D068310A911A900F9680A /* mActionRedo.png in Copy - theme-newgis */,
-				724D068410A911A900F9680A /* mActionRemoveLayer.png in Copy - theme-newgis */,
-				724D068510A911A900F9680A /* mActionReshape.png in Copy - theme-newgis */,
-				724D068610A911A900F9680A /* mActionSaveAsPDF.png in Copy - theme-newgis */,
-				724D068710A911A900F9680A /* mActionSaveAsSVG.png in Copy - theme-newgis */,
-				724D068810A911A900F9680A /* mActionSaveMapAsImage.png in Copy - theme-newgis */,
-				724D068910A911A900F9680A /* mActionScaleBar.png in Copy - theme-newgis */,
-				724D068A10A911A900F9680A /* mActionSelect.png in Copy - theme-newgis */,
-				724D068B10A911A900F9680A /* mActionSelectPan.png in Copy - theme-newgis */,
-				724D068C10A911A900F9680A /* mActionShowAllLayers.png in Copy - theme-newgis */,
-				724D068D10A911A900F9680A /* mActionShowBookmarks.png in Copy - theme-newgis */,
-				724D068E10A911A900F9680A /* mActionSimplify.png in Copy - theme-newgis */,
-				724D068F10A911A900F9680A /* mActionSplitFeatures.png in Copy - theme-newgis */,
-				724D069010A911A900F9680A /* mActionToggleEditing.png in Copy - theme-newgis */,
-				724D069110A911A900F9680A /* mActionUndo.png in Copy - theme-newgis */,
-				724D069210A911A900F9680A /* mActionUngroupItems.png in Copy - theme-newgis */,
-				724D069310A911A900F9680A /* mActionUnselectAttributes.png in Copy - theme-newgis */,
-				724D069410A911A900F9680A /* mActionZoomFullExtent.png in Copy - theme-newgis */,
-				724D069510A911A900F9680A /* mActionZoomIn.png in Copy - theme-newgis */,
-				724D069610A911A900F9680A /* mActionZoomLast.png in Copy - theme-newgis */,
-				724D069710A911A900F9680A /* mActionZoomNext.png in Copy - theme-newgis */,
-				724D069810A911A900F9680A /* mActionZoomOut.png in Copy - theme-newgis */,
-				724D069910A911A900F9680A /* mActionZoomToLayer.png in Copy - theme-newgis */,
-				724D069A10A911A900F9680A /* mActionZoomToSelected.png in Copy - theme-newgis */,
-			);
-			name = "Copy - theme-newgis";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		724D069F10A9122100F9680A /* Copy - theme-newgis-plugins */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_DATA_SUBDIR)/themes/newgis/plugins";
-			dstSubfolderSpec = 6;
-			files = (
-				724D06A010A9123700F9680A /* copyright_label.png in Copy - theme-newgis-plugins */,
-				724D06A110A9123700F9680A /* delimited_text.png in Copy - theme-newgis-plugins */,
-				724D06A210A9123700F9680A /* dxf2shp_converter.png in Copy - theme-newgis-plugins */,
-				724D06A310A9123700F9680A /* georeferencer.png in Copy - theme-newgis-plugins */,
-				724D06A410A9123700F9680A /* gps_importer.png in Copy - theme-newgis-plugins */,
-				724D06A510A9123700F9680A /* interpolation.png in Copy - theme-newgis-plugins */,
-				724D06A610A9123700F9680A /* north_arrow.png in Copy - theme-newgis-plugins */,
-				724D06A710A9123700F9680A /* ogr_converter.png in Copy - theme-newgis-plugins */,
-				724D06A810A9123700F9680A /* quick_print.png in Copy - theme-newgis-plugins */,
-				724D06A910A9123700F9680A /* scale_bar.png in Copy - theme-newgis-plugins */,
-				724D06AA10A9123700F9680A /* spit.png in Copy - theme-newgis-plugins */,
-				724D06AB10A9123700F9680A /* wfs.png in Copy - theme-newgis-plugins */,
-			);
-			name = "Copy - theme-newgis-plugins";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7256F2D60F4146A70022BE1F /* Copy - doc-images */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3272,427 +2588,6 @@
 			name = "Copy - svg-symbol";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7256F3960F41C3AA0022BE1F /* Copy - theme-classic */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_DATA_SUBDIR)/themes/classic";
-			dstSubfolderSpec = 6;
-			files = (
-				72267A470F9A1CC900010C18 /* mActionZoomNext.png in Copy - theme-classic */,
-				7256F3980F41C3E20022BE1F /* mAction.png in Copy - theme-classic */,
-				7256F3990F41C3E20022BE1F /* mActionAddAllToOverview.png in Copy - theme-classic */,
-				7256F39A0F41C3E20022BE1F /* mActionAddIsland.png in Copy - theme-classic */,
-				7256F39B0F41C3E20022BE1F /* mActionAddLayer.png in Copy - theme-classic */,
-				7256F39C0F41C3E20022BE1F /* mActionAddLegend.png in Copy - theme-classic */,
-				7256F39D0F41C3E20022BE1F /* mActionAddOgrLayer.png in Copy - theme-classic */,
-				7256F39E0F41C3E20022BE1F /* mActionAddRasterLayer.png in Copy - theme-classic */,
-				7256F39F0F41C3E20022BE1F /* mActionAddRing.png in Copy - theme-classic */,
-				7256F3A00F41C3E20022BE1F /* mActionAddVertex.png in Copy - theme-classic */,
-				7256F3A10F41C3E20022BE1F /* mActionAddWmsLayer.png in Copy - theme-classic */,
-				7256F3A20F41C3E20022BE1F /* mActionCaptureLine.png in Copy - theme-classic */,
-				7256F3A30F41C3E20022BE1F /* mActionCapturePoint.png in Copy - theme-classic */,
-				7256F3A40F41C3E20022BE1F /* mActionCapturePolygon.png in Copy - theme-classic */,
-				7256F3A50F41C3E20022BE1F /* mActionCheckQgisVersion.png in Copy - theme-classic */,
-				7256F3A60F41C3E20022BE1F /* mActionCollapseTree.png in Copy - theme-classic */,
-				7256F3A70F41C3E20022BE1F /* mActionContextHelp.png in Copy - theme-classic */,
-				7256F3A80F41C3E20022BE1F /* mActionCopySelected.png in Copy - theme-classic */,
-				7256F3A90F41C3E20022BE1F /* mActionCustomProjection.png in Copy - theme-classic */,
-				7256F3AA0F41C3E20022BE1F /* mActionDeleteAttribute.png in Copy - theme-classic */,
-				7256F3AB0F41C3E20022BE1F /* mActionDeleteSelected.png in Copy - theme-classic */,
-				7256F3AC0F41C3E20022BE1F /* mActionDeleteVertex.png in Copy - theme-classic */,
-				7256F3AD0F41C3E20022BE1F /* mActionDraw.png in Copy - theme-classic */,
-				7256F3AE0F41C3E20022BE1F /* mActionEditCopy.png in Copy - theme-classic */,
-				7256F3AF0F41C3E20022BE1F /* mActionEditCut.png in Copy - theme-classic */,
-				7256F3B00F41C3E20022BE1F /* mActionEditPaste.png in Copy - theme-classic */,
-				7256F3B10F41C3E20022BE1F /* mActionExpandTree.png in Copy - theme-classic */,
-				7256F3B20F41C3E20022BE1F /* mActionExportMapServer.png in Copy - theme-classic */,
-				7256F3B30F41C3E20022BE1F /* mActionFileExit.png in Copy - theme-classic */,
-				7256F3B40F41C3E20022BE1F /* mActionFileNew.png in Copy - theme-classic */,
-				7256F3B50F41C3E20022BE1F /* mActionFileOpen.png in Copy - theme-classic */,
-				7256F3B60F41C3E20022BE1F /* mActionFilePrint.png in Copy - theme-classic */,
-				7256F3B70F41C3E20022BE1F /* mActionFileSave.png in Copy - theme-classic */,
-				7256F3B80F41C3E20022BE1F /* mActionFileSaveAs.png in Copy - theme-classic */,
-				7256F3B90F41C3E20022BE1F /* mActionFileSmall.png in Copy - theme-classic */,
-				7256F3BA0F41C3E20022BE1F /* mActionFolder.png in Copy - theme-classic */,
-				7256F3BB0F41C3E20022BE1F /* mActionHelpAbout.png in Copy - theme-classic */,
-				7256F3BC0F41C3E20022BE1F /* mActionHelpContents.png in Copy - theme-classic */,
-				7256F3BD0F41C3E20022BE1F /* mActionHideAllLayers.png in Copy - theme-classic */,
-				7256F3BE0F41C3E20022BE1F /* mActionIdentify.png in Copy - theme-classic */,
-				7256F3BF0F41C3E20022BE1F /* mActionInOverview.png in Copy - theme-classic */,
-				7256F3C00F41C3E20022BE1F /* mActionInvertSelection.png in Copy - theme-classic */,
-				7256F3C10F41C3E20022BE1F /* mActionLabel.png in Copy - theme-classic */,
-				7256F3C20F41C3E20022BE1F /* mActionMeasure.png in Copy - theme-classic */,
-				7256F3C30F41C3E20022BE1F /* mActionMeasureArea.png in Copy - theme-classic */,
-				7256F3C40F41C3E20022BE1F /* mActionMoveVertex.png in Copy - theme-classic */,
-				7256F3C50F41C3E20022BE1F /* mActionNewAttribute.png in Copy - theme-classic */,
-				7256F3C60F41C3E20022BE1F /* mActionNewBookmark.png in Copy - theme-classic */,
-				7256F3C70F41C3E20022BE1F /* mActionNewFolder.png in Copy - theme-classic */,
-				7256F3C80F41C3E20022BE1F /* mActionNewVectorLayer.png in Copy - theme-classic */,
-				7256F3C90F41C3E20022BE1F /* mActionOpenTable.png in Copy - theme-classic */,
-				7256F3CA0F41C3E20022BE1F /* mActionOptions.png in Copy - theme-classic */,
-				7256F3CB0F41C3E20022BE1F /* mActionPan.png in Copy - theme-classic */,
-				7256F3CC0F41C3E20022BE1F /* mActionProjectProperties.png in Copy - theme-classic */,
-				7256F3CD0F41C3E20022BE1F /* mActionPropertyItem.png in Copy - theme-classic */,
-				7256F3CE0F41C3E20022BE1F /* mActionQgisHomePage.png in Copy - theme-classic */,
-				7256F3CF0F41C3E20022BE1F /* mActionRemove.png in Copy - theme-classic */,
-				7256F3D00F41C3E20022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-classic */,
-				7256F3D10F41C3E20022BE1F /* mActionRemoveLayer.png in Copy - theme-classic */,
-				7256F3D20F41C3E20022BE1F /* mActionSaveAsSVG.png in Copy - theme-classic */,
-				7256F3D30F41C3E20022BE1F /* mActionSaveMapAsImage.png in Copy - theme-classic */,
-				7256F3D40F41C3E20022BE1F /* mActionScaleBar.png in Copy - theme-classic */,
-				7256F3D50F41C3E20022BE1F /* mActionSelect.png in Copy - theme-classic */,
-				7256F3D60F41C3E20022BE1F /* mActionSelectedToTop.png in Copy - theme-classic */,
-				7256F3D70F41C3E20022BE1F /* mActionShowAllLayers.png in Copy - theme-classic */,
-				7256F3D80F41C3E20022BE1F /* mActionShowBookmarks.png in Copy - theme-classic */,
-				7256F3D90F41C3E20022BE1F /* mActionShowPluginManager.png in Copy - theme-classic */,
-				7256F3DA0F41C3E20022BE1F /* mActionToggleEditing.png in Copy - theme-classic */,
-				7256F3DB0F41C3E20022BE1F /* mActionUnselectAttributes.png in Copy - theme-classic */,
-				7256F3DC0F41C3E20022BE1F /* mActionZoomFullExtent.png in Copy - theme-classic */,
-				7256F3DD0F41C3E20022BE1F /* mActionZoomIn.png in Copy - theme-classic */,
-				7256F3DE0F41C3E20022BE1F /* mActionZoomLast.png in Copy - theme-classic */,
-				7256F3DF0F41C3E20022BE1F /* mActionZoomOut.png in Copy - theme-classic */,
-				7256F3E00F41C3E20022BE1F /* mActionZoomToLayer.png in Copy - theme-classic */,
-				7256F3E10F41C3E20022BE1F /* mActionZoomToSelected.png in Copy - theme-classic */,
-				7256F3E20F41C3E20022BE1F /* mIconEditable.png in Copy - theme-classic */,
-				7256F3E30F41C3E20022BE1F /* mIconGeometryLayer.png in Copy - theme-classic */,
-				7256F3E40F41C3E20022BE1F /* mIconLayer.png in Copy - theme-classic */,
-				7256F3E50F41C3E20022BE1F /* mIconLineLayer.png in Copy - theme-classic */,
-				7256F3E60F41C3E20022BE1F /* mIconNoPyramid.png in Copy - theme-classic */,
-				7256F3E70F41C3E20022BE1F /* mIconPointLayer.png in Copy - theme-classic */,
-				7256F3E80F41C3E20022BE1F /* mIconPolygonLayer.png in Copy - theme-classic */,
-				7256F3E90F41C3E20022BE1F /* mIconProjectionDisabled.png in Copy - theme-classic */,
-				7256F3EA0F41C3E20022BE1F /* mIconProjectionEnabled.png in Copy - theme-classic */,
-				7256F3EB0F41C3E20022BE1F /* mIconProjectionProblem.png in Copy - theme-classic */,
-				7256F3EC0F41C3E20022BE1F /* mIconProperties.png in Copy - theme-classic */,
-				7256F3ED0F41C3E20022BE1F /* mIconPyramid.png in Copy - theme-classic */,
-				7256F3EE0F41C3E20022BE1F /* mIconSymbology.png in Copy - theme-classic */,
-				7256F3EF0F41C3E20022BE1F /* mIconUnknownLayerType.png in Copy - theme-classic */,
-				7256F3F00F41C3E20022BE1F /* mIconWaitingForLayerType.png in Copy - theme-classic */,
-				7256F3F10F41C3E20022BE1F /* mMapserverExport.png in Copy - theme-classic */,
-			);
-			name = "Copy - theme-classic";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7256F4210F41C4DA0022BE1F /* Copy - theme-default */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_DATA_SUBDIR)/themes/default";
-			dstSubfolderSpec = 6;
-			files = (
-				7216ADF70FE5726700552832 /* mActionRedo.png in Copy - theme-default */,
-				7216ADF80FE5726700552832 /* mActionUndo.png in Copy - theme-default */,
-				727CEC220FBAFFA200F5B88C /* mIconLock.png in Copy - theme-default */,
-				72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */,
-				7256F4220F41C4DD0022BE1F /* clearInput.png in Copy - theme-default */,
-				7256F4230F41C4DD0022BE1F /* extents.png in Copy - theme-default */,
-				7256F4240F41C4DD0022BE1F /* favourites.png in Copy - theme-default */,
-				7256F4250F41C4DD0022BE1F /* geographic.png in Copy - theme-default */,
-				7256F4260F41C4DD0022BE1F /* mAction.png in Copy - theme-default */,
-				7256F4270F41C4DD0022BE1F /* mActionAddAllToOverview.png in Copy - theme-default */,
-				72C93CDA10B58963003A618E /* mActionAddBasicShape.png in Copy - theme-default */,
-				7256F4280F41C4DD0022BE1F /* mActionAddIsland.png in Copy - theme-default */,
-				7256F4290F41C4DD0022BE1F /* mActionAddLayer.png in Copy - theme-default */,
-				7256F42A0F41C4DD0022BE1F /* mActionAddLegend.png in Copy - theme-default */,
-				7256F42B0F41C4DD0022BE1F /* mActionAddNonDbLayer.png in Copy - theme-default */,
-				7256F42C0F41C4DD0022BE1F /* mActionAddOgrLayer.png in Copy - theme-default */,
-				7256F42D0F41C4DD0022BE1F /* mActionAddRasterLayer.png in Copy - theme-default */,
-				7256F42E0F41C4DD0022BE1F /* mActionAddRing.png in Copy - theme-default */,
-				7256F42F0F41C4DD0022BE1F /* mActionAddVertex.png in Copy - theme-default */,
-				7256F4300F41C4DD0022BE1F /* mActionAddWmsLayer.png in Copy - theme-default */,
-				72EBC9BD0F49DBA30016BA3C /* mActionAlignBottom.png in Copy - theme-default */,
-				72EBC9BE0F49DBA30016BA3C /* mActionAlignHCenter.png in Copy - theme-default */,
-				72EBC9BF0F49DBA30016BA3C /* mActionAlignLeft.png in Copy - theme-default */,
-				72EBC9C00F49DBA30016BA3C /* mActionAlignRight.png in Copy - theme-default */,
-				72EBC9C10F49DBA30016BA3C /* mActionAlignTop.png in Copy - theme-default */,
-				72EBC9C20F49DBA30016BA3C /* mActionAlignVCenter.png in Copy - theme-default */,
-				72EA46F30FCD7788009D4CFB /* mActionArrowDown.png in Copy - theme-default */,
-				72EA46F40FCD7788009D4CFB /* mActionArrowUp.png in Copy - theme-default */,
-				72E29CA910739A9200D33C64 /* mActionCalculateField.png in Copy - theme-default */,
-				7256F4310F41C4DD0022BE1F /* mActionCaptureLine.png in Copy - theme-default */,
-				7256F4320F41C4DD0022BE1F /* mActionCapturePoint.png in Copy - theme-default */,
-				7256F4330F41C4DD0022BE1F /* mActionCapturePolygon.png in Copy - theme-default */,
-				7256F4340F41C4DD0022BE1F /* mActionCheckQgisVersion.png in Copy - theme-default */,
-				7256F4350F41C4DD0022BE1F /* mActionCollapseTree.png in Copy - theme-default */,
-				7256F4360F41C4DD0022BE1F /* mActionContextHelp.png in Copy - theme-default */,
-				7256F4370F41C4DD0022BE1F /* mActionCopySelected.png in Copy - theme-default */,
-				7256F4380F41C4DD0022BE1F /* mActionCustomProjection.png in Copy - theme-default */,
-				7256F4390F41C4DD0022BE1F /* mActionDeleteAttribute.png in Copy - theme-default */,
-				7256F43A0F41C4DD0022BE1F /* mActionDeleteSelected.png in Copy - theme-default */,
-				7256F43B0F41C4DD0022BE1F /* mActionDeleteVertex.png in Copy - theme-default */,
-				7256F43C0F41C4DD0022BE1F /* mActionDraw.png in Copy - theme-default */,
-				7256F43D0F41C4DD0022BE1F /* mActionEditCopy.png in Copy - theme-default */,
-				7256F43E0F41C4DD0022BE1F /* mActionEditCut.png in Copy - theme-default */,
-				7256F43F0F41C4DD0022BE1F /* mActionEditPaste.png in Copy - theme-default */,
-				7256F4400F41C4DD0022BE1F /* mActionExpandTree.png in Copy - theme-default */,
-				7256F4410F41C4DD0022BE1F /* mActionExportMapServer.png in Copy - theme-default */,
-				7256F4420F41C4DD0022BE1F /* mActionFileExit.png in Copy - theme-default */,
-				7256F4430F41C4DD0022BE1F /* mActionFileNew.png in Copy - theme-default */,
-				7256F4440F41C4DD0022BE1F /* mActionFileOpen.png in Copy - theme-default */,
-				7256F4450F41C4DD0022BE1F /* mActionFilePrint.png in Copy - theme-default */,
-				7256F4460F41C4DD0022BE1F /* mActionFileSave.png in Copy - theme-default */,
-				7256F4470F41C4DD0022BE1F /* mActionFileSaveAs.png in Copy - theme-default */,
-				7256F4480F41C4DD0022BE1F /* mActionFileSmall.png in Copy - theme-default */,
-				7256F4490F41C4DD0022BE1F /* mActionFolder.png in Copy - theme-default */,
-				7256F44A0F41C4DD0022BE1F /* mActionGroupItems.png in Copy - theme-default */,
-				7256F44B0F41C4DD0022BE1F /* mActionHelpAbout.png in Copy - theme-default */,
-				7256F44C0F41C4DD0022BE1F /* mActionHelpContents.png in Copy - theme-default */,
-				7256F44D0F41C4DD0022BE1F /* mActionHideAllLayers.png in Copy - theme-default */,
-				7256F44E0F41C4DD0022BE1F /* mActionIdentify.png in Copy - theme-default */,
-				7256F44F0F41C4DD0022BE1F /* mActionInOverview.png in Copy - theme-default */,
-				7256F4500F41C4DD0022BE1F /* mActionInvertSelection.png in Copy - theme-default */,
-				7256F4510F41C4DD0022BE1F /* mActionLabel.png in Copy - theme-default */,
-				7256F4520F41C4DD0022BE1F /* mActionLowerItems.png in Copy - theme-default */,
-				7256F4530F41C4DD0022BE1F /* mActionMapTips.png in Copy - theme-default */,
-				7256F4540F41C4DD0022BE1F /* mActionMeasure.png in Copy - theme-default */,
-				7256F4550F41C4DD0022BE1F /* mActionMeasureArea.png in Copy - theme-default */,
-				7256F4560F41C4DD0022BE1F /* mActionMoveFeature.png in Copy - theme-default */,
-				7256F4570F41C4DD0022BE1F /* mActionMoveItemContent.png in Copy - theme-default */,
-				7256F4580F41C4DD0022BE1F /* mActionMoveItemsToBottom.png in Copy - theme-default */,
-				7256F4590F41C4DD0022BE1F /* mActionMoveItemsToTop.png in Copy - theme-default */,
-				7256F45A0F41C4DD0022BE1F /* mActionMoveVertex.png in Copy - theme-default */,
-				7256F45B0F41C4DD0022BE1F /* mActionNewAttribute.png in Copy - theme-default */,
-				7256F45C0F41C4DD0022BE1F /* mActionNewBookmark.png in Copy - theme-default */,
-				727903F410A1EC48006254DF /* mActionNewComposer.png in Copy - theme-default */,
-				7256F45D0F41C4DD0022BE1F /* mActionNewFolder.png in Copy - theme-default */,
-				7256F45E0F41C4DD0022BE1F /* mActionNewVectorLayer.png in Copy - theme-default */,
-				72F22FB90FDAC249000E8CB0 /* mActionNodeTool.png in Copy - theme-default */,
-				7256F45F0F41C4DD0022BE1F /* mActionOpenTable.png in Copy - theme-default */,
-				7256F4600F41C4DD0022BE1F /* mActionOptions.png in Copy - theme-default */,
-				7256F4610F41C4DD0022BE1F /* mActionPan.png in Copy - theme-default */,
-				7256F4620F41C4DD0022BE1F /* mActionProjectProperties.png in Copy - theme-default */,
-				7256F4630F41C4DD0022BE1F /* mActionPropertyItem.png in Copy - theme-default */,
-				7256F4640F41C4DD0022BE1F /* mActionQgisHomePage.png in Copy - theme-default */,
-				7256F4650F41C4DD0022BE1F /* mActionRaiseItems.png in Copy - theme-default */,
-				7256F4660F41C4DD0022BE1F /* mActionRemove.png in Copy - theme-default */,
-				7256F4670F41C4DD0022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-default */,
-				7256F4680F41C4DD0022BE1F /* mActionRemoveLayer.png in Copy - theme-default */,
-				72D84C141044BBC7009F8F39 /* mActionReshape.png in Copy - theme-default */,
-				7286D63B1062763F008D83A6 /* mActionRotatePointSymbols.png in Copy - theme-default */,
-				724C9FE21019EE0000A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-default */,
-				7256F4690F41C4DD0022BE1F /* mActionSaveAsSVG.png in Copy - theme-default */,
-				7256F46A0F41C4DD0022BE1F /* mActionSaveMapAsImage.png in Copy - theme-default */,
-				7256F46B0F41C4DD0022BE1F /* mActionScaleBar.png in Copy - theme-default */,
-				7256F46C0F41C4DD0022BE1F /* mActionSelect.png in Copy - theme-default */,
-				7256F46D0F41C4DD0022BE1F /* mActionSelectedToTop.png in Copy - theme-default */,
-				7256F46E0F41C4DD0022BE1F /* mActionSelectPan.png in Copy - theme-default */,
-				7256F46F0F41C4DD0022BE1F /* mActionShowAllLayers.png in Copy - theme-default */,
-				7256F4700F41C4DD0022BE1F /* mActionShowBookmarks.png in Copy - theme-default */,
-				7256F4710F41C4DD0022BE1F /* mActionShowPluginManager.png in Copy - theme-default */,
-				7256F4720F41C4DD0022BE1F /* mActionSplitFeatures.png in Copy - theme-default */,
-				7256F4730F41C4DD0022BE1F /* mActionToggleEditing.png in Copy - theme-default */,
-				7256F4740F41C4DD0022BE1F /* mActionUngroupItems.png in Copy - theme-default */,
-				7256F4750F41C4DD0022BE1F /* mActionUnselectAttributes.png in Copy - theme-default */,
-				7256F4760F41C4DD0022BE1F /* mActionZoomFullExtent.png in Copy - theme-default */,
-				7256F4770F41C4DD0022BE1F /* mActionZoomIn.png in Copy - theme-default */,
-				7256F4780F41C4DD0022BE1F /* mActionZoomLast.png in Copy - theme-default */,
-				7256F4790F41C4DD0022BE1F /* mActionZoomOut.png in Copy - theme-default */,
-				7256F47A0F41C4DD0022BE1F /* mActionZoomToLayer.png in Copy - theme-default */,
-				7256F47B0F41C4DD0022BE1F /* mActionZoomToSelected.png in Copy - theme-default */,
-				7256F47C0F41C4DD0022BE1F /* mIconDelete.png in Copy - theme-default */,
-				7256F47D0F41C4DD0022BE1F /* mIconEditable.png in Copy - theme-default */,
-				7256F47E0F41C4DD0022BE1F /* mIconFirst.png in Copy - theme-default */,
-				7256F47F0F41C4DD0022BE1F /* mIconGeometryLayer.png in Copy - theme-default */,
-				7256F4800F41C4DD0022BE1F /* mIconLast.png in Copy - theme-default */,
-				7256F4810F41C4DD0022BE1F /* mIconLayer.png in Copy - theme-default */,
-				7256F4820F41C4DD0022BE1F /* mIconLineLayer.png in Copy - theme-default */,
-				7256F4830F41C4DD0022BE1F /* mIconNew.png in Copy - theme-default */,
-				7256F4840F41C4DD0022BE1F /* mIconNext.png in Copy - theme-default */,
-				7256F4850F41C4DD0022BE1F /* mIconNoPyramid.png in Copy - theme-default */,
-				7256F4860F41C4DD0022BE1F /* mIconPointLayer.png in Copy - theme-default */,
-				7256F4870F41C4DD0022BE1F /* mIconPolygonLayer.png in Copy - theme-default */,
-				7256F4880F41C4DD0022BE1F /* mIconPrevious.png in Copy - theme-default */,
-				7256F4890F41C4DD0022BE1F /* mIconProjectionDisabled.png in Copy - theme-default */,
-				7256F48A0F41C4DD0022BE1F /* mIconProjectionEnabled.png in Copy - theme-default */,
-				7256F48B0F41C4DD0022BE1F /* mIconProjectionProblem.png in Copy - theme-default */,
-				7256F48C0F41C4DD0022BE1F /* mIconProperties.png in Copy - theme-default */,
-				7256F48D0F41C4DD0022BE1F /* mIconPyramid.png in Copy - theme-default */,
-				7256F48E0F41C4DD0022BE1F /* mIconSymbology.png in Copy - theme-default */,
-				7256F48F0F41C4DD0022BE1F /* mIconUnknownLayerType.png in Copy - theme-default */,
-				7256F4900F41C4DD0022BE1F /* mIconWaitingForLayerType.png in Copy - theme-default */,
-				7256F4910F41C4DD0022BE1F /* mMapserverExport.png in Copy - theme-default */,
-				7256F4920F41C4DD0022BE1F /* tracking.png in Copy - theme-default */,
-				7256F4930F41C4DD0022BE1F /* transformed.png in Copy - theme-default */,
-				7256F4940F41C4DD0022BE1F /* user.png in Copy - theme-default */,
-				7262ED8A0F7A760B00498385 /* mActionAddSpatiaLiteLayer.png in Copy - theme-default */,
-				72820FEF0FACCFA90011C963 /* mActionDeleteRing.png in Copy - theme-default */,
-				72820FF00FACCFA90011C963 /* mActionDeletePart.png in Copy - theme-default */,
-				72820FF10FACCFA90011C963 /* mActionSimplify.png in Copy - theme-default */,
-				72683FFB0FD6B21A00D90FFC /* mActionFromSelectedFeature.png in Copy - theme-default */,
-				72683FFC0FD6B21A00D90FFC /* mActionMergeFeatures.png in Copy - theme-default */,
-				72683FFD0FD6B21A00D90FFC /* mActionRemoveSelectedFeature.png in Copy - theme-default */,
-				72779E9F1040615000CA9DE5 /* mActionAddImage.png in Copy - theme-default */,
-				72779EA01040615000CA9DE5 /* mActionAddMap.png in Copy - theme-default */,
-				7225EFDE10B22E6C00D23EA2 /* cap_flat.png in Copy - theme-default */,
-				7225EFDF10B22E6C00D23EA2 /* cap_round.png in Copy - theme-default */,
-				7225EFE010B22E6C00D23EA2 /* cap_square.png in Copy - theme-default */,
-				7225EFE110B22E6C00D23EA2 /* cap_style.svg in Copy - theme-default */,
-				7225EFE210B22E6C00D23EA2 /* join_bevel.png in Copy - theme-default */,
-				7225EFE310B22E6C00D23EA2 /* join_miter.png in Copy - theme-default */,
-				7225EFE410B22E6C00D23EA2 /* join_round.png in Copy - theme-default */,
-				7225EFE510B22E6C00D23EA2 /* join_style.svg in Copy - theme-default */,
-				7225EFE610B22E6C00D23EA2 /* rendererCategorizedSymbol.png in Copy - theme-default */,
-				7225EFE710B22E6C00D23EA2 /* rendererGraduatedSymbol.png in Copy - theme-default */,
-				7225EFE810B22E6C00D23EA2 /* rendererSingleSymbol.png in Copy - theme-default */,
-				7225EFE910B22E6C00D23EA2 /* symbologyAdd.png in Copy - theme-default */,
-				7225EFEA10B22E6C00D23EA2 /* symbologyDown.png in Copy - theme-default */,
-				7225EFEB10B22E6C00D23EA2 /* symbologyEdit.png in Copy - theme-default */,
-				7225EFEC10B22E6C00D23EA2 /* symbologyLock.png in Copy - theme-default */,
-				7225EFED10B22E6C00D23EA2 /* symbologyRemove.png in Copy - theme-default */,
-				7225EFEE10B22E6C00D23EA2 /* symbologyUp.png in Copy - theme-default */,
-			);
-			name = "Copy - theme-default";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7256F5310F41C5910022BE1F /* Copy - theme-gis */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 12;
-			dstPath = "$(QGIS_DATA_SUBDIR)/themes/gis";
-			dstSubfolderSpec = 6;
-			files = (
-				72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */,
-				7256F4C40F41C5510022BE1F /* mActionAddGPSLayer.png in Copy - theme-gis */,
-				7256F4C50F41C5510022BE1F /* mActionAddIsland.png in Copy - theme-gis */,
-				7256F4C60F41C5510022BE1F /* mActionAddLayer.png in Copy - theme-gis */,
-				7256F4C70F41C5510022BE1F /* mActionAddOgrLayer.png in Copy - theme-gis */,
-				7256F4C80F41C5510022BE1F /* mActionAddRasterLayer.png in Copy - theme-gis */,
-				7256F4C90F41C5510022BE1F /* mActionAddRing.png in Copy - theme-gis */,
-				7214353F0FA15C1C00B0B7BC /* mActionAddSpatiaLiteLayer.png in Copy - theme-gis */,
-				7256F4CA0F41C5510022BE1F /* mActionAddVertex.png in Copy - theme-gis */,
-				7256F4CB0F41C5510022BE1F /* mActionAddWfsLayer.png in Copy - theme-gis */,
-				7256F4CC0F41C5510022BE1F /* mActionAddWmsLayer.png in Copy - theme-gis */,
-				7256F4CD0F41C5510022BE1F /* mActionCaptureLine.png in Copy - theme-gis */,
-				7256F4CE0F41C5510022BE1F /* mActionCapturePoint.png in Copy - theme-gis */,
-				7256F4CF0F41C5510022BE1F /* mActionCapturePolygon.png in Copy - theme-gis */,
-				7256F4D00F41C5510022BE1F /* mActionDeleteSelected.png in Copy - theme-gis */,
-				7256F4D10F41C5510022BE1F /* mActionDeleteVertex.png in Copy - theme-gis */,
-				7256F4D20F41C5510022BE1F /* mActionDraw.png in Copy - theme-gis */,
-				7256F4D30F41C5510022BE1F /* mActionEditCopy.png in Copy - theme-gis */,
-				7256F4D40F41C5510022BE1F /* mActionEditCut.png in Copy - theme-gis */,
-				7256F4D50F41C5510022BE1F /* mActionEditPaste.png in Copy - theme-gis */,
-				7256F4D60F41C5510022BE1F /* mActionFileNew.png in Copy - theme-gis */,
-				7256F4D70F41C5510022BE1F /* mActionFileOpen.png in Copy - theme-gis */,
-				7256F4D80F41C5510022BE1F /* mActionFilePrint.png in Copy - theme-gis */,
-				7256F4D90F41C5510022BE1F /* mActionFileSave.png in Copy - theme-gis */,
-				7256F4DA0F41C5510022BE1F /* mActionFileSaveAs.png in Copy - theme-gis */,
-				7256F4DB0F41C5510022BE1F /* mActionHelpContents.png in Copy - theme-gis */,
-				7256F4DC0F41C5510022BE1F /* mActionHideAllLayers.png in Copy - theme-gis */,
-				7256F4DD0F41C5510022BE1F /* mActionIdentify.png in Copy - theme-gis */,
-				7256F4DE0F41C5510022BE1F /* mActionInOverview.png in Copy - theme-gis */,
-				7256F4DF0F41C5510022BE1F /* mActionMapTips.png in Copy - theme-gis */,
-				7256F4E00F41C5510022BE1F /* mActionMeasure.png in Copy - theme-gis */,
-				7256F4E10F41C5510022BE1F /* mActionMeasureArea.png in Copy - theme-gis */,
-				7256F4E20F41C5510022BE1F /* mActionMoveFeature.png in Copy - theme-gis */,
-				7256F4E30F41C5510022BE1F /* mActionMoveVertex.png in Copy - theme-gis */,
-				7256F4E40F41C5510022BE1F /* mActionNewBookmark.png in Copy - theme-gis */,
-				7256F4E50F41C5510022BE1F /* mActionNewVectorLayer.png in Copy - theme-gis */,
-				7256F4E60F41C5510022BE1F /* mActionOpenTable.png in Copy - theme-gis */,
-				7256F4E70F41C5510022BE1F /* mActionPan.png in Copy - theme-gis */,
-				7256F4E80F41C5510022BE1F /* mActionRemoveLayer.png in Copy - theme-gis */,
-				724C9FED1019EE3700A1E1D4 /* mActionSaveAsPDF.png in Copy - theme-gis */,
-				7256F4E90F41C5510022BE1F /* mActionSelect.png in Copy - theme-gis */,
-				7256F4EA0F41C5510022BE1F /* mActionShowAllLayers.png in Copy - theme-gis */,
-				7256F4EB0F41C5510022BE1F /* mActionShowBookmarks.png in Copy - theme-gis */,
-				7256F4EC0F41C5510022BE1F /* mActionSplitFeatures.png in Copy - theme-gis */,
-				7256F4ED0F41C5510022BE1F /* mActionToggleEditing.png in Copy - theme-gis */,
-				7256F4EE0F41C5510022BE1F /* mActionUnselectAttributes.png in Copy - theme-gis */,
-				7256F4EF0F41C5510022BE1F /* mActionZoomFullExtent.png in Copy - theme-gis */,
-				7256F4F00F41C5510022BE1F /* mActionZoomIn.png in Copy - theme-gis */,
-				7256F4F10F41C5510022BE1F /* mActionZoomLast.png in Copy - theme-gis */,
-				7256F4F20F41C5510022BE1F /* mActionZoomOut.png in Copy - theme-gis */,
-				7256F4F30F41C5510022BE1F /* mActionZoomToLayer.png in Copy - theme-gis */,
-				7256F4F40F41C5510022BE1F /* mActionZoomToSelected.png in Copy - theme-gis */,
-				72C42430103DE72D005CD18E /* mActionAddImage.png in Copy - theme-gis */,
-				72C42431103DE72D005CD18E /* mActionAddLegend.png in Copy - theme-gis */,
-				72C42432103DE72D005CD18E /* mActionAddMap.png in Copy - theme-gis */,
-				72C42433103DE72D005CD18E /* mActionDeletePart.png in Copy - theme-gis */,
-				72C42434103DE72D005CD18E /* mActionDeleteRing.png in Copy - theme-gis */,
-				72C42435103DE72D005CD18E /* mActionGroupItems.png in Copy - theme-gis */,
-				72C42436103DE72D005CD18E /* mActionLabel.png in Copy - theme-gis */,
-				72C42437103DE72D005CD18E /* mActionMergeFeatures.png in Copy - theme-gis */,
-				72C42438103DE72D005CD18E /* mActionMoveItemContent.png in Copy - theme-gis */,
-				72C42439103DE72D005CD18E /* mActionNodeTool.png in Copy - theme-gis */,
-				72C4243A103DE72D005CD18E /* mActionRedo.png in Copy - theme-gis */,
-				72C4243B103DE72D005CD18E /* mActionSaveAsSVG.png in Copy - theme-gis */,
-				72C4243C103DE72D005CD18E /* mActionSaveMapAsImage.png in Copy - theme-gis */,
-				72C4243D103DE72D005CD18E /* mActionScaleBar.png in Copy - theme-gis */,
-				72C4243E103DE72D005CD18E /* mActionSelectPan.png in Copy - theme-gis */,
-				72C4243F103DE72D005CD18E /* mActionSimplify.png in Copy - theme-gis */,
-				72C42440103DE72D005CD18E /* mActionUndo.png in Copy - theme-gis */,
-				72C42441103DE72D005CD18E /* mActionUngroupItems.png in Copy - theme-gis */,
-			);
-			name = "Copy - theme-gis";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7256F5320F41C5910022BE1F /* Copy - theme-nkids */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_DATA_SUBDIR)/themes/nkids";
-			dstSubfolderSpec = 6;
-			files = (
-				7256F4F60F41C5720022BE1F /* action.png in Copy - theme-nkids */,
-				7256F4F70F41C5720022BE1F /* contexthelp.png in Copy - theme-nkids */,
-				7256F4F80F41C5720022BE1F /* delete_selected.png in Copy - theme-nkids */,
-				7256F4F90F41C5720022BE1F /* gis_plain_cursor.png in Copy - theme-nkids */,
-				7256F4FA0F41C5720022BE1F /* inline_table.png in Copy - theme-nkids */,
-				7256F4FB0F41C5720022BE1F /* layers.png in Copy - theme-nkids */,
-				72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */,
-				7256F4FC0F41C5720022BE1F /* mActionAddAllToOverview.png in Copy - theme-nkids */,
-				7256F4FD0F41C5720022BE1F /* mActionAddLayer.png in Copy - theme-nkids */,
-				7256F4FE0F41C5720022BE1F /* mActionAddNonDbLayer.png in Copy - theme-nkids */,
-				7256F4FF0F41C5720022BE1F /* mActionAddRasterLayer.png in Copy - theme-nkids */,
-				7256F5000F41C5720022BE1F /* mActionAddWmsLayer.png in Copy - theme-nkids */,
-				7256F5010F41C5720022BE1F /* mActionCaptureLine.png in Copy - theme-nkids */,
-				7256F5020F41C5720022BE1F /* mActionCapturePoint.png in Copy - theme-nkids */,
-				7256F5030F41C5720022BE1F /* mActionCapturePolygon.png in Copy - theme-nkids */,
-				7256F5040F41C5720022BE1F /* mActionCustomProjection.png in Copy - theme-nkids */,
-				7256F5050F41C5720022BE1F /* mActionDraw.png in Copy - theme-nkids */,
-				7256F5060F41C5720022BE1F /* mActionExportMapServer.png in Copy - theme-nkids */,
-				7256F5070F41C5720022BE1F /* mActionFileExit.png in Copy - theme-nkids */,
-				7256F5080F41C5720022BE1F /* mActionFileNew.png in Copy - theme-nkids */,
-				7256F5090F41C5720022BE1F /* mActionFileOpen.png in Copy - theme-nkids */,
-				7256F50A0F41C5720022BE1F /* mActionFilePrint.png in Copy - theme-nkids */,
-				7256F50B0F41C5720022BE1F /* mActionFileSave.png in Copy - theme-nkids */,
-				7256F50C0F41C5720022BE1F /* mActionFileSaveAs.png in Copy - theme-nkids */,
-				7256F50D0F41C5720022BE1F /* mActionHelpAbout.png in Copy - theme-nkids */,
-				7256F50E0F41C5720022BE1F /* mActionHelpContents.png in Copy - theme-nkids */,
-				7256F50F0F41C5720022BE1F /* mActionHideAllLayers.png in Copy - theme-nkids */,
-				7256F5100F41C5720022BE1F /* mActionIdentify.png in Copy - theme-nkids */,
-				7256F5110F41C5720022BE1F /* mActionInOverview.png in Copy - theme-nkids */,
-				7256F5120F41C5720022BE1F /* mActionMeasure.png in Copy - theme-nkids */,
-				7256F5130F41C5720022BE1F /* mActionNewBookmark.png in Copy - theme-nkids */,
-				7256F5140F41C5720022BE1F /* mActionNewVectorLayer.png in Copy - theme-nkids */,
-				7256F5150F41C5720022BE1F /* mActionOpenTable.png in Copy - theme-nkids */,
-				7256F5160F41C5720022BE1F /* mActionOptions.png in Copy - theme-nkids */,
-				7256F5170F41C5720022BE1F /* mActionPan.png in Copy - theme-nkids */,
-				7256F5180F41C5720022BE1F /* mActionProjectProperties.png in Copy - theme-nkids */,
-				7256F5190F41C5720022BE1F /* mActionQgisHomePage.png in Copy - theme-nkids */,
-				7256F51A0F41C5720022BE1F /* mActionRemoveAllFromOverview.png in Copy - theme-nkids */,
-				7256F51B0F41C5720022BE1F /* mActionRemoveLayer.png in Copy - theme-nkids */,
-				7256F51C0F41C5720022BE1F /* mActionSaveMapAsImage.png in Copy - theme-nkids */,
-				7256F51D0F41C5720022BE1F /* mActionSelect.png in Copy - theme-nkids */,
-				7256F51E0F41C5720022BE1F /* mActionShowAllLayers.png in Copy - theme-nkids */,
-				7256F51F0F41C5720022BE1F /* mActionShowBookmarks.png in Copy - theme-nkids */,
-				7256F5200F41C5720022BE1F /* mActionShowPluginManager.png in Copy - theme-nkids */,
-				7256F5210F41C5720022BE1F /* mActionZoomFullExtent.png in Copy - theme-nkids */,
-				7256F5220F41C5720022BE1F /* mActionZoomIn.png in Copy - theme-nkids */,
-				7256F5230F41C5720022BE1F /* mActionZoomLast.png in Copy - theme-nkids */,
-				7256F5240F41C5720022BE1F /* mActionZoomOut.png in Copy - theme-nkids */,
-				7256F5250F41C5720022BE1F /* mActionZoomToLayer.png in Copy - theme-nkids */,
-				7256F5260F41C5720022BE1F /* mActionZoomToSelected.png in Copy - theme-nkids */,
-				7256F5270F41C5720022BE1F /* mIconProjectionDisabled.png in Copy - theme-nkids */,
-				7256F5280F41C5720022BE1F /* mIconProjectionEnabled.png in Copy - theme-nkids */,
-				7256F5290F41C5720022BE1F /* mIconProjectionProblem.png in Copy - theme-nkids */,
-				7256F52A0F41C5720022BE1F /* over-.png in Copy - theme-nkids */,
-				7256F52B0F41C5720022BE1F /* over.png in Copy - theme-nkids */,
-				7256F52C0F41C5720022BE1F /* over1.png in Copy - theme-nkids */,
-				7256F52D0F41C5720022BE1F /* qgis32x32.png in Copy - theme-nkids */,
-				7256F52E0F41C5720022BE1F /* remove_all_to_overview.png in Copy - theme-nkids */,
-				7256F52F0F41C5720022BE1F /* show_all_layers1.png in Copy - theme-nkids */,
-				7256F5300F41C5720022BE1F /* show_layerReal.png in Copy - theme-nkids */,
-			);
-			name = "Copy - theme-nkids";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7256F53A0F41C5F40022BE1F /* Copy - resources */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3811,39 +2706,6 @@
 			name = "Copy - context_help";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		72745A080F7702EF007F4218 /* Copy - theme-gis-plugins */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_DATA_SUBDIR)/themes/gis/plugins";
-			dstSubfolderSpec = 6;
-			files = (
-				72745A090F770319007F4218 /* copyright_label.png in Copy - theme-gis-plugins */,
-				72745A0A0F770319007F4218 /* delimited_text.png in Copy - theme-gis-plugins */,
-				72745A0B0F770319007F4218 /* dxf2shp_converter.png in Copy - theme-gis-plugins */,
-				72745A0C0F770319007F4218 /* georeferencer.png in Copy - theme-gis-plugins */,
-				72745A0D0F770319007F4218 /* gps_importer.png in Copy - theme-gis-plugins */,
-				72745A0E0F770319007F4218 /* interpolation.png in Copy - theme-gis-plugins */,
-				72745A0F0F770319007F4218 /* north_arrow.png in Copy - theme-gis-plugins */,
-				72745A100F770319007F4218 /* ogr_converter.png in Copy - theme-gis-plugins */,
-				72745A110F770319007F4218 /* quick_print.png in Copy - theme-gis-plugins */,
-				72745A120F770319007F4218 /* scale_bar.png in Copy - theme-gis-plugins */,
-				72745A130F770319007F4218 /* spit.png in Copy - theme-gis-plugins */,
-				72745A140F770319007F4218 /* wfs.png in Copy - theme-gis-plugins */,
-			);
-			name = "Copy - theme-gis-plugins";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		72745A1A0F770378007F4218 /* Copy - theme-gis-plug-cc */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_DATA_SUBDIR)/themes/gis/plugins/coordinate_capture";
-			dstSubfolderSpec = 6;
-			files = (
-				72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */,
-			);
-			name = "Copy - theme-gis-plug-cc";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		72DB694E1021DA3500ED5F3A /* Copy - osm */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3952,152 +2814,6 @@
 				72E707360F426C6900142011 /* world.png in Copy - grass */,
 			);
 			name = "Copy - grass";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		72E70A4E0F426D3B00142011 /* Copy - theme-classic */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/themes/classic/grass";
-			dstSubfolderSpec = 0;
-			files = (
-				72E70A220F426D1C00142011 /* grass_add_map.png in Copy - theme-classic */,
-				72E70A230F426D1C00142011 /* grass_add_raster.png in Copy - theme-classic */,
-				72E70A240F426D1C00142011 /* grass_add_vector.png in Copy - theme-classic */,
-				72E70A250F426D1C00142011 /* grass_add_vertex.png in Copy - theme-classic */,
-				72E70A260F426D1C00142011 /* grass_browser_raster_layer.png in Copy - theme-classic */,
-				72E70A270F426D1C00142011 /* grass_browser_vector_layer.png in Copy - theme-classic */,
-				72E70A280F426D1C00142011 /* grass_clear_input.png in Copy - theme-classic */,
-				72E70A290F426D1C00142011 /* grass_close_edit.png in Copy - theme-classic */,
-				72E70A2A0F426D1C00142011 /* grass_close_mapset.png in Copy - theme-classic */,
-				72E70A2B0F426D1C00142011 /* grass_copy_map.png in Copy - theme-classic */,
-				72E70A2C0F426D1C00142011 /* grass_delete_line.png in Copy - theme-classic */,
-				72E70A2D0F426D1C00142011 /* grass_delete_map.png in Copy - theme-classic */,
-				72E70A2E0F426D1C00142011 /* grass_delete_vertex.png in Copy - theme-classic */,
-				72E70A2F0F426D1C00142011 /* grass_edit.png in Copy - theme-classic */,
-				72E70A300F426D1C00142011 /* grass_edit_attributes.png in Copy - theme-classic */,
-				72E70A310F426D1C00142011 /* grass_module_error.png in Copy - theme-classic */,
-				72E70A320F426D1C00142011 /* grass_module_warning.png in Copy - theme-classic */,
-				72E70A330F426D1C00142011 /* grass_move_line.png in Copy - theme-classic */,
-				72E70A340F426D1C00142011 /* grass_move_vertex.png in Copy - theme-classic */,
-				72E70A350F426D1C00142011 /* grass_new_boundary.png in Copy - theme-classic */,
-				72E70A360F426D1C00142011 /* grass_new_centroid.png in Copy - theme-classic */,
-				72E70A370F426D1C00142011 /* grass_new_line.png in Copy - theme-classic */,
-				72E70A380F426D1C00142011 /* grass_new_mapset.png in Copy - theme-classic */,
-				72E70A390F426D1C00142011 /* grass_new_point.png in Copy - theme-classic */,
-				72E70A3A0F426D1C00142011 /* grass_new_vector_layer.png in Copy - theme-classic */,
-				72E70A3B0F426D1C00142011 /* grass_open_mapset.png in Copy - theme-classic */,
-				72E70A3C0F426D1C00142011 /* grass_refresh.png in Copy - theme-classic */,
-				72E70A3D0F426D1C00142011 /* grass_region.png in Copy - theme-classic */,
-				72E70A3E0F426D1C00142011 /* grass_region_edit.png in Copy - theme-classic */,
-				72E70A3F0F426D1C00142011 /* grass_rename_map.png in Copy - theme-classic */,
-				72E70A400F426D1C00142011 /* grass_set_region.png in Copy - theme-classic */,
-				72E70A410F426D1C00142011 /* grass_shell.png in Copy - theme-classic */,
-				72E70A420F426D1C00142011 /* grass_split_line.png in Copy - theme-classic */,
-				72E70A430F426D1C00142011 /* grass_tools.png in Copy - theme-classic */,
-				72E70A440F426D1C00142011 /* mapcalc_add_connection.png in Copy - theme-classic */,
-				72E70A450F426D1C00142011 /* mapcalc_add_constant.png in Copy - theme-classic */,
-				72E70A460F426D1C00142011 /* mapcalc_add_function.png in Copy - theme-classic */,
-				72E70A470F426D1C00142011 /* mapcalc_add_map.png in Copy - theme-classic */,
-				72E70A480F426D1C00142011 /* mapcalc_delete.png in Copy - theme-classic */,
-				72E70A490F426D1C00142011 /* mapcalc_open.png in Copy - theme-classic */,
-				72E70A4A0F426D1C00142011 /* mapcalc_save.png in Copy - theme-classic */,
-				72E70A4B0F426D1C00142011 /* mapcalc_save_as.png in Copy - theme-classic */,
-				72E70A4C0F426D1C00142011 /* mapcalc_select.png in Copy - theme-classic */,
-				72E70A4D0F426D1C00142011 /* world.png in Copy - theme-classic */,
-			);
-			name = "Copy - theme-classic";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		72E70A810F426DF300142011 /* Copy - theme-gis */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/themes/gis/grass";
-			dstSubfolderSpec = 0;
-			files = (
-				72E70A500F426DB700142011 /* mActionAddGPSLayer.png in Copy - theme-gis */,
-				72E70A510F426DB700142011 /* mActionAddIsland.png in Copy - theme-gis */,
-				72E70A520F426DB700142011 /* mActionAddLayer.png in Copy - theme-gis */,
-				72E70A530F426DB700142011 /* mActionAddOgrLayer.png in Copy - theme-gis */,
-				72E70A540F426DB700142011 /* mActionAddRasterLayer.png in Copy - theme-gis */,
-				72E70A550F426DB700142011 /* mActionAddRing.png in Copy - theme-gis */,
-				72E70A560F426DB700142011 /* mActionAddVertex.png in Copy - theme-gis */,
-				72E70A570F426DB700142011 /* mActionAddWfsLayer.png in Copy - theme-gis */,
-				72E70A580F426DB700142011 /* mActionAddWmsLayer.png in Copy - theme-gis */,
-				72E70A590F426DB700142011 /* mActionCaptureLine.png in Copy - theme-gis */,
-				72E70A5A0F426DB700142011 /* mActionCapturePoint.png in Copy - theme-gis */,
-				72E70A5B0F426DB700142011 /* mActionCapturePolygon.png in Copy - theme-gis */,
-				72E70A5C0F426DB700142011 /* mActionDeleteSelected.png in Copy - theme-gis */,
-				72E70A5D0F426DB700142011 /* mActionDeleteVertex.png in Copy - theme-gis */,
-				72E70A5E0F426DB700142011 /* mActionDraw.png in Copy - theme-gis */,
-				72E70A5F0F426DB700142011 /* mActionEditCopy.png in Copy - theme-gis */,
-				72E70A600F426DB700142011 /* mActionEditCut.png in Copy - theme-gis */,
-				72E70A610F426DB700142011 /* mActionEditPaste.png in Copy - theme-gis */,
-				72E70A620F426DB700142011 /* mActionFileNew.png in Copy - theme-gis */,
-				72E70A630F426DB700142011 /* mActionFileOpen.png in Copy - theme-gis */,
-				72E70A640F426DB700142011 /* mActionFilePrint.png in Copy - theme-gis */,
-				72E70A650F426DB700142011 /* mActionFileSave.png in Copy - theme-gis */,
-				72E70A660F426DB700142011 /* mActionFileSaveAs.png in Copy - theme-gis */,
-				72E70A670F426DB700142011 /* mActionHelpContents.png in Copy - theme-gis */,
-				72E70A680F426DB700142011 /* mActionHideAllLayers.png in Copy - theme-gis */,
-				72E70A690F426DB700142011 /* mActionIdentify.png in Copy - theme-gis */,
-				72E70A6A0F426DB700142011 /* mActionInOverview.png in Copy - theme-gis */,
-				72E70A6B0F426DB700142011 /* mActionMapTips.png in Copy - theme-gis */,
-				72E70A6C0F426DB700142011 /* mActionMeasure.png in Copy - theme-gis */,
-				72E70A6D0F426DB700142011 /* mActionMeasureArea.png in Copy - theme-gis */,
-				72E70A6E0F426DB700142011 /* mActionMoveFeature.png in Copy - theme-gis */,
-				72E70A6F0F426DB700142011 /* mActionMoveVertex.png in Copy - theme-gis */,
-				72E70A700F426DB700142011 /* mActionNewBookmark.png in Copy - theme-gis */,
-				72E70A710F426DB700142011 /* mActionNewVectorLayer.png in Copy - theme-gis */,
-				72E70A720F426DB700142011 /* mActionOpenTable.png in Copy - theme-gis */,
-				72E70A730F426DB700142011 /* mActionPan.png in Copy - theme-gis */,
-				72E70A740F426DB700142011 /* mActionRemoveLayer.png in Copy - theme-gis */,
-				72E70A750F426DB700142011 /* mActionSelect.png in Copy - theme-gis */,
-				72E70A760F426DB700142011 /* mActionShowAllLayers.png in Copy - theme-gis */,
-				72E70A770F426DB700142011 /* mActionShowBookmarks.png in Copy - theme-gis */,
-				72E70A780F426DB700142011 /* mActionSplitFeatures.png in Copy - theme-gis */,
-				72E70A790F426DB700142011 /* mActionToggleEditing.png in Copy - theme-gis */,
-				72E70A7A0F426DB700142011 /* mActionUnselectAttributes.png in Copy - theme-gis */,
-				72E70A7B0F426DB700142011 /* mActionZoomFullExtent.png in Copy - theme-gis */,
-				72E70A7C0F426DB700142011 /* mActionZoomIn.png in Copy - theme-gis */,
-				72E70A7D0F426DB700142011 /* mActionZoomLast.png in Copy - theme-gis */,
-				72E70A7E0F426DB700142011 /* mActionZoomOut.png in Copy - theme-gis */,
-				72E70A7F0F426DB700142011 /* mActionZoomToLayer.png in Copy - theme-gis */,
-				72E70A800F426DB700142011 /* mActionZoomToSelected.png in Copy - theme-gis */,
-				72EBC9810F49D8030016BA3C /* grass_add_raster.png in Copy - theme-gis */,
-				72EBC9820F49D8030016BA3C /* grass_add_vector.png in Copy - theme-gis */,
-				72EBC9830F49D8030016BA3C /* grass_close_mapset.png in Copy - theme-gis */,
-				72EBC9840F49D8030016BA3C /* grass_edit.png in Copy - theme-gis */,
-				72EBC9850F49D8030016BA3C /* grass_new_mapset.png in Copy - theme-gis */,
-				72EBC9860F49D8030016BA3C /* grass_new_vector_layer.png in Copy - theme-gis */,
-				72EBC9870F49D8030016BA3C /* grass_open_mapset.png in Copy - theme-gis */,
-				72EBC9880F49D8030016BA3C /* grass_region.png in Copy - theme-gis */,
-				72EBC9890F49D8030016BA3C /* grass_region_edit.png in Copy - theme-gis */,
-				72EBC98A0F49D8030016BA3C /* grass_tools.png in Copy - theme-gis */,
-				7262ED670F7A6E6F00498385 /* grass_add_vertex.png in Copy - theme-gis */,
-				7262ED680F7A6E6F00498385 /* grass_close_edit.png in Copy - theme-gis */,
-				7262ED690F7A6E6F00498385 /* grass_delete_line.png in Copy - theme-gis */,
-				7262ED6A0F7A6E6F00498385 /* grass_delete_vertex.png in Copy - theme-gis */,
-				7262ED6B0F7A6E6F00498385 /* grass_edit_attributes.png in Copy - theme-gis */,
-				7262ED6C0F7A6E6F00498385 /* grass_move_line.png in Copy - theme-gis */,
-				7262ED6D0F7A6E6F00498385 /* grass_move_vertex.png in Copy - theme-gis */,
-				7262ED6E0F7A6E6F00498385 /* grass_new_boundary.png in Copy - theme-gis */,
-				7262ED6F0F7A6E6F00498385 /* grass_new_centroid.png in Copy - theme-gis */,
-				7262ED700F7A6E6F00498385 /* grass_new_line.png in Copy - theme-gis */,
-				7262ED710F7A6E6F00498385 /* grass_new_point.png in Copy - theme-gis */,
-				7262ED720F7A6E6F00498385 /* grass_split_line.png in Copy - theme-gis */,
-			);
-			name = "Copy - theme-gis";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		72EB12980F7E9BB4002C38FA /* Copy - theme-dflt-plugins */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_DATA_SUBDIR)/themes/default/plugins";
-			dstSubfolderSpec = 6;
-			files = (
-				72EB129A0F7E9BCD002C38FA /* plugin_installer.png in Copy - theme-dflt-plugins */,
-			);
-			name = "Copy - theme-dflt-plugins";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		72EBC9800F49D7F60016BA3C /* Copy - theme-default */ = {
@@ -6100,6 +4816,25 @@
 		7216ADF10FE571F000552832 /* qgsundowidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsundowidget.h; path = ../../src/app/qgsundowidget.h; sourceTree = SOURCE_ROOT; };
 		7216ADF50FE5725B00552832 /* mActionRedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRedo.png; path = ../../images/themes/default/mActionRedo.png; sourceTree = SOURCE_ROOT; };
 		7216ADF60FE5725B00552832 /* mActionUndo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionUndo.png; path = ../../images/themes/default/mActionUndo.png; sourceTree = SOURCE_ROOT; };
+		721828A710BA332A008D715D /* mActionDeselectAll.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeselectAll.png; path = ../../images/themes/default/mActionDeselectAll.png; sourceTree = SOURCE_ROOT; };
+		721828A910BA3356008D715D /* action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = action.png; path = ../../images/themes/newgis/propertyicons/action.png; sourceTree = SOURCE_ROOT; };
+		721828AA10BA3356008D715D /* attributes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = attributes.png; path = ../../images/themes/newgis/propertyicons/attributes.png; sourceTree = SOURCE_ROOT; };
+		721828AB10BA3356008D715D /* colormap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = colormap.png; path = ../../images/themes/newgis/propertyicons/colormap.png; sourceTree = SOURCE_ROOT; };
+		721828AC10BA3356008D715D /* CRS.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CRS.png; path = ../../images/themes/newgis/propertyicons/CRS.png; sourceTree = SOURCE_ROOT; };
+		721828AD10BA3356008D715D /* diagram.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = diagram.png; path = ../../images/themes/newgis/propertyicons/diagram.png; sourceTree = SOURCE_ROOT; };
+		721828AE10BA3356008D715D /* digitising.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = digitising.png; path = ../../images/themes/newgis/propertyicons/digitising.png; sourceTree = SOURCE_ROOT; };
+		721828AF10BA3356008D715D /* general.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = general.png; path = ../../images/themes/newgis/propertyicons/general.png; sourceTree = SOURCE_ROOT; };
+		721828B010BA3356008D715D /* histogram.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = histogram.png; path = ../../images/themes/newgis/propertyicons/histogram.png; sourceTree = SOURCE_ROOT; };
+		721828B110BA3356008D715D /* labels.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = labels.png; path = ../../images/themes/newgis/propertyicons/labels.png; sourceTree = SOURCE_ROOT; };
+		721828B210BA3356008D715D /* locale.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = locale.png; path = ../../images/themes/newgis/propertyicons/locale.png; sourceTree = SOURCE_ROOT; };
+		721828B310BA3356008D715D /* map_tools.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = map_tools.png; path = ../../images/themes/newgis/propertyicons/map_tools.png; sourceTree = SOURCE_ROOT; };
+		721828B410BA3356008D715D /* metadata.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = metadata.png; path = ../../images/themes/newgis/propertyicons/metadata.png; sourceTree = SOURCE_ROOT; };
+		721828B510BA3356008D715D /* network_and_proxy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = network_and_proxy.png; path = ../../images/themes/newgis/propertyicons/network_and_proxy.png; sourceTree = SOURCE_ROOT; };
+		721828B610BA3356008D715D /* overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = overlay.png; path = ../../images/themes/newgis/propertyicons/overlay.png; sourceTree = SOURCE_ROOT; };
+		721828B710BA3356008D715D /* pyramids.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pyramids.png; path = ../../images/themes/newgis/propertyicons/pyramids.png; sourceTree = SOURCE_ROOT; };
+		721828B810BA3356008D715D /* rendering.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = rendering.png; path = ../../images/themes/newgis/propertyicons/rendering.png; sourceTree = SOURCE_ROOT; };
+		721828B910BA3356008D715D /* symbology.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = symbology.png; path = ../../images/themes/newgis/propertyicons/symbology.png; sourceTree = SOURCE_ROOT; };
+		721828BA10BA3356008D715D /* transparency.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = transparency.png; path = ../../images/themes/newgis/propertyicons/transparency.png; sourceTree = SOURCE_ROOT; };
 		721E07050FABDCAB00558FF9 /* BlockArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BlockArray.cpp; path = ../../src/plugins/grass/qtermwidget/BlockArray.cpp; sourceTree = SOURCE_ROOT; };
 		721E07060FABDCAB00558FF9 /* BlockArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlockArray.h; path = ../../src/plugins/grass/qtermwidget/BlockArray.h; sourceTree = SOURCE_ROOT; };
 		721E07070FABDCAB00558FF9 /* Character.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Character.h; path = ../../src/plugins/grass/qtermwidget/Character.h; sourceTree = SOURCE_ROOT; };
@@ -10863,11 +9598,11 @@
 		7209EEE30F39E5D9003DC336 /* default */ = {
 			isa = PBXGroup;
 			children = (
+				7209EEE70F39E5D9003DC336 /* CMakeLists.txt */,
 				724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */,
 				72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */,
 				7209EEE50F39E5D9003DC336 /* clear_input.svg */,
 				7209EEE60F39E5D9003DC336 /* clearInput.png */,
-				7209EEE70F39E5D9003DC336 /* CMakeLists.txt */,
 				7209EEE80F39E5D9003DC336 /* digitisingIconsMaster.svg */,
 				7209EEE90F39E5D9003DC336 /* extents.png */,
 				7209EEEA0F39E5D9003DC336 /* extents.svg */,
@@ -10908,6 +9643,7 @@
 				7209EF030F39E5D9003DC336 /* mActionDeleteAttribute.png */,
 				7209EF040F39E5D9003DC336 /* mActionDeleteSelected.png */,
 				7209EF050F39E5D9003DC336 /* mActionDeleteVertex.png */,
+				721828A710BA332A008D715D /* mActionDeselectAll.png */,
 				7209EF060F39E5D9003DC336 /* mActionDraw.png */,
 				7209EF070F39E5D9003DC336 /* mActionEditCopy.png */,
 				7209EF080F39E5D9003DC336 /* mActionEditCut.png */,
@@ -11124,8 +9860,8 @@
 		7209EF970F39E5D9003DC336 /* nkids */ = {
 			isa = PBXGroup;
 			children = (
-				7209EF990F39E5D9003DC336 /* action.png */,
 				7209EF9A0F39E5D9003DC336 /* CMakeLists.txt */,
+				7209EF990F39E5D9003DC336 /* action.png */,
 				7209EF9B0F39E5D9003DC336 /* contexthelp.png */,
 				7209EF9C0F39E5D9003DC336 /* delete_selected.png */,
 				7209EF9D0F39E5D9003DC336 /* gis_plain_cursor.png */,
@@ -11446,6 +10182,32 @@
 			path = ../../src/analysis/vector;
 			sourceTree = SOURCE_ROOT;
 		};
+		721828A810BA3356008D715D /* propertyicons */ = {
+			isa = PBXGroup;
+			children = (
+				721828A910BA3356008D715D /* action.png */,
+				721828AA10BA3356008D715D /* attributes.png */,
+				721828AB10BA3356008D715D /* colormap.png */,
+				721828AC10BA3356008D715D /* CRS.png */,
+				721828AD10BA3356008D715D /* diagram.png */,
+				721828AE10BA3356008D715D /* digitising.png */,
+				721828AF10BA3356008D715D /* general.png */,
+				721828B010BA3356008D715D /* histogram.png */,
+				721828B110BA3356008D715D /* labels.png */,
+				721828B210BA3356008D715D /* locale.png */,
+				721828B310BA3356008D715D /* map_tools.png */,
+				721828B410BA3356008D715D /* metadata.png */,
+				721828B510BA3356008D715D /* network_and_proxy.png */,
+				721828B610BA3356008D715D /* overlay.png */,
+				721828B710BA3356008D715D /* pyramids.png */,
+				721828B810BA3356008D715D /* rendering.png */,
+				721828B910BA3356008D715D /* symbology.png */,
+				721828BA10BA3356008D715D /* transparency.png */,
+			);
+			name = propertyicons;
+			path = ../../images/themes/newgis/propertyicons;
+			sourceTree = SOURCE_ROOT;
+		};
 		721E07040FABDCAB00558FF9 /* qtermwidget */ = {
 			isa = PBXGroup;
 			children = (
@@ -11730,8 +10492,9 @@
 				724D063710A9112D00F9680A /* mActionZoomToLayer.png */,
 				724D063810A9112D00F9680A /* mActionZoomToSelected.png */,
 				724D063910A9112D00F9680A /* plugins */,
-				724D05F110A9112D00F9680A /* LICENSE.TXT */,
 				724D05DA10A9112D00F9680A /* grass */,
+				721828A810BA3356008D715D /* propertyicons */,
+				724D05F110A9112D00F9680A /* LICENSE.TXT */,
 			);
 			name = newgis;
 			path = ../../images/themes/newgis;
@@ -13836,8 +12599,6 @@
 				72A56B5A0F3C823800BA32A1 /* Sources */,
 				72A56B5B0F3C823800BA32A1 /* Frameworks */,
 				72E70A1F0F426CB600142011 /* Copy - grass */,
-				72E70A4E0F426D3B00142011 /* Copy - theme-classic */,
-				72E70A810F426DF300142011 /* Copy - theme-gis */,
 				72EBC9800F49D7F60016BA3C /* Copy - theme-default */,
 				72993C820FE303FA00244D1A /* Script - copy modules & config */,
 			);
@@ -14099,15 +12860,6 @@
 				7256F3900F414B3E0022BE1F /* Copy - svg-n_arrow */,
 				7256F3910F414B3E0022BE1F /* Copy - svg-sport */,
 				7256F3920F414B3E0022BE1F /* Copy - svg-symbol */,
-				7256F3960F41C3AA0022BE1F /* Copy - theme-classic */,
-				7256F4210F41C4DA0022BE1F /* Copy - theme-default */,
-				72EB12980F7E9BB4002C38FA /* Copy - theme-dflt-plugins */,
-				7256F5310F41C5910022BE1F /* Copy - theme-gis */,
-				72745A080F7702EF007F4218 /* Copy - theme-gis-plugins */,
-				72745A1A0F770378007F4218 /* Copy - theme-gis-plug-cc */,
-				724D065310A9119E00F9680A /* Copy - theme-newgis */,
-				724D069F10A9122100F9680A /* Copy - theme-newgis-plugins */,
-				7256F5320F41C5910022BE1F /* Copy - theme-nkids */,
 				7256F53A0F41C5F40022BE1F /* Copy - resources */,
 				7256F57E0F41C66D0022BE1F /* Copy - context_help */,
 				729288B80F71FF25006D9489 /* Script - i18n */,
@@ -14116,6 +12868,7 @@
 				726302380F4532E000E4441E /* Script - bundle extras */,
 			);
 			buildRules = (
+				721828C110BA34E2008D715D /* PBXBuildRule */,
 				729288790F71FC3F006D9489 /* PBXBuildRule */,
 			);
 			comments = "template had for debug macros:\n\n_GLIBCXX_DEBUG=1 _GLIBCXX_DEBUG_PEDANTIC=1";
@@ -15553,6 +14306,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				721828C210BA34F7008D715D /* images.qrc in Sources */,
 				7209F4270F3A468C003DC336 /* main.cpp in Sources */,
 				7209F4280F3A468C003DC336 /* qgisapp.cpp in Sources */,
 				7209F4290F3A468C003DC336 /* qgisappinterface.cpp in Sources */,
@@ -18806,7 +17560,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12221;
+				QGIS_VERSION_BUILD = 12228;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18817,7 +17571,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12221;
+				QGIS_VERSION_BUILD = 12228;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
