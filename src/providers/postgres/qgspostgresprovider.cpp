@@ -2044,7 +2044,7 @@ QByteArray QgsPostgresProvider::paramValue( QString fieldValue, const QString &d
   return fieldValue.toUtf8();
 }
 
-bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
+bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 {
   if ( flist.size() == 0 )
     return true;
@@ -2082,6 +2082,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
 
     QStringList defaultValues;
     QList<int> fieldId;
+    int primaryKeyId = -1;
 
     // look for unique attribute values to place in statement instead of passing as parameter
     // e.g. for defaults
@@ -2095,8 +2096,14 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
 
       QgsDebugMsg( "Checking field against: " + fieldname );
 
-      if ( fieldname.isEmpty() || fieldname == geometryColumn || fieldname == primaryKey )
+      if ( fieldname.isEmpty() || fieldname == geometryColumn )
         continue;
+
+      if ( fieldname == primaryKey )
+      {
+        primaryKeyId = it.key();
+        continue;
+      }
 
       int i;
       for ( i = 1; i < flist.size(); i++ )
@@ -2179,7 +2186,9 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
 
       if ( primaryKeyType != "tid" )
       {
-        if ( keyDefault.isNull() )
+        QByteArray key = paramValue( primaryKeyId >= 0 ? attributevec[ primaryKeyId ].toString() : QString::null, keyDefault );
+
+        if ( key.isNull() )
         {
           ++primaryKeyHighWater;
           params << QString::number( primaryKeyHighWater );
@@ -2187,7 +2196,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
         }
         else
         {
-          QByteArray key = paramValue( keyDefault, keyDefault );
           params << key;
           newIds << key.toInt();
         }
