@@ -12,6 +12,7 @@ libqgispython.so.1.4.0 python-qgis #MINVER#
  _ZN18QgsPythonUtilsImpl11startPluginE7QString@Base 1.4.0
  _ZN18QgsPythonUtilsImpl12getTracebackEv@Base 1.4.0
  _ZN18QgsPythonUtilsImpl12unloadPluginE7QString@Base 1.4.0
+ _ZN18QgsPythonUtilsImpl14homePythonPathEv@Base 1.4.0
  _ZN18QgsPythonUtilsImpl15getTypeAsStringEP7_object@Base 1.4.0
  _ZN18QgsPythonUtilsImpl15homePluginsPathEv@Base 1.4.0
  _ZN18QgsPythonUtilsImpl15runStringUnsafeERK7QStringb@Base 1.4.0
