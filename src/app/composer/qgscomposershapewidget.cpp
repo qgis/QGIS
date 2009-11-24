@@ -23,8 +23,10 @@
 QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QWidget( 0 ), mComposerShape( composerShape )
 {
   setupUi( this );
+
+  //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
-  gridLayout->addWidget( itemPropertiesWidget, 6, 0, 1, 1 );
+  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
 
   blockAllSignals( true );
 
