@@ -70,8 +70,9 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     QPen mPen;
     /**Shape fill*/
     QBrush mBrush;
+
     /**Apply default graphics settings*/
-    void initBrushAndPen();
+    void initGraphicsSettings();
 
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;

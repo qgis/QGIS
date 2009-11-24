@@ -124,7 +124,7 @@ void QgsComposerShapeWidget::on_mOutlineColorButton_clicked()
     return;
   }
   QColor existingColor = mComposerShape->outlineColor();
-  QColor newColor = QColorDialog::getColor( existingColor, 0 );
+  QColor newColor = QColorDialog::getColor( existingColor, 0, tr( "Select outline color" ), QColorDialog::ShowAlphaChannel );
   if ( newColor.isValid() )
   {
     mComposerShape->setOutlineColor( newColor );
@@ -169,7 +169,7 @@ void QgsComposerShapeWidget::on_mFillColorButton_clicked()
     return;
   }
   QColor existingColor = mComposerShape->fillColor();
-  QColor newColor = QColorDialog::getColor( existingColor, 0 );
+  QColor newColor = QColorDialog::getColor( existingColor, 0, tr( "Select fill color" ), QColorDialog::ShowAlphaChannel );
   if ( newColor.isValid() )
   {
     mComposerShape->setFillColor( newColor );

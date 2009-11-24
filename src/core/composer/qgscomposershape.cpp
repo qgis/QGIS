@@ -20,13 +20,13 @@
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ), mShape( Ellipse )
 {
-  initBrushAndPen();
+  initGraphicsSettings();
 }
 
 QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition ), mShape( Ellipse )
 {
   setSceneRect( QRectF( x, y, width, height ) );
-  initBrushAndPen();
+  initGraphicsSettings();
 }
 
 QgsComposerShape::~QgsComposerShape()
@@ -93,11 +93,13 @@ bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
   outlineColorElem.setAttribute( "red", mPen.color().red() );
   outlineColorElem.setAttribute( "green", mPen.color().green() );
   outlineColorElem.setAttribute( "blue", mPen.color().blue() );
+  outlineColorElem.setAttribute( "alpha", mPen.color().alpha() );
   composerShapeElem.appendChild( outlineColorElem );
   QDomElement fillColorElem = doc.createElement( "FillColor" );
   fillColorElem.setAttribute( "red", mBrush.color().red() );
   fillColorElem.setAttribute( "green", mBrush.color().green() );
   fillColorElem.setAttribute( "blue", mBrush.color().blue() );
+  fillColorElem.setAttribute( "alpha", mBrush.color().alpha() );
   composerShapeElem.appendChild( fillColorElem );
   elem.appendChild( composerShapeElem );
   return _writeXML( composerShapeElem, doc );
@@ -127,7 +129,8 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
     int penRed = outlineColorElem.attribute( "red", "0" ).toInt();
     int penGreen = outlineColorElem.attribute( "green", "0" ).toInt();
     int penBlue = outlineColorElem.attribute( "blue", "0" ).toInt();
-    mPen.setColor( QColor( penRed, penGreen, penBlue ) );
+    int penAlpha = outlineColorElem.attribute( "alpha", "255" ).toInt();
+    mPen.setColor( QColor( penRed, penGreen, penBlue, penAlpha ) );
   }
 
   //fill color
@@ -138,7 +141,8 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
     int brushRed = fillColorElem.attribute( "red", "0" ).toInt();
     int brushGreen = fillColorElem.attribute( "green", "0" ).toInt();
     int brushBlue = fillColorElem.attribute( "blue", "0" ).toInt();
-    mBrush.setColor( QColor( brushRed, brushGreen, brushBlue ) );
+    int brushAlpha = fillColorElem.attribute( "alpha", "255" ).toInt();
+    mBrush.setColor( QColor( brushRed, brushGreen, brushBlue, brushAlpha ) );
   }
 
 
@@ -199,11 +203,15 @@ void QgsComposerShape::setTransparentFill( bool transparent )
   }
 }
 
-void QgsComposerShape::initBrushAndPen()
+void QgsComposerShape::initGraphicsSettings()
 {
   mPen.setColor( QColor( 0, 0, 0 ) );
   mPen.setWidthF( 1 );
   mPen.setJoinStyle( Qt::RoundJoin );
   mBrush.setColor( QColor( 0, 0, 0 ) );
   mBrush.setStyle( Qt::NoBrush );
+
+  //set composer item brush and pen to transparent white by default
+  setPen( QPen( QColor( 255, 255, 255, 0 ) ) );
+  setBrush( QBrush( QColor( 255, 255, 255, 0 ) ) );
 }
