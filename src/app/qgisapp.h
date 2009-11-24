@@ -59,6 +59,8 @@ class QgsRectangle;
 class QgsUndoWidget;
 class QgsVectorLayer;
 
+class QDomDocument;
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -630,6 +632,9 @@ class QgisApp : public QMainWindow
     void stopRendering();
 
     void showStyleManagerV2();
+
+    //! project changed
+    void projectChanged( const QDomDocument & );
 
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able

@@ -89,6 +89,9 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! return current path for python plugins
     QString pluginsPath();
 
+    //! return current path for python in home directory
+    QString homePythonPath();
+
     //! return current path for home directory python plugins
     QString homePluginsPath();
 
