@@ -42,6 +42,9 @@ class QgsRasterTerrainAnalysisDialog: public QDialog, private Ui::QgsRasterTerra
 
   private:
     QgisInterface* mIface;
+
+    /**Stores relation between driver name and extension*/
+    QMap<QString, QString> mDriverExtensionMap;
 };
 
 #endif // QGSRASTERTERRAINANALYSISDIALOG_H
