@@ -60,6 +60,31 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( QgisInterface* i
       if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, FALSE ) )
       {
         mOutputFormatComboBox->addItem( GDALGetDriverLongName( driver ), QVariant( GDALGetDriverShortName( driver ) ) );
+
+        //store the driver shortnames and the corresponding extensions
+        //(just in case the user does not give an extension for the output file name)
+        int index = 0;
+        while (( driverMetadata ) && driverMetadata[index] != 0 )
+        {
+          QStringList metadataTokens = QString( driverMetadata[index] ).split( "=", QString::SkipEmptyParts );
+          if ( metadataTokens.size() < 1 )
+          {
+            break;
+          }
+
+          if ( metadataTokens[0] == "DMD_EXTENSION" )
+          {
+            if ( metadataTokens.size() < 2 )
+            {
+              ++index;
+              continue;
+            }
+            mDriverExtensionMap.insert( QString( GDALGetDriverShortName( driver ) ), metadataTokens[1] );
+            break;
+          }
+          ++index;
+        }
+
       }
     }
   }
@@ -107,7 +132,29 @@ QString QgsRasterTerrainAnalysisDialog::selectedDriverKey() const
 
 QString QgsRasterTerrainAnalysisDialog::selectedOuputFilePath() const
 {
-  return mOutputLayerLineEdit->text();
+  QString outputFileName = mOutputLayerLineEdit->text();
+  QFileInfo fileInfo( outputFileName );
+  QString suffix = fileInfo.suffix();
+  if ( !suffix.isEmpty() )
+  {
+    return outputFileName;
+  }
+
+  //add the file format extension if the user did not specify it
+  int index = mOutputFormatComboBox->currentIndex();
+  if ( index == -1 )
+  {
+    return outputFileName;
+  }
+
+  QString driverShortName = mOutputFormatComboBox->itemData( index ).toString();
+  QMap<QString, QString>::const_iterator it = mDriverExtensionMap.find( driverShortName );
+  if ( it == mDriverExtensionMap.constEnd() )
+  {
+    return outputFileName;
+  }
+
+  return ( outputFileName + "." + it.value() );
 }
 
 bool QgsRasterTerrainAnalysisDialog::addLayerToProject() const

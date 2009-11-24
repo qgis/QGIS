@@ -116,6 +116,13 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     return;
   }
 
+  //add .asc suffix if the user did not provider it already
+  QString suffix = theFileInfo.suffix();
+  if ( suffix.isEmpty() )
+  {
+    fileName.append( ".asc" );
+  }
+
   int nLayers = mLayersTreeWidget->topLevelItemCount();
   QList< QgsInterpolator::LayerData > inputLayerList;
 
