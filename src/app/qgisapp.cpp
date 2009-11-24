@@ -4091,7 +4091,12 @@ void QgisApp::attributeTable()
     return;
   }
 
-  QgsVectorLayer * myLayer = qobject_cast<QgsVectorLayer *>( mMapLegend->currentLayer() );
+  QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( mMapLegend->currentLayer() );
+  if ( !myLayer )
+  {
+    return;
+  }
+
   QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer );
   mDialog->show();
   // the dialog will be deleted by itself on close
