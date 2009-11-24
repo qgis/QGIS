@@ -1801,6 +1801,12 @@ void QgisApp::setupConnections()
   connect( mActionUndo, SIGNAL( triggered() ), mUndoWidget, SLOT( undo() ) );
   connect( mActionRedo, SIGNAL( triggered() ), mUndoWidget, SLOT( redo() ) );
   connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
+
+  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
+           this, SLOT( projectChanged( const QDomDocument & ) ) );
+  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
+           this, SLOT( projectChanged( QDomDocument & ) ) );
+
 }
 
 void QgisApp::createCanvas()
@@ -4465,10 +4471,10 @@ void QgisApp::deselectAll()
   mMapCanvas->setRenderFlag( false );
 
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
-  for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it!=layers.end(); it++ )
+  for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
-    if( !vl )
+    if ( !vl )
       continue;
 
     vl->removeSelection();
@@ -6459,8 +6465,35 @@ void QgisApp::updateUndoActions()
 
 void QgisApp::runPythonString( const QString &expr )
 {
-  if ( mPythonUtils )
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     mPythonUtils->runStringUnsafe( expr );
   }
+}
+
+// add project directory to python path
+void QgisApp::projectChanged( const QDomDocument &doc )
+{
+  QgsProject *project = qobject_cast<QgsProject*>( sender() );
+  if ( !project )
+    return;
+
+  QFileInfo fi( project->fileName() );
+  if ( !fi.exists() )
+    return;
+
+  static QString prevProjectDir = QString::null;
+
+  if ( prevProjectDir == fi.canonicalPath() )
+    return;
+
+  QString expr;
+  if ( !prevProjectDir.isNull() )
+    expr = QString( "sys.path.remove('%1'); " ).arg( prevProjectDir );
+
+  prevProjectDir = fi.canonicalPath();
+
+  expr += QString( "sys.path.append('%1')" ).arg( prevProjectDir );
+
+  runPythonString( expr );
 }
