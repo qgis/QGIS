@@ -16,8 +16,13 @@ PATH=$QTDIR/bin:$PATH
 echo Creating qt_ts.tar
 tar --remove-files -cvf i18n/qt_ts.tar i18n/qt_*.ts
 exclude=
+opts=
 for i in "$@"; do
-  exclude="$exclude --exclude i18n/qgis_$i.ts"
+  if [ -f "i18n/qgis_$i.ts" ]; then
+    exclude="$exclude --exclude i18n/qgis_$i.ts"
+  else
+    opts=" $i"
+  fi
 done
 if [ -n "$exclude" ]; then
   tar --remove-files -cvf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
@@ -38,7 +43,7 @@ done
 echo Creating qmake project file
 qmake -project -o qgis_ts.pro -nopwd src python i18n
 echo Updating translation files
-lupdate -verbose qgis_ts.pro
+lupdate$opts -verbose qgis_ts.pro
 echo Removing temporary python translation files
 perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
 rm python/python-i18n.cpp python/plugins/*/python-i18n.cpp i18n/qgis_*.ts.bak
