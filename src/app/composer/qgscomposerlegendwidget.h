@@ -48,9 +48,9 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mBoxSpaceSpinBox_valueChanged( double d );
 
     //item manipulation
-    void on_mMoveDownPushButton_clicked();
-    void on_mMoveUpPushButton_clicked();
-    void on_mRemovePushButton_clicked();
+    void on_mMoveDownToolButton_clicked();
+    void on_mMoveUpToolButton_clicked();
+    void on_mRemoveToolButton_clicked();
     void on_mEditPushButton_clicked();
     void on_mUpdatePushButton_clicked();
     void on_mUpdateAllPushButton_clicked();

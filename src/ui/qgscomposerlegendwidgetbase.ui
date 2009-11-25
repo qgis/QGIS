@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>352</width>
-        <height>472</height>
+        <width>348</width>
+        <height>468</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
@@ -48,8 +48,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>334</width>
-            <height>390</height>
+            <width>180</width>
+            <height>347</height>
            </rect>
           </property>
           <attribute name="label">
@@ -176,7 +176,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>334</width>
+            <width>330</width>
             <height>390</height>
            </rect>
           </property>
@@ -198,21 +198,21 @@
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QToolButton" name="mMoveDownPushButton">
+            <widget class="QToolButton" name="mMoveDownToolButton">
              <property name="text">
               <string>v</string>
              </property>
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QToolButton" name="mMoveUpPushButton_2">
+            <widget class="QToolButton" name="mMoveUpToolButton">
              <property name="text">
               <string>^</string>
              </property>
             </widget>
            </item>
            <item row="1" column="2">
-            <widget class="QToolButton" name="toolButton">
+            <widget class="QToolButton" name="mRemoveToolButton">
              <property name="text">
               <string>X</string>
              </property>
