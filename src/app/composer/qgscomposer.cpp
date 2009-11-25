@@ -21,6 +21,8 @@
 #include "qgscomposerview.h"
 #include "qgscomposition.h"
 #include "qgscompositionwidget.h"
+#include "qgscomposerarrow.h"
+#include "qgscomposerarrowwidget.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlabelwidget.h"
 #include "qgscomposerlegend.h"
@@ -109,6 +111,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   toggleActionGroup->addAction( mActionAddImage );
   toggleActionGroup->addAction( mActionSelectMoveItem );
   toggleActionGroup->addAction( mActionAddBasicShape );
+  toggleActionGroup->addAction( mActionAddArrow );
   toggleActionGroup->setExclusive( true );
 
   mActionAddNewMap->setCheckable( true );
@@ -119,6 +122,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   mActionAddImage->setCheckable( true );
   mActionMoveItemContent->setCheckable( true );
   mActionAddBasicShape->setCheckable( true );
+  mActionAddArrow->setCheckable( true );
 
 #ifdef Q_WS_MAC
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
@@ -155,6 +159,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   layoutMenu->addAction( mActionSelectMoveItem );
   layoutMenu->addAction( mActionMoveItemContent );
   layoutMenu->addAction( mActionAddBasicShape );
+  layoutMenu->addAction( mActionAddArrow );
   layoutMenu->addSeparator();
   layoutMenu->addAction( mActionGroupItems );
   layoutMenu->addAction( mActionUngroupItems );
@@ -249,6 +254,7 @@ void QgsComposer::setupTheme()
   mActionAddNewLegend->setIcon( QgisApp::getThemeIcon( "/mActionAddLegend.png" ) );
   mActionAddNewScalebar->setIcon( QgisApp::getThemeIcon( "/mActionScaleBar.png" ) );
   mActionAddBasicShape->setIcon( QgisApp::getThemeIcon( "/mActionAddBasicShape.png" ) );
+  mActionAddArrow->setIcon( QgisApp::getThemeIcon( "/mActionAddArrow.png" ) );
   mActionSelectMoveItem->setIcon( QgisApp::getThemeIcon( "/mActionSelectPan.png" ) );
   mActionMoveItemContent->setIcon( QgisApp::getThemeIcon( "/mActionMoveItemContent.png" ) );
   mActionGroupItems->setIcon( QgisApp::getThemeIcon( "/mActionGroupItems.png" ) );
@@ -275,6 +281,7 @@ void QgsComposer::connectSlots()
   connect( mView, SIGNAL( composerLegendAdded( QgsComposerLegend* ) ), this, SLOT( addComposerLegend( QgsComposerLegend* ) ) );
   connect( mView, SIGNAL( composerPictureAdded( QgsComposerPicture* ) ), this, SLOT( addComposerPicture( QgsComposerPicture* ) ) );
   connect( mView, SIGNAL( composerShapeAdded( QgsComposerShape* ) ), this, SLOT( addComposerShape( QgsComposerShape* ) ) );
+  connect( mView, SIGNAL( composerArrowAdded( QgsComposerArrow* ) ), this, SLOT( addComposerArrow( QgsComposerArrow* ) ) );
   connect( mView, SIGNAL( actionFinished() ), this, SLOT( setSelectionTool() ) );
 }
 
@@ -805,6 +812,14 @@ void QgsComposer::on_mActionAddBasicShape_triggered()
   }
 }
 
+void QgsComposer::on_mActionAddArrow_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::AddArrow );
+  }
+}
+
 void QgsComposer::on_mActionSaveAsTemplate_triggered()
 {
   //show file dialog
@@ -1217,6 +1232,21 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
     showItemOptions( newShape );
   }
 
+  //composer arrows
+  QDomNodeList composerArrowList = composerElem.elementsByTagName( "ComposerArrow" );
+  for ( int i = 0; i < composerArrowList.size(); ++i )
+  {
+    QDomElement currentArrowElem = composerArrowList.at( i ).toElement();
+    QgsComposerArrow* newArrow = new QgsComposerArrow( mComposition );
+    newArrow->readXML( currentArrowElem, doc );
+    addComposerArrow( newArrow );
+    mComposition->addItem( newArrow );
+    mComposition->update();
+    mComposition->clearSelection();
+    newArrow->setSelected( true );
+    showItemOptions( newArrow );
+  }
+
   mComposition->sortZList();
   mView->setComposition( mComposition );
 
@@ -1233,6 +1263,17 @@ void QgsComposer::deleteItems()
     delete it.value();
   }
   mItemWidgetMap.clear();
+}
+
+void QgsComposer::addComposerArrow( QgsComposerArrow* arrow )
+{
+  if ( !arrow )
+  {
+    return;
+  }
+
+  QgsComposerArrowWidget* arrowWidget = new QgsComposerArrowWidget( arrow );
+  mItemWidgetMap.insert( arrow, arrowWidget );
 }
 
 void QgsComposer::addComposerMap( QgsComposerMap* map )

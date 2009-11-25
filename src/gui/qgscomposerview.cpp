@@ -20,6 +20,7 @@
 #include <QKeyEvent>
 
 #include "qgscomposerview.h"
+#include "qgscomposerarrow.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
@@ -29,7 +30,7 @@
 #include "qgscomposershape.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f ) :
-    QGraphicsView( parent ), mShiftKeyPressed( false ), mRubberBandItem( 0 ), mMoveContentItem( 0 )
+    QGraphicsView( parent ), mShiftKeyPressed( false ), mRubberBandItem( 0 ), mRubberBandLineItem( 0 ), mMoveContentItem( 0 )
 {
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
@@ -95,6 +96,15 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       }
       mMoveContentItem = item;
       break;
+    }
+
+    case AddArrow:
+    {
+      mRubberBandStartPos = QPointF( snappedScenePoint.x(), snappedScenePoint.y() );
+      mRubberBandLineItem = new QGraphicsLineItem( snappedScenePoint.x(), snappedScenePoint.y(), snappedScenePoint.x(), snappedScenePoint.y() );
+      mRubberBandLineItem->setZValue( 100 );
+      scene()->addItem( mRubberBandLineItem );
+      scene()->update();
     }
 
     //create rubber band for map and ellipse items
@@ -187,6 +197,18 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       }
       break;
     }
+    case AddArrow:
+    {
+      QPointF scenePoint = mapToScene( e->pos() );
+      QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
+      QgsComposerArrow* composerArrow = new QgsComposerArrow( mRubberBandStartPos, QPointF( snappedScenePoint.x(), snappedScenePoint.y() ), composition() );
+      addComposerArrow( composerArrow );
+      scene()->removeItem( mRubberBandLineItem );
+      delete mRubberBandLineItem;
+      mRubberBandLineItem = 0;
+      emit actionFinished();
+      break;
+    }
 
     case AddShape:
     {
@@ -194,6 +216,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       {
         scene()->removeItem( mRubberBandItem );
         delete mRubberBandItem;
+        mRubberBandItem = 0;
         return;
       }
 
@@ -218,6 +241,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       addComposerMap( composerMap );
       scene()->removeItem( mRubberBandItem );
       delete mRubberBandItem;
+      mRubberBandItem = 0;
       emit actionFinished();
     }
     break;
@@ -250,6 +274,15 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case Select:
         QGraphicsView::mouseMoveEvent( e );
         break;
+
+      case AddArrow:
+      {
+        if ( mRubberBandLineItem )
+        {
+          mRubberBandLineItem->setLine( mRubberBandStartPos.x(), mRubberBandStartPos.y(),  scenePoint.x(),  scenePoint.y() );
+        }
+        break;
+      }
 
       case AddMap:
       case AddShape:
@@ -285,10 +318,13 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
           height = dy;
         }
 
-        mRubberBandItem->setRect( 0, 0, width, height );
-        QTransform t;
-        t.translate( x, y );
-        mRubberBandItem->setTransform( t );
+        if ( mRubberBandItem )
+        {
+          mRubberBandItem->setRect( 0, 0, width, height );
+          QTransform t;
+          t.translate( x, y );
+          mRubberBandItem->setTransform( t );
+        }
         break;
       }
 
@@ -408,6 +444,15 @@ QgsComposition* QgsComposerView::composition()
     }
   }
   return 0;
+}
+
+void QgsComposerView::addComposerArrow( QgsComposerArrow* arrow )
+{
+  composition()->addItem( arrow );
+  emit composerArrowAdded( arrow );
+  scene()->clearSelection();
+  arrow->setSelected( true );
+  emit selectedItemChanged( arrow );
 }
 
 void QgsComposerView::addComposerLabel( QgsComposerLabel* label )
