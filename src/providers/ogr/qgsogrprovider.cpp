@@ -1453,7 +1453,8 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
                                        const QString& format,
                                        const QString& encoding,
                                        QGis::WkbType vectortype,
-                                       const std::list<std::pair<QString, QString> >& attributes )
+                                       const std::list<std::pair<QString, QString> > &attributes,
+                                       const QgsCoordinateReferenceSystem *srs = NULL )
 {
   QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
   OGRSFDriverH driver;
@@ -1473,8 +1474,17 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
 
   //consider spatial reference system
   OGRSpatialReferenceH reference = NULL;
+
   QgsCoordinateReferenceSystem mySpatialRefSys;
-  mySpatialRefSys.validate();
+  if ( srs )
+  {
+    mySpatialRefSys = *srs;
+  }
+  else
+  {
+    mySpatialRefSys.validate();
+  }
+
   QString myWkt = mySpatialRefSys.toWkt();
 
   if ( !myWkt.isNull()  &&  myWkt.length() != 0 )
@@ -1575,6 +1585,22 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
   }
 
   OGR_DS_Destroy( dataSource );
+
+  if ( uri.endsWith( ".shp", Qt::CaseInsensitive ) )
+  {
+    QString layerName = uri.left( uri.length() - 4 );
+    QFile prjFile( layerName + ".prj" );
+    if ( prjFile.open( QIODevice::WriteOnly ) )
+    {
+      QTextStream prjStream( &prjFile );
+      prjStream << myWkt.toLocal8Bit().data() << endl;
+      prjFile.close();
+    }
+    else
+    {
+      QgsDebugMsg( "Couldn't open file " + layerName + ".prj" );
+    }
+  }
 
   QgsDebugMsg( QString( "GDAL Version number %1" ).arg( GDAL_VERSION_NUM ) );
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1310
