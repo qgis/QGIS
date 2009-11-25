@@ -38,84 +38,88 @@ QgsComposerArrowWidget::~QgsComposerArrowWidget()
 
 void QgsComposerArrowWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
 {
-  if ( !mArrow )
-  {
-    return;
-  }
+    if(!mArrow)
+    {
+        return;
+    }
 
-  mArrow->setOutlineWidth( d );
-  mArrow->update();
+    mArrow->setOutlineWidth( d );
+    mArrow->update();
 }
 
 void QgsComposerArrowWidget::on_mArrowHeadWidthSpinBox_valueChanged( double d )
 {
-  if ( !mArrow )
-  {
-    return;
-  }
+    if(!mArrow)
+    {
+        return;
+    }
 
-  mArrow->setArrowHeadWidth( d );
-  mArrow->update();
+    mArrow->setArrowHeadWidth( d );
+    mArrow->update();
 }
 
-void QgsComposerArrowWidget::on_mShowArrowHeadCheckBox_stateChanged( int state )
+void QgsComposerArrowWidget::on_mShowArrowHeadCheckBox_stateChanged ( int state )
 {
-  if ( !mArrow )
-  {
-    return;
-  }
+    if(!mArrow)
+    {
+        return;
+    }
 
-  if ( state == Qt::Checked )
-  {
-    mArrow->setShowArrowMarker( true );
-  }
-  else
-  {
-    mArrow->setShowArrowMarker( false );
-  }
-  mArrow->update();
+    if(state == Qt::Checked)
+    {
+        mArrow->setShowArrowMarker(true);
+    }
+    else
+    {
+        mArrow->setShowArrowMarker(false);
+    }
+    mArrow->update();
 }
 
 void QgsComposerArrowWidget::on_mArrowColorButton_clicked()
 {
-  if ( !mArrow )
-  {
-    return;
-  }
+    if(!mArrow)
+    {
+        return;
+    }
 
-  QColor newColor = QColorDialog::getColor( mArrow->arrowColor(), 0, tr( "Arrow color" ), QColorDialog::ShowAlphaChannel );
-  if ( newColor.isValid() )
-  {
-    mArrow->setArrowColor( newColor );
-    mArrow->update();
-  }
+    #if QT_VERSION >= 0x040500
+    QColor newColor = QColorDialog::getColor(mArrow->arrowColor(), 0, tr("Arrow color"), QColorDialog::ShowAlphaChannel);
+    #else
+    QColor newColor = QColorDialog::getColor(mArrow->arrowColor());
+    #endif
+    if(newColor.isValid())
+    {
+        mArrow->setArrowColor(newColor);
+        mArrow->update();
+    }
 }
 
-void QgsComposerArrowWidget::blockAllSignals( bool block )
+void QgsComposerArrowWidget::blockAllSignals(bool block)
 {
-  mArrowColorButton->blockSignals( block );
-  mShowArrowHeadCheckBox->blockSignals( block );
-  mOutlineWidthSpinBox->blockSignals( block );
-  mArrowHeadWidthSpinBox->blockSignals( block );
+    mArrowColorButton->blockSignals(block);
+    mShowArrowHeadCheckBox->blockSignals(block);
+    mOutlineWidthSpinBox->blockSignals(block);
+    mArrowHeadWidthSpinBox->blockSignals(block);
 }
 
 void QgsComposerArrowWidget::setGuiElementValues()
 {
-  if ( !mArrow )
-  {
-    return;
-  }
+    if(!mArrow)
+    {
+        return;
+    }
 
-  blockAllSignals( true );
-  mOutlineWidthSpinBox->setValue( mArrow->outlineWidth() );
-  mArrowHeadWidthSpinBox->setValue( mArrow->arrowHeadWidth() );
-  if ( mArrow->showArrowMarker() )
-  {
-    mShowArrowHeadCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    mShowArrowHeadCheckBox->setCheckState( Qt::Unchecked );
-  }
-  blockAllSignals( false );
+    blockAllSignals(true);
+    mOutlineWidthSpinBox->setValue(mArrow->outlineWidth());
+    mArrowHeadWidthSpinBox->setValue(mArrow->arrowHeadWidth());
+    if( mArrow->showArrowMarker())
+    {
+        mShowArrowHeadCheckBox->setCheckState(Qt::Checked);
+    }
+    else
+    {
+        mShowArrowHeadCheckBox->setCheckState(Qt::Unchecked);
+    }
+    blockAllSignals(false);
 }
