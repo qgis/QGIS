@@ -21,7 +21,7 @@
 #include "qgscomposeritem.h"
 
 /**An item that draws an arrow between to points*/
-class QgsComposerArrow: public QgsComposerItem
+class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 {
   public:
     QgsComposerArrow( QgsComposition* c );

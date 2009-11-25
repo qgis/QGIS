@@ -87,7 +87,7 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 }
 
-void QgsComposerArrow::QgsComposerArrow::setSceneRect( const QRectF& rectangle )
+void QgsComposerArrow::setSceneRect( const QRectF& rectangle )
 {
   //maintain the relative position of start and stop point in the rectangle
   double startPointXPos = ( mStartPoint.x() - transform().dx() ) / rect().width();
