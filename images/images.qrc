@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/images" >
+    <file>themes/default/mActionAddArrow.png</file>
     <file>themes/newgis/mActionAddGPSLayer.png</file>
     <file>themes/newgis/mActionAddImage.png</file>
     <file>themes/newgis/mActionAddIsland.png</file>
