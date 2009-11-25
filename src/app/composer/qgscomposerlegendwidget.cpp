@@ -198,7 +198,7 @@ void QgsComposerLegendWidget::on_mBoxSpaceSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mMoveDownPushButton_clicked()
+void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
 {
   QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
@@ -248,7 +248,7 @@ void QgsComposerLegendWidget::on_mMoveDownPushButton_clicked()
   }
 }
 
-void QgsComposerLegendWidget::on_mMoveUpPushButton_clicked()
+void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
 {
   QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
@@ -299,7 +299,7 @@ void QgsComposerLegendWidget::on_mMoveUpPushButton_clicked()
   }
 }
 
-void QgsComposerLegendWidget::on_mRemovePushButton_clicked()
+void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
 {
   QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
   if ( !itemModel )
