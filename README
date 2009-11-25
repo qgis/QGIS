@@ -1,4 +1,4 @@
-README for QGIS version 0.9.2 'Ganymede'
+README for QGIS version 1.4 'Enceladus'
 ----------------------------------------
 Quantum GIS (QGIS) is an Open Source Geographic Information System. The
 project was born in May of 2002 and was established as a project on
@@ -45,7 +45,7 @@ installation document in qgis/doc/index.html. The installation document is
 also available as PDF in the same directory.
 
 HELP US --  Please submit bug reports using the QGIS bug tracker at:
-            http://svn.qgis.org/trac
+            http://trac.osgeo.org/qgis/
             When reporting a bug, either login or, if you don't
             have a qgis trac, provide an email address where we can 
             request additional information.
