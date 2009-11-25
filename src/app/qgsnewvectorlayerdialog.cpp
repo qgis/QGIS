@@ -20,7 +20,10 @@
 #include "qgsapplication.h"
 #include "qgisapp.h" // <- for theme icons
 #include "qgslogger.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgenericprojectionselector.h"
 #include <QPushButton>
+
 
 QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
@@ -48,6 +51,12 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
   }
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
+
+  QgsCoordinateReferenceSystem srs;
+  srs.validate();
+
+  mCrsId = srs.srsid();
+  leSpatialRefSys->setText( srs.toProj4() );
 }
 
 QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
@@ -76,6 +85,11 @@ QGis::WkbType QgsNewVectorLayerDialog::selectedType() const
   return QGis::WKBUnknown;
 }
 
+int QgsNewVectorLayerDialog::selectedCrsId() const
+{
+  return mCrsId;
+}
+
 void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
 {
   QString myName = mNameEdit->text();
@@ -98,6 +112,23 @@ void QgsNewVectorLayerDialog::on_mRemoveAttributeButton_clicked()
   {
     mOkButton->setEnabled( false );
   }
+}
+
+void QgsNewVectorLayerDialog::on_pbnChangeSpatialRefSys_clicked()
+{
+  QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
+  mySelector->setMessage();
+  mySelector->setSelectedCrsId( pbnChangeSpatialRefSys->text().toInt() );
+  if ( mySelector->exec() )
+  {
+    mCrsId = mySelector->selectedCrsId();
+    leSpatialRefSys->setText( mySelector->selectedProj4String() );
+  }
+  else
+  {
+    QApplication::restoreOverrideCursor();
+  }
+  delete mySelector;
 }
 
 void QgsNewVectorLayerDialog::attributes( std::list<std::pair<QString, QString> >& at ) const

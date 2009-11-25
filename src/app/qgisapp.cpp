@@ -1802,11 +1802,11 @@ void QgisApp::setupConnections()
   connect( mActionRedo, SIGNAL( triggered() ), mUndoWidget, SLOT( redo() ) );
   connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
 
+  // Monitor change of project path
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
            this, SLOT( projectChanged( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( projectChanged( QDomDocument & ) ) );
-
 }
 
 void QgisApp::createCanvas()
@@ -3209,16 +3209,15 @@ void QgisApp::newVectorLayer()
     return;
   }
 
-  QGis::WkbType geometrytype;
-  QString fileformat;
-
   QgsNewVectorLayerDialog geomDialog( this );
   if ( geomDialog.exec() == QDialog::Rejected )
   {
     return;
   }
-  geometrytype = geomDialog.selectedType();
-  fileformat = geomDialog.selectedFileFormat();
+
+  QGis::WkbType geometrytype = geomDialog.selectedType();
+  QString fileformat = geomDialog.selectedFileFormat();
+  int crsId = geomDialog.selectedCrsId();
   QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
 
   std::list<std::pair<QString, QString> > attributes;
@@ -3286,27 +3285,14 @@ void QgisApp::newVectorLayer()
     QgsDebugMsg( "ogr provider loaded" );
 
     typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType,
-        const std::list<std::pair<QString, QString> >& );
+        const std::list<std::pair<QString, QString> >&, const QgsCoordinateReferenceSystem * );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )
     {
-#if 0
-      if ( geometrytype == QGis::WKBPoint )
-      {
-        createEmptyDataSource( fileName, fileformat, enc, QGis::WKBPoint, attributes );
-      }
-      else if ( geometrytype == QGis::WKBLineString )
-      {
-        createEmptyDataSource( fileName, fileformat, enc, QGis::WKBLineString, attributes );
-      }
-      else if ( geometrytype == QGis::WKBPolygon )
-      {
-        createEmptyDataSource( fileName, fileformat, enc, QGis::WKBPolygon, attributes );
-      }
-#endif
       if ( geometrytype != QGis::WKBUnknown )
       {
-        createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes );
+        QgsCoordinateReferenceSystem srs( crsId, QgsCoordinateReferenceSystem::InternalCrsId );
+        createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, &srs );
       }
       else
       {

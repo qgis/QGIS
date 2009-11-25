@@ -95,12 +95,27 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   }
 
   // datasource created, now create the output layer
-  QString layerName = shapefileName.left( shapefileName.indexOf( ".shp" ) );
+  QString layerName = shapefileName.left( shapefileName.lastIndexOf( ".shp", Qt::CaseInsensitive ) );
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>( geometryType );
   mLayer = OGR_DS_CreateLayer( mDS, QFile::encodeName( layerName ).data(), ogrRef, wkbType, NULL );
 
   if ( srs )
   {
+    if ( shapefileName != layerName )
+    {
+      QFile prjFile( layerName + ".prj" );
+      if ( prjFile.open( QIODevice::WriteOnly ) )
+      {
+        QTextStream prjStream( &prjFile );
+        prjStream << srs->toWkt().toLocal8Bit().data() << endl;
+        prjFile.close();
+      }
+      else
+      {
+        QgsDebugMsg( "Couldn't open file " + layerName + ".prj" );
+      }
+    }
+
     OSRDestroySpatialReference( ogrRef );
   }
 
@@ -344,8 +359,8 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
     // This means we shouldn't transform, use source CRS as output (if defined)
     outputCRS = &layer->srs();
   }
-  QgsVectorFileWriter* writer = new QgsVectorFileWriter( shapefileName,
-      fileEncoding, provider->fields(), provider->geometryType(), outputCRS );
+  QgsVectorFileWriter* writer =
+    new QgsVectorFileWriter( shapefileName, fileEncoding, provider->fields(), provider->geometryType(), outputCRS );
 
   // check whether file creation was successful
   WriterError err = writer->hasError();
@@ -393,26 +408,6 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   {
     delete ct;
   }
-
-  // Ohh, a great Hack-fest starts!
-  // Overwrite the .prj file created by QGsVectorFileWrite().
-  // This might break progrmas that relies on ESRI style .prf-files.
-  // The 'CT-params' (e.g. +towgs84) does not get stripped in this way
-  QRegExp regExp( ".shp$" );
-  QString prjName = shapefileName;
-  prjName.replace( regExp, QString( "" ) );
-  prjName.append( QString( ".prj" ) );
-  QFile prjFile( prjName );
-
-  if ( !prjFile.open( QIODevice::WriteOnly ) )
-  {
-    QgsDebugMsg( "Couldn't open file " + prjName );
-    return NoError; // For now
-  }
-
-  QTextStream prjStream( & prjFile );
-  prjStream << destCRS->toWkt() << endl;
-  prjFile.close();
 
   return NoError;
 }

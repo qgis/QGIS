@@ -14768,8 +14768,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="245"/>
-        <source>Removed selected attribute</source>
-        <translation>Gewähltes Attribute gelöscht</translation>
+        <source>Remove selected attribute</source>
+        <translation type="unfinished">Gewähltes Attribut löschen</translation>
     </message>
 </context>
 <context>
