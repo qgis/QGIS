@@ -73,6 +73,7 @@ SET(QGIS_APP_SRCS
   qgsquerybuilder.cpp
 
   composer/qgscomposer.cpp
+  composer/qgscomposerarrowwidget.cpp
   composer/qgscomposeritemwidget.cpp
   composer/qgscomposerlabelwidget.cpp
   composer/qgscomposerpicturewidget.cpp
@@ -171,6 +172,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsquerybuilder.h
 
   composer/qgscomposer.h
+  composer/qgscomposerarrowwidget.h
   composer/qgscomposeritemwidget.h
   composer/qgscomposerlabelwidget.h
   composer/qgscomposerlegendwidget.h

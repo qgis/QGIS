@@ -24,6 +24,7 @@ class QKeyEvent;
 class QMainWindow;
 class QMouseEvent;
 class QgsComposition;
+class QgsComposerArrow;
 class QgsComposerItem;
 class QgsComposerLabel;
 class QgsComposerLegend;
@@ -49,6 +50,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     enum Tool
     {
       Select = 0,      // Select/Move item
+      AddArrow,         //add arrow
       AddMap,          // add new map
       AddLegend, // add vector legend
       AddLabel,        // add label
@@ -74,6 +76,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Returns the composition or 0 in case of error*/
     QgsComposition* composition();
 
+    /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerArrow( QgsComposerArrow* arrow );
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerLabel( QgsComposerLabel* label );
     /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
@@ -107,6 +111,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QgsComposerView::Tool mCurrentTool;
     /**Rubber band item*/
     QGraphicsRectItem* mRubberBandItem;
+    /**Rubber band item for arrows*/
+    QGraphicsLineItem* mRubberBandLineItem;
     /**Item to move content*/
     QgsComposerItem* mMoveContentItem;
     /**Start position of content move*/
@@ -121,7 +127,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( const QgsComposerItem* selected );
-    /**Ist emittted when new composer label has been added to the view*/
+    /**Is emitted when new composer arrow has been added to the view*/
+    void composerArrowAdded( QgsComposerArrow* arrow );
+    /**Is emitted when new composer label has been added to the view*/
     void composerLabelAdded( QgsComposerLabel* label );
     /**Is emitted when new composer map has been added to the view*/
     void composerMapAdded( QgsComposerMap* map );

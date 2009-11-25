@@ -70,6 +70,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerundocommand.cpp
   qgsvectoroverlay.cpp
 
+  composer/qgscomposerarrow.cpp
   composer/qgscomposeritem.cpp
   composer/qgscomposeritemgroup.cpp
   composer/qgscomposerlabel.cpp

@@ -22,6 +22,7 @@
 #include "qgscontexthelp.h"
 
 class QgisApp;
+class QgsComposerArrow;
 class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerMap;
@@ -128,6 +129,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Select item
     void on_mActionSelectMoveItem_triggered();
 
+    //! Add arrow
+    void on_mActionAddArrow_triggered();
+
     //! Add new map
     void on_mActionAddNewMap_triggered();
 
@@ -192,6 +196,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Save window state
     void saveWindowState();
+
+    /**Add a composer arrow to the item/widget map and crete a configuration widget for it*/
+    void addComposerArrow( QgsComposerArrow* arrow );
 
     /**Add a composer map to the item/widget map and creates a configuration widget for it*/
     void addComposerMap( QgsComposerMap* map );

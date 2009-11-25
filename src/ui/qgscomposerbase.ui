@@ -170,6 +170,7 @@
    <addaction name="mActionAddNewLegend"/>
    <addaction name="mActionAddNewScalebar"/>
    <addaction name="mActionAddBasicShape"/>
+   <addaction name="mActionAddArrow"/>
    <addaction name="mActionSelectMoveItem"/>
    <addaction name="mActionMoveItemContent"/>
    <addaction name="mActionGroupItems"/>
@@ -450,6 +451,14 @@
    </property>
    <property name="text">
     <string>Add Basic Shape</string>
+   </property>
+  </action>
+  <action name="mActionAddArrow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add arrow</string>
    </property>
   </action>
  </widget>
