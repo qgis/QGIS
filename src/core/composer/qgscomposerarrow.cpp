@@ -25,16 +25,14 @@
 #include <math.h>
 #endif
 
-QgsComposerArrow::QgsComposerArrow( QgsComposition* c ): QgsComposerItem( c ), mStartPoint( 0, 0 ), mStopPoint( 0, 0 ), mArrowColor( QColor( 0, 0, 0 ) )
+QgsComposerArrow::QgsComposerArrow( QgsComposition* c ): QgsComposerItem( c ), mStartPoint( 0, 0 ), mStopPoint( 0, 0 ), mMarkerMode( DefaultMarker ), mArrowColor( QColor( 0, 0, 0 ) )
 {
   initGraphicsSettings();
 }
 
 QgsComposerArrow::QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c ): QgsComposerItem( c ), mStartPoint( startPoint ), \
-    mStopPoint( stopPoint ), mArrowColor( QColor( 0, 0, 0 ) )
+    mStopPoint( stopPoint ), mMarkerMode( DefaultMarker ), mArrowColor( QColor( 0, 0, 0 ) )
 {
-  //setStartMarker( "/home/marco/src/qgis/images/svg/north_arrows/NorthArrow11.svg" );
-  //setEndMarker( "/home/marco/src/qgis/images/svg/north_arrows/NorthArrow11.svg" );
   initGraphicsSettings();
   adaptItemSceneRect();
 }
@@ -49,7 +47,9 @@ void QgsComposerArrow::initGraphicsSettings()
   setArrowHeadWidth( 4 );
   mPen.setColor( QColor( 0, 0, 0 ) );
   mPen.setWidthF( 1 );
-  mShowArrowMarker = true;
+
+  //setStartMarker( "/home/marco/src/qgis/images/svg/north_arrows/NorthArrow11.svg" );
+  //setEndMarker( "/home/marco/src/qgis/images/svg/north_arrows/NorthArrow11.svg" );
 
   //set composer item brush and pen to transparent white by default
   setPen( QPen( QColor( 255, 255, 255, 0 ) ) );
@@ -73,11 +73,14 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   painter->setBrush( QBrush( mArrowColor ) );
   painter->drawLine( QPointF( mStartPoint.x() - transform().dx(), mStartPoint.y() - transform().dy() ), QPointF( mStopPoint.x() - transform().dx(), mStopPoint.y() - transform().dy() ) );
 
-  if ( mShowArrowMarker )
+  if ( mMarkerMode == DefaultMarker )
   {
     drawHardcodedMarker( painter, EndMarker );
-    //drawSVGMarker( painter, StartMarker, mStartMarkerFile );
-    //drawSVGMarker( painter, EndMarker, mEndMarkerFile );
+  }
+  else if ( mMarkerMode == SVGMarker )
+  {
+    drawSVGMarker( painter, StartMarker, mStartMarkerFile );
+    drawSVGMarker( painter, EndMarker, mEndMarkerFile );
   }
 
   drawFrame( painter );
@@ -155,9 +158,19 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
 
   //prepare paint device
   int dpi = ( p->device()->logicalDpiX() + p->device()->logicalDpiY() ) / 2;
+  double viewScaleFactor = horizontalViewScaleFactor();
   int imageWidth = mArrowHeadWidth / 25.4 * dpi;
   int imageHeight = arrowHeadHeight / 25.4 * dpi;
+
+  //make nicer preview
+  if ( mComposition && mComposition->plotStyle() == QgsComposition::Preview )
+  {
+    imageWidth *= std::min( viewScaleFactor, 10.0 );
+    imageHeight *= std::min( viewScaleFactor, 10.0 );
+  }
   QImage markerImage( imageWidth, imageHeight, QImage::Format_ARGB32 );
+  QColor markerBG( 255, 255, 255, 0 ); //transparent white background
+  markerImage.fill( markerBG.rgba() );
 
   QPointF imageFixPoint;
   imageFixPoint.setX( mArrowHeadWidth / 2.0 );
@@ -202,8 +215,8 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
   }
   QPointF rotatedFixPoint;
   double angleRad = angle / 180 * M_PI;
-  rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * sin( angleRad ) );
-  rotatedFixPoint.setY( fixPoint.x() * -sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
+  rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
+  rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
 
 
   QPainter imagePainter( &markerImage );
@@ -275,12 +288,8 @@ void QgsComposerArrow::setOutlineWidth( double width )
 void QgsComposerArrow::setArrowHeadWidth( double width )
 {
   mArrowHeadWidth = width;
-  adaptItemSceneRect();
-}
-
-void QgsComposerArrow::setShowArrowMarker( bool show )
-{
-  mShowArrowMarker = show;
+  setStartMarker( mStartMarkerFile );
+  setEndMarker( mEndMarkerFile );
   adaptItemSceneRect();
 }
 
@@ -290,15 +299,20 @@ void QgsComposerArrow::adaptItemSceneRect()
   QRectF rect = QRectF( std::min( mStartPoint.x(), mStopPoint.x() ), std::min( mStartPoint.y(), mStopPoint.y() ), \
                         fabs( mStopPoint.x() - mStartPoint.x() ), fabs( mStopPoint.y() - mStartPoint.y() ) );
   double enlarge;
-  if ( mShowArrowMarker )
+  if ( mMarkerMode == DefaultMarker )
+  {
+    enlarge == mPen.widthF() / 2.0 + mArrowHeadWidth / 2.0;
+  }
+  else if ( mMarkerMode == NoMarker )
+  {
+    enlarge = mPen.widthF() / 2.0;
+  }
+  else if ( mMarkerMode == SVGMarker )
   {
     double maxArrowHeight = std::max( mStartArrowHeadHeight, mStopArrowHeadHeight );
     enlarge = mPen.widthF() / 2 + std::max( mArrowHeadWidth / 2.0, maxArrowHeight / 2.0 );
   }
-  else
-  {
-    enlarge = mPen.widthF() / 2.0;
-  }
+
   rect.adjust( -enlarge, -enlarge, enlarge, enlarge );
   QgsComposerItem::setSceneRect( rect );
 }
@@ -307,8 +321,10 @@ bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerArrowElem = doc.createElement( "ComposerArrow" );
   composerArrowElem.setAttribute( "outlineWidth", outlineWidth() );
-  composerArrowElem.setAttribute( "showArrowMarker", mShowArrowMarker );
   composerArrowElem.setAttribute( "arrowHeadWidth", mArrowHeadWidth );
+  composerArrowElem.setAttribute( "markerMode", mMarkerMode );
+  composerArrowElem.setAttribute( "startMarkerFile", mStartMarkerFile );
+  composerArrowElem.setAttribute( "endMarkerFile", mEndMarkerFile );
 
   //arrow color
   QDomElement arrowColorElem = doc.createElement( "ArrowColor" );
@@ -336,9 +352,11 @@ bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
 bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  mShowArrowMarker = itemElem.attribute( "showArrowMarker", "1" ).toInt();
   mArrowHeadWidth = itemElem.attribute( "arrowHeadWidth", "2.0" ).toDouble();
   mPen.setWidthF( itemElem.attribute( "outlineWidth", "1.0" ).toDouble() );
+  setStartMarker( itemElem.attribute( "startMarkerFile", "" ) );
+  setEndMarker( itemElem.attribute( "endMarkerFile", "" ) );
+  mMarkerMode = QgsComposerArrow::MarkerMode( itemElem.attribute( "markerMode", "0" ).toInt() );
 
   //arrow color
   QDomNodeList arrowColorList = itemElem.elementsByTagName( "ArrowColor" );

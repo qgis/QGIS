@@ -34,12 +34,22 @@ class QgsComposerArrowWidget: public QWidget, private Ui::QgsComposerArrowWidget
 
     void blockAllSignals( bool block );
     void setGuiElementValues();
+    QButtonGroup* mRadioButtonGroup;
+
+    /**Enables / disables the SVG line inputs*/
+    void enableSvgInputElements( bool enable );
 
   private slots:
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mArrowHeadWidthSpinBox_valueChanged( double d );
-    void on_mShowArrowHeadCheckBox_stateChanged( int state );
     void on_mArrowColorButton_clicked();
+    void on_mDefaultMarkerRadioButton_toggled( bool toggled );
+    void on_mNoMarkerRadioButton_toggled( bool toggled );
+    void on_mSvgMarkerRadioButton_toggled( bool toggled );
+    void on_mStartMarkerLineEdit_textChanged( const QString & text );
+    void on_mEndMarkerLineEdit_textChanged( const QString & text );
+    void on_mStartMarkerToolButton_clicked();
+    void on_mEndMarkerToolButton_clicked();
 };
 
 #endif // QGSCOMPOSERARROWWIDGET_H
