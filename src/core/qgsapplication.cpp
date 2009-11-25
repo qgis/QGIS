@@ -137,7 +137,7 @@ const QString QgsApplication::activeThemePath()
 */
 void QgsApplication::setThemeName( const QString theThemeName )
 {
-  QString myPath = mPkgDataPath + "/themes/" + theThemeName + "/";
+  QString myPath = ":/images/themes/" + theThemeName + "/";
   //check it exists and if not roll back to default theme
   if ( QFile::exists( myPath ) )
   {
