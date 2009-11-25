@@ -24,6 +24,14 @@
 class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 {
   public:
+
+    enum MarkerMode
+    {
+      DefaultMarker,
+      NoMarker,
+      SVGMarker
+    };
+
     QgsComposerArrow( QgsComposition* c );
     QgsComposerArrow( const QPointF& startPoint, const QPointF& stopPoint, QgsComposition* c );
     ~QgsComposerArrow();
@@ -42,13 +50,15 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     double outlineWidth() const {return mPen.widthF();}
 
     void setStartMarker( const QString& svgPath );
+    QString startMarker() const {return mStartMarkerFile;}
     void setEndMarker( const QString& svgPath );
-
-    bool showArrowMarker() const { return mShowArrowMarker;}
-    void setShowArrowMarker( bool show );
+    QString endMarker() const {return mEndMarkerFile;}
 
     QColor arrowColor() const { return mArrowColor; }
     void setArrowColor( const QColor& c ) { mArrowColor = c; }
+
+    MarkerMode markerMode() const { return mMarkerMode;}
+    void setMarkerMode( MarkerMode mode ) {mMarkerMode = mode;}
 
     /** stores state in Dom node
     * @param node is Dom node corresponding to 'Composer' tag
@@ -85,16 +95,18 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QString mStartMarkerFile;
     /**Path to the end marker file*/
     QString mEndMarkerFile;
-
-    /**True if arrow head marker is drawn*/
-    bool mShowArrowMarker;
+    /**Default marker, no marker or svg marker*/
+    MarkerMode mMarkerMode;
     QColor mArrowColor;
+
+
 
     /**Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the outline.
         Needs to be called whenever the arrow width/height, the outline with or the endpoints are changed*/
     void adaptItemSceneRect();
-
+    /**Draws the default marker at the line end*/
     void drawHardcodedMarker( QPainter* p, MarkerType type );
+    /**Draws a user-defined marker (must be an svg file)*/
     void drawSVGMarker( QPainter* p, MarkerType type, const QString& markerPath );
     /**Calculates arrow angle (for marker rotation)*/
     double arrowAngle() const;
