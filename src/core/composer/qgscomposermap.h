@@ -381,15 +381,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QPointF mapToItemCoords( const QPointF& mapCoords ) const;
     /**Returns the item border of a point (in item coordinates)*/
     Border borderForLineCoord( const QPointF& p ) const;
-    /**Rotates a point / vector
-        @param angle rotation angle in degrees, counterclockwise
-        @param x in/out: x coordinate before / after the rotation
-        @param y in/out: y cooreinate before / after the rotation*/
-    void rotate( double angle, double& x, double& y ) const;
-#if 0
-    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
-    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
-#endif //0
 };
 
 #endif

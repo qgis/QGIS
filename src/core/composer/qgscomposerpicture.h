@@ -39,7 +39,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     QString pictureFile() const;
 
     /**Sets this items bound in scene coordinates such that 1 item size units
-       corresponds to 1 scene size unit*/
+       corresponds to 1 scene size unit and resizes the svg symbol / image*/
     void setSceneRect( const QRectF& rectangle );
 
     /** stores state in Dom node
@@ -59,6 +59,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     int rotationMap() const;
     /**True if the rotation is taken from a map item*/
     bool useRotationMap() const {return mRotationMap;}
+
+  public slots:
+    /**Sets the rotation and adapts the item rect*/
+    virtual void setRotation( double r );
 
   private:
 
@@ -94,7 +98,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     QSize mDefaultSvgSize;
     /**Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
     const QgsComposerMap* mRotationMap;
-
+    /**Width of the picture (in mm)*/
+    double mPictureWidth;
+    /**Height of the picture (in mm)*/
+    double mPictureHeight;
 
   signals:
     /**Tell the configuration widget that the settings need to be updated*/

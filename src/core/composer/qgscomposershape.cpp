@@ -26,6 +26,8 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerIt
 QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition ), mShape( Ellipse )
 {
   setSceneRect( QRectF( x, y, width, height ) );
+  mShapeWidth = width;
+  mShapeHeight = height;
   initGraphicsSettings();
 }
 
@@ -44,7 +46,6 @@ void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   double width = rect().width();
   double height = rect().height();
-  imageSizeConsideringRotation( width, height );
 
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing );
@@ -53,23 +54,23 @@ void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
   painter->rotate( mRotation );
-  painter->translate( -width / 2.0, -height / 2.0 );
+  painter->translate( -mShapeWidth / 2.0, -mShapeHeight / 2.0 );
 
   double halfPenWidth = mPen.widthF() / 2.0;
 
   switch ( mShape )
   {
     case Ellipse:
-      painter->drawEllipse( QRectF( halfPenWidth, halfPenWidth , width - mPen.widthF(), height - mPen.widthF() ) );
+      painter->drawEllipse( QRectF( halfPenWidth, halfPenWidth , mShapeWidth - mPen.widthF(), mShapeHeight - mPen.widthF() ) );
       break;
     case Rectangle:
-      painter->drawRect( QRectF( halfPenWidth, halfPenWidth , width - mPen.widthF(), height - mPen.widthF() ) );
+      painter->drawRect( QRectF( halfPenWidth, halfPenWidth , mShapeWidth - mPen.widthF(), mShapeHeight - mPen.widthF() ) );
       break;
     case Triangle:
       QPolygonF triangle;
-      triangle << QPointF( halfPenWidth, height - halfPenWidth );
-      triangle << QPointF( width - halfPenWidth, height - halfPenWidth );
-      triangle << QPointF( width / 2.0, halfPenWidth );
+      triangle << QPointF( halfPenWidth, mShapeHeight - halfPenWidth );
+      triangle << QPointF( mShapeWidth - halfPenWidth, mShapeHeight - halfPenWidth );
+      triangle << QPointF( mShapeWidth / 2.0, halfPenWidth );
       painter->drawPolygon( triangle );
       break;
   }
@@ -89,6 +90,8 @@ bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerShapeElem.setAttribute( "shapeType", mShape );
   composerShapeElem.setAttribute( "outlineWidth", mPen.widthF() );
   composerShapeElem.setAttribute( "transparentFill", mBrush.style() == Qt::NoBrush );
+  composerShapeElem.setAttribute( "shapeWidth", mShapeWidth );
+  composerShapeElem.setAttribute( "shapeHeight", mShapeHeight );
   QDomElement outlineColorElem = doc.createElement( "OutlineColor" );
   outlineColorElem.setAttribute( "red", mPen.color().red() );
   outlineColorElem.setAttribute( "green", mPen.color().green() );
@@ -108,6 +111,8 @@ bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
 bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mShape = QgsComposerShape::Shape( itemElem.attribute( "shapeType", "0" ).toInt() );
+  mShapeWidth = itemElem.attribute( "shapeWidth", "10" ).toDouble();
+  mShapeHeight = itemElem.attribute( "shapeHeight", "10" ).toDouble();
   mPen.setWidthF( itemElem.attribute( "outlineWidth", "0.4" ).toDouble() );
 
   //transparent fill
@@ -214,4 +219,31 @@ void QgsComposerShape::initGraphicsSettings()
   //set composer item brush and pen to transparent white by default
   setPen( QPen( QColor( 255, 255, 255, 0 ) ) );
   setBrush( QBrush( QColor( 255, 255, 255, 0 ) ) );
+}
+
+void QgsComposerShape::setRotation( double r )
+{
+  //adapt rectangle size
+  double width = mShapeWidth;
+  double height = mShapeHeight;
+  sizeChangedByRotation( width, height );
+
+  //adapt scene rect to have the same center and the new width / height
+  double x = transform().dx() + rect().width() / 2.0 - width / 2.0;
+  double y = transform().dy() + rect().height() / 2.0 - height / 2.0;
+  QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
+
+  QgsComposerItem::setRotation( r );
+}
+
+void QgsComposerShape::setSceneRect( const QRectF& rectangle )
+{
+  QgsComposerItem::setSceneRect( rectangle );
+
+  //consider to change size of the shape if the rectangle changes width and/or height
+  double newShapeWidth = rectangle.width();
+  double newShapeHeight = rectangle.height();
+  imageSizeConsideringRotation( newShapeWidth, newShapeHeight );
+  mShapeWidth = newShapeWidth;
+  mShapeHeight = newShapeHeight;
 }

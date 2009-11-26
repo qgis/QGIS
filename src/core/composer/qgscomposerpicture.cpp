@@ -30,11 +30,12 @@
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ): QgsComposerItem( composition ), mMode( Unknown ), \
     mSvgCacheUpToDate( false ), mCachedDpi( 0 ), mCachedRotation( 0 ), mCachedViewScaleFactor( -1 ), mRotationMap( 0 )
 {
+  mPictureWidth = rect().width();
 }
 
 QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mMode( Unknown ), mSvgCacheUpToDate( false ), mCachedRotation( 0 ), mCachedViewScaleFactor( -1 ), mRotationMap( 0 )
 {
-
+  mPictureHeight = rect().height();
 }
 
 QgsComposerPicture::~QgsComposerPicture()
@@ -61,8 +62,8 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
   if ( mMode != Unknown )
   {
-    double rectPixelWidth = rect().width() * newDpi / 25.4;
-    double rectPixelHeight = rect().height() * newDpi / 25.4;
+    double rectPixelWidth = /*rect().width()*/mPictureWidth * newDpi / 25.4;
+    double rectPixelHeight = /*rect().height()*/ mPictureHeight * newDpi / 25.4;
     QRectF boundRect;
     if ( mMode == SVG )
     {
@@ -75,11 +76,8 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
 
     double boundRectWidthMM = boundRect.width() / newDpi * 25.4;
     double boundRectHeightMM = boundRect.height() / newDpi * 25.4;
-    double rotatedBoundImageWidth = boundRect.width();
-    double rotatedBoundImageHeight = boundRect.height();
-    imageSizeConsideringRotation( rotatedBoundImageWidth, rotatedBoundImageHeight );
-    double rotatedBoundImageWidthMM = rotatedBoundImageWidth / newDpi * 25.4;
-    double rotatedBoundImageHeightMM = rotatedBoundImageHeight / newDpi * 25.4;
+    double boundImageWidth = boundRect.width();
+    double boundImageHeight = boundRect.height();
 
     if ( mMode == SVG )
     {
@@ -88,20 +86,20 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
         //make nicer preview
         if ( mComposition && mComposition->plotStyle() == QgsComposition::Preview )
         {
-          rotatedBoundImageWidth *= std::min( viewScaleFactor, 10.0 );
-          rotatedBoundImageHeight *= std::min( viewScaleFactor, 10.0 );
+          boundImageWidth *= std::min( viewScaleFactor, 10.0 );
+          boundImageHeight *= std::min( viewScaleFactor, 10.0 );
         }
-        mImage = QImage( rotatedBoundImageWidth, rotatedBoundImageHeight, QImage::Format_ARGB32 );
+        mImage = QImage( boundImageWidth, boundImageHeight, QImage::Format_ARGB32 );
         updateImageFromSvg();
       }
     }
 
     painter->save();
-    painter->translate( boundRectWidthMM / 2.0, boundRectHeightMM / 2.0 );
+    painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
     painter->rotate( mRotation );
-    painter->translate( -rotatedBoundImageWidthMM / 2.0, -rotatedBoundImageHeightMM / 2.0 );
+    painter->translate( -boundRectWidthMM / 2.0, -boundRectHeightMM / 2.0 );
 
-    painter->drawImage( QRectF( 0, 0, rotatedBoundImageWidthMM,  rotatedBoundImageHeightMM ), mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
+    painter->drawImage( QRectF( 0, 0, boundRectWidthMM,  boundRectHeightMM ), mImage, QRectF( 0, 0, mImage.width(), mImage.height() ) );
 
     painter->restore();
   }
@@ -186,6 +184,24 @@ QRectF QgsComposerPicture::boundedImageRect( double deviceWidth, double deviceHe
 QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeight )
 {
   double imageToSvgRatio;
+  if ( deviceWidth / mDefaultSvgSize.width() > deviceHeight / mDefaultSvgSize.height() )
+  {
+    imageToSvgRatio = deviceHeight / mDefaultSvgSize.height();
+    double width = mDefaultSvgSize.width() * imageToSvgRatio;
+    return QRectF( 0, 0, width, deviceHeight );
+  }
+  else
+  {
+    imageToSvgRatio = deviceWidth / mDefaultSvgSize.width();
+    double height = mDefaultSvgSize.height() * imageToSvgRatio;
+    return QRectF( 0, 0, deviceWidth, height );
+  }
+}
+
+#if 0
+QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeight )
+{
+  double imageToSvgRatio;
   if ( deviceWidth / mDefaultSvgSize.width() < deviceHeight / mDefaultSvgSize.height() )
   {
     imageToSvgRatio = deviceWidth / mDefaultSvgSize.width();
@@ -199,6 +215,7 @@ QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeig
     return QRectF( 0, 0, width, deviceHeight );
   }
 }
+#endif //0
 
 void QgsComposerPicture::updateImageFromSvg()
 {
@@ -216,7 +233,30 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 {
   mSvgCacheUpToDate = false;
   QgsComposerItem::setSceneRect( rectangle );
+
+  //consider to change size of the shape if the rectangle changes width and/or height
+  double newPictureWidth = rectangle.width();
+  double newPictureHeight = rectangle.height();
+  imageSizeConsideringRotation( newPictureWidth, newPictureHeight );
+  mPictureWidth = newPictureWidth;
+  mPictureHeight = newPictureHeight;
+
   emit settingsChanged();
+}
+
+void QgsComposerPicture::setRotation( double r )
+{
+  //adapt rectangle size
+  double width = mPictureWidth;
+  double height = mPictureHeight;
+  sizeChangedByRotation( width, height );
+
+  //adapt scene rect to have the same center and the new width / height
+  double x = transform().dx() + rect().width() / 2.0 - width / 2.0;
+  double y = transform().dy() + rect().height() / 2.0 - height / 2.0;
+  QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
+
+  QgsComposerItem::setRotation( r );
 }
 
 void QgsComposerPicture::setRotationMap( int composerMapId )
@@ -260,6 +300,8 @@ bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
   }
   QDomElement composerPictureElem = doc.createElement( "ComposerPicture" );
   composerPictureElem.setAttribute( "file", QgsProject::instance()->writePath( mSourceFile.fileName() ) );
+  composerPictureElem.setAttribute( "pictureWidth", mPictureWidth );
+  composerPictureElem.setAttribute( "pictureHeight", mPictureHeight );
   if ( !mRotationMap )
   {
     composerPictureElem.setAttribute( "mapId", -1 );
@@ -280,6 +322,9 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
   {
     return false;
   }
+
+  mPictureWidth = itemElem.attribute( "pictureWidth", "10" ).toDouble();
+  mPictureHeight = itemElem.attribute( "pictureHeight", "10" ).toDouble();
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( composerItemList.size() > 0 )

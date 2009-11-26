@@ -948,3 +948,50 @@ QPointF QgsComposerItem::pointOnLineWithDistance( const QPointF& startPoint, con
   double scaleFactor = distance / length;
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
+
+void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
+{
+  if ( mRotation == 0.0 )
+  {
+    return;
+  }
+
+  //vector to p1
+  double x1 = -width / 2.0;
+  double y1 = -height / 2.0;
+  rotate( mRotation, x1, y1 );
+  //vector to p2
+  double x2 = width / 2.0;
+  double y2 = -height / 2.0;
+  rotate( mRotation, x2, y2 );
+  //vector to p3
+  double x3 = width / 2.0;
+  double y3 = height / 2.0;
+  rotate( mRotation, x3, y3 );
+  //vector to p4
+  double x4 = -width / 2.0;
+  double y4 = height / 2.0;
+  rotate( mRotation, x4, y4 );
+
+  //double midpoint
+  QPointF midpoint( width / 2.0, height / 2.0 );
+
+  QPolygonF rotatedRectPoly;
+  rotatedRectPoly << QPointF( midpoint.x() + x1, midpoint.y() + y1 );
+  rotatedRectPoly << QPointF( midpoint.x() + x2, midpoint.y() + y2 );
+  rotatedRectPoly << QPointF( midpoint.x() + x3, midpoint.y() + y3 );
+  rotatedRectPoly << QPointF( midpoint.x() + x4, midpoint.y() + y4 );
+  QRectF boundingRect = rotatedRectPoly.boundingRect();
+  width = boundingRect.width();
+  height = boundingRect.height();
+}
+
+void QgsComposerItem::rotate( double angle, double& x, double& y ) const
+{
+  double rotToRad = angle * M_PI / 180.0;
+  double xRot, yRot;
+  xRot = x * cos( rotToRad ) - y * sin( rotToRad );
+  yRot = x * sin( rotToRad ) + y * cos( rotToRad );
+  x = xRot;
+  y = yRot;
+}
