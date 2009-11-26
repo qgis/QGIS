@@ -298,10 +298,10 @@ void QgsComposerArrow::adaptItemSceneRect()
   //rectangle containing start and end point
   QRectF rect = QRectF( std::min( mStartPoint.x(), mStopPoint.x() ), std::min( mStartPoint.y(), mStopPoint.y() ), \
                         fabs( mStopPoint.x() - mStartPoint.x() ), fabs( mStopPoint.y() - mStartPoint.y() ) );
-  double enlarge;
+  double enlarge = 0;
   if ( mMarkerMode == DefaultMarker )
   {
-    enlarge == mPen.widthF() / 2.0 + mArrowHeadWidth / 2.0;
+    enlarge = mPen.widthF() / 2.0 + mArrowHeadWidth / 2.0;
   }
   else if ( mMarkerMode == NoMarker )
   {
