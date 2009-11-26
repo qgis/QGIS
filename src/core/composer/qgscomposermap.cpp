@@ -1383,24 +1383,3 @@ QgsComposerMap::Border QgsComposerMap::borderForLineCoord( const QPointF& p ) co
     return Bottom;
   }
 }
-
-void QgsComposerMap::rotate( double angle, double& x, double& y ) const
-{
-  double rotToRad = angle * M_PI / 180.0;
-  double xRot, yRot;
-  xRot = x * cos( rotToRad ) - y * sin( rotToRad );
-  yRot = x * sin( rotToRad ) + y * cos( rotToRad );
-  x = xRot;
-  y = yRot;
-}
-
-#if 0
-QPointF QgsComposerMap::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const
-{
-  double dx = directionPoint.x() - startPoint.x();
-  double dy = directionPoint.y() - startPoint.y();
-  double length = sqrt( dx * dx + dy * dy );
-  double scaleFactor = distance / length;
-  return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
-}
-#endif //0

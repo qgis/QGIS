@@ -172,7 +172,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     double rotation() const {return mRotation;}
 
   public slots:
-    void setRotation( double r );
+    virtual void setRotation( double r );
 
   protected:
 
@@ -245,12 +245,21 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     @note: this function was introduced in version 1.2*/
     double horizontalViewScaleFactor() const;
 
+    //some utility functions
+
     /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation*/
     bool imageSizeConsideringRotation( double& width, double& height ) const;
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+    /**Calculates width / height of the bounding box of a rotated rectangle (mRotation)*/
+    void sizeChangedByRotation( double& width, double& height );
+    /**Rotates a point / vector
+        @param angle rotation angle in degrees, counterclockwise
+        @param x in/out: x coordinate before / after the rotation
+        @param y in/out: y cooreinate before / after the rotation*/
+    void rotate( double angle, double& x, double& y ) const;
 
   signals:
     /**Is emitted on rotation change to notify north arrow pictures*/

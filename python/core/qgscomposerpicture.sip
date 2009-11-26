@@ -41,6 +41,9 @@ class QgsComposerPicture: QgsComposerItem
     /**True if the rotation is taken from a map item*/
     bool useRotationMap() const;
 
+    public slots:
+    virtual void setRotation( double r );
+
 
   signals:
     /**Tell the configuration widget that the settings need to be updated*/

@@ -23,6 +23,7 @@
 /**A composer items that draws common shapes (ellipse, triangle, rectangle)*/
 class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 {
+    Q_OBJECT
   public:
 
     enum Shape
@@ -62,6 +63,14 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     bool transparentFill() const;
     void setTransparentFill( bool transparent );
 
+    /**Sets this items bound in scene coordinates such that 1 item size units
+     corresponds to 1 scene size unit. Also, the shape is scaled*/
+    void setSceneRect( const QRectF& rectangle );
+
+  public slots:
+    /**Sets item rotation and resizes item bounds such that the shape always has the same size*/
+    virtual void setRotation( double r );
+
 
   private:
     /**Ellipse, rectangle or triangle*/
@@ -70,6 +79,8 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     QPen mPen;
     /**Shape fill*/
     QBrush mBrush;
+    double mShapeWidth;
+    double mShapeHeight;
 
     /**Apply default graphics settings*/
     void initGraphicsSettings();
