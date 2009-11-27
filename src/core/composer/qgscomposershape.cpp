@@ -238,12 +238,17 @@ void QgsComposerShape::setRotation( double r )
 
 void QgsComposerShape::setSceneRect( const QRectF& rectangle )
 {
-  QgsComposerItem::setSceneRect( rectangle );
+  
 
   //consider to change size of the shape if the rectangle changes width and/or height
-  double newShapeWidth = rectangle.width();
-  double newShapeHeight = rectangle.height();
-  imageSizeConsideringRotation( newShapeWidth, newShapeHeight );
-  mShapeWidth = newShapeWidth;
-  mShapeHeight = newShapeHeight;
+  if(rectangle.width() != rect().width() || rectangle.height() != rect().height())
+  {
+	double newShapeWidth = rectangle.width();
+	double newShapeHeight = rectangle.height();
+	imageSizeConsideringRotation( newShapeWidth, newShapeHeight );
+	mShapeWidth = newShapeWidth;
+	mShapeHeight = newShapeHeight;
+  }
+
+  QgsComposerItem::setSceneRect( rectangle );
 }
