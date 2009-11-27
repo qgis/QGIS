@@ -142,11 +142,22 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
   //pal geometry that the current label object refers to
   QgsPALGeometry* referredGeometry = 0;
   QgsOverlayObject* referredOverlayObject = 0;
+  pal::FeaturePart* referredPart = 0;
 
   std::list<pal::LabelPosition*>::iterator labelIt = resultLabelList->begin();
   for ( ; labelIt != resultLabelList->end(); ++labelIt )
   {
-    referredGeometry = dynamic_cast<QgsPALGeometry*>(( *labelIt )->getFeaturePart()->getUserGeometry() );
+    if ( !*labelIt )
+    {
+      continue;
+    }
+
+    referredPart = ( *labelIt )->getFeaturePart();
+    if ( !referredPart )
+    {
+      continue;
+    }
+    referredGeometry = dynamic_cast<QgsPALGeometry*>( referredPart->getUserGeometry() );
     if ( !referredGeometry )
     {
       continue;
@@ -160,8 +171,8 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
     pal::LabelPosition* lp = *labelIt;
 
     //QGIS takes the coordinates of the middle points
-    double x = (lp->getX( 0 ) + lp->getX( 1 ) + lp->getX( 2 ) + lp->getX( 3 ) ) / 4;
-    double y = (lp->getY( 0 ) + lp->getY( 1 ) + lp->getY( 2 ) + lp->getY( 3 ) ) / 4;
+    double x = ( lp->getX( 0 ) + lp->getX( 1 ) + lp->getX( 2 ) + lp->getX( 3 ) ) / 4;
+    double y = ( lp->getY( 0 ) + lp->getY( 1 ) + lp->getY( 2 ) + lp->getY( 3 ) ) / 4;
     referredOverlayObject->addPosition( QgsPoint( x, y ) );
   }
 
