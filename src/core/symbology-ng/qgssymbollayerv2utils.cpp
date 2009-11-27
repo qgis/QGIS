@@ -130,6 +130,7 @@ Qt::BrushStyle QgsSymbolLayerV2Utils::decodeBrushStyle( QString str )
   if ( str == "dense5" ) return Qt::Dense5Pattern;
   if ( str == "dense6" ) return Qt::Dense6Pattern;
   if ( str == "dense7" ) return Qt::Dense7Pattern;
+  if ( str == "no" ) return Qt::NoBrush;
   return Qt::SolidPattern;
 }
 
