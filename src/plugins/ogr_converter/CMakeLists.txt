@@ -52,7 +52,6 @@ INCLUDE_DIRECTORIES (
 )
 
 TARGET_LINK_LIBRARIES(${OGR_CONVERTER_PLUGIN}
-    ${GDAL_LIBRARY}
     qgis_core
     qgis_gui
 )

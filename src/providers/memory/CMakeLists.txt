@@ -10,9 +10,6 @@ INCLUDE_DIRECTORIES(
 ADD_LIBRARY(memoryprovider MODULE ${MEMORY_SRCS})
 
 TARGET_LINK_LIBRARIES(memoryprovider
-  ${QT_QTCORE_LIBRARY} 
-# ${GDAL_LIBRARY}
-#  ${GEOS_LIBRARY}
   qgis_core
 )
 

@@ -1,16 +1,3 @@
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DGUI_EXPORT=__declspec(dllimport)")
-    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllimport)")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("\"-DGUI_EXPORT=__declspec(dllimport)\"")
-    ADD_DEFINITIONS("\"-DCORE_EXPORT=__declspec(dllimport)\"")
-  ENDIF (MSVC)
-ELSE (WIN32)
-  ADD_DEFINITIONS(-DGUI_EXPORT=)
-  ADD_DEFINITIONS(-DCORE_EXPORT=)
-ENDIF (WIN32)
-
 ########################################################
 # Files
 
@@ -48,14 +35,6 @@ SET (evis_MOC_HDRS
 
 SET (evis_RCCS resources/evis.qrc)
 
-SET (QT_USE_QT3SUPPORT FALSE)
-SET (QT_USE_QTGUI TRUE)
-SET (QT_USE_QTSQL TRUE)
-SET (QT_USE_QTSVG TRUE)
-SET (QT_USE_QTXML TRUE)
-SET (QT_USE_QTNETWORK TRUE)
-FIND_PACKAGE(Qt4 REQUIRED)
-INCLUDE( ${QT_USE_FILE} )
 ########################################################
 # Build
 
@@ -83,9 +62,9 @@ INCLUDE_DIRECTORIES(
 )
 
 TARGET_LINK_LIBRARIES(evis
-  ${QT_LIBRARIES}
   qgis_core
   qgis_gui
+  ${QT_QTSQL_LIBRARY}
 )
 
 

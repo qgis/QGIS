@@ -69,24 +69,8 @@ ADD_DEPENDENCIES(qgis_analysis qgis_core)
 
 SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
 
-# because of htonl
-IF (WIN32)
-  SET(PLATFORM_LIBRARIES wsock32)
-  IF (MSVC)
-    #needed for linking to gdal which needs odbc
-    SET(PLATFORM_LIBRARIES ${PLATFORM_LIBRARIES} odbc32 odbccp32)
-  ENDIF (MSVC)
-ENDIF (WIN32)
-
 TARGET_LINK_LIBRARIES(qgis_analysis
   qgis_core
-  ${QT_QTCORE_LIBRARY} 
-  ${QT_QTGUI_LIBRARY} 
-  ${QT_QTMAIN_LIBRARY} 
-  ${PROJ_LIBRARY}
-  ${GEOS_LIBRARY}
-  ${GDAL_LIBRARY}
-  ${PLATFORM_LIBRARIES}
 )
 
 IF (APPLE)
