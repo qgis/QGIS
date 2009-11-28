@@ -19,13 +19,13 @@
 #include "qgsrasterdataprovider.h"
 #include "qgslogger.h"
 
-QgsRasterDataProvider::QgsRasterDataProvider(): mDpi(-1)
+QgsRasterDataProvider::QgsRasterDataProvider(): mDpi( -1 )
 {
 }
 
 
 QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
-    : QgsDataProvider( uri ), mDpi(-1)
+    : QgsDataProvider( uri ), mDpi( -1 )
 {
 }
 

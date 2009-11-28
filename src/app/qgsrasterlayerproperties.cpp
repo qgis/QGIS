@@ -2354,7 +2354,7 @@ void QgsRasterLayerProperties::on_rbtnSingleBand_toggled( bool theState )
 
     if ( cboxColorMap->currentText() == tr( "Pseudocolor" ) )
     {
-      tabPageColormap->setEnabled ( true );
+      tabPageColormap->setEnabled( true );
     }
 
     if ( cboxColorMap->currentText() == tr( "Pseudocolor" ) || cboxColorMap->currentText() == tr( "Color Ramp" ) || cboxColorMap->currentText() == tr( "Freak Out" ) || mRasterLayer->rasterType() == QgsRasterLayer::Palette )

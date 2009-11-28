@@ -29,8 +29,8 @@
 #include <QProgressDialog>
 
 bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
-                                        const QString& shapefileName, bool onlySelectedFeatures,
-                                        QProgressDialog* p )
+                                       const QString& shapefileName, bool onlySelectedFeatures,
+                                       QProgressDialog* p )
 {
   if ( !layerA && !layerB )
   {
@@ -140,7 +140,7 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
 }
 
 void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw,
-                                            QgsVectorLayer* vl, QgsSpatialIndex* index )
+    QgsVectorLayer* vl, QgsSpatialIndex* index )
 {
   QgsGeometry* featureGeometry = f.geometry();
   QgsGeometry* intersectGeometry = 0;

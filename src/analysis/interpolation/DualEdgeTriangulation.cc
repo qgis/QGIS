@@ -28,7 +28,7 @@ DualEdgeTriangulation::~DualEdgeTriangulation()
   //remove all the points
   if ( mPointVector.count() > 0 )
   {
-    for ( int i = 0; i < mPointVector.count();i++ )
+    for ( int i = 0; i < mPointVector.count(); i++ )
     {
       delete mPointVector[i];
     }
@@ -37,7 +37,7 @@ DualEdgeTriangulation::~DualEdgeTriangulation()
   //remove all the HalfEdge
   if ( mHalfEdge.count() > 0 )
   {
-    for ( int i = 0; i < mHalfEdge.count();i++ )
+    for ( int i = 0; i < mHalfEdge.count(); i++ )
     {
       delete mHalfEdge[i];
     }
@@ -48,7 +48,7 @@ void DualEdgeTriangulation::performConsistencyTest()
 {
   QgsDebugMsg( "performing consistency test" );
 
-  for ( int i = 0;i < mHalfEdge.count();i++ )
+  for ( int i = 0; i < mHalfEdge.count(); i++ )
   {
     int a = mHalfEdge[mHalfEdge[i]->getDual()]->getDual();
     int b = mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getNext();
@@ -74,7 +74,7 @@ void DualEdgeTriangulation::addLine( Line3D* line, bool breakline )
     unsigned int i;
     line->goToBegin();
 
-    for ( i = 0;i < line->getSize();i++ )
+    for ( i = 0; i < line->getSize(); i++ )
     {
       line->goToNext();
       actpoint = mDecorator->addPoint( line->getPoint() );
@@ -91,7 +91,7 @@ void DualEdgeTriangulation::addLine( Line3D* line, bool breakline )
       return;
     }
 
-    for ( ;i < line->getSize();i++ )
+    for ( ; i < line->getSize(); i++ )
     {
       line->goToNext();
       currentpoint = mDecorator->addPoint( line->getPoint() );
@@ -407,7 +407,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
   if ( mPointVector.count() < 4 || point == -1 )//at the beginning, mEdgeInside is not defined yet
   {
     //first find pointingedge(an edge pointing to p1)
-    for ( int i = 0;i < mHalfEdge.count();i++ )
+    for ( int i = 0; i < mHalfEdge.count(); i++ )
     {
       if ( mHalfEdge[i]->getPoint() == point )//we found it
       {
@@ -427,7 +427,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
 
       //use the secure and slow method
       //qWarning( "******************warning, using the slow method in baseEdgeOfPoint****************************************" );
-      for ( int i = 0;i < mHalfEdge.count();i++ )
+      for ( int i = 0; i < mHalfEdge.count(); i++ )
       {
         if ( mHalfEdge[i]->getPoint() == point && mHalfEdge[mHalfEdge[i]->getNext()]->getPoint() != -1 )//we found it
         {
@@ -441,7 +441,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
 
     if ( frompoint == -1 || topoint == -1 )//this would cause a crash. Therefore we use the slow method in this case
     {
-      for ( int i = 0;i < mHalfEdge.count();i++ )
+      for ( int i = 0; i < mHalfEdge.count(); i++ )
       {
         if ( mHalfEdge[i]->getPoint() == point && mHalfEdge[mHalfEdge[i]->getNext()]->getPoint() != -1 )//we found it
         {
@@ -752,7 +752,7 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
   bool* control = new bool[mHalfEdge.count()];//controllarray that no edge is painted twice
   bool* control2 = new bool[mHalfEdge.count()];//controllarray for the flat triangles
 
-  for ( unsigned int i = 0;i <= mHalfEdge.count() - 1;i++ )
+  for ( unsigned int i = 0; i <= mHalfEdge.count() - 1; i++ )
   {
     control[i] = false;
     control2[i] = false;
@@ -761,7 +761,7 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
   if ((( xupright - xlowleft ) / width ) > (( yupright - ylowleft ) / height ) )
   {
     double lowerborder = -( height * ( xupright - xlowleft ) / width - yupright );//real world coordinates of the lower widget border. This is useful to know because of the HalfEdge bounding box test
-    for ( unsigned int i = 0;i < mHalfEdge.count() - 1;i++ )
+    for ( unsigned int i = 0; i < mHalfEdge.count() - 1; i++ )
     {
       if ( mHalfEdge[i]->getPoint() == -1 || mHalfEdge[mHalfEdge[i]->getDual()]->getPoint() == -1 )
         {continue;}
@@ -824,7 +824,7 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
   else
   {
     double rightborder = width * ( yupright - ylowleft ) / height + xlowleft;//real world coordinates of the right widget border. This is useful to know because of the HalfEdge bounding box test
-    for ( unsigned int i = 0;i < mHalfEdge.count() - 1;i++ )
+    for ( unsigned int i = 0; i < mHalfEdge.count() - 1; i++ )
     {
       if ( mHalfEdge[i]->getPoint() == -1 || mHalfEdge[mHalfEdge[i]->getDual()]->getPoint() == -1 )
         {continue;}
@@ -1453,7 +1453,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
   //set the flags 'forced' and 'break' to false for every edge and dualedge of 'crossEdges'
   QList<int>::const_iterator iter;
-  for ( iter = crossedEdges.constBegin();iter != crossedEdges.constEnd();++iter )
+  for ( iter = crossedEdges.constBegin(); iter != crossedEdges.constEnd(); ++iter )
   {
     mHalfEdge[( *( iter ) )]->setForced( false );
     mHalfEdge[( *( iter ) )]->setBreak( false );
@@ -1507,7 +1507,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   //finish the polygon on the right side
   QList<int>::const_iterator rightiter;
   int actpointr = p1;
-  for ( rightiter = crossedEdges.constBegin();rightiter != crossedEdges.constEnd();++rightiter )
+  for ( rightiter = crossedEdges.constBegin(); rightiter != crossedEdges.constEnd(); ++rightiter )
   {
     int newpoint = mHalfEdge[mHalfEdge[mHalfEdge[( *rightiter )]->getNext()]->getNext()]->getPoint();
     if ( newpoint != actpointr )
@@ -1527,7 +1527,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   //set the necessary nexts of leftPolygon(exept the first)
   int actedgel = leftPolygon[1];
   leftiter = leftPolygon.constBegin(); leftiter += 2;
-  for ( ;leftiter != leftPolygon.constEnd();++leftiter )
+  for ( ; leftiter != leftPolygon.constEnd(); ++leftiter )
   {
     mHalfEdge[actedgel]->setNext(( *leftiter ) );
     actedgel = ( *leftiter );
@@ -1536,7 +1536,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   //set all the necessary nexts of rightPolygon
   int actedger = rightPolygon[1];
   rightiter = rightPolygon.constBegin(); rightiter += 2;
-  for ( ;rightiter != rightPolygon.constEnd();++rightiter )
+  for ( ; rightiter != rightPolygon.constEnd(); ++rightiter )
   {
     mHalfEdge[actedger]->setNext(( *rightiter ) );
     actedger = ( *( rightiter ) );
@@ -1555,7 +1555,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   triangulatePolygon( &rightPolygon, &freelist, dualfirstedge );
 
   //optimisation of the new edges
-  for ( iter = crossedEdges.begin();iter != crossedEdges.end();++iter )
+  for ( iter = crossedEdges.begin(); iter != crossedEdges.end(); ++iter )
   {
     checkSwap(( *( iter ) ) );
   }
@@ -1598,13 +1598,13 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
     bool swaped = false;//flag which allows to exit the loop
     bool* control = new bool[mHalfEdge.count()];//controlarray
 
-    for ( int i = 0;i <= mHalfEdge.count() - 1;i++ )
+    for ( int i = 0; i <= mHalfEdge.count() - 1; i++ )
     {
       control[i] = false;
     }
 
 
-    for ( int i = 0;i <= mHalfEdge.count() - 1;i++ )
+    for ( int i = 0; i <= mHalfEdge.count() - 1; i++ )
     {
       if ( control[i] == true )//edge has already been examined
       {
@@ -1696,7 +1696,7 @@ void DualEdgeTriangulation::ruppertRefinement()
     stop = true;
     int nhalfedges = mHalfEdge.count();
 
-    for ( int i = 0;i < nhalfedges - 1;i++ )
+    for ( int i = 0; i < nhalfedges - 1; i++ )
     {
       int next = mHalfEdge[i]->getNext();
       int nextnext = mHalfEdge[next]->getNext();
@@ -1721,7 +1721,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   //examine the triangulation for angles below the minimum and insert the edges into angle_edge and edge_angle, except the small angle is between forced segments or convex hull edges
   double angle;//angle between edge i and the consecutive edge
   int p1, p2, p3;//numbers of the triangle points
-  for ( int i = 0;i < mHalfEdge.count() - 1;i++ )
+  for ( int i = 0; i < mHalfEdge.count() - 1; i++ )
   {
     p1 = mHalfEdge[mHalfEdge[i]->getDual()]->getPoint();
     p2 = mHalfEdge[i]->getPoint();
@@ -1753,7 +1753,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   }
 
   //debugging: print out all the angles below the minimum for a test
-  for ( std::multimap<double, int>::const_iterator it = angle_edge.begin();it != angle_edge.end();++it )
+  for ( std::multimap<double, int>::const_iterator it = angle_edge.begin(); it != angle_edge.end(); ++it )
   {
     QgsDebugMsg( QString( "angle: %1" ).arg( it->first ) );
   }
@@ -1812,7 +1812,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 #if 0 //slow version
     int numhalfedges = mHalfEdge.count();//begin slow version
-    for ( int i = 0;i < numhalfedges;i++ )
+    for ( int i = 0; i < numhalfedges; i++ )
     {
       if ( mHalfEdge[i]->getForced() || edgeOnConvexHull( i ) )
       {
@@ -2022,7 +2022,7 @@ void DualEdgeTriangulation::ruppertRefinement()
     evaluateInfluenceRegion( &circumcenter, mHalfEdge[baseedge]->getNext(), &influenceedges );
     evaluateInfluenceRegion( &circumcenter, mHalfEdge[mHalfEdge[baseedge]->getNext()]->getNext(), &influenceedges );
 
-    for ( std::set<int>::iterator it = influenceedges.begin();it != influenceedges.end();++it )
+    for ( std::set<int>::iterator it = influenceedges.begin(); it != influenceedges.end(); ++it )
     {
       if (( mHalfEdge[*it]->getForced() == true || edgeOnConvexHull( *it ) ) && MathUtils::inDiametral( mPointVector[mHalfEdge[*it]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[*it]->getDual()]->getPoint()], &circumcenter ) )
       {
@@ -2221,7 +2221,7 @@ void DualEdgeTriangulation::ruppertRefinement()
                      .arg( circumcenter.getX() ).arg( circumcenter.getY() ) );
         //test, if the point is present in the triangulation
         bool flag = false;
-        for ( int i = 0;i < mPointVector.count();i++ )
+        for ( int i = 0; i < mPointVector.count(); i++ )
         {
           if ( mPointVector[i]->getX() == circumcenter.getX() && mPointVector[i]->getY() == circumcenter.getY() )
           {
@@ -2413,7 +2413,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 #if 0
   //debugging: print out all edge of dontexamine
-  for ( std::set<int>::iterator it = dontexamine.begin();it != dontexamine.end();++it )
+  for ( std::set<int>::iterator it = dontexamine.begin(); it != dontexamine.end(); ++it )
   {
     QgsDebugMsg( QString( "edge nr. %1 is in dontexamine" ).arg( *it ) );
   }
@@ -2499,7 +2499,7 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
       mHalfEdge[mainedge]->setNext( insertb );
 
       QList<int> polya;
-      for ( iterator = ( ++( poly->constBegin() ) );( *iterator ) != nextdistedge;++iterator )
+      for ( iterator = ( ++( poly->constBegin() ) ); ( *iterator ) != nextdistedge; ++iterator )
       {
         polya.append(( *iterator ) );
       }
@@ -2507,7 +2507,7 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
 
 #if 0
       //print out all the elements of polya for a test
-      for ( iterator = polya.begin();iterator != polya.end();++iterator )
+      for ( iterator = polya.begin(); iterator != polya.end(); ++iterator )
       {
         QgsDebugMsg( *iterator );
       }
@@ -2568,7 +2568,7 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
       QList<int> polya;
       QList<int> polyb;
 
-      for ( iterator = ++( poly->constBegin() );( *iterator ) != nextdistedge;++iterator )
+      for ( iterator = ++( poly->constBegin() ); ( *iterator ) != nextdistedge; ++iterator )
       {
         polya.append(( *iterator ) );
       }
@@ -2725,7 +2725,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
   edgebar->move( 500, 500 );
   edgebar->show();
 
-  for ( int i = 0;i < numberofhalfedges / 2;i++ )
+  for ( int i = 0; i < numberofhalfedges / 2; i++ )
   {
     if ( i % 1000 == 0 )
     {
@@ -2806,7 +2806,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
   delete edgebar;
 
   //set mEdgeInside to a reasonable value
-  for ( int i = 0;i < numberofhalfedges;i++ )
+  for ( int i = 0; i < numberofhalfedges; i++ )
   {
     int a, b, c, d;
     a = mHalfEdge[i]->getPoint();
@@ -2848,7 +2848,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
 
 
   double x, y, z;
-  for ( int i = 0;i < numberofpoints;i++ )
+  for ( int i = 0; i < numberofpoints; i++ )
   {
     if ( i % 1000 == 0 )
     {
@@ -2919,12 +2919,12 @@ bool DualEdgeTriangulation::saveToTAFF( QString filename ) const
   outstream << "DATA ";
 
   bool* cont = new bool[mHalfEdge.count()];
-  for ( unsigned int i = 0;i <= mHalfEdge.count() - 1;i++ )
+  for ( unsigned int i = 0; i <= mHalfEdge.count() - 1; i++ )
   {
     cont[i] = false;
   }
 
-  for ( unsigned int i = 0;i < mHalfEdge.count();i++ )
+  for ( unsigned int i = 0; i < mHalfEdge.count(); i++ )
   {
     if ( cont[i] == true )
     {
@@ -2948,7 +2948,7 @@ bool DualEdgeTriangulation::saveToTAFF( QString filename ) const
   outstream << "PATT 3" << std::endl << std::flush;
   outstream << "DATA ";
 
-  for ( int i = 0;i < this->getNumberOfPoints();i++ )
+  for ( int i = 0; i < this->getNumberOfPoints(); i++ )
   {
     Point3D* p = mPointVector[i];
     outstream << p->getX() << " " << p->getY() << " " << p->getZ() << " ";

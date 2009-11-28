@@ -530,7 +530,7 @@ QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, 
     QTreeWidgetItem *item = featItem->child( i );
     if ( item->childCount() > 0 )
       continue;
-    if( item==lstResults->currentItem() )
+    if ( item == lstResults->currentItem() )
       idx = attributes.size();
     attributes << QPair<QString, QString>( item->data( 0, Qt::DisplayRole ).toString(), item->data( 1, Qt::DisplayRole ).toString() );
   }

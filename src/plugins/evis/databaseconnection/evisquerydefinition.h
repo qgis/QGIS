@@ -137,7 +137,7 @@ class eVisQueryDefinition
     QString mDatabaseName;
 
     /** \brief Username for the database, if required */
-    QString mDatabaseUsername;\
+    QString mDatabaseUsername;
 
     /** \brief Password for the username, if require */
     QString mDatabasePassword;

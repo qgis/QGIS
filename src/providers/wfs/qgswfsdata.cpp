@@ -755,7 +755,7 @@ int QgsWFSData::createPolygonFromFragments()
 
   std::list<unsigned char*>::iterator wkbIt = mCurrentWKBFragments.begin()->begin();
   std::list<int>::iterator sizeIt = mCurrentWKBFragmentSizes.begin()->begin();
-  for ( ;wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt, ++sizeIt )
+  for ( ; wkbIt != mCurrentWKBFragments.begin()->end(); ++wkbIt, ++sizeIt )
   {
     memcpy( &( mCurrentWKB[pos] ), *wkbIt, *sizeIt );
     pos += *sizeIt;

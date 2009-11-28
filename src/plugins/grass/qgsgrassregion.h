@@ -43,7 +43,7 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
   public:
     //! Constructor
     QgsGrassRegion( QgsGrassPlugin *plugin, QgisInterface *iface,
-                    QWidget * parent = 0, Qt::WFlags f = 0 );
+    QWidget * parent = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassRegion();

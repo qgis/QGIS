@@ -61,17 +61,17 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   {
     QFile file( vl->editForm() );
 
-    if( file.open( QFile::ReadOnly ) )
+    if ( file.open( QFile::ReadOnly ) )
     {
-    	QUiLoader loader;
+      QUiLoader loader;
 
-    	QFileInfo fi( vl->editForm() );
-    	loader.setWorkingDirectory( fi.dir() );
-    	QWidget *myWidget = loader.load( &file, NULL );
-    	file.close();
+      QFileInfo fi( vl->editForm() );
+      loader.setWorkingDirectory( fi.dir() );
+      QWidget *myWidget = loader.load( &file, NULL );
+      file.close();
 
-    	mDialog = qobject_cast<QDialog*>( myWidget );
-    	buttonBox = myWidget->findChild<QDialogButtonBox*>();
+      mDialog = qobject_cast<QDialog*>( myWidget );
+      buttonBox = myWidget->findChild<QDialogButtonBox*>();
     }
   }
 

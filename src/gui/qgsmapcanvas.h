@@ -149,7 +149,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /** Zoom to the extent of the selected features of current (vector) layer.
       Added in version 1.2: optionally specify different than current layer */
-    void zoomToSelected(QgsVectorLayer* layer = NULL);
+    void zoomToSelected( QgsVectorLayer* layer = NULL );
 
     /** \brief Sets the map tool currently being used on the canvas */
     void setMapTool( QgsMapTool* mapTool );

@@ -48,9 +48,9 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
     bool simplify( QgsVectorLayer* layer, const QString& shapefileName, double tolerance,
-                 bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
+                   bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
-    /**Calculate the true centroids, or 'center of mass' for a vector layer and 
+    /**Calculate the true centroids, or 'center of mass' for a vector layer and
        write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
@@ -59,7 +59,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
     bool centroids( QgsVectorLayer* layer, const QString& shapefileName,
-                 bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
+                    bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
     /**Create a polygon based on the extent of all (selected) features and write it to a new shape file
       @param layer input vector layer
@@ -105,7 +105,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
     bool dissolve( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
-                     int uniqueIdField = -1, QProgressDialog* p = 0 );
+                   int uniqueIdField = -1, QProgressDialog* p = 0 );
 
   private:
 

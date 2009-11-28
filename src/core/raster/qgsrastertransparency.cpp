@@ -119,7 +119,7 @@ int QgsRasterTransparency::alphaValue( double theValue, int theGlobalTransparenc
   //if a match was found use the stored transparency percentage
   if ( myTransparentPixelFound )
   {
-    return ( int )(( float )theGlobalTransparency * ( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
+    return ( int )(( float )theGlobalTransparency *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
   }
 
   return theGlobalTransparency;
@@ -163,7 +163,7 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   //if a match was found use the stored transparency percentage
   if ( myTransparentPixelFound )
   {
-    return ( int )(( float )theGlobalTransparency * ( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
+    return ( int )(( float )theGlobalTransparency *( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
   }
 
   return theGlobalTransparency;

@@ -158,13 +158,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
     /**Sets the output device resolution.
       @note: this method was added in version 1.2*/
-    void setDpi(int dpi){mDpi = dpi;}
+    void setDpi( int dpi ) {mDpi = dpi;}
 
 
   protected:
     /**Dots per intch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore
-  are suited for printing. A value of -1 means it has not been set
-  @note: this member has been added in version 1.2*/
+    are suited for printing. A value of -1 means it has not been set
+    @note: this member has been added in version 1.2*/
     int mDpi;
 
 };

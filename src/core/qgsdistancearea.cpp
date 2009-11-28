@@ -537,7 +537,7 @@ double QgsDistanceArea::getQ( double x )
   sinx = sin( x );
   sinx2 = sinx * sinx;
 
-  return sinx * ( 1 + sinx2 * ( m_QA + sinx2 * ( m_QB + sinx2 * m_QC ) ) );
+  return sinx *( 1 + sinx2 *( m_QA + sinx2 *( m_QB + sinx2 * m_QC ) ) );
 }
 
 
@@ -548,7 +548,7 @@ double QgsDistanceArea::getQbar( double x )
   cosx = cos( x );
   cosx2 = cosx * cosx;
 
-  return cosx * ( m_QbarA + cosx2 * ( m_QbarB + cosx2 * ( m_QbarC + cosx2 * m_QbarD ) ) );
+  return cosx *( m_QbarA + cosx2 *( m_QbarB + cosx2 *( m_QbarC + cosx2 * m_QbarD ) ) );
 }
 
 

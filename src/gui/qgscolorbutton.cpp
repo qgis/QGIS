@@ -71,7 +71,7 @@ void QgsColorButton::setColor( const QColor &color )
 //////////////////
 
 QgsColorButtonV2::QgsColorButtonV2( QWidget* parent )
- : QPushButton(parent)
+    : QPushButton( parent )
 {
 }
 
@@ -79,24 +79,24 @@ void QgsColorButtonV2::setColor( const QColor &color )
 {
   mColor = color;
 
-  QPixmap pixmap(iconSize());
-  pixmap.fill(QColor(0,0,0,0));
+  QPixmap pixmap( iconSize() );
+  pixmap.fill( QColor( 0, 0, 0, 0 ) );
 
-  QRect rect(1,1, iconSize().width() - 2, iconSize().height() - 2);
+  QRect rect( 1, 1, iconSize().width() - 2, iconSize().height() - 2 );
 
   // draw a slightly rounded rectangle
   QPainter p;
-  p.begin(&pixmap);
-  p.setPen(Qt::NoPen);
-  p.setRenderHint(QPainter::Antialiasing);
-  p.setBrush(color);
+  p.begin( &pixmap );
+  p.setPen( Qt::NoPen );
+  p.setRenderHint( QPainter::Antialiasing );
+  p.setBrush( color );
 #if QT_VERSION >= 0x040400
-  p.drawRoundedRect(rect, 4, 4);
+  p.drawRoundedRect( rect, 4, 4 );
 #else
-  p.drawRect(rect);
+  p.drawRect( rect );
 #endif
   p.end();
 
   // set this pixmap as icon
-  setIcon(QIcon(pixmap));
+  setIcon( QIcon( pixmap ) );
 }

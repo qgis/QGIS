@@ -297,8 +297,8 @@ const QStringList QgsApplication::svgPaths()
   }
   //additional default paths
   myPathList
-    << mPkgDataPath + QString( "/svg/" )
-    << qgisSettingsDirPath() + QString( "svg/" );
+  << mPkgDataPath + QString( "/svg/" )
+  << qgisSettingsDirPath() + QString( "svg/" );
   return myPathList;
 
 }

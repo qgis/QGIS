@@ -57,7 +57,7 @@ namespace SpatialIndex
   //
   // Interfaces
   //
-  interface IEntry : public Tools::IObject
+interface IEntry : public Tools::IObject
   {
   public:
     virtual long getIdentifier() const = 0;
@@ -65,7 +65,7 @@ namespace SpatialIndex
     virtual ~IEntry() {}
   }; // IEntry
 
-  interface INode : public IEntry, public Tools::ISerializable
+interface INode : public IEntry, public Tools::ISerializable
   {
   public:
     virtual unsigned long getChildrenCount() const = 0;
@@ -77,14 +77,14 @@ namespace SpatialIndex
     virtual ~INode() {}
   }; // INode
 
-  interface IData : public IEntry
+interface IData : public IEntry
   {
   public:
     virtual void getData( unsigned long& len, byte** data ) const = 0;
     virtual ~IData() {}
   }; // IData
 
-  interface IDataStream : public Tools::IObjectStream
+interface IDataStream : public Tools::IObjectStream
   {
   public:
     virtual IData* getNext() = 0;
@@ -168,7 +168,7 @@ namespace SpatialIndex
       NewPage = -0x1
     };
 
-    interface IBuffer : public IStorageManager
+  interface IBuffer : public IStorageManager
     {
     public:
       virtual unsigned long getHits() = 0;

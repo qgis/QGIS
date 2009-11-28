@@ -1130,7 +1130,7 @@ void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
 
 void QgsVectorLayer::removeSelection( bool emitSignal )
 {
-  if( mSelectedFeatureIds.size() == 0 )
+  if ( mSelectedFeatureIds.size() == 0 )
     return;
 
   mSelectedFeatureIds.clear();

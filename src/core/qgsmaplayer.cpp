@@ -791,17 +791,17 @@ void QgsMapLayer::setCustomProperty( const QString& key, const QVariant& value )
 
 QVariant QgsMapLayer::customProperty( const QString& value, const QVariant& defaultValue ) const
 {
-  return mCustomProperties.value(value, defaultValue);
+  return mCustomProperties.value( value, defaultValue );
 }
 
 void QgsMapLayer::removeCustomProperty( const QString& key )
 {
-  mCustomProperties.remove(key);
+  mCustomProperties.remove( key );
 }
 
 void QgsMapLayer::readCustomProperties( QDomNode & layerNode )
 {
-  QDomNode propsNode = layerNode.namedItem("customproperties");
+  QDomNode propsNode = layerNode.namedItem( "customproperties" );
   if ( propsNode.isNull() ) // no properties stored...
     return;
 
@@ -812,13 +812,13 @@ void QgsMapLayer::readCustomProperties( QDomNode & layerNode )
   for ( int i = 0; i < nodes.size(); i++ )
   {
     QDomNode propNode = nodes.at( i );
-    if (propNode.isNull() || propNode.nodeName() != "property")
+    if ( propNode.isNull() || propNode.nodeName() != "property" )
       continue;
     QDomElement propElement = propNode.toElement();
 
     QString key = propElement.attribute( "key" );
     QString value = propElement.attribute( "value" );
-    mCustomProperties[key] = QVariant(value);
+    mCustomProperties[key] = QVariant( value );
   }
 
 }
@@ -832,14 +832,14 @@ void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & do
     QDomElement propElement = doc.createElement( "property" );
     propElement.setAttribute( "key", it.key() );
     propElement.setAttribute( "value", it.value().toString() );
-    propsElement.appendChild(propElement);
+    propsElement.appendChild( propElement );
   }
 
-  layerNode.appendChild(propsElement);
+  layerNode.appendChild( propsElement );
 }
 
-void QgsMapLayer::setCacheImage( QImage * thepImage ) 
-{ 
+void QgsMapLayer::setCacheImage( QImage * thepImage )
+{
   QgsDebugMsg( "cache Image set!" );
   if ( mpCacheImage )
   {

@@ -1788,8 +1788,8 @@ SHPRewindObject( SHPHandle hSHP, SHPObject * psObject )
                + ( dfTestY - psObject->padfY[iEdge+nVertStart] )
                / ( psObject->padfY[iNext+nVertStart]
                    - psObject->padfY[iEdge+nVertStart] )
-               * ( psObject->padfX[iNext+nVertStart]
-                   - psObject->padfX[iEdge+nVertStart] ) < dfTestX )
+               *( psObject->padfX[iNext+nVertStart]
+                  - psObject->padfX[iEdge+nVertStart] ) < dfTestX )
             bInner = !bInner;
         }
       }
