@@ -1461,6 +1461,25 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
     return false;
   }
 
+  QString driverName = OGR_Dr_GetName( driver );
+
+  if ( driverName == "ESRI Shapefile" )
+  {
+    // check for duplicate fieldnames
+    QSet<QString> fieldNames;
+    std::list<std::pair<QString, QString> >::const_iterator fldIt;
+    for ( fldIt = attributes.begin(); fldIt != attributes.end(); ++fldIt )
+    {
+      QString name = fldIt->first.left( 10 );
+      if ( fieldNames.contains( name ) )
+      {
+        QgsDebugMsg( QString( "duplicate field (10 significant characters): %1" ).arg( name ) );
+        return false;
+      }
+      fieldNames << name;
+    }
+  }
+
   OGRDataSourceH dataSource;
   dataSource = OGR_Dr_CreateDataSource( driver, QFile::encodeName( uri ).constData(), NULL );
   if ( dataSource == NULL )
@@ -1581,8 +1600,6 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
   }
 
   OGR_DS_Destroy( dataSource );
-
-  QString driverName = OGR_Dr_GetName( driver );
 
   if ( driverName == "ESRI Shapefile" )
   {

@@ -31,6 +31,7 @@
 #include <QFileInfo>
 #include <QTextCodec>
 #include <QTextStream>
+#include <QSet>
 
 #include <cassert>
 #include <cstdlib> // size_t
@@ -58,6 +59,23 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   {
     mError = ErrDriverNotFound;
     return;
+  }
+
+  if ( driverName == "ESRI Shapefile" )
+  {
+    // check for unique fieldnames
+    QSet<QString> fieldNames;
+    QgsFieldMap::const_iterator fldIt;
+    for ( fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    {
+      QString name = fldIt.value().name().left( 10 );
+      if ( fieldNames.contains( name ) )
+      {
+        mError = ErrAttributeCreationFailed;
+        return;
+      }
+      fieldNames << name;
+    }
   }
 
   // create the data source
