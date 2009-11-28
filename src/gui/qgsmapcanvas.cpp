@@ -504,9 +504,20 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
     mLastExtent.removeAt( i );
   }
 
-
   mLastExtent.append( extent() ) ;
+
+  // adjust history to no more than 20
+  if ( mLastExtent.size() > 20 )
+  {
+    mLastExtent.removeAt( 0 );
+  }
+
+  // the last item is the current extent
   mLastExtentIndex = mLastExtent.size() - 1;
+
+  // update controls' enabled state
+  emit zoomLastStatusChanged( mLastExtentIndex > 0 );
+  emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
   // notify canvas items of change
   updateCanvasItemPositions();
 
@@ -558,7 +569,7 @@ void QgsMapCanvas::zoomToPreviousExtent()
     return;
   }
 
-  if ( mLastExtentIndex > 1 )
+  if ( mLastExtentIndex > 0 )
   {
     mLastExtentIndex--;
     mMapRenderer->setExtent( mLastExtent[mLastExtentIndex] );
@@ -566,9 +577,12 @@ void QgsMapCanvas::zoomToPreviousExtent()
     updateScale();
     if ( mMapOverview )
       mMapOverview->drawExtentRect();
+    refresh();
+    // update controls' enabled state
+    emit zoomLastStatusChanged( mLastExtentIndex > 0 );
+    emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
   }
 
-  refresh();
 } // zoomToPreviousExtent
 
 void QgsMapCanvas::zoomToNextExtent()
@@ -585,10 +599,22 @@ void QgsMapCanvas::zoomToNextExtent()
     updateScale();
     if ( mMapOverview )
       mMapOverview->drawExtentRect();
+    refresh();
+    // update controls' enabled state
+    emit zoomLastStatusChanged( mLastExtentIndex > 0 );
+    emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
   }
-  refresh();
 }// zoomToNextExtent
 
+void QgsMapCanvas::clearExtentHistory()
+{
+  mLastExtent.clear(); // clear the zoom history list
+  mLastExtent.append( extent() ) ; // set the current extent in the list
+  mLastExtentIndex = mLastExtent.size() - 1;
+  // update controls' enabled state
+  emit zoomLastStatusChanged( mLastExtentIndex > 0 );
+  emit zoomNextStatusChanged( mLastExtentIndex < mLastExtent.size() - 1 );
+}// clearExtentHistory
 
 
 bool QgsMapCanvas::hasCrsTransformEnabled()
@@ -1340,6 +1366,7 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
   {
     QDomNode node = nodes.item( 0 );
     mMapRenderer->readXML( node );
+    clearExtentHistory(); // clear the extent history on project load
   }
   else
   {
