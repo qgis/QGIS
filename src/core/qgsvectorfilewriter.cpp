@@ -266,6 +266,12 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
 
   // build geometry from WKB
   QgsGeometry *geom = feature.geometry();
+  if ( !geom )
+  {
+    QgsDebugMsg( "invalid geometry" );
+    OGR_F_Destroy( poFeature );
+    return false;
+  }
 
   if ( geom->wkbType() != mWkbType )
   {
