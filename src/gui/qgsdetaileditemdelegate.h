@@ -33,7 +33,7 @@ class QFont;
  * @see also QgsDetailedItemData
  */
 class GUI_EXPORT QgsDetailedItemDelegate :
-      public QAbstractItemDelegate
+    public QAbstractItemDelegate
 {
     Q_OBJECT
   public:

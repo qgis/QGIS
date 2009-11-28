@@ -149,7 +149,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
       currentWkbPtr += ( 1 + sizeof( int ) );
       int* npoints = ( int* )currentWkbPtr;
       currentWkbPtr += sizeof( int );
-      for ( int index = 0;index < *npoints;++index )
+      for ( int index = 0; index < *npoints; ++index )
       {
         theVertex.x = *(( double * )( currentWkbPtr ) );
         currentWkbPtr += sizeof( double );
@@ -176,11 +176,11 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
       int* nrings = ( int* )( mGeometry + 5 );
       int* npoints;
       unsigned char* ptr = mGeometry + 9;
-      for ( int index = 0;index < *nrings;++index )
+      for ( int index = 0; index < *nrings; ++index )
       {
         npoints = ( int* )ptr;
         ptr += sizeof( int );
-        for ( int index2 = 0;index2 < *npoints;++index2 )
+        for ( int index2 = 0; index2 < *npoints; ++index2 )
         {
           tempx = ( double* )ptr;
           ptr += sizeof( double );
@@ -225,7 +225,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
       unsigned char* ptr = mGeometry + 5;
       int* npoints = ( int* )ptr;
       ptr += sizeof( int );
-      for ( int index = 0;index < *npoints;++index )
+      for ( int index = 0; index < *npoints; ++index )
       {
         ptr += ( 1 + sizeof( int ) ); //skip endian and point type
         tempx = ( double* )ptr;
@@ -253,12 +253,12 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
       int* nlines = ( int* )ptr;
       int* npoints = 0;
       ptr += sizeof( int );
-      for ( int index = 0;index < *nlines;++index )
+      for ( int index = 0; index < *nlines; ++index )
       {
         ptr += ( sizeof( int ) + 1 );
         npoints = ( int* )ptr;
         ptr += sizeof( int );
-        for ( int index2 = 0;index2 < *npoints;++index2 )
+        for ( int index2 = 0; index2 < *npoints; ++index2 )
         {
           tempx = ( double* )ptr;
           ptr += sizeof( double );
@@ -306,16 +306,16 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
       int* nrings;
       int* npoints;
       ptr += sizeof( int );
-      for ( int index = 0;index < *npolys;++index )
+      for ( int index = 0; index < *npolys; ++index )
       {
         ptr += ( 1 + sizeof( int ) ); //skip endian and polygon type
         nrings = ( int* )ptr;
         ptr += sizeof( int );
-        for ( int index2 = 0;index2 < *nrings;++index2 )
+        for ( int index2 = 0; index2 < *nrings; ++index2 )
         {
           npoints = ( int* )ptr;
           ptr += sizeof( int );
-          for ( int index3 = 0;index3 < *npoints;++index3 )
+          for ( int index3 = 0; index3 < *npoints; ++index3 )
           {
             tempx = ( double* )ptr;
             ptr += sizeof( double );

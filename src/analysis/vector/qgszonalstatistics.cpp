@@ -23,13 +23,13 @@
 #include "cpl_string.h"
 #include <QProgressDialog>
 
-QgsZonalStatistics::QgsZonalStatistics(QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand): \
-    mRasterFilePath(rasterFile), mRasterBand(rasterBand), mPolygonLayer(polygonLayer), mAttributePrefix(attributePrefix), mInputNodataValue( -1 )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand ) :
+    mRasterFilePath( rasterFile ), mRasterBand( rasterBand ), mPolygonLayer( polygonLayer ), mAttributePrefix( attributePrefix ), mInputNodataValue( -1 )
 {
 
 }
 
-QgsZonalStatistics::QgsZonalStatistics(): mRasterBand(0), mPolygonLayer(0)
+QgsZonalStatistics::QgsZonalStatistics(): mRasterBand( 0 ), mPolygonLayer( 0 )
 {
 
 }
@@ -39,31 +39,31 @@ QgsZonalStatistics::~QgsZonalStatistics()
 
 }
 
-int QgsZonalStatistics::calculateStatistics(QProgressDialog* p)
+int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 {
-  if(!mPolygonLayer || mPolygonLayer->geometryType() != QGis::Polygon)
+  if ( !mPolygonLayer || mPolygonLayer->geometryType() != QGis::Polygon )
   {
     return 1;
   }
 
   QgsVectorDataProvider* vectorProvider = mPolygonLayer->dataProvider();
-  if(!vectorProvider)
+  if ( !vectorProvider )
   {
     return 2;
   }
 
   //open the raster layer and the raster band
   GDALAllRegister();
-  GDALDatasetH inputDataset = GDALOpen(mRasterFilePath.toLocal8Bit().data(), GA_ReadOnly );
+  GDALDatasetH inputDataset = GDALOpen( mRasterFilePath.toLocal8Bit().data(), GA_ReadOnly );
   if ( inputDataset == NULL )
   {
     return 3;
   }
 
-  if ( GDALGetRasterCount( inputDataset ) < (mRasterBand - 1) )
+  if ( GDALGetRasterCount( inputDataset ) < ( mRasterBand - 1 ) )
   {
-      GDALClose( inputDataset );
-      return 4;
+    GDALClose( inputDataset );
+    return 4;
   }
 
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, mRasterBand );
@@ -84,50 +84,50 @@ int QgsZonalStatistics::calculateStatistics(QProgressDialog* p)
     return 6;
   }
   double cellsizeX = geoTransform[1];
-  if(cellsizeX < 0)
+  if ( cellsizeX < 0 )
   {
     cellsizeX = -cellsizeX;
   }
   double cellsizeY = geoTransform[5];
-  if(cellsizeY < 0)
+  if ( cellsizeY < 0 )
   {
     cellsizeY = -cellsizeY;
   }
-  QgsRectangle rasterBBox(geoTransform[0], geoTransform[3] - (nCellsY * cellsizeY), geoTransform[0] + (nCellsX * cellsizeX), geoTransform[3]);
+  QgsRectangle rasterBBox( geoTransform[0], geoTransform[3] - ( nCellsY * cellsizeY ), geoTransform[0] + ( nCellsX * cellsizeX ), geoTransform[3] );
 
   //add the new count, sum, mean fields to the provider
   QList<QgsField> newFieldList;
-  QgsField countField(mAttributePrefix + "count", QVariant::Int);
-  QgsField sumField(mAttributePrefix + "sum", QVariant::Double);
-  QgsField meanField(mAttributePrefix + "mean", QVariant::Double);
-  newFieldList.push_back(countField);
-  newFieldList.push_back(sumField);
-  newFieldList.push_back(meanField);
-  if(!vectorProvider->addAttributes( newFieldList ))
+  QgsField countField( mAttributePrefix + "count", QVariant::Int );
+  QgsField sumField( mAttributePrefix + "sum", QVariant::Double );
+  QgsField meanField( mAttributePrefix + "mean", QVariant::Double );
+  newFieldList.push_back( countField );
+  newFieldList.push_back( sumField );
+  newFieldList.push_back( meanField );
+  if ( !vectorProvider->addAttributes( newFieldList ) )
   {
     return 7;
   }
 
   //index of the new fields
-  int countIndex = vectorProvider->fieldNameIndex(mAttributePrefix + "count");
-  int sumIndex = vectorProvider->fieldNameIndex(mAttributePrefix + "sum");
-  int meanIndex = vectorProvider->fieldNameIndex(mAttributePrefix + "mean");
+  int countIndex = vectorProvider->fieldNameIndex( mAttributePrefix + "count" );
+  int sumIndex = vectorProvider->fieldNameIndex( mAttributePrefix + "sum" );
+  int meanIndex = vectorProvider->fieldNameIndex( mAttributePrefix + "mean" );
 
-  if (countIndex == -1 || sumIndex == -1 || meanIndex == -1)
+  if ( countIndex == -1 || sumIndex == -1 || meanIndex == -1 )
   {
     return 8;
   }
 
   //progress dialog
   long featureCount = vectorProvider->featureCount();
-  if(p)
+  if ( p )
   {
-    p->setMaximum(featureCount);
+    p->setMaximum( featureCount );
   }
 
 
   //iterate over each polygon
-  vectorProvider->select(QgsAttributeList(), QgsRectangle(), true, false);
+  vectorProvider->select( QgsAttributeList(), QgsRectangle(), true, false );
   vectorProvider->rewind();
   QgsFeature f;
   double count = 0;
@@ -140,27 +140,27 @@ int QgsZonalStatistics::calculateStatistics(QProgressDialog* p)
   double cellCenterY = 0;
   QgsPoint currentCellCenter;
 
-  while(vectorProvider->nextFeature(f))
+  while ( vectorProvider->nextFeature( f ) )
   {
-    if(p)
+    if ( p )
     {
-      p->setValue(featureCounter);
+      p->setValue( featureCounter );
     }
 
-    if(p && p->wasCanceled())
+    if ( p && p->wasCanceled() )
     {
       break;
     }
 
     QgsGeometry* featureGeometry = f.geometry();
-    if(!featureGeometry)
+    if ( !featureGeometry )
     {
       ++featureCounter;
       continue;
     }
 
     int offsetX, offsetY, nCellsX, nCellsY;
-    if(cellInfoForBBox(rasterBBox, featureGeometry->boundingBox(), cellsizeX, cellsizeY, offsetX, offsetY, nCellsX, nCellsY) != 0)
+    if ( cellInfoForBBox( rasterBBox, featureGeometry->boundingBox(), cellsizeX, cellsizeY, offsetX, offsetY, nCellsX, nCellsY ) != 0 )
     {
       ++featureCounter;
       continue;
@@ -171,16 +171,16 @@ int QgsZonalStatistics::calculateStatistics(QProgressDialog* p)
     count = 0;
     sum = 0;
 
-    for(int i = 0; i < nCellsY; ++i)
+    for ( int i = 0; i < nCellsY; ++i )
     {
       GDALRasterIO( rasterBand, GF_Read, offsetX, offsetY + i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 );
       cellCenterX = rasterBBox.xMinimum() + offsetX * cellsizeX + cellsizeX / 2;
-      for(int j = 0; j < nCellsX; ++j)
+      for ( int j = 0; j < nCellsX; ++j )
       {
-        currentCellCenter = QgsPoint(cellCenterX, cellCenterY);
-        if(featureGeometry->contains(&currentCellCenter))
+        currentCellCenter = QgsPoint( cellCenterX, cellCenterY );
+        if ( featureGeometry->contains( &currentCellCenter ) )
         {
-          if(scanLine[j] != mInputNodataValue) //don't consider nodata values
+          if ( scanLine[j] != mInputNodataValue ) //don't consider nodata values
           {
             sum += scanLine[j];
             ++count;
@@ -191,7 +191,7 @@ int QgsZonalStatistics::calculateStatistics(QProgressDialog* p)
       cellCenterY -= cellsizeY;
     }
 
-    if(count == 0)
+    if ( count == 0 )
     {
       mean = 0;
     }
@@ -203,42 +203,42 @@ int QgsZonalStatistics::calculateStatistics(QProgressDialog* p)
     //write the new AEY value to the vector data provider
     QgsChangedAttributesMap changeMap;
     QgsAttributeMap changeAttributeMap;
-    changeAttributeMap.insert(countIndex, QVariant(count));
-    changeAttributeMap.insert(sumIndex, QVariant(sum));
-    changeAttributeMap.insert(meanIndex, QVariant(mean));
-    changeMap.insert(f.id(), changeAttributeMap);
-    vectorProvider->changeAttributeValues(changeMap);
+    changeAttributeMap.insert( countIndex, QVariant( count ) );
+    changeAttributeMap.insert( sumIndex, QVariant( sum ) );
+    changeAttributeMap.insert( meanIndex, QVariant( mean ) );
+    changeMap.insert( f.id(), changeAttributeMap );
+    vectorProvider->changeAttributeValues( changeMap );
 
-    CPLFree(scanLine);
+    CPLFree( scanLine );
     ++featureCounter;
   }
 
-  if(p)
+  if ( p )
   {
-    p->setValue(featureCount);
+    p->setValue( featureCount );
   }
 
   GDALClose( inputDataset );
   return 0;
 }
 
-int QgsZonalStatistics::cellInfoForBBox(const QgsRectangle& rasterBBox, const QgsRectangle& featureBBox, double cellSizeX, double cellSizeY, \
-                                        int& offsetX, int& offsetY, int& nCellsX, int& nCellsY) const
+int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const QgsRectangle& featureBBox, double cellSizeX, double cellSizeY,
+    int& offsetX, int& offsetY, int& nCellsX, int& nCellsY ) const
 {
   //get intersecting bbox
-  QgsRectangle intersectBox = rasterBBox.intersect(&featureBBox);
-  if(intersectBox.isEmpty())
+  QgsRectangle intersectBox = rasterBBox.intersect( &featureBBox );
+  if ( intersectBox.isEmpty() )
   {
     nCellsX = 0; nCellsY = 0; offsetX = 0; offsetY = 0;
     return 0;
   }
 
   //get offset in pixels in x- and y- direction
-  offsetX = (int)( (intersectBox.xMinimum() - rasterBBox.xMinimum()) / cellSizeX);
-  offsetY = (int)( (rasterBBox.yMaximum() - intersectBox.yMaximum()) / cellSizeY);
+  offsetX = ( int )(( intersectBox.xMinimum() - rasterBBox.xMinimum() ) / cellSizeX );
+  offsetY = ( int )(( rasterBBox.yMaximum() - intersectBox.yMaximum() ) / cellSizeY );
 
-  int maxColumn = (int) ( (intersectBox.xMaximum() - rasterBBox.xMinimum()) / cellSizeX) + 1;
-  int maxRow = (int) ( (rasterBBox.yMaximum() - intersectBox.yMinimum()) / cellSizeY ) + 1;
+  int maxColumn = ( int )(( intersectBox.xMaximum() - rasterBBox.xMinimum() ) / cellSizeX ) + 1;
+  int maxRow = ( int )(( rasterBBox.yMaximum() - intersectBox.yMinimum() ) / cellSizeY ) + 1;
 
   nCellsX = maxColumn - offsetX;
   nCellsY = maxRow - offsetY;

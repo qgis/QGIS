@@ -78,25 +78,25 @@ namespace SpatialIndex
     extern ISpatialIndex* returnRTree( IStorageManager& in0, Tools::PropertySet& in1 );
 #endif//_MSC_VER
     extern ISpatialIndex* createNewRTree(
-        IStorageManager& sm,
-        double fillFactor,
-        unsigned long indexCapacity,
-        unsigned long leafCapacity,
-        unsigned long dimension,
-        RTreeVariant rv,
-        long& indexIdentifier
-      );
+      IStorageManager& sm,
+      double fillFactor,
+      unsigned long indexCapacity,
+      unsigned long leafCapacity,
+      unsigned long dimension,
+      RTreeVariant rv,
+      long& indexIdentifier
+    );
     extern ISpatialIndex* createAndBulkLoadNewRTree(
-        BulkLoadMethod m,
-        IDataStream& stream,
-        IStorageManager& sm,
-        double fillFactor,
-        unsigned long indexCapacity,
-        unsigned long leafCapacity,
-        unsigned long dimension,
-        RTreeVariant rv,
-        long& indexIdentifier
-      );
+      BulkLoadMethod m,
+      IDataStream& stream,
+      IStorageManager& sm,
+      double fillFactor,
+      unsigned long indexCapacity,
+      unsigned long leafCapacity,
+      unsigned long dimension,
+      RTreeVariant rv,
+      long& indexIdentifier
+    );
     extern ISpatialIndex* loadRTree( IStorageManager& in, long indexIdentifier );
   }
 }

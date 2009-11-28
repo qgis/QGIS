@@ -28,19 +28,19 @@ class QProgressDialog;
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
-    QgsZonalStatistics(QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1);
+    QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1 );
     ~QgsZonalStatistics();
 
     /**Starts the calculation
       @return 0 in case of success*/
-    int calculateStatistics(QProgressDialog* p);
+    int calculateStatistics( QProgressDialog* p );
 
   private:
     QgsZonalStatistics();
     /**Analysis what cells need to be considered to cover the bounding box of a feature
       @return 0 in case of success*/
-    int cellInfoForBBox(const QgsRectangle& rasterBBox, const QgsRectangle& featureBBox, double cellSizeX, double cellSizeY, \
-                        int& offsetX, int& offsetY, int& nCellsX, int& nCellsY) const;
+    int cellInfoForBBox( const QgsRectangle& rasterBBox, const QgsRectangle& featureBBox, double cellSizeX, double cellSizeY,
+                         int& offsetX, int& offsetY, int& nCellsX, int& nCellsY ) const;
 
     QString mRasterFilePath;
     /**Raster band to calculate statistics from (defaults to 1)*/

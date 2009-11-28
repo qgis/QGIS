@@ -398,10 +398,10 @@ int QgsRubberBand::numberOfVertices() const
 {
   int count = 0;
   QList<QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
-  for ( ;it != mPoints.constEnd(); ++it )
+  for ( ; it != mPoints.constEnd(); ++it )
   {
     QList<QgsPoint>::const_iterator iter = it->constBegin();
-    for ( ;iter != it->constEnd(); ++iter )
+    for ( ; iter != it->constEnd(); ++iter )
     {
       ++count;
     }

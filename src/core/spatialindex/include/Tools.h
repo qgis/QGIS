@@ -317,7 +317,7 @@ namespace Tools
 
     // since all base classes are interfaces (there is no state involved) all
     // inheritance can be virtual for efficiency.
-    interface IShape : public virtual ISerializable
+  interface IShape : public virtual ISerializable
     {
     public:
       virtual bool intersectsShape( const IShape& in ) const = 0;
@@ -333,7 +333,7 @@ namespace Tools
 
     // since all base classes are interfaces (there is no state involved) all
     // inheritance can be virtual for efficiency.
-    interface ITimeShape : public virtual IShape, public virtual IInterval
+  interface ITimeShape : public virtual IShape, public virtual IInterval
     {
     public:
       virtual bool intersectsShapeInTime( const ITimeShape& in ) const = 0;
@@ -351,7 +351,7 @@ namespace Tools
 
     // since all base classes are interfaces (there is no state involved) all
     // inheritance can be virtual for efficiency.
-    interface IEvolvingShape : public virtual IShape
+  interface IEvolvingShape : public virtual IShape
     {
     public:
       virtual void getVMBR( Region& out ) const = 0;

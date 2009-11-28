@@ -385,7 +385,7 @@ void QgsPluginManager::unload()
 {
   QSettings settings;
   QgsDebugMsg( "Checking for plugins to unload" );
-  for ( int row = 0;row < mModelPlugins->rowCount();row++ )
+  for ( int row = 0; row < mModelPlugins->rowCount(); row++ )
   {
     // FPV - I want to use index. You can do evrething with item.
     QModelIndex myIndex = mModelPlugins->index( row, 0 );
@@ -433,7 +433,7 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
 {
   std::vector < QgsPluginItem > pis;
   // FPV - I want to use item here. You can do everything with index if you want.
-  for ( int row = 0;row < mModelPlugins->rowCount();row++ )
+  for ( int row = 0; row < mModelPlugins->rowCount(); row++ )
   {
     QgsDetailedItemData myData =
       qVariantValue<QgsDetailedItemData>( mModelPlugins->item( row, 0 )->data( PLUGIN_DATA_ROLE ) );
@@ -470,7 +470,7 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
 void QgsPluginManager::selectAll()
 {
   // select all plugins
-  for ( int row = 0;row < mModelPlugins->rowCount();row++ )
+  for ( int row = 0; row < mModelPlugins->rowCount(); row++ )
   {
     QStandardItem *mypItem = mModelPlugins->item( row, 0 );
     QgsDetailedItemData myData =
@@ -485,7 +485,7 @@ void QgsPluginManager::selectAll()
 void QgsPluginManager::clearAll()
 {
   // clear all selection checkboxes
-  for ( int row = 0;row < mModelPlugins->rowCount();row++ )
+  for ( int row = 0; row < mModelPlugins->rowCount(); row++ )
   {
     QStandardItem *mypItem = mModelPlugins->item( row, 0 );
     QgsDetailedItemData myData =

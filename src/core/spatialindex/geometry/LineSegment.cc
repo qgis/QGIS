@@ -259,7 +259,7 @@ double Tools::Geometry::LineSegment::getMinimumDistance( const Point& p ) const
   double y2 = m_pEndPoint[1];
   double y0 = p.m_pCoords[1];
 
-  return std::abs(( x2 - x1 ) * ( y1 - y0 ) - ( x1 - x0 ) * ( y2 - y1 ) ) / ( std::sqrt(( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) ) );
+  return std::abs(( x2 - x1 ) *( y1 - y0 ) - ( x1 - x0 ) *( y2 - y1 ) ) / ( std::sqrt(( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 ) ) );
 }
 
 // assuming moving from start to end, positive distance is from right hand side.
@@ -296,7 +296,7 @@ double Tools::Geometry::LineSegment::getRelativeMinimumDistance( const Point& p 
   double y2 = m_pEndPoint[1];
   double y0 = p.m_pCoords[1];
 
-  return (( x1 - x0 ) * ( y2 - y1 ) - ( x2 - x1 ) * ( y1 - y0 ) ) / ( std::sqrt(( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) ) );
+  return (( x1 - x0 ) *( y2 - y1 ) - ( x2 - x1 ) *( y1 - y0 ) ) / ( std::sqrt(( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 ) ) );
 }
 
 double Tools::Geometry::LineSegment::getRelativeMaximumDistance( const Tools::Geometry::Region& r ) const

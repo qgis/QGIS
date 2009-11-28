@@ -112,7 +112,7 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
 
   else //take all results
   {
-    for ( ;evalIt != snappingResultList.end(); ++evalIt )
+    for ( ; evalIt != snappingResultList.end(); ++evalIt )
     {
       snappingResult.push_back( evalIt.value() );
     }

@@ -26,7 +26,7 @@
  * @see also QgsDetailedItem and QgsDetailedItemData.
  */
 class QgsDetailedItemWidget :
-      public QWidget, private Ui::QgsDetailedItemWidgetBase
+    public QWidget, private Ui::QgsDetailedItemWidgetBase
 {
     Q_OBJECT
   public:

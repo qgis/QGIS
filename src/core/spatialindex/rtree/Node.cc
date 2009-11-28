@@ -46,7 +46,7 @@ unsigned long Node::getByteArraySize()
     ( sizeof( long ) +
       sizeof( long ) +
       sizeof( long ) +
-      ( m_children * ( m_pTree->m_dimension * sizeof( double ) * 2 + sizeof( long ) + sizeof( unsigned long ) ) ) +
+      ( m_children *( m_pTree->m_dimension * sizeof( double ) * 2 + sizeof( long ) + sizeof( unsigned long ) ) ) +
       m_totalDataLength +
       ( 2 * m_pTree->m_dimension * sizeof( double ) ) );
 }

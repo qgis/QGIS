@@ -3733,7 +3733,7 @@ void QgisApp::newPrintComposer()
 
 void QgisApp::showComposerManager()
 {
-  QgsComposerManager m( this, 0);
+  QgsComposerManager m( this, 0 );
   m.exec();
 }
 

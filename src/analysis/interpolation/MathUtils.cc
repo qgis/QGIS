@@ -228,7 +228,7 @@ int MathUtils::faculty( int n )
   if ( n == 0 || n == 1 )
     {return 1;}//faculty of 0 is 1!
 
-  for ( i = n - 1;i >= 2;i-- )
+  for ( i = n - 1; i >= 2; i-- )
   {
     result *= i;
   }
@@ -479,7 +479,7 @@ double MathUtils::power( double a, int b )
     return 1;
   }
   double tmp = a;
-  for ( int i = 2;i <= fabs(( double )b );i++ )
+  for ( int i = 2; i <= fabs(( double )b ); i++ )
   {
 
     a *= tmp;

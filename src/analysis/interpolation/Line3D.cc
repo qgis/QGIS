@@ -32,7 +32,7 @@ Line3D::~Line3D()
   //First remove all the content
   goToBegin();
   unsigned int s = size;
-  for ( unsigned int i = 1;i <= s;i++ )
+  for ( unsigned int i = 1; i <= s; i++ )
   {
     removePoint();
   }

@@ -31,7 +31,7 @@ class QgsGrassMapcalcView;
  *  \brief Interface for r.mapcalc
  */
 class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
-      public QgsGrassModuleOptions
+    public QgsGrassModuleOptions
 {
     Q_OBJECT
 
