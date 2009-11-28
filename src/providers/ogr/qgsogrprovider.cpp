@@ -1026,6 +1026,7 @@ int QgsOgrProvider::capabilities() const
       ability |= ChangeGeometries;
     }
 
+#if 0
     if ( OGR_L_TestCapability( ogrLayer, "FastSpatialFilter" ) )
       // TRUE if this layer implements spatial filtering efficiently.
       // Layers that effectively read all features, and test them with the
@@ -1059,25 +1060,20 @@ int QgsOgrProvider::capabilities() const
     {
       // No use required for this QGIS release.
     }
-
-    if ( 1 )
-    {
-      // Ideally this should test for Shapefile type and GDAL >= 1.2.6
-      // In reality, createSpatialIndex() looks after itself.
-      ability |= CreateSpatialIndex;
-    }
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
-    // adding attributes was added in GDAL 1.6
-    if ( ogrDriverName.startsWith( "ESRI" ) )
-    {
-      ability |= AddAttributes;
-    }
 #endif
 
     // OGR doesn't handle shapefiles without attributes, ie. missing DBFs well, fixes #803
-    if ( ogrDriverName.startsWith( "ESRI" ) )
+    if ( ogrDriverName == "ESRI Shapefile" )
     {
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1260
+      // test for Shapefile type and GDAL >= 1.2.6
+      ability |= CreateSpatialIndex;
+#endif
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
+      // adding attributes was added in GDAL 1.6
+      ability |= AddAttributes;
+#endif
+
       if ( mAttributeFields.size() == 0 )
       {
         QgsDebugMsg( "OGR doesn't handle shapefile without attributes well, ie. missing DBFs" );
@@ -1586,10 +1582,12 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
 
   OGR_DS_Destroy( dataSource );
 
-  if ( uri.endsWith( ".shp", Qt::CaseInsensitive ) )
+  QString driverName = OGR_Dr_GetName( driver );
+
+  if ( driverName == "ESRI Shapefile" )
   {
-    QString layerName = uri.left( uri.length() - 4 );
-    QFile prjFile( layerName + ".prj" );
+    QString layerName = uri.left( uri.indexOf( ".shp", Qt::CaseInsensitive ) );
+    QFile prjFile( layerName + ".qpj" );
     if ( prjFile.open( QIODevice::WriteOnly ) )
     {
       QTextStream prjStream( &prjFile );
@@ -1598,7 +1596,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
     }
     else
     {
-      QgsDebugMsg( "Couldn't open file " + layerName + ".prj" );
+      QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
     }
   }
 
@@ -1618,6 +1616,29 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 
   QgsCoordinateReferenceSystem srs;
 
+  if ( ogrDriver )
+  {
+    QString driverName = OGR_Dr_GetName( ogrDriver );
+
+    if ( driverName == "ESRI Shapefile" )
+    {
+      QString layerName = mFilePath.left( mFilePath.indexOf( ".shp", Qt::CaseInsensitive ) );
+      QFile prjFile( layerName + ".qpj" );
+      if ( prjFile.open( QIODevice::ReadOnly ) )
+      {
+        QTextStream prjStream( &prjFile );
+        QString myWktString = prjStream.readLine();
+        prjFile.close();
+
+        // create CRS from Wkt
+        srs.createFromWkt( myWktString );
+
+        if ( srs.isValid() )
+          return srs;
+      }
+    }
+  }
+
   OGRSpatialReferenceH mySpatialRefSys = OGR_L_GetSpatialRef( ogrLayer );
   if ( mySpatialRefSys == NULL )
   {
@@ -1626,10 +1647,10 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
   else
   {
     // get the proj4 text
-    char * ppszProj4;
+    char *ppszProj4;
     OSRExportToProj4( mySpatialRefSys, &ppszProj4 );
     QgsDebugMsg( ppszProj4 );
-    char    *pszWkt = NULL;
+    char *pszWkt = NULL;
     OSRExportToWkt( mySpatialRefSys, &pszWkt );
     QString myWktString = QString( pszWkt );
     OGRFree( pszWkt );

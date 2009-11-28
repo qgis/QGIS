@@ -95,15 +95,15 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   }
 
   // datasource created, now create the output layer
-  QString layerName = shapefileName.left( shapefileName.lastIndexOf( ".shp", Qt::CaseInsensitive ) );
+  QString layerName = shapefileName.left( shapefileName.indexOf( ".shp", Qt::CaseInsensitive ) );
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>( geometryType );
   mLayer = OGR_DS_CreateLayer( mDS, QFile::encodeName( layerName ).data(), ogrRef, wkbType, NULL );
 
   if ( srs )
   {
-    if ( shapefileName != layerName )
+    if ( driverName == "ESRI Shapefile" )
     {
-      QFile prjFile( layerName + ".prj" );
+      QFile prjFile( layerName + ".qpj" );
       if ( prjFile.open( QIODevice::WriteOnly ) )
       {
         QTextStream prjStream( &prjFile );
@@ -112,7 +112,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
       }
       else
       {
-        QgsDebugMsg( "Couldn't open file " + layerName + ".prj" );
+        QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
       }
     }
 
@@ -420,10 +420,10 @@ bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
   // TODO: should be case-insensitive
   //
   QString myFileBase = theFileName.replace( ".shp", "" );
-  bool ok = TRUE;
+  bool ok = true;
 
-  const char* suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix" };
-  for ( std::size_t i = 0; i < sizeof( suffixes ) / sizeof( char* ); i++ )
+  const char *suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix", ".qpj" };
+  for ( std::size_t i = 0; i < sizeof( suffixes ) / sizeof( *suffixes ); i++ )
   {
     QString file = myFileBase + suffixes[i];
     QFileInfo myInfo( file );
@@ -432,7 +432,7 @@ bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
       if ( !QFile::remove( file ) )
       {
         QgsDebugMsg( "Removing file failed : " + file );
-        ok = FALSE;
+        ok = false;
       }
     }
   }
