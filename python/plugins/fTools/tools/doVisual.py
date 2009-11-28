@@ -334,7 +334,7 @@ class visualThread( QThread ):
 	  if ( nVal % 2 ) == 0:
 	    medianVal = 0.5 * ( lstVal[ int( ( nVal - 1 ) / 2 ) ] + lstVal[ int( ( nVal ) / 2 ) ] )
 	  else:
-	    medianVal = lstVal[ ( nVal + 1 ) / 2 ]
+	    medianVal = lstVal[ int( ( nVal + 1 ) / 2 ) ]
       lstStats = []
       lstStats.append( self.tr( "Mean:" ) + unicode( meanVal ) )
       lstStats.append( self.tr( "StdDev:" ) + unicode( stdVal ) )
