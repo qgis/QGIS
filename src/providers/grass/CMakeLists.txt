@@ -30,10 +30,12 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 TARGET_LINK_LIBRARIES (qgisgrass
-  ${QT_QTCORE_LIBRARY} 
-  ${QT_QTXML_LIBRARY} 
-  ${GRASS_LIBRARIES}
   qgis_core
+  ${GRASS_LIBRARY_gis}
+  ${GRASS_LIBRARY_vect}
+  ${GRASS_LIBRARY_dbmibase}
+  ${GRASS_LIBRARY_dbmiclient}
+  ${GRASS_LIBRARY_gproj}
 )
 
 IF (APPLE)
@@ -49,9 +51,6 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 TARGET_LINK_LIBRARIES (grassprovider
-  ${QT_QTCORE_LIBRARY} 
-  ${QT_QTXML_LIBRARY} 
-  qgis_core
   qgisgrass
 )
 

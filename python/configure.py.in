@@ -37,9 +37,9 @@ else:
 if not os.path.isdir("./core"):
   os.mkdir("./core")
 if not os.path.isdir("./gui"):
-    os.mkdir("./gui")
+  os.mkdir("./gui")
 if not os.path.isdir("./analysis"):
-    os.mkdir("./analysis")
+  os.mkdir("./analysis")
 
 ##########################################################################
 # SIP -> *.CPP + *.H

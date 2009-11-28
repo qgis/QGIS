@@ -27,8 +27,6 @@ INCLUDE_DIRECTORIES (
 ADD_LIBRARY (postgresprovider MODULE ${PG_SRCS} ${PG_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (postgresprovider
-  ${QT_QTCORE_LIBRARY} 
-  ${QT_QTXML_LIBRARY} 
   ${POSTGRES_LIBRARY}
   qgis_core
 )

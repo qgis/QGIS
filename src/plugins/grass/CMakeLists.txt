@@ -147,14 +147,9 @@ INCLUDE_DIRECTORIES(
      qtermwidget
 )
 
-INCLUDE( ${QT_USE_FILE} )
-
 TARGET_LINK_LIBRARIES(grassplugin
-  qgis_core
-  qgis_gui
   qgisgrass
-  ${QT_QTSQL_LIBRARY}
-  ${GRASS_LIBRARIES}
+  qgis_gui
 )
 
 

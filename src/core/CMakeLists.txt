@@ -279,24 +279,24 @@ ADD_DEPENDENCIES(qgis_core svnversion)
 
 # because of htonl
 IF (WIN32)
-  SET(PLATFORM_LIBRARIES wsock32)
+  TARGET_LINK_LIBRARIES(qgis_core wsock32)
   IF (MSVC)
-    #needed for linking to gdal which needs odbc
-    SET(PLATFORM_LIBRARIES ${PLATFORM_LIBRARIES} odbc32 odbccp32)
+    # needed for linking to gdal which needs odbc
+    # TARGET_LINK_LIBRARIES(qgis_core odbc32 odbccp32)
   ENDIF (MSVC)
 ENDIF (WIN32)
 
 TARGET_LINK_LIBRARIES(qgis_core
+  ${QT_QTMAIN_LIBRARY} 
+  ${QT_QTXML_LIBRARY} 
   ${QT_QTCORE_LIBRARY} 
   ${QT_QTGUI_LIBRARY} 
-  ${QT_QTXML_LIBRARY} 
-  ${QT_QTSVG_LIBRARY} 
   ${QT_QTNETWORK_LIBRARY} 
-  ${QT_QTMAIN_LIBRARY} 
+  ${QT_QTSVG_LIBRARY} 
+
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
   ${GDAL_LIBRARY}
-  ${PLATFORM_LIBRARIES}
 )
 
 IF (WITH_INTERNAL_SPATIALITE)
@@ -323,82 +323,82 @@ INSTALL(TARGETS qgis_core
 # Added by Tim to install headers
 
 SET(QGIS_CORE_HDRS
-qgis.h
-qgsapplication.h
-qgsattributeaction.h
-qgscentralpointpositionmanager.h
-qgsclipper.h
-qgscontexthelp.h
-qgscoordinatetransform.h
-qgsdatasourceuri.h
-qgsdistancearea.h
-qgscsexception.h
-qgsexception.h
-qgsfeature.h
-qgsfield.h
-qgsgeometry.h
-qgshttptransaction.h
-qgslabel.h
-qgslabelattributes.h
-qgslogger.h
-qgsmaplayer.h
-qgsmaplayerregistry.h
-qgsmaprenderer.h
-qgsmaptopixel.h
-qgsmessageoutput.h
-qgsoverlayobjectpositionmanager.h
-qgspalobjectpositionmanager.h
-qgspoint.h
-qgsproject.h
-qgsprojectfiletransform.h
-qgsprojectproperty.h
-qgsprojectversion.h
-qgsprovidercountcalcevent.h
-qgsproviderextentcalcevent.h
-qgsprovidermetadata.h
-qgsproviderregistry.h
-qgsrasterdataprovider.h
-qgsrectangle.h
-qgsrendercontext.h
-qgsrunprocess.h
-qgsscalecalculator.h
-qgssearchstring.h
-qgssearchtreenode.h
-qgssnapper.h
-qgscoordinatereferencesystem.h
-qgsvectordataprovider.h
-qgsvectorfilewriter.h
-qgsvectorlayer.h
-qgsvectoroverlay.h
-qgstolerance.h
+  qgis.h
+  qgsapplication.h
+  qgsattributeaction.h
+  qgscentralpointpositionmanager.h
+  qgsclipper.h
+  qgscontexthelp.h
+  qgscoordinatetransform.h
+  qgsdatasourceuri.h
+  qgsdistancearea.h
+  qgscsexception.h
+  qgsexception.h
+  qgsfeature.h
+  qgsfield.h
+  qgsgeometry.h
+  qgshttptransaction.h
+  qgslabel.h
+  qgslabelattributes.h
+  qgslogger.h
+  qgsmaplayer.h
+  qgsmaplayerregistry.h
+  qgsmaprenderer.h
+  qgsmaptopixel.h
+  qgsmessageoutput.h
+  qgsoverlayobjectpositionmanager.h
+  qgspalobjectpositionmanager.h
+  qgspoint.h
+  qgsproject.h
+  qgsprojectfiletransform.h
+  qgsprojectproperty.h
+  qgsprojectversion.h
+  qgsprovidercountcalcevent.h
+  qgsproviderextentcalcevent.h
+  qgsprovidermetadata.h
+  qgsproviderregistry.h
+  qgsrasterdataprovider.h
+  qgsrectangle.h
+  qgsrendercontext.h
+  qgsrunprocess.h
+  qgsscalecalculator.h
+  qgssearchstring.h
+  qgssearchtreenode.h
+  qgssnapper.h
+  qgscoordinatereferencesystem.h
+  qgsvectordataprovider.h
+  qgsvectorfilewriter.h
+  qgsvectorlayer.h
+  qgsvectoroverlay.h
+  qgstolerance.h
 
-raster/qgscliptominmaxenhancement.h
-raster/qgscolorrampshader.h
-raster/qgscolorrampshader.h
-raster/qgscontrastenhancement.h
-raster/qgscontrastenhancementfunction.h
-raster/qgsfreakoutshader.h
-raster/qgslinearminmaxenhancement.h
-raster/qgslinearminmaxenhancementwithclip.h
-raster/qgspseudocolorshader.h
-raster/qgsrasterbandstats.h
-raster/qgsrasterlayer.h
-raster/qgsrastertransparency.h
-raster/qgsrastershader.h
-raster/qgsrastershaderfunction.h
-raster/qgsrasterviewport.h
+  raster/qgscliptominmaxenhancement.h
+  raster/qgscolorrampshader.h
+  raster/qgscolorrampshader.h
+  raster/qgscontrastenhancement.h
+  raster/qgscontrastenhancementfunction.h
+  raster/qgsfreakoutshader.h
+  raster/qgslinearminmaxenhancement.h
+  raster/qgslinearminmaxenhancementwithclip.h
+  raster/qgspseudocolorshader.h
+  raster/qgsrasterbandstats.h
+  raster/qgsrasterlayer.h
+  raster/qgsrastertransparency.h
+  raster/qgsrastershader.h
+  raster/qgsrastershaderfunction.h
+  raster/qgsrasterviewport.h
+  
+  renderer/qgscontinuouscolorrenderer.h
+  renderer/qgsgraduatedsymbolrenderer.h
+  renderer/qgsrenderer.h
+  renderer/qgssinglesymbolrenderer.h
+  renderer/qgsuniquevaluerenderer.h
 
-renderer/qgscontinuouscolorrenderer.h
-renderer/qgsgraduatedsymbolrenderer.h
-renderer/qgsrenderer.h
-renderer/qgssinglesymbolrenderer.h
-renderer/qgsuniquevaluerenderer.h
+  symbology/qgsmarkercatalogue.h
+  symbology/qgssymbol.h
+  symbology/qgssymbologyutils.h
 
-symbology/qgsmarkercatalogue.h
-symbology/qgssymbol.h
-symbology/qgssymbologyutils.h
-
-spatialindex/qgsspatialindex.h
+  spatialindex/qgsspatialindex.h
 )
 
 INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
