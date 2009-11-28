@@ -93,6 +93,9 @@ class QgsMapCanvas : QGraphicsView
     //! Zoom to the next extent (view)
     void zoomToNextExtent();
 
+    // ! Clears the list of extents and sets current extent as first item
+    void clearExtentHistory();
+ 
     /** Zoom to the extent of the selected features of current (vector) layer.
       Added in version 1.2: optionally specify different than current layer */
     void zoomToSelected(QgsVectorLayer* layer = NULL);
@@ -256,6 +259,14 @@ class QgsMapCanvas : QGraphicsView
    
     //! Emit map tool changed event
     void mapToolSet(QgsMapTool *tool);
+
+    //! Emitted when zoom last status changed
+    //! @note: this signal was added in version 1.4
+    void zoomLastStatusChanged( bool );
+
+    //! Emitted when zoom next status changed
+    //! @note: this signal was added in version 1.4
+    void zoomNextStatusChanged( bool );
 
   protected:
 

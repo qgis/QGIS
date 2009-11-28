@@ -466,6 +466,7 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   QgsDebugMsg( QgsApplication::showSettings() );
   QgsDebugMsg( "\n--------------------------\n\n\n" );
   mMapCanvas->freeze( false );
+  mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mLastComposerId = 0;
 } // QgisApp ctor
 
@@ -1801,6 +1802,10 @@ void QgisApp::setupConnections()
   connect( mActionUndo, SIGNAL( triggered() ), mUndoWidget, SLOT( undo() ) );
   connect( mActionRedo, SIGNAL( triggered() ), mUndoWidget, SLOT( redo() ) );
   connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
+
+  // Connect status from ZoomLast/ZoomNext to corresponding action
+  connect( mMapCanvas, SIGNAL( zoomLastStatusChanged( bool ) ), mActionZoomLast, SLOT( setEnabled( bool ) ) );
+  connect( mMapCanvas, SIGNAL( zoomNextStatusChanged( bool ) ), mActionZoomNext, SLOT( setEnabled( bool ) ) );
 
   // Monitor change of project path
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
@@ -3193,6 +3198,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
 
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
+  mMapCanvas->clearExtentHistory();
 
   mMapCanvas->mapRenderer()->setProjectionsEnabled( FALSE );
 

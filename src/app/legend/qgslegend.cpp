@@ -516,7 +516,10 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
 
   // first layer?
   if ( mMapCanvas->layerCount() == 1 )
+  {
     mMapCanvas->zoomToFullExtent();
+    mMapCanvas->clearExtentHistory();
+  }
   setCurrentItem( llayer );
   //make the QTreeWidget item up-to-date
   doItemsLayout();
