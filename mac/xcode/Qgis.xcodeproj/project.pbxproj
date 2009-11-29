@@ -1037,6 +1037,8 @@
 		729288B60F71FEE2006D9489 /* qgsopenvectorlayerdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 726979A70F71369A00AFA402 /* qgsopenvectorlayerdialog.h */; };
 		729288ED0F7293DB006D9489 /* qgshelpserver.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77B0F39E57A003DC336 /* qgshelpserver.h */; };
 		729288EE0F7293DB006D9489 /* qgshelpviewer.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77D0F39E57A003DC336 /* qgshelpviewer.h */; };
+		7296CD9E10C2ED18001EAD92 /* qgscomposershape.h in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CE110B58AD2003A618E /* qgscomposershape.h */; };
+		7296CE1A10C2FE91001EAD92 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		7299E8BA0F90F06C002F58DE /* AUTHORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2E50F4147890022BE1F /* AUTHORS */; };
 		7299E8BB0F90F06C002F58DE /* CODING in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2E40F4147890022BE1F /* CODING */; };
 		7299E8BC0F90F06C002F58DE /* SPONSORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2DD0F4147890022BE1F /* SPONSORS */; };
@@ -1061,7 +1063,6 @@
 		72A07D8E0F3BDF9C004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07D9A0F3BDF9F004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07DA60F3BDFA3004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
-		72A07DB20F3BDFA4004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07DBD0F3BDFC8004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07DC60F3BE1B1004FC2A4 /* qgspostgresprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC720F39E57B003DC336 /* qgspostgresprovider.cpp */; };
 		72A07DC70F3BE1B4004FC2A4 /* qgspostgisbox2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC6A0F39E57B003DC336 /* qgspostgisbox2d.cpp */; };
@@ -1089,7 +1090,6 @@
 		72A56B2D0F3C810600BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B470F3C822800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B520F3C823800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
-		72A56B5C0F3C823800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B700F3C824400BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B7A0F3C824400BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B840F3C824400BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -5361,6 +5361,12 @@
 		7286D63D1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolrotatepointsymbols.h; path = ../../src/app/qgsmaptoolrotatepointsymbols.h; sourceTree = SOURCE_ROOT; };
 		7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspointrotationitem.cpp; path = ../../src/app/qgspointrotationitem.cpp; sourceTree = SOURCE_ROOT; };
 		7286D63F1062769D008D83A6 /* qgspointrotationitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspointrotationitem.h; path = ../../src/app/qgspointrotationitem.h; sourceTree = SOURCE_ROOT; };
+		7296CD8610C2E667001EAD92 /* chstroke.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = chstroke.sh; path = ../../scripts/chstroke.sh; sourceTree = SOURCE_ROOT; };
+		7296CD8710C2E6E3001EAD92 /* QgsAttributeTable-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTable-fr_FR"; path = "../../resources/context_help/QgsAttributeTable-fr_FR"; sourceTree = SOURCE_ROOT; };
+		7296CD8810C2E6E3001EAD92 /* QgsBookmarks-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-fr_FR"; path = "../../resources/context_help/QgsBookmarks-fr_FR"; sourceTree = SOURCE_ROOT; };
+		7296CD8910C2E6E3001EAD92 /* QgsComposer-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-fr_FR"; path = "../../resources/context_help/QgsComposer-fr_FR"; sourceTree = SOURCE_ROOT; };
+		7296CD8A10C2E6E3001EAD92 /* QgsCopyrightLabelPluginGui-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-fr_FR"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-fr_FR"; sourceTree = SOURCE_ROOT; };
+		7296CD8B10C2E6E3001EAD92 /* QgsCreateNewVectorLayer-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCreateNewVectorLayer-fr_FR"; path = "../../resources/context_help/QgsCreateNewVectorLayer-fr_FR"; sourceTree = SOURCE_ROOT; };
 		7299396A0FE3037600244D1A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = "../../src/plugins/grass/modules-6.3/CMakeLists.txt"; sourceTree = SOURCE_ROOT; };
 		7299396B0FE3037600244D1A /* r.surf.fractal.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.1.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.1.png"; sourceTree = SOURCE_ROOT; };
 		7299396C0FE3037600244D1A /* r.surf.fractal.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.2.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.2.png"; sourceTree = SOURCE_ROOT; };
@@ -5397,7 +5403,6 @@
 		7299398C0FE3037600244D1A /* v.to.db.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.to.db.1.png; path = "../../src/plugins/grass/modules-6.4/v.to.db.1.png"; sourceTree = SOURCE_ROOT; };
 		7299398D0FE3037600244D1A /* v.to.db.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.to.db.2.png; path = "../../src/plugins/grass/modules-6.4/v.to.db.2.png"; sourceTree = SOURCE_ROOT; };
 		7299398E0FE3037600244D1A /* v.to.db.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.to.db.qgm; path = "../../src/plugins/grass/modules-6.4/v.to.db.qgm"; sourceTree = SOURCE_ROOT; };
-		729939910FE3037600244D1A /* chstroke */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = chstroke; path = "../../src/plugins/grass/modules-common/chstroke"; sourceTree = SOURCE_ROOT; };
 		729939920FE3037600244D1A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = "../../src/plugins/grass/modules-common/CMakeLists.txt"; sourceTree = SOURCE_ROOT; };
 		729939930FE3037600244D1A /* db.connect.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = db.connect.1.png; path = "../../src/plugins/grass/modules-common/db.connect.1.png"; sourceTree = SOURCE_ROOT; };
 		729939940FE3037600244D1A /* db.connect.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = db.connect.qgm; path = "../../src/plugins/grass/modules-common/db.connect.qgm"; sourceTree = SOURCE_ROOT; };
@@ -6801,7 +6806,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				72A07DB20F3BDFA4004FC2A4 /* libqgis_core.dylib in Frameworks */,
 				72A07E3B0F3BEEB4004FC2A4 /* libqgisgrass.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6862,7 +6866,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				72A56B5C0F3C823800BA32A1 /* libqgis_core.dylib in Frameworks */,
+				7296CE1A10C2FE91001EAD92 /* libqgis_core.dylib in Frameworks */,
 				72A56BB70F3C84A700BA32A1 /* libqgis_gui.dylib in Frameworks */,
 				72A56D730F3CC66000BA32A1 /* libqgisgrass.dylib in Frameworks */,
 			);
@@ -8919,6 +8923,7 @@
 				7209ED2E0F39E5D9003DC336 /* astyle-rollback.sh */,
 				7209ED2F0F39E5D9003DC336 /* astyle.sh */,
 				7209ED300F39E5D9003DC336 /* build_debian_package.sh */,
+				7296CD8610C2E667001EAD92 /* chstroke.sh */,
 				72E2D9FB10B240B2002E8663 /* context_help_id.py */,
 				7209ED310F39E5D9003DC336 /* create_new_ts.sh */,
 				7209ED320F39E5D9003DC336 /* fixdiff.pl */,
@@ -8958,100 +8963,105 @@
 			children = (
 				7209ED800F39E5D9003DC336 /* CMakeLists.txt */,
 				724FFB0810B47263006E3698 /* QgsAttributeTable-de_DE */,
-				724FFB0910B47263006E3698 /* QgsAttributeTable-en_US */,
-				724FFB0A10B47263006E3698 /* QgsAttributeTable-pl_PL */,
-				724FFB0B10B47263006E3698 /* QgsAttributeTable-ru_RU */,
-				724FFB0C10B47263006E3698 /* QgsAttributeTable-sk_SK */,
 				724FFB0D10B47263006E3698 /* QgsBookmarks-de_DE */,
-				724FFB0E10B47263006E3698 /* QgsBookmarks-en_US */,
-				724FFB0F10B47263006E3698 /* QgsBookmarks-es_ES */,
-				724FFB1010B47263006E3698 /* QgsBookmarks-pl_PL */,
-				724FFB1110B47263006E3698 /* QgsBookmarks-ru_RU */,
-				724FFB1210B47263006E3698 /* QgsBookmarks-sk_SK */,
-				724FFB1310B47263006E3698 /* QgsBookmarks-sv_SE */,
 				724FFB1410B47263006E3698 /* QgsComposer-de_DE */,
-				724FFB1510B47263006E3698 /* QgsComposer-en_US */,
-				724FFB1610B47263006E3698 /* QgsComposer-pl_PL */,
-				724FFB1710B47263006E3698 /* QgsComposer-ru_RU */,
-				724FFB1810B47263006E3698 /* QgsComposer-sk_SK */,
 				724FFB1910B47263006E3698 /* QgsCopyrightLabelPluginGui-de_DE */,
-				724FFB1A10B47263006E3698 /* QgsCopyrightLabelPluginGui-en_US */,
-				724FFB1B10B47263006E3698 /* QgsCopyrightLabelPluginGui-ru_RU */,
-				724FFB1C10B47263006E3698 /* QgsCopyrightLabelPluginGui-sk_SK */,
-				724FFB1D10B47263006E3698 /* QgsCopyrightLabelPluginGui-sv_SE */,
 				724FFB1E10B47263006E3698 /* QgsCreateNewVectorLayer-de_DE */,
-				724FFB1F10B47263006E3698 /* QgsCreateNewVectorLayer-en_US */,
-				724FFB2010B47263006E3698 /* QgsCreateNewVectorLayer-ru_RU */,
-				724FFB2110B47263006E3698 /* QgsCreateNewVectorLayer-sk_SK */,
 				724FFB2210B47263006E3698 /* QgsDbSourceSelect-de_DE */,
-				724FFB2310B47263006E3698 /* QgsDbSourceSelect-en_US */,
-				724FFB2410B47263006E3698 /* QgsDbSourceSelect-pl_PL */,
-				724FFB2510B47263006E3698 /* QgsDbSourceSelect-ru_RU */,
-				724FFB2610B47263006E3698 /* QgsDbSourceSelect-sk_SK */,
-				724FFB2710B47263006E3698 /* QgsDbSourceSelect-sv_SE */,
 				724FFB2810B47263006E3698 /* QgsDelimitedTextPluginGui-de_DE */,
-				724FFB2910B47263006E3698 /* QgsDelimitedTextPluginGui-en_US */,
-				724FFB2A10B47263006E3698 /* QgsDelimitedTextPluginGui-ru_RU */,
-				724FFB2B10B47263006E3698 /* QgsDelimitedTextPluginGui-sk_SK */,
-				724FFB2C10B47263006E3698 /* QgsDelimitedTextPluginGui-sv_SE */,
 				724FFB2D10B47263006E3698 /* QgsGPSPlugin-de_DE */,
-				724FFB2E10B47263006E3698 /* QgsGPSPlugin-en_US */,
-				724FFB2F10B47263006E3698 /* QgsGPSPlugin-ru_RU */,
-				724FFB3010B47263006E3698 /* QgsGPSPlugin-sk_SK */,
 				724FFB3110B47263006E3698 /* QgsIdentifyResults-de_DE */,
-				724FFB3210B47263006E3698 /* QgsIdentifyResults-en_US */,
-				724FFB3310B47263006E3698 /* QgsIdentifyResults-es_ES */,
-				724FFB3410B47263006E3698 /* QgsIdentifyResults-pl_PL */,
-				724FFB3510B47263006E3698 /* QgsIdentifyResults-ru_RU */,
-				724FFB3610B47263006E3698 /* QgsIdentifyResults-sk_SK */,
-				724FFB3710B47263006E3698 /* QgsIdentifyResults-sv_SE */,
 				724FFB3810B47263006E3698 /* QgsMapserverExport-de_DE */,
-				724FFB3910B47263006E3698 /* QgsMapserverExport-en_US */,
-				724FFB3A10B47263006E3698 /* QgsMapserverExport-es_ES */,
-				724FFB3B10B47263006E3698 /* QgsMapserverExport-pl_PL */,
-				724FFB3C10B47263006E3698 /* QgsMapserverExport-ru_RU */,
-				724FFB3D10B47263006E3698 /* QgsMapserverExport-sk_SK */,
 				724FFB3E10B47263006E3698 /* QgsMeasure-de_DE */,
-				724FFB3F10B47263006E3698 /* QgsMeasure-en_US */,
-				724FFB4010B47263006E3698 /* QgsMeasure-es_ES */,
-				724FFB4110B47263006E3698 /* QgsMeasure-pl_PL */,
-				724FFB4210B47263006E3698 /* QgsMeasure-ru_RU */,
-				724FFB4310B47263006E3698 /* QgsMeasure-sk_SK */,
-				724FFB4410B47263006E3698 /* QgsMeasure-sv_SE */,
 				724FFB4510B47263006E3698 /* QgsNewConnection-de_DE */,
-				724FFB4610B47263006E3698 /* QgsNewConnection-en_US */,
-				724FFB4710B47263006E3698 /* QgsNewConnection-es_ES */,
-				724FFB4810B47263006E3698 /* QgsNewConnection-pl_PL */,
-				724FFB4910B47263006E3698 /* QgsNewConnection-ru_RU */,
-				724FFB4A10B47263006E3698 /* QgsNewConnection-sk_SK */,
-				724FFB4B10B47263006E3698 /* QgsNewConnection-sv_SE */,
 				724FFB4C10B47263006E3698 /* QgsNewHttpConnection-de_DE */,
-				724FFB4D10B47263006E3698 /* QgsNewHttpConnection-en_US */,
-				724FFB4E10B47263006E3698 /* QgsNewHttpConnection-ru_RU */,
-				724FFB4F10B47263006E3698 /* QgsNewHttpConnection-sk_SK */,
-				724FFB5010B47263006E3698 /* QgsNewHttpConnection-sv_SE */,
-				724FFB5110B47263006E3698 /* QgsNewOgrConnection-en_US */,
-				724FFB5210B47263006E3698 /* QgsNewOgrConnection-ru_RU */,
-				724FFB5310B47263006E3698 /* QgsOpenVectorLayerDialog-en_US */,
-				724FFB5410B47263006E3698 /* QgsOpenVectorLayerDialog-ru_RU */,
 				724FFB5510B47263006E3698 /* QgsProjectProperties-de_DE */,
-				724FFB5610B47263006E3698 /* QgsProjectProperties-en_US */,
-				724FFB5710B47263006E3698 /* QgsProjectProperties-es_ES */,
-				724FFB5810B47263006E3698 /* QgsProjectProperties-pl_PL */,
-				724FFB5910B47263006E3698 /* QgsProjectProperties-ru_RU */,
-				724FFB5A10B47263006E3698 /* QgsProjectProperties-sk_SK */,
-				724FFB5B10B47263006E3698 /* QgsProjectProperties-sv_SE */,
 				724FFB5C10B47263006E3698 /* QgsServerSourceSelect-de_DE */,
-				724FFB5D10B47263006E3698 /* QgsServerSourceSelect-en_US */,
-				724FFB5E10B47263006E3698 /* QgsServerSourceSelect-ru_RU */,
-				724FFB5F10B47263006E3698 /* QgsServerSourceSelect-sk_SK */,
-				724FFB6010B47263006E3698 /* QgsServerSourceSelect-sv_SE */,
 				724FFB6110B47263006E3698 /* QgsVectorLayerProperties-de_DE */,
+				724FFB0910B47263006E3698 /* QgsAttributeTable-en_US */,
+				724FFB0E10B47263006E3698 /* QgsBookmarks-en_US */,
+				724FFB1510B47263006E3698 /* QgsComposer-en_US */,
+				724FFB1A10B47263006E3698 /* QgsCopyrightLabelPluginGui-en_US */,
+				724FFB1F10B47263006E3698 /* QgsCreateNewVectorLayer-en_US */,
+				724FFB2310B47263006E3698 /* QgsDbSourceSelect-en_US */,
+				724FFB2910B47263006E3698 /* QgsDelimitedTextPluginGui-en_US */,
+				724FFB2E10B47263006E3698 /* QgsGPSPlugin-en_US */,
+				724FFB3210B47263006E3698 /* QgsIdentifyResults-en_US */,
+				724FFB3910B47263006E3698 /* QgsMapserverExport-en_US */,
+				724FFB3F10B47263006E3698 /* QgsMeasure-en_US */,
+				724FFB4610B47263006E3698 /* QgsNewConnection-en_US */,
+				724FFB4D10B47263006E3698 /* QgsNewHttpConnection-en_US */,
+				724FFB5110B47263006E3698 /* QgsNewOgrConnection-en_US */,
+				724FFB5310B47263006E3698 /* QgsOpenVectorLayerDialog-en_US */,
+				724FFB5610B47263006E3698 /* QgsProjectProperties-en_US */,
+				724FFB5D10B47263006E3698 /* QgsServerSourceSelect-en_US */,
 				724FFB6210B47263006E3698 /* QgsVectorLayerProperties-en_US */,
+				724FFB0F10B47263006E3698 /* QgsBookmarks-es_ES */,
+				724FFB3310B47263006E3698 /* QgsIdentifyResults-es_ES */,
+				724FFB3A10B47263006E3698 /* QgsMapserverExport-es_ES */,
+				724FFB4010B47263006E3698 /* QgsMeasure-es_ES */,
+				724FFB4710B47263006E3698 /* QgsNewConnection-es_ES */,
+				724FFB5710B47263006E3698 /* QgsProjectProperties-es_ES */,
 				724FFB6310B47263006E3698 /* QgsVectorLayerProperties-es_ES */,
+				7296CD8710C2E6E3001EAD92 /* QgsAttributeTable-fr_FR */,
+				7296CD8810C2E6E3001EAD92 /* QgsBookmarks-fr_FR */,
+				7296CD8910C2E6E3001EAD92 /* QgsComposer-fr_FR */,
+				7296CD8A10C2E6E3001EAD92 /* QgsCopyrightLabelPluginGui-fr_FR */,
+				7296CD8B10C2E6E3001EAD92 /* QgsCreateNewVectorLayer-fr_FR */,
+				724FFB0A10B47263006E3698 /* QgsAttributeTable-pl_PL */,
+				724FFB1010B47263006E3698 /* QgsBookmarks-pl_PL */,
+				724FFB1610B47263006E3698 /* QgsComposer-pl_PL */,
+				724FFB2410B47263006E3698 /* QgsDbSourceSelect-pl_PL */,
+				724FFB3410B47263006E3698 /* QgsIdentifyResults-pl_PL */,
+				724FFB3B10B47263006E3698 /* QgsMapserverExport-pl_PL */,
+				724FFB4110B47263006E3698 /* QgsMeasure-pl_PL */,
+				724FFB4810B47263006E3698 /* QgsNewConnection-pl_PL */,
+				724FFB5810B47263006E3698 /* QgsProjectProperties-pl_PL */,
 				724FFB6410B47263006E3698 /* QgsVectorLayerProperties-pl_PL */,
+				724FFB0B10B47263006E3698 /* QgsAttributeTable-ru_RU */,
+				724FFB1110B47263006E3698 /* QgsBookmarks-ru_RU */,
+				724FFB1710B47263006E3698 /* QgsComposer-ru_RU */,
+				724FFB1B10B47263006E3698 /* QgsCopyrightLabelPluginGui-ru_RU */,
+				724FFB2010B47263006E3698 /* QgsCreateNewVectorLayer-ru_RU */,
+				724FFB2510B47263006E3698 /* QgsDbSourceSelect-ru_RU */,
+				724FFB2A10B47263006E3698 /* QgsDelimitedTextPluginGui-ru_RU */,
+				724FFB2F10B47263006E3698 /* QgsGPSPlugin-ru_RU */,
+				724FFB3510B47263006E3698 /* QgsIdentifyResults-ru_RU */,
+				724FFB3C10B47263006E3698 /* QgsMapserverExport-ru_RU */,
+				724FFB4210B47263006E3698 /* QgsMeasure-ru_RU */,
+				724FFB4910B47263006E3698 /* QgsNewConnection-ru_RU */,
+				724FFB4E10B47263006E3698 /* QgsNewHttpConnection-ru_RU */,
+				724FFB5210B47263006E3698 /* QgsNewOgrConnection-ru_RU */,
+				724FFB5410B47263006E3698 /* QgsOpenVectorLayerDialog-ru_RU */,
+				724FFB5910B47263006E3698 /* QgsProjectProperties-ru_RU */,
+				724FFB5E10B47263006E3698 /* QgsServerSourceSelect-ru_RU */,
 				724FFB6510B47263006E3698 /* QgsVectorLayerProperties-ru_RU */,
+				724FFB0C10B47263006E3698 /* QgsAttributeTable-sk_SK */,
+				724FFB1210B47263006E3698 /* QgsBookmarks-sk_SK */,
+				724FFB1810B47263006E3698 /* QgsComposer-sk_SK */,
+				724FFB1C10B47263006E3698 /* QgsCopyrightLabelPluginGui-sk_SK */,
+				724FFB2110B47263006E3698 /* QgsCreateNewVectorLayer-sk_SK */,
+				724FFB2610B47263006E3698 /* QgsDbSourceSelect-sk_SK */,
+				724FFB2B10B47263006E3698 /* QgsDelimitedTextPluginGui-sk_SK */,
+				724FFB3010B47263006E3698 /* QgsGPSPlugin-sk_SK */,
+				724FFB3610B47263006E3698 /* QgsIdentifyResults-sk_SK */,
+				724FFB3D10B47263006E3698 /* QgsMapserverExport-sk_SK */,
+				724FFB4310B47263006E3698 /* QgsMeasure-sk_SK */,
+				724FFB4A10B47263006E3698 /* QgsNewConnection-sk_SK */,
+				724FFB4F10B47263006E3698 /* QgsNewHttpConnection-sk_SK */,
+				724FFB5A10B47263006E3698 /* QgsProjectProperties-sk_SK */,
+				724FFB5F10B47263006E3698 /* QgsServerSourceSelect-sk_SK */,
 				724FFB6610B47263006E3698 /* QgsVectorLayerProperties-sk_SK */,
+				724FFB1310B47263006E3698 /* QgsBookmarks-sv_SE */,
+				724FFB1D10B47263006E3698 /* QgsCopyrightLabelPluginGui-sv_SE */,
+				724FFB2710B47263006E3698 /* QgsDbSourceSelect-sv_SE */,
+				724FFB2C10B47263006E3698 /* QgsDelimitedTextPluginGui-sv_SE */,
+				724FFB3710B47263006E3698 /* QgsIdentifyResults-sv_SE */,
+				724FFB4410B47263006E3698 /* QgsMeasure-sv_SE */,
+				724FFB4B10B47263006E3698 /* QgsNewConnection-sv_SE */,
+				724FFB5010B47263006E3698 /* QgsNewHttpConnection-sv_SE */,
+				724FFB5B10B47263006E3698 /* QgsProjectProperties-sv_SE */,
+				724FFB6010B47263006E3698 /* QgsServerSourceSelect-sv_SE */,
 			);
 			name = context_help;
 			path = ../../resources/context_help;
@@ -10730,7 +10740,6 @@
 		7299398F0FE3037600244D1A /* modules-common */ = {
 			isa = PBXGroup;
 			children = (
-				729939910FE3037600244D1A /* chstroke */,
 				729939920FE3037600244D1A /* CMakeLists.txt */,
 				729939930FE3037600244D1A /* db.connect.1.png */,
 				729939940FE3037600244D1A /* db.connect.qgm */,
@@ -12922,11 +12931,11 @@
 				729BBF320F407CBA001BCB63 /* qgispython */,
 				7256F1540F4105770022BE1F /* python_modules */,
 				72A07DB90F3BDFC8004FC2A4 /* provider template */,
+				72A07D140F3BD625004FC2A4 /* delimitedtextprovider */,
 				72A07CBB0F3BBFEE004FC2A4 /* memoryprovider */,
 				72A07CF00F3BD1F9004FC2A4 /* ogrprovider */,
 				72DB68DB1021D08400ED5F3A /* osmprovider */,
 				72A07D0A0F3BD625004FC2A4 /* wmsprovider */,
-				72A07D140F3BD625004FC2A4 /* delimitedtextprovider */,
 				72A07D880F3BDF9C004FC2A4 /* postgresprovider */,
 				72A07D940F3BDF9F004FC2A4 /* gpxprovider */,
 				72A07DA00F3BDFA3004FC2A4 /* wfsprovider */,
@@ -13698,6 +13707,7 @@
 				729287460F71C2CB006D9489 /* qgscomposermap.h in Sources */,
 				729287470F71C2CB006D9489 /* qgscomposerpicture.h in Sources */,
 				729287480F71C2CB006D9489 /* qgscomposerscalebar.h in Sources */,
+				7296CD9E10C2ED18001EAD92 /* qgscomposershape.h in Sources */,
 				72038CA310893F3100439C44 /* qgscomposition.h in Sources */,
 				729287490F71C2CB006D9489 /* qgscontexthelp.h in Sources */,
 				7292874A0F71C2CB006D9489 /* qgscoordinatetransform.h in Sources */,
@@ -14769,8 +14779,8 @@
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
-					"$(QT_LIB_SVG)",
 					"$(QT_LIB_XML)",
+					"$(QT_LIB_SVG)",
 				);
 				PRODUCT_NAME = diagramoverlayplugin.so;
 				TARGET_PLUGINDIR = diagram_overlay;
@@ -14806,8 +14816,8 @@
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
-					"$(QT_LIB_SVG)",
 					"$(QT_LIB_XML)",
+					"$(QT_LIB_SVG)",
 				);
 				PRODUCT_NAME = diagramoverlayplugin.so;
 				TARGET_PLUGINDIR = diagram_overlay;
@@ -14868,7 +14878,11 @@
 					"$(GEOS_LIB)",
 					"$(SQLITE_LIB)",
 					"$(SPATIALITE_LIBADD)",
-					"$(QT_LIB)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_XML)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_NET)",
+					"$(QT_LIB_SVG)",
 				);
 				PRODUCT_NAME = qgis_core;
 			};
@@ -14910,7 +14924,11 @@
 					"$(GEOS_LIB)",
 					"$(SQLITE_LIB)",
 					"$(SPATIALITE_LIBADD)",
-					"$(QT_LIB)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_XML)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_NET)",
+					"$(QT_LIB_SVG)",
 				);
 				PRODUCT_NAME = qgis_core;
 			};
@@ -14944,9 +14962,12 @@
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"$(GEOS_LIB)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+					"$(QT_LIB_SVG)",
+					"$(QT_LIB_SQL)",
 					"$(SQLITE_LIB)",
-					"$(QT_LIB)",
 				);
 				PRODUCT_NAME = qgis_gui;
 			};
@@ -14979,9 +15000,12 @@
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"$(GEOS_LIB)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+					"$(QT_LIB_SVG)",
+					"$(QT_LIB_SQL)",
 					"$(SQLITE_LIB)",
-					"$(QT_LIB)",
 				);
 				PRODUCT_NAME = qgis_gui;
 			};
@@ -15012,10 +15036,9 @@
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"$(GEOS_LIB)",
-					"$(PROJ_LIB)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
 					"$(GDAL_LIB)",
-					"$(QT_LIB)",
 				);
 				PRODUCT_NAME = qgis_analysis;
 			};
@@ -15045,10 +15068,9 @@
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"$(GEOS_LIB)",
-					"$(PROJ_LIB)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
 					"$(GDAL_LIB)",
-					"$(QT_LIB)",
 				);
 				PRODUCT_NAME = qgis_analysis;
 			};
@@ -15308,7 +15330,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 					"$(SQLITE_LIB)",
 				);
 				PRODUCT_NAME = spatialiteprovider.so;
@@ -15340,7 +15361,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 					"$(SQLITE_LIB)",
 				);
 				PRODUCT_NAME = spatialiteprovider.so;
@@ -15538,8 +15558,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
-					"$(QT_LIB_GUI)",
 					"$(PYTHON_LIB)",
 				);
 				PRODUCT_NAME = qgispython;
@@ -15570,8 +15588,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
-					"$(QT_LIB_GUI)",
 					"$(PYTHON_LIB)",
 				);
 				PRODUCT_NAME = qgispython;
@@ -15659,9 +15675,7 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 					"$(GDAL_LIB)",
-					"$(GEOS_LIB)",
 				);
 				PRODUCT_NAME = ogrprovider.so;
 			};
@@ -15690,9 +15704,7 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 					"$(GDAL_LIB)",
-					"$(GEOS_LIB)",
 				);
 				PRODUCT_NAME = ogrprovider.so;
 			};
@@ -15779,9 +15791,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
-					"$(GDAL_LIB)",
-					"$(GEOS_LIB)",
 				);
 				PRODUCT_NAME = delimitedtextprovider.so;
 			};
@@ -15810,9 +15819,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
-					"$(GDAL_LIB)",
-					"$(GEOS_LIB)",
 				);
 				PRODUCT_NAME = delimitedtextprovider.so;
 			};
@@ -15842,7 +15848,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 					"$(PGSQL_LIB)",
 				);
 				PRODUCT_NAME = postgresprovider.so;
@@ -15872,7 +15877,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 					"$(PGSQL_LIB)",
 				);
 				PRODUCT_NAME = postgresprovider.so;
@@ -15903,8 +15907,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
-					"$(GDAL_LIB)",
 					"$(EXPAT_LIB)",
 				);
 				PRODUCT_NAME = gpxprovider.so;
@@ -15934,8 +15936,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
-					"$(GDAL_LIB)",
 					"$(EXPAT_LIB)",
 				);
 				PRODUCT_NAME = gpxprovider.so;
@@ -15968,10 +15968,9 @@
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_XML)",
-					"$(GEOS_LIB)",
-					"$(EXPAT_LIB)",
-					"$(QT_LIB_GUI)",
 					"$(QT_LIB_NET)",
+					"$(QT_LIB_GUI)",
+					"$(EXPAT_LIB)",
 				);
 				PRODUCT_NAME = wfsprovider.so;
 			};
@@ -16002,10 +16001,9 @@
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_XML)",
-					"$(GEOS_LIB)",
-					"$(EXPAT_LIB)",
-					"$(QT_LIB_GUI)",
 					"$(QT_LIB_NET)",
+					"$(QT_LIB_GUI)",
+					"$(EXPAT_LIB)",
 				);
 				PRODUCT_NAME = wfsprovider.so;
 			};
@@ -16040,7 +16038,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 				);
 				PRODUCT_NAME = grassprovider.so;
 			};
@@ -16074,7 +16071,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 				);
 				PRODUCT_NAME = grassprovider.so;
 			};
@@ -16156,14 +16152,20 @@
 					"$(GEOS_INC)",
 				);
 				INSTALL_PATH = "@executable_path/$(QGIS_LIB_SUBDIR)";
-				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)",
+					"$(GRASS_LIB_DIR)",
+				);
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 					"$(QT_LIB_GUI)",
-					"$(GRASS_LIB)",
+					"$(GRASS_LIB_gis)",
+					"$(GRASS_LIB_vect)",
+					"$(GRASS_LIB_dbmibase)",
+					"$(GRASS_LIB_dbmiclient)",
+					"$(GRASS_LIB_gproj)",
 				);
 				PRODUCT_NAME = qgisgrass;
 			};
@@ -16191,14 +16193,20 @@
 					"$(GEOS_INC)",
 				);
 				INSTALL_PATH = "@executable_path/$(QGIS_LIB_SUBDIR)";
-				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)",
+					"$(GRASS_LIB_DIR)",
+				);
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
-					"$(QT_LIB_XML)",
 					"$(QT_LIB_GUI)",
-					"$(GRASS_LIB)",
+					"$(GRASS_LIB_gis)",
+					"$(GRASS_LIB_vect)",
+					"$(GRASS_LIB_dbmibase)",
+					"$(GRASS_LIB_dbmiclient)",
+					"$(GRASS_LIB_gproj)",
 				);
 				PRODUCT_NAME = qgisgrass;
 			};
@@ -16516,17 +16524,23 @@
 					"$(GEOS_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
-				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)",
+					"$(GRASS_LIB_DIR)",
+				);
 				MACH_O_TYPE = mh_bundle;
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
-					"$(GRASS_LIB)",
-					"$(QT_LIB_SQL)",
-					"$(QT_LIB_SVG)",
 					"$(QT_LIB_XML)",
+					"$(QT_LIB_SVG)",
+					"$(GRASS_LIB_gis)",
+					"$(GRASS_LIB_vect)",
+					"$(GRASS_LIB_dbmibase)",
+					"$(GRASS_LIB_dbmiclient)",
+					"$(GRASS_LIB_gproj)",
 					"$(GDAL_LIB)",
 				);
 				PRODUCT_NAME = grassplugin.so;
@@ -16567,17 +16581,23 @@
 					"$(GEOS_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
-				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)",
+					"$(GRASS_LIB_DIR)",
+				);
 				MACH_O_TYPE = mh_bundle;
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
-					"$(GRASS_LIB)",
-					"$(QT_LIB_SQL)",
-					"$(QT_LIB_SVG)",
 					"$(QT_LIB_XML)",
+					"$(QT_LIB_SVG)",
+					"$(GRASS_LIB_gis)",
+					"$(GRASS_LIB_vect)",
+					"$(GRASS_LIB_dbmibase)",
+					"$(GRASS_LIB_dbmiclient)",
+					"$(GRASS_LIB_gproj)",
 					"$(GDAL_LIB)",
 				);
 				PRODUCT_NAME = grassplugin.so;
@@ -17578,7 +17598,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12259;
+				QGIS_VERSION_BUILD = 12290;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -17589,7 +17609,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12259;
+				QGIS_VERSION_BUILD = 12290;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
