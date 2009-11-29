@@ -307,15 +307,13 @@ void QgsSpatiaLiteSourceSelect::addNewConnection()
   QString fullPath;
   QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", "." ).toString();
 
-  QFileDialog *openFileDialog = new QFileDialog( this,
+  QString myFile = QFileDialog::getOpenFileName( this,
       tr( "Choose a SpatiaLite/SQLite DB to open" ),
       lastUsedDir, QObject::tr( "SQLite DB (*.sqlite);;All files (*.*)" ) );
-  openFileDialog->setFileMode( QFileDialog::ExistingFile );
 
-  if ( openFileDialog->exec() == QDialog::Accepted )
+  if ( myFile.isEmpty() )
   {
-    fullPath = openFileDialog->selectedFiles().first();
-    QFileInfo myFI( fullPath );
+    QFileInfo myFI( myFile );
     QString myPath = myFI.path();
     QString myName = myFI.fileName();
 
@@ -337,11 +335,9 @@ void QgsSpatiaLiteSourceSelect::addNewConnection()
   else
   {
     // if they didn't select anything, just return
-    delete openFileDialog;
     return;
   }
 
-  delete openFileDialog;
   populateConnectionList();
 }
 
