@@ -294,11 +294,15 @@ class Qgis2Map:
     self.outFile.write("\n")
     self.outFile.write("  OUTPUTFORMAT\n")
     self.outFile.write("    NAME " + self.imageType + "\n")
-    self.outFile.write("    DRIVER 'GD/" + self.imageType.upper() + "'\n")
-    self.outFile.write("    MIMETYPE 'image/" + lower(self.imageType) + "'\n")
-    if self.imageType.lower() != "gif":
-      self.outFile.write("    IMAGEMODE RGBA\n")
-    self.outFile.write("    EXTENSION '" + lower(self.imageType) + "'\n")
+    if self.imageType == 'agg':
+        self.outFile.write("    DRIVER AGG/PNG\n")
+        self.outFile.write("    IMAGEMODE RGB\n")
+    else:
+        self.outFile.write("    DRIVER 'GD/" + self.imageType.upper() + "'\n")
+        self.outFile.write("    MIMETYPE 'image/" + lower(self.imageType) + "'\n")
+        if self.imageType.lower() != "gif":
+          self.outFile.write("    IMAGEMODE RGBA\n")
+        self.outFile.write("    EXTENSION '" + lower(self.imageType) + "'\n")
     self.outFile.write("  END\n")
     
 
