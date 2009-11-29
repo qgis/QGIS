@@ -1,1 +1,6 @@
 <h3>Open Vector Layer Dialog</h3>
+
+<p class="overview">
+The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).</p>
+
+<img src=":/themes/default/mActionDelete.png">

@@ -151,7 +151,9 @@ void QgsHelpViewer::loadContext( const QString &contextId )
     file.close();
 
     // Set the browser text to the help contents
-    txtBrowser->setHtml( helpContents );
+    QString myStyle = QgsApplication::reportStyleSheet();
+    helpContents = "<head><style>" + myStyle + "</style></head><body>" + helpContents + "</body>";
+    webView->setHtml( helpContents );
     setWindowTitle( tr( "Quantum GIS Help" ) );
 
   }
@@ -179,7 +181,7 @@ void QgsHelpViewer::loadContextFromSqlite( const QString &contextId )
         {
           // there should only be one row returned
           // Set the browser text to the record from the database
-          txtBrowser->setText(( char* )sqlite3_column_text( ppStmt, 0 ) );
+          webView->setHtml(( char* )sqlite3_column_text( ppStmt, 0 ) );
           setWindowTitle( tr( "Quantum GIS Help - %1" ).arg(( char* )sqlite3_column_text( ppStmt, 1 ) ) );
         }
       }
