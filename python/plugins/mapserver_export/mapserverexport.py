@@ -36,7 +36,6 @@ class MapServerExport:
     # Save reference to the QGIS interface
     self.iface = iface
 
-  # ----------------------------------------- #
   def setCurrentTheme(self, theThemeName):
     # Set icons to the current theme
     self.action.setIcon(self.getThemeIcon("mapserver_export.png"))
@@ -55,12 +54,10 @@ class MapServerExport:
     else:
       return QIcon()
 
-
   def initGui(self):  
     # Create action that will start plugin configuration
     self.action = QAction(self.getThemeIcon("mapserver_export.png"), \
         "MapServer Export", self.iface.mainWindow())
-    #self.action.setWhatsThis("Configuration for Zoom To Point plugin")
     # connect the action to the run method
     QObject.connect(self.action, SIGNAL("activated()"), self.run) 
     QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
@@ -68,18 +65,15 @@ class MapServerExport:
     self.iface.addToolBarIcon(self.action)
     self.iface.addPluginToMenu("&MapServer Export...", self.action)
 
-
   def unload(self):
     # Remove the plugin menu item and icon
     self.iface.removePluginMenu("&MapServer Export...",self.action)
     self.iface.removeToolBarIcon(self.action)
 
-
   # run method that performs all the real work
   def run(self): 
     # create and show the MapServerExport dialog 
     self.dlg = MapServerExportDialog()
-    
     # attach events to inputs and buttons
     QObject.connect(self.dlg.ui.btnChooseFile, SIGNAL("clicked()"), self.setMapFile)
     QObject.connect(self.dlg.ui.txtMapFilePath, SIGNAL("textChanged(QString)"), self.mapfileChanged)
@@ -90,12 +84,9 @@ class MapServerExport:
     QObject.connect(self.dlg.ui.btnChooseHeaderFile, SIGNAL("clicked()"), self.setHeaderFile)
     QObject.connect(self.dlg.ui.btnChooseTemplateFile, SIGNAL("clicked()"), self.setTemplateFile)
     QObject.connect(self.dlg.ui.buttonBox, SIGNAL("accepted()"), self.ok_clicked)
-    
-    # qgs-project
-    # defaults to current instance
+    # qgs-project defaults to current instance
     project = QgsProject.instance()
     self.dlg.ui.txtQgisFilePath.setText(project.fileName())
-
     # get some settings from former successfull exports
     # defaults are defined in ms_export.py and set in mapserverexportdialog.py
     settings = QSettings()
@@ -115,64 +106,47 @@ class MapServerExport:
     # MapServer URL (default value already set by dialog defaults)
     if settings.contains("/MapserverExport/mapserverUrl"):
       self.dlg.ui.txtMapServerUrl.setText(settings.value("/MapserverExport/mapserverUrl").toString())
-    
-    
     # set title or default to one if none available
     title = project.title()
     if title == "":
       title = "QGIS-MAP"
     self.dlg.ui.txtMapName.setText(title)
-
     # TODO: fetch units used from current project
     # QGIS: Meters, Feet, Degrees, UnknownUnit since 1.4 also: DecimalDegrees, DegreesMinutesSeconds, DegreesDecimalMinutes 	
     # Mapserver: UNITS [feet|inches|kilometers|meters|miles|dd]
-	
     self.dlg.show()
 
   def ok_clicked(self):
-    if self.checkMapFile():
-      self.saveMapFile()
-    else:
+    # check if current project is saved or dirty
+    if not self.checkCurrentProject():
+      # abort because user apparently did not wat to save or Cancelled
+      return
+    if not self.checkMapFile():
       print "Failed for Map file check, try again..."
-      pass
+      return
+    else:
+      self.saveMapFile()
 
   def toggleUseCurrentProject(self, boolUseCurrent):
     self.dlg.ui.txtQgisFilePath.setEnabled(not boolUseCurrent)
     self.dlg.ui.btnChooseProjectFile.setEnabled(not boolUseCurrent)
     if boolUseCurrent:
-      if self.dlg.ui.txtQgisFilePath.text().size() == 0:
-        # reload path of current project
-        self.dlg.ui.txtQgisFilePath.setText(QgsProject.instance().fileName())
-        # check if current project is saved and/or dirty? Nope: will be done when Ok clicked
+      #if self.dlg.ui.txtQgisFilePath.text().size() == 0:
+      # reload path of current project
+      self.dlg.ui.txtQgisFilePath.setText(QgsProject.instance().fileName())
     else:  
       # open dialog to choose project file
       self.setProjectFile()
     
-    
 
-  def saveMapFile(self):
-    # get the settings from the dialog and export the map file  
-    print "Creating exporter using %s and %s" % (self.dlg.ui.txtQgisFilePath.text(), self.dlg.ui.txtMapFilePath.text())
-    if self.dlg.ui.txtQgisFilePath.text().size() == 0:
-      saveAsFileName = QFileDialog.getSaveFileName(self.dlg,
-                    "Please choose to save QGis project file as...",
-                    ".",
-                    "QGis files (*.qgs)",
-                    "Filter list for selecting files from a dialog box")
-      # Check that a file was selected
-      if saveAsFileName.size() == 0:
-        QMessageBox.warning(self.dlg, "Not saved!", "QGis project file not saved because no file name was given")
-        return
-      else:
-        self.dlg.ui.txtQgisFilePath.setText(saveAsFileName)
-        
+  def saveMapFile(self):   
+    # get the settings from the dialog and export the map file
+    print "Creating exporter using '%s' and '%s'" % (self.dlg.ui.txtQgisFilePath.text(), self.dlg.ui.txtMapFilePath.text())
     exporter = Qgis2Map(unicode(self.dlg.ui.txtMapFilePath.text()))
-    
     # Parse qgis project file and check success
     if not(exporter.setQgsProject(self.dlg.ui.txtQgisFilePath.text())):
-      QMessageBox.warning(self.dlg, "Not saved!", "File not saved because no valid qgis project file was given.")
+      QMessageBox.warning(self.dlg, "No Map file export!", "Map file not exported because no valid qgis project file was given.")
       return
-    
     self.dlg.hide()
     print "Setting options"
     exporter.setOptions(
@@ -233,21 +207,100 @@ class MapServerExport:
     self.dlg.ui.txtMapFilePath.setText(mapFileName)
     # Check if map file exists and we should overwrite it
     if QFile(mapFileName).exists():
-      if QMessageBox.Cancel == QMessageBox.question(self.dlg, "Overwrite?",
+      if QMessageBox.Cancel == QMessageBox.question(self.dlg, "Overwrite excisting Map file?",
                     "Map file \"" + mapFileName + "\" already exists. \nShould we overwrite it?",
                     QMessageBox.Yes, QMessageBox.Cancel):
         return False
-    # mapfile ok, extension ok, ok to overwrite  
+    # mapfile ok, extension ok, overwrite  ok
     return True
-
+    
+  # check if current project is saved and or dirty (has modifications)
+  def checkCurrentProject(self, forUnload=False):
+    project = QgsProject.instance()
+    # question: save project on loading export dialog?
+    if project.isDirty():
+      msg = "Save project to \"" + project.fileName() + "\" before exporting?\nOnly the last saved version of your project will be exported."
+      if project.fileName()=="":
+        msg = "Please save project before exporting.\nOnly saved projects can be exported."
+      if forUnload:
+        msg = "Save project first?\nAfter saving, this project will be unloaded."
+      shouldSave = QMessageBox.question(self.dlg, "Save?", msg,
+                    QMessageBox.Yes, QMessageBox.No, QMessageBox.Cancel)
+      if shouldSave == QMessageBox.Yes:
+        if project.fileName().size() == 0:
+          # project has not yet been saved:
+          saveAsFileName = QFileDialog.getSaveFileName(self.dlg,
+                      "Save QGIS Project file as...", ".",
+                      "QGIS Project Files (*.qgs)", "Filter list for selecting files from a dialog box")
+          # Check that a file was selected
+          if saveAsFileName.size() == 0:
+            QMessageBox.warning(self.dlg, "Not saved!", "QGis project file not saved because no file name was given.")
+            # fall back to using current project if available
+            self.dlg.ui.txtQgisFilePath.setText(project.fileName())
+          else:
+            if not saveAsFileName.trimmed().endsWith('.qgs'):
+              saveAsFileName += '.qgs'
+            self.dlg.ui.txtQgisFilePath.setText(saveAsFileName)
+            project.setFileName(saveAsFileName)
+            project.write()
+        else:
+          project.write()
+        #project ok now
+        return True
+      elif shouldSave == QMessageBox.No and forUnload:
+        # unloading a non saved project: just leave ...
+        return True
+      elif shouldSave == QMessageBox.No:
+        # users does not want to save project, but has to because only saved projects can be exported
+        return False
+      elif shouldSave == QMessageBox.Cancel:
+        # user cancelled
+        return False
+    else: 
+      # project saved and not dirty
+      return True
+      
   def setMapFile(self):
     mapFileName = QFileDialog.getSaveFileName(self.dlg, "Name for the map file", \
       self.dlg.ui.txtMapFilePath.text(), "MapServer map files (*.map);;All files (*.*)","Filter list for selecting files from a dialog box")
     self.dlg.ui.txtMapFilePath.setText(mapFileName)
 
   def setProjectFile(self):
-    qgisProjectFile = QFileDialog.getOpenFileName(self.dlg, "Choose a QGIS Project file", \
-      ".", "QGIS Project Files (*.qgs);;All files (*.*)", "Filter list for selecting files from a dialog box")
+    # check if it's needed to save current project, will return False if user cancelled
+    if not self.checkCurrentProject(True):
+      return
+    qgisProjectFile = QFileDialog.getOpenFileName(self.dlg, "Choose a QGIS Project", \
+      ".", "QGIS Project Files (*.qgs);;", "Filter list for selecting files from a dialog box")
+    if not qgisProjectFile:
+      # cancelled: check checkBoxCurrentProject again 
+      self.dlg.ui.checkBoxCurrentProject.setChecked(True)
+      self.dlg.ui.txtQgisFilePath.setEnabled(False)
+      return
+    try:
+      # reading a nog qgs or not existing file results in qgis crash
+      # QgsProject.instance().read(QFileInfo(qgisProjectFile))
+      # we try to open the file first to see if it can be parsed...
+      exporter = Qgis2Map(unicode(self.dlg.ui.txtMapFilePath.text()))
+      if exporter.setQgsProject(qgisProjectFile):
+        # project file OK !!
+        pass
+      if exporter.projectHasPostgisLayers():
+        loadProject = QMessageBox.question(self.dlg, "Load project?", 
+            "The project you selected holds one or more postgis layers. \nTo be able to export a valid DATA string in the map file,\nthe project should be loaded into QGIS. \nNot loading can result in non valid DATA strings in map file.\nSo, should we load it into qgis?",
+            QMessageBox.Yes, QMessageBox.No)
+        if loadProject == QMessageBox.Yes:
+          QgsProject.instance().read(QFileInfo(qgisProjectFile))
+        else:
+          # postgis, but user refuses to load it, just go and see what happens
+          pass
+      else:
+        # NO postgis, go
+        pass
+    except QgsException, err:
+      QMessageBox.information(self.dlg, "Error reading or loading the selected project file", str(err))
+      self.dlg.ui.checkBoxCurrentProject.setChecked(True)
+      self.dlg.ui.txtQgisFilePath.setEnabled(False)
+      return
     self.dlg.ui.txtQgisFilePath.setText(qgisProjectFile)
 
   def setTemplateFile(self):
