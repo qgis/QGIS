@@ -1,0 +1,88 @@
+<h3>Extension Étiquette de Copyright</h3>
+L'extension Étiquette de Copyright permet d'afficher une mention de
+droit d'auteur sur la carte du projet en cours.
+<h4>Afficher l'Étiquette de Copyright</h4>
+Pour activer l'affichage de l'Etiquette de Copyright, appuyer sur le
+bouton <i>Étiquette de Copyright</i> dans la barre d'outil, ou choisir
+la fonction <i>Étiquette de Copyright</i> dans le menu <i>Extension/Décorations</i>.
+<p>Dans la boîte de dialogue <i>Extension d'étiquette de Copyright</i>,
+réaliser les actions suivantes:
+</p>
+<ol>
+<li>Cocher le bouton <i>Activer l'étiquette du Copyright</i> située
+en bas à droite de la boîte de dialogue;
+</li>
+<li>Appuyer sur le bouton <i>OK</i> afin de valider ce choix ou sur
+le bouton <i>Annuler</i> pour fermer la boîte de dialogue sans valider
+l'activation de l'affichage d'étiquette.
+</li>
+</ol>
+<h4>Placer l'Étiquette de Copyright</h4>
+Le choix l'emplacement de la mention de droit d'auteur sur la carte
+peut être personnalisé de manière à apparaître dans un des quatre coins
+de la carte en cours.
+<p>Pour définir une position de l'Étiquette de Copyright, ouvrir la
+boîte de dialogue <i>extension d'étiquette de Copyright</i> et choisir
+un des quatre emplacements disponibles à l'aide de la liste déroulante
+située en face de la mention <i>Placement</i>.
+Pour valider le placement choisit, appuyer sur le bouton <i>OK</i> ou
+sur le bouton <i>Annuler</i> pour fermer la boîte de dialogue sans
+valider la modification de placement d'étiquette.
+</p>
+<h4>Personnaliser l'Étiquette de Copyright</h4>
+Le style, la couleur et le contenu de l'Étiquette de Copyright peuvent
+être personnalisés.
+<p>Tous les changements se font depuis la zone de texte inférieure
+située dans la boîte de dialogue <i>Extension d'étiquette de Copyright</i>
+et son pris en compte après validation par appui sur le bouton <i>OK</i>.
+</p>
+<h5><u>Choix du type de mention</u></h5>
+La mention en elle-même, qui est un caractère spécial, apparaît dans la
+fenêtre sous forme d'abréviation ENTITY.<br>
+Par défaut, c'est la mention de copyright qui est proposée dans QGIS,
+mais il est possible d'afficher une mention particulière différente
+pour peu que la mention ENTITY soit correctement inscrite.
+<p>Par exemple :
+</p>
+<ul>
+<li>© mention de copyright
+</li>
+<li>™ mention de marque commerciale (trademark)
+</li>
+<li>® mention de marque déposée
+</li>
+<li>♥ affiche un coeur...
+</li>
+</ul>
+<p>NB 1: inscrire l'abréviation ENTITY sans les parenthèses<br>
+NB 1: Cette liste n'est pas exhaustive, il est possible de mettre bien
+d'autres caractères spéciaux afin de personnaliser la mention sur la
+carte. Amusez-vous!
+</p>
+<h5><u>Choix de la couleur</u></h5>
+Sélectionner tout ou partie du texte de la mention dont la couleur doit
+être changée puis appuyer sur la case <i>Couleur</i>.<br>
+Choisir une couleur dans la fenêtre de choix et valider en appuyant sur
+<i>OK</i>.
+<h5><u>Choix du style</u></h5>
+Le style de mise en forme de l'étiquette peut être personnalisé en
+insérant des balises HTML simples autour de la mention.
+<p>Ainsi il est possible de mettre la mention en gras, en italique ou
+encore de réaliser une étiquette multi-lignes.
+Les balises les plus courantes sont :
+</p>
+<ul>
+<li>&lt;B&gt;<b> Pour du texte en gras</b>
+</li>
+<li>&lt;I&gt;<i> Pour du texte en italique</i>
+</li>
+<li>&lt;U&gt;<u> Pour souligner le texte</u>
+</li>
+<li>&lt;BR&gt; Pour insérer un retour chariot
+</li>
+</ul>
+<p>NB 1: une balise ouverte doit toujours être fermée pour qu’elle soit
+prise en compte<br>
+NB 2: Les balises HTML peuvent être additionnées entre elles afin de
+mélanger les styles.<br>
+</p>
