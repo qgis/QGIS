@@ -108,7 +108,7 @@ class MapServerExport:
     if settings.contains("/MapserverExport/mapHeight"):
       self.dlg.ui.txtMapHeight.setText(settings.value("/MapserverExport/mapHeight").toString ())
     # MapServer IMAGETYPE's [gif|png|jpeg|wbmp|gtiff|swf|userdefined]
-    self.dlg.ui.cmbMapImageType.addItems(QStringList(["png","gif","jpeg","wbmp","gtiff","swf","userdefined"]))
+    self.dlg.ui.cmbMapImageType.addItems(QStringList(["agg","png","gif","jpeg","wbmp","gtiff","swf","userdefined"]))
     if settings.contains("/MapserverExport/imageType"):
       idx = self.dlg.ui.cmbMapImageType.findText(settings.value("/MapserverExport/imageType").toString ())
       self.dlg.ui.cmbMapImageType.setCurrentIndex(idx)
