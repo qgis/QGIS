@@ -168,13 +168,30 @@ class Qgis2Map:
     self.header = header.encode('utf-8')
     self.footer = footer.encode('utf-8')
     #print units, image, mapname, width, height, template, header, footer
-
     self.dump               = bool2str[dump]
     self.force              = bool2str[force]
     self.antialias          = bool2str[antialias]
     self.partials           = bool2str[partials]
     self.exportLayersOnly   = exportLayersOnly
 
+  # method to check the project file for the exitence of postgis layers
+  # if so it should be loaded in qgis before exporting, because a connection
+  # to the database is needed to determine primary keys etc etc
+  def projectHasPostgisLayers(self):
+    # get the list of maplayer nodes
+    maplayers = self.qgs.getElementsByTagName("maplayer")
+    for lyr in maplayers:
+      try:
+        providerString = lyr.getElementsByTagName("provider")[0].childNodes[0].nodeValue.encode('utf-8')
+      except:
+        print "ERROR getting provider string from layer"
+        # if providerString is null
+        providerString = ''
+      if providerString == 'postgres':
+        #print  "POSTGIS LAYER !!"
+        return True
+    return False
+      
 
   ## All real work happens here by calling methods to write the
   ## various sections of the map file
@@ -205,11 +222,11 @@ class Qgis2Map:
         self.writeLegendSection()
         logmsg += "Wrote legend section\n"
         print " --- python : legend section done"
-
         # write the WEB section
         print " --- python : web section "
-        self.writeWebSection()
+        webMsg = self.writeWebSection()
         logmsg += "Wrote web section\n"
+        logmsg += webMsg
         print " --- python : web section done"
 
     # write the LAYER sections
@@ -351,6 +368,7 @@ class Qgis2Map:
 
   # Write the WEB section of the map file
   def writeWebSection(self):
+    resultMsg = ""
     self.outFile.write("  # Web interface definition. Only the template parameter\n")
     self.outFile.write("  # is required to display a map. See MapServer documentation\n")
     self.outFile.write("  WEB\n")
@@ -369,6 +387,10 @@ class Qgis2Map:
     self.outFile.write("    # WMS server settings\n")
     self.outFile.write("    METADATA\n")
     self.outFile.write("      'ows_title'           '" + self.mapName + "'\n")
+    # if mapserverurl is still defaults.mapServerUrl, give warning
+    if defaults.mapServerUrl==self.mapServerUrl:
+      resultMsg += " ! MapServer url still default value: '" +  defaults.mapServerUrl + \
+            "'?\n  Be sure there is a valid mapserverurl in the 'ows_onlineresource'.\n"
     self.outFile.write("      'ows_onlineresource'  '" + self.mapServerUrl + "?" + "map" + "=" + self.mapFile + "'\n")
     self.outFile.write("      'ows_srs'             'EPSG:" + epsg + "'\n")
     self.outFile.write("    END\n\n")
@@ -389,15 +411,14 @@ class Qgis2Map:
     if self.footer != "":
       self.outFile.write("    FOOTER '" + self.footer + "'\n")
     self.outFile.write("  END\n\n")
+    return resultMsg
 
   # Write the map layers - we have to defer writing to disk so we
   # can invert the order of the layes, since they are opposite in QGIS 
   # compared to mapserver
   def writeMapLayers(self):
-    # get the list of legend nodes so the layers can be written in the
-    # proper order
     resultMsg = ''
-    
+    # get the list of legend nodes so the layers can be written in the proper order
     legend_nodes = self.qgs.getElementsByTagName("legendlayer")
     self.z_order = list()
     for legend_node in legend_nodes:
@@ -428,9 +449,12 @@ class Qgis2Map:
       elif lyr.getAttribute("type").encode('utf-8') == 'raster':  
         layer_def += "    TYPE " + lyr.getAttribute("type").encode('utf-8').upper() + "\n"
 
-      # Uses default value from the gui
+      # Use (global) default value from the gui
       layer_def += "    DUMP " + self.dump + "\n"
-      
+      # id dump = true: add TEMPLATE to be able to use getFeatureInfoRequests
+      if self.dump=="true":
+        layer_def += "    TEMPLATE fooOnlyForWMSGetFeatureInfo\n"
+        
       # Set min/max scales
       if lyr.getAttribute('hasScaleBasedVisibilityFlag').encode('utf-8') == 1:
         layer_def += "    MINSCALE " + lyr.getAttribute('minimumScale').encode('utf-8') + "\n"
@@ -450,26 +474,28 @@ class Qgis2Map:
         providerString = ''
 
       if providerString == 'postgres':
-
         # it's a postgis layer
         uri = QgsDataSourceURI(dataString)
-
         layer_def += "    CONNECTIONTYPE postgis\n"
-        layer_def += "    CONNECTION \"" + uri.connectionInfo() + "\"\n"
+        connectionInfo = str(uri.connectionInfo())
+        # if connectionInfo does NOT contain a password, warn user:
+        if connectionInfo.find("password")<0:
+          resultMsg += " ! No password in connection string for postgres layer '" +  layer_name + \
+            "' \n  Add it, or make sure mapserver can connect to postgres.\n"  
+        layer_def += "    CONNECTION \"" + connectionInfo + "\"\n"
         # EvdP: it seems that the uri.geometryColumn() is quoted automaticly by PostGIS.
         # To prevent double quoting, we don't quote here.
         # Now we are unable to process uri.geometryColumn()s with special characters (uppercase... etc.)
         #layer_def += "    DATA '\"" + uri.geometryColumn() + "\" FROM " + uri.quotedTablename() + "'\n"
         #layer_def += "    DATA '" + uri.geometryColumn() + " FROM " + uri.quotedTablename() + "'\n"
-
         layer_id = lyr.getElementsByTagName("id")[0].childNodes[0].nodeValue.encode("utf-8")
         # TODO: check if this project is actually loaded in QGis
         # only in loaded project files it's possible to determine the primary key of a postgis table
         uniqueId = self.getPrimaryKey(layer_id, uri.table())
         # %tablename% is returned when no uniqueId is found: inform user
         if uniqueId.find("%") >= 0:
-            resultMsg += "  ! No primary key found for postgres layer '" +  layer_name + \
-            "' \n    Make sure you edit the mapfile and change the DATA-string \n    containing '" + uniqueId + "'\n"
+            resultMsg += " ! No primary key found for postgres layer '" +  layer_name + \
+            "' \n  Make sure you edit the mapfile and change the DATA-string \n    containing '" + uniqueId + "'\n"
         epsg = self.getEpsg(lyr)
         
         layer_def += "    DATA '" + uri.geometryColumn() + " FROM " + uri.quotedTablename() + " USING UNIQUE " + uniqueId + " USING srid=" + epsg + "'\n"
@@ -608,16 +634,19 @@ class Qgis2Map:
     This is obviously a lousy solution at best.
 
     This script requires the project you export to be open in QGis!!
+    
+    This method will return either the primary key of this table, or
+    the string %tablename% in case we're not able to find it...
     """
 
     mlr = QgsMapLayerRegistry.instance()
     layers = mlr.mapLayers()
     if not QString(layerId) in layers:
-      # layerId of this postgis layer NOT in the layerlist... probably 
-      # the project is not loaded in qgis (to be able to find the primary
-      # key, one should load the project in QGis
-      raise Exception("ERROR: layer not found in project layers.... \nThis happens with postgis layers in a project which \nis not loaded in QGis.\nDid you load this project into QGis? \nIf not please load project first, and then export it to mapserver.")
-
+      # layerId of this postgis layer NOT in the layerlist... 
+      # probably the project is not loaded in qgis 
+      #raise Exception("ERROR: layer not found in project layers.... \nThis happens with postgis layers in a project which \nis not loaded in QGis.\nDid you load this project into QGis? \nIf not please load project first, and then export it to mapserver.")
+      return str("%" + tableName + "_id%")
+      
     layer = layers[QString(layerId)]
     dataProvider = layer.dataProvider()
     fields = dataProvider.fields()
