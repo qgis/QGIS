@@ -1445,14 +1445,15 @@ QGISEXTERN bool isProvider()
 @param vectortype point/line/polygon or multitypes
 @param attributes a list of name/type pairs for the initial attributes
 @return true in case of success*/
-QGISEXTERN bool createEmptyDataSource( const QString& uri,
-                                       const QString& format,
-                                       const QString& encoding,
+QGISEXTERN bool createEmptyDataSource( const QString &uri,
+                                       const QString &format,
+                                       const QString &encoding,
                                        QGis::WkbType vectortype,
                                        const std::list<std::pair<QString, QString> > &attributes,
                                        const QgsCoordinateReferenceSystem *srs = NULL )
 {
   QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
+
   OGRSFDriverH driver;
   QgsApplication::registerOgrDrivers();
   driver = OGRGetDriverByName( format.toAscii() );
@@ -1465,6 +1466,11 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
 
   if ( driverName == "ESRI Shapefile" )
   {
+    if ( !uri.endsWith( ".shp", Qt::CaseInsensitive ) )
+    {
+      return false;
+    }
+
     // check for duplicate fieldnames
     QSet<QString> fieldNames;
     std::list<std::pair<QString, QString> >::const_iterator fldIt;
