@@ -138,6 +138,8 @@
 #include "qgsvectorlayer.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "qgsattributetabledialog.h"
+#include "qgsvectorfilewriter.h"
+
 //
 // Gdal/Ogr includes
 //
@@ -3272,7 +3274,17 @@ void QgisApp::newVectorLayer()
   // file, which can cause problems (e.g., if the file contains
   // linestrings, but we're wanting to create points, we'll end up
   // with a linestring file).
-  QFile::remove( fileName );
+  if ( fileformat == "ESRI Shapefile" )
+  {
+    if ( !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
+      fileName += ".shp";
+
+    QgsVectorFileWriter::deleteShapeFile( fileName );
+  }
+  else
+  {
+    QFile::remove( fileName );
+  }
 
   settings.setValue( "/UI/lastVectorFileFilter", openFileDialog->selectedFilter() );
 
