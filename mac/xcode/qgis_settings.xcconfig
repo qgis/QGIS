@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.2.1
+CURRENT_PROJECT_VERSION = 2.2.2
 
 // SDKSYS must be set to valid value
 SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
@@ -247,7 +247,19 @@ GEOS_LIB = $(GEOS_LIB_$(GEOS_FORM))
 
 GRASS_PREFIX = $(GRASS_PREFIX_$(GRASS_FORM))
 GRASS_INC = $(GRASS_PREFIX)/include $(GRASS_PREFIX)/include/grass
-GRASS_LIB = -L$(GRASS_PREFIX)/lib -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form -lgrass_gproj
+GRASS_LIB_gis = -lgrass_gis
+GRASS_LIB_vect = -lgrass_vect
+GRASS_LIB_dig2 = -lgrass_dig2
+GRASS_LIB_dbmiclient = -lgrass_dbmiclient
+GRASS_LIB_dbmibase = -lgrass_dbmibase
+GRASS_LIB_shape = -lgrass_shape
+GRASS_LIB_dgl = -lgrass_dgl
+GRASS_LIB_rtree = -lgrass_rtree
+GRASS_LIB_datetime = -lgrass_datetime
+GRASS_LIB_linkm = -lgrass_linkm
+GRASS_LIB_form = -lgrass_form
+GRASS_LIB_gproj = -lgrass_gproj
+GRASS_LIB_DIR = $(GRASS_PREFIX)/lib
 GRASS_BASE = $(GRASS_PREFIX)
 HAVE_OPENPTY = 1
 
