@@ -456,6 +456,10 @@ class geometryThread( QThread ):
               cx+=((line[i].x()-xmin)+(line[j].x()-xmin))*factor
               cy+=((line[i].y()-ymin)+(line[j].y()-ymin))*factor
               area+=factor
+
+        if area==0:
+          continue
+		 
         cx/=area*3.00
         cy/=area*3.00
         outfeat.setGeometry( QgsGeometry.fromPoint( QgsPoint( cx+xmin, cy+ymin ) ) )
