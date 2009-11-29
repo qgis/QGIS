@@ -385,6 +385,7 @@ QString QgsApplication::reportStyleSheet()
             "padding-bottom: 8px;"
             "border: 1px solid #6c6c6c;"
             "}"
+            ".overview{ font: 1.82em; font-weight: bold;}"
             "h1 {font-size : 22pt; }"
             "h2 {font-size : 18pt; }"
             "h3 {font-size : 14pt; }";
