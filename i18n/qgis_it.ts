@@ -30908,7 +30908,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="524"/>
         <source>Line edit</source>
-        <translation>Modifica linea</translation>
+        <translation type="unfinished">Modifica valore</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="525"/>
