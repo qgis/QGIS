@@ -25,6 +25,7 @@
 
 #include <QWidget>
 #include <QList>
+#include <QSharedPointer>
 
 class QCloseEvent;
 class QTreeWidgetItem;
@@ -88,6 +89,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void zoomToFeature();
     void copyAttributeValue();
     void copyFeatureAttributes();
+    void highlightAll();
+    void highlightLayer();
     void expandAll();
     void collapseAll();
 
@@ -107,16 +110,15 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
   private:
     QMenu *mActionPopup;
-    QgsVectorLayer *mRubberBandLayer;
-    int mRubberBandFid;
-    QgsRubberBand *mRubberBand;
+    QMap<QTreeWidgetItem *, QSharedPointer<QgsRubberBand> > mRubberBands;
     QgsMapCanvas *mCanvas;
 
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
+    QTreeWidgetItem *layerItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
 
-    void clearRubberBand();
+    void highlightLayer( QTreeWidgetItem *object );
     void disconnectLayer( QObject *object );
 
     void setColumnText( int column, const QString & label );
