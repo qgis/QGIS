@@ -1119,8 +1119,8 @@ void QgsVectorLayerProperties::setUsingNewSymbology( bool useNewSymbology )
 void QgsVectorLayerProperties::useNewSymbology()
 {
   int res = QMessageBox::question( this, tr( "Symbology" ),
-                                   tr( "Do you wish to use original symbology implementation for this layer?" ),
-                                   QMessageBox::Yes | QMessageBox::No );
+      tr( "Do you wish to use original symbology implementation for this layer?" ),
+      QMessageBox::Yes | QMessageBox::No );
 
   if ( res != QMessageBox::Yes )
     return;
