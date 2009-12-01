@@ -92,7 +92,6 @@ class QgsIdentifyResultsDock : public QDockWidget
 QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Qt::WFlags f )
     : QDialog( parent, f ),
     mActionPopup( 0 ),
-    mRubberBand( 0 ),
     mCanvas( canvas ),
     mDock( NULL )
 {
@@ -215,6 +214,8 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
   }
 
   layItem->addChild( featItem );
+
+  highlightFeature( featItem );
 }
 
 void QgsIdentifyResults::editingToggled()
@@ -263,13 +264,11 @@ void QgsIdentifyResults::show()
     QTreeWidgetItem *layItem = lstResults->topLevelItem( 0 );
     QTreeWidgetItem *featItem = layItem->child( 0 );
 
-    if ( layItem->childCount() == 1 && QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
+    if ( lstResults->topLevelItemCount() == 1 && layItem->childCount() == 1 && QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
     {
       QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
       if ( layer )
       {
-        highlightFeature( featItem );
-
         // if this is the only feature and it's on a vector layer
         // don't show the form dialog instead of the results window
         lstResults->setCurrentItem( featItem );
@@ -341,6 +340,8 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
   mActionPopup->addAction( tr( "Copy feature attributes" ), this, SLOT( copyFeatureAttributes() ) );
   mActionPopup->addSeparator();
+  mActionPopup->addAction( tr( "Highlight all" ), this, SLOT( highlightAll() ) );
+  mActionPopup->addAction( tr( "Highlight layer" ), this, SLOT( highlightLayer() ) );
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
   mActionPopup->addAction( tr( "Collapse all" ), this, SLOT( collapseAll() ) );
 
@@ -405,14 +406,14 @@ void QgsIdentifyResults::clear()
   }
 
   lstResults->clear();
-  clearRubberBand();
+  mRubberBands.clear();
 }
 
 void QgsIdentifyResults::activate()
 {
-  if ( mRubberBand )
+  foreach( QSharedPointer<QgsRubberBand> rb, mRubberBands )
   {
-    mRubberBand->show();
+    rb->show();
   }
 
   if ( lstResults->topLevelItemCount() > 0 )
@@ -424,21 +425,10 @@ void QgsIdentifyResults::activate()
 
 void QgsIdentifyResults::deactivate()
 {
-  if ( mRubberBand )
+  foreach( QSharedPointer<QgsRubberBand> rb, mRubberBands )
   {
-    mRubberBand->hide();
+    rb->hide();
   }
-}
-
-void QgsIdentifyResults::clearRubberBand()
-{
-  if ( !mRubberBand )
-    return;
-
-  delete mRubberBand;
-  mRubberBand = 0;
-  mRubberBandLayer = 0;
-  mRubberBandFid = 0;
 }
 
 void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
@@ -507,13 +497,22 @@ QTreeWidgetItem *QgsIdentifyResults::featureItem( QTreeWidgetItem *item )
   return featItem;
 }
 
-QgsVectorLayer *QgsIdentifyResults::vectorLayer( QTreeWidgetItem *item )
+QTreeWidgetItem *QgsIdentifyResults::layerItem( QTreeWidgetItem *item )
 {
-  if ( item->parent() )
+  if ( item && item->parent() )
   {
     item = featureItem( item )->parent();
   }
 
+  return item;
+}
+
+
+QgsVectorLayer *QgsIdentifyResults::vectorLayer( QTreeWidgetItem *item )
+{
+  item = layerItem( item );
+  if ( !item )
+    return NULL;
   return qobject_cast<QgsVectorLayer *>( item->data( 0, Qt::UserRole ).value<QObject *>() );
 }
 
@@ -543,7 +542,7 @@ void QgsIdentifyResults::itemExpanded( QTreeWidgetItem* item )
   expandColumnsToFit();
 }
 
-void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
+void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
   if ( current == NULL )
   {
@@ -551,16 +550,34 @@ void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem* current, QTr
     return;
   }
 
-  highlightFeature( current );
+  QTreeWidgetItem *layItem = layerItem( current );
+
+  if ( current == layItem )
+  {
+    highlightLayer( layItem );
+  }
+  else
+  {
+    mRubberBands.clear();
+    highlightFeature( current );
+  }
 }
 
 void QgsIdentifyResults::layerDestroyed()
 {
   QObject *theSender = sender();
 
-  if ( mRubberBandLayer == theSender )
+  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
-    clearRubberBand();
+    QTreeWidgetItem *layItem = lstResults->topLevelItem( i );
+
+    if ( layItem->data( 0, Qt::UserRole ).value<QObject *>() == sender() )
+    {
+      for ( int j = 0; j < layItem->childCount(); j++ )
+      {
+        mRubberBands.remove( layItem->child( i ) );
+      }
+    }
   }
 
   disconnectLayer( theSender );
@@ -604,17 +621,13 @@ void QgsIdentifyResults::featureDeleted( int fid )
 
     if ( featItem && featItem->data( 0, Qt::UserRole ).toInt() == fid )
     {
-      if ( mRubberBandLayer == sender() && mRubberBandFid == fid )
-        clearRubberBand();
-      delete featItem;
+      mRubberBands.remove( featItem );
       break;
     }
   }
 
   if ( layItem->childCount() == 0 )
   {
-    if ( mRubberBandLayer == sender() )
-      clearRubberBand();
     delete layItem;
   }
 
@@ -634,9 +647,10 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
   if ( !featItem )
     return;
 
-  int fid = featItem->data( 0, Qt::UserRole ).toInt();
+  if ( mRubberBands.contains( featItem ) )
+    return;
 
-  clearRubberBand();
+  int fid = featItem->data( 0, Qt::UserRole ).toInt();
 
   QgsFeature feat;
   if ( ! layer->featureAtId( fid, feat, true, false ) )
@@ -649,15 +663,14 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
     return;
   }
 
-  mRubberBand = new QgsRubberBand( mCanvas, feat.geometry()->type() == QGis::Polygon );
-  if ( mRubberBand )
+  QgsRubberBand *rb = new QgsRubberBand( mCanvas, feat.geometry()->type() == QGis::Polygon );
+  if ( rb )
   {
-    mRubberBandLayer = layer;
-    mRubberBandFid = fid;
-    mRubberBand->setToGeometry( feat.geometry(), layer );
-    mRubberBand->setWidth( 2 );
-    mRubberBand->setColor( Qt::red );
-    mRubberBand->show();
+    rb->setToGeometry( feat.geometry(), layer );
+    rb->setWidth( 2 );
+    rb->setColor( Qt::red );
+    rb->show();
+    mRubberBands.insert( featItem, QSharedPointer<QgsRubberBand>( rb ) );
   }
 }
 
@@ -767,6 +780,39 @@ void QgsIdentifyResults::featureForm()
   delete ad;
   mCanvas->refresh();
 }
+
+void QgsIdentifyResults::highlightAll()
+{
+  for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
+  {
+    QTreeWidgetItem *layItem = lstResults->topLevelItem( i );
+
+    for ( int j = 0; j < layItem->childCount(); j++ )
+    {
+      highlightFeature( layItem->child( j ) );
+    }
+  }
+}
+
+void QgsIdentifyResults::highlightLayer()
+{
+  highlightLayer( lstResults->currentItem() );
+}
+
+void QgsIdentifyResults::highlightLayer( QTreeWidgetItem *item )
+{
+  QTreeWidgetItem *layItem = layerItem( item );
+  if ( !layItem )
+    return;
+
+  mRubberBands.clear();
+
+  for ( int i = 0; i < layItem->childCount(); i++ )
+  {
+    highlightFeature( layItem->child( i ) );
+  }
+}
+
 
 void QgsIdentifyResults::expandAll()
 {
