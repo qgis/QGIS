@@ -479,6 +479,9 @@ INPUT          = doc \
                  src/core/symbology \
                  src/core/symbology-ng \
                  src/gui \
+                 src/analysis/interpolation \
+                 src/analysis/raster \
+                 src/analysis/vector \
                  src/plugins
 
 # If the value of the INPUT tag contains directories, you can use the 
