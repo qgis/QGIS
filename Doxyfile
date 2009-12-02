@@ -477,6 +477,7 @@ INPUT          = doc \
                  src/core/raster \
                  src/core/renderer \
                  src/core/symbology \
+                 src/core/symbology-ng \
                  src/gui \
                  src/plugins
 
