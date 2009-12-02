@@ -123,6 +123,7 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
 
 QgsIdentifyResults::~QgsIdentifyResults()
 {
+  clearRubberbands();
   delete mActionPopup;
 }
 
@@ -340,8 +341,11 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
   mActionPopup->addAction( tr( "Copy feature attributes" ), this, SLOT( copyFeatureAttributes() ) );
   mActionPopup->addSeparator();
+  mActionPopup->addAction( tr( "Clear results" ), this, SLOT( clear() ) );
+  mActionPopup->addAction( tr( "Clear highlights" ), this, SLOT( clearRubberbands() ) );
   mActionPopup->addAction( tr( "Highlight all" ), this, SLOT( highlightAll() ) );
   mActionPopup->addAction( tr( "Highlight layer" ), this, SLOT( highlightLayer() ) );
+  mActionPopup->addSeparator();
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
   mActionPopup->addAction( tr( "Collapse all" ), this, SLOT( collapseAll() ) );
 
@@ -398,6 +402,16 @@ void QgsIdentifyResults::expandColumnsToFit()
   lstResults->resizeColumnToContents( 1 );
 }
 
+void QgsIdentifyResults::clearRubberbands()
+{
+  foreach( QgsRubberBand *rb, mRubberBands )
+  {
+    delete rb;
+  }
+
+  mRubberBands.clear();
+}
+
 void QgsIdentifyResults::clear()
 {
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
@@ -406,15 +420,17 @@ void QgsIdentifyResults::clear()
   }
 
   lstResults->clear();
-  mRubberBands.clear();
+  clearRubberbands();
 }
 
 void QgsIdentifyResults::activate()
 {
-  foreach( QSharedPointer<QgsRubberBand> rb, mRubberBands )
+#if 0
+  foreach( QgsRubberBand *rb, mRubberBands )
   {
     rb->show();
   }
+#endif
 
   if ( lstResults->topLevelItemCount() > 0 )
   {
@@ -425,10 +441,12 @@ void QgsIdentifyResults::activate()
 
 void QgsIdentifyResults::deactivate()
 {
-  foreach( QSharedPointer<QgsRubberBand> rb, mRubberBands )
+#if 0
+  foreach( QgsRubberBand *rb, mRubberBands )
   {
     rb->hide();
   }
+#endif
 }
 
 void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
@@ -558,7 +576,7 @@ void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem *current, QTr
   }
   else
   {
-    mRubberBands.clear();
+    clearRubberbands();
     highlightFeature( current );
   }
 }
@@ -575,7 +593,7 @@ void QgsIdentifyResults::layerDestroyed()
     {
       for ( int j = 0; j < layItem->childCount(); j++ )
       {
-        mRubberBands.remove( layItem->child( i ) );
+        delete mRubberBands.take( layItem->child( i ) );
       }
     }
   }
@@ -621,7 +639,7 @@ void QgsIdentifyResults::featureDeleted( int fid )
 
     if ( featItem && featItem->data( 0, Qt::UserRole ).toInt() == fid )
     {
-      mRubberBands.remove( featItem );
+      delete mRubberBands.take( featItem );
       break;
     }
   }
@@ -670,7 +688,7 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
     rb->setWidth( 2 );
     rb->setColor( Qt::red );
     rb->show();
-    mRubberBands.insert( featItem, QSharedPointer<QgsRubberBand>( rb ) );
+    mRubberBands.insert( featItem, rb );
   }
 }
 
@@ -805,7 +823,7 @@ void QgsIdentifyResults::highlightLayer( QTreeWidgetItem *item )
   if ( !layItem )
     return;
 
-  mRubberBands.clear();
+  clearRubberbands();
 
   for ( int i = 0; i < layItem->childCount(); i++ )
   {

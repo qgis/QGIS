@@ -25,7 +25,6 @@
 
 #include <QWidget>
 #include <QList>
-#include <QSharedPointer>
 
 class QCloseEvent;
 class QTreeWidgetItem;
@@ -60,9 +59,6 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes );
 
-    /** Remove results */
-    void clear();
-
     /** map tool was deactivated */
     void deactivate();
 
@@ -75,6 +71,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void selectedFeatureChanged( QgsVectorLayer *, int featureId );
 
   public slots:
+    /** Remove results */
+    void clear();
 
     void show();
 
@@ -91,6 +89,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void copyFeatureAttributes();
     void highlightAll();
     void highlightLayer();
+    void clearRubberbands();
     void expandAll();
     void collapseAll();
 
@@ -110,7 +109,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
   private:
     QMenu *mActionPopup;
-    QMap<QTreeWidgetItem *, QSharedPointer<QgsRubberBand> > mRubberBands;
+    QMap<QTreeWidgetItem *, QgsRubberBand * > mRubberBands;
     QgsMapCanvas *mCanvas;
 
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
