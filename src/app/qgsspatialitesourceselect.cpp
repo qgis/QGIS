@@ -304,39 +304,33 @@ void QgsSpatiaLiteSourceSelect::addNewConnection()
 // Retrieve last used project dir from persistent settings
   sqlite3 *handle;
   QSettings settings;
-  QString fullPath;
   QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", "." ).toString();
 
   QString myFile = QFileDialog::getOpenFileName( this,
-      tr( "Choose a SpatiaLite/SQLite DB to open" ),
-      lastUsedDir, QObject::tr( "SQLite DB (*.sqlite);;All files (*.*)" ) );
+                   tr( "Choose a SpatiaLite/SQLite DB to open" ),
+                   lastUsedDir, QObject::tr( "SQLite DB (*.sqlite);;All files (*.*)" ) );
 
   if ( myFile.isEmpty() )
-  {
-    QFileInfo myFI( myFile );
-    QString myPath = myFI.path();
-    QString myName = myFI.fileName();
-
-    handle = openSpatiaLiteDb( myFI.canonicalFilePath() );
-    if ( handle )
-    {
-      // OK, this one is a valid SpatiaLite DB
-      closeSpatiaLiteDb( handle );
-
-      // Persist last used SpatiaLite dir
-      settings.setValue( "/UI/lastSpatiaLiteDir", myPath );
-      // inserting this SQLite DB path
-      QString baseKey = "/SpatiaLite/connections/";
-      settings.setValue( baseKey + "selected", myName );
-      baseKey += myName;
-      settings.setValue( baseKey + "/sqlitepath", fullPath );
-    }
-  }
-  else
-  {
-    // if they didn't select anything, just return
     return;
-  }
+
+  QFileInfo myFI( myFile );
+  QString myPath = myFI.path();
+  QString myName = myFI.fileName();
+
+  handle = openSpatiaLiteDb( myFI.canonicalFilePath() );
+  if ( !handle )
+    return;
+
+  // OK, this one is a valid SpatiaLite DB
+  closeSpatiaLiteDb( handle );
+
+  // Persist last used SpatiaLite dir
+  settings.setValue( "/UI/lastSpatiaLiteDir", myPath );
+  // inserting this SQLite DB path
+  QString baseKey = "/SpatiaLite/connections/";
+  settings.setValue( baseKey + "selected", myName );
+  baseKey += myName;
+  settings.setValue( baseKey + "/sqlitepath", myFI.canonicalFilePath() );
 
   populateConnectionList();
 }
