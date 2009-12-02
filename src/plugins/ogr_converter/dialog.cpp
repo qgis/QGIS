@@ -237,14 +237,16 @@ void Dialog::on_buttonBox_accepted()
 
   if ( srcUrl.isEmpty() )
   {
-    QMessageBox::warning( this, "OGR Layer Converter",
+    QMessageBox::warning( this,
+                          tr( "OGR Layer Converter" ),
                           tr( "Input OGR dataset is missing!" ) );
     return;
   }
 
   if ( srcLayer.isEmpty() )
   {
-    QMessageBox::warning( this, "OGR Layer Converter",
+    QMessageBox::warning( this,
+                          tr( "OGR Layer Converter" ),
                           tr( "Input OGR layer name is missing!" ) );
     return;
   }
@@ -258,21 +260,24 @@ void Dialog::on_buttonBox_accepted()
 
   if ( dstFormat.isEmpty() )
   {
-    QMessageBox::warning( this, "OGR Layer Converter",
+    QMessageBox::warning( this,
+                          tr( "OGR Layer Converter" ),
                           tr( "Target OGR format not selected!" ) );
     return;
   }
 
   if ( dstUrl.isEmpty() )
   {
-    QMessageBox::warning( this, "OGR Layer Converter",
+    QMessageBox::warning( this,
+                          tr( "OGR Layer Converter" ),
                           tr( "Output OGR dataset is missing!" ) );
     return;
   }
 
   if ( dstLayer.isEmpty() )
   {
-    QMessageBox::warning( this, "OGR Layer Converter",
+    QMessageBox::warning( this,
+                          tr( "OGR Layer Converter" ),
                           tr( "Output OGR layer name is missing!" ) );
     return;
   }
@@ -294,12 +299,14 @@ void Dialog::on_buttonBox_accepted()
 
   if ( success )
   {
-    QMessageBox::information( this, "OGR Layer Converter",
+    QMessageBox::information( this,
+                              tr( "OGR Layer Converter" ),
                               tr( "Successfully translated layer '%1'" ).arg( srcLayer ) );
   }
   else
   {
-    QMessageBox::information( this, "OGR Layer Converter",
+    QMessageBox::information( this,
+                              tr( "OGR Layer Converter" ),
                               tr( "Failed to translate layer '%1'" ).arg( srcLayer ) );
   }
 
