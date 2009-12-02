@@ -37,6 +37,7 @@
 #include <QEvent>
 #include <QFile>
 #include <QFileInfo>
+#include <QImageReader>
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QLabel>
@@ -62,11 +63,11 @@
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTextStream>
+#include <QtGlobal>
 #include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QWhatsThis>
-#include <QtGlobal>
 //
 // Mac OS X Includes
 // Must include before GEOS 3 due to unqualified use of 'Point'
@@ -3771,18 +3772,13 @@ void QgisApp::saveMapAsImage()
   // get a list of supported output image types
   int myCounterInt = 0;
   QString myFilters;
-  QList<QByteArray> formats = QPictureIO::outputFormats();
-  // Workaround for a problem with Qt4 - calls to outputFormats tend
-  // to return nothing :(
-  if ( formats.count() == 0 )
-  {
-    formats.append( "png" );
-    formats.append( "jpg" );
-  }
+  QList<QByteArray> formats = QImageReader::supportedImageFormats();
 
   for ( ; myCounterInt < formats.count(); myCounterInt++ )
   {
     QString myFormat = QString( formats.at( myCounterInt ) );
+    //svg doesnt work so skip it
+    if ( myFormat ==  "svg" ) continue;
     QString myFilter = createFileFilter_( myFormat + " format", "*." + myFormat );
     myFilters += myFilter;
     myFilterMap[myFilter] = myFormat;
