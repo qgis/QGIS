@@ -173,7 +173,7 @@ void QgsRendererV2PropertiesDialog::showSymbolLevels()
 void QgsRendererV2PropertiesDialog::useOldSymbology()
 {
   int res = QMessageBox::question( this, tr( "Symbology" ),
-                                   tr( "Do you wish to use original symbology implementation for this layer?" ),
+                                   tr( "Do you wish to use the original symbology implementation for this layer?" ),
                                    QMessageBox::Yes | QMessageBox::No );
 
   if ( res != QMessageBox::Yes )
