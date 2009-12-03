@@ -309,5 +309,10 @@ not disjoint with existing polygons of the feature*/
       @note added in version 1.2 */
     bool deletePart( int partNum );
 
+    /**Converts single type geometry into multitype geometry
+     e.g. a polygon into a multipolygon geometry with one polygon
+    @return true in case of success and false else*/
+    bool convertToMultiType();
+
 }; // class QgsGeometry
 

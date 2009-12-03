@@ -348,6 +348,11 @@ class CORE_EXPORT QgsGeometry
       @note added in version 1.2 */
     bool deletePart( int partNum );
 
+    /**Converts single type geometry into multitype geometry
+     e.g. a polygon into a multipolygon geometry with one polygon
+    @return true in case of success and false else*/
+    bool convertToMultiType();
+
 
   private:
     // Private variables
@@ -409,11 +414,6 @@ class CORE_EXPORT QgsGeometry
                        int beforeVertex,
                        const GEOSCoordSequence*  old_sequence,
                        GEOSCoordSequence** new_sequence );
-
-    /**Converts single type geometry into multitype geometry
-     e.g. a polygon into a multipolygon geometry with one polygon
-    @return true in case of success and false else*/
-    bool convertToMultiType();
 
     /**Translates a single vertex by dx and dy.
      @param ptr pointer to the wkb fragment containing the vertex
