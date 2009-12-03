@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Crate watershed subbasins raster" module="r.basins.fill">
+<qgisgrassmodule label="Create watershed subbasins raster" module="r.basins.fill">
 	<option key="number" />
 	<option key="c_map" />
 	<option key="t_map" />

@@ -26795,7 +26795,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="311"/>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
-        <translation>Per cotruire piramidi devi avere accesso in scrittura sulla directory dove sono memorizzati i files di origine.</translation>
+        <translation type="unfinished">Per costruire piramidi devi avere accesso in scrittura sulla directory dove sono memorizzati i files di origine.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="363"/>
@@ -27784,7 +27784,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1998"/>
         <source>Out of range OK?</source>
-        <translation>Furi intervallo OK?</translation>
+        <translation>Accettare valori fuori dell&apos; intervallo?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2005"/>
@@ -31423,7 +31423,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1394"/>
         <source>received %1 bytes from %2</source>
-        <translation>Rivevuti %1 bytes da %2</translation>
+        <translation>Ricevuti %1 bytes da %2</translation>
     </message>
 </context>
 <context>
