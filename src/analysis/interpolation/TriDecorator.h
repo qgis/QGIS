@@ -80,3 +80,4 @@ inline void TriDecorator::addTriangulation( Triangulation* t )
 }
 
 #endif
+
