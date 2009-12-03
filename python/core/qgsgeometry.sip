@@ -195,6 +195,10 @@ not disjoint with existing polygons of the feature*/
      @return 0 in case of success*/
     int translate(double dx, double dy);
 
+ /**Transform this geometry as described by CoordinateTranasform ct
+     @return 0 in case of success*/
+    int transform( const QgsCoordinateTransform& ct );
+
  /**Splits this geometry according to a given line. Note that the geometry is only splitted once. If there are several intersections
     between geometry and splitLine, only the first one is considered.
     @param splitLine the line that splits the geometry
