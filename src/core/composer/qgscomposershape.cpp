@@ -44,9 +44,6 @@ void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
   drawBackground( painter );
 
-  double width = rect().width();
-  double height = rect().height();
-
   painter->save();
   painter->setRenderHint( QPainter::Antialiasing );
   painter->setPen( mPen );
