@@ -39,6 +39,9 @@ class QgsUniqueValueRenderer : QgsRenderer
     int classificationField();
     /**Return symbology items*/
     const QList<QgsSymbol*> symbols() const;
+    /**Return the classification map 
+      @note added in 1.4 */ 
+    const QMap<QString, QgsSymbol*> symbolMap() const;
     QgsRenderer* clone() const /Factory/;
 };
 

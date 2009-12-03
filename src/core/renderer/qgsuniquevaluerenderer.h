@@ -63,6 +63,9 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     int classificationField() const;
     /**Return symbology items*/
     const QList<QgsSymbol*> symbols() const { return mSymbols.values(); }
+    /**Return the classification map 
+       @note added in 1.4 */ 
+    const QMap<QString, QgsSymbol*> symbolMap() const { return mSymbols; }
     QgsRenderer* clone() const;
   protected:
     /**Field index used for classification*/
