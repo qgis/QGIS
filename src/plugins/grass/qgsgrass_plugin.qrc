@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/default/grass" >
+    <qresource prefix="/images/themes/default/grass" >
       <file alias="grass_add_map.png">themes/default/grass_add_map.png</file>
       <file alias="grass_add_raster.png">themes/default/grass_add_raster.png</file>
       <file alias="grass_add_vector.png">themes/default/grass_add_vector.png</file>
@@ -45,7 +45,7 @@
       <file alias="mapcalc_select.png">themes/default/mapcalc_select.png</file>
       <file alias="world.png">themes/default/world.png</file>
     </qresource>
-    <qresource prefix="/classic/grass" >
+    <qresource prefix="/images/themes/classic/grass" >
       <file alias="grass_add_map.png">themes/classic/grass_add_map.png</file>
       <file alias="grass_add_raster.png">themes/classic/grass_add_raster.png</file>
       <file alias="grass_add_vector.png">themes/classic/grass_add_vector.png</file>
@@ -91,7 +91,19 @@
       <file alias="mapcalc_select.png">themes/classic/mapcalc_select.png</file>
       <file alias="world.png">themes/classic/world.png</file>
     </qresource>
-    <qresource prefix="/gis/grass" >
+    <qresource prefix="/images/themes/newgis/grass" >
+      <file alias="grass_add_raster.png">themes/gis/grass_add_raster.png</file>
+      <file alias="grass_add_vector.png">themes/gis/grass_add_vector.png</file>
+      <file alias="grass_close_mapset.png">themes/gis/grass_close_mapset.png</file>
+      <file alias="grass_new_mapset.png">themes/gis/grass_new_mapset.png</file>
+      <file alias="grass_open_mapset.png">themes/gis/grass_open_mapset.png</file>
+      <file alias="grass_new_vector_layer.png">themes/gis/grass_new_vector_layer.png</file>
+      <file alias="grass_region_edit.png">themes/gis/grass_region_edit.png</file>
+      <file alias="grass_region.png">themes/gis/grass_region.png</file>
+      <file alias="grass_edit.png">themes/gis/grass_edit.png</file>
+      <file alias="grass_tools.png">themes/gis/grass_tools.png</file>
+    </qresource>
+    <qresource prefix="/images/themes/gis/grass" >
       <file alias="grass_add_raster.png">themes/gis/grass_add_raster.png</file>
       <file alias="grass_add_vector.png">themes/gis/grass_add_vector.png</file>
       <file alias="grass_close_mapset.png">themes/gis/grass_close_mapset.png</file>
