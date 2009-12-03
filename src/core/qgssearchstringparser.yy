@@ -20,6 +20,7 @@
 %{
 #include <qglobal.h>
 #include <QList>
+#include <cstdlib>
 #include "qgssearchtreenode.h"
 
 // don't redeclare malloc/free
