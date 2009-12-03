@@ -150,6 +150,7 @@ INCLUDE_DIRECTORIES(
 TARGET_LINK_LIBRARIES(grassplugin
   qgisgrass
   qgis_gui
+  ${OPENPTY_LIBRARY}
 )
 
 
