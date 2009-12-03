@@ -165,7 +165,7 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Open</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>
@@ -195,28 +195,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>449</y>
+     <x>353</x>
+     <y>446</y>
     </hint>
     <hint type="destinationlabel">
-     <x>399</x>
-     <y>310</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsPgSourceSelectBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>368</x>
-     <y>450</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>401</x>
-     <y>377</y>
+     <x>404</x>
+     <y>421</y>
     </hint>
    </hints>
   </connection>
