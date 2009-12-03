@@ -7,7 +7,7 @@
 ** of 5% are more are commonly seen when SQLite is compiled as a single
 ** translation unit.
 **
-** This amalgamation was generated on 2009-11-12 09:49:19 +0100.
+** This amalgamation was generated on 2009-12-03 13:49:58 +0100.
 
 Author: Alessandro (Sandro) Furieri <a.furieri@lqt.it>
 
@@ -7387,6 +7387,7 @@ gaiaIsReservedSqliteName (const char *name)
 	"AS",
 	"AUTOINCREMENT",
 	"BETWEEN",
+	"BLOB",
 	"BY",
 	"CASE",
 	"CHECK",
@@ -7395,10 +7396,13 @@ gaiaIsReservedSqliteName (const char *name)
 	"CONSTRAINT",
 	"CREATE",
 	"CROSS",
+	"DATE",
+	"DATETIME",
 	"DEFAULT",
 	"DEFERRABLE",
 	"DELETE",
 	"DISTINCT",
+	"DOUBLE",
 	"DROP",
 	"ELSE",
 	"ESCAPE",
@@ -7413,11 +7417,13 @@ gaiaIsReservedSqliteName (const char *name)
 	"INDEX",
 	"INNER",
 	"INSERT",
+	"INTEGER",
 	"INTERSECT",
 	"INTO",
 	"IS",
 	"ISNULL",
 	"JOIN",
+	"KEY",
 	"LEFT",
 	"LIKE",
 	"LIMIT",
@@ -7429,6 +7435,7 @@ gaiaIsReservedSqliteName (const char *name)
 	"OR",
 	"ORDER",
 	"OUTER",
+	"PRAGMA",
 	"PRIMARY",
 	"REFERENCES",
 	"RIGHT",
@@ -7436,7 +7443,11 @@ gaiaIsReservedSqliteName (const char *name)
 	"SELECT",
 	"SET",
 	"TABLE",
+	"TEMP",
+	"TEMPORARY",
 	"THEN",
+	"TEXT",
+	"TIMESTAMP",
 	"TO",
 	"TRANSACTION",
 	"UNION",
@@ -7444,6 +7455,7 @@ gaiaIsReservedSqliteName (const char *name)
 	"UPDATE",
 	"USING",
 	"VALUES",
+	"VIEW",
 	"WHEN",
 	"WHERE",
 	NULL
@@ -24874,8 +24886,8 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		else
 		  {
 		      /* compressing any other intermediate vertex */
-		      fx = x - last_x;
-		      fy = y - last_y;
+		      fx = (float) (x - last_x);
+		      fy = (float) (y - last_y);
 		      gaiaExportF32 (ptr, fx, 1, endian_arch);
 		      gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 		      ptr += 8;
@@ -24911,9 +24923,9 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		else
 		  {
 		      /* compressing any other intermediate vertex */
-		      fx = x - last_x;
-		      fy = y - last_y;
-		      fz = z - last_z;
+		      fx = (float) (x - last_x);
+		      fy = (float) (y - last_y);
+		      fz = (float) (z - last_z);
 		      gaiaExportF32 (ptr, fx, 1, endian_arch);
 		      gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 		      gaiaExportF32 (ptr + 8, fz, 1, endian_arch);
@@ -24951,8 +24963,8 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		else
 		  {
 		      /* compressing any other intermediate vertex */
-		      fx = x - last_x;
-		      fy = y - last_y;
+		      fx = (float) (x - last_x);
+		      fy = (float) (y - last_y);
 		      gaiaExportF32 (ptr, fx, 1, endian_arch);
 		      gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 		      gaiaExport64 (ptr + 8, m, 1, endian_arch);
@@ -24990,9 +25002,9 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		else
 		  {
 		      /* compressing any other intermediate vertex */
-		      fx = x - last_x;
-		      fy = y - last_y;
-		      fz = z - last_z;
+		      fx = (float) (x - last_x);
+		      fy = (float) (y - last_y);
+		      fz = (float) (z - last_z);
 		      gaiaExportF32 (ptr, fx, 1, endian_arch);
 		      gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 		      gaiaExportF32 (ptr + 8, fz, 1, endian_arch);
@@ -25032,8 +25044,8 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		else
 		  {
 		      /* compressing any other intermediate vertex */
-		      fx = x - last_x;
-		      fy = y - last_y;
+		      fx = (float) (x - last_x);
+		      fy = (float) (y - last_y);
 		      gaiaExportF32 (ptr, fx, 1, endian_arch);
 		      gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 		      ptr += 8;
@@ -25059,8 +25071,8 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		      else
 			{
 			    /* compressing any other intermediate vertex */
-			    fx = x - last_x;
-			    fy = y - last_y;
+			    fx = (float) (x - last_x);
+			    fy = (float) (y - last_y);
 			    gaiaExportF32 (ptr, fx, 1, endian_arch);
 			    gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 			    ptr += 8;
@@ -25099,9 +25111,9 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		else
 		  {
 		      /* compressing any other intermediate vertex */
-		      fx = x - last_x;
-		      fy = y - last_y;
-		      fz = z - last_z;
+		      fx = (float) (x - last_x);
+		      fy = (float) (y - last_y);
+		      fz = (float) (z - last_z);
 		      gaiaExportF32 (ptr, fx, 1, endian_arch);
 		      gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 		      gaiaExportF32 (ptr + 8, fz, 1, endian_arch);
@@ -25130,9 +25142,9 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		      else
 			{
 			    /* compressing any other intermediate vertex */
-			    fx = x - last_x;
-			    fy = y - last_y;
-			    fz = z - last_z;
+			    fx = (float) (x - last_x);
+			    fy = (float) (y - last_y);
+			    fz = (float) (z - last_z);
 			    gaiaExportF32 (ptr, fx, 1, endian_arch);
 			    gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 			    gaiaExportF32 (ptr + 8, fz, 1, endian_arch);
@@ -25173,8 +25185,8 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		else
 		  {
 		      /* compressing any other intermediate vertex */
-		      fx = x - last_x;
-		      fy = y - last_y;
+		      fx = (float) (x - last_x);
+		      fy = (float) (y - last_y);
 		      gaiaExportF32 (ptr, fx, 1, endian_arch);
 		      gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 		      gaiaExport64 (ptr + 8, m, 1, endian_arch);
@@ -25202,8 +25214,8 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		      else
 			{
 			    /* compressing any other intermediate vertex */
-			    fx = x - last_x;
-			    fy = y - last_y;
+			    fx = (float) (x - last_x);
+			    fy = (float) (y - last_y);
 			    gaiaExportF32 (ptr, fx, 1, endian_arch);
 			    gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 			    gaiaExport64 (ptr + 8, m, 1, endian_arch);
@@ -25244,9 +25256,9 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		else
 		  {
 		      /* compressing any other intermediate vertex */
-		      fx = x - last_x;
-		      fy = y - last_y;
-		      fz = z - last_z;
+		      fx = (float) (x - last_x);
+		      fy = (float) (y - last_y);
+		      fz = (float) (z - last_z);
 		      gaiaExportF32 (ptr, fx, 1, endian_arch);
 		      gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 		      gaiaExportF32 (ptr + 8, fz, 1, endian_arch);
@@ -25277,9 +25289,9 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		      else
 			{
 			    /* compressing any other intermediate vertex */
-			    fx = x - last_x;
-			    fy = y - last_y;
-			    fz = z - last_z;
+			    fx = (float) (x - last_x);
+			    fy = (float) (y - last_y);
+			    fz = (float) (z - last_z);
 			    gaiaExportF32 (ptr, fx, 1, endian_arch);
 			    gaiaExportF32 (ptr + 4, fy, 1, endian_arch);
 			    gaiaExportF32 (ptr + 8, fz, 1, endian_arch);
@@ -25388,8 +25400,8 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		      else
 			{
 			    /* compressing any other intermeditate vertex */
-			    fx = x - last_x;
-			    fy = y - last_y;
+			    fx = (float) (x - last_x);
+			    fy = (float) (y - last_y);
 			    gaiaExportF32 (ptr, fx, 1, endian_arch);	/* X */
 			    gaiaExportF32 (ptr + 4, fy, 1, endian_arch);	/* Y */
 			    ptr += 8;
@@ -25405,7 +25417,7 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 			    else
 			      {
 				  /* compressing any other intermeditate vertex */
-				  fz = z - last_z;
+				  fz = (float) (z - last_z);
 				  gaiaExportF32 (ptr, fz, 1, endian_arch);	/* Z */
 				  ptr += 4;
 			      }
@@ -25426,7 +25438,7 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 			    else
 			      {
 				  /* compressing any other intermeditate vertex */
-				  fz = z - last_z;
+				  fz = (float) (z - last_z);
 				  gaiaExportF32 (ptr, fz, 1, endian_arch);	/* Z */
 				  ptr += 4;
 			      }
@@ -25485,8 +25497,8 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 		      else
 			{
 			    /* compressing any other intermeditate vertex */
-			    fx = x - last_x;
-			    fy = y - last_y;
+			    fx = (float) (x - last_x);
+			    fy = (float) (y - last_y);
 			    gaiaExportF32 (ptr, fx, 1, endian_arch);	/* X */
 			    gaiaExportF32 (ptr + 4, fy, 1, endian_arch);	/* Y */
 			    ptr += 8;
@@ -25502,7 +25514,7 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 			    else
 			      {
 				  /* compressing any other intermeditate vertex */
-				  fz = z - last_z;
+				  fz = (float) (z - last_z);
 				  gaiaExportF32 (ptr, fz, 1, endian_arch);	/* Z */
 				  ptr += 4;
 			      }
@@ -25523,7 +25535,7 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 			    else
 			      {
 				  /* compressing any other intermeditate vertex */
-				  fz = z - last_z;
+				  fz = (float) (z - last_z);
 				  gaiaExportF32 (ptr, fz, 1, endian_arch);	/* Z */
 				  ptr += 4;
 			      }
@@ -25570,8 +25582,8 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 			    else
 			      {
 				  /* compressing any other intermeditate vertex */
-				  fx = x - last_x;
-				  fy = y - last_y;
+				  fx = (float) (x - last_x);
+				  fy = (float) (y - last_y);
 				  gaiaExportF32 (ptr, fx, 1, endian_arch);	/* X */
 				  gaiaExportF32 (ptr + 4, fy, 1, endian_arch);	/* Y */
 				  ptr += 8;
@@ -25587,7 +25599,7 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 				  else
 				    {
 					/* compressing any other intermeditate vertex */
-					fz = z - last_z;
+					fz = (float) (z - last_z);
 					gaiaExportF32 (ptr, fz, 1, endian_arch);	/* Z */
 					ptr += 4;
 				    }
@@ -25608,7 +25620,7 @@ gaiaToCompressedBlobWkb (gaiaGeomCollPtr geom, unsigned char **result,
 				  else
 				    {
 					/* compressing any other intermeditate vertex */
-					fz = z - last_z;
+					fz = (float) (z - last_z);
 					gaiaExportF32 (ptr, fz, 1, endian_arch);	/* Z */
 					ptr += 4;
 				    }
@@ -26466,7 +26478,7 @@ pointFromFgf (gaiaGeomCollPtr geom, int endian_arch, const unsigned char *blob,
 	  x = gaiaImport64 (ptr, GAIA_LITTLE_ENDIAN, endian_arch);
 	  y = gaiaImport64 (ptr + 8, GAIA_LITTLE_ENDIAN, endian_arch);
 	  z = gaiaImport64 (ptr + 8, GAIA_LITTLE_ENDIAN, endian_arch);
-	  gaiaAddPointToGeomCollXYZ (geom, x, y, m);
+	  gaiaAddPointToGeomCollXYZ (geom, x, y, z);
       }
     else if (type == GAIA_XY_Z_M)
       {
@@ -33968,7 +33980,7 @@ fnct_InitSpatialMetaData (sqlite3_context * context, int argc,
 
 static int
 recoverGeomColumn (sqlite3 * sqlite, const unsigned char *table,
-		   const unsigned char *column, int xtype, int srid)
+		   const unsigned char *column, int xtype, int dims, int srid)
 {
 /* checks if TABLE.COLUMN exists and has the required features */
     int ok = 1;
@@ -33997,7 +34009,7 @@ recoverGeomColumn (sqlite3 * sqlite, const unsigned char *table,
 	      break;		/* end of result set */
 	  if (ret == SQLITE_ROW)
 	    {
-		/* cecking Geometry features */
+		/* checking Geometry features */
 		geom = NULL;
 		for (i_col = 0; i_col < sqlite3_column_count (stmt); i_col++)
 		  {
@@ -34012,6 +34024,8 @@ recoverGeomColumn (sqlite3 * sqlite, const unsigned char *table,
 				ok = 0;
 			    else
 			      {
+				  if (geom->DimensionModel != dims)
+				      ok = 0;
 				  if (geom->Srid != srid)
 				      ok = 0;
 				  type = gaiaGeometryType (geom);
@@ -34743,8 +34757,11 @@ fnct_RecoverGeometryColumn (sqlite3_context * context, int argc,
     const unsigned char *column;
     const unsigned char *type;
     int xtype;
+    int xxtype;
     int srid = -1;
+    const unsigned char *txt_dims;
     int dimension = 2;
+    int dims = -1;
     char dummy[32];
     char sql[1024];
     char *errMsg = NULL;
@@ -34788,14 +34805,33 @@ fnct_RecoverGeometryColumn (sqlite3_context * context, int argc,
 	  return;
       }
     type = sqlite3_value_text (argv[3]);
-    if (sqlite3_value_type (argv[4]) != SQLITE_INTEGER)
+    if (sqlite3_value_type (argv[4]) == SQLITE_INTEGER)
+      {
+	  dimension = sqlite3_value_int (argv[4]);
+	  if (dimension == 2)
+	      dims = GAIA_XY;
+	  if (dimension == 3)
+	      dims = GAIA_XY_Z;
+      }
+    else if (sqlite3_value_type (argv[4]) == SQLITE_TEXT)
+      {
+	  txt_dims = sqlite3_value_text (argv[4]);
+	  if (strcasecmp ((char *) txt_dims, "XY") == 0)
+	      dims = GAIA_XY;
+	  if (strcasecmp ((char *) txt_dims, "XYZ") == 0)
+	      dims = GAIA_XY_Z;
+	  if (strcasecmp ((char *) txt_dims, "XYM") == 0)
+	      dims = GAIA_XY_M;
+	  if (strcasecmp ((char *) txt_dims, "XYZM") == 0)
+	      dims = GAIA_XY_Z_M;
+      }
+    else
       {
 	  fprintf (stderr,
-		   "RecoverGeometryColumn() error: argument 5 [dimension] is not of the Integer type\n");
+		   "RecoverGeometryColumn() error: argument 5 [dimension] is not of the Integer or Text type\n");
 	  sqlite3_result_int (context, 0);
 	  return;
       }
-    dimension = sqlite3_value_int (argv[4]);
     xtype = GAIA_UNKNOWN;
     if (strcasecmp ((char *) type, "POINT") == 0)
 	xtype = GAIA_POINT;
@@ -34820,10 +34856,13 @@ fnct_RecoverGeometryColumn (sqlite3_context * context, int argc,
 	  sqlite3_result_int (context, 0);
 	  return;
       }
-    if (dimension != 2)
+    if (dims == GAIA_XY || dims == GAIA_XY_Z || dims == GAIA_XY_M
+	|| dims == GAIA_XY_Z_M)
+	;
+    else
       {
 	  fprintf (stderr,
-		   "RecoverGeometryColumn() error: argument 5 [dimension] current version only accepts dimension=2\n");
+		   "RecoverGeometryColumn() error: argument 5 [dimension] ILLEGAL VALUE\n");
 	  sqlite3_result_int (context, 0);
 	  return;
       }
@@ -34853,7 +34892,136 @@ fnct_RecoverGeometryColumn (sqlite3_context * context, int argc,
 	  sqlite3_result_int (context, 0);
 	  return;
       }
-    if (!recoverGeomColumn (sqlite, table, column, xtype, srid))
+/* adjusting the actucal GeometryType */
+    xxtype = xtype;
+    xtype = GAIA_UNKNOWN;
+    if (xxtype == GAIA_POINT)
+      {
+	  switch (dims)
+	    {
+	    case GAIA_XY_Z:
+		xtype = GAIA_POINTZ;
+		break;
+	    case GAIA_XY_M:
+		xtype = GAIA_POINTM;
+		break;
+	    case GAIA_XY_Z_M:
+		xtype = GAIA_POINTZM;
+		break;
+	    default:
+		xtype = GAIA_POINT;
+		break;
+	    };
+      }
+    if (xxtype == GAIA_LINESTRING)
+      {
+	  switch (dims)
+	    {
+	    case GAIA_XY_Z:
+		xtype = GAIA_LINESTRINGZ;
+		break;
+	    case GAIA_XY_M:
+		xtype = GAIA_LINESTRINGM;
+		break;
+	    case GAIA_XY_Z_M:
+		xtype = GAIA_LINESTRINGZM;
+		break;
+	    default:
+		xtype = GAIA_LINESTRING;
+		break;
+	    };
+      }
+    if (xxtype == GAIA_POLYGON)
+      {
+	  switch (dims)
+	    {
+	    case GAIA_XY_Z:
+		xtype = GAIA_POLYGONZ;
+		break;
+	    case GAIA_XY_M:
+		xtype = GAIA_POLYGONM;
+		break;
+	    case GAIA_XY_Z_M:
+		xtype = GAIA_POLYGONZM;
+		break;
+	    default:
+		xtype = GAIA_POLYGON;
+		break;
+	    };
+      }
+    if (xxtype == GAIA_MULTIPOINT)
+      {
+	  switch (dims)
+	    {
+	    case GAIA_XY_Z:
+		xtype = GAIA_MULTIPOINTZ;
+		break;
+	    case GAIA_XY_M:
+		xtype = GAIA_MULTIPOINTM;
+		break;
+	    case GAIA_XY_Z_M:
+		xtype = GAIA_MULTIPOINTZM;
+		break;
+	    default:
+		xtype = GAIA_MULTIPOINT;
+		break;
+	    };
+      }
+    if (xxtype == GAIA_MULTILINESTRING)
+      {
+	  switch (dims)
+	    {
+	    case GAIA_XY_Z:
+		xtype = GAIA_MULTILINESTRINGZ;
+		break;
+	    case GAIA_XY_M:
+		xtype = GAIA_MULTILINESTRINGM;
+		break;
+	    case GAIA_XY_Z_M:
+		xtype = GAIA_MULTILINESTRINGZM;
+		break;
+	    default:
+		xtype = GAIA_MULTILINESTRING;
+		break;
+	    };
+      }
+    if (xxtype == GAIA_MULTIPOLYGON)
+      {
+	  switch (dims)
+	    {
+	    case GAIA_XY_Z:
+		xtype = GAIA_MULTIPOLYGONZ;
+		break;
+	    case GAIA_XY_M:
+		xtype = GAIA_MULTIPOLYGONM;
+		break;
+	    case GAIA_XY_Z_M:
+		xtype = GAIA_MULTIPOLYGONZM;
+		break;
+	    default:
+		xtype = GAIA_MULTIPOLYGON;
+		break;
+	    };
+      }
+    if (xxtype == GAIA_GEOMETRYCOLLECTION)
+      {
+	  switch (dims)
+	    {
+	    case GAIA_XY_Z:
+		xtype = GAIA_GEOMETRYCOLLECTIONZ;
+		break;
+	    case GAIA_XY_M:
+		xtype = GAIA_GEOMETRYCOLLECTIONM;
+		break;
+	    case GAIA_XY_Z_M:
+		xtype = GAIA_GEOMETRYCOLLECTIONZM;
+		break;
+	    default:
+		xtype = GAIA_GEOMETRYCOLLECTION;
+		break;
+	    };
+      }
+    if (!recoverGeomColumn (sqlite, table, column, xtype, dims, srid))
       {
 	  fprintf (stderr, "RecoverGeometryColumn(): validation failed\n");
 	  sqlite3_result_int (context, 0);
@@ -34894,7 +35062,23 @@ fnct_RecoverGeometryColumn (sqlite3_context * context, int argc,
 	  strcat (sql, "GEOMETRY");
 	  break;
       };
-    strcat (sql, "', 2, ");
+    strcat (sql, "', '");
+    switch (dims)
+      {
+      case GAIA_XY:
+	  strcat (sql, "XY");
+	  break;
+      case GAIA_XY_Z:
+	  strcat (sql, "XYZ");
+	  break;
+      case GAIA_XY_M:
+	  strcat (sql, "XYM");
+	  break;
+      case GAIA_XY_Z_M:
+	  strcat (sql, "XYZM");
+	  break;
+      };
+    strcat (sql, "', ");
     if (srid <= 0)
 	strcat (sql, "-1");
     else
@@ -37469,6 +37653,60 @@ fnct_Dimension (sqlite3_context * context, int argc, sqlite3_value ** argv)
 }
 
 static void
+fnct_CoordDimension (sqlite3_context * context, int argc, sqlite3_value ** argv)
+{
+/* SQL function:
+/ CoordDimension(BLOB encoded geometry)
+/
+/ returns:
+/ 'XY', 'XYM', 'XYZ', 'XYZM'
+/ or NULL if any error is encountered
+*/
+    unsigned char *p_blob;
+    int n_bytes;
+    int len;
+    char *p_dim = NULL;
+    char *p_result = NULL;
+    gaiaGeomCollPtr geo = NULL;
+    GAIA_UNUSED ();
+    if (sqlite3_value_type (argv[0]) != SQLITE_BLOB)
+      {
+	  sqlite3_result_null (context);
+	  return;
+      }
+    p_blob = (unsigned char *) sqlite3_value_blob (argv[0]);
+    n_bytes = sqlite3_value_bytes (argv[0]);
+    geo = gaiaFromSpatiaLiteBlobWkb (p_blob, n_bytes);
+    if (!geo)
+	sqlite3_result_null (context);
+    else
+      {
+	  if (geo->DimensionModel == GAIA_XY)
+	      p_dim = "XY";
+	  else if (geo->DimensionModel == GAIA_XY_Z)
+	      p_dim = "XYZ";
+	  else if (geo->DimensionModel == GAIA_XY_M)
+	      p_dim = "XYM";
+	  else if (geo->DimensionModel == GAIA_XY_Z_M)
+	      p_dim = "XYZM";
+	  if (p_dim)
+	    {
+		len = strlen (p_dim);
+		p_result = malloc (len + 1);
+		strcpy (p_result, p_dim);
+	    }
+	  if (!p_result)
+	      sqlite3_result_null (context);
+	  else
+	    {
+		len = strlen (p_result);
+		sqlite3_result_text (context, p_result, len, free);
+	    }
+      }
+    gaiaFreeGeomColl (geo);
+}
+
+static void
 fnct_GeometryType (sqlite3_context * context, int argc, sqlite3_value ** argv)
 {
 /* SQL function:
@@ -37825,6 +38063,7 @@ fnct_Envelope (sqlite3_context * context, int argc, sqlite3_value ** argv)
 	    {
 		gaiaMbrGeometry (geo);
 		bbox = gaiaAllocGeomColl ();
+		bbox->Srid = geo->Srid;
 		polyg = gaiaAddPolygonToGeomColl (bbox, 5, 0);
 		rect = polyg->Exterior;
 		gaiaSetPoint (rect->Coords, 0, geo->MinX, geo->MinY);	/* vertex # 1 */
@@ -43312,6 +43551,126 @@ init_static_spatialite (sqlite3 * db, char **pzErrMsg,
 			     fnct_MPolyFromWkb1, 0, 0);
     sqlite3_create_function (db, "MultiPolygonFromWKB", 2, SQLITE_ANY, 0,
 			     fnct_MPolyFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_GeomFromText", 1, SQLITE_ANY, 0,
+			     fnct_GeomFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_GeomFromText", 2, SQLITE_ANY, 0,
+			     fnct_GeomFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryFromText", 1, SQLITE_ANY, 0,
+			     fnct_GeomFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryFromText", 2, SQLITE_ANY, 0,
+			     fnct_GeomFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_GeomCollFromText", 1, SQLITE_ANY, 0,
+			     fnct_GeomCollFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_GeomCollFromText", 2, SQLITE_ANY, 0,
+			     fnct_GeomCollFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryCollectionFromText", 1, SQLITE_ANY,
+			     0, fnct_GeomCollFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryCollectionFromText", 2, SQLITE_ANY,
+			     0, fnct_GeomCollFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_PointFromText", 1, SQLITE_ANY, 0,
+			     fnct_PointFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_PointFromText", 2, SQLITE_ANY, 0,
+			     fnct_PointFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_LineFromText", 1, SQLITE_ANY, 0,
+			     fnct_LineFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_LineFromText", 2, SQLITE_ANY, 0,
+			     fnct_LineFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_LineStringFromText", 1, SQLITE_ANY, 0,
+			     fnct_LineFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_LineStringFromText", 2, SQLITE_ANY, 0,
+			     fnct_LineFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_PolyFromText", 1, SQLITE_ANY, 0,
+			     fnct_PolyFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_PolyFromText", 2, SQLITE_ANY, 0,
+			     fnct_PolyFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_PolygonFromText", 1, SQLITE_ANY, 0,
+			     fnct_PolyFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_PolygonFromText", 2, SQLITE_ANY, 0,
+			     fnct_PolyFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MPointFromText", 1, SQLITE_ANY, 0,
+			     fnct_MPointFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MPointFromText", 2, SQLITE_ANY, 0,
+			     fnct_MPointFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPointFromText", 1, SQLITE_ANY, 0,
+			     fnct_MPointFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPointFromText", 2, SQLITE_ANY, 0,
+			     fnct_MPointFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MLineFromText", 1, SQLITE_ANY, 0,
+			     fnct_MLineFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MLineFromText", 2, SQLITE_ANY, 0,
+			     fnct_MLineFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiLineStringFromText", 1, SQLITE_ANY, 0,
+			     fnct_MLineFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiLineStringFromText", 2, SQLITE_ANY, 0,
+			     fnct_MLineFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MPolyFromText", 1, SQLITE_ANY, 0,
+			     fnct_MPolyFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MPolyFromText", 2, SQLITE_ANY, 0,
+			     fnct_MPolyFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPolygonFromText", 1, SQLITE_ANY, 0,
+			     fnct_MPolyFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPolygonFromText", 2, SQLITE_ANY, 0,
+			     fnct_MPolyFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_GeomFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_GeomFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_GeomFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_GeomFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_GeomFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_GeomFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_GeomCollFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_GeomCollFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_GeomCollFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_GeomCollFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryCollectionFromWKB", 1, SQLITE_ANY,
+			     0, fnct_GeomCollFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryCollectionFromWKB", 2, SQLITE_ANY,
+			     0, fnct_GeomCollFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_PointFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_PointFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_PointFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_PointFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_LineFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_LineFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_LineFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_LineFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_LineStringFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_LineFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_LineStringFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_LineFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_PolyFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_PolyFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_PolyFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_PolyFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_PolygonFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_PolyFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_PolygonFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_PolyFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MPointFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MPointFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MPointFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MPointFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPointFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MPointFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPointFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MPointFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MLineFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MLineFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MLineFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MLineFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiLineStringFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MLineFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiLineStringFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MLineFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MPolyFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MPolyFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MPolyFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MPolyFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPolygonFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MPolyFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPolygonFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MPolyFromWkb2, 0, 0);
     sqlite3_create_function (db, "GeomFromFGF", 1, SQLITE_ANY, 0,
 			     fnct_GeometryFromFGF1, 0, 0);
     sqlite3_create_function (db, "GeomFromFGF", 2, SQLITE_ANY, 0,
@@ -43350,6 +43709,8 @@ init_static_spatialite (sqlite3 * db, char **pzErrMsg,
 			     0, 0);
     sqlite3_create_function (db, "ST_Dimension", 1, SQLITE_ANY, 0,
 			     fnct_Dimension, 0, 0);
+    sqlite3_create_function (db, "CoordDimension", 1, SQLITE_ANY, 0,
+			     fnct_CoordDimension, 0, 0);
     sqlite3_create_function (db, "GeometryType", 1, SQLITE_ANY, 0,
 			     fnct_GeometryType, 0, 0);
     sqlite3_create_function (db, "ST_GeometryType", 1, SQLITE_ANY, 0,
@@ -44004,6 +44365,126 @@ sqlite3_extension_init (sqlite3 * db, char **pzErrMsg,
 			     fnct_PolyFromWkb1, 0, 0);
     sqlite3_create_function (db, "PolygonFromWKB", 2, SQLITE_ANY, 0,
 			     fnct_PolyFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_GeomFromText", 1, SQLITE_ANY, 0,
+			     fnct_GeomFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_GeomFromText", 2, SQLITE_ANY, 0,
+			     fnct_GeomFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryFromText", 1, SQLITE_ANY, 0,
+			     fnct_GeomFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryFromText", 2, SQLITE_ANY, 0,
+			     fnct_GeomFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_GeomCollFromText", 1, SQLITE_ANY, 0,
+			     fnct_GeomCollFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_GeomCollFromText", 2, SQLITE_ANY, 0,
+			     fnct_GeomCollFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryCollectionFromText", 1, SQLITE_ANY,
+			     0, fnct_GeomCollFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryCollectionFromText", 2, SQLITE_ANY,
+			     0, fnct_GeomCollFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_PointFromText", 1, SQLITE_ANY, 0,
+			     fnct_PointFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_PointFromText", 2, SQLITE_ANY, 0,
+			     fnct_PointFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_LineFromText", 1, SQLITE_ANY, 0,
+			     fnct_LineFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_LineFromText", 2, SQLITE_ANY, 0,
+			     fnct_LineFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_LineStringFromText", 1, SQLITE_ANY, 0,
+			     fnct_LineFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_LineStringFromText", 2, SQLITE_ANY, 0,
+			     fnct_LineFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_PolyFromText", 1, SQLITE_ANY, 0,
+			     fnct_PolyFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_PolyFromText", 2, SQLITE_ANY, 0,
+			     fnct_PolyFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_PolygonFromText", 1, SQLITE_ANY, 0,
+			     fnct_PolyFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_PolygonFromText", 2, SQLITE_ANY, 0,
+			     fnct_PolyFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MPointFromText", 1, SQLITE_ANY, 0,
+			     fnct_MPointFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MPointFromText", 2, SQLITE_ANY, 0,
+			     fnct_MPointFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPointFromText", 1, SQLITE_ANY, 0,
+			     fnct_MPointFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPointFromText", 2, SQLITE_ANY, 0,
+			     fnct_MPointFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MLineFromText", 1, SQLITE_ANY, 0,
+			     fnct_MLineFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MLineFromText", 2, SQLITE_ANY, 0,
+			     fnct_MLineFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiLineStringFromText", 1, SQLITE_ANY, 0,
+			     fnct_MLineFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiLineStringFromText", 2, SQLITE_ANY, 0,
+			     fnct_MLineFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MPolyFromText", 1, SQLITE_ANY, 0,
+			     fnct_MPolyFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MPolyFromText", 2, SQLITE_ANY, 0,
+			     fnct_MPolyFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPolygonFromText", 1, SQLITE_ANY, 0,
+			     fnct_MPolyFromText1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPolygonFromText", 2, SQLITE_ANY, 0,
+			     fnct_MPolyFromText2, 0, 0);
+    sqlite3_create_function (db, "ST_GeomFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_GeomFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_GeomFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_GeomFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_GeomFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_GeomFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_GeomCollFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_GeomCollFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_GeomCollFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_GeomCollFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryCollectionFromWKB", 1, SQLITE_ANY,
+			     0, fnct_GeomCollFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_GeometryCollectionFromWKB", 2, SQLITE_ANY,
+			     0, fnct_GeomCollFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_PointFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_PointFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_PointFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_PointFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_LineFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_LineFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_LineFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_LineFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_LineStringFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_LineFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_LineStringFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_LineFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_PolyFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_PolyFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_PolyFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_PolyFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_PolygonFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_PolyFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_PolygonFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_PolyFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MPointFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MPointFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MPointFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MPointFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPointFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MPointFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPointFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MPointFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MLineFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MLineFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MLineFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MLineFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiLineStringFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MLineFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiLineStringFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MLineFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MPolyFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MPolyFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MPolyFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MPolyFromWkb2, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPolygonFromWKB", 1, SQLITE_ANY, 0,
+			     fnct_MPolyFromWkb1, 0, 0);
+    sqlite3_create_function (db, "ST_MultiPolygonFromWKB", 2, SQLITE_ANY, 0,
+			     fnct_MPolyFromWkb2, 0, 0);
     sqlite3_create_function (db, "GeomFromFGF", 1, SQLITE_ANY, 0,
 			     fnct_GeometryFromFGF1, 0, 0);
     sqlite3_create_function (db, "GeomFromFGF", 2, SQLITE_ANY, 0,
@@ -44042,6 +44523,8 @@ sqlite3_extension_init (sqlite3 * db, char **pzErrMsg,
 			     0, 0);
     sqlite3_create_function (db, "ST_Dimension", 1, SQLITE_ANY, 0,
 			     fnct_Dimension, 0, 0);
+    sqlite3_create_function (db, "CoordDimension", 1, SQLITE_ANY, 0,
+			     fnct_CoordDimension, 0, 0);
     sqlite3_create_function (db, "GeometryType", 1, SQLITE_ANY, 0,
 			     fnct_GeometryType, 0, 0);
     sqlite3_create_function (db, "ST_GeometryType", 1, SQLITE_ANY, 0,
@@ -48066,7 +48549,7 @@ vnet_column (sqlite3_vtab_cursor * pCursor, sqlite3_context * pContext,
 					 strlen (cursor->solution->From->Code),
 					 SQLITE_STATIC);
 		else
-		    sqlite3_result_int (pContext, cursor->solution->From->Id);
+		    sqlite3_result_int64 (pContext, cursor->solution->From->Id);
 	    }
 	  if (column == 2)
 	    {
@@ -48076,7 +48559,7 @@ vnet_column (sqlite3_vtab_cursor * pCursor, sqlite3_context * pContext,
 					 strlen (cursor->solution->To->Code),
 					 SQLITE_STATIC);
 		else
-		    sqlite3_result_int (pContext, cursor->solution->To->Id);
+		    sqlite3_result_int64 (pContext, cursor->solution->To->Id);
 	    }
 	  if (column == 3)
 	    {
