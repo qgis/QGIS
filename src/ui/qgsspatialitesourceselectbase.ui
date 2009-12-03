@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>672</width>
-    <height>687</height>
+    <width>419</width>
+    <height>452</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,7 +54,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>SpatiaLite DBs</string>
+      <string>SpatiaLite Databases</string>
      </property>
      <layout class="QGridLayout">
       <property name="margin">
@@ -105,7 +105,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="mSearchLabel">
         <property name="text">
-         <string>Search:</string>
+         <string>Search</string>
         </property>
         <property name="buddy">
          <cstring>mSearchTableEdit</cstring>
@@ -115,7 +115,7 @@
       <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="mSearchModeLabel">
         <property name="text">
-         <string>Search mode:</string>
+         <string>Search mode</string>
         </property>
         <property name="buddy">
          <cstring>mSearchModeComboBox</cstring>
@@ -128,7 +128,7 @@
       <item row="1" column="0" colspan="2">
        <widget class="QLabel" name="mSearchColumnsLabel">
         <property name="text">
-         <string>Search in columns:</string>
+         <string>Search in columns</string>
         </property>
         <property name="buddy">
          <cstring>mSearchColumnComboBox</cstring>
