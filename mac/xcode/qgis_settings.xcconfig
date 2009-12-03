@@ -197,7 +197,7 @@ DEFS_EXPORT = CORE_EXPORT= GUI_EXPORT= PYTHON_EXPORT= ANALYSIS_EXPORT=
 
 // use full flags instead of Xcode includes and defs,
 // since these are needed in scripts also
-QT_CXXFLAGS = -DQT_DLL -DQT_SVG_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NO_CAST_TO_ASCII $(QTDEFS_$(CONFIGURATION)) -I/Library/Frameworks/QtCore.framework/Headers -I/Library/Frameworks/QtGui.framework/Headers -I/Library/Frameworks/QtNetwork.framework/Headers -I/Library/Frameworks/QtSql.framework/Headers -I/Library/Frameworks/QtSvg.framework/Headers -I/Library/Frameworks/QtXml.framework/Headers
+QT_CXXFLAGS = -DQT_DLL -DQT_SVG_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NO_CAST_TO_ASCII $(QTDEFS_$(CONFIGURATION)) -I/Library/Frameworks/QtCore.framework/Headers -I/Library/Frameworks/QtGui.framework/Headers -I/Library/Frameworks/QtNetwork.framework/Headers -I/Library/Frameworks/QtSql.framework/Headers -I/Library/Frameworks/QtSvg.framework/Headers -I/Library/Frameworks/QtXml.framework/Headers -I/Library/Frameworks/QtWebKit.framework/Headers
 QT_INC_UITOOLS = /usr/include/QtUiTools
 QTDEFS_Debug = -DQT_DEBUG
 QTDEFS_Release = -DQT_NO_DEBUG
@@ -208,6 +208,7 @@ QT_LIB_NET = -framework QtNetwork
 QT_LIB_XML = -framework QtXml
 QT_LIB_SVG = -framework QtSvg
 QT_LIB_SQL = -framework QtSql
+QT_LIB_WEBKIT = -framework QtWebKit
 QT_LIB_UITOOLS = -lQtUiTools
 // convenience for all Qt:
 QT_LIB = $(QT_LIB_CORE) $(QT_LIB_GUI) $(QT_LIB_NET) $(QT_LIB_XML) $(QT_LIB_SVG) $(QT_LIB_SQL)

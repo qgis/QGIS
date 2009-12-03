@@ -15501,6 +15501,7 @@
 					"$(QT_LIB_NET)",
 					"$(QT_LIB_SVG)",
 					"$(QT_LIB_XML)",
+					"$(QT_LIB_WEBKIT)",
 				);
 				PRODUCT_NAME = qgis_help;
 			};
@@ -15528,6 +15529,7 @@
 					"$(QT_LIB_NET)",
 					"$(QT_LIB_SVG)",
 					"$(QT_LIB_XML)",
+					"$(QT_LIB_WEBKIT)",
 				);
 				PRODUCT_NAME = qgis_help;
 			};
