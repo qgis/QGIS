@@ -127,3 +127,4 @@ inline void Bezier3D::setControlPoly( QVector<Point3D*>* cp )
 }
 
 #endif
+
