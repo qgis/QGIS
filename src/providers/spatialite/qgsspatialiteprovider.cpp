@@ -141,7 +141,7 @@ void QgsSpatiaLiteProvider::loadFields()
   attributeFields.clear();
   mPrimaryKey.clear();
 
-  QString sql = QString( "PRAGMA table_info(%1)" ).arg( quotedValue( mTableName ) );
+  QString sql = QString( "PRAGMA table_info(\"%1\")" ).arg( mTableName );
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -152,7 +152,7 @@ void QgsSpatiaLiteProvider::loadFields()
   {
     for ( i = 1; i <= rows; i++ )
     {
-      QString name = results[( i * columns ) + 1];
+      QString name = QString::fromUtf8( results[( i * columns ) + 1] );
       const char *type = results[( i * columns ) + 2];
       QString pk = results[( i * columns ) + 5];
       if ( pk.toInt() != 0 )
@@ -223,14 +223,15 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
   {
     const QgsField & fld = field( *it );
     const QString & fieldname = fld.name();
-    sql += ", ";
+    sql += ", \"";
     sql += fieldname;
+	sql += "\"";
   }
   if ( fetchGeometry )
   {
-    sql += QString( ", AsBinary(%1)" ).arg( mGeometryColumn );
+    sql += QString( ", AsBinary(\"%1\")" ).arg( mGeometryColumn );
   }
-  sql += QString( " FROM %1 WHERE ROWID = %2" ).arg( quotedValue( mTableName ) ).arg( featureId );
+  sql += QString( " FROM \"%1\" WHERE ROWID = %2" ).arg( mTableName ).arg( featureId );
 
   if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
   {
@@ -311,7 +312,7 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
         }
         if ( mFetchGeom )
         {
-          QString geoCol = QString( "AsBinary(%1)" ).arg( mGeometryColumn );
+          QString geoCol = QString( "AsBinary(\"%1\")" ).arg( mGeometryColumn );
           if ( strcasecmp( geoCol.toUtf8().constData(), sqlite3_column_name( stmt, ic ) ) == 0 )
           {
             if ( sqlite3_column_type( stmt, ic ) == SQLITE_BLOB )
@@ -433,7 +434,7 @@ bool QgsSpatiaLiteProvider::nextFeature( QgsFeature & feature )
         }
         if ( mFetchGeom )
         {
-          QString geoCol = QString( "AsBinary(%1)" ).arg( mGeometryColumn );
+          QString geoCol = QString( "AsBinary(\"%1\")" ).arg( mGeometryColumn );
           if ( strcasecmp( geoCol.toUtf8().constData(), sqlite3_column_name( sqliteStatement, ic ) ) == 0 )
           {
             if ( sqlite3_column_type( sqliteStatement, ic ) == SQLITE_BLOB )
@@ -523,14 +524,15 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
   {
     const QgsField & fld = field( *it );
     const QString & fieldname = fld.name();
-    sql += ", ";
+    sql += ", \"";
     sql += fieldname;
+	sql += "\"";
   }
   if ( fetchGeometry )
   {
-    sql += QString( ", AsBinary(%1)" ).arg( mGeometryColumn );
+    sql += QString( ", AsBinary(\"%1\")" ).arg( mGeometryColumn );
   }
-  sql += QString( " FROM %1" ).arg( quotedValue( mTableName ) );
+  sql += QString( " FROM \"%1\"" ).arg( mTableName );
 
   QString whereClause;
 
@@ -545,7 +547,7 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
                     arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
                     arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
                     arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
-      whereClause += QString( "Intersects(%1, BuildMbr(%2)) AND " ).arg( mGeometryColumn ).arg( mbr );
+      whereClause += QString( "Intersects(\"%1\", BuildMbr(%2)) AND " ).arg( mGeometryColumn ).arg( mbr );
     }
     if ( mVShapeBased )
     {
@@ -554,7 +556,7 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
                     arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
                     arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
                     arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
-      whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( mGeometryColumn ).arg( mbr );
+      whereClause += QString( "MbrIntersects(\"%1\", BuildMbr(%2))" ).arg( mGeometryColumn ).arg( mbr );
     }
     else
     {
@@ -566,7 +568,7 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
         mbrFilter += QString( "ymin <= %1 AND " ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
         mbrFilter += QString( "ymax >= %1" ).arg( QString::number( rect.yMinimum(), 'f', 6 ) );
         QString idxName = QString( "idx_%1_%2" ).arg( mIndexTable ).arg( mIndexGeometry );
-        whereClause += QString( "ROWID IN (SELECT pkid FROM %1 WHERE %2)" ).arg( idxName ).arg( mbrFilter );
+        whereClause += QString( "ROWID IN (SELECT pkid FROM \"%1\" WHERE %2)" ).arg( idxName ).arg( mbrFilter );
       }
       else if ( spatialIndexMbrCache )
       {
@@ -576,7 +578,7 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
                       arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
                       arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
         QString idxName = QString( "cache_%1_%2" ).arg( mIndexTable ).arg( mIndexGeometry );
-        whereClause += QString( "ROWID IN (SELECT rowid FROM %1 WHERE mbr = FilterMbrIntersects(%2))" ).arg( idxName ).arg( mbr );
+        whereClause += QString( "ROWID IN (SELECT rowid FROM \"%1\" WHERE mbr = FilterMbrIntersects(%2))" ).arg( idxName ).arg( mbr );
       }
       else
       {
@@ -585,7 +587,7 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
                       arg( QString::number( rect.xMinimum(), 'f', 6 ) ).
                       arg( QString::number( rect.yMinimum(), 'f', 6 ) ).
                       arg( QString::number( rect.xMaximum(), 'f', 6 ) ).arg( QString::number( rect.yMaximum(), 'f', 6 ) );
-        whereClause += QString( "MbrIntersects(%1, BuildMbr(%2))" ).arg( mGeometryColumn ).arg( mbr );
+        whereClause += QString( "MbrIntersects(\"%1\", BuildMbr(%2))" ).arg( mGeometryColumn ).arg( mbr );
       }
     }
   }
@@ -710,7 +712,7 @@ QVariant QgsSpatiaLiteProvider::minimumValue( int index )
   // get the field name
   const QgsField & fld = field( index );
 
-  QString sql = QString( "SELECT Min(%1) FROM %2" ).arg( fld.name() ).arg( quotedValue( mTableName ) );
+  QString sql = QString( "SELECT Min(\"%1\") FROM \"%2\"" ).arg( fld.name() ).arg( mTableName );
 
   if ( !mSubsetString.isEmpty() )
   {
@@ -768,7 +770,7 @@ QVariant QgsSpatiaLiteProvider::maximumValue( int index )
   // get the field name
   const QgsField & fld = field( index );
 
-  QString sql = QString( "SELECT Max(%1) FROM %2" ).arg( fld.name() ).arg( quotedValue( mTableName ) );
+  QString sql = QString( "SELECT Max(\"%1\") FROM \"%2\"" ).arg( fld.name() ).arg( mTableName );
 
   if ( !mSubsetString.isEmpty() )
   {
@@ -825,7 +827,7 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   // get the field name
   const QgsField & fld = field( index );
 
-  sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" ).arg( fld.name() ).arg( quotedValue( mTableName ) );
+  sql = QString( "SELECT DISTINCT \"%1\" FROM \"%2\" ORDER BY \"%1\"" ).arg( fld.name() ).arg( mTableName );
 
   if ( !mSubsetString.isEmpty() )
   {
@@ -928,13 +930,13 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
   if ( !mPrimaryKey.isEmpty() )
   {
-    sql = QString( "INSERT INTO %1 (%2, %3" ).
-          arg( quotedValue( mTableName ) ).arg( quotedValue( mPrimaryKey ) ).arg( quotedValue( mGeometryColumn ) );
+    sql = QString( "INSERT INTO \"%1\" (\"%2\", \"%3\"" ).
+          arg( mTableName ).arg( mPrimaryKey ).arg( mGeometryColumn );
     values = QString( ") VALUES (NULL, GeomFromWKB(?, %1)" ).arg( mSrid );
   }
   else
   {
-    sql = QString( "INSERT INTO %1 (%2" ).arg( quotedValue( mTableName ) ).arg( quotedValue( mGeometryColumn ) );
+    sql = QString( "INSERT INTO \"%1\" (\"%2\"" ).arg( mTableName ).arg( mGeometryColumn );
     values = QString( ") VALUES (GeomFromWKB(?, %1)" ).arg( mSrid );
   }
 
@@ -948,8 +950,9 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     if ( fieldname.isEmpty() || fieldname == mGeometryColumn || fieldname == mPrimaryKey )
       continue;
 
-    sql += ", ";
-    sql += quotedValue( fieldname );
+    sql += ", \"";
+    sql += fieldname;
+	sql += "\"";
     values += ", ?";
   }
 
@@ -1030,7 +1033,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     // performing actual row insert
     ret = sqlite3_step( stmt );
 
-    if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
+	if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
     {
       numberFeatures++;
     }
@@ -1048,12 +1051,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   sqlite3_finalize( stmt );
 
   ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
-  if ( ret == SQLITE_OK )
+  if ( ret != SQLITE_OK )
   {
     // some error occurred
     goto abort;
   }
-
   return true;
 
 abort:
@@ -1091,7 +1093,7 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds & id )
   }
   toCommit = true;
 
-  sql = QString( "DELETE FROM %1 WHERE ROWID = ?" ).arg( quotedValue( mTableName ) );
+  sql = QString( "DELETE FROM \"%1\" WHERE ROWID = ?" ).arg( mTableName );
 
   // SQLite prepared statement
   if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
@@ -1175,9 +1177,9 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
 
   for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
   {
-    sql = QString( "ALTER TABLE %1 ADD COLUMN %2 %3" )
-          .arg( quotedValue( mTableName ) )
-          .arg( quotedValue( iter->name() ) )
+    sql = QString( "ALTER TABLE \"%1\" ADD COLUMN \"%2\" %3" )
+          .arg( mTableName )
+          .arg( iter->name() )
           .arg( iter->typeName() );
     ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
     if ( ret != SQLITE_OK )
@@ -1197,7 +1199,7 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
   return true;
 
 abort:
-  QString msg = QString( "assAttributes SQL error:\n%1\n" ).arg( sql );
+  QString msg = QString( "addAttributes SQL error:\n%1\n" ).arg( sql );
   if ( errMsg )
   {
     msg += errMsg;
@@ -1238,7 +1240,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     if ( fid < 0 )
       continue;
 
-    QString sql = QString( "UPDATE %1 SET " ).arg( mTableName );
+    QString sql = QString( "UPDATE \"%1\" SET " ).arg( mTableName );
     bool first = true;
 
     const QgsAttributeMap & attrs = iter.value();
@@ -1252,8 +1254,29 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         sql += ",";
       else
         first = false;
+	
+	  QVariant::Type type = siter->type();
+	  if ( siter->toString().isEmpty() )
+	  {
+	  // assuming to be a NULL value
+		type = QVariant::Invalid;
+	  }
 
-      sql += QString( "%1=%2" ).arg( quotedValue( fieldName ) ).arg( quotedValue( siter->toString() ) );
+	  if ( type == QVariant::Invalid )
+	  {
+	  // binding a NULL value
+		sql += QString( "\"%1\"=NULL" ).arg( fieldName );
+	  }
+	  else if ( type == QVariant::Int || type == QVariant::Double )
+	  {
+	  // binding a NUMERIC value
+		sql += QString( "\"%1\"=%2" ).arg( fieldName ).arg( siter->toString() );
+	  }
+	  else
+	  {
+	  // binding a TEXT value
+		sql += QString( "\"%1\"=%2" ).arg( fieldName ).arg( quotedValue( siter->toString() ) );
+	  }
     }
     sql += QString( " WHERE ROWID=%1" ).arg( fid );
 
@@ -1310,8 +1333,8 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
   toCommit = true;
 
   sql =
-    QString( "UPDATE %1 SET %2 = GeomFromWKB(?, %3) WHERE ROWID = ?" ).
-    arg( quotedValue( mTableName ) ).arg( quotedValue( mGeometryColumn ) ).arg( mSrid );
+    QString( "UPDATE \"%1\" SET \"%2\" = GeomFromWKB(?, %3) WHERE ROWID = ?" ).
+    arg( mTableName ).arg( mGeometryColumn ).arg( mSrid );
 
   // SQLite prepared statement
   if ( sqlite3_prepare_v2( sqliteHandle, sql.toUtf8().constData(), -1, &stmt, NULL ) != SQLITE_OK )
@@ -1914,8 +1937,8 @@ bool QgsSpatiaLiteProvider::getTableSummary()
   int columns;
   char *errMsg = NULL;
 
-  QString sql = QString( "SELECT Min(MbrMinX(%1)), Min(MbrMinY(%1)), "
-                         "Max(MbrMaxX(%1)), Max(MbrMaxY(%1)), Count(*) " "FROM %2" ).arg( mGeometryColumn ).arg( quotedValue( mTableName ) );
+  QString sql = QString( "SELECT Min(MbrMinX(\"%1\")), Min(MbrMinY(\"%1\")), "
+                         "Max(MbrMaxX(\"%1\")), Max(MbrMaxY(\"%1\")), Count(*) " "FROM \"%2\"" ).arg( mGeometryColumn ).arg( mTableName );
 
   if ( !mSubsetString.isEmpty() )
   {
