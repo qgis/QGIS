@@ -2,7 +2,7 @@
 
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="r.watershed - Watershed Analysis." module="r.watershed">
+<qgisgrassmodule label="Watershed Analysis." module="r.watershed">
 
 	<option key="elevation" />
 	<option key="threshold" />
