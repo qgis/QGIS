@@ -233,7 +233,7 @@
             </widget>
            </item>
            <item row="1" column="5">
-            <widget class="QToolButton" name="mUpdatePushButton_2">
+            <widget class="QToolButton" name="mUpdateAllPushButton">
              <property name="text">
               <string>All</string>
              </property>
