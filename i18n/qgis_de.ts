@@ -451,63 +451,63 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="obsolete">Erstelle neue Auswahl</translation>
+        <translation type="unfinished">Erstelle neue Auswahl</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="obsolete">Ergänze aktuelle Auswahl</translation>
+        <translation type="unfinished">Ergänze aktuelle Auswahl</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="obsolete">Entferne aus aktueller Auswahl</translation>
+        <translation type="unfinished">Entferne aus aktueller Auswahl</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Nach Position auswählen</translation>
+        <translation type="unfinished">Nach Position auswählen</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="obsolete">Objekte wählen in:</translation>
+        <translation type="unfinished">Objekte wählen in:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="obsolete">die Objekte schneiden in:</translation>
+        <translation type="unfinished">die Objekte schneiden in:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="obsolete">Aktuelle Auswahl ändern durch:</translation>
+        <translation type="unfinished">Aktuelle Auswahl ändern durch:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="obsolete">Bitte Eingabelayer angeben</translation>
+        <translation type="unfinished">Bitte Eingabelayer angeben</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="obsolete">Bitte Auswahllayer angeben</translation>
+        <translation type="unfinished">Bitte Auswahllayer angeben</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Distanzmatrix</translation>
+        <translation type="unfinished">Distanzmatrix</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="obsolete">Erstellte Ausgabematrix:
+        <translation type="unfinished">Erstellte Ausgabematrix:
 </translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Punkte in Polygon</translation>
+        <translation type="unfinished">Punkte in Polygon</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="obsolete">Ausgabeshapedatei erzeugt:
+        <translation type="unfinished">Ausgabeshapedatei erzeugt:
 </translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="obsolete">Vektorlayer ist ungültig</translation>
+        <translation type="unfinished">Vektorlayer ist ungültig</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
@@ -861,7 +861,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Linienlängen summieren</translation>
+        <translation type="unfinished">Linienlängen summieren</translation>
     </message>
 </context>
 <context>
@@ -994,211 +994,211 @@ p, li { white-space: pre-wrap; }
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">Alle zusammenführen</translation>
+        <translation type="unfinished">Alle zusammenführen</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Bitte Vektorlayer angeben</translation>
+        <translation type="unfinished">Bitte Vektorlayer angeben</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Bitte Ausgabeshapedatei angeben</translation>
+        <translation type="unfinished">Bitte Ausgabeshapedatei angeben</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="obsolete">Bitte einen gültigen Toleranzwert angeben</translation>
+        <translation type="unfinished">Bitte einen gültigen Toleranzwert angeben</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="obsolete">Bitte ein gültiges UID-Feld angeben</translation>
+        <translation type="unfinished">Bitte ein gültiges UID-Feld angeben</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Möchten Sie den neuen Layer der Legende hinzufügen?</translation>
+        <translation type="unfinished">Möchten Sie den neuen Layer der Legende hinzufügen?</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Einzel- zu mehrteilig</translation>
+        <translation type="unfinished">Einzel- zu mehrteilig</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="obsolete">Ausgabeshapedatei</translation>
+        <translation type="unfinished">Ausgabeshapedatei</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Mehr- zu einteilig</translation>
+        <translation type="unfinished">Mehr- zu einteilig</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Knoten extrahieren</translation>
+        <translation type="unfinished">Knoten extrahieren</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Polygon zu Linie</translation>
+        <translation type="unfinished">Polygon zu Linie</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="obsolete">Eingabepolygonvektorlayer</translation>
+        <translation type="unfinished">Eingabepolygonvektorlayer</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Geometriespalten exportieren/hinzufügen</translation>
+        <translation type="unfinished">Geometriespalten exportieren/hinzufügen</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">Eingabevektorlayer</translation>
+        <translation type="unfinished">Eingabevektorlayer</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Geometrien vereinfachen</translation>
+        <translation type="unfinished">Geometrien vereinfachen</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Polygonschwerpunkte</translation>
+        <translation type="unfinished">Polygonschwerpunkte</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="obsolete">Ausgabepunktshapedatei</translation>
+        <translation type="unfinished">Ausgabepunktshapedatei</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="obsolete">Fehler bei Verarbeitung der angegebenen Toleranz!</translation>
+        <translation type="unfinished">Fehler bei Verarbeitung der angegebenen Toleranz!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="obsolete">Bitte eine größere Toleranz wählen...</translation>
+        <translation type="unfinished">Bitte eine größere Toleranz wählen...</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Delaunay-Triangulation</translation>
+        <translation type="unfinished">Delaunay-Triangulation</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="obsolete">Eingabepunktvektorlayer</translation>
+        <translation type="unfinished">Eingabepunktvektorlayer</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Polygon aus Layergrenzen</translation>
+        <translation type="unfinished">Polygon aus Layergrenzen</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Eingabelayer</translation>
+        <translation type="unfinished">Eingabelayer</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="obsolete">Ausgabepolygonlayer</translation>
+        <translation type="unfinished">Ausgabepolygonlayer</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Konnte vorhandene Shapedatei nicht löschen.</translation>
+        <translation type="unfinished">Konnte vorhandene Shapedatei nicht löschen.</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="obsolete">Konnte unvollständige Shapedatei nicht löschen.</translation>
+        <translation type="unfinished">Konnte unvollständige Shapedatei nicht löschen.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="obsolete">Erzeugte Ausgabeshapedatei:</translation>
+        <translation type="unfinished">Erzeugte Ausgabeshapedatei:</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="obsolete">Fehler beim Schreiben der Ausgabeshapedatei.</translation>
+        <translation type="unfinished">Fehler beim Schreiben der Ausgabeshapedatei.</translation>
     </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="obsolete">Alles auflösen</translation>
+        <translation type="unfinished">Alles auflösen</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="obsolete">Bitte einen Eingabelayer angeben</translation>
+        <translation type="unfinished">Bitte einen Eingabelayer angeben</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="obsolete">Bitte einen Differenz-/Schnitt-/Vereinigungslayer angeben</translation>
+        <translation type="unfinished">Bitte einen Differenz-/Schnitt-/Vereinigungslayer angeben</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="obsolete">Bitte einen gültigen Pufferwert angeben</translation>
+        <translation type="unfinished">Bitte einen gültigen Pufferwert angeben</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="obsolete">Bitte ein gültiges Auflösungsfeld angeben</translation>
+        <translation type="unfinished">Bitte ein gültiges Auflösungsfeld angeben</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Bitte eine Shapeausgabedatei angeben</translation>
+        <translation type="unfinished">Bitte eine Shapeausgabedatei angeben</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Puffer</translation>
+        <translation type="unfinished">Puffer</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="obsolete">Einzelne konvexe Minimalhülle erzeugen</translation>
+        <translation type="unfinished">Einzelne konvexe Minimalhülle erzeugen</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="obsolete">Konvexe Hüllen auf Basis des Eingabefelds erzeugen</translation>
+        <translation type="unfinished">Konvexe Hüllen auf Basis des Eingabefelds erzeugen</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Konvexe Hülle(n)</translation>
+        <translation type="unfinished">Konvexe Hülle(n)</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Auflösen</translation>
+        <translation type="unfinished">Auflösen</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Unterschied</translation>
+        <translation type="unfinished">Unterschied</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="obsolete">Layer schneiden</translation>
+        <translation type="unfinished">Layer schneiden</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Schneiden</translation>
+        <translation type="unfinished">Schneiden</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Differenzlayer</translation>
+        <translation type="unfinished">Differenzlayer</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="obsolete">Keine Objekte selektiert, bitte wählen Sie &apos;Nur gewählte&apos; ab oder wählen Sie welche aus</translation>
+        <translation type="unfinished">Keine Objekte selektiert, bitte wählen Sie &apos;Nur gewählte&apos; ab oder wählen Sie welche aus</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Symetrische Differenz</translation>
+        <translation type="unfinished">Symetrische Differenz</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="obsolete">Layer clippen</translation>
+        <translation type="unfinished">Layer clippen</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Clip</translation>
+        <translation type="unfinished">Clip</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="obsolete">Vereinigungslayer</translation>
+        <translation type="unfinished">Vereinigungslayer</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Vereinigen</translation>
+        <translation type="unfinished">Vereinigen</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Konnte vorhandene Shapedatei nicht löschen.</translation>
+        <translation type="unfinished">Konnte vorhandene Shapedatei nicht löschen.</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Warnungen:</translation>
     </message>
     <message>
@@ -1206,7 +1206,7 @@ Warnungen:</translation>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Einige Ausgabegeometrien könnten fehlen oder ungültig sein.
 
 Möchten Sie den neuen Layer trotzdem hinzufügen?</translation>
@@ -1215,31 +1215,31 @@ Möchten Sie den neuen Layer trotzdem hinzufügen?</translation>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 
 Möchten Sie den neuen Layer der Legende hinzufügen?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Eingabe-KBS-Fehler: Unterschiedliche Eingabekoordinatenbezugssystem wurden festgestellt, dies könnte zu unerwarteten Ergebnissen geführt haben.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometrie wurden ignoriert.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="obsolete">Erzeugte Ausgabeshapedatei:</translation>
+        <translation type="unfinished">Erzeugte Ausgabeshapedatei:</translation>
     </message>
 </context>
 <context>
@@ -1730,7 +1730,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <name>OsmAddRelationDlg</name>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">OSM-Information</translation>
+        <translation type="unfinished">OSM-Information</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="13"/>
@@ -1831,51 +1831,51 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">OSM-Download</translation>
+        <translation type="unfinished">OSM-Download</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Konnte nicht in Datei %1 speichern: %2.</translation>
+        <translation type="unfinished">Konnte nicht in Datei %1 speichern: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">Warte auf OpenStreetMap-Server ...</translation>
+        <translation type="unfinished">Warte auf OpenStreetMap-Server ...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">Herunterladen gescheitert. OpenStreetMap-Server-Antwort: %1 - %2</translation>
+        <translation type="unfinished">Herunterladen gescheitert. OpenStreetMap-Server-Antwort: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">OSM-Downloadfehler</translation>
+        <translation type="unfinished">OSM-Downloadfehler</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">Download gescheitert: %1.</translation>
+        <translation type="unfinished">Download gescheitert: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">Hole Daten</translation>
+        <translation type="unfinished">Hole Daten</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">Die Datenmenge, die von diesem OpenStreetMap-Server (~ api.openstreetmap.org) heruntergeladen werden dürfen, ist beschränkt.  Lt. &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; darf weder die Breite noch Länge des Ausschnitts 0,25 Grad überschreiten. Quantum GIS erlaubt Ihnen jede gewünschte Größe einzustellen. Der OpenStreetMap-Server wird aber alle zu größeren Anfragen ablehnen.</translation>
+        <translation type="unfinished">Die Datenmenge, die von diesem OpenStreetMap-Server (~ api.openstreetmap.org) heruntergeladen werden dürfen, ist beschränkt.  Lt. &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; darf weder die Breite noch Länge des Ausschnitts 0,25 Grad überschreiten. Quantum GIS erlaubt Ihnen jede gewünschte Größe einzustellen. Der OpenStreetMap-Server wird aber alle zu größeren Anfragen ablehnen.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">Ausschnitt zu breit und zu hoch!</translation>
+        <translation type="unfinished">Ausschnitt zu breit und zu hoch!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">Ausschnitt zu breit!</translation>
+        <translation type="unfinished">Ausschnitt zu breit!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">Ausschnitt zu hoch!</translation>
+        <translation type="unfinished">Ausschnitt zu hoch!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">OK! Größe wird wahrscheinlich vom Server akzeptiert.</translation>
+        <translation type="unfinished">OK! Größe wird wahrscheinlich vom Server akzeptiert.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
@@ -1955,23 +1955,23 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <name>OsmFeatureDW</name>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">OSM-Erweiterung</translation>
+        <translation type="unfinished">OSM-Erweiterung</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">Der Dialog &apos;OSM-Relationen erzeugen&apos; wurde automatisch geschlossen, weil die aktuelle OSM-Datenbank geändert wurde.</translation>
+        <translation type="unfinished">Der Dialog &apos;OSM-Relationen erzeugen&apos; wurde automatisch geschlossen, weil die aktuelle OSM-Datenbank geändert wurde.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">OSM-Objektdockwidget</translation>
+        <translation type="unfinished">OSM-Objektdockwidget</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">Zuerst OSM-Objekt wählen.</translation>
+        <translation type="unfinished">Zuerst OSM-Objekt wählen.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">Zuerst zu bearbeitende Relation wählen.</translation>
+        <translation type="unfinished">Zuerst zu bearbeitende Relation wählen.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
@@ -2200,31 +2200,31 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">OSM als Datei speichern</translation>
+        <translation type="unfinished">OSM als Datei speichern</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Konnte nicht in Datei %1 speichern: %2.</translation>
+        <translation type="unfinished">Konnte nicht in Datei %1 speichern: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">Initialisiere...</translation>
+        <translation type="unfinished">Initialisiere...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">Knoten speichern...</translation>
+        <translation type="unfinished">Knoten speichern...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">Linien speichern...</translation>
+        <translation type="unfinished">Linien speichern...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">Polygone speichern...</translation>
+        <translation type="unfinished">Polygone speichern...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">Relationen speichern...</translation>
+        <translation type="unfinished">Relationen speichern...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
@@ -2312,11 +2312,11 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <name>OsmUploadDlg</name>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">OSM-Hochladen</translation>
+        <translation type="unfinished">OSM-Hochladen</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">Daten werden hochgeladen...</translation>
+        <translation type="unfinished">Daten werden hochgeladen...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -2388,39 +2388,39 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="obsolete">Fehler bei der Ausführung von Python-Code:</translation>
+        <translation type="unfinished">Fehler bei der Ausführung von Python-Code:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="obsolete">Python-Version:</translation>
+        <translation type="unfinished">Python-Version:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="obsolete">Python-Pfad:</translation>
+        <translation type="unfinished">Python-Pfad:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Python-Fehler</translation>
+        <translation type="unfinished">Python-Fehler</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="obsolete">Konnte Erweiterung &apos;%1&apos; von [&apos;%2&apos;] nicht laden</translation>
+        <translation type="unfinished">Konnte Erweiterung &apos;%1&apos; von [&apos;%2&apos;] nicht laden</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="obsolete">Konnte Erweiterung %1 nicht laden</translation>
+        <translation type="unfinished">Konnte Erweiterung %1 nicht laden</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="obsolete">%1 wegen eines Fehler beim Aufruf seiner classFactory()-Methode</translation>
+        <translation type="unfinished">%1 wegen eines Fehler beim Aufruf seiner classFactory()-Methode</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="obsolete">%1 wegen eines Fehler beim Aufruf seinder initGui()-Methode</translation>
+        <translation type="unfinished">%1 wegen eines Fehler beim Aufruf seinder initGui()-Methode</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="obsolete">Fehler beim Entladen der Erweiterung %1</translation>
+        <translation type="unfinished">Fehler beim Entladen der Erweiterung %1</translation>
     </message>
 </context>
 <context>
@@ -16419,318 +16419,318 @@ mit PostGIS-Geometrie haben.</translation>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">Konnte Ausgabe des Repositorys nicht interpretieren</translation>
+        <translation type="unfinished">Konnte Ausgabe des Repositorys nicht interpretieren</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="obsolete">Konnte lokales Erweiterungsverzeichnis nicht öffnen</translation>
+        <translation type="unfinished">Konnte lokales Erweiterungsverzeichnis nicht öffnen</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Python-Erweiterung herunterladen...</translation>
+        <translation type="unfinished">Python-Erweiterung herunterladen...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="obsolete">Mehr Erweiterungen von entfernten Repositorys installieren</translation>
+        <translation type="unfinished">Mehr Erweiterungen von entfernten Repositorys installieren</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">Neue Erweiterungen werden gesucht...</translation>
+        <translation type="unfinished">Neue Erweiterungen werden gesucht...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="obsolete">Es gibt eine neue Erweiterung</translation>
+        <translation type="unfinished">Es gibt eine neue Erweiterung</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="obsolete">Es gibt ein Erweiterungsupdate</translation>
+        <translation type="unfinished">Es gibt ein Erweiterungsupdate</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS-Python-Erweiterungsinstallation</translation>
+        <translation type="unfinished">QGIS-Python-Erweiterungsinstallation</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Fehler beim Lesen des Repositorys:</translation>
+        <translation type="unfinished">Fehler beim Lesen des Repositorys:</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="obsolete">Nichts zu entfernen! Erweiterungsverzeichnis existiert nicht:</translation>
+        <translation type="unfinished">Nichts zu entfernen! Erweiterungsverzeichnis existiert nicht:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="obsolete">Das Verzeichnis konnte nicht gelöscht werden:</translation>
+        <translation type="unfinished">Das Verzeichnis konnte nicht gelöscht werden:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="obsolete">Überprüfen Sie die Zugriffsrechte oder entfernen Sie es manuell</translation>
+        <translation type="unfinished">Überprüfen Sie die Zugriffsrechte oder entfernen Sie es manuell</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">QGIS-Erweiterungskonflikt:</translation>
+        <translation type="unfinished">QGIS-Erweiterungskonflikt:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="obsolete">Die Erweiterungsinstallation hat eine veraltete Erweiterung erkannt, das ein neueres, mit dieser QGIS-Version geliefertes, verdeckt. Dies ist wahrscheinlich ein Überbleibsel einer ältereren QGIS-Installation. Bitte entfernen Sie es unter Erweiterungsinstallation, um die mitgelieferte Ausgabe sichtbar zu machen.</translation>
+        <translation type="unfinished">Die Erweiterungsinstallation hat eine veraltete Erweiterung erkannt, das ein neueres, mit dieser QGIS-Version geliefertes, verdeckt. Dies ist wahrscheinlich ein Überbleibsel einer ältereren QGIS-Installation. Bitte entfernen Sie es unter Erweiterungsinstallation, um die mitgelieferte Ausgabe sichtbar zu machen.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS-Python-Erweiterungsinstallation</translation>
+        <translation type="unfinished">QGIS-Python-Erweiterungsinstallation</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Fehler beim Lesen des Repositorys:</translation>
+        <translation type="unfinished">Fehler beim Lesen des Repositorys:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">Alle Repositorys</translation>
+        <translation type="unfinished">Alle Repositorys</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">verbunden</translation>
+        <translation type="unfinished">verbunden</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="obsolete">Repository ist verbunden</translation>
+        <translation type="unfinished">Repository ist verbunden</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="obsolete">nicht verfügbar</translation>
+        <translation type="unfinished">nicht verfügbar</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="obsolete">Diese Repository ist aktiv, aber nicht verfügbar</translation>
+        <translation type="unfinished">Diese Repository ist aktiv, aber nicht verfügbar</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">deaktiviert</translation>
+        <translation type="unfinished">deaktiviert</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="obsolete">Dieses Repository ist deaktiviert</translation>
+        <translation type="unfinished">Dieses Repository ist deaktiviert</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="obsolete">Diese Repository wurde wegen Inkompatibilität zu Ihrer Quantum GIS-Version blockiert</translation>
+        <translation type="unfinished">Diese Repository wurde wegen Inkompatibilität zu Ihrer Quantum GIS-Version blockiert</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="obsolete">Waisen</translation>
+        <translation type="unfinished">Waisen</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">Alle Zustände</translation>
+        <translation type="unfinished">Alle Zustände</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">Aktualisierungen und Neuigkeiten</translation>
+        <translation type="unfinished">Aktualisierungen und Neuigkeiten</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">Diese Erweiterung ist nicht installiert</translation>
+        <translation type="unfinished">Diese Erweiterung ist nicht installiert</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">Diese Erweiterung ist installiert</translation>
+        <translation type="unfinished">Diese Erweiterung ist installiert</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">Diese Erweiterung ist installiert, aber es gibt eine neuere Version</translation>
+        <translation type="unfinished">Diese Erweiterung ist installiert, aber es gibt eine neuere Version</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="obsolete">Diese Erweiterung ist installiert, aber in keinem aktivierten Repository zu finden</translation>
+        <translation type="unfinished">Diese Erweiterung ist installiert, aber in keinem aktivierten Repository zu finden</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="obsolete">Diese Erweiterung ist nicht installiert und wurde zum ersten Mal entdeckt</translation>
+        <translation type="unfinished">Diese Erweiterung ist nicht installiert und wurde zum ersten Mal entdeckt</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="obsolete">Diese Erweiterung ist installiert und ist aktueller als die Version in einem Repository</translation>
+        <translation type="unfinished">Diese Erweiterung ist installiert und ist aktueller als die Version in einem Repository</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="obsolete">installierte Version</translation>
+        <translation type="unfinished">installierte Version</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="obsolete">verfügbare Version</translation>
+        <translation type="unfinished">verfügbare Version</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="obsolete">Dies ist die neuste verfügbare Version</translation>
+        <translation type="unfinished">Dies ist die neuste verfügbare Version</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="obsolete">Keine Version zum Download verfügbar</translation>
+        <translation type="unfinished">Keine Version zum Download verfügbar</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="obsolete">nur lokal verfügbar</translation>
+        <translation type="unfinished">nur lokal verfügbar</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">Erweiterung installieren</translation>
+        <translation type="unfinished">Erweiterung installieren</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">Erweiterung erneut installieren</translation>
+        <translation type="unfinished">Erweiterung erneut installieren</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">Erweiterung aktualisieren</translation>
+        <translation type="unfinished">Erweiterung aktualisieren</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">Erweiterung installieren/aktualisieren</translation>
+        <translation type="unfinished">Erweiterung installieren/aktualisieren</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">Frühere Version der Erweiterung installieren</translation>
+        <translation type="unfinished">Frühere Version der Erweiterung installieren</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="obsolete">Sind Sie sicher, dass sie eine früherer Version der Erweiterung installieren wollen?  Die installierte ist aktueller!</translation>
+        <translation type="unfinished">Sind Sie sicher, dass sie eine früherer Version der Erweiterung installieren wollen?  Die installierte ist aktueller!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">Installation der Erweiterung schlug fehl</translation>
+        <translation type="unfinished">Installation der Erweiterung schlug fehl</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="obsolete">Erweiterung ist verschwunden</translation>
+        <translation type="unfinished">Erweiterung ist verschwunden</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="obsolete">Die Erweiterung scheint installiert worden zu sein, aber der Ort konnte nicht festgestellt werden. Wahrscheinlich enthielt das Erweiterungspaket ein falsch benanntes Verzeichnis.
+        <translation type="unfinished">Die Erweiterung scheint installiert worden zu sein, aber der Ort konnte nicht festgestellt werden. Wahrscheinlich enthielt das Erweiterungspaket ein falsch benanntes Verzeichnis.
 Bitte durchsuchen Sie die Liste der installierten Erweiterung. Dies bedeutet ausserdem, dass es nicht möglich ist festzustellen, dass die Erweiterung installiert ist und ob es Updates gibt. Nichtdestotrotz könnte die Erweiterung funktionieren. Bitte kontaktieren Sie den Erweiterungsautor und setzen Ihn davon in Kenntnis.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="obsolete">Erweiterung erfolgreich installiert</translation>
+        <translation type="unfinished">Erweiterung erfolgreich installiert</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="obsolete">Erweiterungsdeinstallation gescheitert</translation>
+        <translation type="unfinished">Erweiterungsdeinstallation gescheitert</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="obsolete">Sind Sie sicher, dass Sie folgende Erweiterung deinstallieren wollen?</translation>
+        <translation type="unfinished">Sind Sie sicher, dass Sie folgende Erweiterung deinstallieren wollen?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="obsolete">Warnung: diese Erweiterung ist in keinem verfügbaren Repository enthalten!</translation>
+        <translation type="unfinished">Warnung: diese Erweiterung ist in keinem verfügbaren Repository enthalten!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="obsolete">Erweiterung erfolgreich deinstalliert</translation>
+        <translation type="unfinished">Erweiterung erfolgreich deinstalliert</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="obsolete">Ein Repository einer bereits vorhandene URL kann nicht hinzugefügt werden!</translation>
+        <translation type="unfinished">Ein Repository einer bereits vorhandene URL kann nicht hinzugefügt werden!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="obsolete">Sind Sie sicher, dass die folgendes Repository entfernen wollen?</translation>
+        <translation type="unfinished">Sind Sie sicher, dass die folgendes Repository entfernen wollen?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="obsolete">Diese Erweiterung ist inkompatibel mit Ihrer Quantum GIS-Version und wird wahrscheinlich nicht funktionieren.</translation>
+        <translation type="unfinished">Diese Erweiterung ist inkompatibel mit Ihrer Quantum GIS-Version und wird wahrscheinlich nicht funktionieren.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="obsolete">Diese Erweiterung scheint defekt zu sein.
+        <translation type="unfinished">Diese Erweiterung scheint defekt zu sein.
 Es wurde installiert, konnte aber nicht geladen werden.
 Hier die Fehlermeldung:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="obsolete">Beachten Sie, dass es eine nicht installierbare Kernerweiterung ist</translation>
+        <translation type="unfinished">Beachten Sie, dass es eine nicht installierbare Kernerweiterung ist</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="obsolete">Diese Erweiterung ist defekt</translation>
+        <translation type="unfinished">Diese Erweiterung ist defekt</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="obsolete">Diese Erweiterung benötigt eine neuere Quantum GIS-Version</translation>
+        <translation type="unfinished">Diese Erweiterung benötigt eine neuere Quantum GIS-Version</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="obsolete">Diese Erweiterung benötigt ein fehlendes Modul</translation>
+        <translation type="unfinished">Diese Erweiterung benötigt ein fehlendes Modul</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="obsolete">Erweiterung erfolgreich neuinstalliert</translation>
+        <translation type="unfinished">Erweiterung erfolgreich neuinstalliert</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="obsolete">Diese Erweiterung ist für eine neuere Version von Quantum GIS bestimmt. Die minimal erforderliche Version ist:</translation>
+        <translation type="unfinished">Diese Erweiterung ist für eine neuere Version von Quantum GIS bestimmt. Die minimal erforderliche Version ist:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="obsolete">Diese Erweiterung hängt von einigen auf Ihrem System fehlenden Komponenten ab. Sie müssen folgende Pythonmodule installieren, um es zu aktivieren:</translation>
+        <translation type="unfinished">Diese Erweiterung hängt von einigen auf Ihrem System fehlenden Komponenten ab. Sie müssen folgende Pythonmodule installieren, um es zu aktivieren:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="obsolete">Diese Erweiterung ist defekt. Python meldete:</translation>
+        <translation type="unfinished">Diese Erweiterung ist defekt. Python meldete:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="obsolete">Das benötigte Python-Modul ist nicht installiert.
+        <translation type="unfinished">Das benötigte Python-Modul ist nicht installiert.
 Für weitere Informationen besuchen Sie bitte dessen Homepage und das Quantum GIS-Wiki.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="obsolete">Python-Erweiterung installiert.
+        <translation type="unfinished">Python-Erweiterung installiert.
 Sie müssen es noch im Plugin-Manager aktivieren.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="obsolete">Python-Erweiterung neuinstalliert.
+        <translation type="unfinished">Python-Erweiterung neuinstalliert.
 Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">Python-Erweiterung deinstalliert. Beachten Sie, dass Sie Quantum GIS u.U. neustarten müssen, um es komplett zu entfernen.</translation>
+        <translation type="unfinished">Python-Erweiterung deinstalliert. Beachten Sie, dass Sie Quantum GIS u.U. neustarten müssen, um es komplett zu entfernen.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="obsolete">Sie sind dabei mehrere Erweiterungsrepositories hinzuzufügen, die vom Quantum GIS-Team weder autorisiert noch unterstützt werden. Erweiterungsautoren sind grundsätzlich bemüht, das ihre Arbeit nützlich und sicher ist. Allerdings können wird keine Verantwortung dafür übernehmen.</translation>
+        <translation type="unfinished">Sie sind dabei mehrere Erweiterungsrepositories hinzuzufügen, die vom Quantum GIS-Team weder autorisiert noch unterstützt werden. Erweiterungsautoren sind grundsätzlich bemüht, das ihre Arbeit nützlich und sicher ist. Allerdings können wird keine Verantwortung dafür übernehmen.</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">nicht installiert</translation>
+        <translation type="unfinished">nicht installiert</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">installiert</translation>
+        <translation type="unfinished">installiert</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">aktualisierbar</translation>
+        <translation type="unfinished">aktualisierbar</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="obsolete">neu!</translation>
+        <translation type="unfinished">neu!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="obsolete">ungültig</translation>
+        <translation type="unfinished">ungültig</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="obsolete">mindestens</translation>
+        <translation type="unfinished">mindestens</translation>
     </message>
 </context>
 <context>
@@ -17004,35 +17004,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="obsolete">Erfolg</translation>
+        <translation type="unfinished">Erfolg</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Löse Hostname auf...</translation>
+        <translation type="unfinished">Löse Hostname auf...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Verbinde...</translation>
+        <translation type="unfinished">Verbinde...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Verbunden. Sende Anfrage...</translation>
+        <translation type="unfinished">Verbunden. Sende Anfrage...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Daten werden heruntergeladen...</translation>
+        <translation type="unfinished">Daten werden heruntergeladen...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Leerlauf</translation>
+        <translation type="unfinished">Leerlauf</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Verbindung wird geschlossen...</translation>
+        <translation type="unfinished">Verbindung wird geschlossen...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Fehler</translation>
+        <translation type="unfinished">Fehler</translation>
     </message>
 </context>
 <context>
@@ -17067,43 +17067,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">Installiere...</translation>
+        <translation type="unfinished">Installiere...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Löse Hostname auf...</translation>
+        <translation type="unfinished">Löse Hostname auf...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Verbinde...</translation>
+        <translation type="unfinished">Verbinde...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Verbunden. Sende Anfrage...</translation>
+        <translation type="unfinished">Verbunden. Sende Anfrage...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Daten werden heruntergeladen...</translation>
+        <translation type="unfinished">Daten werden heruntergeladen...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Leerlauf</translation>
+        <translation type="unfinished">Leerlauf</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Verbindung wird geschlossen...</translation>
+        <translation type="unfinished">Verbindung wird geschlossen...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Fehler</translation>
+        <translation type="unfinished">Fehler</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">Erweiterungspaket konnte nicht ausgepackt werden. Es ist wahrscheinlich defekt oder fehlt im Repository. Sie sollten sicherstellen, dass Sie Schreibrechte im Erweiterungsverzeichnis haben:</translation>
+        <translation type="unfinished">Erweiterungspaket konnte nicht ausgepackt werden. Es ist wahrscheinlich defekt oder fehlt im Repository. Sie sollten sicherstellen, dass Sie Schreibrechte im Erweiterungsverzeichnis haben:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">Durch Benutzer abgebrochen</translation>
+        <translation type="unfinished">Durch Benutzer abgebrochen</translation>
     </message>
 </context>
 <context>
@@ -17128,7 +17128,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">keine Fehlermeldung empfangen</translation>
+        <translation type="unfinished">keine Fehlermeldung empfangen</translation>
     </message>
 </context>
 <context>
@@ -23121,51 +23121,51 @@ URL %1 versucht</translation>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Bitte Eingabevektorlayer angeben</translation>
+        <translation type="unfinished">Bitte Eingabevektorlayer angeben</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="obsolete">Bitte Eingabefeld angeben</translation>
+        <translation type="unfinished">Bitte Eingabefeld angeben</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Gültigkeit der Geometrie überprüfen</translation>
+        <translation type="unfinished">Gültigkeit der Geometrie überprüfen</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="obsolete">Geometriefehler</translation>
+        <translation type="unfinished">Geometriefehler</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="obsolete">Gesamtzahl aufgetretener Fehler</translation>
+        <translation type="unfinished">Gesamtzahl aufgetretener Fehler</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Liste eindeutiger Werte</translation>
+        <translation type="unfinished">Liste eindeutiger Werte</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="obsolete">Grundstatistik</translation>
+        <translation type="unfinished">Grundstatistik</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="obsolete">Statistische Ausgabe</translation>
+        <translation type="unfinished">Statistische Ausgabe</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Nächste Nachbaranalyse</translation>
+        <translation type="unfinished">Nächste Nachbaranalyse</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="obsolete">Nächste Nachbarstatistik</translation>
+        <translation type="unfinished">Nächste Nachbarstatistik</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">Eindeutige Werte</translation>
+        <translation type="unfinished">Eindeutige Werte</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="obsolete">Gesamtzahl eindeutiger Werte</translation>
+        <translation type="unfinished">Gesamtzahl eindeutiger Werte</translation>
     </message>
 </context>
 <context>
@@ -24218,189 +24218,189 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Festgestellte Quantum GIS-Version:</translation>
+        <translation type="unfinished">Festgestellte Quantum GIS-Version:</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">&amp;Analyse-Werkzeuge</translation>
+        <translation type="unfinished">&amp;Analyse-Werkzeuge</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Distanzmatrix</translation>
+        <translation type="unfinished">Distanzmatrix</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Linienlängen summieren</translation>
+        <translation type="unfinished">Linienlängen summieren</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Punkte in Polygonen</translation>
+        <translation type="unfinished">Punkte in Polygonen</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="obsolete">Grundstatistik</translation>
+        <translation type="unfinished">Grundstatistik</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Eindeutige Werte auflisten</translation>
+        <translation type="unfinished">Eindeutige Werte auflisten</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Nächster Nachbaranalyse</translation>
+        <translation type="unfinished">Nächster Nachbaranalyse</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="obsolete">Mittlere Koordinate(n)</translation>
+        <translation type="unfinished">Mittlere Koordinate(n)</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Linienschnittpunkte</translation>
+        <translation type="unfinished">Linienschnittpunkte</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Zufällige Auswahl</translation>
+        <translation type="unfinished">Zufällige Auswahl</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Zufällige Auswahl in Untermengen</translation>
+        <translation type="unfinished">Zufällige Auswahl in Untermengen</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="obsolete">Zufällige Punkte</translation>
+        <translation type="unfinished">Zufällige Punkte</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Regelmäßige Punkte</translation>
+        <translation type="unfinished">Regelmäßige Punkte</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Vektorraster</translation>
+        <translation type="unfinished">Vektorraster</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Nach Position wählen</translation>
+        <translation type="unfinished">Nach Position wählen</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="obsolete">&amp;Geoverarbeitungswerkzeuge</translation>
+        <translation type="unfinished">&amp;Geoverarbeitungswerkzeuge</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Konvexe Hülle(n)</translation>
+        <translation type="unfinished">Konvexe Hülle(n)</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Puffer</translation>
+        <translation type="unfinished">Puffer</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Schnittmengen</translation>
+        <translation type="unfinished">Schnittmengen</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Vereinigungen</translation>
+        <translation type="unfinished">Vereinigungen</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Symetrische Differenz</translation>
+        <translation type="unfinished">Symetrische Differenz</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Clip</translation>
+        <translation type="unfinished">Clip</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Auflösen</translation>
+        <translation type="unfinished">Auflösen</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Differenz</translation>
+        <translation type="unfinished">Differenz</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="obsolete">G&amp;eometrie-Werkzeuge</translation>
+        <translation type="unfinished">G&amp;eometrie-Werkzeuge</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Geometriesspalten exportieren/hinzufügen</translation>
+        <translation type="unfinished">Geometriesspalten exportieren/hinzufügen</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Geometriegültigkeit prüfen</translation>
+        <translation type="unfinished">Geometriegültigkeit prüfen</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Polygonschwerpunkt</translation>
+        <translation type="unfinished">Polygonschwerpunkt</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Knoten extrahieren</translation>
+        <translation type="unfinished">Knoten extrahieren</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Geometrien vereinfachen</translation>
+        <translation type="unfinished">Geometrien vereinfachen</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Mehr- zu einteilig</translation>
+        <translation type="unfinished">Mehr- zu einteilig</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Ein- zu mehrteilig</translation>
+        <translation type="unfinished">Ein- zu mehrteilig</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Polygon zu Linie</translation>
+        <translation type="unfinished">Polygon zu Linie</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">&amp;Datenmanagement-Werkzeuge</translation>
+        <translation type="unfinished">&amp;Datenmanagement-Werkzeuge</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">In neue Projektion exportieren</translation>
+        <translation type="unfinished">In neue Projektion exportieren</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Aktuelle Projektion definieren</translation>
+        <translation type="unfinished">Aktuelle Projektion definieren</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Attribute zusammenführen</translation>
+        <translation type="unfinished">Attribute zusammenführen</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Attribute nach Position zusammenführen</translation>
+        <translation type="unfinished">Attribute nach Position zusammenführen</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Vektorlayer teilen</translation>
+        <translation type="unfinished">Vektorlayer teilen</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">&amp;Forschungswerkzeuge</translation>
+        <translation type="unfinished">&amp;Forschungswerkzeuge</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Delaunay-Triangulation</translation>
+        <translation type="unfinished">Delaunay-Triangulation</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Polygon aus Layergrenzen</translation>
+        <translation type="unfinished">Polygon aus Layergrenzen</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">Diese fTools-Version erfordert mindestens QGIS Version 1.0.0
+        <translation type="unfinished">Diese fTools-Version erfordert mindestens QGIS Version 1.0.0
 Plugin wird nicht aktiviert.</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
-        <translation type="obsolete">&amp;Vektor</translation>
+        <translation type="unfinished">&amp;Vektor</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">fTools-Information</translation>
+        <translation type="unfinished">fTools-Information</translation>
     </message>
 </context>
 <context>
@@ -24425,95 +24425,95 @@ Plugin wird nicht aktiviert.</translation>
     <name>visualThread</name>
     <message>
         <source>Max. len:</source>
-        <translation type="obsolete">Max. Länge: </translation>
+        <translation type="unfinished">Max. Länge: </translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="obsolete">Min. Länge: </translation>
+        <translation type="unfinished">Min. Länge: </translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="obsolete">Mittlere Länge: </translation>
+        <translation type="unfinished">Mittlere Länge: </translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="obsolete">Gefüllt: </translation>
+        <translation type="unfinished">Gefüllt: </translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="obsolete">Leer: </translation>
+        <translation type="unfinished">Leer: </translation>
     </message>
     <message>
         <source>N:</source>
-        <translation type="obsolete">N:</translation>
+        <translation type="unfinished">N:</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="obsolete">Durchschnitt: </translation>
+        <translation type="unfinished">Durchschnitt: </translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="obsolete">Std.Abw: </translation>
+        <translation type="unfinished">Std.Abw: </translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="obsolete">Summe: </translation>
+        <translation type="unfinished">Summe: </translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="obsolete">Min: </translation>
+        <translation type="unfinished">Min: </translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="obsolete">Max: </translation>
+        <translation type="unfinished">Max: </translation>
     </message>
     <message>
         <source>CV:</source>
-        <translation type="obsolete">CV: </translation>
+        <translation type="unfinished">CV: </translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="obsolete">Anzahl der eindeutigen Werte: </translation>
+        <translation type="unfinished">Anzahl der eindeutigen Werte: </translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="obsolete">Bereich: </translation>
+        <translation type="unfinished">Bereich: </translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="obsolete">Mittel: </translation>
+        <translation type="unfinished">Mittel: </translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="obsolete">Beobachteter mittlerer Abstand : </translation>
+        <translation type="unfinished">Beobachteter mittlerer Abstand : </translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="obsolete">Erwarteter mittlerer Abstand : </translation>
+        <translation type="unfinished">Erwarteter mittlerer Abstand : </translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="obsolete">Nächster Nachbarindex : </translation>
+        <translation type="unfinished">Nächster Nachbarindex : </translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation type="obsolete">Z-Score:</translation>
+        <translation type="unfinished">Z-Score:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="obsolete">Objekt %1 enthält ein Loch außerhalb des Polygons</translation>
+        <translation type="unfinished">Objekt %1 enthält ein Loch außerhalb des Polygons</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="obsolete">Objekt %1 ist nicht geschlossen</translation>
+        <translation type="unfinished">Objekt %1 ist nicht geschlossen</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="obsolete">Objekt %1 schneidet sich selbst</translation>
+        <translation type="unfinished">Objekt %1 schneidet sich selbst</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="obsolete">Die Knoten des Objekt %1 sind nicht in der richtigen Reihenfolge</translation>
+        <translation type="unfinished">Die Knoten des Objekt %1 sind nicht in der richtigen Reihenfolge</translation>
     </message>
 </context>
 </TS>

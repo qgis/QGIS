@@ -562,61 +562,61 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="obsolete">создать новое выделение</translation>
+        <translation type="unfinished">создать новое выделение</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="obsolete">добавить к текущему выделению</translation>
+        <translation type="unfinished">добавить к текущему выделению</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="obsolete">удалить из текущего выделения</translation>
+        <translation type="unfinished">удалить из текущего выделения</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Выделение по районам</translation>
+        <translation type="unfinished">Выделение по районам</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="obsolete">Выбрать объекты в слое:</translation>
+        <translation type="unfinished">Выбрать объекты в слое:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="obsolete">Пересекающие объекты в слое:</translation>
+        <translation type="unfinished">Пересекающие объекты в слое:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="obsolete">Изменить текущее выделение:</translation>
+        <translation type="unfinished">Изменить текущее выделение:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="obsolete">Пожалуйста, укажите исходный слой</translation>
+        <translation type="unfinished">Пожалуйста, укажите исходный слой</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="obsolete">Пожалуйста, укажите слой выборки</translation>
+        <translation type="unfinished">Пожалуйста, укажите слой выборки</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Матрица расстояний</translation>
+        <translation type="unfinished">Матрица расстояний</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="obsolete">Матрица расстояний сохранена в файле:</translation>
+        <translation type="unfinished">Матрица расстояний сохранена в файле:</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Количество точек в полигонах</translation>
+        <translation type="unfinished">Количество точек в полигонах</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="obsolete">Создан новый shape-файл:</translation>
+        <translation type="unfinished">Создан новый shape-файл:</translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="obsolete">Векторный слой недействителен</translation>
+        <translation type="unfinished">Векторный слой недействителен</translation>
     </message>
     <message>
         <source>Count Points In Polygons</source>
@@ -888,7 +888,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Сумма расстояний в полигонах</translation>
+        <translation type="unfinished">Сумма расстояний в полигонах</translation>
     </message>
     <message>
         <source>OGR Layer Converter</source>
@@ -1279,23 +1279,23 @@ p, li { white-space: pre-wrap; }
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">По всем полям</translation>
+        <translation type="unfinished">По всем полям</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Пожалуйста, укажите исходный векторный слой</translation>
+        <translation type="unfinished">Пожалуйста, укажите исходный векторный слой</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Пожалуйста, укажите целевой shape-файл</translation>
+        <translation type="unfinished">Пожалуйста, укажите целевой shape-файл</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="obsolete">Пожалуйста, укажите действительное значение порога</translation>
+        <translation type="unfinished">Пожалуйста, укажите действительное значение порога</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="obsolete">Пожалуйста, укажите действительное поле классификации</translation>
+        <translation type="unfinished">Пожалуйста, укажите действительное поле классификации</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1303,63 +1303,63 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Вы хотите добавить новый слой на карту?</translation>
+        <translation type="unfinished">Вы хотите добавить новый слой на карту?</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Объединить полигоны в составные</translation>
+        <translation type="unfinished">Объединить полигоны в составные</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="obsolete">Сохранить результат в shape-файл</translation>
+        <translation type="unfinished">Сохранить результат в shape-файл</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Разбить составные полигоны</translation>
+        <translation type="unfinished">Разбить составные полигоны</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Извлечение узлов</translation>
+        <translation type="unfinished">Извлечение узлов</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Преобразовать полигоны в линии</translation>
+        <translation type="unfinished">Преобразовать полигоны в линии</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="obsolete">Исходный полигональный слой</translation>
+        <translation type="unfinished">Исходный полигональный слой</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Экспортировать/добавить поле геометрии</translation>
+        <translation type="unfinished">Экспортировать/добавить поле геометрии</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">Исходный векторный слой</translation>
+        <translation type="unfinished">Исходный векторный слой</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Упростить геометрию</translation>
+        <translation type="unfinished">Упростить геометрию</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Центроиды полигонов</translation>
+        <translation type="unfinished">Центроиды полигонов</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="obsolete">Сохранить результат в точечный shape-файл</translation>
+        <translation type="unfinished">Сохранить результат в точечный shape-файл</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Не удалось удалить существующий shape-файл.</translation>
+        <translation type="unfinished">Не удалось удалить существующий shape-файл.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="obsolete">Ошибка при обработке указанного порога!</translation>
+        <translation type="unfinished">Ошибка при обработке указанного порога!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="obsolete">Пожалуйста, выберите больший порог...</translation>
+        <translation type="unfinished">Пожалуйста, выберите больший порог...</translation>
     </message>
     <message>
         <source>Function not found</source>
@@ -1375,62 +1375,62 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Триангуляция Делоне</translation>
+        <translation type="unfinished">Триангуляция Делоне</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="obsolete">Исходный точечный слой</translation>
+        <translation type="unfinished">Исходный точечный слой</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Полигон из границ слоя</translation>
+        <translation type="unfinished">Полигон из границ слоя</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Исходный слой</translation>
+        <translation type="unfinished">Исходный слой</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="obsolete">Сохранить результат в полигональный shape-файл</translation>
+        <translation type="unfinished">Сохранить результат в полигональный shape-файл</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="obsolete">Не удалось удалить незавершённый shape-файл.</translation>
+        <translation type="unfinished">Не удалось удалить незавершённый shape-файл.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="obsolete">Создан новый shape-файл:</translation>
+        <translation type="unfinished">Создан новый shape-файл:</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="obsolete">Ошибка при сохранении shape-файла.</translation>
+        <translation type="unfinished">Ошибка при сохранении shape-файла.</translation>
     </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="obsolete">По всем признакам</translation>
+        <translation type="unfinished">По всем признакам</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="obsolete">Пожалуйста, укажите исходный слой</translation>
+        <translation type="unfinished">Пожалуйста, укажите исходный слой</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="obsolete">Пожалуйста, укажите слой для выполнения разности/пересечения/объединения</translation>
+        <translation type="unfinished">Пожалуйста, укажите слой для выполнения разности/пересечения/объединения</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="obsolete">Пожалуйста, укажите действительное значение буферной зоны</translation>
+        <translation type="unfinished">Пожалуйста, укажите действительное значение буферной зоны</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="obsolete">Пожалуйста, укажите действительное поле классификации</translation>
+        <translation type="unfinished">Пожалуйста, укажите действительное поле классификации</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Пожалуйста, укажите целевой shape-файл</translation>
+        <translation type="unfinished">Пожалуйста, укажите целевой shape-файл</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
@@ -1446,72 +1446,72 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Буферные зоны</translation>
+        <translation type="unfinished">Буферные зоны</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="obsolete">Создать минимально возможную выпуклую оболочку</translation>
+        <translation type="unfinished">Создать минимально возможную выпуклую оболочку</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="obsolete">Создать выпуклые оболочки на основе поля классификации</translation>
+        <translation type="unfinished">Создать выпуклые оболочки на основе поля классификации</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Выпуклые оболочки</translation>
+        <translation type="unfinished">Выпуклые оболочки</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Объединение по признаку</translation>
+        <translation type="unfinished">Объединение по признаку</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Разность</translation>
+        <translation type="unfinished">Разность</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="obsolete">Слой пересечения</translation>
+        <translation type="unfinished">Слой пересечения</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Пересечение</translation>
+        <translation type="unfinished">Пересечение</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Слой разности</translation>
+        <translation type="unfinished">Слой разности</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="obsolete">Нет выделенных объектов. Пожалуйста, снимите флажок &quot;Использовать выделенные объекты&quot;</translation>
+        <translation type="unfinished">Нет выделенных объектов. Пожалуйста, снимите флажок &quot;Использовать выделенные объекты&quot;</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Симметричная разность</translation>
+        <translation type="unfinished">Симметричная разность</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="obsolete">Слой отсечения</translation>
+        <translation type="unfinished">Слой отсечения</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Отсечение</translation>
+        <translation type="unfinished">Отсечение</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="obsolete">Слой для объединения</translation>
+        <translation type="unfinished">Слой для объединения</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Объединение</translation>
+        <translation type="unfinished">Объединение</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Не удалось удалить существующий shape-файл.</translation>
+        <translation type="unfinished">Не удалось удалить существующий shape-файл.</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Предупреждения:</translation>
     </message>
     <message>
@@ -1519,7 +1519,7 @@ Warnings:</source>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Некоторые геометрии могут отсутствовать или содержать ошибки.
 
 Вы хотите добавить слой, несмотря на это?</translation>
@@ -1528,28 +1528,28 @@ Would you like to add the new layer anyway?</source>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Вы хотите добавить новый слой на карту?</translation>
+        <translation type="unfinished">Вы хотите добавить новый слой на карту?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="obsolete">Неверная система координат: Обнаружены различные системы координат, вывод может содержать ошибки.</translation>
+        <translation type="unfinished">Неверная система координат: Обнаружены различные системы координат, вывод может содержать ошибки.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Неверная геометрия объекта: Один или более исходных объектов проигнорированы по причине недействительной геометрии.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Ошибка GEOS: Один или более исходных объектов имеют недействительную геометрию.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="obsolete">Создан новый shape-файл:</translation>
+        <translation type="unfinished">Создан новый shape-файл:</translation>
     </message>
 </context>
 <context>
@@ -1997,7 +1997,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">Сообщение OSM</translation>
+        <translation type="unfinished">Сообщение OSM</translation>
     </message>
     <message>
         <source>Show type description</source>
@@ -2175,51 +2175,51 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">Загрузка данных OSM</translation>
+        <translation type="unfinished">Загрузка данных OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Не удалось сохранить файл %1: %2.</translation>
+        <translation type="unfinished">Не удалось сохранить файл %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">Ожидание ответа от сервера OSM...</translation>
+        <translation type="unfinished">Ожидание ответа от сервера OSM...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">Процесс загрузки завершился с ошибкой. Ответ сервера OSM: %1 - %2</translation>
+        <translation type="unfinished">Процесс загрузки завершился с ошибкой. Ответ сервера OSM: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">Ошибка загрузки OSM</translation>
+        <translation type="unfinished">Ошибка загрузки OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">Не удалось выполнить загрузку: %1.</translation>
+        <translation type="unfinished">Не удалось выполнить загрузку: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">Получение данных</translation>
+        <translation type="unfinished">Получение данных</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">Сервер данных OpenStreetMap (~ api.openstreetmap.org) имеет фиксированные ограничение на размер получаемых данных. Согласно &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; охват загружаемого региона не может превышать 0.25 градуса по широте или долготе. Quantum GIS позволяет указать больший охват, но сервер будет возвращать ошибку в ответ на любой запрос, который не удовлетворяет ограничениям загрузки.</translation>
+        <translation type="unfinished">Сервер данных OpenStreetMap (~ api.openstreetmap.org) имеет фиксированные ограничение на размер получаемых данных. Согласно &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; охват загружаемого региона не может превышать 0.25 градуса по широте или долготе. Quantum GIS позволяет указать больший охват, но сервер будет возвращать ошибку в ответ на любой запрос, который не удовлетворяет ограничениям загрузки.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">Охват по широте и долготе слишком большой!</translation>
+        <translation type="unfinished">Охват по широте и долготе слишком большой!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">Охват по широте слишком большой!</translation>
+        <translation type="unfinished">Охват по широте слишком большой!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">Охват по долготе слишком большой!</translation>
+        <translation type="unfinished">Охват по долготе слишком большой!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">Площадь пригодна для загрузки с сервера.</translation>
+        <translation type="unfinished">Площадь пригодна для загрузки с сервера.</translation>
     </message>
 </context>
 <context>
@@ -2330,23 +2330,23 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">Модуль OSM</translation>
+        <translation type="unfinished">Модуль OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">Диалог «Создание отношения OSM» был автоматически закрыт, поскольку текущие данные OSM изменились.</translation>
+        <translation type="unfinished">Диалог «Создание отношения OSM» был автоматически закрыт, поскольку текущие данные OSM изменились.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">Панель свойств объекта OSM</translation>
+        <translation type="unfinished">Панель свойств объекта OSM</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">Пожалуйста, выберите объект OSM.</translation>
+        <translation type="unfinished">Пожалуйста, выберите объект OSM.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">Пожалуйста, выберите отношение для правки.</translation>
+        <translation type="unfinished">Пожалуйста, выберите отношение для правки.</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -2451,31 +2451,31 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">Сохранить данные OSM в файл</translation>
+        <translation type="unfinished">Сохранить данные OSM в файл</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Не удалось сохранить файл %1: %2.</translation>
+        <translation type="unfinished">Не удалось сохранить файл %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">Инициализация...</translation>
+        <translation type="unfinished">Инициализация...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">Сохранение узлов...</translation>
+        <translation type="unfinished">Сохранение узлов...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">Сохранение линий...</translation>
+        <translation type="unfinished">Сохранение линий...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">Сохранение полигонов...</translation>
+        <translation type="unfinished">Сохранение полигонов...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">Сохранение отношений...</translation>
+        <translation type="unfinished">Сохранение отношений...</translation>
     </message>
 </context>
 <context>
@@ -2580,46 +2580,50 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">Выгрузка данных OSM</translation>
+        <translation type="unfinished">Выгрузка данных OSM</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">Выгрузка данных...</translation>
+        <translation type="unfinished">Выгрузка данных...</translation>
     </message>
 </context>
 <context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="obsolete">При выполнении Python-кода возникла ошибка:</translation>
+        <translation type="unfinished">При выполнении Python-кода возникла ошибка:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="obsolete">Версия Python:</translation>
+        <translation type="unfinished">Версия Python:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="obsolete">Путь поиска Python:</translation>
+        <translation type="unfinished">Путь поиска Python:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Ошибка Python</translation>
+        <translation type="unfinished">Ошибка Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="obsolete">Не удалось загрузить модуль %1</translation>
+        <translation type="unfinished">Не удалось загрузить модуль %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="obsolete">%1 при вызове его метода classFactory()</translation>
+        <translation type="unfinished">%1 при вызове его метода classFactory()</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="obsolete">%1 при вызове его метода initGui()</translation>
+        <translation type="unfinished">%1 при вызове его метода initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="obsolete">Ошибка при выгрузке модуля %1</translation>
+        <translation type="unfinished">Ошибка при выгрузке модуля %1</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17112,7 +17116,7 @@ geometry.</source>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">Не удалось обработать ответ репозитория</translation>
+        <translation type="unfinished">Не удалось обработать ответ репозитория</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
@@ -17120,51 +17124,51 @@ geometry.</source>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="obsolete">Не удалось открыть локальный каталог модулей</translation>
+        <translation type="unfinished">Не удалось открыть локальный каталог модулей</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Загрузить модули...</translation>
+        <translation type="unfinished">Загрузить модули...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="obsolete">Установка дополнительных модулей из удалённых репозиториев</translation>
+        <translation type="unfinished">Установка дополнительных модулей из удалённых репозиториев</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">Поиск новых модулей...</translation>
+        <translation type="unfinished">Поиск новых модулей...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="obsolete">Доступен новый модуль</translation>
+        <translation type="unfinished">Доступен новый модуль</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="obsolete">Доступна новая версия модуля</translation>
+        <translation type="unfinished">Доступна новая версия модуля</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">Установка модулей QGIS</translation>
+        <translation type="unfinished">Установка модулей QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Ошибка чтения из репозитория:</translation>
+        <translation type="unfinished">Ошибка чтения из репозитория:</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="obsolete">Удаление невозможно! Каталог модулей не обнаружен:</translation>
+        <translation type="unfinished">Удаление невозможно! Каталог модулей не обнаружен:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="obsolete">Не удалось удалить каталог:</translation>
+        <translation type="unfinished">Не удалось удалить каталог:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="obsolete">Проверьте права доступа или удалите его вручную</translation>
+        <translation type="unfinished">Проверьте права доступа или удалите его вручную</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">Конфликт модулей QGIS:</translation>
+        <translation type="unfinished">Конфликт модулей QGIS:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
@@ -17172,58 +17176,58 @@ geometry.</source>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="obsolete">Обнаружен устаревший модуль, который делает невозможной загрузку модуля, поставляемого с этой версией QGIS. Возможно этот модуль остался после предыдущей установки QGIS. Используйте установщик модулей для его удаления, чтобы сделать возможной загрузку включенной в QGIS версии.</translation>
+        <translation type="unfinished">Обнаружен устаревший модуль, который делает невозможной загрузку модуля, поставляемого с этой версией QGIS. Возможно этот модуль остался после предыдущей установки QGIS. Используйте установщик модулей для его удаления, чтобы сделать возможной загрузку включенной в QGIS версии.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">Установка модулей QGIS</translation>
+        <translation type="unfinished">Установка модулей QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Ошибка чтения из репозитория:</translation>
+        <translation type="unfinished">Ошибка чтения из репозитория:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">все репозитории</translation>
+        <translation type="unfinished">все репозитории</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">подключен</translation>
+        <translation type="unfinished">подключен</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="obsolete">Репозиторий подключен</translation>
+        <translation type="unfinished">Репозиторий подключен</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="obsolete">недоступен</translation>
+        <translation type="unfinished">недоступен</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="obsolete">Репозиторий активен, но недоступен</translation>
+        <translation type="unfinished">Репозиторий активен, но недоступен</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">выключен</translation>
+        <translation type="unfinished">выключен</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="obsolete">Репозиторий выключен</translation>
+        <translation type="unfinished">Репозиторий выключен</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="obsolete">Репозиторий заблокирован ввиду несовместимости с вашей версией Quantum GIS</translation>
+        <translation type="unfinished">Репозиторий заблокирован ввиду несовместимости с вашей версией Quantum GIS</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="obsolete">неподдерживаемые</translation>
+        <translation type="unfinished">неподдерживаемые</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">все</translation>
+        <translation type="unfinished">все</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -17237,31 +17241,31 @@ geometry.</source>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">обновляемые и новые</translation>
+        <translation type="unfinished">обновляемые и новые</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">Модуль не установлен</translation>
+        <translation type="unfinished">Модуль не установлен</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">Модуль установлен</translation>
+        <translation type="unfinished">Модуль установлен</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">Модуль установлен, но доступна более новая версия</translation>
+        <translation type="unfinished">Модуль установлен, но доступна более новая версия</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="obsolete">Модуль установлен, но не найден в активных репозиториях</translation>
+        <translation type="unfinished">Модуль установлен, но не найден в активных репозиториях</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="obsolete">Модуль не установлен и впервые зарегистрирован</translation>
+        <translation type="unfinished">Модуль не установлен и впервые зарегистрирован</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="obsolete">Модуль установлен, и его версия выше доступной в репозитории</translation>
+        <translation type="unfinished">Модуль установлен, и его версия выше доступной в репозитории</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -17290,81 +17294,81 @@ geometry.</source>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="obsolete">установленная версия</translation>
+        <translation type="unfinished">установленная версия</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="obsolete">доступная версия</translation>
+        <translation type="unfinished">доступная версия</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="obsolete">Эта версия является самой последней</translation>
+        <translation type="unfinished">Эта версия является самой последней</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="obsolete">Доступных для загрузки версий не найдено</translation>
+        <translation type="unfinished">Доступных для загрузки версий не найдено</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="obsolete">доступен только локально</translation>
+        <translation type="unfinished">доступен только локально</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">Установить модуль</translation>
+        <translation type="unfinished">Установить модуль</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">Переустановить модуль</translation>
+        <translation type="unfinished">Переустановить модуль</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">Обновить модуль</translation>
+        <translation type="unfinished">Обновить модуль</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">Установить/обновить модуль</translation>
+        <translation type="unfinished">Установить/обновить модуль</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">Понизить версию</translation>
+        <translation type="unfinished">Понизить версию</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="obsolete">Вы уверены, что хотите понизить версию модуля до последней доступной? Установленная версия выше!</translation>
+        <translation type="unfinished">Вы уверены, что хотите понизить версию модуля до последней доступной? Установленная версия выше!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">Установка модуля не выполнена</translation>
+        <translation type="unfinished">Установка модуля не выполнена</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="obsolete">Модуль потерян</translation>
+        <translation type="unfinished">Модуль потерян</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="obsolete">Модуль был установлен, но не был обнаружен после установки. Вероятно, архив модуля содержал каталог с неверным именем.
+        <translation type="unfinished">Модуль был установлен, но не был обнаружен после установки. Вероятно, архив модуля содержал каталог с неверным именем.
 Пожалуйста, просмотрите список установленных модулей. Скорее всего, модуль будет в этом списке, но Quantum GIS не сможет определить, который из них. Кроме того, это означает что состояние модуля и наличие обновлений будет невозможно определить. Тем не менее, модуль может работать. Пожалуйста, свяжитесь с его автором и сообщите об этой ошибке.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="obsolete">Модуль успешно установлен</translation>
+        <translation type="unfinished">Модуль успешно установлен</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="obsolete">Удаление модуля не выполнено</translation>
+        <translation type="unfinished">Удаление модуля не выполнено</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="obsolete">Вы уверены, что хотите удалить этот модуль?</translation>
+        <translation type="unfinished">Вы уверены, что хотите удалить этот модуль?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="obsolete">Внимание: этот модуль не доступен ни в одном активном репозитории!</translation>
+        <translation type="unfinished">Внимание: этот модуль не доступен ни в одном активном репозитории!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="obsolete">Модуль успешно удалён</translation>
+        <translation type="unfinished">Модуль успешно удалён</translation>
     </message>
     <message>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
@@ -17372,105 +17376,105 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="obsolete">Невозможно добавить другой репозиторий с тем же URL!</translation>
+        <translation type="unfinished">Невозможно добавить другой репозиторий с тем же URL!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="obsolete">Вы уверены, что хотите удалить следующий репозиторий?</translation>
+        <translation type="unfinished">Вы уверены, что хотите удалить следующий репозиторий?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="obsolete">Модуль несовместим с вашей версией Quantum GIS и может работать неправильно.</translation>
+        <translation type="unfinished">Модуль несовместим с вашей версией Quantum GIS и может работать неправильно.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="obsolete">Модуль неисправен.
+        <translation type="unfinished">Модуль неисправен.
 Установка прошла успешно, но он не может быть загружен.
 Сообщение об ошибке:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="obsolete">Обратите внимание, что модуль является базовым и не может быть удалён</translation>
+        <translation type="unfinished">Обратите внимание, что модуль является базовым и не может быть удалён</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="obsolete">Модуль неисправен</translation>
+        <translation type="unfinished">Модуль неисправен</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="obsolete">Модуль требует более позднюю версию Quantum GIS</translation>
+        <translation type="unfinished">Модуль требует более позднюю версию Quantum GIS</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="obsolete">Требуются отстутствующие в системе библиотеки</translation>
+        <translation type="unfinished">Требуются отстутствующие в системе библиотеки</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="obsolete">Модуль успешно переустановлен</translation>
+        <translation type="unfinished">Модуль успешно переустановлен</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="obsolete">Модуль написан для более новой версии Quantum GIS. Минимальная требуемая версия:</translation>
+        <translation type="unfinished">Модуль написан для более новой версии Quantum GIS. Минимальная требуемая версия:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="obsolete">Для работы модуля требуются компоненты, которые не найдены в вашей системе. Чтобы включить его, требуется установить следующие библиотеки:</translation>
+        <translation type="unfinished">Для работы модуля требуются компоненты, которые не найдены в вашей системе. Чтобы включить его, требуется установить следующие библиотеки:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="obsolete">Модуль неисправен. Сообщение Python:</translation>
+        <translation type="unfinished">Модуль неисправен. Сообщение Python:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="obsolete">Требуемая библиотека Python не установлена.
+        <translation type="unfinished">Требуемая библиотека Python не установлена.
 Обратитесь к домашней странице модуля или вики Quantum GIS за дополнительной информацией.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="obsolete">Модуль установлен.
+        <translation type="unfinished">Модуль установлен.
 Вы можете включить его в менеджере модулей.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="obsolete">Модуль переустановлен.
+        <translation type="unfinished">Модуль переустановлен.
 Для его перезагрузки следует перезапустить Quantum GIS.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">Модуль удалён. Для завершения удаления может потребоваться перезапуск Quantum GIS.</translation>
+        <translation type="unfinished">Модуль удалён. Для завершения удаления может потребоваться перезапуск Quantum GIS.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="obsolete">Вы собираетесь добавить один или несколько репозиториев, которые не поддерживаются командой Quantum GIS. Авторы модулей, как правило, стараются сделать свои программы полезными и безопасными, но мы не можем нести за них никакую ответственность.</translation>
+        <translation type="unfinished">Вы собираетесь добавить один или несколько репозиториев, которые не поддерживаются командой Quantum GIS. Авторы модулей, как правило, стараются сделать свои программы полезными и безопасными, но мы не можем нести за них никакую ответственность.</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">обновляем</translation>
+        <translation type="unfinished">обновляем</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="obsolete">новый!</translation>
+        <translation type="unfinished">новый!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="obsolete">недействительный</translation>
+        <translation type="unfinished">недействительный</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">не установлен</translation>
+        <translation type="unfinished">не установлен</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">установлен</translation>
+        <translation type="unfinished">установлен</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="obsolete">минимальная требуемая версия</translation>
+        <translation type="unfinished">минимальная требуемая версия</translation>
     </message>
 </context>
 <context>
@@ -17688,35 +17692,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="obsolete">Успешное завершение</translation>
+        <translation type="unfinished">Успешное завершение</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Поиск узла...</translation>
+        <translation type="unfinished">Поиск узла...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Соединение...</translation>
+        <translation type="unfinished">Соединение...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Соединение установлено. Отправка запроса...</translation>
+        <translation type="unfinished">Соединение установлено. Отправка запроса...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Загрузка данных...</translation>
+        <translation type="unfinished">Загрузка данных...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Бездействие</translation>
+        <translation type="unfinished">Бездействие</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Закрытие соединения...</translation>
+        <translation type="unfinished">Закрытие соединения...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
+        <translation type="unfinished">Ошибка</translation>
     </message>
 </context>
 <context>
@@ -17746,43 +17750,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">Установка...</translation>
+        <translation type="unfinished">Установка...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Поиск узла...</translation>
+        <translation type="unfinished">Поиск узла...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Соединение...</translation>
+        <translation type="unfinished">Соединение...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Соединение установлено. Отправка запроса...</translation>
+        <translation type="unfinished">Соединение установлено. Отправка запроса...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Загрузка данных...</translation>
+        <translation type="unfinished">Загрузка данных...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Бездействие</translation>
+        <translation type="unfinished">Бездействие</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Закрытие соединения...</translation>
+        <translation type="unfinished">Закрытие соединения...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
+        <translation type="unfinished">Ошибка</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">Не удалось распаковать архив модуля. Возможно, файл повреждён или отсутствует в репозитории. Данная ошибка также может возникать при отсутствии прав на запись в каталог модулей:</translation>
+        <translation type="unfinished">Не удалось распаковать архив модуля. Возможно, файл повреждён или отсутствует в репозитории. Данная ошибка также может возникать при отсутствии прав на запись в каталог модулей:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">Отменено пользователем</translation>
+        <translation type="unfinished">Отменено пользователем</translation>
     </message>
 </context>
 <context>
@@ -17804,7 +17808,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">сообщений об ошибках не зафиксировано</translation>
+        <translation type="unfinished">сообщений об ошибках не зафиксировано</translation>
     </message>
 </context>
 <context>
@@ -23563,27 +23567,27 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Пожалуйста, укажите исходный векторный слой</translation>
+        <translation type="unfinished">Пожалуйста, укажите исходный векторный слой</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="obsolete">Пожалуйста, заполните исходное поле</translation>
+        <translation type="unfinished">Пожалуйста, заполните исходное поле</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Проверка геометрии</translation>
+        <translation type="unfinished">Проверка геометрии</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="obsolete">Ошибки геометрии</translation>
+        <translation type="unfinished">Ошибки геометрии</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="obsolete">Всего найдено ошибок</translation>
+        <translation type="unfinished">Всего найдено ошибок</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Список уникальных значений</translation>
+        <translation type="unfinished">Список уникальных значений</translation>
     </message>
     <message>
         <source>Unique values:</source>
@@ -23595,19 +23599,19 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="obsolete">Базовая статистика</translation>
+        <translation type="unfinished">Базовая статистика</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="obsolete">Статистика</translation>
+        <translation type="unfinished">Статистика</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Анализ близости</translation>
+        <translation type="unfinished">Анализ близости</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="obsolete">Статистика близости</translation>
+        <translation type="unfinished">Статистика близости</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
@@ -23639,11 +23643,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">Уникальные значения</translation>
+        <translation type="unfinished">Уникальные значения</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="obsolete">Всего уникальных значений</translation>
+        <translation type="unfinished">Всего уникальных значений</translation>
     </message>
 </context>
 <context>
@@ -24500,7 +24504,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Обнаруженная версия Quantum GIS: </translation>
+        <translation type="unfinished">Обнаруженная версия Quantum GIS: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
@@ -24516,39 +24520,39 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">&amp;Анализ</translation>
+        <translation type="unfinished">&amp;Анализ</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Матрица расстояний</translation>
+        <translation type="unfinished">Матрица расстояний</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Сумма расстояний в полигонах</translation>
+        <translation type="unfinished">Сумма расстояний в полигонах</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Количество точек в полигонах</translation>
+        <translation type="unfinished">Количество точек в полигонах</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="obsolete">Базовая статистика</translation>
+        <translation type="unfinished">Базовая статистика</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Список уникальных значений</translation>
+        <translation type="unfinished">Список уникальных значений</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Анализ близости</translation>
+        <translation type="unfinished">Анализ близости</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="obsolete">Средние координаты</translation>
+        <translation type="unfinished">Средние координаты</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Пересечения линий</translation>
+        <translation type="unfinished">Пересечения линий</translation>
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
@@ -24557,132 +24561,132 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">Эта версия fTools требует QGIS версии 1.0.0
+        <translation type="unfinished">Эта версия fTools требует QGIS версии 1.0.0
 Модуль не будет активирован.</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Случайная выборка</translation>
+        <translation type="unfinished">Случайная выборка</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Случайная выборка в подмножествах</translation>
+        <translation type="unfinished">Случайная выборка в подмножествах</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="obsolete">Случайные точки</translation>
+        <translation type="unfinished">Случайные точки</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Регулярные точки</translation>
+        <translation type="unfinished">Регулярные точки</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Векторная сетка</translation>
+        <translation type="unfinished">Векторная сетка</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Выделение по районам</translation>
+        <translation type="unfinished">Выделение по районам</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="obsolete">&amp;Обработка</translation>
+        <translation type="unfinished">&amp;Обработка</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Выпуклые оболочки</translation>
+        <translation type="unfinished">Выпуклые оболочки</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Буферные зоны</translation>
+        <translation type="unfinished">Буферные зоны</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Пересечение</translation>
+        <translation type="unfinished">Пересечение</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Объединение</translation>
+        <translation type="unfinished">Объединение</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Симметричная разность</translation>
+        <translation type="unfinished">Симметричная разность</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Отсечение</translation>
+        <translation type="unfinished">Отсечение</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Объединение по признаку</translation>
+        <translation type="unfinished">Объединение по признаку</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Разность</translation>
+        <translation type="unfinished">Разность</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="obsolete">Обработка &amp;геометрии</translation>
+        <translation type="unfinished">Обработка &amp;геометрии</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Экспортировать/добавить поле геометрии</translation>
+        <translation type="unfinished">Экспортировать/добавить поле геометрии</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Проверка геометрии</translation>
+        <translation type="unfinished">Проверка геометрии</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Центроиды полигонов</translation>
+        <translation type="unfinished">Центроиды полигонов</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Извлечение узлов</translation>
+        <translation type="unfinished">Извлечение узлов</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Упростить геометрию</translation>
+        <translation type="unfinished">Упростить геометрию</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Разбить составные полигоны</translation>
+        <translation type="unfinished">Разбить составные полигоны</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Объединить полигоны в составные</translation>
+        <translation type="unfinished">Объединить полигоны в составные</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Преобразовать полигоны в линии</translation>
+        <translation type="unfinished">Преобразовать полигоны в линии</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">&amp;Управление данными</translation>
+        <translation type="unfinished">&amp;Управление данными</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">Экспорт в новую проекцию</translation>
+        <translation type="unfinished">Экспорт в новую проекцию</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Задать текущую проекцию</translation>
+        <translation type="unfinished">Задать текущую проекцию</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Объединение атрибутов</translation>
+        <translation type="unfinished">Объединение атрибутов</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Объединение атрибутов по районам</translation>
+        <translation type="unfinished">Объединение атрибутов по районам</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Разбить векторный слой</translation>
+        <translation type="unfinished">Разбить векторный слой</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">О программе fTools</translation>
+        <translation type="unfinished">О программе fTools</translation>
     </message>
     <message>
         <source>About fTools</source>
@@ -24690,15 +24694,15 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">&amp;Выборка</translation>
+        <translation type="unfinished">&amp;Выборка</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Триангуляция Делоне</translation>
+        <translation type="unfinished">Триангуляция Делоне</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Полигон из границ слоя</translation>
+        <translation type="unfinished">Полигон из границ слоя</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -24711,6 +24715,10 @@ Plugin will not be enabled.</source>
     <message>
         <source>Output polygon shapefile</source>
         <translation type="obsolete">Сохранить результат в полигональный shape-файл</translation>
+    </message>
+    <message>
+        <source>&amp;Vector</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24771,19 +24779,95 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="obsolete">Объект %1 включает кольцо, выходящее за его границы</translation>
+        <translation type="unfinished">Объект %1 включает кольцо, выходящее за его границы</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="obsolete">Объект %1 не замкнут</translation>
+        <translation type="unfinished">Объект %1 не замкнут</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="obsolete">Объект %1 пересекает сам себя</translation>
+        <translation type="unfinished">Объект %1 пересекает сам себя</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="obsolete">Объект %1 имеет неверный порядок узлов</translation>
+        <translation type="unfinished">Объект %1 имеет неверный порядок узлов</translation>
+    </message>
+    <message>
+        <source>Max. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filled:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>StdDev:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CV:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of unique values:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Median:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Observed mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

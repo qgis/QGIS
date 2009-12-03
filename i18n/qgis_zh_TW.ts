@@ -1041,6 +1041,68 @@ p, li { white-space: pre-wrap; }
         <source>OGR Layer Converter</source>
         <translation type="unfinished">OGR檔案轉換工具</translation>
     </message>
+    <message>
+        <source>Sum line lengths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output matrix:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points in polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output Shapefile:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector layer is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>creating new selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>adding to current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>removing from current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select by location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>that intersect features in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify current selection by:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify select layer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DlgAddRelation</name>
@@ -1465,11 +1527,115 @@ p, li { white-space: pre-wrap; }
     <name>GeometryDialog</name>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">輸入向量圖層</translation>
+        <translation type="unfinished">輸入向量圖層</translation>
     </message>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">合併所有</translation>
+        <translation type="unfinished">合併所有</translation>
+    </message>
+    <message>
+        <source>Please specify input vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify output shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify valid tolerance value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify valid UID field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Singleparts to multipart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multipart to singleparts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extract nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygons to lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input polygon vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export/Add geometry columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon centroids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output point shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error processing specified tolerance!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please choose larger tolerance...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete incomplete shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error writing output shapefile.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1493,6 +1659,134 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Browse</source>
         <translation type="obsolete">瀏覽</translation>
+    </message>
+</context>
+<context>
+    <name>GeoprocessingDialog</name>
+    <message>
+        <source>Dissolve all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify an input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify a difference/intersect/union layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify valid buffer value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify dissolve field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify output shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create single minimum convex hull</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create convex hulls based on input field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convex hull(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Difference layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersect layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clip layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Union layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Warnings:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Some output geometries may be missing or invalid.
+
+Would you like to add the new layer anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Feature geometry error: One or more output features ignored due to invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+GEOS geoprocessing error: One or more input features have invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2021,7 +2315,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">OSM 資訊</translation>
+        <translation type="unfinished">OSM 資訊</translation>
     </message>
     <message>
         <source>Show type description</source>
@@ -2215,51 +2509,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">OSM下載</translation>
+        <translation type="unfinished">OSM下載</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">無法儲存檔案 %1: %2.</translation>
+        <translation type="unfinished">無法儲存檔案 %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">等待OpenStreetMap(OSM)伺服器中...</translation>
+        <translation type="unfinished">等待OpenStreetMap(OSM)伺服器中...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">下載過程失敗。OpenStreetMap伺服器回應%1 - %2</translation>
+        <translation type="unfinished">下載過程失敗。OpenStreetMap伺服器回應%1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">OSM下載錯誤</translation>
+        <translation type="unfinished">OSM下載錯誤</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">下載失敗:%1。</translation>
+        <translation type="unfinished">下載失敗:%1。</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">取得資料中</translation>
+        <translation type="unfinished">取得資料中</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">您從OpenStreetMap伺服器(~ api.openstreetmap.org)下載的有固定限制的大小，在 &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;中提到經度或緯度的可下載範圍不能超過0.25度。注意 Quantum GIS 允許您指定您任何範圍，但是 OpenStreetMap 伺服器會依據下載的限制拒絕您的下載。</translation>
+        <translation type="unfinished">您從OpenStreetMap伺服器(~ api.openstreetmap.org)下載的有固定限制的大小，在 &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;中提到經度或緯度的可下載範圍不能超過0.25度。注意 Quantum GIS 允許您指定您任何範圍，但是 OpenStreetMap 伺服器會依據下載的限制拒絕您的下載。</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">緯度與經度範圍過大!</translation>
+        <translation type="unfinished">緯度與經度範圍過大!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">緯度範圍過大!</translation>
+        <translation type="unfinished">緯度範圍過大!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">經度範圍過大!</translation>
+        <translation type="unfinished">經度範圍過大!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">OK!面積大小伺服器可以接受。</translation>
+        <translation type="unfinished">OK!面積大小伺服器可以接受。</translation>
     </message>
 </context>
 <context>
@@ -2366,23 +2660,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">OSM附加元件</translation>
+        <translation type="unfinished">OSM附加元件</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">因為OSM資料庫異動，所以&apos;建立OSM關連&apos;對話方塊將會自動關閉。</translation>
+        <translation type="unfinished">因為OSM資料庫異動，所以&apos;建立OSM關連&apos;對話方塊將會自動關閉。</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">OSM 圖徵停駐工具</translation>
+        <translation type="unfinished">OSM 圖徵停駐工具</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">請先選取OSM圖徵。</translation>
+        <translation type="unfinished">請先選取OSM圖徵。</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">請先選取關連來編輯。</translation>
+        <translation type="unfinished">請先選取關連來編輯。</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -2487,31 +2781,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">儲存OSM為檔案</translation>
+        <translation type="unfinished">儲存OSM為檔案</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">無法儲存檔案 %1: %2.</translation>
+        <translation type="unfinished">無法儲存檔案 %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">初始化...</translation>
+        <translation type="unfinished">初始化...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">儲存結點中...</translation>
+        <translation type="unfinished">儲存結點中...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">儲存線中...</translation>
+        <translation type="unfinished">儲存線中...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">儲存多邊形中...</translation>
+        <translation type="unfinished">儲存多邊形中...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">儲存關連中...</translation>
+        <translation type="unfinished">儲存關連中...</translation>
     </message>
 </context>
 <context>
@@ -2612,11 +2906,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">OSM上傳</translation>
+        <translation type="unfinished">OSM上傳</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">上傳資料...</translation>
+        <translation type="unfinished">上傳資料...</translation>
     </message>
 </context>
 <context>
@@ -2923,7 +3217,39 @@ p, li { white-space: pre-wrap; }
     <name>Python</name>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Python錯誤</translation>
+        <translation type="unfinished">Python錯誤</translation>
+    </message>
+    <message>
+        <source>An error has occured while executing Python code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python version:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load plugin %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 due an error when calling its classFactory() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 due an error when calling its initGui() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while unloading plugin %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20565,19 +20891,59 @@ geometry.</source>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Python附加元件...</translation>
+        <translation type="unfinished">Python附加元件...</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">尋找新的附加元件...</translation>
+        <translation type="unfinished">尋找新的附加元件...</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">QGIS附加元件衝突:</translation>
+        <translation type="unfinished">QGIS附加元件衝突:</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Python附加元件安裝</translation>
+        <translation type="unfinished">QGIS Python附加元件安裝</translation>
+    </message>
+    <message>
+        <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to remove the directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check permissions or remove it manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t parse output from the repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open the local plugin directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install more plugins from remote repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is a new plugin available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is a plugin update available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error reading repository:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20616,75 +20982,253 @@ geometry.</source>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Python 附加元件安裝</translation>
+        <translation type="unfinished">QGIS Python 附加元件安裝</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">所有附加元件主機</translation>
+        <translation type="unfinished">所有附加元件主機</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">已連線</translation>
+        <translation type="unfinished">已連線</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">停用</translation>
+        <translation type="unfinished">停用</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">任何狀態</translation>
+        <translation type="unfinished">任何狀態</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">未安裝</translation>
+        <translation type="unfinished">未安裝</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">已安裝</translation>
+        <translation type="unfinished">已安裝</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">可升級與新版</translation>
+        <translation type="unfinished">可升級與新版</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">這附加元件未安裝</translation>
+        <translation type="unfinished">這附加元件未安裝</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">這附加元件已安裝</translation>
+        <translation type="unfinished">這附加元件已安裝</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">這附加元件已安裝，且有新版本可以安裝</translation>
+        <translation type="unfinished">這附加元件已安裝，且有新版本可以安裝</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">可升級</translation>
+        <translation type="unfinished">可升級</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">安裝附加元件</translation>
+        <translation type="unfinished">安裝附加元件</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">重新安裝附加元件</translation>
+        <translation type="unfinished">重新安裝附加元件</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">升級附加元件</translation>
+        <translation type="unfinished">升級附加元件</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">安裝/升級附加元件</translation>
+        <translation type="unfinished">安裝/升級附加元件</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">降級附加元件</translation>
+        <translation type="unfinished">降級附加元件</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">附加元件安裝失敗</translation>
+        <translation type="unfinished">附加元件安裝失敗</translation>
+    </message>
+    <message>
+        <source>Error reading repository:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is enabled, but unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>orphans</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is not installed and is seen for the first time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is installed and is newer than its version available in a repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin seems to be broken.
+It has been installed but can&apos;t be loaded.
+Here is the error message:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>new!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note that it&apos;s an uninstallable core plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>installed version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>available version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>That&apos;s the newest available version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is no version available for download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is broken</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin requires a newer version of Quantum GIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>at least</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin requires a missing module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>only locally available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin has disappeared</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
+Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin installed successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin reinstalled successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin uninstall failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to uninstall the following plugin?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin uninstalled successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to add another repository with the same URL!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove the following repository?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20898,35 +21442,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">下載資料...</translation>
+        <translation type="unfinished">下載資料...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
+        <translation type="unfinished">錯誤</translation>
     </message>
     <message>
         <source>Success</source>
-        <translation type="obsolete">成功</translation>
+        <translation type="unfinished">成功</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">解析主機名稱...</translation>
+        <translation type="unfinished">解析主機名稱...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">連線中...</translation>
+        <translation type="unfinished">連線中...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">主機已連線。傳送需求中...</translation>
+        <translation type="unfinished">主機已連線。傳送需求中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">閒置</translation>
+        <translation type="unfinished">閒置</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">關閉連線中...</translation>
+        <translation type="unfinished">關閉連線中...</translation>
     </message>
 </context>
 <context>
@@ -20956,43 +21500,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">下載資料...</translation>
+        <translation type="unfinished">下載資料...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
+        <translation type="unfinished">錯誤</translation>
     </message>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">安裝中...</translation>
+        <translation type="unfinished">安裝中...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">解析主機名稱...</translation>
+        <translation type="unfinished">解析主機名稱...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">連接中...</translation>
+        <translation type="unfinished">連接中...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">主機已連線。傳送請求中...</translation>
+        <translation type="unfinished">主機已連線。傳送請求中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">閒置</translation>
+        <translation type="unfinished">閒置</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">關閉連線中...</translation>
+        <translation type="unfinished">關閉連線中...</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">附加元件解壓縮失敗。可能是從主機下載失敗。您要先確定您的附加元件資料夾有寫入的權限:</translation>
+        <translation type="unfinished">附加元件解壓縮失敗。可能是從主機下載失敗。您要先確定您的附加元件資料夾有寫入的權限:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">使用者已放棄</translation>
+        <translation type="unfinished">使用者已放棄</translation>
     </message>
 </context>
 <context>
@@ -21014,7 +21558,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">無接收到錯誤訊息</translation>
+        <translation type="unfinished">無接收到錯誤訊息</translation>
     </message>
 </context>
 <context>
@@ -27488,7 +28032,51 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">唯一值</translation>
+        <translation type="unfinished">唯一值</translation>
+    </message>
+    <message>
+        <source>Please specify input vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check geometry validity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total encountered errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basics statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistics output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour statistics</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28374,27 +28962,188 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">分析工具(&amp;A)</translation>
+        <translation type="unfinished">分析工具(&amp;A)</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">研究工具(&amp;R)</translation>
+        <translation type="unfinished">研究工具(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="obsolete">地理空間運算工具(&amp;G)</translation>
+        <translation type="unfinished">地理空間運算工具(&amp;G)</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="obsolete">幾何工具(G&amp;)</translation>
+        <translation type="unfinished">幾何工具(G&amp;)</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">資料管理工具(&amp;D)</translation>
+        <translation type="unfinished">資料管理工具(&amp;D)</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">fTools 資訊</translation>
+        <translation type="unfinished">fTools 資訊</translation>
+    </message>
+    <message>
+        <source>Quantum GIS version detected: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This version of fTools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum line lengths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points in polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basic statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean coordinate(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line intersections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random selection within subsets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regular points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select by location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convex hull(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export/Add geometry columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check geometry validity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon centroids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extract nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simplify geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multipart to singleparts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Singleparts to multipart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygons to lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to new projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Define current projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join attributes by location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Split vector layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28428,6 +29177,101 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Replace this with a short description of what the plugin does</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>visualThread</name>
+    <message>
+        <source>Max. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filled:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>StdDev:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CV:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of unique values:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Median:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Observed mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 contains an unnested hole</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 is not closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 is self intersecting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 has incorrect node ordering</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
