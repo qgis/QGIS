@@ -1581,6 +1581,11 @@ void QgsLegend::makeToTopLevelItem()
 
 void QgsLegend::legendLayerZoom()
 {
+  if(!mMapCanvas)
+  {
+    return;
+  }
+
   //find current Layer
   QgsLegendLayer* currentLayer = dynamic_cast<QgsLegendLayer *>( currentItem() );
   if ( !currentLayer )
@@ -1588,6 +1593,16 @@ void QgsLegend::legendLayerZoom()
 
   QgsMapLayer* theLayer = currentLayer->layer();
   QgsRectangle extent = theLayer->extent();
+
+  //transform extent if otf-projection is on
+  if(mMapCanvas->hasCrsTransformEnabled())
+  {
+    QgsMapRenderer* renderer = mMapCanvas->mapRenderer();
+    if(renderer)
+    {
+      extent = renderer->layerExtentToOutputExtent(theLayer, extent);
+    }
+  }
 
   // Increase bounding box with 5%, so that layer is a bit inside the borders
   extent.scale( 1.05 );
