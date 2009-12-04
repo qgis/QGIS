@@ -27,6 +27,7 @@ email                : sherman at mrcc.com
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
+#include <cpl_conv.h>
 
 #include <QtDebug>
 #include <QFile>
@@ -125,7 +126,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsDebugMsg( "mLayerIndex: " + QString::number( mLayerIndex ) );
   QgsDebugMsg( "mLayerName: " + mLayerName );
   QgsDebugMsg( "mSubsetString: " + mSubsetString );
-
+  CPLSetConfigOption("OGR_ORGANIZE_POLYGONS", "SKIP");
   CPLPushErrorHandler( CPLQuietErrorHandler );
   ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), TRUE, &ogrDriver );
   CPLPopErrorHandler();
