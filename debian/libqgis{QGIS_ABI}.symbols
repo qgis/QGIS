@@ -1499,6 +1499,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN15QgsComposerItem17mouseReleaseEventEP24QGraphicsSceneMouseEvent@Base 1.4.0
  _ZN15QgsComposerItem18drawSelectionBoxesEP8QPainter@Base 1.4.0
  _ZN15QgsComposerItem19changeItemRectangleERK7QPointFS2_PK17QGraphicsRectItemddPS3_@Base 1.4.0
+ _ZN15QgsComposerItem21sizeChangedByRotationERdS0_@Base 1.4.0
  _ZN15QgsComposerItem26mouseMoveActionForPositionERK7QPointF@Base 1.4.0
  _ZN15QgsComposerItem4moveEdd@Base 1.4.0
  _ZN15QgsComposerItem7addItemEPS_@Base 1.4.0
@@ -1590,6 +1591,24 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN15QgsSpatialIndexC2Ev@Base 1.4.0
  _ZN15QgsSpatialIndexD1Ev@Base 1.4.0
  _ZN15QgsSpatialIndexD2Ev@Base 1.4.0
+ _ZN16QgsComposerArrow12setEndMarkerERK7QString@Base 1.4.0
+ _ZN16QgsComposerArrow12setSceneRectERK6QRectF@Base 1.4.0
+ _ZN16QgsComposerArrow13drawSVGMarkerEP8QPainterNS_10MarkerTypeERK7QString@Base 1.4.0
+ _ZN16QgsComposerArrow14setStartMarkerERK7QString@Base 1.4.0
+ _ZN16QgsComposerArrow15setOutlineWidthEd@Base 1.4.0
+ _ZN16QgsComposerArrow17setArrowHeadWidthEd@Base 1.4.0
+ _ZN16QgsComposerArrow18adaptItemSceneRectEv@Base 1.4.0
+ _ZN16QgsComposerArrow19drawHardcodedMarkerEP8QPainterNS_10MarkerTypeE@Base 1.4.0
+ _ZN16QgsComposerArrow20initGraphicsSettingsEv@Base 1.4.0
+ _ZN16QgsComposerArrow5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
+ _ZN16QgsComposerArrow7readXMLERK11QDomElementRK12QDomDocument@Base 1.4.0
+ _ZN16QgsComposerArrowC1EP14QgsComposition@Base 1.4.0
+ _ZN16QgsComposerArrowC1ERK7QPointFS2_P14QgsComposition@Base 1.4.0
+ _ZN16QgsComposerArrowC2EP14QgsComposition@Base 1.4.0
+ _ZN16QgsComposerArrowC2ERK7QPointFS2_P14QgsComposition@Base 1.4.0
+ _ZN16QgsComposerArrowD0Ev@Base 1.4.0
+ _ZN16QgsComposerArrowD1Ev@Base 1.4.0
+ _ZN16QgsComposerArrowD2Ev@Base 1.4.0
  _ZN16QgsComposerLabel16adjustSizeToTextEv@Base 1.4.0
  _ZN16QgsComposerLabel5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
  _ZN16QgsComposerLabel7readXMLERK11QDomElementRK12QDomDocument@Base 1.4.0
@@ -1600,10 +1619,15 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN16QgsComposerLabelD0Ev@Base 1.4.0
  _ZN16QgsComposerLabelD1Ev@Base 1.4.0
  _ZN16QgsComposerLabelD2Ev@Base 1.4.0
+ _ZN16QgsComposerShape11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN16QgsComposerShape11qt_metacastEPKc@Base 1.4.0
+ _ZN16QgsComposerShape11setRotationEd@Base 1.4.0
  _ZN16QgsComposerShape12setFillColorERK6QColor@Base 1.4.0
  _ZN16QgsComposerShape12setLineWidthEd@Base 1.4.0
+ _ZN16QgsComposerShape12setSceneRectERK6QRectF@Base 1.4.0
  _ZN16QgsComposerShape15initBrushAndPenEv@Base 1.4.0
  _ZN16QgsComposerShape15setOutlineColorERK6QColor@Base 1.4.0
+ _ZN16QgsComposerShape16staticMetaObjectE@Base 1.4.0
  _ZN16QgsComposerShape18setTransparentFillEb@Base 1.4.0
  _ZN16QgsComposerShape20initGraphicsSettingsEv@Base 1.4.0
  _ZN16QgsComposerShape5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
@@ -3053,6 +3077,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN4QMapIiS_IiN14QgsUndoCommand20AttributeChangeEntryEEED1Ev@Base 1.4.0
  _ZN4QMapIiiE13detach_helperEv@Base 1.4.0
  _ZN4QMapIiiED1Ev@Base 1.4.0
+ _ZN4QSetI7QStringED1Ev@Base 1.4.0
  _ZN4QSetIP15QgsComposerItemED1Ev@Base 1.4.0
  _ZN4QSetIP9QgsSymbolED1Ev@Base 1.4.0
  _ZN4QSetIiE5beginEv@Base 1.4.0
@@ -3726,6 +3751,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK15QgsComposerItem26rectHandlerBorderToleranceEv@Base 1.4.0
  _ZNK15QgsComposerItem28imageSizeConsideringRotationERdS0_@Base 1.4.0
  _ZNK15QgsComposerItem33cornerPointOnRotatedAndScaledRectERdS0_dd@Base 1.4.0
+ _ZNK15QgsComposerItem6rotateEdRdS0_@Base 1.4.0
  _ZNK15QgsComposerItem8drawTextEP8QPainterRK6QRectFRK7QStringRK5QFont@Base 1.4.0
  _ZNK15QgsComposerItem8drawTextEP8QPainterddRK7QStringRK5QFont@Base 1.4.0
  _ZNK15QgsComposerItem8drawTextEP8QPainteriiRK7QStringRK5QFont@Base 1.4.0
@@ -3739,10 +3765,13 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK15QgsDataProvider9subLayersEv@Base 1.4.0
  _ZNK15QgsFillSymbolV25cloneEv@Base 1.4.0
  _ZNK15QgsLineSymbolV25cloneEv@Base 1.4.0
+ _ZNK16QgsComposerArrow10arrowAngleEv@Base 1.4.0
+ _ZNK16QgsComposerArrow8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
  _ZNK16QgsComposerLabel11displayTextEv@Base 1.4.0
  _ZNK16QgsComposerLabel15replaceDateTextER7QString@Base 1.4.0
  _ZNK16QgsComposerLabel4fontEv@Base 1.4.0
  _ZNK16QgsComposerLabel8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
+ _ZNK16QgsComposerShape10metaObjectEv@Base 1.4.0
  _ZNK16QgsComposerShape12outlineColorEv@Base 1.4.0
  _ZNK16QgsComposerShape15transparentFillEv@Base 1.4.0
  _ZNK16QgsComposerShape8writeXMLER11QDomElementR12QDomDocument@Base 1.4.0
@@ -4253,6 +4282,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI15QgsDataProvider@Base 1.4.0
  _ZTI15QgsFillSymbolV2@Base 1.4.0
  _ZTI15QgsLineSymbolV2@Base 1.4.0
+ _ZTI16QgsComposerArrow@Base 1.4.0
  _ZTI16QgsComposerLabel@Base 1.4.0
  _ZTI16QgsComposerShape@Base 1.4.0
  _ZTI16QgsMessageOutput@Base 1.4.0
@@ -4413,6 +4443,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS15QgsDataProvider@Base 1.4.0
  _ZTS15QgsFillSymbolV2@Base 1.4.0
  _ZTS15QgsLineSymbolV2@Base 1.4.0
+ _ZTS16QgsComposerArrow@Base 1.4.0
  _ZTS16QgsComposerLabel@Base 1.4.0
  _ZTS16QgsComposerShape@Base 1.4.0
  _ZTS16QgsMessageOutput@Base 1.4.0
@@ -4576,6 +4607,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV15QgsDataProvider@Base 1.4.0
  _ZTV15QgsFillSymbolV2@Base 1.4.0
  _ZTV15QgsLineSymbolV2@Base 1.4.0
+ _ZTV16QgsComposerArrow@Base 1.4.0
  _ZTV16QgsComposerLabel@Base 1.4.0
  _ZTV16QgsComposerShape@Base 1.4.0
  _ZTV16QgsMessageOutput@Base 1.4.0
@@ -4718,6 +4750,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZThn16_N15QgsComposerItem17mouseReleaseEventEP24QGraphicsSceneMouseEvent@Base 1.4.0
  _ZThn16_N15QgsComposerItemD0Ev@Base 1.4.0
  _ZThn16_N15QgsComposerItemD1Ev@Base 1.4.0
+ _ZThn16_N16QgsComposerArrow5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
+ _ZThn16_N16QgsComposerArrowD0Ev@Base 1.4.0
+ _ZThn16_N16QgsComposerArrowD1Ev@Base 1.4.0
  _ZThn16_N16QgsComposerLabel5paintEP8QPainterPK24QStyleOptionGraphicsItemP7QWidget@Base 1.4.0
  _ZThn16_N16QgsComposerLabelD0Ev@Base 1.4.0
  _ZThn16_N16QgsComposerLabelD1Ev@Base 1.4.0
@@ -5458,12 +5493,15 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN12QgsMapCanvas16zoomToFullExtentEv@Base 1.4.0
  _ZN12QgsMapCanvas16zoomToNextExtentEv@Base 1.4.0
  _ZN12QgsMapCanvas17mouseReleaseEventEP11QMouseEvent@Base 1.4.0
+ _ZN12QgsMapCanvas18clearExtentHistoryEv@Base 1.4.0
  _ZN12QgsMapCanvas18enableAntiAliasingEb@Base 1.4.0
  _ZN12QgsMapCanvas18enableOverviewModeEP20QgsMapOverviewCanvas@Base 1.4.0
  _ZN12QgsMapCanvas18moveCanvasContentsEb@Base 1.4.0
  _ZN12QgsMapCanvas20selectionChangedSlotEv@Base 1.4.0
  _ZN12QgsMapCanvas20zoomToPreviousExtentEv@Base 1.4.0
  _ZN12QgsMapCanvas21mouseDoubleClickEventEP11QMouseEvent@Base 1.4.0
+ _ZN12QgsMapCanvas21zoomLastStatusChangedEb@Base 1.4.0
+ _ZN12QgsMapCanvas21zoomNextStatusChangedEb@Base 1.4.0
  _ZN12QgsMapCanvas22getCoordinateTransformEv@Base 1.4.0
  _ZN12QgsMapCanvas22hasCrsTransformEnabledEv@Base 1.4.0
  _ZN12QgsMapCanvas25updateCanvasItemPositionsEv@Base 1.4.0
@@ -5581,6 +5619,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN15QgsComposerView14setCompositionEP14QgsComposition@Base 1.4.0
  _ZN15QgsComposerView15keyReleaseEventEP9QKeyEvent@Base 1.4.0
  _ZN15QgsComposerView15mousePressEventEP11QMouseEvent@Base 1.4.0
+ _ZN15QgsComposerView16addComposerArrowEP16QgsComposerArrow@Base 1.4.0
  _ZN15QgsComposerView16addComposerLabelEP16QgsComposerLabel@Base 1.4.0
  _ZN15QgsComposerView16addComposerShapeEP16QgsComposerShape@Base 1.4.0
  _ZN15QgsComposerView16composerMapAddedEP14QgsComposerMap@Base 1.4.0
@@ -5588,6 +5627,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN15QgsComposerView17addComposerLegendEP17QgsComposerLegend@Base 1.4.0
  _ZN15QgsComposerView17mouseReleaseEventEP11QMouseEvent@Base 1.4.0
  _ZN15QgsComposerView18addComposerPictureEP18QgsComposerPicture@Base 1.4.0
+ _ZN15QgsComposerView18composerArrowAddedEP16QgsComposerArrow@Base 1.4.0
  _ZN15QgsComposerView18composerLabelAddedEP16QgsComposerLabel@Base 1.4.0
  _ZN15QgsComposerView18composerShapeAddedEP16QgsComposerShape@Base 1.4.0
  _ZN15QgsComposerView19addComposerScaleBarEP19QgsComposerScaleBar@Base 1.4.0
@@ -6170,7 +6210,9 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QHashI7QString15QHashDummyValueE13detach_helperEv@Base 1.4.0
  _ZN5QHashI7QString15QHashDummyValueE13duplicateNodeEPN9QHashData4NodeEPv@Base 1.4.0
  _ZN5QHashI7QString15QHashDummyValueE8freeDataEP9QHashData@Base 1.4.0
+ _ZN5QListI12QgsRectangleE13detach_helperEv@Base 1.4.0
  _ZN5QListI12QgsRectangleE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI12QgsRectangleE6appendERKS0_@Base 1.4.0
  _ZN5QListI12QgsRectangleED1Ev@Base 1.4.0
  _ZN5QListI17QgsSnappingResultE13detach_helperEv@Base 1.4.0
  _ZN5QListI17QgsSnappingResultE4freeEPN9QListData4DataE@Base 1.4.0

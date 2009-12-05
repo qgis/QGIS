@@ -1,0 +1,4 @@
+usr/include/qgis/*
+usr/lib/libqgis_core.so
+usr/lib/libqgis_gui.so
+usr/lib/libqgis_analysis.so
