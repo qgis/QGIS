@@ -31,7 +31,7 @@
      <property name="title">
       <string>Paper</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout_1">
       <property name="margin">
        <number>0</number>
       </property>

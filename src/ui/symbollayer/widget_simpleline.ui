@@ -124,7 +124,7 @@
     </spacer>
    </item>
    <item>
-    <layout class="QGridLayout" name="gridLayout">
+    <layout class="QGridLayout" name="gridLayout_1">
      <item row="0" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
